@@ -22,12 +22,13 @@ import org.eclipse.jetty.servlet.ServletHolder;
 /** Test utility class to create a {@link Server} instance with custom port and servlets. */
 public class JettyServerFactory {
 
-  public record ServerWithConfiguration(Server server, int serverPort){}
+  public record ServerWithConfiguration(Server server, int serverPort, int adminPort){}
 
   private final Map<String, ServletHolder> servlets = new HashMap<>();
   private final Map<String, FilterHolder> filters = new HashMap<>();
   private final List<EventListener> listeners = new ArrayList<>();
   private final int port = PortUtil.findFreePort();
+  private final int adminPort = PortUtil.findFreePort();
 
   public JettyServerFactory addServlet(String path, ServletHolder servletHolder) {
     this.servlets.put(path, servletHolder);
@@ -55,12 +56,15 @@ public class JettyServerFactory {
     ServerConnector connector = new ServerConnector(server);
     connector.setPort(port);
     connector.setHost("localhost");
+    ServerConnector adminConnector = new ServerConnector(server);
+    connector.setPort(adminPort);
+    connector.setHost("localhost");
     ServletContextHandler servletContextHandler = new ServletContextHandler();
     listeners.forEach(servletContextHandler::addEventListener);
     filters.forEach((path, filterHolder) -> servletContextHandler.addFilter(filterHolder, path, EnumSet.of(DispatcherType.REQUEST)));
     servlets.forEach((path, servlet) -> servletContextHandler.addServlet(servlet, path));
     server.setHandler(servletContextHandler);
-    server.setConnectors(new Connector[] {connector});
-    return new ServerWithConfiguration(server, port);
+    server.setConnectors(new Connector[] {connector, adminConnector});
+    return new ServerWithConfiguration(server, port, adminPort);
   }
 }

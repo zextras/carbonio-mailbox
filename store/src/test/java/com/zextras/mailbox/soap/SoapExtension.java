@@ -54,12 +54,14 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
   private final SoapClient soapClient;
   private final Server server;
   private final int port;
+  private final int adminPort;
 
-  private SoapExtension(int port, Server server, SoapClient soapClient) {
+  private SoapExtension(int port, Server server, SoapClient soapClient, int adminPort) {
     this.server = server;
     this.port = port;
     this.soapClient = soapClient;
-  }
+		this.adminPort = adminPort;
+	}
 
   public static class Builder {
 
@@ -86,8 +88,10 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
       final var server =
           serverWithConfiguration.server();
       final int serverPort = serverWithConfiguration.serverPort();
+      final int adminPort = serverWithConfiguration.adminPort();
       final var soapClient = new SoapClient("http://localhost:" + serverPort + basePath);
-      return new SoapExtension(serverPort, server, soapClient);
+      soapClient.setAdminEndpoint("http://localhost:" + adminPort + basePath);
+      return new SoapExtension(serverPort, server, soapClient,  adminPort);
     }
 
     private static ServletHolder createFirstServlet() {
@@ -118,6 +122,7 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
               new HashMap<>(
                   Map.of(
                       Provisioning.A_zimbraMailPort, String.valueOf(port),
+                      Provisioning.A_zimbraAdminPort, String.valueOf(adminPort),
                       ZAttrProvisioning.A_zimbraMailMode, "http",
                       ZAttrProvisioning.A_zimbraPop3SSLServerEnabled, "FALSE",
                       ZAttrProvisioning.A_zimbraImapSSLServerEnabled, "FALSE")));

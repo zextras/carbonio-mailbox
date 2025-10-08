@@ -39,7 +39,8 @@ public class SoapClient implements Closeable {
 	/**
 	 * Endpoint in form of http://<host>:<port>/<basePath>
 	 */
-	private final String endpoint;
+	private final String userEndpoint;
+	private String adminEndpoint;
 
 	private final BasicCookieStore cookieStore;
 	private final CloseableHttpClient client;
@@ -66,7 +67,7 @@ public class SoapClient implements Closeable {
 			};
 
 	public SoapClient(String endpoint) {
-		this.endpoint = endpoint;
+		this.userEndpoint = endpoint;
 		cookieStore = new BasicCookieStore();
 		try {
 			final SSLContext sslContext = SSLContext.getInstance("SSL");
@@ -84,6 +85,13 @@ public class SoapClient implements Closeable {
 			throw new RuntimeException(e);
 		}
 	}
+	public void setAdminEndpoint(String adminEndpoint) {
+		this.adminEndpoint = adminEndpoint;
+	}
+
+	public String getAdminEndpoint() {
+		return this.adminEndpoint;
+	}
 
 	@Override
 	public void close() throws IOException {
@@ -97,6 +105,7 @@ public class SoapClient implements Closeable {
 
 		private final BasicCookieStore cookieStore;
 		private final HttpClient client;
+		private boolean isAdminRequest = false;
 
 		public Request(BasicCookieStore cookieStore, HttpClient client) {
 
@@ -170,7 +179,7 @@ public class SoapClient implements Closeable {
 
 		private BasicClientCookie createAuthCookie() throws AuthTokenException, ServiceException {
 			final var authToken = AuthProvider.getAuthToken(caller, isAdminAccount());
-			final var name = ZimbraCookie.authTokenCookieName(false);
+			final var name = ZimbraCookie.authTokenCookieName(isAdminRequest);
 			final var cookie = new BasicClientCookie(name, authToken.getEncoded());
 			cookie.setDomain(caller.getServerName());
 			cookie.setPath("/");
@@ -180,10 +189,19 @@ public class SoapClient implements Closeable {
 		private boolean isAdminAccount() {
 			return caller.isIsAdminAccount() || caller.isIsDelegatedAdminAccount();
 		}
+
+		private Request asAdmin() {
+			this.isAdminRequest = true;
+			return this;
+		}
 	}
 
 	public Request newRequest() {
-		return new Request(cookieStore, client).setBaseURL(this.endpoint);
+		return new Request(cookieStore, client).setBaseURL(this.userEndpoint);
+	}
+
+	public Request newAdminRequest() {
+		return new Request(cookieStore, client).setBaseURL(this.adminEndpoint).asAdmin();
 	}
 
 	/**
