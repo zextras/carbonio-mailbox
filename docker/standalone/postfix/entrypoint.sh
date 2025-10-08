@@ -7,8 +7,5 @@
 
 sed -i -e "s/LDAP_ROOT_PASSWORD/${LDAP_ROOT_PASSWORD}/g" /opt/zextras/conf/*.cf
 
-/opt/zextras/common/sbin/postconf maillog_file=/var/log/postfix.log
-
-/opt/zextras/common/sbin/postfix start
-
-tail -f /var/log/postfix.log
+/opt/zextras/common/sbin/postconf maillog_file=/dev/stdout
+exec /opt/zextras/common/sbin/postfix start-fg

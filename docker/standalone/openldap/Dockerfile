@@ -1,3 +1,23 @@
+FROM maven:3-eclipse-temurin-17-alpine AS build
+RUN apk add --no-cache make gcc g++ musl-dev
+
+WORKDIR /build
+
+COPY pom.xml                          pom.xml
+COPY store                            store
+COPY native                           native
+COPY attribute-manager                attribute-manager
+COPY mailbox-ldap-lib                 mailbox-ldap-lib
+COPY soap                             soap
+COPY store-extra-runtime-dependencies store-extra-runtime-dependencies
+COPY jython-libs                      jython-libs
+COPY common                           common
+COPY right-manager                    right-manager
+COPY client                           client
+COPY store-conf                       store-conf
+
+RUN --mount=type=cache,target=/root/.m2 mvn clean install -DskipTests
+
 FROM ubuntu:jammy
 
 USER root
@@ -11,7 +31,7 @@ ENV LDAP_ADMIN_PASSWORD=password
 EXPOSE 1389
 
 COPY docker/standalone/openldap/ldap-utils/ /ldap-utils/
-COPY mailbox-ldap-lib/ldap/generated/ /opt/zextras/common/etc/openldap/zimbra/
+COPY --from=build /build/mailbox-ldap-lib/ldap/generated/ /opt/zextras/common/etc/openldap/zimbra/
 RUN mkdir -p /opt/zextras/ldap/custom-ldifs \
             /opt/zextras/data/ldap/state/run \
             /opt/zextras/data/ldap/config \
