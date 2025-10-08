@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.soap.SoapUtils;
 import com.zextras.mailbox.util.SoapClient.Request;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Account;
@@ -32,22 +33,36 @@ public class AdminGroupTest extends SoapTestSuite {
 	}
 
 	@Test
-	void delegatedAdminIsAbleToSeeCOS() throws Exception {
+	void delegatedAdmin_IsAbleToRetrieveCOS() throws Exception {
 		final Cos cos = provisioning.createCos("COS1", Maps.newHashMap());
 		final Account account = createAccount().create();
 		account.setIsDelegatedAdminAccount(true);
 
-		final GetCosResponse getCosByAdminApi = getCOSAdminApi(cos, account);
-		Assertions.assertEquals(getCosByAdminApi.getCos().getId(), cos.getId());
+		final SoapResponse response = getCOSAdminApi(cos, account);
+		final String soapResponse = response.body();
+		final GetCosResponse cosResponse = SoapUtils.getSoapResponse(soapResponse,
+				AdminConstants.E_GET_COS_RESPONSE, GetCosResponse.class);
+		Assertions.assertEquals(cosResponse.getCos().getId(), cos.getId());
 
 	}
 
-	private GetCosResponse getCOSAdminApi(Cos cos, Account account) throws Exception {
+	@Test
+	void domainAdmin_IsNotAbleToRetrieveCOS() throws Exception {
+		final Cos cos = provisioning.createCos("COS2", Maps.newHashMap());
+
+		final Account account = createAccount().create();
+		account.setIsDomainAdminAccount(true);
+
+		final SoapResponse cosAdminApi = getCOSAdminApi(cos, account);
+		Assertions.assertTrue(cosAdminApi.body().contains("permission denied: need adequate admin"));
+
+	}
+
+	private SoapResponse getCOSAdminApi(Cos cos, Account account) throws Exception {
 		final GetCosRequest getCosRequest = new GetCosRequest(new CosSelector(CosBy.id, cos.getId()));
 		final Request request = getSoapClient().newAdminRequest().setCaller(account)
 				.setSoapBody(getCosRequest);
-		final String soapResponse = request.call().body();
-		return SoapUtils.getSoapResponse(soapResponse, AdminConstants.E_GET_COS_RESPONSE, GetCosResponse.class);
+		return request.call();
 	}
 
 }
