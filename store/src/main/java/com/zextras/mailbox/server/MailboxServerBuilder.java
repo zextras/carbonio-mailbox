@@ -264,9 +264,7 @@ public class MailboxServerBuilder {
 		localSslContextFactory.setRenegotiationAllowed(
 				localServer.isMailboxdSSLRenegotiationAllowed());
 
-		for (String protocol : localServer.getMailboxdSSLProtocols()) {
-			localSslContextFactory.setIncludeProtocols(protocol);
-		}
+		localSslContextFactory.setIncludeProtocols(localServer.getMailboxdSSLProtocols());
 
 		localSslContextFactory.setExcludeCipherSuites(localServer.getSSLExcludeCipherSuites());
 
