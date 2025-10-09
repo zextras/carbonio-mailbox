@@ -2,20 +2,15 @@ package com.zimbra.cs.service.account;
 
 import com.google.common.collect.Maps;
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.soap.SoapUtils;
 import com.zextras.mailbox.util.SoapClient.Request;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
-import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Cos;
-import com.zimbra.cs.account.DistributionList;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.soap.admin.message.GetAccountRequest;
 import com.zimbra.soap.admin.message.GetCosRequest;
-import com.zimbra.soap.admin.message.GetCosResponse;
 import com.zimbra.soap.admin.message.GetDomainRequest;
 import com.zimbra.soap.admin.message.GetServerRequest;
 import com.zimbra.soap.admin.type.CosSelector;
@@ -26,7 +21,6 @@ import com.zimbra.soap.admin.type.ServerSelector;
 import com.zimbra.soap.admin.type.ServerSelector.ServerBy;
 import com.zimbra.soap.type.AccountBy;
 import com.zimbra.soap.type.AccountSelector;
-import java.util.Objects;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,7 +36,7 @@ public class AdminGroupTest extends SoapTestSuite {
 	}
 
 	@Test
-	void globalAdmin_IsAbleToRetrieveCOS() throws Exception {
+	void globalAdmin_IsAbleToRetrieve_COS_Account_Domain() throws Exception {
 		final Account account = createAccount().asGlobalAdmin().create();
 
 		assertAllowed(getCOSAdminApi(account));
@@ -52,7 +46,7 @@ public class AdminGroupTest extends SoapTestSuite {
 	}
 
 	@Test
-	void delegatedAdmin_IsNotAbleToRetrieveCOS_IFHasNoAccessToCOS() throws Exception {
+	void delegatedAdmin_Is_NOT_AbleToRetrieve_COS_Account_Domain() throws Exception {
 		final Account account = createAccount().create();
 		account.setIsDelegatedAdminAccount(true);
 
@@ -63,7 +57,7 @@ public class AdminGroupTest extends SoapTestSuite {
 	}
 
 	@Test
-	void domainAdmin_IsNotAbleToRetrieveCOS_IfCOSInDifferentDomain() throws Exception {
+	void domainAdminWithoutDelegatedAdmin_Is_NOT_AbleToRetrieve_COS_Account_Domain() throws Exception {
 		final Account account = createAccount().create();
 		account.setIsDomainAdminAccount(true);
 
