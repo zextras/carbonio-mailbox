@@ -12,16 +12,21 @@ import com.zimbra.cs.account.Cos;
 import com.zimbra.cs.account.DistributionList;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.Server;
 import com.zimbra.soap.admin.message.GetAccountRequest;
 import com.zimbra.soap.admin.message.GetCosRequest;
 import com.zimbra.soap.admin.message.GetCosResponse;
 import com.zimbra.soap.admin.message.GetDomainRequest;
+import com.zimbra.soap.admin.message.GetServerRequest;
 import com.zimbra.soap.admin.type.CosSelector;
 import com.zimbra.soap.admin.type.CosSelector.CosBy;
 import com.zimbra.soap.admin.type.DomainSelector;
 import com.zimbra.soap.admin.type.DomainSelector.DomainBy;
+import com.zimbra.soap.admin.type.ServerSelector;
+import com.zimbra.soap.admin.type.ServerSelector.ServerBy;
 import com.zimbra.soap.type.AccountBy;
 import com.zimbra.soap.type.AccountSelector;
+import java.util.Objects;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -40,8 +45,10 @@ public class AdminGroupTest extends SoapTestSuite {
 	void globalAdmin_IsAbleToRetrieveCOS() throws Exception {
 		final Account account = createAccount().asGlobalAdmin().create();
 
-		final SoapResponse response = getCOSAdminApi(account);
-		assertAllowed(response);
+		assertAllowed(getCOSAdminApi(account));
+		assertAllowed(getAccountAdminApi(account));
+		assertAllowed(getServerAdminApi(account));
+		assertAllowed(getOtherDomainAdminApi(account));
 	}
 
 	@Test
@@ -49,8 +56,10 @@ public class AdminGroupTest extends SoapTestSuite {
 		final Account account = createAccount().create();
 		account.setIsDelegatedAdminAccount(true);
 
-		final SoapResponse response = getCOSAdminApi(account);
-		assertDenied(response);
+		assertDenied(getCOSAdminApi(account));
+		assertDenied(getAccountAdminApi(account));
+		assertDenied(getServerAdminApi(account));
+		assertDenied(getOtherDomainAdminApi(account));
 	}
 
 	@Test
@@ -58,8 +67,10 @@ public class AdminGroupTest extends SoapTestSuite {
 		final Account account = createAccount().create();
 		account.setIsDomainAdminAccount(true);
 
-		final SoapResponse cosAdminApi = getCOSAdminApi(account);
-		assertDenied(cosAdminApi);
+		assertDenied(getCOSAdminApi(account));
+		assertDenied(getAccountAdminApi(account));
+		assertDenied(getServerAdminApi(account));
+		assertDenied(getOtherDomainAdminApi(account));
 	}
 
 	private static void assertDenied(SoapResponse response) {
@@ -81,8 +92,25 @@ public class AdminGroupTest extends SoapTestSuite {
 	private SoapResponse getAccountAdminApi(Account account) throws Exception {
 		final Account accountToRetrieve = createAccount().create();
 		final GetAccountRequest getAccountRequest = new GetAccountRequest(new AccountSelector(AccountBy.id, accountToRetrieve.getId()));
+		return executeRequest(account, getAccountRequest);
+	}
+
+	private SoapResponse getServerAdminApi(Account account) throws Exception {
+		final Server localServer = provisioning.getLocalServer();
+		final GetServerRequest getServerRequest = new GetServerRequest(new ServerSelector(ServerBy.id, localServer.getId()), false);
+		return executeRequest(account, getServerRequest);
+	}
+
+	private SoapResponse getOtherDomainAdminApi(Account account) throws Exception {
+		final Domain domain = provisioning.createDomain(UUID.randomUUID().toString() + ".com", Maps.newHashMap());
+		final GetDomainRequest getDomainRequest = new GetDomainRequest(new DomainSelector(DomainBy.id, domain.getId()), false);
+		return executeRequest(account, getDomainRequest);
+	}
+
+	private SoapResponse executeRequest(Account account, Object getDomainRequest)
+			throws Exception {
 		final Request request = getSoapClient().newAdminRequest().setCaller(account)
-				.setSoapBody(getAccountRequest);
+				.setSoapBody(getDomainRequest);
 		return request.call();
 	}
 
