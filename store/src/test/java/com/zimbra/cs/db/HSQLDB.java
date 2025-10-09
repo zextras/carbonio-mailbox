@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,36 +40,41 @@ public class HSQLDB extends Db {
     public static void createDatabase() throws Exception {
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        DbConnection conn = DbPool.getConnection();
-        try {
-            stmt = conn.prepareStatement("SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = ?");
-            stmt.setString(1, "ZIMBRA");
-            rs = stmt.executeQuery();
-            if (rs.next() && rs.getInt(1) > 0) {
-                return; // already exists
-            }
-            createZimbraDatabase(conn);
-            createMailboxDatabase(conn);
-        } finally {
-            DbPool.closeResults(rs);
-            DbPool.quietCloseStatement(stmt);
-            DbPool.quietClose(conn);
-        }
+			try (var conn = getHSQLDBConnection()) {
+				stmt = conn.prepareStatement(
+						"SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = ?");
+				stmt.setString(1, "ZIMBRA");
+				rs = stmt.executeQuery();
+				if (rs.next() && rs.getInt(1) > 0) {
+					return; // already exists
+				}
+				createZimbraDatabase(conn);
+				createMailboxDatabase(conn);
+			} finally {
+				DbPool.closeResults(rs);
+				DbPool.quietCloseStatement(stmt);
+			}
     }
 
     /**
      * Deletes all records from all tables.
      */
     public static void clearDatabase() throws Exception {
-        DbConnection conn = DbPool.getConnection();
-        try {
-            clearDatabase(conn);
-        } finally {
-            DbPool.quietClose(conn);
-        }
+			try (Connection conn = getHSQLDBConnection()) {
+				clearDatabase(conn);
+			}
     }
 
-    private static void createZimbraDatabase(DbConnection conn) throws Exception {
+    private static Connection getHSQLDBConnection() {
+        var hsqldbConfig = new Config();
+			try {
+				return DriverManager.getConnection(hsqldbConfig.mConnectionUrl, "SA", "");
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+    private static void createZimbraDatabase(Connection conn) throws Exception {
         final String volumeDirectory = TestConfig.getInstance().volumeDirectory();
         Map<String, String> vars = Map.of(
                 "DATABASE_NAME", DbMailbox.getDatabaseName(1),
@@ -75,24 +82,24 @@ public class HSQLDB extends Db {
         execute(conn, "db.sql", vars);
     }
 
-    private static void createMailboxDatabase(DbConnection conn) throws Exception {
+    private static void createMailboxDatabase(Connection conn) throws Exception {
         Map<String, String> vars = Collections.singletonMap("DATABASE_NAME", DbMailbox.getDatabaseName(1));
         execute(conn, "create_database.sql", vars);
     }
 
-    private static void clearDatabase(DbConnection conn) throws Exception {
+    private static void clearDatabase(Connection conn) throws Exception {
         Map<String, String> vars = Collections.singletonMap("DATABASE_NAME", DbMailbox.getDatabaseName(1));
         execute(conn, "clear.sql", vars);
     }
 
-    private static void execute(DbConnection conn, String resource, Map<String, String> vars) throws Exception {
+    private static void execute(Connection conn, String resource, Map<String, String> vars) throws Exception {
         final InputStream resourceAsStream = HSQLDB.class.getResourceAsStream(resource);
         URL url = null;
         SqlFile sql = new SqlFile(new InputStreamReader(resourceAsStream,
                 StandardCharsets.UTF_8),
                 "", System.out, StandardCharsets.UTF_8.toString(), false, url);
         sql.addUserVars(vars);
-        sql.setConnection(conn.getConnection());
+        sql.setConnection(conn);
         sql.execute();
         conn.commit();
     }
