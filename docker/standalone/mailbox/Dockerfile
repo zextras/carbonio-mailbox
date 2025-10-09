@@ -34,11 +34,8 @@ COPY --from=build /build/store-conf/conf/owasp_policy.xml /opt/zextras/conf/owas
 ADD https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar \
     /opt/zextras/opentelemetry-javaagent.jar
 
-COPY --from=build /build/store/target/zm-store.jar /opt/zextras/mailbox/jars/
+COPY --from=build /build/store/target/zm-store.jar /opt/zextras/mailbox/jars/mailbox.jar
 COPY --from=build /build/store/target/dependencies/* /opt/zextras/mailbox/jars/
-COPY --from=build /build/native/target/zm-native*.jar /opt/zextras/mailbox/jars/
-COPY --from=build /build/soap/target/zm-soap*.jar /opt/zextras/mailbox/jars/
-COPY --from=build /build/common/target/zm-common*.jar /opt/zextras/mailbox/jars/
 COPY docker/standalone/mailbox/log4j.properties /opt/zextras/conf/log4j.properties
 COPY --from=build /build/store-conf/conf/datasource.xml /opt/zextras/conf/
 
