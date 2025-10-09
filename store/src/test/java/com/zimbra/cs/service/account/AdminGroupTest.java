@@ -33,21 +33,38 @@ public class AdminGroupTest extends SoapTestSuite {
 	}
 
 	@Test
-	void delegatedAdmin_IsAbleToRetrieveCOS() throws Exception {
+	void globalAdmin_IsAbleToRetrieveCOS() throws Exception {
+		final Cos cos = provisioning.createCos("COS1", Maps.newHashMap());
+		final Account account = createAccount().asGlobalAdmin().create();
+
+		final SoapResponse response = getCOSAdminApi(cos, account);
+		final String soapResponse = response.body();
+		System.out.println(soapResponse);
+		final GetCosResponse cosResponse = SoapUtils.getSoapResponse(soapResponse,
+				AdminConstants.E_GET_COS_RESPONSE, GetCosResponse.class);
+
+		Assertions.assertEquals(cosResponse.getCos().getId(), cos.getId());
+
+	}
+
+	@Test
+	void delegatedAdmin_IsNotAbleToRetrieveCOS_IFHasNoAccessToCOS() throws Exception {
 		final Cos cos = provisioning.createCos("COS1", Maps.newHashMap());
 		final Account account = createAccount().create();
 		account.setIsDelegatedAdminAccount(true);
 
 		final SoapResponse response = getCOSAdminApi(cos, account);
 		final String soapResponse = response.body();
+		System.out.println(soapResponse);
 		final GetCosResponse cosResponse = SoapUtils.getSoapResponse(soapResponse,
 				AdminConstants.E_GET_COS_RESPONSE, GetCosResponse.class);
+
 		Assertions.assertEquals(cosResponse.getCos().getId(), cos.getId());
 
 	}
 
 	@Test
-	void domainAdmin_IsNotAbleToRetrieveCOS() throws Exception {
+	void domainAdmin_IsNotAbleToRetrieveCOS_IfCOSInDifferentDomain() throws Exception {
 		final Cos cos = provisioning.createCos("COS2", Maps.newHashMap());
 
 		final Account account = createAccount().create();
@@ -55,7 +72,19 @@ public class AdminGroupTest extends SoapTestSuite {
 
 		final SoapResponse cosAdminApi = getCOSAdminApi(cos, account);
 		Assertions.assertTrue(cosAdminApi.body().contains("permission denied: need adequate admin"));
+	}
 
+	@Test
+	void dlWithAdminGroup_IsAbleToRetrieveCOS() throws Exception {
+		final Cos cos = provisioning.createCos("COS2", Maps.newHashMap());
+		final Account account = createAccount().create();
+		final DistributionList distributionList = provisioning.createDistributionList("dl@" + account.getDomainName(),
+				Maps.newHashMap());
+		distributionList.setIsAdminGroup(true);
+		distributionList.addMembers(new String[]{account.getName()});
+
+		final SoapResponse cosAdminApi = getCOSAdminApi(cos, account);
+		Assertions.assertFalse(cosAdminApi.body().contains("permission denied: need adequate admin"));
 	}
 
 	private SoapResponse getCOSAdminApi(Cos cos, Account account) throws Exception {

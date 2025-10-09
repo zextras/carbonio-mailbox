@@ -56,7 +56,7 @@ public class GetCos extends AdminDocumentHandler {
         if (cos == null)
             throw AccountServiceException.NO_SUCH_COS(value);
 
-        AdminAccessControl aac = checkCosRight(zsc, cos, AdminRight.PR_ALWAYS_ALLOW);
+        AdminAccessControl aac = checkCosRight(zsc, cos, Admin.R_getCos);
 
         Element response = zsc.createElement(AdminConstants.GET_COS_RESPONSE);
         encodeCos(response, cos, reqAttrs, aac.getAttrRightChecker(cos));
