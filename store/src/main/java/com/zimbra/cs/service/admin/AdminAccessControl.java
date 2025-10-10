@@ -18,6 +18,7 @@ import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.Alias;
 import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeManager;
+import com.zimbra.cs.account.AttributeManagerException;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.CalendarResource;
 import com.zimbra.cs.account.Cos;
@@ -27,6 +28,7 @@ import com.zimbra.cs.account.DynamicGroup;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.StoreAttributeManager;
 import com.zimbra.cs.account.accesscontrol.ACLAccessManager;
 import com.zimbra.cs.account.accesscontrol.AccessControlUtil;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
@@ -50,6 +52,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.management.AttributeNotFoundException;
 
 /**
  * This class serves as:
@@ -326,8 +329,14 @@ public abstract class AdminAccessControl {
         if (attrName.charAt(0) == '+' || attrName.charAt(0) == '-')
           attrName = attrName.substring(1);
 
-        if (!AttributeManager.getInstance().isDomainAdminModifiable(attrName, attrClass)) {
-          throw ServiceException.PERM_DENIED("can not modify attr: " + attrName);
+        try {
+          final boolean isDomainAdminModifiable = StoreAttributeManager.getInstance()
+              .isDomainAdminModifiable(attrName, attrClass);
+          if (!isDomainAdminModifiable) {
+            throw ServiceException.PERM_DENIED("can not modify attr: " + attrName);
+          }
+        } catch (AttributeManagerException e) {
+          throw ServiceException.FAILURE(e.getMessage(), e);
         }
       }
     }

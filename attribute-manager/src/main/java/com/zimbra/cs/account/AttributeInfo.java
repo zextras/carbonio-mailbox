@@ -6,18 +6,20 @@
 package com.zimbra.cs.account;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.zimbra.common.util.DateUtil;
-import com.zimbra.common.util.StringUtil;
-import com.zimbra.common.util.Version;
-import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.util.DateUtil;
+import com.zimbra.cs.account.util.StringUtil;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class AttributeInfo {
+
+    private static final Logger logger = Logger.getLogger(AttributeInfo.class.getName());
 
     public static String DURATION_PATTERN_DOC =
         "Must be in valid duration format: {digits}{time-unit}.  " +
@@ -119,9 +121,9 @@ public class AttributeInfo {
 
     private final List<AttributeServerType> mRequiresRestart;
 
-    private final List<Version> mSince;
+    private final List<AttributeVersion> mSince;
 
-    private final Version mDeprecatedSince;
+    private final AttributeVersion mDeprecatedSince;
 
     private static Integer parseInt(String value) {
         try {
@@ -144,8 +146,8 @@ public class AttributeInfo {
             try {
                 return Long.parseLong(value);
             } catch (NumberFormatException e) {
-                ZimbraLog.misc.warn("Invalid value '%s' for property %s of attribute %s.  Defaulting to %d.",
-                        value, propName, attrName, defaultValue);
+                logger.warning(String.format("Invalid value '%s' for property %s of attribute %s.  Defaulting to %d.",
+                        value, propName, attrName, defaultValue));
                 return defaultValue;
             }
         } else
@@ -163,7 +165,7 @@ public class AttributeInfo {
             List<String> globalConfigValues, List<String> defaultCOSValues,
             List<String> defaultExternalCOSValues, List<String> globalConfigValuesUpgrade,
             List<String> defaultCOSValuesUpgrade, String description, List<AttributeServerType> requiresRestart,
-            List<Version> since, Version deprecatedSince) {
+            List<AttributeVersion> since, AttributeVersion deprecatedSince) {
         mName = attrName;
 			mCallbackClassName = callbackClassName;
 			mImmutable = immutable;
@@ -202,8 +204,8 @@ public class AttributeInfo {
             if (!StringUtil.isNullOrEmpty(min)) {
                 Integer i = parseInt(min);
                 if (i == null) {
-                    ZimbraLog.misc.warn("Invalid value '%s' for property %s of attribute %s.  Defaulting to %d.",
-                        min, AttributeManager.A_MIN, attrName, mMin);
+                    logger.warning(String.format("Invalid value '%s' for property %s of attribute %s.  Defaulting to %d.",
+                        min, AttributeManager.A_MIN, attrName, mMin));
                 } else {
                     mMin = i;
                 }
@@ -211,8 +213,8 @@ public class AttributeInfo {
             if (!StringUtil.isNullOrEmpty(max)) {
                 Integer i = parseInt(max);
                 if (i == null) {
-                    ZimbraLog.misc.warn("Invalid value '%s' for property %s of attribute %s.  Defaulting to %d.",
-                        max, AttributeManager.A_MAX, attrName, mMax);
+                    logger.warning(String.format("Invalid value '%s' for property %s of attribute %s.  Defaulting to %d.",
+                        max, AttributeManager.A_MAX, attrName, mMax));
                 } else {
                     mMax = i;
                 }
@@ -225,8 +227,8 @@ public class AttributeInfo {
             if (!StringUtil.isNullOrEmpty(min)) {
                 Long l = parseLong(min);
                 if (l == null) {
-                    ZimbraLog.misc.warn("Invalid value '%s' for property %s of attribute %s.  Defaulting to %d.",
-                        min, AttributeManager.A_MIN, attrName, mMin);
+                    logger.warning(String.format("Invalid value '%s' for property %s of attribute %s.  Defaulting to %d.",
+                        min, AttributeManager.A_MIN, attrName, mMin));
                 } else {
                     mMin = l;
                 }
@@ -234,8 +236,8 @@ public class AttributeInfo {
             if (!StringUtil.isNullOrEmpty(max)) {
                 Long l = parseLong(max);
                 if (l == null) {
-                    ZimbraLog.misc.warn("Invalid value '%s' for property %s of attribute %s.  Defaulting to %d.",
-                        max, AttributeManager.A_MAX, attrName, mMax);
+                    logger.warning(String.format("Invalid value '%s' for property %s of attribute %s.  Defaulting to %d.",
+                        max, AttributeManager.A_MAX, attrName, mMax));
                 } else {
                     mMax = l;
                 }
@@ -259,8 +261,8 @@ public class AttributeInfo {
                 mMin = DateUtil.getTimeInterval(min, -1);
                 if (mMin < 0) {
                     mMin = 0;
-                    ZimbraLog.misc.warn("Invalid value '%s' for property %s of attribute %s.  Defaulting to 0.",
-                        min, AttributeManager.A_MIN, attrName);
+                    logger.warning(String.format("Invalid value '%s' for property %s of attribute %s.  Defaulting to 0.",
+                        min, AttributeManager.A_MIN, attrName));
                 } else {
                     mMinDuration = min;
                 }
@@ -269,8 +271,8 @@ public class AttributeInfo {
                 mMax = DateUtil.getTimeInterval(max, -1);
                 if (mMax < 0) {
                     mMax = Long.MAX_VALUE;
-                    ZimbraLog.misc.warn("Invalid value '%s' for property %s of attribute %s.  Defaulting to %d.",
-                        max, AttributeManager.A_MAX, attrName, mMax);
+                    logger.warning(String.format("Invalid value '%s' for property %s of attribute %s.  Defaulting to %d.",
+                        max, AttributeManager.A_MAX, attrName, mMax));
                 } else {
                     mMaxDuration = max;
                 }
@@ -398,11 +400,11 @@ public class AttributeInfo {
         return mRequiresRestart;
     }
 
-    public List<Version> getSince() {
+    public List<AttributeVersion> getSince() {
         return mSince;
     }
 
-    public Version getDeprecatedSince() {
+    public AttributeVersion getDeprecatedSince() {
         return mDeprecatedSince;
     }
 

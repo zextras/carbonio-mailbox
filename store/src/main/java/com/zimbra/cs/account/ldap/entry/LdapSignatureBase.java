@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.account.ldap.entry;
 
+import com.zimbra.cs.account.StoreAttributeManager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -54,7 +55,7 @@ public abstract class LdapSignatureBase extends Signature implements LdapEntry {
             return null;
         
         Map<String, Object> attrs = new HashMap<>();
-        Set<String> signatureAttrs = AttributeManager.getInstance().getAttrsInClass(AttributeClass.signature);
+        Set<String> signatureAttrs = StoreAttributeManager.getInstance().getAttrsInClass(AttributeClass.signature);
         
         for (String name : signatureAttrs) {
             String value = acct.getAttr(name, null);
@@ -105,7 +106,7 @@ public abstract class LdapSignatureBase extends Signature implements LdapEntry {
 
     public static void deleteAccountSignature(Provisioning prov, Account acct) throws ServiceException {
         Map<String, Object> attrs = new HashMap<>();
-        Set<String> signatureAttrs = AttributeManager.getInstance().getAttrsInClass(AttributeClass.signature);
+        Set<String> signatureAttrs = StoreAttributeManager.getInstance().getAttrsInClass(AttributeClass.signature);
         
         for (String name : signatureAttrs) {
             String value = acct.getAttr(name, null);

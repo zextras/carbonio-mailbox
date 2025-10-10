@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.account;
 
+import com.zimbra.cs.account.StoreAttributeManager;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -75,7 +76,7 @@ public abstract class AccountDocumentHandler extends DocumentHandler {
         
         String[] attrs = attrsStr.split(",");
 
-        Set<String> attrsOnEntry = AttributeManager.getInstance().getAllAttrsInClass(klass);
+        Set<String> attrsOnEntry = StoreAttributeManager.getInstance().getAllAttrsInClass(klass);
         Set<String> validAttrs = new HashSet<>();
 
         for (String attr : attrs) {

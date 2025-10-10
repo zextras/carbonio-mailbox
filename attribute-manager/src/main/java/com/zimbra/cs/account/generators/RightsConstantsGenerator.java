@@ -1,9 +1,8 @@
 package com.zimbra.cs.account.generators;
 
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.W3cDomUtil;
-import com.zimbra.common.util.StringUtil;
+import com.zimbra.cs.account.AttributeManagerException;
 import com.zimbra.cs.account.FileGenUtil;
+import com.zimbra.cs.account.util.StringUtil;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,6 +17,7 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Options;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 
 public class RightsConstantsGenerator {
 
@@ -46,10 +46,11 @@ public class RightsConstantsGenerator {
 
 	private static UserAdminRights loadRightsFromFile(InputStream fileContent)
 			throws Exception {
-		Document doc = W3cDomUtil.parseXMLToDom4jDocUsingSecureProcessing(fileContent);
+		final SAXReader saxReader = new SAXReader();
+		Document doc = saxReader.read(fileContent);
 		Element root = doc.getRootElement();
 		if (!root.getName().equals(E_RIGHTS)) {
-			throw ServiceException.PARSE_ERROR("root tag is not " + E_RIGHTS, null);
+			throw new AttributeManagerException("root tag is not " + E_RIGHTS);
 		}
 		final ArrayList<RightName> adminRights = new ArrayList<>();
 		final ArrayList<RightName> userRights = new ArrayList<>();
@@ -58,7 +59,7 @@ public class RightsConstantsGenerator {
 			if (elem.getName().equals(E_RIGHT)) {
 				String name = elem.attributeValue(A_NAME);
 				if (name == null) {
-					throw ServiceException.PARSE_ERROR("no name specified", null);
+					throw new AttributeManagerException("no name specified");
 				}
 				// TODO: add desc
 				var right = new RightName(name, "");
@@ -125,18 +126,18 @@ public class RightsConstantsGenerator {
 		}
 	}
 
-	private static boolean getBoolean(String value) throws ServiceException {
+	private static boolean getBoolean(String value) throws AttributeManagerException {
 		if ("1".equals(value)) {
 			return true;
 		} else if ("0".equals(value)) {
 			return false;
 		} else {
-			throw ServiceException.PARSE_ERROR("invalid value:" + value, null);
+			throw new AttributeManagerException("invalid value:" + value);
 		}
 	}
 
 	private static boolean getBooleanAttr(Element elem, String attr)
-			throws ServiceException {
+			throws AttributeManagerException {
 		String value = elem.attributeValue(attr);
 		if (value == null) {
 			return false;
@@ -234,7 +235,7 @@ public class RightsConstantsGenerator {
 				.append(r.getName()).append("\";").append("\n");
 	}
 
-	private String genMessageProperties() throws ServiceException {
+	private String genMessageProperties() {
 		StringBuilder result = new StringBuilder();
 
 		result.append(

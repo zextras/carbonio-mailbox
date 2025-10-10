@@ -6,7 +6,6 @@
 /** */
 package com.zimbra.cs.account;
 
-import com.zimbra.common.service.ServiceException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -93,11 +92,11 @@ public enum AttributeClass {
     return TM.sOCMap.get(ocName);
   }
 
-  public static AttributeClass fromString(String s) throws ServiceException {
+  public static AttributeClass fromString(String s) throws AttributeManagerException {
     try {
       return AttributeClass.valueOf(s);
     } catch (IllegalArgumentException e) {
-      throw ServiceException.PARSE_ERROR("unknown attribute class: " + s, e);
+      throw new AttributeManagerException("unknown attribute class: " + s, e);
     }
   }
 

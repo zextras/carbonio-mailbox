@@ -8,6 +8,7 @@
  */
 package com.zimbra.cs.service.admin;
 
+import com.zimbra.cs.account.StoreAttributeManager;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -78,7 +79,7 @@ public class GetCos extends AdminDocumentHandler {
             cos.addAttribute(AdminConstants.A_IS_DEFAULT_COS, true);
 
         Map attrs = c.getUnicodeAttrs();
-        AttributeManager attrMgr = AttributeManager.getInstance();
+        AttributeManager attrMgr = StoreAttributeManager.getInstance();
       for (Object o : attrs.entrySet()) {
         Entry entry = (Entry) o;
         String name = (String) entry.getKey();

@@ -9,12 +9,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.W3cDomUtil;
-import com.zimbra.common.util.SetUtil;
-import com.zimbra.common.util.Version;
-import com.zimbra.common.util.ZimbraLog;
-import java.io.File;
+import com.zimbra.cs.account.util.SetUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -25,11 +20,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 
 public class AttributeManager {
+
+  private static final Logger logger = Logger.getLogger(AttributeManager.class.getName());
 
   static final String A_MAX = "max";
   static final String A_MIN = "min";
@@ -162,45 +163,31 @@ public class AttributeManager {
   @VisibleForTesting
   public AttributeManager() {}
 
-  public static AttributeManager fromResource() throws ServiceException {
+  public static AttributeManager fromResource() throws AttributeManagerException {
     final ResourceAttributeStream resourceAttributeStream = new ResourceAttributeStream(
         ATTRIBUTES_RESOURCE_PATH);
     return new AttributeManager(resourceAttributeStream);
   }
 
-  public static AttributeManager fromFileSystem(String baseAttributesDirectoryPath)
-      throws ServiceException {
-    File baseAttributeDirectory = new File(baseAttributesDirectoryPath);
-    if (!baseAttributeDirectory.exists()) {
-      throw ServiceException.FAILURE("attrs directory does not exists: " + baseAttributesDirectoryPath, null);
-    }
-    if (!baseAttributeDirectory.isDirectory()) {
-      throw ServiceException.FAILURE("attrs directory is not a directory: " + baseAttributesDirectoryPath, null);
-    }
-    final FileAttributeStream fileAttributeStream = new FileAttributeStream(
-        baseAttributesDirectoryPath);
-
-    return new AttributeManager(fileAttributeStream);
-  }
-
-  private AttributeManager(AttributeStream attributeStream) throws ServiceException {
+  private AttributeManager(AttributeStream attributeStream) throws AttributeManagerException {
     initFlagsToAttrsMap();
     initClassToAttrsMap();
 
     for (String file : ATTRS_FILES) {
       try (InputStream inputStream = attributeStream.open(file)) {
-        Document doc = W3cDomUtil.parseXMLToDom4jDocUsingSecureProcessing(inputStream);
+        final SAXReader saxReader = new SAXReader();
+        Document doc = saxReader.read(inputStream);
         Element root = doc.getRootElement();
         if (root.getName().equals(E_ATTRS)) {
           loadAttrs(file, doc);
         } else if (root.getName().equals(E_OBJECTCLASSES)) {
           loadObjectClasses(file, doc);
         } else {
-          ZimbraLog.misc.warn("while loading attrs, ignored unknown file: %s", file);
+          logger.warning( String.format("while loading attrs, ignored unknown file: %s", file));
         }
 
-      } catch (ServiceException | IOException e) {
-        throw ServiceException.FAILURE("error loading attrs file: " + file, e);
+      } catch (IOException | DocumentException e) {
+        throw new AttributeManagerException("error loading attrs file: " + file);
       }
     }
     computeClassToAllAttrsMap();
@@ -209,20 +196,20 @@ public class AttributeManager {
   public static AttributeManager getInst() {
     try {
       return AttributeManager.getInstance();
-    } catch (ServiceException e) {
-      ZimbraLog.account.warn("could not get AttributeManager instance", e);
+    } catch (AttributeManagerException e) {
+      logger.warning("could not get AttributeManager instance: " + e);
       return null;
     }
   }
 
-  public static AttributeManager getInstance() throws ServiceException {
+  public static AttributeManager getInstance() throws AttributeManagerException {
     synchronized (AttributeManager.class) {
       if (mInstance != null) {
         return mInstance;
       }
       mInstance = AttributeManager.fromResource();
       if (mInstance.hasErrors()) {
-        throw ServiceException.FAILURE(mInstance.getErrors(), null);
+        throw new AttributeManagerException(mInstance.getErrors());
       }
       mInstance.computeClassToAllAttrsMap();
       return mInstance;
@@ -422,8 +409,8 @@ public class AttributeManager {
       canonicalName = name.toLowerCase();
 
       List<AttributeServerType> requiresRestart = null;
-      Version deprecatedSinceVer = null;
-      List<Version> sinceVer = null;
+      AttributeVersion deprecatedSinceVer = null;
+      List<AttributeVersion> sinceVer = null;
 
       for (Iterator attrIter = eattr.attributeIterator(); attrIter.hasNext(); ) {
         Attribute attr = (Attribute) attrIter.next();
@@ -500,8 +487,8 @@ public class AttributeManager {
             String depreSince = attr.getValue();
             if (depreSince != null) {
               try {
-                deprecatedSinceVer = new Version(depreSince);
-              } catch (ServiceException e) {
+                deprecatedSinceVer = new AttributeVersion(depreSince);
+              } catch (AttributeManagerException e) {
                 error(
                     name,
                     fileName,
@@ -517,9 +504,9 @@ public class AttributeManager {
                 String[] versions = since.split(",");
                 sinceVer = new ArrayList<>();
                 for (String verStr : versions) {
-                  sinceVer.add(new Version(verStr.trim()));
+                  sinceVer.add(new AttributeVersion(verStr.trim()));
                 }
-              } catch (ServiceException e) {
+              } catch (AttributeManagerException e) {
                 error(
                     name,
                     fileName,
@@ -816,8 +803,8 @@ public class AttributeManager {
       List<String> defaultCOSValuesUpgrade,
       String description,
       List<AttributeServerType> requiresRestart,
-      List<Version> sinceVer,
-      Version deprecatedSinceVer) {
+      List<AttributeVersion> sinceVer,
+      AttributeVersion deprecatedSinceVer) {
     return new AttributeInfo(
         name,
         id,
@@ -1196,11 +1183,10 @@ public class AttributeManager {
   }
 
   public boolean isDomainAdminModifiable(String attr, AttributeClass klass)
-      throws ServiceException {
+      throws AttributeManagerException {
     // bug 32507
     if (!mClassToAllAttrsMap.get(klass).contains(attr))
-      throw AttributeException.INVALID_ATTR_NAME(
-          "unknown attribute on " + klass.name() + ": " + attr, null);
+      throw new AttributeManagerException("unknown attribute on " + klass.name() + ": " + attr);
 
     return mFlagToAttrsMap.get(AttributeFlag.domainAdminModifiable).contains(attr);
   }
@@ -1222,87 +1208,11 @@ public class AttributeManager {
     return IDNType.NONE;
   }
 
-  /**
-   * returns whether attr is in the specified version.
-   *
-   * <p>An attr is considered in a version if it is introduced prior to version or on the same
-   * version.
-   *
-   * <p>e.g. - if attr is introduced on 7.1.0, it is in 7.1.1 - if attr is introduced on 7.1.1, it
-   * is in 7.1.1 - if attr is introduced on 7.1.2, it is not in 7.1.1
-   *
-   * @param attr
-   * @param version
-   * @return
-   * @throws ServiceException
-   */
-  public boolean inVersion(String attr, String version) throws ServiceException {
-    return versionCheck(attr, version, true, true);
-  }
 
-  /**
-   * returns whether attr is introduced before the specified version.
-   *
-   * <p>e.g. - if attr is introduced on 7.1.0, it is before 7.1.1 - if attr is introduced on 7.1.1,
-   * it is *NOT* before 7.1.1 - if attr is introduced on 7.1.2, it is not before 7.1.1
-   *
-   * @param attr
-   * @param version
-   * @return
-   * @throws ServiceException
-   */
-  public boolean beforeVersion(String attr, String version) throws ServiceException {
-    return versionCheck(attr, version, false, true);
-  }
-
-  private boolean versionCheck(String attr, String version, boolean in, boolean before)
-      throws ServiceException {
-    AttributeInfo ai = mAttrs.get(attr.toLowerCase());
-    if (ai != null) {
-      List<Version> since = ai.getSince();
-      if (since == null) {
-        return true;
-      } else {
-        Version current = new Version(version);
-        boolean good = false;
-        for (Version sinceVer : since) {
-          if (current.isSameMinorRelease(sinceVer)) {
-            // ok same release; just compare
-            return (before && sinceVer.compare(version) < 0)
-                || (in && sinceVer.compare(version) == 0);
-          } else if (!current.isLaterMajorMinorRelease(sinceVer)) {
-            // current is lower series than one item in list
-            // if it was OK from earlier series then it's OK
-            return good;
-          } else {
-            // current is later major/minor, so check in/before and iterate further
-            good =
-                (before && sinceVer.compare(version) < 0) || (in && sinceVer.compare(version) == 0);
-          }
-        }
-        return good;
-      }
-    } else {
-      throw AttributeException.INVALID_ATTR_NAME("unknown attribute: " + attr, null);
-    }
-  }
-
-  public boolean isFuture(String attr) {
-    AttributeInfo ai = mAttrs.get(attr.toLowerCase());
-    return (ai != null
-        && ai.getSince() != null
-        && ai.getSince().size() == 1
-        && ai.getSince().iterator().next().isFuture());
-  }
-
-  public boolean addedIn(String attr, String version) throws ServiceException {
-    return versionCheck(attr, version, true, false);
-  }
-
-  public AttributeType getAttributeType(String attr) throws ServiceException {
+  public AttributeType getAttributeType(String attr) throws AttributeManagerException {
     AttributeInfo ai = mAttrs.get(attr.toLowerCase());
     if (ai != null) return ai.getType();
-    else throw AttributeException.INVALID_ATTR_NAME("unknown attribute: " + attr, null);
+    else throw new AttributeManagerException("unknown attribute: " + attr);
   }
 
   public boolean containsBinaryData(String attr) {
@@ -1365,7 +1275,7 @@ public class AttributeManager {
       if (info != null) {
         if (info.isImmutable()) immutable.add(attr);
       } else {
-        ZimbraLog.misc.warn("getImmutableAttrsInClass: no attribute info for: " + attr);
+        logger.warning("getImmutableAttrsInClass: no attribute info for: " + attr);
       }
     }
     return immutable;

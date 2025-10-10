@@ -2,7 +2,6 @@ package com.zimbra.cs.account;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zimbra.common.service.ServiceException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,7 +16,7 @@ class AttributeManagerUtilTest {
 	private static File testDir;
 
 	@Test
-	void shouldGenerateZAttrConfig() throws ServiceException, IOException {
+	void shouldGenerateZAttrConfig() throws AttributeManagerException, IOException {
 		final AttributeManagerUtil attributeManagerUtil = AttributeManagerUtil.get();
 		final Path path = Paths.get(testDir.toURI().getPath(), "ZAttrConfig.java");
 		attributeManagerUtil.generateGetters("globalConfig", path.toString());
@@ -27,7 +26,7 @@ class AttributeManagerUtilTest {
 
 
 	@Test
-	void shouldGenerateZAttrCos() throws ServiceException, IOException {
+	void shouldGenerateZAttrCos() throws AttributeManagerException, IOException {
 		final AttributeManagerUtil attributeManagerUtil = AttributeManagerUtil.get();
 		final Path path = Paths.get(testDir.toURI().getPath(), "ZAttrCos.java");
 		attributeManagerUtil.generateGetters("cos", path.toString());
@@ -36,7 +35,7 @@ class AttributeManagerUtilTest {
 	}
 
 	@Test
-	void shouldGenerateZAttrAccount() throws ServiceException, IOException {
+	void shouldGenerateZAttrAccount() throws AttributeManagerException, IOException {
 		final AttributeManagerUtil attributeManagerUtil = AttributeManagerUtil.get();
 		final Path path = Paths.get(testDir.toURI().getPath(), "ZAttrAccount.java");
 		attributeManagerUtil.generateGetters("account", path.toString());
@@ -45,7 +44,7 @@ class AttributeManagerUtilTest {
 	}
 
 	@Test
-	void shouldGenerateZAttrServer() throws ServiceException, IOException {
+	void shouldGenerateZAttrServer() throws AttributeManagerException, IOException {
 		final AttributeManagerUtil attributeManagerUtil = AttributeManagerUtil.get();
 		final Path path = Paths.get(testDir.toURI().getPath(), "ZAttrServer.java");
 		attributeManagerUtil.generateGetters("server", path.toString());
@@ -54,7 +53,7 @@ class AttributeManagerUtilTest {
 	}
 
 	@Test
-	void shouldGenerateZAttrDistributionList() throws ServiceException, IOException {
+	void shouldGenerateZAttrDistributionList() throws AttributeManagerException, IOException {
 		final AttributeManagerUtil attributeManagerUtil = AttributeManagerUtil.get();
 		final Path path = Paths.get(testDir.toURI().getPath(), "ZAttrDistributionList.java");
 		attributeManagerUtil.generateGetters("distributionList", path.toString());
@@ -63,7 +62,7 @@ class AttributeManagerUtilTest {
 	}
 
 	@Test
-	void shouldGenerateZAttrDynamicGroup() throws ServiceException, IOException {
+	void shouldGenerateZAttrDynamicGroup() throws AttributeManagerException, IOException {
 		final AttributeManagerUtil attributeManagerUtil = AttributeManagerUtil.get();
 		final Path path = Paths.get(testDir.toURI().getPath(), "ZAttrDynamicGroup.java");
 		attributeManagerUtil.generateGetters("group", path.toString());
@@ -72,7 +71,7 @@ class AttributeManagerUtilTest {
 	}
 
 	@Test
-	void shouldGenerateZAttrShareLocator() throws ServiceException, IOException {
+	void shouldGenerateZAttrShareLocator() throws AttributeManagerException, IOException {
 		final AttributeManagerUtil attributeManagerUtil = AttributeManagerUtil.get();
 		final Path path = Paths.get(testDir.toURI().getPath(), "ZAttrShareLocator.java");
 		attributeManagerUtil.generateGetters("shareLocator", path.toString());
@@ -81,7 +80,7 @@ class AttributeManagerUtilTest {
 	}
 
 	@Test
-	void shouldGenerateZAttrProvisioning() throws ServiceException, IOException {
+	void shouldGenerateZAttrProvisioning() throws AttributeManagerException, IOException {
 		final AttributeManagerUtil attributeManagerUtil = AttributeManagerUtil.get();
 		final Path path = Paths.get(testDir.toURI().getPath(), "ZAttrProvisioning.java");
 		attributeManagerUtil.generateProvisioningConstants(path.toString());

@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.account;
 
+import com.zimbra.cs.account.StoreAttributeManager;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
@@ -112,7 +113,7 @@ public class ToXML {
     private static void encodeAttrs(Element e, Map attrs, String key, Set<String> reqAttrs, AttrRightChecker attrRightChecker) {
         AttributeManager attrMgr = null;
         try {
-            attrMgr = AttributeManager.getInstance();
+            attrMgr = StoreAttributeManager.getInstance();
         } catch (ServiceException se) {
             ZimbraLog.account.warn("failed to get AttributeManager instance", se);
         }
