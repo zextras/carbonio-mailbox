@@ -52,8 +52,10 @@ import javax.mail.internet.MimeMultipart;
 import org.dom4j.QName;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("special")
 public final class ParseMimeMessageTest extends MailboxTestSuite {
 
   private static Account account;

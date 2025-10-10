@@ -25,8 +25,10 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.SetRecoveryAccountRequest;
 import com.zimbra.soap.type.Channel;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("special")
 public class SetRecoveryAccountTest extends MailboxTestSuite {
 
   private Account testAccount4797;

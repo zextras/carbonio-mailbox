@@ -24,8 +24,10 @@ import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("special")
 class DeleteCalendarGroupTest extends SoapTestSuite {
     
     private static Provisioning provisioning;
