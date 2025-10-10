@@ -82,7 +82,7 @@ pipeline {
             }
         }
 
-        stage('UT, IT & API tests') {
+        stage('UT, IT tests') {
             when {
                 expression {
                     params.SKIP_TEST_WITH_COVERAGE == false
@@ -90,10 +90,24 @@ pipeline {
             }
             steps {
                 container('jdk-17') {
-                    sh "mvn ${MVN_OPTS} verify"
+                    sh "mvn ${MVN_OPTS} verify -DexcludeTags=api"
                 }
                 junit allowEmptyResults: true,
                     testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+            }
+        }
+        stage('API tests') {
+            when {
+                expression {
+                    params.SKIP_TEST_WITH_COVERAGE == false
+                }
+            }
+            steps {
+                container('jdk-17') {
+                    sh "mvn ${MVN_OPTS} verify -DincludeTags=api"
+                }
+                junit allowEmptyResults: true,
+                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
             }
         }
 
