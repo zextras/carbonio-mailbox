@@ -90,7 +90,7 @@ pipeline {
             }
             steps {
                 container('jdk-17') {
-                    sh "mvn ${MVN_OPTS} verify -Dexcludegroups=api"
+                    sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api"
                 }
                 junit allowEmptyResults: true,
                     testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
