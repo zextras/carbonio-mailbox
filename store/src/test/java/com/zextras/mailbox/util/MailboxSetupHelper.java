@@ -111,9 +111,9 @@ public class MailboxSetupHelper {
 		Provisioning.setInstance(new LdapProvisioningWithMockMime(client));
 		this.initData(mailboxTestData);
 
-		DbPool.startup();
 		HSQLDB.createDatabase();
 
+		DbPool.startup();
 		RedoLogProvider.getInstance().startup();
 		StoreManager.getInstance().startup();
 		RightManager.getInstance();

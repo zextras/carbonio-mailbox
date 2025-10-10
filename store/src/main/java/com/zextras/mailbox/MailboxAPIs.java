@@ -34,7 +34,6 @@ import com.zimbra.cs.servlet.ContextPathBasedThreadPoolBalancerFilter;
 import com.zimbra.cs.servlet.CsrfFilter;
 import com.zimbra.cs.servlet.DoSFilter;
 import com.zimbra.cs.servlet.ETagHeaderFilter;
-import com.zimbra.cs.servlet.FirstServlet;
 import com.zimbra.cs.servlet.RequestStringFilter;
 import com.zimbra.cs.servlet.SetHeaderFilter;
 import com.zimbra.cs.servlet.TracingSpanFilter;
@@ -144,11 +143,6 @@ public class MailboxAPIs {
 		final String adminAndMTAPort = adminPortOnly + ", " + server.getMtaAuthPort();
 		final String userOnlyPorts = server.getMailPort() + ", " + server.getMailSSLPort();
 		final String userAndAdminPorts = server.getMailPort() + ", " + server.getMailSSLPort() + ", " + adminPortOnly;
-
-		final var firstServlet = new ServletHolder(FirstServlet.class);
-		firstServlet.setInitOrder(1);
-		firstServlet.setAsyncSupported(true);
-		servletContextHandler.addServlet(firstServlet, "/*");
 
 		final var extensionDispatcherServlet = new ServletHolder(ExtensionDispatcherServlet.class);
 		extensionDispatcherServlet.setName("ExtensionDispatcherServlet");

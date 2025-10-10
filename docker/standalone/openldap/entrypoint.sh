@@ -5,14 +5,21 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 #
 
-startLDAP() {
+startLDAPDaemon() {
   echo "Starting LDAP..."
     /opt/zextras/common/libexec/slapd -l LOCAL0 -h ldap://0.0.0.0:1389 \
     -F /opt/zextras/data/ldap/config -d 256 >> /tmp/openldap.log &
+    echo $! > /run/carbonio/slapd.pid
     while ! netcat -z localhost 1389; do
       sleep 0.5
     done
     echo "OpenLDAP started."
+}
+
+startLDAPForeground() {
+  echo "Starting LDAP..."
+    exec /opt/zextras/common/libexec/slapd -l LOCAL0 -h ldap://0.0.0.0:1389 \
+    -F /opt/zextras/data/ldap/config -d 256
 }
 
 applySchema() {
@@ -33,16 +40,12 @@ stopLDAP() {
   fi
 }
 
-waitLogs() {
-  tail -f /tmp/openldap.log
-}
 
 echo "Checking for existing installation..."
 if [ -f /opt/zextras/data/ldap/config/cn\=config.ldif ]; then
   echo "Found existing installation"
   applySchema
-  startLDAP
-  waitLogs
+  startLDAPForeground
 fi
 
 echo "No installation found, proceeding with bootstrap"
@@ -58,7 +61,7 @@ openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 \
 applySchema
 applyLdapConfig
 
-startLDAP
+startLDAPDaemon
 
 echo "Root LDAP password is: ${LDAP_ROOT_PASSWORD}."
 echo "Zimbra/Admin LDAP password is: ${LDAP_ADMIN_PASSWORD}."
@@ -66,5 +69,6 @@ echo "Use test@demo.zextras.io - 'password' to login as standard user."
 echo "Use admin@demo.zextras.io - 'password' to login as admin user."
 
 sh /ldap-utils/add_initial_data
+stopLDAP
 
-waitLogs
+startLDAPForeground

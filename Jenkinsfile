@@ -69,13 +69,12 @@ pipeline {
             steps {
                 container('jdk-17') {
                     sh """
-                        apt update && apt install -y build-essential
                         mvn ${MVN_OPTS} \
                             -DskipTests=true \
                             clean install
                         mkdir staging
                         cp -a store* milter* attribute-manager right-manager \
-                                mailbox-ldap-lib native client common packages soap jython-libs \
+                                mailbox-ldap-lib client common packages soap jython-libs \
                                 staging/
                     """
                     stash includes: 'staging/**', name: 'staging'
