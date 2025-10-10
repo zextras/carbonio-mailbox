@@ -100,13 +100,13 @@ public class MailboxSetupHelper {
 		final UBIDLdapClient client = UBIDLdapClient.createNew(poolConfig);
 		LdapClient.setInstance(client);
 		Provisioning.setInstance(new LdapProvisioningWithMockMime(client));
-//		RedoLogProvider.setInstance(new MockRedoLogProvider());
 		this.initData(mailboxTestData);
 
 		HSQLDB.createDatabase();
 
 		DbPool.startup();
 
+		RedoLogProvider.setInstance(new DefaultRedoLogProvider());
 		RedoLogProvider.getInstance().startup();
 		StoreManager.getInstance().startup();
 		RightManager.getInstance();
