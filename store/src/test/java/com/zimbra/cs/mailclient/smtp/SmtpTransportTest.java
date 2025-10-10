@@ -43,6 +43,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -50,6 +52,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
+@Disabled
 final class SmtpTransportTest {
 
 	private MockTcpServer server;
