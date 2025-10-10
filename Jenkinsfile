@@ -94,7 +94,7 @@ pipeline {
         stage('Special tests') {
             steps {
                 container('jdk-17') {
-                    sh "mvn ${MVN_OPTS} verify -Dgroups=special -Dsurefire.reuseForks=false"
+                    sh "mvn ${MVN_OPTS} verify -Dgroups=special"
                 }
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
