@@ -884,7 +884,6 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <forkCount>1</forkCount>
-          <reuseForks>true</reuseForks>
           <argLine>@{argLine} -Dserver.dir=${project.basedir}
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
             -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
@@ -903,7 +902,6 @@
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
           <forkCount>1</forkCount>
-          <reuseForks>true</reuseForks>
           <argLine>@{argLine} -Dserver.dir=${project.basedir}
             -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml

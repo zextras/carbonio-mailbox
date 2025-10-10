@@ -20,12 +20,15 @@ import java.util.Locale;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMultipart;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 
 /**
  * @author zimbra
  */
+
+@Tag("special")
 class ExtShareInfoTest extends MailboxTestSuite {
 
 	private Account ownerAcct = null;

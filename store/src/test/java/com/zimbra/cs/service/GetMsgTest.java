@@ -42,8 +42,10 @@ import javax.mail.internet.MimeMessage;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("special")
 public class GetMsgTest extends MailboxTestSuite {
 
   public static String zimbraServerDir = "";
