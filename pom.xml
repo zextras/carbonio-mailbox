@@ -383,9 +383,9 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
-        <artifactId>zm-native</artifactId>
-        <version>${project.version}</version>
+        <groupId>com.zextras</groupId>
+        <artifactId>mailbox-native</artifactId>
+        <version>4.23.1</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
@@ -787,7 +787,6 @@
   <groupId>zextras</groupId>
   <modelVersion>4.0.0</modelVersion>
   <modules>
-    <module>native</module>
     <module>common</module>
     <module>attribute-manager</module>
     <module>right-manager</module>

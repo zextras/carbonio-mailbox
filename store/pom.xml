@@ -489,8 +489,8 @@
       <artifactId>zm-soap</artifactId>
     </dependency>
     <dependency>
-      <groupId>zextras</groupId>
-      <artifactId>zm-native</artifactId>
+      <groupId>com.zextras</groupId>
+      <artifactId>mailbox-native</artifactId>
     </dependency>
 
     <dependency>

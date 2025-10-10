@@ -37,7 +37,6 @@ import com.zimbra.cs.mailbox.acl.AclPushTask;
 import com.zimbra.cs.memcached.MemcachedConnector;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.server.ServerManager;
-import com.zimbra.cs.servlet.FirstServlet;
 import com.zimbra.cs.session.SessionCache;
 import com.zimbra.cs.session.WaitSetMgr;
 import com.zimbra.cs.stats.ZimbraPerf;
@@ -65,11 +64,7 @@ public final class Zimbra {
     throw new IllegalStateException("Utility class");
   }
 
-  /**
-   * Sets system properties before the server fully starts up. Note that there's a potential race
-   * condition if {@link FirstServlet} or another servlet faults in classes or references properties
-   * before they're set here.
-   */
+
   private static void setSystemProperties() {
     System.setProperty("mail.mime.decodetext.strict", "false");
     System.setProperty("mail.mime.encodefilename", "true");
@@ -193,9 +188,6 @@ public final class Zimbra {
     if (sInited) return;
 
     sIsMailboxd = forMailboxd;
-    if (sIsMailboxd) {
-      FirstServlet.waitForInitialization();
-    }
 
     Provisioning prov = Provisioning.getInstance();
     Server server = prov.getLocalServer();

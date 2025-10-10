@@ -8,7 +8,6 @@ package com.zimbra.cs.filter;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zimbra.common.mailbox.MailItemType;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.DeliveryContext;
@@ -28,7 +27,6 @@ import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.store.file.VolumeBlob;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;

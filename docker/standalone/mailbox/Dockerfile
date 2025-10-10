@@ -1,3 +1,25 @@
+FROM maven:3-eclipse-temurin-17-alpine AS build
+
+RUN apk add --no-cache make gcc g++ musl-dev
+
+WORKDIR /build
+
+# Copy all project files
+COPY pom.xml                          pom.xml
+COPY store                            store
+COPY native                           native
+COPY attribute-manager                attribute-manager
+COPY mailbox-ldap-lib                 mailbox-ldap-lib
+COPY soap                             soap
+COPY store-extra-runtime-dependencies store-extra-runtime-dependencies
+COPY jython-libs                      jython-libs
+COPY common                           common
+COPY right-manager                    right-manager
+COPY client                           client
+COPY store-conf                       store-conf
+
+RUN --mount=type=cache,target=/root/.m2 mvn clean install -DskipTests
+
 FROM eclipse-temurin:17-jre-jammy
 
 RUN mkdir -p /opt/zextras/mailbox/jars/ && \
@@ -6,19 +28,16 @@ RUN mkdir -p /opt/zextras/mailbox/jars/ && \
     mkdir -p /opt/zextras/mailboxd/work && \
     mkdir -p /opt/zextras/log
 
-COPY store/src/test/resources/timezones-test.ics /opt/zextras/conf/timezones.ics
-COPY store-conf/conf/msgs/* /opt/zextras/conf/msgs/
-COPY store-conf/conf/owasp_policy.xml /opt/zextras/conf/owasp_policy.xml
+COPY --from=build /build/store/src/test/resources/timezones-test.ics /opt/zextras/conf/timezones.ics
+COPY --from=build /build/store-conf/conf/msgs/* /opt/zextras/conf/msgs/
+COPY --from=build /build/store-conf/conf/owasp_policy.xml /opt/zextras/conf/owasp_policy.xml
 ADD https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar \
     /opt/zextras/opentelemetry-javaagent.jar
 
-COPY store/target/zm-store.jar /opt/zextras/mailbox/jars/
-COPY store/target/dependencies/* /opt/zextras/mailbox/jars/
-COPY native/target/zm-native*.jar /opt/zextras/mailbox/jars/
-COPY soap/target/zm-soap*.jar /opt/zextras/mailbox/jars/
-COPY common/target/zm-common*.jar /opt/zextras/mailbox/jars/
+COPY --from=build /build/store/target/zm-store.jar /opt/zextras/mailbox/jars/mailbox.jar
+COPY --from=build /build/store/target/dependencies/* /opt/zextras/mailbox/jars/
 COPY docker/standalone/mailbox/log4j.properties /opt/zextras/conf/log4j.properties
-COPY store-conf/conf/datasource.xml /opt/zextras/conf/
+COPY --from=build /build/store-conf/conf/datasource.xml /opt/zextras/conf/
 
 ENV LDAP_URL="ldap://openldap:1389"
 ENV LDAP_ROOT_PASSWORD=qh6hWZvc

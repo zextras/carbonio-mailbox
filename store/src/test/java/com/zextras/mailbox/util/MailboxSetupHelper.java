@@ -96,18 +96,17 @@ public class MailboxSetupHelper {
 		inMemoryLdapServer.initializeBasicData();
 
 		LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
-
-
 		final UBIDLdapPoolConfig poolConfig = UBIDLdapPoolConfig.createNewPool(true);
 		final UBIDLdapClient client = UBIDLdapClient.createNew(poolConfig);
 		LdapClient.setInstance(client);
 		Provisioning.setInstance(new LdapProvisioningWithMockMime(client));
+//		RedoLogProvider.setInstance(new MockRedoLogProvider());
 		this.initData(mailboxTestData);
 
-		DbPool.startup();
 		HSQLDB.createDatabase();
 
-		RedoLogProvider.setInstance(new DefaultRedoLogProvider());
+		DbPool.startup();
+
 		RedoLogProvider.getInstance().startup();
 		StoreManager.getInstance().startup();
 		RightManager.getInstance();
@@ -149,6 +148,8 @@ public class MailboxSetupHelper {
 		DbPool.shutdown();
 		DbPool.clear();
 		inMemoryLdapServer.shutDown(true);
+		// TODO: avoid shutting down with explicit static method calls
+		UBIDLdapClient.shutdown();
 		FileUtils.deleteDirectory(mailboxHome.toFile());
 		FileUtils.deleteDirectory(mailboxTmpDirectory.toFile());
 //		LdapClient.shutdown();

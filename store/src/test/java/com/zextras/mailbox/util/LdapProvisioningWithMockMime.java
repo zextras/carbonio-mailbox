@@ -34,6 +34,7 @@ public final class LdapProvisioningWithMockMime extends LdapProvisioning {
     public LdapProvisioningWithMockMime(UBIDLdapClient client) {
         // disable cache for testing, it makes the provisioning use mocked mime types
         super(CacheMode.OFF, client);
+        initializeMimeHandlers();
     }
 
 

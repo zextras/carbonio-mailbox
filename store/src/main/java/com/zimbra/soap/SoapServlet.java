@@ -129,12 +129,6 @@ public class SoapServlet extends ZimbraServlet {
   public void destroy() {
     String name = getServletName();
     ZimbraLog.soap.info("Servlet " + name + " shutting down");
-    try {
-//      Zimbra.shutdown();
-    } catch (RuntimeException e) {
-      ZimbraLog.soap.error("Unchecked Exception while shutting down servlet " + name, e);
-      throw e;
-    }
     // FIXME: we might want to add mEngine.destroy()
     // to allow the mEngine to cleanup?
     mEngine = null;
