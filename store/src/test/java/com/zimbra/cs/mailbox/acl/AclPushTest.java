@@ -20,12 +20,15 @@ import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.OperationContext;
 import java.util.Date;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author zimbra
  *
  */
+
+@Tag("special")
 public class AclPushTest extends MailboxTestSuite {
 
 	private static Account owner1;
