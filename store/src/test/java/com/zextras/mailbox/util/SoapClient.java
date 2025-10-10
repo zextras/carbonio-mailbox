@@ -29,6 +29,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
 
 /**
@@ -41,8 +42,7 @@ public class SoapClient implements Closeable {
 	 */
 	private final String endpoint;
 
-	private final BasicCookieStore cookieStore;
-	private final CloseableHttpClient client;
+	private CloseableHttpClient client;
 
 	private static final X509TrustManager TRUST_ALL_CERTS =
 			new X509TrustManager() {
@@ -64,33 +64,46 @@ public class SoapClient implements Closeable {
 					// Allow all
 				}
 			};
+	private PoolingHttpClientConnectionManager connManager;
+	private BasicCookieStore cookieStore;
 
 	public SoapClient(String endpoint) {
 		this.endpoint = endpoint;
+	}
+
+	private CloseableHttpClient getClient() {
+		connManager = new PoolingHttpClientConnectionManager();
+		connManager.setMaxTotal(100);
+		connManager.setDefaultMaxPerRoute(100);
 		cookieStore = new BasicCookieStore();
 		try {
-			final SSLContext sslContext = SSLContext.getInstance("SSL");
+			var sslContext = SSLContext.getInstance("SSL");
 			sslContext.init(null, new TrustManager[]{TRUST_ALL_CERTS}, new java.security.SecureRandom());
-
-			client =
-					HttpClients.custom()
-							.setDefaultCookieStore(cookieStore)
-							.setSSLContext(sslContext)
-							.setSSLHostnameVerifier((hostname, session) -> true)
-							.setMaxConnTotal(100)
-							.setMaxConnPerRoute(100)
-							.build();
+			return HttpClients.custom()
+					.setConnectionManager(connManager)
+					.setDefaultCookieStore(cookieStore)
+					.setSSLContext(sslContext)
+					.setSSLHostnameVerifier((hostname, session) -> true)
+					.build();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+
 	}
 
 	@Override
 	public void close() throws IOException {
 		client.close();
+		connManager.shutdown();
+
+	}
+
+	public void createPool() {
+		client = getClient();
 	}
 
 	public record SoapResponse(int statusCode, String body) {
+
 	}
 
 	public static class Request {
@@ -99,7 +112,6 @@ public class SoapClient implements Closeable {
 		private final HttpClient client;
 
 		public Request(BasicCookieStore cookieStore, HttpClient client) {
-
 			this.cookieStore = cookieStore;
 			this.client = client;
 		}
@@ -135,9 +147,8 @@ public class SoapClient implements Closeable {
 		private String url = "/";
 
 		public HttpResponse execute() throws Exception {
-
+			cookieStore.clear();
 			if (!Objects.isNull(caller)) {
-				cookieStore.clear();
 				cookieStore.addCookie(createAuthCookie());
 			}
 

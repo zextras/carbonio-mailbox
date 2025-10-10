@@ -37,17 +37,8 @@ import org.junit.jupiter.api.Test;
 @Tag("api")
 class DeleteCalendarTest extends SoapTestSuite {
 
-  
-  private static Provisioning provisioning;
-
   private Account account;
   private Mailbox mbox;
-
-  @BeforeAll
-  static void init() {
-    provisioning = Provisioning.getInstance();
-    
-  }
 
   @BeforeEach
   void setUp() throws Exception {

@@ -33,11 +33,6 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
 
 	private Account account;
 
-  @BeforeAll
-  static void init() {
-		Provisioning provisioning = Provisioning.getInstance();
-    
-  }
 
   @BeforeEach
   void setUp() throws Exception {

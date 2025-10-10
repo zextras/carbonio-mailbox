@@ -101,6 +101,7 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
 
   @Override
   public void beforeAll(ExtensionContext context) throws Exception {
+    soapClient.createPool();
     if (!server.isRunning()) {
       mailboxSetupHelper.setUp(testData);
       Provisioning.getInstance()
