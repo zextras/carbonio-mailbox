@@ -82,32 +82,40 @@ pipeline {
             }
         }
 
-        stage('UT, IT tests') {
+        stage('Tests') {
             when {
                 expression {
                     params.SKIP_TEST_WITH_COVERAGE == false
                 }
             }
-            steps {
-                container('jdk-17') {
-                    sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,special"
+            parallel {
+                stage('UT, IT') {
+                    steps {
+                        container('jdk-17') {
+                            sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,special"
+                        }
+                        junit allowEmptyResults: true,
+                                testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+                    }
                 }
-                junit allowEmptyResults: true,
-                    testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
-            }
-        }
-        stage('API tests') {
-            when {
-                expression {
-                    params.SKIP_TEST_WITH_COVERAGE == false
+                stage('Special tests') {
+                    steps {
+                        container('jdk-17') {
+                            sh "mvn ${MVN_OPTS} verify -Dgroups=special -Dsurefire.reuseForks=false"
+                        }
+                        junit allowEmptyResults: true,
+                                testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+                    }
                 }
-            }
-            steps {
-                container('jdk-17') {
-                    sh "mvn ${MVN_OPTS} verify -Dgroups=api"
+                stage('API tests') {
+                    steps {
+                        container('jdk-17') {
+                            sh "mvn ${MVN_OPTS} verify -Dgroups=api -Dsurefire.reuseForks=false"
+                        }
+                        junit allowEmptyResults: true,
+                                testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+                    }
                 }
-                junit allowEmptyResults: true,
-                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
             }
         }
 
