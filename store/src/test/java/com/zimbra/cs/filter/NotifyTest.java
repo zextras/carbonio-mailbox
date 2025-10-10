@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
  * @author zimbra
  */
 
-@Tag("special")
+@Tag("special2")
 public class NotifyTest extends MailboxTestSuite {
 
 	@BeforeAll

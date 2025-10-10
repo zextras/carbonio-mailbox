@@ -19,6 +19,7 @@ import com.zimbra.cs.db.HSQLDB;
 import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapClient;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapPoolConfig;
+import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.ScheduledTaskManager;
 import com.zimbra.cs.redolog.DefaultRedoLogProvider;
 import com.zimbra.cs.redolog.MockRedoLogProvider;
@@ -106,6 +107,7 @@ public class MailboxSetupHelper {
 
 		DbPool.startup();
 
+		MailboxManager.setInstance(new MailboxManager());
 		RedoLogProvider.setInstance(new DefaultRedoLogProvider());
 		RedoLogProvider.getInstance().startup();
 		StoreManager.getInstance().startup();

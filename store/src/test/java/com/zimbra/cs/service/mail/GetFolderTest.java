@@ -27,7 +27,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-@Tag("special")
+@Tag("special2")
 public class GetFolderTest extends MailboxTestSuite {
 
 	@Test
