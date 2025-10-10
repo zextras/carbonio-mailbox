@@ -1,13 +1,10 @@
 FROM maven:3-eclipse-temurin-17-alpine AS build
 
-RUN apk add --no-cache make gcc g++ musl-dev
-
 WORKDIR /build
 
 # Copy all project files
 COPY pom.xml                          pom.xml
 COPY store                            store
-COPY native                           native
 COPY attribute-manager                attribute-manager
 COPY mailbox-ldap-lib                 mailbox-ldap-lib
 COPY soap                             soap
