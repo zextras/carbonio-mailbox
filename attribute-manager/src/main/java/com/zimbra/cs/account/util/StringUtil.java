@@ -8,23 +8,13 @@
  */
 package com.zimbra.cs.account.util;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import com.zimbra.cs.account.AttributeManagerUtil;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -93,48 +83,6 @@ public class StringUtil {
         }
     }
 
-    public static int countOccurrences(String str, char c) {
-        if (str == null) {
-            return 0;
-        }
-
-        int count = 0;
-        for (int i = 0, len = str.length(); i < len; i++) {
-            if (str.charAt(i) == c) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    /** Returns the first instance in {@code str} of any character in {@code
-     *  values}, or {@code -1} if no characters from {@code values} appear in
-     *   {@code str}. */
-    public static int indexOfAny(String str, String values) {
-        if (!isNullOrEmpty(str) && !isNullOrEmpty(values)) {
-            for (int i = 0, len = str.length(); i < len; i++) {
-                if (values.indexOf(str.charAt(i)) != -1) {
-                    return i;
-                }
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * Replaces control characters in the filename with space. Windows has
-     * a problem with downloading such filenames.
-     *
-     * @param filename filename to sanitize
-     * @return sanitized filename
-     */
-    public static String sanitizeFilename(String filename) {
-        if (Strings.isNullOrEmpty(filename)) {
-            return filename;
-        }
-        return filename.replaceAll("\\p{Cntrl}", " ");
-    }
-
     /** Returns the passed-in {@code string} with all XML-unsafe characters
      *  removed.  If nothing needs to be removed, the original {@code String}
      *  is returned.  Those characters considered "unsafe" are:<ul>
@@ -190,86 +138,6 @@ public class StringUtil {
         }
     }
 
-    /** Replaces all high and low surrogate character pairs (0xD800-0xDFFF)
-     *  with the '?' character.  This is sometimes needed when handing data to
-     *  third-party applications which cannot handle characters outside the
-     *  Basic Multilingual Plane (U+10000 and higher). */
-    public static String removeSurrogates(String string) {
-        if (isNullOrEmpty(string)) {
-            return string;
-        }
-
-        StringBuilder sb = null;
-        int start = 0;
-        for (int i = 0, len = string.length(); i < len; i++) {
-            char c = string.charAt(i);
-            if (c >= 0xD800 && c <= 0xDFFF) {
-                if (sb == null) {
-                    sb = new StringBuilder(len - 1);
-                }
-                if (start < i) {
-                    sb.append(string, start, i);
-                }
-                sb.append('?');
-                start = ++i + 1;
-            }
-        }
-        if (sb == null) {
-            return string;
-        } else {
-            start = Math.min(start, string.length());
-            return sb.append(string.substring(start)).toString();
-        }
-    }
-
-    /** Returns whether the passed-in {@code string} contains any surrogates
-     *  (0xD800-0xDFFF).  Two surrogate chars are used to encode a character
-     *  outside the Basic Multilingual Plane (U+10000 and higher). */
-    public static boolean containsSurrogates(String string) {
-        if (!isNullOrEmpty(string)) {
-            for (int i = 0, len = string.length(); i < len; i++) {
-                char c = string.charAt(i);
-                if (c >= 0xD800 && c <= 0xDFFF) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /** Returns whether the passed-in {@code String} is comprised only of
-     *  printable ASCII characters.  The "printable ASCII characters" are CR,
-     *  LF, TAB, and all characters from 0x20 to 0x7E.  If the argument is
-     *  {@code null}, returns {@code false}. */
-    public static boolean isAsciiString(String string) {
-        if (string == null) {
-            return false;
-        }
-
-        for (int i = 0, len = string.length(); i < len; i++) {
-            char c = string.charAt(i);
-            if ((c < 0x20 || c >= 0x7F) && c != '\r' && c != '\n' && c != '\t') {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /** Removes all spaces (and any character below 0x20) from the end of the
-     *  passed-in {@code String}.  If nothing was trimmed, the original
-     *  {@code String} is returned. */
-    public static String trimTrailingSpaces(String raw) {
-        if (raw == null) {
-            return null;
-        }
-
-        int length = raw.length();
-        while (length > 0 && raw.charAt(length - 1) <= ' ') {
-            length--;
-        }
-        return length == raw.length() ? raw : raw.substring(0, length);
-    }
-
     /** Add the name/value mapping to the map. If an entry doesn't exist,
      *  value remains a {@code String}.  If an entry already exists as a
      *  {@code String}, convert to {@code String[]} and add new value.
@@ -294,97 +162,9 @@ public class StringUtil {
         }
     }
 
-    /**
-     * Convert an array of the form:
-     *
-     *    a1 v1 a2 v2 a2 v3
-     *
-     * to a map of the form:
-     *
-     *    a1 -> v1
-     *    a2 -> [v2, v3]
-     */
-    public static Map<String, Object> keyValueArrayToMultiMap(String[] args, int offset) {
-        Map<String, Object> attrs = new HashMap<>();
-        for (int i = offset; i < args.length; i += 2) {
-            String n = args[i];
-            if (i + 1 >= args.length) {
-                throw new IllegalArgumentException("not enough arguments");
-            }
-            String v = args[i + 1];
-            addToMultiMap(attrs, n, v);
-        }
-        return attrs;
-    }
-
-    /**
-     * Converts an old-style multimap to Guava's version.
-     */
-    public static Multimap<String, String> toNewMultimap(Map<String, Object> oldMultimap) {
-        Multimap<String, String> newMap = ArrayListMultimap.create();
-        for (String key : oldMultimap.keySet()) {
-            Object value = oldMultimap.get(key);
-            if (value instanceof String[]) {
-                for (String sVal : (String[]) value) {
-                    newMap.put(key, sVal);
-                }
-            } else if (value == null) {
-                newMap.put(key, null);
-            } else {
-                newMap.put(key, value.toString());
-            }
-        }
-        return newMap;
-    }
-
-    /**
-     * Converts a Guava multimap to an old-style version.
-     */
-    public static Map<String, Object> toOldMultimap(Multimap<String, String> newMultimap) {
-        Map<String, Object> oldMap = new HashMap<>();
-        for (Map.Entry<String, String> entry : newMultimap.entries()) {
-            addToMultiMap(oldMap, entry.getKey(), entry.getValue());
-        }
-        return oldMap;
-    }
-
-    public static String[] toStringArray(Object obj) {
-
-        if (obj == null) {
-            return null;
-        }
-
-        String[] strArray;
-        if (obj instanceof String) {
-            strArray = new String[]{(String)obj};
-        } else if (obj instanceof String[]) {
-            strArray = (String[])obj;
-        } else {
-            throw new UnsupportedOperationException();
-        }
-        return strArray;
-    }
-
     private static final int TERM_WHITESPACE = 1;
     private static final int TERM_SINGLEQUOTE = 2;
     private static final int TERM_DBLQUOTE = 3;
-
-    /**
-     * open the specified file and return the first line in the file, without the end of line character(s).
-     * @param file
-     * @return
-     * @throws IOException
-     */
-    public static String readSingleLineFromFile(String file) throws IOException {
-        InputStream is = null;
-        try {
-            is = new FileInputStream(file);
-            BufferedReader in = new BufferedReader(new InputStreamReader(is));
-            return in.readLine();
-        } finally {
-            ByteUtil.closeStream(is);
-        }
-    }
 
     /**
      * read a line from "in", using readLine(). A trailing '\\' on the line will
@@ -533,27 +313,6 @@ public class StringUtil {
         System.out.println();
     }
 
-    public static void main(String[] args) {
-        dump("this is a test");
-        dump("this is 'a nother' test");
-        dump("this is\\ test");
-        dump("first Roland last 'Schemers' full 'Roland Schemers'");
-        dump("multi 'Roland\\nSchemers'");
-        dump("a");
-        dump("");
-        dump("\\  \\ ");
-        dump("backslash \\\\");
-        dump("backslash \\f");
-        dump("a           b");
-    }
-
-    // A pattern that matches the beginning of a string followed by ${KEY_NAME} followed
-    // by the end.  There are three groups:  the beginning, KEY_NAME and the end.
-    // Pattern.DOTALL is required in case one of the values in the map has a newline
-    // in it.
-    public static Pattern atPattern =
-        Pattern.compile("(.*)\\@([^\\@]+)\\@(.*)", Pattern.DOTALL);
-
     public static Pattern varPattern =
         Pattern.compile("(.*)\\$\\{([^\\}]+)\\}(.*)", Pattern.DOTALL);
 
@@ -665,48 +424,6 @@ public class StringUtil {
         return s == null || s.isEmpty();
     }
 
-    private static final String[] JS_CHAR_ENCODINGS = {
-        "\\u0000", "\\u0001", "\\u0002", "\\u0003", "\\u0004", "\\u0005", "\\u0006", "\\u0007",
-        "\\b",     "\\t",     "\\n",     "\\u000B", "\\f",     "\\r",     "\\u000E", "\\u000F",
-        "\\u0010", "\\u0011", "\\u0012", "\\u0013", "\\u0014", "\\u0015", "\\u0016", "\\u0017",
-        "\\u0018", "\\u0019", "\\u001A", "\\u001B", "\\u001C", "\\u001D", "\\u001E", "\\u001F"
-    };
-
-    public static String jsEncode(Object obj) {
-        if (obj == null) {
-            return "";
-        }
-
-        String replacement, str = obj.toString();
-        StringBuilder sb = null;
-        int i, last, length = str.length();
-        for (i = 0, last = -1; i < length; i++) {
-            char c = str.charAt(i);
-            switch (c) {
-                case '<':       replacement = "\\u003C";             break;
-                case '>':       replacement = "\\u003E";             break;
-                case '\\':      replacement = "\\\\";                break;
-                case '"':       replacement = "\\\"";                break;
-                case '\u2028':  replacement = "\\u2028";             break;
-                case '\u2029':  replacement = "\\u2029";             break;
-                default:        if (c >= ' ')                        continue;
-                                replacement = JS_CHAR_ENCODINGS[c];  break;
-            }
-            if (sb == null) {
-                sb = new StringBuilder(str.substring(0, i));
-            } else {
-                sb.append(str, last, i);
-            }
-            sb.append(replacement);
-            last = i + 1;
-        }
-        return (sb == null ? str : sb.append(str, last, i).toString());
-    }
-
-    public static String jsEncodeKey(String key) {
-        return '"' + key + '"';
-    }
-
     //
     // HTML methods
     //
@@ -734,26 +451,6 @@ public class StringUtil {
             }
         }
         return result.toString();
-    }
-
-    /**
-     * Unescapes a string containing entity escapes to a string containing the actual Unicode characters
-     * corresponding to the escapes.
-     */
-    public static String unEscapeHtml(String text) {
-        if (text == null || text.length() == 0) {
-            return "";
-        }
-
-        String result = text;
-        result = result.replace("&lt;", "<");
-        result = result.replace("&gt;", ">");
-        result = result.replace("&amp;", "&");
-        result = result.replace("&quot;", "\"");
-        result = result.replace("&#034;", "\"");
-        result = result.replace("&#039;", "\'");
-
-        return result;
     }
 
     private static Set<String> sJavaReservedWords =
@@ -846,10 +543,6 @@ public class StringUtil {
         return s.substring(0,1).toUpperCase() + s.substring(1);
     }
 
-    public static String enclose(String strToEnclose, char encloseWith) {
-        return new StringBuilder().append(encloseWith).append(strToEnclose).append(encloseWith).toString();
-    }
-
     private static Map<String, Pattern> patternCache = new LruMap<>(1000);
 
     /**
@@ -891,36 +584,6 @@ public class StringUtil {
         return m.replaceAll(replacement);
     }
 
-    /**
-     * Converts all instances of LF to CRLF.  Preserves existing CRLF combinations.
-     */
-    public static String lfToCrlf(CharSequence s) {
-        return replaceAll(s, "\r?\n", "\r\n");
-    }
-
-    /** Replaces all non-printable-ASCII characters with their Java Unicode escape sequences. */
-    public static String escapeString(String string) {
-        if (Strings.isNullOrEmpty(string))
-            return string;
-
-        StringBuilder sb = new StringBuilder(string.length());
-        for (int index = 0, len = string.length(); index < len; index++) {
-            char c = string.charAt(index);
-            if (c >= 0x20 && c < 0x7F) {
-                sb.append(c);
-            } else if (c == '\t') {
-                sb.append("\\t");
-            } else if (c == '\r') {
-                sb.append("\\r");
-            } else if (c == '\n') {
-                sb.append("\\n");
-            } else {
-                sb.append(String.format("\\u%04x", (int) c));
-            }
-        }
-        return sb.toString();
-    }
-
     public static boolean isUUID(String value) {
         if (value.length() == 36 &&
             value.charAt(8) == '-' &&
@@ -929,61 +592,5 @@ public class StringUtil {
             value.charAt(23) == '-')
             return true;
         return false;
-    }
-
-    public static String nonNull(String s) {
-        return s == null ? "" : s;
-    }
-
-    public static String truncateIfRequired(String body, int maxBodyBytes) {
-        byte[] bodyBytes = body.getBytes(StandardCharsets.UTF_8);
-        if (maxBodyBytes > -1 && bodyBytes.length > maxBodyBytes) {
-            // During truncation make sure that we don't end up with a partial char at the end of the body.
-            // Start from index maxBodyBytes and going backwards determine the first byte that is a starting
-            // byte for a character. Such a byte is one whose top bit is 0 or whose top 2 bits are 11.
-            int indexToExclude = maxBodyBytes;
-            while (indexToExclude > 0 && bodyBytes[indexToExclude] < -64) {
-                indexToExclude--;
-            }
-            return new String(bodyBytes, 0, indexToExclude, StandardCharsets.UTF_8);
-        }
-        return body;
-    }
-
-    /**
-     * Removes all occurrences of "Other, Control", "Other, Private Use",
-     * "Other, Unassigned", "Other, Format" and "Other, Surrogate"
-     * Replaces all "Separator, *" characters with a simple space (U+0020)
-     *
-     * @param string string to sanitize
-     * @return sanitized string
-     */
-    public static String sanitizeString(String string) {
-        if (string != null) {
-            StringBuilder sanitizedString = new StringBuilder(string.length());
-            for (int offset = 0; offset < string.length();) {
-                int codePoint = string.codePointAt(offset);
-                offset += Character.charCount(codePoint);
-                // Remove invisible control characters and unused code points
-                switch (Character.getType(codePoint)) {
-                    case Character.CONTROL: // \p{Cc}
-                    case Character.FORMAT: // \p{Cf}
-                    case Character.PRIVATE_USE: // \p{Co}
-                    case Character.SURROGATE: // \p{Cs}
-                    case Character.UNASSIGNED: // \p{Cn}
-                        break;
-                    case Character.LINE_SEPARATOR:
-                    case Character.PARAGRAPH_SEPARATOR:
-                    case Character.SPACE_SEPARATOR:
-                        sanitizedString.append(" ");
-                        break;
-                    default:
-                        sanitizedString.append(Character.toChars(codePoint));
-                        break;
-                }
-            }
-            return sanitizedString.toString();
-        }
-        return null;
     }
 }
