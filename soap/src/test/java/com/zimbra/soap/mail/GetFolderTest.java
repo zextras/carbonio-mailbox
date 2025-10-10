@@ -16,6 +16,7 @@ import javax.xml.bind.Unmarshaller;
 import com.zimbra.soap.mail.type.Acl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.zimbra.soap.mail.message.GetFolderResponse;
@@ -28,6 +29,8 @@ import com.zimbra.soap.mail.type.SearchFolder;
 /**
  * Unit test for {@link GetFolderRequest}.
  */
+
+@Tag("special")
 public final class GetFolderTest {
 
     private static Unmarshaller unmarshaller;

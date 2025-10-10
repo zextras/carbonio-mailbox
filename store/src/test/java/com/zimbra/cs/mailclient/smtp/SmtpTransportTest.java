@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.base.Charsets;
 import com.sun.mail.smtp.SMTPMessage;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.calendar.WellKnownTimeZones;
 import com.zimbra.common.localconfig.LC;
@@ -52,51 +53,11 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-@Disabled
-final class SmtpTransportTest {
+final class SmtpTransportTest extends MailboxTestSuite {
 
 	private MockTcpServer server;
 	private static final int PORT = 9025;
 
-
-    @BeforeAll
-    public static void init() throws Exception {
-			MigrationInfo.setFactory(InMemoryMigrationInfo.Factory.class);
-			EphemeralStore.setFactory(InMemoryEphemeralStore.Factory.class);
-			System.setProperty(
-					"zimbra.config", "src/test/resources/localconfig-test.xml");
-			LC.reload();
-			LC.zimbra_home.setDefault(Files.createTempDirectory("mailbox_home_").toAbsolutePath().toString());
-			// substitute test TZ file
-			String timezonefilePath = "src/test/resources/timezones-test.ics";
-			File d = new File(timezonefilePath);
-			if (!d.exists()) {
-				throw new FileNotFoundException("timezones-test.ics not found in " + timezonefilePath);
-			}
-			LC.timezone_file.setDefault(timezonefilePath);
-			WellKnownTimeZones.loadFromFile(d);
-			LC.zimbra_tmp_directory.setDefault(Files.createTempDirectory("server_tmp_dir_").toAbsolutePath().toString());
-			// substitute test DS config file
-			String dsfilePath = "src/test/resources/datasource-test.xml";
-			d = new File(dsfilePath);
-			if (!d.exists()) {
-				throw new FileNotFoundException("datasource-test.xml not found in " + dsfilePath);
-			}
-			LC.data_source_config.setDefault(dsfilePath);
-			// default MIME handlers are now set up in MockProvisioning constructor
-
-			LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
-			DbPool.startup();
-			HSQLDB.createDatabase();
-
-			MailboxManager.setInstance(null);
-			IndexStore.setFactory(LC.zimbra_class_index_store_factory.value());
-
-			LC.zimbra_class_store.setDefault(MockStoreManager.class.getName());
-			StoreManager.getInstance().startup();
-			StoreManager.setInstance(new MockStoreManager());
-			StoreManager.getInstance().startup();
-    }
 
 	@AfterEach
 	void tearDown() {
