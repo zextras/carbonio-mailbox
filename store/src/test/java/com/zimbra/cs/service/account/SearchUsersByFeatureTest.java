@@ -35,7 +35,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("api")
-@Disabled
 public class SearchUsersByFeatureTest extends SoapTestSuite {
   public static final String ACCOUNT_UID = "first.account";
   public static final String ACCOUNT_NAME = "name";
