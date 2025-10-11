@@ -103,7 +103,7 @@ pipeline {
         stage('API tests') {
             steps {
                 container('jdk-17') {
-                    sh "mvn ${MVN_OPTS} verify -Dgroups=api -Dsurefire.reuseForks=false"
+                    sh "mvn ${MVN_OPTS} verify -Dgroups=api"
                 }
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
