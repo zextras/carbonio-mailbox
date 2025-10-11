@@ -886,6 +886,10 @@
           <forkCount>${surefire.forkCount}</forkCount>
           <reuseForks>${surefire.reuseForks}</reuseForks>
           <argLine>@{argLine} -Dserver.dir=${project.basedir}
+            -Djunit.jupiter.execution.parallel.enabled=true
+            -Djunit.jupiter.execution.parallel.mode.default=same_thread
+            -Djunit.jupiter.execution.parallel.mode.classes.default=sequential
+            -Djunit.jupiter.execution.parallel.mode.methods.default=concurrent
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
             -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
@@ -905,6 +909,10 @@
           <forkCount>${surefire.forkCount}</forkCount>
           <reuseForks>${surefire.reuseForks}</reuseForks>
           <argLine>@{argLine} -Dserver.dir=${project.basedir}
+            -Djunit.jupiter.execution.parallel.enabled=true
+            -Djunit.jupiter.execution.parallel.mode.default=same_thread
+            -Djunit.jupiter.execution.parallel.mode.classes.default=sequential
+            -Djunit.jupiter.execution.parallel.mode.methods.default=concurrent
             -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
