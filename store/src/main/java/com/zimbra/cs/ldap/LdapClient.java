@@ -69,6 +69,7 @@ public abstract class LdapClient {
         unsetInstance();
     }
 
+    @Deprecated
     public static ZLdapContext toZLdapContext(
             com.zimbra.cs.account.Provisioning prov, ILdapContext ldapContext) {
 
@@ -81,6 +82,22 @@ public abstract class LdapClient {
         if (ldapContext != null && !(ldapContext instanceof ZLdapContext)) {
             Zimbra.halt("ILdapContext instance is not ZLdapContext",
                     ServiceException.FAILURE("internal error, wrong ldap context instance", null));
+        }
+
+        return (ZLdapContext)ldapContext;
+    }
+
+    public ZLdapContext toZLdapContext(ILdapContext ldapContext) {
+
+        if (!(getInstance() instanceof UBIDLdapClient)) {
+            Zimbra.halt("LdapClient instance is not UBIDLdapClient",
+                ServiceException.FAILURE("internal error, wrong ldap context instance", null));
+        }
+
+        // just a safety check, this should really not happen at this point
+        if (ldapContext != null && !(ldapContext instanceof ZLdapContext)) {
+            Zimbra.halt("ILdapContext instance is not ZLdapContext",
+                ServiceException.FAILURE("internal error, wrong ldap context instance", null));
         }
 
         return (ZLdapContext)ldapContext;

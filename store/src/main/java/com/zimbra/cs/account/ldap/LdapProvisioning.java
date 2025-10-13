@@ -3764,7 +3764,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
           new RenameDomain.RenameDomainLdapHelper(this, zlc) {
 
             private ZLdapContext toZLdapContext() {
-              return ldapClient.toZLdapContext(mProv, mZlc);
+              return ldapClient.toZLdapContext(mZlc);
             }
 
             @Override
