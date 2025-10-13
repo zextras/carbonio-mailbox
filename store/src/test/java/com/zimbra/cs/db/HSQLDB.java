@@ -6,7 +6,7 @@
 package com.zimbra.cs.db;
 
 import com.google.common.base.Joiner;
-import com.zextras.mailbox.util.TestConfig;
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.db.DbPool.PoolConfig;
@@ -36,7 +36,7 @@ public class HSQLDB extends Db {
 
 
     public static void createDatabase() throws Exception {
-        final String volumeDirectory = TestConfig.getInstance().volumeDirectory();
+        final String volumeDirectory = LC.zimbra_home.value() + "/build/test/";
         final String path = new File(volumeDirectory).getAbsolutePath();
         createDatabase(path);
     }

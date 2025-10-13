@@ -39,7 +39,6 @@ public class GetServerEncodingTest extends MailboxTestSuite {
 		Element response = zsc.createElement(AdminConstants.GET_SERVER_RESPONSE);
 		Map<String, Object> attrs = new HashMap<String, Object>();
 		attrs.put("zimbraMailMode", "https");
-		attrs.put("zimbraRedoLogProvider", "com.zimbra.cs.redolog.MockRedoLogProvider");
 		attrs.put("zimbraLowestSupportedAuthVersion", 1);
 		attrs.put("zimbraServiceHostname", "localhost");
 		attrs.put("zimbraSmtpPort", 7030);

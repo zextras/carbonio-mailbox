@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zextras.mailbox.util.TestConfig;
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
@@ -85,7 +85,7 @@ public abstract class AbstractIndexStoreTest extends MailboxTestSuite {
 	}
 
 	private void deleteIndexData() throws IOException {
-		final String volumeDirectory = TestConfig.getInstance().volumeDirectory();
+		final String volumeDirectory = LC.zimbra_home.value() + "/build/test/";
 		File index = new File(volumeDirectory, "index");
 		if (index.isDirectory()) {
 			FileUtils.deleteDirectory(index);
