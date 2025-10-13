@@ -6,44 +6,32 @@ package com.zimbra.cs.redolog.op;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zextras.mailbox.util.MailboxSetupHelper;
-import com.zextras.mailbox.util.MailboxTestData;
-import com.zextras.mailbox.util.MailboxTestExtension;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.mailbox.MailboxOperation;
 import com.zimbra.cs.redolog.RedoLogManager;
 import com.zimbra.cs.redolog.RedoLogOutput;
 import com.zimbra.cs.redolog.TransactionId;
 import java.io.InputStream;
-import org.easymock.EasyMock;
-import org.easymock.EasyMockSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
+import org.mockito.Mockito;
+import org.mockito.quality.Strictness;
 
-public class RedoableOpTest extends EasyMockSupport {
-
-	private static final String DEFAULT_DOMAIN_NAME = "test.com";
-	private static final String DEFAULT_DOMAIN_ID = "f4806430-b434-4e93-9357-a02d9dd796b8";
-	private static final String SERVER_NAME = "localhost";
-	private static final MailboxTestData mailboxTestData = new MailboxTestData(SERVER_NAME,
-			DEFAULT_DOMAIN_NAME,
-			DEFAULT_DOMAIN_ID);
-
-	@RegisterExtension
-	private static final MailboxTestExtension mailboxTestExtension = new MailboxTestExtension(
-			mailboxTestData,
-			MailboxSetupHelper.create());
+public class RedoableOpTest extends MailboxTestSuite {
 
 	private RedoLogManager mgr;
 	private RedoableOp op;
 
 	@BeforeEach
 	public void setUp() {
-		mgr = createStrictMock(RedoLogManager.class);
-		op = createMockBuilder(RedoableOp.class)
-				.withConstructor(MailboxOperation.CopyItem, mgr)
-				.addMockedMethod("toString")
-				.createMock();
+		mgr = Mockito.mock(RedoLogManager.class, Mockito.withSettings().strictness(Strictness.STRICT_STUBS));
+
+		op = Mockito.mock(RedoableOp.class,
+				Mockito.withSettings()
+						.useConstructor(MailboxOperation.CopyItem, mgr)
+						.defaultAnswer(Mockito.CALLS_REAL_METHODS));
+
+		Mockito.doReturn("mocked-toString").when(op).toString();
 	}
 
 	@Test
@@ -58,10 +46,10 @@ public class RedoableOpTest extends EasyMockSupport {
 	@Test
 	void startLogCommit() {
 		final TransactionId txnId = new TransactionId(1, 2);
-		EasyMock.expect(mgr.getNewTxnId()).andReturn(txnId);
+		Mockito.when(mgr.getNewTxnId()).thenReturn(txnId);
 		mgr.log(op, false);
 		mgr.commit(op);
-		replayAll();
+		
 
 		op.start(7);
 		assertEquals(txnId, op.getTransactionId());
@@ -71,29 +59,29 @@ public class RedoableOpTest extends EasyMockSupport {
 		op.commit();
 		assertNull(op.mSerializedByteArrayVector,
 				"Commit clears byte array.");
-		verifyAll();
+		
 	}
 
 	@Test
 	void inactiveOp() {
-		replayAll();
+		
 		op.commit();
 		op.abort();
 		// no calls to mock expected, op is not active until log()
-		verifyAll();
+		
 	}
 
 	@Test
 	void serialize() throws Exception {
-		op = createMockBuilder(RedoableOp.class)
-				.withConstructor(MailboxOperation.CopyItem, mgr)
-				.addMockedMethod("getTransactionId")
-				.createMock();
+		op = Mockito.mock(RedoableOp.class,
+				Mockito.withSettings()
+						.useConstructor(MailboxOperation.CopyItem, mgr)
+						.defaultAnswer(Mockito.CALLS_REAL_METHODS));
 
-		EasyMock.expect(op.getTransactionId())
-				.andReturn(new TransactionId(1, 2));
-		op.serializeData(EasyMock.anyObject(RedoLogOutput.class));
-		replayAll();
+		Mockito.when(op.getTransactionId())
+				.thenReturn(new TransactionId(1, 2));
+		op.serializeData(Mockito.any(RedoLogOutput.class));
+		
 		InputStream out = op.getInputStream();
 		assertNotNull(op.mSerializedByteArrayVector,
 				"getInputStream sets up internal vector.");
@@ -101,7 +89,7 @@ public class RedoableOpTest extends EasyMockSupport {
 		byte[] bytes = new byte[RedoableOp.REDO_MAGIC.length()];
 		out.read(bytes);
 		assertEquals(RedoableOp.REDO_MAGIC, new String(bytes), "REDO_MAGIC missing in serialize.");
-		verifyAll();
+		
 	}
 
 	@Test
@@ -109,14 +97,14 @@ public class RedoableOpTest extends EasyMockSupport {
 		mgr.log(op, false);
 		mgr.commit(op);
 
-		RedoableOp subOp = createMock(RedoableOp.class);
+		RedoableOp subOp = Mockito.mock(RedoableOp.class);
 		subOp.commit();
-		replayAll();
+		
 		op.addChainedOp(subOp);
 
 		op.log(false);
 		op.commit();
-		verifyAll();
+		
 	}
 
 	@Test
@@ -124,14 +112,14 @@ public class RedoableOpTest extends EasyMockSupport {
 		mgr.log(op, false);
 		mgr.abort(op);
 
-		RedoableOp subOp = createMock(RedoableOp.class);
+		RedoableOp subOp = Mockito.mock(RedoableOp.class);
 		subOp.abort();
-		replayAll();
+		
 		op.addChainedOp(subOp);
 
 		op.log(false);
 		op.abort();
-		verifyAll();
+		
 	}
 
 	@Test
