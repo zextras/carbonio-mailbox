@@ -28,7 +28,7 @@ public class DbMailboxTest {
 
 	@BeforeAll
 	public static void init() throws Exception {
-		HSQLDB.createDatabase();
+		HSQLDB.createDatabase(LC.zimbra_home.value() + "/build/test");
 		LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
 		DbPool.startup();
 	}
