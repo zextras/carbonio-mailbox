@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import javax.mail.internet.InternetAddress;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -83,7 +82,7 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
     assertEquals(1, autocomplete.query("first second third forth", null, 100).entries.size());
   }
 
-  private static @NotNull String getRandomMail() {
+  private static String getRandomMail() {
     return UUID.randomUUID() + "@domain.com";
   }
 
