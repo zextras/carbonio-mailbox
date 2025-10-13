@@ -74,14 +74,10 @@ public class MailboxSetupHelper {
 
 	private void mockMessageBrokerClient() {
 			var messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
-			try {
-				var mockedMessageBrokerFactory = Mockito.mockStatic(MessageBrokerFactory.class,
-						Mockito.CALLS_REAL_METHODS);
-				mockedMessageBrokerFactory.when(MessageBrokerFactory::getMessageBrokerClientInstance)
-						.thenReturn(messageBrokerClient);
-			} catch (Exception e) {
-				// ignore
-			}
+			var mockedMessageBrokerFactory = Mockito.mockStatic(MessageBrokerFactory.class,
+					Mockito.CALLS_REAL_METHODS);
+			mockedMessageBrokerFactory.when(MessageBrokerFactory::getMessageBrokerClientInstance)
+					.thenReturn(messageBrokerClient);
 	}
 
 	public void setUp(MailboxTestData mailboxTestData) throws Exception {
@@ -113,13 +109,11 @@ public class MailboxSetupHelper {
 		final UBIDLdapClient client = UBIDLdapClient.createNew(poolConfig);
 		LdapClient.setInstance(client);
 		Provisioning.setInstance(new LdapProvisioningWithMockMime(client));
-//		RedoLogProvider.setInstance(new MockRedoLogProvider());
 		this.initData(mailboxTestData);
 
 		HSQLDB.createDatabase();
 
 		DbPool.startup();
-
 		RedoLogProvider.getInstance().startup();
 		StoreManager.getInstance().startup();
 		RightManager.getInstance();
@@ -158,8 +152,6 @@ public class MailboxSetupHelper {
 		inMemoryLdapServer.clear();
 		RedoLogProvider.getInstance().shutdown();
 		inMemoryLdapServer.shutDown(true);
-		// TODO: avoid shutting down with explicit static method calls
-		UBIDLdapClient.shutdown();
 		FileUtils.deleteDirectory(mailboxHome.toFile());
 		FileUtils.deleteDirectory(mailboxTmpDirectory.toFile());
 	}
