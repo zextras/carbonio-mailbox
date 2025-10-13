@@ -13,10 +13,10 @@ import com.zimbra.cs.redolog.op.RedoableOp;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.Mockito;
 
 public class FileLogWriterTest extends MailboxTestSuite {
 
@@ -28,7 +28,7 @@ public class FileLogWriterTest extends MailboxTestSuite {
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		mockRedoLogManager = EasyMock.createNiceMock(RedoLogManager.class);
+		mockRedoLogManager = Mockito.mock(RedoLogManager.class);
 
 		logWriter =
 				new FileLogWriter(mockRedoLogManager, new File(folder.getAbsolutePath(), "logfile"),
@@ -41,9 +41,10 @@ public class FileLogWriterTest extends MailboxTestSuite {
 		logWriter.open();
 		assertTrue(logWriter.isEmpty(), "file empty after open");
 
-		RedoableOp op = EasyMock.createMockBuilder(RedoableOp.class)
-				.withConstructor(MailboxOperation.Preview)
-				.createMock();
+		RedoableOp op = Mockito.mock(RedoableOp.class,
+				Mockito.withSettings()
+						.useConstructor(MailboxOperation.Preview)
+						.defaultAnswer(Mockito.CALLS_REAL_METHODS));
 
 		logWriter.log(op, new ByteArrayInputStream("some bytes".getBytes()),
 				false /* asynchronous */);
