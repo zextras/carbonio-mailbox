@@ -6,16 +6,11 @@
 package com.zimbra.cs.account;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ByteUtil;
-import com.zimbra.common.util.DateUtil;
-import com.zimbra.common.util.Log;
-import com.zimbra.common.util.LogFactory;
-import com.zimbra.common.util.SetUtil;
-import com.zimbra.common.util.StringUtil;
-import com.zimbra.common.util.Version;
-import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AttributeManager.ObjectClassInfo;
+import com.zimbra.cs.account.util.ByteUtil;
+import com.zimbra.cs.account.util.DateUtil;
+import com.zimbra.cs.account.util.SetUtil;
+import com.zimbra.cs.account.util.StringUtil;
 import com.zimbra.cs.util.MemoryUnitUtil;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -39,6 +34,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -49,15 +46,19 @@ import org.apache.commons.cli.ParseException;
 
 public class AttributeManagerUtil {
 
-  private static final Log logger = LogFactory.getLog(AttributeManagerUtil.class);
+
+  private final String DEFAULT_COS_NAME = "default";
+  private final String DEFAULT_EXTERNAL_COS_NAME = "defaultExternal";
+
+  private static final Logger logger = Logger.getLogger(AttributeManagerUtil.class.getName());
 
   private static final Options options = new Options();
 
   // multi-line continuation prefix chars
   private static final String ML_CONT_PREFIX = "  ";
 
-  public static AttributeManagerUtil get() throws ServiceException {
-    return new AttributeManagerUtil(AttributeManager.getInst());
+  public static AttributeManagerUtil get() throws AttributeManagerException {
+    return new AttributeManagerUtil(AttributeManager.fromResource());
   }
 
   static {
@@ -94,7 +95,7 @@ public class AttributeManagerUtil {
 
   private final AttributeManager attrMgr;
 
-  private AttributeManagerUtil(AttributeManager am) {
+  public AttributeManagerUtil(AttributeManager am) {
     attrMgr = am;
   }
 
@@ -470,14 +471,14 @@ public class AttributeManagerUtil {
     result.append(String.format(" {%n        %s%n    }%n", javaBody));
   }
 
-  private static String versionListAsString(List<Version> versions) {
+  private static String versionListAsString(List<AttributeVersion> versions) {
     if (versions == null || versions.isEmpty()) {
       return "";
     } else if (versions.size() == 1) {
       return versions.iterator().next().toString();
     } else {
       StringBuilder sb = new StringBuilder();
-      for (Version version : versions) {
+      for (AttributeVersion version : versions) {
         sb.append(version.toString()).append(",");
       }
       sb.setLength(sb.length() - 1);
@@ -777,7 +778,7 @@ public class AttributeManagerUtil {
 
   private static void usage(String errmsg) {
     if (errmsg != null) {
-      logger.error(errmsg);
+      logger.severe(errmsg);
     }
     HelpFormatter formatter = new HelpFormatter();
     formatter.printHelp("AttributeManagerUtil [options] where [options] are one of:", options);
@@ -798,12 +799,10 @@ public class AttributeManagerUtil {
     return commandLine;
   }
 
-  public static void main(String[] args) throws IOException, ServiceException {
-    ZimbraLog.toolSetupInfo();
+  public static void main(String[] args) throws Exception {
     CommandLine commandLine = parseArgs(args);
 
     if (commandLine == null) {
-      ZimbraLog.misc.error("No command line option specified! Exiting.");
       System.exit(1);
     }
 
@@ -820,13 +819,9 @@ public class AttributeManagerUtil {
 
       AttributeManager am = null;
       if (action != Action.LIST_ATTRS) {
-        if (!commandLine.hasOption('i')) {
-          am =  AttributeManager.fromResource();
-        } else {
-          am =  AttributeManager.fromFileSystem(commandLine.getOptionValue('i'));
-        }
+        am =  AttributeManager.fromResource();
         if (am.hasErrors()) {
-          ZimbraLog.misc.warn(am.getErrors());
+          logger.warning(am.getErrors());
           System.exit(1);
         }
       }
@@ -854,7 +849,7 @@ public class AttributeManagerUtil {
           case GENERATE_GETTERS:
             attributeManagerUtil.generateGetters(
                 commandLine.getOptionValue('c'), commandLine.getOptionValue('r'));
-            ZimbraLog.misc.info("Finished generating getters");
+            logger.info("Finished generating getters");
             break;
           case GENERATE_GLOBAL_CONFIG_LDIF:
             attributeManagerUtil.generateGlobalConfigLdif(printWriter);
@@ -870,7 +865,7 @@ public class AttributeManagerUtil {
             break;
           case GENERATE_PROVISIONING:
             attributeManagerUtil.generateProvisioningConstants(commandLine.getOptionValue('r'));
-            ZimbraLog.misc.info("Finished generating provisioning");
+            logger.info("Finished generating provisioning");
             break;
           case GENERATE_SCHEMA_LDIF:
             attributeManagerUtil.generateSchemaLdif(printWriter);
@@ -883,7 +878,7 @@ public class AttributeManagerUtil {
             break;
         }
       } catch (IOException e) {
-        ZimbraLog.misc.error(e.getMessage());
+        logger.severe(e.getMessage());
         System.exit(1);
       }
       finally {
@@ -922,7 +917,7 @@ public class AttributeManagerUtil {
     pw.println("#");
 
     String baseDn = CLOptions.getBaseDn("cos");
-    String cosName = CLOptions.getEntryName("cos", AttributeManagerRepository.DEFAULT_COS_NAME);
+    String cosName = CLOptions.getEntryName("cos", DEFAULT_COS_NAME);
     String cosId = CLOptions.getEntryId("cos", "e00428a1-0c00-11d9-836a-000d93afea2a");
 
     pw.println("dn: cn=" + cosName + ",cn=cos," + baseDn);
@@ -954,7 +949,7 @@ public class AttributeManagerUtil {
     pw.println("#");
 
     String baseDn = CLOptions.getBaseDn("cos");
-    String cosName = CLOptions.getEntryName("cos", AttributeManagerRepository.DEFAULT_EXTERNAL_COS_NAME);
+    String cosName = CLOptions.getEntryName("cos", DEFAULT_EXTERNAL_COS_NAME);
     String cosId = CLOptions.getEntryId("cos", "f27456a8-0c00-11d9-280a-286d93afea2g");
 
     pw.println("dn: cn=" + cosName + ",cn=cos," + baseDn);
@@ -1695,7 +1690,7 @@ public class AttributeManagerUtil {
       }
     }
     FileGenUtil.createJavaFile(javaFile, result.toString());
-    ZimbraLog.misc.info("Done: " + javaFile);
+    logger.info("Done: " + javaFile);
   }
 
   /** */

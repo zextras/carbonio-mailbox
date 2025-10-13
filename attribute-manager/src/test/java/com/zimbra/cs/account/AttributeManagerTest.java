@@ -3,14 +3,11 @@ package com.zimbra.cs.account;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zimbra.common.service.ServiceException;
 import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 class AttributeManagerTest {
-
-  private static final String BASE_ATTRIBUTES_DIRECTORY_PATH = "src/main/resources/conf/attrs";
 
   @AfterEach
   void cleanup() {
@@ -18,7 +15,7 @@ class AttributeManagerTest {
   }
 
   @Test
-  void shouldLoadAllAttributesWhenUsingSingleton() throws ServiceException {
+  void shouldLoadAllAttributesWhenUsingSingleton() throws AttributeManagerException {
     final AttributeManager attributeManager = AttributeManager.getInstance();
 
     assertLoadedAllAttributes(attributeManager);
@@ -26,22 +23,14 @@ class AttributeManagerTest {
 
   @Test
   void shouldLoadAllAttributesFromResourceByDefaultWhenUsingSingleton()
-      throws ServiceException {
+      throws AttributeManagerException {
     final AttributeManager attributeManager = AttributeManager.getInstance();
     assertLoadedAllAttributes(attributeManager);
   }
 
   @Test
-  void shouldLoadAllAttributesFromResources() throws ServiceException {
+  void shouldLoadAllAttributesFromResources() throws AttributeManagerException {
     final AttributeManager attributeManager = AttributeManager.fromResource();
-    assertLoadedAllAttributes(attributeManager);
-  }
-
-  @Test
-  void shouldLoadAllAttributesFromAttrsFile() throws ServiceException {
-    final AttributeManager attributeManager = AttributeManager.fromFileSystem(
-        BASE_ATTRIBUTES_DIRECTORY_PATH);
-
     assertLoadedAllAttributes(attributeManager);
   }
 

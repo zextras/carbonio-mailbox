@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
+import com.zimbra.cs.account.AttributeManagerException;
+import com.zimbra.cs.account.StoreAttributeManager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -451,9 +453,14 @@ public class AttributeConstraint {
     }
 
     static AttributeConstraint newConstratint(AttributeManager am, String attrName) throws ServiceException {
-        AttributeType at = am.getAttributeType(attrName);
+			AttributeType at = null;
+			try {
+				at = am.getAttributeType(attrName);
+			} catch (AttributeManagerException e) {
+				throw ServiceException.FAILURE(e.getMessage());
+			}
 
-        switch (at) {
+			switch (at) {
         case TYPE_BOOLEAN:
             case TYPE_PHONE:
             case TYPE_STRING:
@@ -517,7 +524,7 @@ public class AttributeConstraint {
 
         Set<String> cstrnts = constraintEntry.getMultiAttrSet(Provisioning.A_zimbraConstraint);
 
-        AttributeManager am = AttributeManager.getInstance();
+        AttributeManager am = StoreAttributeManager.getInstance();
         for (String c : cstrnts) {
             AttributeConstraint constraint = AttributeConstraint.fromString(am, c);
             constraints.put(constraint.getAttrName(), constraint);
@@ -624,7 +631,7 @@ public class AttributeConstraint {
      */
     public static void main(String[] args) throws ServiceException  {
         Provisioning prov = Provisioning.getInstance();
-        AttributeManager am = AttributeManager.getInstance();
+        AttributeManager am = StoreAttributeManager.getInstance();
 
         AttributeConstraint.fromString(am, "zimbraPasswordMinLength:min=6");
         AttributeConstraint.fromString(am, "zimbraPasswordMaxLength:min=64");

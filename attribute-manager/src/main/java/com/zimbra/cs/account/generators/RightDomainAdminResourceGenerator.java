@@ -1,10 +1,10 @@
 package com.zimbra.cs.account.generators;
 
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.SetUtil;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeManager;
+import com.zimbra.cs.account.AttributeManagerException;
+import com.zimbra.cs.account.util.SetUtil;
+import com.zimbra.cs.account.util.StringUtil;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -34,7 +34,7 @@ public class RightDomainAdminResourceGenerator {
 
 		// sanity check, since we are not generating it, make sure it is indeed empty
 		if (!acctOnlyAttrs.isEmpty())
-			throw ServiceException.FAILURE("account only attrs is not empty???", null);
+			throw new Exception("account only attrs is not empty???");
 
 		String acctAndCrAttrsFiller = genAttrs(acctAndCrAttrs);
 		String crOnlyAttrsFiller = genAttrs(crOnlyAttrs);
@@ -53,8 +53,7 @@ public class RightDomainAdminResourceGenerator {
 		return StringUtil.fillTemplate(templateString, templateFillers);
 	}
 
-	private static Set<String> getDomainAdminModifiableAttrs(AttributeClass klass)
-			throws ServiceException {
+	private static Set<String> getDomainAdminModifiableAttrs(AttributeClass klass) throws AttributeManagerException {
 		AttributeManager am = AttributeManager.getInstance();
 		Set<String> allAttrs = am.getAllAttrsInClass(klass);
 

@@ -16,6 +16,7 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.StoreAttributeManager;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.util.List;
@@ -121,7 +122,7 @@ public class GetDomainInfo extends AdminDocumentHandler {
 
   private void addAttrElementIfNotNull(Entry entry, Element element, String key)
       throws ServiceException {
-    if (AttributeManager.getInstance().isMultiValued(key)) {
+    if (StoreAttributeManager.getInstance().isMultiValued(key)) {
       for (String value : entry.getMultiAttr(key)) {
         element
             .addNonUniqueElement(AdminConstants.E_A)
@@ -163,7 +164,7 @@ public class GetDomainInfo extends AdminDocumentHandler {
       domain.addAttribute(AdminConstants.A_ID, "globalconfig-dummy-id");
     }
     Set<String> attrList =
-        AttributeManager.getInstance().getAttrsWithFlag(AttributeFlag.domainInfo);
+        StoreAttributeManager.getInstance().getAttrsWithFlag(AttributeFlag.domainInfo);
     Map<String, Object> attrsMap = entry.getUnicodeAttrs(applyConfig);
 
     for (String name : attrList) {

@@ -28,6 +28,7 @@ import com.zimbra.cs.account.MailTarget;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
+import com.zimbra.cs.account.StoreAttributeManager;
 import com.zimbra.cs.account.accesscontrol.Right.RightType;
 import com.zimbra.cs.account.accesscontrol.RightBearer.Grantee;
 import com.zimbra.cs.account.accesscontrol.SearchGrants.GrantsOnTarget;
@@ -419,7 +420,7 @@ public class RightCommand {
                 EffectiveAttrsInfo eAttrs)
         throws ServiceException {
             TreeMap<String, EffectiveAttr> attrs = new TreeMap<>();
-            AttributeManager am = AttributeManager.getInstance();
+            AttributeManager am = StoreAttributeManager.getInstance();
 
             for (EffectiveAttrInfo eAttr : eAttrs.getAttrs()) {
                 String attrName = eAttr.getName();
@@ -450,7 +451,7 @@ public class RightCommand {
         throws ServiceException {
             TreeMap<String, EffectiveAttr> attrs = new TreeMap<>();
 
-            AttributeManager am = AttributeManager.getInstance();
+            AttributeManager am = StoreAttributeManager.getInstance();
 
             for (Element eAttr : eAttrs.listElements(AdminConstants.E_A)) {
                 String attrName = eAttr.getAttribute(AdminConstants.A_N);

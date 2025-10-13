@@ -55,11 +55,6 @@
       <artifactId>xercesImpl</artifactId>
       <scope>runtime</scope>
     </dependency>
-
-    <dependency>
-      <artifactId>zm-common</artifactId>
-      <groupId>zextras</groupId>
-    </dependency>
   </dependencies>
   <build>
     <plugins>

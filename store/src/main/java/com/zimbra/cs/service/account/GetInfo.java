@@ -28,6 +28,7 @@ import com.zimbra.cs.account.Identity;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.Signature;
+import com.zimbra.cs.account.StoreAttributeManager;
 import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.account.accesscontrol.Right;
 import com.zimbra.cs.account.accesscontrol.RightManager;
@@ -253,7 +254,7 @@ public class GetInfo extends AccountDocumentHandler  {
 
     static void doAttrs(Account acct, String locale, Element response, Map<String,Object> attrsMap)
             throws ServiceException {
-        AttributeManager attrMgr = AttributeManager.getInstance();
+        AttributeManager attrMgr = StoreAttributeManager.getInstance();
 
         Set<String> attrList = attrMgr.getAttrsWithFlag(AttributeFlag.accountInfo);
 

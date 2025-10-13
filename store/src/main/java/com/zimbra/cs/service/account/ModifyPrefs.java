@@ -9,6 +9,7 @@
 package com.zimbra.cs.service.account;
 
 import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.cs.account.StoreAttributeManager;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -75,7 +76,7 @@ public class ModifyPrefs extends AccountDocumentHandler {
                 throw ServiceException.INVALID_REQUEST("pref name must start with " + PREF_PREFIX + " or " + PREF_PREFIX2, null);
             }
 
-            AttributeInfo attrInfo = AttributeManager.getInstance().getAttributeInfo(name.substring(offset));
+            AttributeInfo attrInfo = StoreAttributeManager.getInstance().getAttributeInfo(name.substring(offset));
             if (attrInfo == null) {
                 throw ServiceException.INVALID_REQUEST("no such attribute: " + name, null);
             }

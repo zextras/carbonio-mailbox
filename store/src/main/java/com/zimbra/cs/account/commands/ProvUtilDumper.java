@@ -18,6 +18,7 @@ import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.Identity;
 import com.zimbra.cs.account.ProvUtilDumperOptions;
 import com.zimbra.cs.account.Server;
+import com.zimbra.cs.account.StoreAttributeManager;
 import com.zimbra.cs.account.accesscontrol.AttrRight;
 import com.zimbra.cs.account.accesscontrol.ComboRight;
 import com.zimbra.cs.account.accesscontrol.Help;
@@ -240,7 +241,7 @@ class ProvUtilDumper {
       }
     }
 
-    AttributeManager attrMgr = AttributeManager.getInstance();
+    AttributeManager attrMgr = StoreAttributeManager.getInstance();
 
     SimpleDateFormat dateFmt = new SimpleDateFormat("yyyyMMddHHmmss");
     String timestamp = dateFmt.format(new Date());

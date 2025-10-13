@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.account.ldap;
 
+import com.zimbra.cs.account.StoreAttributeManager;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -183,7 +184,7 @@ public abstract class AutoProvision {
         private AutoProvisionListener listener;
 
         private AutoProvisionCachedInfo(Domain domain) throws ServiceException {
-            AttributeManager attrMgr = AttributeManager.getInstance();
+            AttributeManager attrMgr = StoreAttributeManager.getInstance();
 
             // include attrs in schema extension
             Set<String> validAccountAttrs = attrMgr.getAllAttrsInClass(AttributeClass.account);

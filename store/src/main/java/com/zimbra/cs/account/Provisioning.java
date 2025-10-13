@@ -58,7 +58,7 @@ import javax.mail.internet.InternetAddress;
  * @since Sep 23, 2004
  * @author schemers
  */
-public abstract class Provisioning extends ZAttrProvisioning implements AttributeManagerRepository {
+public abstract class Provisioning extends ZAttrProvisioning {
 
   public static final String DEFAULT_COS_NAME = "default";
   public static final String DEFAULT_EXTERNAL_COS_NAME = "defaultExternal";
@@ -2150,7 +2150,7 @@ public abstract class Provisioning extends ZAttrProvisioning implements Attribut
   public Identity getDefaultIdentity(Account account) throws ServiceException {
     Map<String, Object> attrs = new HashMap<>();
     Set<String> identityAttrs =
-        AttributeManager.getInstance().getAttrsInClass(AttributeClass.identity);
+        StoreAttributeManager.getInstance().getAttrsInClass(AttributeClass.identity);
 
     for (String name : identityAttrs) {
       String value = account.getAttr(name, null);

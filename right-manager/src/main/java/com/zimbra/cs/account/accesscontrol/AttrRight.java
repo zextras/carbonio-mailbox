@@ -9,6 +9,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.SetUtil;
 import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeManager;
+import com.zimbra.cs.account.AttributeManagerException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -190,7 +191,11 @@ public class AttrRight extends AdminRight {
 
         // get the sole target type,
         TargetType tt = mTargetTypes.iterator().next();
-        return AttributeManager.getInstance().getAllAttrsInClass(tt.getAttributeClass());
+        try {
+            return AttributeManager.getInstance().getAllAttrsInClass(tt.getAttributeClass());
+        } catch (AttributeManagerException e) {
+            throw ServiceException.FAILURE(e.getMessage(), e);
+        }
     }
 
 

@@ -545,7 +545,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   }
 
   private void checkDeprecatedAttrs(Map<String, ? extends Object> attrs) throws ServiceException {
-    AttributeManager am = AttributeManager.getInstance();
+    AttributeManager am = StoreAttributeManager.getInstance();
     boolean hadWarnings = false;
     for (String attr : attrs.keySet()) {
       AttributeInfo ai = am.getAttributeInfo(attr);
@@ -592,7 +592,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   private Map<String, Object> keyValueArrayToMultiMap(
       String[] args, int offset, boolean isCreateCmd)
 			throws IOException, ServiceException, CommandExitException {
-    AttributeManager attrMgr = AttributeManager.getInstance();
+    AttributeManager attrMgr = StoreAttributeManager.getInstance();
 
     Map<String, Object> attrs = new HashMap<>();
 

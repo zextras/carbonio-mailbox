@@ -1,6 +1,5 @@
 package com.zimbra.cs.account;
 
-import com.zimbra.common.service.ServiceException;
 import java.io.InputStream;
 
 public class ResourceAttributeStream implements AttributeStream {
@@ -12,7 +11,7 @@ public class ResourceAttributeStream implements AttributeStream {
   }
 
   @Override
-  public InputStream open(String attributesFileName) throws ServiceException {
+  public InputStream open(String attributesFileName) {
     return AttributeManager.class.getResourceAsStream(rightResourcePath + attributesFileName);
 
   }
