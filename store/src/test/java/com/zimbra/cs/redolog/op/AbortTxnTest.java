@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class AbortTxnTest extends MailboxTestSuite {
     private AbortTxn op;
@@ -23,16 +24,10 @@ public class AbortTxnTest extends MailboxTestSuite {
 
     @BeforeEach
     public void setUp() {
-        changeEntry = EasyMock.createMockBuilder(CopyItem.class)
-                          .withConstructor()
-                          .addMockedMethod("getTransactionId")
-                          .addMockedMethod("getMailboxId")
-                          .createMock();
-        EasyMock.expect(changeEntry.getTransactionId())
-            .andStubReturn(new TransactionId(1, 2));
-        EasyMock.expect(changeEntry.getMailboxId()).andStubReturn(5);
+      changeEntry = Mockito.spy(new CopyItem());
 
-        EasyMock.replay(changeEntry);
+      Mockito.doReturn(new TransactionId(1, 2)).when(changeEntry).getTransactionId();
+      Mockito.doReturn(5).when(changeEntry).getMailboxId();
     }
 
  @Test
