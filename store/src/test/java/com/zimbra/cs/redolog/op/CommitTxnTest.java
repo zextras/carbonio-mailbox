@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class CommitTxnTest extends MailboxTestSuite {
     private CommitTxn op;
@@ -25,20 +26,15 @@ public class CommitTxnTest extends MailboxTestSuite {
 
     @BeforeEach
     public void setUp() {
-        callback = EasyMock.createStrictMock(RedoCommitCallback.class);
-        changeEntry = EasyMock.createMockBuilder(CopyItem.class)
-                          .withConstructor()
-                          .addMockedMethod("getTransactionId")
-                          .addMockedMethod("getMailboxId")
-                          .addMockedMethod("getCommitCallback")
-                          .createMock();
-        EasyMock.expect(changeEntry.getTransactionId())
-            .andStubReturn(new TransactionId(1, 2));
-        EasyMock.expect(changeEntry.getMailboxId()).andStubReturn(5);
-        EasyMock.expect(changeEntry.getCommitCallback())
-            .andStubReturn(callback);
+        callback = Mockito.mock(RedoCommitCallback.class);
+        changeEntry = Mockito.spy(CopyItem.class);
+        Mockito.when(changeEntry.getTransactionId())
+            .thenReturn(new TransactionId(1, 2));
+        Mockito.when(changeEntry.getMailboxId()).thenReturn(5);
+        Mockito.when(changeEntry.getCommitCallback())
+            .thenReturn(callback);
 
-        EasyMock.replay(changeEntry);
+
     }
 
  @Test
