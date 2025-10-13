@@ -18,7 +18,9 @@ import com.zimbra.cs.mime.ParsedContact;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import javax.mail.internet.InternetAddress;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -37,13 +39,13 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
     result.rankings = new ContactRankings(account.getId());
     ContactAutoComplete.ContactEntry contact = new ContactAutoComplete.ContactEntry();
     contact.mDisplayName = "C1";
-    contact.mEmail = "c1@zimbra.com";
+    contact.mEmail = getRandomMail();
     result.addEntry(contact);
     assertEquals(1, result.entries.size());
 
     contact = new ContactAutoComplete.ContactEntry();
     contact.mDisplayName = "C2";
-    contact.mEmail = "c2@zimbra.com";
+    contact.mEmail = getRandomMail();
     result.addEntry(contact);
     assertEquals(2, result.entries.size());
   }
@@ -57,7 +59,7 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
     Map<String, Object> fields = new HashMap<>();
     fields.put(ContactConstants.A_firstName, "First");
     fields.put(ContactConstants.A_lastName, "Last");
-    fields.put(ContactConstants.A_email, "test1@zimbra.com");
+    fields.put(ContactConstants.A_email, getRandomMail());
     mbox.createContact(null, new ParsedContact(fields), Mailbox.ID_FOLDER_CONTACTS, null);
 
     ContactAutoComplete autocomplete = new ContactAutoComplete(mbox.getAccount(),
@@ -73,12 +75,16 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
     Map<String, Object> fields = new HashMap<>();
     fields.put(ContactConstants.A_firstName, "First Second Third Forth");
     fields.put(ContactConstants.A_lastName, "Last");
-    fields.put(ContactConstants.A_email, "test@zimbra.com");
+    fields.put(ContactConstants.A_email, getRandomMail());
     mbox.createContact(null, new ParsedContact(fields), Mailbox.ID_FOLDER_CONTACTS, null);
 
     ContactAutoComplete autocomplete = new ContactAutoComplete(mbox.getAccount(),
         new OperationContext(mbox));
     assertEquals(1, autocomplete.query("first second third forth", null, 100).entries.size());
+  }
+
+  private static @NotNull String getRandomMail() {
+    return UUID.randomUUID() + "@domain.com";
   }
 
   @Test
@@ -88,7 +94,7 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
     Map<String, Object> fields = new HashMap<>();
     fields.put(ContactConstants.A_firstName, "not and or");
     fields.put(ContactConstants.A_lastName, "subject: from:");
-    fields.put(ContactConstants.A_email, "test@zimbra.com");
+    fields.put(ContactConstants.A_email, getRandomMail());
     mbox.createContact(null, new ParsedContact(fields), Mailbox.ID_FOLDER_CONTACTS, null);
 
     Thread.sleep(500);
@@ -108,7 +114,7 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
     Map<String, Object> fields = new HashMap<>();
     fields.put(ContactConstants.A_firstName, "Conf - Hillview");
     fields.put(ContactConstants.A_lastName, "test.server-vmware - dash");
-    fields.put(ContactConstants.A_email, "test@zimbra.com");
+    fields.put(ContactConstants.A_email, getRandomMail());
     mbox.createContact(null, new ParsedContact(fields), Mailbox.ID_FOLDER_CONTACTS, null);
 
     Thread.sleep(500);
@@ -150,7 +156,7 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
         ContactConstants.A_firstName, "First",
         ContactConstants.A_middleName, "Middle",
         ContactConstants.A_lastName, "Last",
-        ContactConstants.A_email, "first.last@zimbra.com");
+        ContactConstants.A_email, "first.last@" + UUID.randomUUID() + ".com");
     comp.addMatchedContacts("first f", attrs, Mailbox.ID_FOLDER_CONTACTS, null, result);
 
     assertEquals(0, result.entries.size());
@@ -185,7 +191,7 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
     attrs = ImmutableMap.of(
         ContactConstants.A_firstName, "Conf - hillview",
         ContactConstants.A_lastName, "test.server-vmware - dash",
-        ContactConstants.A_email, "conf-hillview@zimbra.com");
+        ContactConstants.A_email, getRandomMail());
 
     comp.addMatchedContacts("test.server-vmware -", attrs, Mailbox.ID_FOLDER_CONTACTS, null,
         result);
@@ -231,17 +237,18 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
     Map<String, Object> fields = new HashMap<>();
     fields.put(ContactConstants.A_firstName, "Pal");
     fields.put(ContactConstants.A_lastName, "One");
-    fields.put(ContactConstants.A_email, "testauto@zimbra.com");
+    final String mail = getRandomMail();
+    fields.put(ContactConstants.A_email, mail);
     mbox.createContact(null, new ParsedContact(fields), Mailbox.ID_FOLDER_CONTACTS, null);
 
     Map<String, Object> fields1 = new HashMap<>();
-    fields1.put(ContactConstants.A_email, "testauto@zimbra.com");
+    fields1.put(ContactConstants.A_email, mail);
     mbox.createContact(null, new ParsedContact(fields1), Mailbox.ID_FOLDER_CONTACTS, null);
 
     ContactRankings.increment(mbox.getAccountId(),
-        Collections.singleton(new InternetAddress("testauto@zimbra.com")));
+        Collections.singleton(new InternetAddress(mail)));
     ContactRankings.increment(mbox.getAccountId(),
-        Collections.singleton(new InternetAddress("testauto@zimbra.com")));
+        Collections.singleton(new InternetAddress(mail)));
 
     ContactAutoComplete autocomplete = new ContactAutoComplete(mbox.getAccount(),
         new OperationContext(mbox));
@@ -252,7 +259,8 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
     }
     result.clear();
 
-    result = autocomplete.query("testauto", null, 10);
+    final String search = mail.split("@")[0];
+    result = autocomplete.query(search, null, 10);
     assertEquals(2, result.entries.size());
     for (ContactEntry ce : result.entries) {
       assertEquals(2, ce.mRanking);
@@ -265,10 +273,11 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
     //AutoComplete should not return entry present in ranking table but contact does not exist.
     Mailbox mbox = MailboxManager.getInstance()
         .getMailboxByAccountId(account.getId());
+    final String mail = getRandomMail();
     ContactRankings.increment(mbox.getAccountId(),
-        Collections.singleton(new InternetAddress("noex@zimbra.com")));
+        Collections.singleton(new InternetAddress(mail)));
     ContactRankings.increment(mbox.getAccountId(),
-        Collections.singleton(new InternetAddress("noex@zimbra.com")));
+        Collections.singleton(new InternetAddress(mail)));
     ContactAutoComplete autocomplete = new ContactAutoComplete(mbox.getAccount(),
         new OperationContext(mbox));
     assertEquals(0, autocomplete.query("noex", null, 10).entries.size());
