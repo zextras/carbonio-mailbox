@@ -85,16 +85,7 @@ pipeline {
         stage('UT, IT') {
             steps {
                 container('jdk-17') {
-                    sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,special"
-                }
-                junit allowEmptyResults: true,
-                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
-            }
-        }
-        stage('Special tests') {
-            steps {
-                container('jdk-17') {
-                    sh "mvn ${MVN_OPTS} verify -Dgroups=special"
+                    sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api"
                 }
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
