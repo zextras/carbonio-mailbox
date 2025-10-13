@@ -6,6 +6,7 @@ package com.zimbra.cs.service.mail.message.parser;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.common.collect.Maps;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.AccountAction;
 import com.zextras.mailbox.util.MailMessageBuilder;
@@ -52,26 +53,29 @@ import javax.mail.internet.MimeMultipart;
 import org.dom4j.QName;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 @Tag("special")
 public final class ParseMimeMessageTest extends MailboxTestSuite {
 
-  private static Account account;
+  private Account account;
+  private static Provisioning provisioning;
 
   @BeforeAll
-  public static void init() throws Exception {
-    Provisioning prov = Provisioning.getInstance();
-    prov.createDomain("zimbra.com", new HashMap<>());
-    account =
-        prov.createAccount(
-            "test@zimbra.com",
-            "secret",
-            new HashMap<>(Map.of(Provisioning.A_zimbraId, UUID.randomUUID().toString())));
+  static void setUpClass() throws Exception {
+    provisioning = Provisioning.getInstance();
   }
 
-  private static ZimbraSoapContext getMockSoapContext() throws ServiceException {
+  @BeforeEach
+  public void init() throws Exception {
+    account = createAccount().create();
+  }
+
+  private ZimbraSoapContext getMockSoapContext() throws ServiceException {
     ZimbraSoapContext parent =
         new ZimbraSoapContext(
             (Element) null,
@@ -287,7 +291,7 @@ public final class ParseMimeMessageTest extends MailboxTestSuite {
 
   @Test
   void parseMimeMsgSoap_IgnoresFileSizeMtaQuotaWhenNoAttachments() throws Exception {
-    var config = Provisioning.getInstance().getConfig();
+    var config = provisioning.getConfig();
     try {
       config.modify(new HashMap<>(Map.of(Provisioning.A_zimbraMtaMaxMessageSize, "1")));
 
@@ -328,7 +332,7 @@ public final class ParseMimeMessageTest extends MailboxTestSuite {
 
   @Test
   void parseMimeMsgSoap_WithFileSizeExceedingMtaQuotaFails() throws Exception {
-    var config = Provisioning.getInstance().getConfig();
+    var config = provisioning.getConfig();
     try {
       config.modify(new HashMap<>(Map.of(Provisioning.A_zimbraMtaMaxMessageSize, "1")));
 
@@ -458,7 +462,7 @@ public final class ParseMimeMessageTest extends MailboxTestSuite {
 
   @Test
   void parseDraftMimeMsgSoap_SucceedsEvenIfSizeExceedsMtaQuota() throws Exception {
-    var config = Provisioning.getInstance().getConfig();
+    var config = provisioning.getConfig();
     try {
       config.modify(new HashMap<>(Map.of(Provisioning.A_zimbraMtaMaxMessageSize, "1")));
 
@@ -531,7 +535,7 @@ public final class ParseMimeMessageTest extends MailboxTestSuite {
       assertEquals("invalid request: header 'X-Zimbra-Test' not allowed", expected.getMessage());
     }
 
-    Provisioning.getInstance()
+    provisioning
         .getConfig()
         .setCustomMimeHeaderNameAllowed(new String[] {"X-Zimbra-Test"});
     mm = ParseMimeMessage.parseMimeMsgSoap(zsc, octxt, null, el, new MimeMessageData());
