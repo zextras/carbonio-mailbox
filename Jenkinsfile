@@ -93,10 +93,9 @@ pipeline {
                     steps {
                         container('jdk-17') {
                             sh """
-                                    mkdir -p ut-it-tests
-                                    cp -r ./* ut-it-tests/
-                                    cd ut-it-tests
-                                    mvn ${MVN_OPTS} verify -DexcludedGroups=api,special
+                                    mkdir -p /ut-it-tests
+                                    cp -r ./* /ut-it-test/
+                                    cd /ut-it-tests && mvn ${MVN_OPTS} verify -DexcludedGroups=api,special
                                """
                         }
                         junit allowEmptyResults: true,
@@ -107,10 +106,9 @@ pipeline {
                     steps {
                         container('jdk-17') {
                             sh """
-                                    mkdir -p special-tests
-                                    cp -r ./* special-tests/
-                                    cd special-tests
-                                    mvn ${MVN_OPTS} verify -Dgroups=special
+                                    mkdir -p /special-tests
+                                    cp -r ./* /special-tests/
+                                    cd /special-tests && mvn ${MVN_OPTS} verify -Dgroups=special
                                """
                         }
                         junit allowEmptyResults: true,
@@ -121,10 +119,9 @@ pipeline {
                     steps {
                         container('jdk-17') {
                             sh """
-                                    mkdir -p api-tests
-                                    cp -r ./* api-tests/
-                                    cd api-tests
-                                    mvn ${MVN_OPTS} verify -Dgroups=api
+                                    mkdir -p /api-tests
+                                    cp -r ./* /api-tests/
+                                    cd /api-tests && mvn ${MVN_OPTS} verify -Dgroups=api
                                """
                         }
                         junit allowEmptyResults: true,
