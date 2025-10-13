@@ -253,10 +253,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     singleton = prov;
   }
 
-  public LdapProvisioning(LdapClient ldapClient) {
-    this(CacheMode.DEFAULT, ldapClient);
-  }
-
   public static LdapProvisioning create(CacheMode cacheMode) {
     try {
       return new LdapProvisioning(cacheMode, LdapClient.getInstanceIfLDAPavailable());
@@ -265,9 +261,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 		}
 	}
 
-  public LdapProvisioning(CacheMode cacheMode, LdapClient ldapClient) {
+  protected LdapProvisioning(CacheMode cacheMode, LdapClient ldapClient) {
 		this.ldapClient = ldapClient;
-		ensureSingleton(this);
+//		ensureSingleton(this);
     useCache = cacheMode != CacheMode.OFF;
 
     if (this.useCache) {
