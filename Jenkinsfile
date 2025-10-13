@@ -66,9 +66,11 @@ pipeline {
         }
 
         stage('Build') {
-            steps {
-                container('jdk-17') {
-                    sh """
+            parallel {
+                stage('Maven build') {
+                    steps {
+                        container('jdk-17') {
+                            sh """
                         mvn ${MVN_OPTS} \
                             -DskipTests=true \
                             clean install
@@ -77,15 +79,17 @@ pipeline {
                                 mailbox-ldap-lib client common packages soap jython-libs \
                                 staging/
                     """
-                    stash includes: 'staging/**', name: 'staging'
+                            stash includes: 'staging/**', name: 'staging'
+                        }
+                    }
                 }
             }
-        }
-        stage('Build containers') {
-            steps {
-                container('dind') {
-                    withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                        sh 'docker buildx bake'
+            stage('Build containers') {
+                steps {
+                    container('dind') {
+                        withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                            sh 'docker buildx bake'
+                        }
                     }
                 }
             }
