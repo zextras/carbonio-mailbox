@@ -16,7 +16,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
-import com.zimbra.cs.index.LuceneViewer;
 import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapClient;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapPoolConfig;
@@ -25,7 +24,6 @@ import com.zimbra.cs.mailbox.ScheduledTaskManager;
 import com.zimbra.cs.redolog.DefaultRedoLogProvider;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.store.StoreManager;
-import com.zimbra.cs.volume.VolumeManager;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -86,6 +84,12 @@ public class MailboxSetupHelper {
 										"/localconfig-api-test.xml"))
 						.getFile());
 
+		if (!Files.exists(mailboxHome)) {
+			Files.createDirectory(mailboxHome); // deleted in teardown
+		}
+		if (!Files.exists(mailboxTmpDirectory)) {
+			Files.createDirectory(mailboxTmpDirectory); // deleted in teardown
+		}
 		LC.zimbra_home.setDefault(mailboxHome.toAbsolutePath().toString());
 		LC.zimbra_tmp_directory.setDefault(mailboxTmpDirectory.toAbsolutePath().toString());
 
