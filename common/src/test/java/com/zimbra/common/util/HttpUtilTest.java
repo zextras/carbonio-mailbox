@@ -5,14 +5,11 @@
 
 package com.zimbra.common.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.easymock.EasyMock;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.common.util.HttpUtil.Browser;
+import javax.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 /**

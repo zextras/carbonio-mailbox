@@ -14,7 +14,6 @@ import com.zimbra.cs.redolog.RedoLogOutput;
 import com.zimbra.cs.redolog.TransactionId;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
