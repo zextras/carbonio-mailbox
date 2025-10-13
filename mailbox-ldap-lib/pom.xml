@@ -118,14 +118,14 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>/bin/bash</executable>
+              <executable>sh</executable>
               <arguments>
                 <argument>-c</argument>
                 <argument>mkdir -p ${ldap.generated.dir} &amp;&amp; \
                   git log -1 \
                   --pretty=format:%at \
                   ${project.basedir}/../attribute-manager/src/main/resources/conf/attrs/attrs.xml \
-                  | tee ${ldap.generated.dir}/attrs-schema</argument>
+                  > ${ldap.generated.dir}/attrs-schema</argument>
               </arguments>
             </configuration>
           </execution>
