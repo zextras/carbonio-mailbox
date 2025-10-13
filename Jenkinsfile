@@ -94,7 +94,7 @@ pipeline {
                         container('jdk-17') {
                             sh """
                                     mkdir -p /ut-it-tests
-                                    cp -r . /ut-it-test/
+                                    cp -r . /ut-it-tests/
                                     cd /ut-it-tests && mvn ${MVN_OPTS} verify -DexcludedGroups=api,special
                                """
                         }
