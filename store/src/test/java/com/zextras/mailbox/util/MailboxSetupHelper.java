@@ -74,7 +74,7 @@ public class MailboxSetupHelper {
   }
 
 	private String getVolumeDirectory() {
-		return LC.zimbra_home.value() + "/build/test/";
+		return LC.zimbra_home.value() + "/build/test";
 	}
 
 	public void setUp(MailboxTestData mailboxTestData) throws Exception {
