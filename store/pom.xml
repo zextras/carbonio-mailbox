@@ -786,6 +786,34 @@
               </arguments>
             </configuration>
           </execution>
+          <!-- BuildInfo -->
+          <execution>
+            <id>generate-buildinfo</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>/bin/bash</executable>
+              <arguments>
+                <argument>-c</argument>
+                <argument><![CDATA[
+                  mkdir -p ${generated-resources}/com/zimbra/cs/util/ && cat <<EOF > ${generated-resources}/com/zimbra/cs/util/buildInfo.properties
+MAJORVERSION=${parsedVersion.majorVersion}
+MINORVERSION=${parsedVersion.minorVersion}
+MICROVERSION=${parsedVersion.incrementalVersion}
+RELCLASS=ZEXTRAS
+RELNUM=0
+BUILDNUM=${build.timestamp.yyyymm}
+VERSION=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}_ZEXTRAS_${build.timestamp.yyyymm}
+RELEASE=carbonio
+DATE=${build.timestamp.yyyymm}
+HOST=carbonio
+EOF
+                ]]></argument>
+              </arguments>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <!-- Add buildinfo sources -->
@@ -977,41 +1005,6 @@
               <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
               <includeScope>compile</includeScope>
               <includeScope>runtime</includeScope>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <artifactId>exec-maven-plugin</artifactId>
-        <groupId>org.codehaus.mojo</groupId>
-        <version>${maven-exec-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>generate-buildinfo</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>/bin/bash</executable>
-              <arguments>
-                <argument>-c</argument>
-                <argument><![CDATA[
-                  mkdir -p ${generated-resources}/com/zimbra/cs/util/ && cat <<EOF > ${generated-resources}/com/zimbra/cs/util/buildInfo.properties
-MAJORVERSION=${parsedVersion.majorVersion}
-MINORVERSION=${parsedVersion.minorVersion}
-MICROVERSION=${parsedVersion.incrementalVersion}
-RELCLASS=ZEXTRAS
-RELNUM=0
-BUILDNUM=${build.timestamp.yyyymm}
-VERSION=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}_ZEXTRAS_${build.timestamp.yyyymm}
-RELEASE=carbonio
-DATE=${build.timestamp.yyyymm}
-HOST=carbonio
-EOF
-                ]]></argument>
-              </arguments>
             </configuration>
           </execution>
         </executions>
