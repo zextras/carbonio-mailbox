@@ -4,6 +4,7 @@
 
 package com.zimbra.cs.ephemeral.migrate;
 
+import com.zimbra.cs.account.StoreAttributeManager;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -113,7 +114,7 @@ public class AttributeMigrationUtil {
         if (clArgs.size() > 1) {
             attrsToMigrate = clArgs.subList(1, clArgs.size());
         } else {
-            attrsToMigrate = new ArrayList<>(AttributeManager.getInstance().getEphemeralAttributeNames());
+            attrsToMigrate = new ArrayList<>(StoreAttributeManager.getInstance().getEphemeralAttributeNames());
         }
 
         if (!dryRun) {

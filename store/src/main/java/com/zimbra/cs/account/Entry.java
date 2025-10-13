@@ -100,7 +100,7 @@ public abstract class Entry implements ToZJSONObject, AttributeEntry {
 
   private void setAttributeManager() {
     try {
-      mAttrMgr = AttributeManager.getInstance();
+      mAttrMgr = StoreAttributeManager.getInstance();
     } catch (ServiceException se) {
       ZimbraLog.account.warn("failed to get AttributeManager instance", se);
     }
@@ -713,7 +713,7 @@ public abstract class Entry implements ToZJSONObject, AttributeEntry {
   protected void getDefaults(AttributeFlag flag, Map<String, Object> defaults)
       throws ServiceException {
     defaults.clear();
-    Set<String> attrs = AttributeManager.getInstance().getAttrsWithFlag(flag);
+    Set<String> attrs = StoreAttributeManager.getInstance().getAttrsWithFlag(flag);
     for (String a : attrs) {
       Object obj = getObject(a, true);
       if (obj != null) defaults.put(a, obj);

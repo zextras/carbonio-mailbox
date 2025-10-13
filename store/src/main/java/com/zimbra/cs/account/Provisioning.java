@@ -23,11 +23,10 @@ import com.zimbra.cs.account.accesscontrol.RightCommand;
 import com.zimbra.cs.account.accesscontrol.RightModifier;
 import com.zimbra.cs.account.auth.AuthContext;
 import com.zimbra.cs.account.gal.GalOp;
+import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.account.names.NameUtil;
 import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.gal.GalSearchParams;
-import com.zimbra.cs.ldap.LdapClient;
-import com.zimbra.cs.ldap.LdapException;
 import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import com.zimbra.cs.util.AccountUtil;
@@ -60,7 +59,7 @@ import javax.mail.internet.InternetAddress;
  * @since Sep 23, 2004
  * @author schemers
  */
-public abstract class Provisioning extends ZAttrProvisioning implements AttributeManagerRepository {
+public abstract class Provisioning extends ZAttrProvisioning {
 
   public static final String DEFAULT_COS_NAME = "default";
   public static final String DEFAULT_EXTERNAL_COS_NAME = "defaultExternal";
@@ -348,14 +347,8 @@ public abstract class Provisioning extends ZAttrProvisioning implements Attribut
           }
 
           if (singleton == null) {
-            try {
-              singleton = new com.zimbra.cs.account.ldap.LdapProvisioning(cacheMode,
-                  LdapClient.getInstanceIfLDAPavailable());
-              ZimbraLog.account.error("defaulting to " + singleton.getClass().getCanonicalName());
-            } catch (LdapException e) {
-              ZimbraLog.account.error("Cannot start ldap client. Reason: " + e.getMessage());
-              throw new RuntimeException(e.getMessage(), e);
-            }
+            singleton = LdapProvisioning.create(cacheMode);
+            ZimbraLog.account.error("defaulting to " + singleton.getClass().getCanonicalName());
           }
         }
       }
@@ -2158,7 +2151,7 @@ public abstract class Provisioning extends ZAttrProvisioning implements Attribut
   public Identity getDefaultIdentity(Account account) throws ServiceException {
     Map<String, Object> attrs = new HashMap<>();
     Set<String> identityAttrs =
-        AttributeManager.getInstance().getAttrsInClass(AttributeClass.identity);
+        StoreAttributeManager.getInstance().getAttrsInClass(AttributeClass.identity);
 
     for (String name : identityAttrs) {
       String value = account.getAttr(name, null);

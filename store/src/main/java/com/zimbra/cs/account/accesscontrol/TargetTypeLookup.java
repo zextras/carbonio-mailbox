@@ -20,6 +20,7 @@ import com.zimbra.cs.account.GlobalGrant;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
+import com.zimbra.cs.account.StoreAttributeManager;
 import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.account.ldap.LdapDIT;
 import com.zimbra.cs.account.ldap.LdapProv;
@@ -368,7 +369,7 @@ public enum TargetTypeLookup {
 
 	public static Set<String> getAttrsInClass(AttributeEntry target) throws ServiceException {
 		AttributeClass klass = getAttributeClass(target);
-		return AttributeManager.getInstance().getAllAttrsInClass(klass);
+		return StoreAttributeManager.getInstance().getAllAttrsInClass(klass);
 	}
 
 	static class SearchBaseAndOC {

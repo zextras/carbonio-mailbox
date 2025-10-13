@@ -69,6 +69,7 @@ public abstract class LdapClient {
         unsetInstance();
     }
 
+    @Deprecated
     public static ZLdapContext toZLdapContext(
             com.zimbra.cs.account.Provisioning prov, ILdapContext ldapContext) {
 
@@ -81,6 +82,22 @@ public abstract class LdapClient {
         if (ldapContext != null && !(ldapContext instanceof ZLdapContext)) {
             Zimbra.halt("ILdapContext instance is not ZLdapContext",
                     ServiceException.FAILURE("internal error, wrong ldap context instance", null));
+        }
+
+        return (ZLdapContext)ldapContext;
+    }
+
+    public ZLdapContext toZLdapContext(ILdapContext ldapContext) {
+
+        if (!(getInstance() instanceof UBIDLdapClient)) {
+            Zimbra.halt("LdapClient instance is not UBIDLdapClient",
+                ServiceException.FAILURE("internal error, wrong ldap context instance", null));
+        }
+
+        // just a safety check, this should really not happen at this point
+        if (ldapContext != null && !(ldapContext instanceof ZLdapContext)) {
+            Zimbra.halt("ILdapContext instance is not ZLdapContext",
+                ServiceException.FAILURE("internal error, wrong ldap context instance", null));
         }
 
         return (ZLdapContext)ldapContext;
@@ -155,20 +172,39 @@ public abstract class LdapClient {
         return getInstance().getExternalContextImpl(ldapConfig, usage);
     }
 
+    @Deprecated
     public static ZLdapContext getExternalContext(ExternalLdapConfig ldapConfig,
             LdapUsage usage)
     throws ServiceException {
         return getInstance().getExternalContextImpl(ldapConfig, usage);
     }
 
+    public ZLdapContext getInstanceExternalContext(ExternalLdapConfig ldapConfig,
+        LdapUsage usage)
+        throws ServiceException {
+        return this.getExternalContextImpl(ldapConfig, usage);
+    }
+
+    @Deprecated
     public static void closeContext(ZLdapContext lctxt) {
         if (lctxt != null) {
             lctxt.closeContext(false);
         }
     }
 
+    public void closeInstanceContext(ZLdapContext lctxt) {
+        if (lctxt != null) {
+            lctxt.closeContext(false);
+        }
+    }
+
+    @Deprecated
     public static ZMutableEntry createMutableEntry() {
         return getInstance().createMutableEntryImpl();
+    }
+
+    public ZMutableEntry createInstanceMutableEntry() {
+        return this.createMutableEntryImpl();
     }
 
     public static void externalLdapAuthenticate(String[] urls, boolean wantStartTLS,

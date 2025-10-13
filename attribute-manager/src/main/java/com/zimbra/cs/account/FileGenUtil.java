@@ -5,9 +5,8 @@
 
 package com.zimbra.cs.account;
 
-import com.zimbra.common.util.ByteUtil;
-import com.zimbra.common.util.StringUtil;
-import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.util.ByteUtil;
+import com.zimbra.cs.account.util.StringUtil;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,9 +16,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class FileGenUtil {
 
+    private static final Logger logger = Logger.getLogger(FileGenUtil.class.getName());
 
     private static final String BEGIN_MARKER = "BEGIN-AUTO-GEN-REPLACE";
 
@@ -192,7 +193,7 @@ public class FileGenUtil {
         if (!parentFile.exists()) {
             final boolean mkdirs = parentFile.mkdirs();
             if (!mkdirs) {
-                ZimbraLog.misc.error("Cannot create directories");
+                logger.severe("Cannot create directories");
             }
         }
         var className = javaFile.substring(javaFile.lastIndexOf(File.separator)+1).replace(".java", "");
@@ -202,9 +203,9 @@ public class FileGenUtil {
             try (BufferedWriter out = new BufferedWriter(new FileWriter(javaFile))) {
                 out.write(template);
             } catch (IOException e) {
-                ZimbraLog.misc.info("Failed writing template to file: " + javaFile);
+                logger.info("Failed writing template to file: " + javaFile);
             }
-            ZimbraLog.misc.info("Wrote file: " + javaFile);
+            logger.info("Wrote file: " + javaFile);
         }
         replaceJavaFile(javaFile, content);
     }

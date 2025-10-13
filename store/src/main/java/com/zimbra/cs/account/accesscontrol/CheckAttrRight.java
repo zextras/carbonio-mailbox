@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
+import com.zimbra.cs.account.StoreAttributeManager;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -468,7 +469,7 @@ public class CheckAttrRight extends CheckRight {
         } else {
             // get all attrs that can appear on the target entry
           Set<String> allowed = new HashSet<>(
-              AttributeManager.getInstance().getAllAttrsInClass(klass));
+              StoreAttributeManager.getInstance().getAllAttrsInClass(klass));
 
             // remove denied from all
             for (String d : denySome.keySet())
