@@ -8,13 +8,11 @@
  */
 package com.zimbra.cs.account.util;
 
-import com.zimbra.cs.account.AttributeManagerUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PipedInputStream;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
