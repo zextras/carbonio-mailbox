@@ -5,9 +5,8 @@
 
 package com.zimbra.cs.ldap;
 
-import com.zimbra.common.localconfig.LC;
+import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.ldap.LdapServerConfig.ExternalLdapConfig;
 import com.zimbra.cs.ldap.LdapServerConfig.GenericLdapConfig;
 import com.zimbra.cs.ldap.ZSearchScope.ZSearchScopeFactory;
@@ -22,22 +21,14 @@ public abstract class LdapClient {
     private static LdapClient ldapClient;
     private static boolean ALWAYS_USE_MASTER = false;
 
-     static synchronized LdapClient getInstanceIfLDAPavailable() throws LdapException {
-        if (ldapClient == null) {
+    @VisibleForTesting
+    public static void setInstance(LdapClient client) {
+        ldapClient = client;
+    }
 
-            String className = LC.zimbra_class_ldap_client.value();
-            if (className != null && !className.equals("")) {
-                try {
-                    ldapClient = (LdapClient) Class.forName(className).newInstance();
-                } catch (Exception e) {
-                    ZimbraLog.system.error("could not instantiate LDAP client '" + className +
-                            "'; defaulting to JNDI LDAP SDK", e);
-                }
-            }
-            if (ldapClient == null) {
-                ldapClient = new UBIDLdapClient();
-            }
-            ldapClient.init(ALWAYS_USE_MASTER);
+    public static synchronized LdapClient getInstanceIfLDAPavailable() throws LdapException {
+        if (ldapClient == null) {
+            ldapClient = UBIDLdapClient.createNew(ALWAYS_USE_MASTER);
         }
         return ldapClient;
     }
@@ -60,7 +51,7 @@ public abstract class LdapClient {
 
         if (ldapClient != null) {
             // already initialized
-            ldapClient.alwaysUseMaster();
+            ldapClient.forceUsingMaster();
         }
     }
 
@@ -78,6 +69,7 @@ public abstract class LdapClient {
         unsetInstance();
     }
 
+    @Deprecated
     public static ZLdapContext toZLdapContext(
             com.zimbra.cs.account.Provisioning prov, ILdapContext ldapContext) {
 
@@ -95,6 +87,22 @@ public abstract class LdapClient {
         return (ZLdapContext)ldapContext;
     }
 
+    public ZLdapContext toZLdapContext(ILdapContext ldapContext) {
+
+        if (!(getInstance() instanceof UBIDLdapClient)) {
+            Zimbra.halt("LdapClient instance is not UBIDLdapClient",
+                ServiceException.FAILURE("internal error, wrong ldap context instance", null));
+        }
+
+        // just a safety check, this should really not happen at this point
+        if (ldapContext != null && !(ldapContext instanceof ZLdapContext)) {
+            Zimbra.halt("ILdapContext instance is not ZLdapContext",
+                ServiceException.FAILURE("internal error, wrong ldap context instance", null));
+        }
+
+        return (ZLdapContext)ldapContext;
+    }
+
     /*
      * ========================================================
      * static methods just to short-hand the getInstance() call
@@ -104,19 +112,37 @@ public abstract class LdapClient {
         getInstance().waitForLdapServerImpl();
     }
 
+    @Deprecated
     public static ZLdapContext getContext(LdapUsage usage) throws ServiceException {
         return getContext(LdapServerType.REPLICA, usage);
     }
 
+    public ZLdapContext getInstanceContext(LdapUsage usage) throws ServiceException {
+        return this.getInstanceContext(LdapServerType.REPLICA, usage);
+    }
+
+    @Deprecated
     public static ZLdapContext getContext(LdapServerType serverType, LdapUsage usage)
     throws ServiceException {
         return getInstance().getContextImpl(serverType, usage);
     }
 
+    public ZLdapContext getInstanceContext(LdapServerType serverType, LdapUsage usage)
+        throws ServiceException {
+        return this.getContextImpl(serverType, usage);
+    }
+
+    @Deprecated
     public static ZLdapContext getContext(LdapServerType serverType, boolean useConnPool,
             LdapUsage usage)
     throws ServiceException {
         return getInstance().getContextImpl(serverType, useConnPool, usage);
+    }
+
+    public ZLdapContext getInstanceContext(LdapServerType serverType, boolean useConnPool,
+        LdapUsage usage)
+        throws ServiceException {
+        return this.getContextImpl(serverType, useConnPool, usage);
     }
 
     /**
@@ -146,20 +172,39 @@ public abstract class LdapClient {
         return getInstance().getExternalContextImpl(ldapConfig, usage);
     }
 
+    @Deprecated
     public static ZLdapContext getExternalContext(ExternalLdapConfig ldapConfig,
             LdapUsage usage)
     throws ServiceException {
         return getInstance().getExternalContextImpl(ldapConfig, usage);
     }
 
+    public ZLdapContext getInstanceExternalContext(ExternalLdapConfig ldapConfig,
+        LdapUsage usage)
+        throws ServiceException {
+        return this.getExternalContextImpl(ldapConfig, usage);
+    }
+
+    @Deprecated
     public static void closeContext(ZLdapContext lctxt) {
         if (lctxt != null) {
             lctxt.closeContext(false);
         }
     }
 
+    public void closeInstanceContext(ZLdapContext lctxt) {
+        if (lctxt != null) {
+            lctxt.closeContext(false);
+        }
+    }
+
+    @Deprecated
     public static ZMutableEntry createMutableEntry() {
         return getInstance().createMutableEntryImpl();
+    }
+
+    public ZMutableEntry createInstanceMutableEntry() {
+        return this.createMutableEntryImpl();
     }
 
     public static void externalLdapAuthenticate(String[] urls, boolean wantStartTLS,
@@ -176,24 +221,14 @@ public abstract class LdapClient {
      * @param password
      * @throws ServiceException
      */
-    public static void zimbraLdapAuthenticate(String bindDN, String password)
+    public void zimbraLdapAuthenticate(String bindDN, String password)
     throws ServiceException {
-        getInstance().zimbraLdapAuthenticateImpl(bindDN, password);
-    }
-
-    /*
-     * ========================================================
-     * abstract methods
-     * ========================================================
-     */
-    protected void init(boolean alwaysUseMaster) throws LdapException {
-        ZSearchScope.init(getSearchScopeFactoryInstance());
-        ZLdapFilterFactory.setInstance(getLdapFilterFactoryInstance());
+        this.zimbraLdapAuthenticateImpl(bindDN, password);
     }
 
     protected abstract void terminate();
 
-    protected abstract void alwaysUseMaster();
+    protected abstract void forceUsingMaster();
 
     protected abstract ZSearchScopeFactory getSearchScopeFactoryInstance();
 

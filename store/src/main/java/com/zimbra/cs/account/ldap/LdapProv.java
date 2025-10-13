@@ -29,10 +29,6 @@ public abstract class LdapProv extends Provisioning implements ProvisioningCache
   protected LdapDIT mDIT;
   protected LdapHelper helper;
 
-  protected LdapProv() {
-    LdapClient.initialize();
-  }
-
   public static LdapProv getInst() throws ServiceException {
     Provisioning prov = Provisioning.getInstance();
 

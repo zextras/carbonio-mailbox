@@ -5,9 +5,10 @@ package com.zextras.mailbox.util;
 
 import com.google.common.collect.Maps;
 import com.zimbra.common.mime.MimeConstants;
-import com.zimbra.cs.account.Config;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
+import com.zimbra.cs.ldap.LdapException;
+import com.zimbra.cs.ldap.unboundid.UBIDLdapClient;
+import com.zimbra.cs.ldap.unboundid.UBIDLdapPoolConfig;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import com.zimbra.cs.mime.MockMimeTypeInfo;
 import com.zimbra.cs.mime.handler.MessageRFC822Handler;
@@ -17,7 +18,6 @@ import com.zimbra.cs.mime.handler.TextPlainHandler;
 import com.zimbra.cs.mime.handler.UnknownTypeHandler;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,18 +27,16 @@ import java.util.Map;
 public final class LdapProvisioningWithMockMime extends LdapProvisioning {
     private final Map<String, List<MimeTypeInfo>> mimeConfig = Maps.newHashMap();
 
-    public LdapProvisioningWithMockMime() {
-        super(CacheMode.OFF); // disable cache for testing, it makes the provisioning use mocked mime types
+    public static LdapProvisioningWithMockMime get(UBIDLdapPoolConfig poolConfig) throws LdapException {
+        final UBIDLdapClient client = UBIDLdapClient.createNew(poolConfig);
+        return new LdapProvisioningWithMockMime(client);
+    }
+    public LdapProvisioningWithMockMime(UBIDLdapClient client) {
+        // disable cache for testing, it makes the provisioning use mocked mime types
+        super(CacheMode.OFF, client);
         initializeMimeHandlers();
     }
 
-    /**
-     * Constructor allowing to specify cache mode.
-     * Used in {@link MailboxSetupHelper} indirectly by {@link Provisioning#getInstance(CacheMode)}
-     */
-    public LdapProvisioningWithMockMime(CacheMode cacheMode) {
-        this();
-    }
 
     private void initializeMimeHandlers() {
         addMimeType(MimeConstants.CT_TEXT_PLAIN, createMimeTypeInfo(MimeConstants.CT_TEXT_PLAIN, TextPlainHandler.class.getName()));
