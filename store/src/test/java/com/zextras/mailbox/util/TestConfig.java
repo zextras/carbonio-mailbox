@@ -8,11 +8,13 @@ package com.zextras.mailbox.util;
 
 import com.zimbra.common.localconfig.LC;
 
+@Deprecated
 public record TestConfig(String volumeDirectory) {
 
 	private static TestConfig singleton;
 
 
+	@Deprecated
 	public static TestConfig getInstance() {
 		if (singleton == null) {
 			singleton = new TestConfig(LC.zimbra_home.value() + "/build/test/");
