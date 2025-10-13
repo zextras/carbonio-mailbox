@@ -679,7 +679,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         refreshEntry(entry, zlc);
       }
       if (initZlc == null) {
-        ldapClient.closeContext(zlc);
+        ldapClient.closeInstanceContext(zlc);
       }
     }
   }
@@ -699,7 +699,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         refreshEntry(entry, zlc);
       }
       if (initZlc == null) {
-        ldapClient.closeContext(zlc);
+        ldapClient.closeInstanceContext(zlc);
       }
     }
   }
@@ -718,7 +718,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       zlc = ldapClient.getInstanceContext(LdapServerType.get(master), LdapUsage.GET_ENTRY);
       refreshEntry(e, zlc);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -1540,7 +1540,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create account: " + emailAddress, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
 
       if (!restoring && acct != null) {
         for (PostCreateAccountListener listener : ProvisioningExt.getPostCreateAccountListeners()) {
@@ -1588,7 +1588,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       ZimbraLog.account.warn("unable to get LDAP schema", e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -1619,7 +1619,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       ZimbraLog.account.warn("unable to get LDAP schema", e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -2251,7 +2251,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to list all objects", e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -2515,7 +2515,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create alias: " + e.getMessage(), e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -2638,7 +2638,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         throw AccountServiceException.NO_SUCH_ALIAS(alias);
 
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -2776,7 +2776,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create domain: " + name, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -3147,7 +3147,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create cos: " + destCosName, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -3174,7 +3174,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to rename cos: " + zimbraId, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -3321,7 +3321,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to purge account: " + zimbraId, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -3491,7 +3491,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to rename account: " + newName, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
       // prune cache
       accountCache.remove(oldAccount);
     }
@@ -3533,7 +3533,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw e;
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -3836,7 +3836,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       RenameDomain rd = new RenameDomain(this, helper, oldDomain, newDomainName);
       rd.execute();
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -3857,7 +3857,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to purge cos: " + zimbraId, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -3904,7 +3904,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create share locator: " + id, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -3921,7 +3921,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to delete share locator: " + id, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -3966,7 +3966,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create server: " + name, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -4252,7 +4252,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to purge server: " + zimbraId, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -4353,7 +4353,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create distribution list: " + listAddress, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -4522,7 +4522,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to rename distribution list: " + zimbraId, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
 
     if (domainChanged) {
@@ -4618,7 +4618,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to purge distribution list: " + zimbraId, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
 
     PermissionCache.invalidateCache();
@@ -4638,7 +4638,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       throw ServiceException.FAILURE(
           String.format("unable to purge address list: %s", addressListId), e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -5534,7 +5534,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       }
       ne.close();
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
 
     if (tooMany != null) {
@@ -6399,7 +6399,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create zimlet: " + name, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -6416,7 +6416,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to delete zimlet: " + name, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -7420,7 +7420,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
           token,
           result);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
 
     // Collections.sort(result);
@@ -7809,7 +7809,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create identity " + identityName, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -7864,7 +7864,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to rename identity: " + newIdentityName, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -7889,7 +7889,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to delete identity: " + identityName, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -8125,7 +8125,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create signature: " + signatureName, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -8194,7 +8194,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to rename signature: " + newSignatureName, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -8219,7 +8219,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       } catch (ServiceException e) {
         throw ServiceException.FAILURE("unable to delete signarure: " + signatureId, e);
       } finally {
-        ldapClient.closeContext(zlc);
+        ldapClient.closeInstanceContext(zlc);
       }
     }
 
@@ -8501,7 +8501,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create data source: " + dsName, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -8523,7 +8523,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to delete data source: " + dataSourceId, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -8597,7 +8597,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       } catch (ServiceException e) {
         throw ServiceException.FAILURE("unable to rename datasource: " + name, e);
       } finally {
-        ldapClient.closeContext(zlc);
+        ldapClient.closeInstanceContext(zlc);
       }
     }
   }
@@ -9261,7 +9261,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       zlc = ldapClient.getInstanceContext(LdapServerType.get(useMaster), LdapUsage.SEARCH);
       zlc.searchPaged(searchOptions);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -9291,7 +9291,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       ZimbraLog.account.warn("unable to get LDAP schema", e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -9566,7 +9566,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
           }
         }
       } finally {
-        ldapClient.closeContext(zlc);
+        ldapClient.closeInstanceContext(zlc);
       }
       if (!externalMembers.isEmpty()) {
         if (!internalMembers.isEmpty()) {
@@ -9896,7 +9896,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (LdapException | AccountServiceException e) {
       throw e;
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -9952,7 +9952,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to purge group: " + zimbraId, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
 
     PermissionCache.invalidateCache();
@@ -10157,7 +10157,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to rename dynamic group: " + zimbraId, e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
 
     if (domainChanged) {
@@ -10313,7 +10313,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       }
 
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
     PermissionCache.invalidateCache();
     cleanGroupMembersCache(group);
@@ -10416,7 +10416,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       }
 
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
     PermissionCache.invalidateCache();
     cleanGroupMembersCache(group);
@@ -10509,7 +10509,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       ZimbraLog.account.warn("unable to search dynamic groups for guest acct", e);
     } finally {
       if (initZlc == null) {
-        ldapClient.closeContext(zlc);
+        ldapClient.closeInstanceContext(zlc);
       }
     }
 
@@ -10564,7 +10564,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       ZimbraLog.account.warn("unable to search dynamic group members", e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
 
     return members;
@@ -10600,7 +10600,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       ZimbraLog.account.warn("unable to search dynamic group members", e);
     } finally {
       if (initZlc == null) {
-        ldapClient.closeContext(zlc);
+        ldapClient.closeInstanceContext(zlc);
       }
     }
   }
@@ -10635,7 +10635,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       ZimbraLog.account.warn("unable to get dynamic group members", e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
 
     return members.toArray(new String[0]);
@@ -10680,7 +10680,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       throw ServiceException.FAILURE(
           String.format("unable to refresh user credentials for '%s'", account.getName()), e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 
@@ -10724,7 +10724,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
           "Exception occured while creating addresslist in ldap: %s", se.getMessage());
       throw se;
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
 
     return zimbraIdStr;
@@ -10816,7 +10816,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("error modifying address list: " + addressList.getId(), e);
     } finally {
-      ldapClient.closeContext(zlc);
+      ldapClient.closeInstanceContext(zlc);
     }
   }
 }

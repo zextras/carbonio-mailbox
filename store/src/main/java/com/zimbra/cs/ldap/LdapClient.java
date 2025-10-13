@@ -161,7 +161,14 @@ public abstract class LdapClient {
         return getInstance().getExternalContextImpl(ldapConfig, usage);
     }
 
+    @Deprecated
     public static void closeContext(ZLdapContext lctxt) {
+        if (lctxt != null) {
+            lctxt.closeContext(false);
+        }
+    }
+
+    public void closeInstanceContext(ZLdapContext lctxt) {
         if (lctxt != null) {
             lctxt.closeContext(false);
         }
