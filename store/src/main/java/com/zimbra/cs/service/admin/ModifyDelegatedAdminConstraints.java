@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.admin;
 
+import com.zimbra.cs.account.StoreAttributeManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +38,7 @@ public class ModifyDelegatedAdminConstraints extends AdminDocumentHandler {
         sar.addAttr(Provisioning.A_zimbraConstraint);
         checkRight(zsc, context, entry, sar);
         
-        AttributeManager am = AttributeManager.getInstance();
+        AttributeManager am = StoreAttributeManager.getInstance();
         List<AttributeConstraint> constraints = new ArrayList<>();
         for (Element a : request.listElements(AdminConstants.E_A)) {
             String attrName = a.getAttribute(AdminConstants.A_NAME);

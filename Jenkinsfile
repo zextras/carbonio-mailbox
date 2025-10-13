@@ -81,6 +81,15 @@ pipeline {
                 }
             }
         }
+        stage('Build containers') {
+            steps {
+                container('dind') {
+                    withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                        sh 'docker buildx bake'
+                    }
+                }
+            }
+        }
 
         stage('UT, IT & API tests') {
             when {

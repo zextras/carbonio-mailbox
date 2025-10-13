@@ -10,7 +10,7 @@ class LdapAttributeInfoTest extends MailboxTestSuite {
 
 	@Test
 	void getCallback_shouldReturnSameInstance_whenCalledTwice() throws ServiceException {
-		final AttributeManager attributeManager = AttributeManager.getInstance();
+		final AttributeManager attributeManager = StoreAttributeManager.getInstance();
 		final AttributeInfo accountStatusAttribute = attributeManager.getAttributeInfo(ZAttrProvisioning.A_zimbraAccountStatus);
 		final AttributeCallback callback = LdapAttributeInfo.get(accountStatusAttribute).getCallback();
 		final AttributeCallback callback1 = LdapAttributeInfo.get(accountStatusAttribute).getCallback();
@@ -19,7 +19,7 @@ class LdapAttributeInfoTest extends MailboxTestSuite {
 
 	@Test
 	void verify_accountStatusCallbackIsLoaded() throws ServiceException {
-		final AttributeManager attributeManager = AttributeManager.getInstance();
+		final AttributeManager attributeManager = StoreAttributeManager.getInstance();
 		final AttributeInfo accountStatusAttribute = attributeManager.getAttributeInfo(ZAttrProvisioning.A_zimbraAccountStatus);
 		final AttributeCallback callback = LdapAttributeInfo.get(accountStatusAttribute).getCallback();
 		Assertions.assertEquals("com.zimbra.cs.account.callback.AccountStatus", callback.getClass().getName());
@@ -27,7 +27,7 @@ class LdapAttributeInfoTest extends MailboxTestSuite {
 
 	@Test
 	void shouldNotLoadCallbackIfAttributeDoesNotHaveOne() throws ServiceException {
-		final AttributeManager attributeManager = AttributeManager.getInstance();
+		final AttributeManager attributeManager = StoreAttributeManager.getInstance();
 		final AttributeInfo accountStatusAttribute = attributeManager.getAttributeInfo(ZAttrProvisioning.A_zimbraMailTransport);
 		final AttributeCallback callback = LdapAttributeInfo.get(accountStatusAttribute).getCallback();
 		Assertions.assertNull(callback);

@@ -10,6 +10,7 @@ import com.zimbra.common.soap.W3cDomUtil;
 import com.zimbra.common.soap.XmlParseException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AttributeManager;
+import com.zimbra.cs.account.AttributeManagerException;
 import com.zimbra.cs.account.accesscontrol.Right.RightType;
 import java.io.IOException;
 import java.io.InputStream;
@@ -103,8 +104,13 @@ public class RightManager {
         if (mInstance != null) {
             return mInstance;
         }
-        final AttributeManager attributeManager1 = AttributeManager.getInstance();
-        mInstance = RightManager.fromResources(attributeManager1);
+			final AttributeManager attributeManager1;
+			try {
+				attributeManager1 = AttributeManager.getInstance();
+			} catch (AttributeManagerException e) {
+				throw ServiceException.FAILURE(e.getMessage(), e);
+			}
+			mInstance = RightManager.fromResources(attributeManager1);
 
         try {
             Right.init(mInstance, attributeManager1);

@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.admin;
 
+import com.zimbra.cs.account.StoreAttributeManager;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -89,7 +90,7 @@ public class ToXML {
             Set<String> reqAttrs, Set<String> hideAttrs, AttrRightChecker attrRightChecker) {
         AttributeManager attrMgr = null;
         try {
-            attrMgr = AttributeManager.getInstance();
+            attrMgr = StoreAttributeManager.getInstance();
         } catch (ServiceException se) {
             ZimbraLog.account.warn("failed to get AttributeManager instance", se);
         }

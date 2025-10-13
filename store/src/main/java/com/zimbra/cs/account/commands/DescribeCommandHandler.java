@@ -11,6 +11,7 @@ import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.FileGenUtil;
 import com.zimbra.cs.account.ProvUtil;
 
+import com.zimbra.cs.account.StoreAttributeManager;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
@@ -40,7 +41,7 @@ class DescribeCommandHandler implements CommandHandler {
     SortedSet<String> attrs = null;
     String specificAttr = null;
 
-    AttributeManager am = AttributeManager.getInstance();
+    AttributeManager am = StoreAttributeManager.getInstance();
 
     if (descArgs.mAttr != null) {
       // specific attr

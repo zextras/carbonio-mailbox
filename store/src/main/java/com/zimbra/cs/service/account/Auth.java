@@ -32,6 +32,7 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Provisioning.AuthMode;
 import com.zimbra.cs.account.Server;
+import com.zimbra.cs.account.StoreAttributeManager;
 import com.zimbra.cs.account.auth.AuthContext;
 import com.zimbra.cs.account.krb5.Krb5Principal;
 import com.zimbra.cs.account.names.NameUtil.EmailAddress;
@@ -356,7 +357,7 @@ public class Auth extends AccountDocumentHandler {
     if (attrsRequest != null) {
       Element attrsResponse = response.addUniqueElement(AccountConstants.E_ATTRS);
       Set<String> attrList =
-          AttributeManager.getInstance().getAttrsWithFlag(AttributeFlag.accountInfo);
+          StoreAttributeManager.getInstance().getAttrsWithFlag(AttributeFlag.accountInfo);
       for (Iterator it = attrsRequest.elementIterator(AccountConstants.E_ATTR); it.hasNext(); ) {
         Element e = (Element) it.next();
         String name = e.getAttribute(AccountConstants.A_NAME);
