@@ -91,52 +91,32 @@ pipeline {
             }
         }
 
-        stage('Tests') {
-            when {
-                expression {
-                    params.SKIP_TEST_WITH_COVERAGE == false
+
+        stage('UT, IT') {
+            steps {
+                container('jdk-17') {
+                    sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,special"
                 }
+                junit allowEmptyResults: true,
+                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
             }
-            parallel {
-                stage('UT, IT') {
-                    steps {
-                        container('jdk-17') {
-                            sh """
-                                    mkdir -p /ut-it-tests
-                                    cp -r . /ut-it-tests/
-                                    cd /ut-it-tests && mvn ${MVN_OPTS} verify -DexcludedGroups=api,special
-                               """
-                        }
-                        junit allowEmptyResults: true,
-                                testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
-                    }
+        }
+        stage('Special tests') {
+            steps {
+                container('jdk-17') {
+                    sh "mvn ${MVN_OPTS} verify -Dgroups=special"
                 }
-                stage('Special tests') {
-                    steps {
-                        container('jdk-17') {
-                            sh """
-                                    mkdir -p /special-tests
-                                    cp -r . /special-tests/
-                                    cd /special-tests && mvn ${MVN_OPTS} verify -Dgroups=special
-                               """
-                        }
-                        junit allowEmptyResults: true,
-                                testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
-                    }
+                junit allowEmptyResults: true,
+                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+            }
+        }
+        stage('API tests') {
+            steps {
+                container('jdk-17') {
+                    sh "mvn ${MVN_OPTS} verify -Dgroups=api"
                 }
-                stage('API tests') {
-                    steps {
-                        container('jdk-17') {
-                            sh """
-                                    mkdir -p /api-tests
-                                    cp -r . /api-tests/
-                                    cd /api-tests && mvn ${MVN_OPTS} verify -Dgroups=api
-                               """
-                        }
-                        junit allowEmptyResults: true,
-                                testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
-                    }
-                }
+                junit allowEmptyResults: true,
+                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
             }
         }
 
