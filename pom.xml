@@ -455,11 +455,6 @@
         <version>${mockito.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.easymock</groupId>
-        <artifactId>easymock</artifactId>
-        <version>5.2.0</version>
-      </dependency>
-      <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-core</artifactId>
         <version>2.10.0</version>

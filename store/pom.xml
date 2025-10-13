@@ -283,12 +283,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>easymock</artifactId>
-      <groupId>org.easymock</groupId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <artifactId>xmlunit-core</artifactId>
       <groupId>org.xmlunit</groupId>
       <scope>test</scope>
