@@ -155,10 +155,17 @@ public abstract class LdapClient {
         return getInstance().getExternalContextImpl(ldapConfig, usage);
     }
 
+    @Deprecated
     public static ZLdapContext getExternalContext(ExternalLdapConfig ldapConfig,
             LdapUsage usage)
     throws ServiceException {
         return getInstance().getExternalContextImpl(ldapConfig, usage);
+    }
+
+    public ZLdapContext getInstanceExternalContext(ExternalLdapConfig ldapConfig,
+        LdapUsage usage)
+        throws ServiceException {
+        return this.getExternalContextImpl(ldapConfig, usage);
     }
 
     @Deprecated
@@ -174,8 +181,13 @@ public abstract class LdapClient {
         }
     }
 
+    @Deprecated
     public static ZMutableEntry createMutableEntry() {
         return getInstance().createMutableEntryImpl();
+    }
+
+    public ZMutableEntry createInstanceMutableEntry() {
+        return this.createMutableEntryImpl();
     }
 
     public static void externalLdapAuthenticate(String[] urls, boolean wantStartTLS,

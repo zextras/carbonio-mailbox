@@ -1325,7 +1325,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         throw ServiceException.INVALID_REQUEST("domain type must be local", null);
       }
 
-      ZMutableEntry entry = ldapClient.createMutableEntry();
+      ZMutableEntry entry = ldapClient.createInstanceMutableEntry();
       entry.mapToAttrs(acctAttrs);
 
       for (String a : sInvalidAccountCreateModifyAttrs) {
@@ -2709,7 +2709,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       String[] dns = mDIT.domainToDNs(parts);
       createParentDomains(zlc, parts, dns);
 
-      ZMutableEntry entry = ldapClient.createMutableEntry();
+      ZMutableEntry entry = ldapClient.createInstanceMutableEntry();
       entry.mapToAttrs(domainAttrs);
 
       Set<String> ocs = LdapObjectClass.getDomainObjectClasses(this);
@@ -3123,7 +3123,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     try {
       zlc = ldapClient.getInstanceContext(LdapServerType.MASTER, LdapUsage.CREATE_COS);
 
-      ZMutableEntry entry = ldapClient.createMutableEntry();
+      ZMutableEntry entry = ldapClient.createInstanceMutableEntry();
       entry.mapToAttrs(allAttrs);
 
       Set<String> ocs = LdapObjectClass.getCosObjectClasses(this);
@@ -3445,7 +3445,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         newAttrs.put(Provisioning.A_cn, newLocal);
 
       /*
-      ZMutableEntry mutableEntry = ldapClient.createMutableEntry();
+      ZMutableEntry mutableEntry = ldapClient.createInstanceMutableEntry();
       mutableEntry.mapToAttrs(newAttrs);
       mutableEntry.setDN(newDn);
       */
@@ -3762,7 +3762,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             @Override
             public void createEntry(String dn, Map<String, Object> attrs) throws ServiceException {
 
-              ZMutableEntry entry = ldapClient.createMutableEntry();
+              ZMutableEntry entry = ldapClient.createInstanceMutableEntry();
               entry.mapToAttrs(attrs);
               entry.setDN(dn);
 
@@ -3881,7 +3881,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     try {
       zlc = ldapClient.getInstanceContext(LdapServerType.MASTER, LdapUsage.CREATE_SHARELOCATOR);
 
-      ZMutableEntry entry = ldapClient.createMutableEntry();
+      ZMutableEntry entry = ldapClient.createInstanceMutableEntry();
       entry.mapToAttrs(attrs);
 
       Set<String> ocs = LdapObjectClass.getShareLocatorObjectClasses(this);
@@ -3936,7 +3936,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     try {
       zlc = ldapClient.getInstanceContext(LdapServerType.MASTER, LdapUsage.CREATE_SERVER);
 
-      ZMutableEntry entry = ldapClient.createMutableEntry();
+      ZMutableEntry entry = ldapClient.createInstanceMutableEntry();
       entry.mapToAttrs(serverAttrs);
 
       Set<String> ocs = LdapObjectClass.getServerObjectClasses(this);
@@ -4298,7 +4298,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         throw ServiceException.INVALID_REQUEST("domain type must be local", null);
       }
 
-      ZMutableEntry entry = ldapClient.createMutableEntry();
+      ZMutableEntry entry = ldapClient.createInstanceMutableEntry();
       entry.mapToAttrs(listAttrs);
 
       Set<String> ocs = LdapObjectClass.getDistributionListObjectClasses(this);
@@ -5516,7 +5516,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     ZLdapContext zlc = null;
     try {
-      zlc = ldapClient.getExternalContext(config, LdapUsage.LDAP_AUTH_EXTERNAL);
+      zlc = ldapClient.getInstanceExternalContext(config, LdapUsage.LDAP_AUTH_EXTERNAL);
       ZSearchResultEnumeration ne =
           zlc.searchDir(
               searchBase,
@@ -6377,7 +6377,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         hasKeyword = ProvisioningConstants.TRUE;
       }
 
-      ZMutableEntry entry = ldapClient.createMutableEntry();
+      ZMutableEntry entry = ldapClient.createInstanceMutableEntry();
       entry.mapToAttrs(zimletAttrs);
 
       entry.setAttr(A_objectClass, "zimbraZimletEntry");
@@ -7783,7 +7783,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
       String dn = getIdentityDn(ldapEntry, identityName);
 
-      ZMutableEntry entry = ldapClient.createMutableEntry();
+      ZMutableEntry entry = ldapClient.createInstanceMutableEntry();
       entry.setDN(dn);
       entry.mapToAttrs(identityAttrs);
 
@@ -8102,7 +8102,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
       String dn = getSignatureDn(ldapEntry, signatureName);
 
-      ZMutableEntry entry = ldapClient.createMutableEntry();
+      ZMutableEntry entry = ldapClient.createInstanceMutableEntry();
       entry.mapToAttrs(signatureAttrs);
 
       entry.setAttr(A_objectClass, "zimbraSignature");
@@ -8458,7 +8458,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
       String dn = getDataSourceDn(ldapEntry, dsName);
 
-      ZMutableEntry entry = ldapClient.createMutableEntry();
+      ZMutableEntry entry = ldapClient.createInstanceMutableEntry();
       entry.setDN(dn);
       entry.mapToAttrs(dataSourceAttrs);
 
@@ -9750,7 +9750,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
        * create the main dynamic group entry
        * ====================================
        */
-      ZMutableEntry entry = ldapClient.createMutableEntry();
+      ZMutableEntry entry = ldapClient.createInstanceMutableEntry();
       entry.mapToAttrs(groupAttrs);
 
       Set<String> ocs = LdapObjectClass.getGroupObjectClasses(this);
@@ -9833,7 +9833,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
          */
         String dynamicUnitLocalpart = dynamicGroupDynamicUnitLocalpart(localPart);
         String dynamicUnitAddr = EmailAddress.getAddress(dynamicUnitLocalpart, domainName);
-        entry = ldapClient.createMutableEntry();
+        entry = ldapClient.createInstanceMutableEntry();
         ocs = LdapObjectClass.getGroupDynamicUnitObjectClasses(this);
         entry.addAttr(A_objectClass, ocs);
 
@@ -9861,7 +9861,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
          * create the static group unit entry, for external addresses
          * ==========================================================
          */
-        entry = ldapClient.createMutableEntry();
+        entry = ldapClient.createInstanceMutableEntry();
         ocs = LdapObjectClass.getGroupStaticUnitObjectClasses(this);
         entry.addAttr(A_objectClass, ocs);
 
@@ -10133,7 +10133,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
           String dynamicUnitDN =
               mDIT.dynamicGroupUnitNameToDN(DYNAMIC_GROUP_DYNAMIC_UNIT_NAME, newDn);
 
-          ZMutableEntry entry = ldapClient.createMutableEntry();
+          ZMutableEntry entry = ldapClient.createInstanceMutableEntry();
           entry.setAttr(A_mail, dynamicUnitNewEmail);
           entry.setAttr(A_zimbraMailAlias, dynamicUnitNewEmail);
           zlc.replaceAttributes(dynamicUnitDN, entry.getAttributes());
@@ -10690,7 +10690,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     String domainDn = ((LdapEntry) domain).getDN();
     Set<String> oc = new HashSet<>();
     oc.add(AttributeClass.OC_zimbraAddressList);
-    ZMutableEntry entry = ldapClient.createMutableEntry();
+    ZMutableEntry entry = ldapClient.createInstanceMutableEntry();
     if (attrs != null && attrs.size() > 0) {
       entry.mapToAttrs(attrs);
     }
