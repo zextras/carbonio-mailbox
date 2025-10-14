@@ -101,7 +101,6 @@ public final class ParseMimeMessageTest extends MailboxTestSuite {
   }
 
   @Test
-  @Disabled
   void parseMimeMsgSoap_withMsgAttachment() throws Exception {
     // TODO: check why this test keeps failing randomly
     Account acct = createAccount().create();
