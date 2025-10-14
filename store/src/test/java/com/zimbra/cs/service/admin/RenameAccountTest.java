@@ -3,6 +3,7 @@ package com.zimbra.cs.service.admin;
 import static com.zimbra.common.util.Constants.ERROR_CODE_NO_SUCH_DOMAIN;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
@@ -44,10 +45,10 @@ class RenameAccountTest extends SoapTestSuite {
 
     final RenameAccountRequest request =
         new RenameAccountRequest(userAccount.getId(), "newName@" + userAccount.getDomainName());
-    final HttpResponse response =
+    final SoapResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
   }
 
   @Test
@@ -58,10 +59,10 @@ class RenameAccountTest extends SoapTestSuite {
 
     final RenameAccountRequest request =
         new RenameAccountRequest(userAccount.getId(), accountName + "@" + targetDomain.getName());
-    final HttpResponse response =
+    final SoapResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
   }
 
   @Test
@@ -73,12 +74,12 @@ class RenameAccountTest extends SoapTestSuite {
     final RenameAccountRequest request =
         new RenameAccountRequest(
             userAccount.getId(), accountName + "@" + UUID.randomUUID() + ".com");
-    final HttpResponse response =
+    final SoapResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
     Assertions.assertEquals(
-        HttpStatus.SC_UNPROCESSABLE_ENTITY, response.getStatusLine().getStatusCode());
-    final String responseBody = EntityUtils.toString(response.getEntity());
+        HttpStatus.SC_UNPROCESSABLE_ENTITY, response.statusCode());
+    final String responseBody = response.body();
     Assertions.assertTrue(responseBody.contains(ERROR_CODE_NO_SUCH_DOMAIN));
   }
 
@@ -92,10 +93,10 @@ class RenameAccountTest extends SoapTestSuite {
 
     final RenameAccountRequest request =
         new RenameAccountRequest(userAccount.getId(), accountName + "@" + targetDomain.getName());
-    final HttpResponse response =
+    final SoapResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
   }
 
   @Test
@@ -108,10 +109,10 @@ class RenameAccountTest extends SoapTestSuite {
 
     final RenameAccountRequest request =
         new RenameAccountRequest(userAccount.getId(), accountName + "@" + targetDomain.getName());
-    final HttpResponse response =
+    final SoapResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
   }
 
   @Test
@@ -126,10 +127,10 @@ class RenameAccountTest extends SoapTestSuite {
 
     final RenameAccountRequest request =
         new RenameAccountRequest(userAccount.getId(), accountName + "@" + targetDomain.getName());
-    final HttpResponse response =
+    final SoapResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
   }
 
   @Test
@@ -148,9 +149,9 @@ class RenameAccountTest extends SoapTestSuite {
 
     final RenameAccountRequest request =
         new RenameAccountRequest(userAccount.getId(), accountName + "@" + targetDomain.getName());
-    final HttpResponse response =
+    final SoapResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
   }
 }

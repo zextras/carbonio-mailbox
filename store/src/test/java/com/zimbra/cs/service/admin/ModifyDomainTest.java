@@ -6,6 +6,7 @@ package com.zimbra.cs.service.admin;
 
 
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
@@ -67,9 +68,9 @@ public class ModifyDomainTest extends SoapTestSuite {
     request.addAttr(ZAttrProvisioning.A_zimbraSSLPrivateKey, "/tmp/myKey.pub");
     request.addAttr(ZAttrProvisioning.A_zimbraPublicServicePort, "8080");
 
-    final HttpResponse response = getSoapClient().newRequest().setCaller(domainAdminAccount)
+    final SoapResponse response = getSoapClient().newRequest().setCaller(domainAdminAccount)
         .setSoapBody(request).execute();
-    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
   }
 
 }

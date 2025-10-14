@@ -346,8 +346,8 @@ class ModifyAppointmentTest extends SoapTestSuite {
 
     var response = getSoapClient().executeSoap(authenticatedAccount,
         modifyAppointmentRequest);
-    var soapResponse = SoapUtils.getResponse(response);
-    Assertions.assertEquals(200, response.getStatusLine().getStatusCode(),
+    var soapResponse = response.body();
+    Assertions.assertEquals(200, response.statusCode(),
         "ModifyAppointment failed with: \n" + soapResponse);
 
     return SoapUtils.getSoapResponse(soapResponse, MailConstants.E_MODIFY_APPOINTMENT_RESPONSE,
@@ -367,7 +367,7 @@ class ModifyAppointmentTest extends SoapTestSuite {
     }});
     var response = getSoapClient().executeSoap(authenticatedAccount,
         shareNotificationRequest);
-    Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
+    Assertions.assertEquals(200, response.statusCode());
     return SoapUtils.getSoapResponse(response, MailConstants.E_SEND_SHARE_NOTIFICATION_RESPONSE,
         SendShareNotificationResponse.class);
   }
@@ -386,7 +386,7 @@ class ModifyAppointmentTest extends SoapTestSuite {
     var folderActionRequest = new FolderActionRequest(grantRequest);
     var response = getSoapClient().executeSoap(authenticatedAccount,
         folderActionRequest);
-    Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
+    Assertions.assertEquals(200, response.statusCode());
     return SoapUtils.getSoapResponse(response, MailConstants.E_FOLDER_ACTION_RESPONSE,
         FolderActionResponse.class);
   }

@@ -503,7 +503,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
     for (String contactEmail : emails) {
       var response = getSoapClient().executeSoap(account,
           new CreateContactRequest(new ContactSpec().addEmail(contactEmail)));
-      assertEquals(200, response.getStatusLine().getStatusCode());
+      assertEquals(200, response.statusCode());
     }
     return account;
   }
@@ -542,7 +542,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
 
     createContactRequest.addNonUniqueElement(contactSpecElement);
     var response = getSoapClient().executeSoap(account, createContactRequest);
-    assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(200, response.statusCode());
   }
 
 

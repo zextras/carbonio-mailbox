@@ -1,6 +1,7 @@
 package com.zimbra.cs.service.admin;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
@@ -52,8 +53,8 @@ class ModifyAccountTest extends SoapTestSuite {
     final ModifyAccountRequest request =
         new ModifyAccountRequest(userAccount.getId());
     request.addAttr(ZAttrProvisioning.A_zimbraMailTransport, "lmtp:localhost:1333");
-    final HttpResponse response = getSoapClient().newRequest().setCaller(domainAdminAccount)
+    final SoapResponse response = getSoapClient().newRequest().setCaller(domainAdminAccount)
         .setSoapBody(request).execute();
-    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
   }
 }
