@@ -106,24 +106,6 @@
         <version>3.1.0</version>
         <executions>
           <execution>
-            <id>generate-ldap-version</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>sh</executable>
-              <arguments>
-                <argument>-c</argument>
-                <argument>mkdir -p ${ldap.generated.dir} &amp;&amp; \
-                  git log -1 \
-                  --pretty=format:%at \
-                  ${project.basedir}/../attribute-manager/src/main/resources/conf/attrs/attrs.xml \
-                  > ${ldap.generated.dir}/attrs-schema</argument>
-              </arguments>
-            </configuration>
-          </execution>
-          <execution>
             <id>generate-ZAttrAccount</id>
             <phase>generate-sources</phase>
             <goals>
@@ -234,6 +216,7 @@
             <phase>generate-resources</phase>
             <configuration>
               <target>
+                <copy todir="${ldap.generated.dir}/" file="${ldap.dir}/attrs-schema" />
                 <copy todir="${ldap.generated.dir}/" file="${ldap.dir}/carbonio.ldif" />
                 <copy todir="${ldap.generated.dir}/" file="${ldap.dir}/mimehandlers.ldif" />
                 <copy todir="${ldap.generated.dir}/schema" file="${ldap.dir}/amavisd.schema" />
