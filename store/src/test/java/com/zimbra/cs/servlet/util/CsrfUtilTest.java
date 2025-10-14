@@ -148,7 +148,7 @@ public class CsrfUtilTest extends MailboxTestSuite {
 	@Test
 	final void testIsCsrfRequestWhenCsrfCheckIsTurnedOn() {
 
-		String[] allowedRefHost = new String[1];
+		String[] allowedRefHost = getAllowedRefHost();
 		HttpServletRequest request = Mockito
 				.mock(HttpServletRequest.class);
 		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
@@ -171,10 +171,14 @@ public class CsrfUtilTest extends MailboxTestSuite {
 		}
 	}
 
+	private static String[] getAllowedRefHost() {
+		return new String[]{"test"};
+	}
+
 	@Test
 	final void testIsCsrfRequestForSameReferer() {
 
-		String[] allowedRefHost = new String[1];
+		String[] allowedRefHost = getAllowedRefHost();
 		HttpServletRequest request = Mockito
 				.mock(HttpServletRequest.class);
 		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
@@ -228,7 +232,7 @@ public class CsrfUtilTest extends MailboxTestSuite {
 	@Test
 	final void testIsCsrfRequestForAllowedRefHostListEmptyAndNonMatchingHost() {
 
-		String[] allowedRefHost = new String[1];
+		String[] allowedRefHost = getAllowedRefHost();
 		HttpServletRequest request = Mockito
 				.mock(HttpServletRequest.class);
 		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
@@ -278,7 +282,7 @@ public class CsrfUtilTest extends MailboxTestSuite {
 	@Test
 	final void testIsCsrfRequestForSameRefererWithUrlHavingPort() {
 
-		String[] allowedRefHost = new String[1];
+		String[] allowedRefHost = getAllowedRefHost();
 		HttpServletRequest request = Mockito
 				.mock(HttpServletRequest.class);
 		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
@@ -304,7 +308,7 @@ public class CsrfUtilTest extends MailboxTestSuite {
 	@Test
 	final void testIsCsrfRequestForSameRefererWithHttpsUrl() {
 
-		String[] allowedRefHost = new String[1];
+		String[] allowedRefHost = getAllowedRefHost();
 		HttpServletRequest request = Mockito
 				.mock(HttpServletRequest.class);
 		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
@@ -329,7 +333,7 @@ public class CsrfUtilTest extends MailboxTestSuite {
 	@Test
 	final void testIsCsrfRequestForSameRefererWithXFowardedHostHdr() {
 
-		String[] allowedRefHost = new String[1];
+		String[] allowedRefHost = getAllowedRefHost();
 		HttpServletRequest request = Mockito
 				.mock(HttpServletRequest.class);
 		Mockito.when(request.getHeader("X-Forwarded-Host")).thenReturn(

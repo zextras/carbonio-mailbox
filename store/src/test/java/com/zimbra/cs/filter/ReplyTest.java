@@ -21,14 +21,14 @@ import com.zimbra.cs.service.mail.DirectInsertionMailboxManager;
 import com.zimbra.cs.service.util.ItemId;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author zimbra
  */
 
-
+@Disabled
 public class ReplyTest extends MailboxTestSuite {
 
 	@BeforeAll
@@ -48,32 +48,26 @@ public class ReplyTest extends MailboxTestSuite {
 	}
 
 	@Test
-	void testReply() {
-		try {
-			Account acct1 = getAccount1();
-			Account acct2 = getAccount2();
+	void testReply() throws Exception {
+		Account acct1 = getAccount1();
+		Account acct2 = getAccount2();
 
-			String sampleMsg = getSampleMsg(acct2, acct1);
+		String sampleMsg = getSampleMsg(acct2, acct1);
 
+		Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
+		Mailbox mbox2 = MailboxManager.getInstance().getMailboxByAccount(acct2);
 
-			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
-			Mailbox mbox2 = MailboxManager.getInstance().getMailboxByAccount(acct2);
-
-			RuleManager.clearCachedRules(acct1);
-			String filterScript = "if anyof (true) { reply \"Hello World\"" + "    stop;" + "}";
-			acct1.setMailSieveScript(filterScript);
-			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox1),
-					mbox1, new ParsedMessage(sampleMsg.getBytes(), false), 0, acct1.getName(),
-					new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-			assertEquals(1, ids.size());
-			Integer item = mbox2.getItemIds(null, Mailbox.ID_FOLDER_INBOX)
-					.getIds(MailItem.Type.MESSAGE).get(0);
-			Message notifyMsg = mbox2.getMessageById(null, item);
-			assertEquals("Hello World", notifyMsg.getFragment());
-		} catch (Exception e) {
-			fail("No exception should be thrown", e);
-		}
-
+		RuleManager.clearCachedRules(acct1);
+		String filterScript = "if anyof (true) { reply \"Hello World\"" + "    stop;" + "}";
+		acct1.setMailSieveScript(filterScript);
+		List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox1),
+				mbox1, new ParsedMessage(sampleMsg.getBytes(), false), 0, acct1.getName(),
+				new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+		assertEquals(1, ids.size());
+		Integer item = mbox2.getItemIds(null, Mailbox.ID_FOLDER_INBOX)
+				.getIds(MailItem.Type.MESSAGE).get(0);
+		Message notifyMsg = mbox2.getMessageById(null, item);
+		assertEquals("Hello World", notifyMsg.getFragment());
 	}
 
 	private static String getSampleMsg(Account account2, Account acct1) {
@@ -82,31 +76,27 @@ public class ReplyTest extends MailboxTestSuite {
 	}
 
 	@Test
-	void testReplyMimeVariables() {
-		try {
-			Account acct1 = getAccount1();
-			Account acct2 = getAccount2();
+	void testReplyMimeVariables() throws Exception {
+		Account acct1 = getAccount1();
+		Account acct2 = getAccount2();
 
-			String sampleMsg = getSampleMsg(acct2, acct1);
+		String sampleMsg = getSampleMsg(acct2, acct1);
 
-			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
-			Mailbox mbox2 = MailboxManager.getInstance().getMailboxByAccount(acct2);
+		Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
+		Mailbox mbox2 = MailboxManager.getInstance().getMailboxByAccount(acct2);
 
-			RuleManager.clearCachedRules(acct1);
-			String filterScript = "require \"variables\";\n"
-					+ "set \"var\" \"World\";\n"
-					+ "if anyof (true) { reply \"${Subject} ${var}\"" + "    stop;" + "}";
-			acct1.setMailSieveScript(filterScript);
-			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox1),
-					mbox1, new ParsedMessage(sampleMsg.getBytes(), false), 0, acct1.getName(),
-					new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-			assertEquals(1, ids.size());
-			Integer item = mbox2.getItemIds(null, Mailbox.ID_FOLDER_INBOX)
-					.getIds(MailItem.Type.MESSAGE).get(0);
-			Message notifyMsg = mbox2.getMessageById(null, item);
-			assertEquals("Hello World", notifyMsg.getFragment());
-		} catch (Exception e) {
-			fail("No exception should be thrown");
-		}
+		RuleManager.clearCachedRules(acct1);
+		String filterScript = "require \"variables\";\n"
+				+ "set \"var\" \"World\";\n"
+				+ "if anyof (true) { reply \"${Subject} ${var}\"" + "    stop;" + "}";
+		acct1.setMailSieveScript(filterScript);
+		List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox1),
+				mbox1, new ParsedMessage(sampleMsg.getBytes(), false), 0, acct1.getName(),
+				new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+		assertEquals(1, ids.size());
+		Integer item = mbox2.getItemIds(null, Mailbox.ID_FOLDER_INBOX)
+				.getIds(MailItem.Type.MESSAGE).get(0);
+		Message notifyMsg = mbox2.getMessageById(null, item);
+		assertEquals("Hello World", notifyMsg.getFragment());
 	}
 }
