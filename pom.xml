@@ -1081,25 +1081,6 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
       </plugin>
-        <plugin>
-          <groupId>org.openrewrite.maven</groupId>
-          <artifactId>rewrite-maven-plugin</artifactId>
-          <configuration>
-            <exportDatatables>true</exportDatatables> <!-- optional, helpful for reports -->
-            <activeRecipes>
-              <recipe>org.openrewrite.staticanalysis.RemoveUnusedLocalVariables</recipe>
-              <recipe>org.openrewrite.staticanalysis.RemoveUnusedPrivateMethods</recipe>
-              <recipe>org.openrewrite.java.RemoveUnusedImports</recipe>
-            </activeRecipes>
-          </configuration>
-          <dependencies>
-            <dependency>
-              <groupId>org.openrewrite.recipe</groupId>
-              <artifactId>rewrite-static-analysis</artifactId>
-              <version>2.4.0</version>
-            </dependency>
-          </dependencies>
-        </plugin>
     </plugins>
   </build>
 

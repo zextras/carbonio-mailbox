@@ -6,18 +6,22 @@ package com.zextras.mailbox.servlet;
 
 import com.google.inject.servlet.GuiceFilter;
 import com.zextras.mailbox.util.JettyServerFactory;
+import com.zimbra.common.localconfig.ConfigException;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.db.Db;
 import com.zimbra.cs.db.DbPool;
+import com.zimbra.cs.db.HSQLDB;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.dom4j.DocumentException;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +32,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-@Tag("api")
+@Tag("e2e")
 @Testcontainers
 class HealthServletTest {
 
@@ -43,6 +47,12 @@ class HealthServletTest {
           .withDatabaseName("zimbra");
 
   private static Server server;
+
+  @BeforeAll
+  static void setUp() throws DocumentException, ConfigException {
+    // ensure proper driver is applied
+    LC.zimbra_class_database.setDefault("com.zimbra.cs.db.MariaDB");
+    }
 
   @BeforeEach
   void beforeEach() throws Exception {
