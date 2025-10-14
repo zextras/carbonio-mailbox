@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
  * @author ysasaki
  */
 
-@Tag("special")
+@Tag("flaky")
 public final class LuceneQueryOperationTest extends MailboxTestSuite {
 
 	private Account account;

@@ -99,16 +99,16 @@ pipeline {
         stage('UT, IT') {
             steps {
                 container('jdk-17') {
-                    sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,special"
+                    sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,flaky"
                 }
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
             }
         }
-        stage('API tests') {
+        stage('Flaky && API tests') {
             steps {
                 container('jdk-17') {
-                    sh "mvn ${MVN_OPTS} verify -Dgroups=api"
+                    sh "mvn ${MVN_OPTS} verify -Dgroups=flaky,api"
                 }
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'

@@ -33,7 +33,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 
-@Tag("special")
+@Tag("flaky")
 class EmailChannelTest extends MailboxTestSuite {
 
 	private static GreenMail mta;

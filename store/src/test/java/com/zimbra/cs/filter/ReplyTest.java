@@ -21,13 +21,14 @@ import com.zimbra.cs.service.mail.DirectInsertionMailboxManager;
 import com.zimbra.cs.service.util.ItemId;
 import java.util.List;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author zimbra
  */
 
-@Disabled
+@Tag("flaky")
 public class ReplyTest extends MailboxTestSuite {
 
 	private Account getAccount1() throws Exception {
