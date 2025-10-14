@@ -14,6 +14,7 @@ import com.zimbra.common.calendar.WellKnownTimeZones;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.RightManager;
+import com.zimbra.cs.account.auth.ZimbraCustomAuth;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
 import com.zimbra.cs.index.ZimbraAnalyzer;
@@ -122,6 +123,7 @@ public class MailboxSetupHelper {
 		ScheduledTaskManager.startup();
 		System.setProperty("broker.disabled", "true");
 		ZimbraAnalyzer.setInstance(new ZimbraAnalyzer());
+		ZimbraCustomAuth.clear();
 	}
 
   public void initData(MailboxTestData mailboxTestData) throws Exception {
