@@ -47,6 +47,18 @@
 
   <packaging>jar</packaging>
   <build>
+    <resources>
+      <resource>
+        <directory>${ldap.generated.dir}</directory>
+        <includes>
+          <include>*.ldif</include>
+          <include>config/**</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${project.basedir}/src/main/resources</directory>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -55,7 +67,7 @@
         <executions>
           <execution>
             <id>add-zattr</id>
-            <phase>generate-sources</phase>
+            <phase>process-sources</phase>
             <goals>
               <goal>add-source</goal>
             </goals>
@@ -63,24 +75,6 @@
               <sources>
                 <source>${generated-sources}/zattr/</source>
               </sources>
-            </configuration>
-          </execution>
-          <execution>
-            <id>add-ldap-files</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>add-resource</goal>
-            </goals>
-            <configuration>
-              <resources>
-                <resource>
-                  <directory>${ldap.generated.dir}</directory>
-                  <includes>
-                    <include>*.ldif</include>
-                    <include>config/**</include>
-                  </includes>
-                </resource>
-              </resources>
             </configuration>
           </execution>
         </executions>
