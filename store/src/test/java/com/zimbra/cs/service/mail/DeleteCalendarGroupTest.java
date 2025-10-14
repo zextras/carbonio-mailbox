@@ -28,19 +28,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-@Tag("special")
+@Tag("api")
 class DeleteCalendarGroupTest extends SoapTestSuite {
-    
-    private static Provisioning provisioning;
 
     private Account account;
-
-    @BeforeAll
-    static void init() {
-        provisioning = Provisioning.getInstance();
-        
-    }
-
     @BeforeEach
     void setUp() throws Exception {
         account = createAccount().create();
@@ -101,7 +92,7 @@ class DeleteCalendarGroupTest extends SoapTestSuite {
     }
 
     private static <T> T parseSoapResponse(SoapResponse soapResponse, Class<T> clazz)
-            throws IOException, ServiceException {
+            throws ServiceException {
         final var responseBody = soapResponse.body();
         final var rootElement =
                 parseXML(responseBody)
