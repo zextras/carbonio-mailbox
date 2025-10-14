@@ -54,12 +54,13 @@ public class OwaspHtmlSanitizerTest {
 
 	@BeforeAll
 	public static void init() throws Exception {
-		LC.zimbra_use_owasp_html_sanitizer.value();
+		LC.zimbra_use_owasp_html_sanitizer.setDefault(true);
+		LC.reload();
 	}
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		LC.zimbra_use_owasp_html_sanitizer.setDefault(true);
+
 	}
 
 	private void defangHtmlString(String html, String expected) throws IOException {
