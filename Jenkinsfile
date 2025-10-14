@@ -108,7 +108,7 @@ pipeline {
         stage('Flaky && API tests') {
             steps {
                 container('jdk-17') {
-                    sh "cd store && mvn ${MVN_OPTS} verify -Dgroups=flaky,api,e2e"
+                    sh "cd store && mvn ${MVN_OPTS} verify -Dgroups=flaky,api && mvn ${MVN_OPTS} verify -Dgroups=e2e"
                 }
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'

@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 @Tag("e2e")
-@Disabled
 class MailboxServerAPITest {
 
 	private static MailboxServer mailboxServer;
