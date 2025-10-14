@@ -8,8 +8,10 @@ package com.zimbra.cs.filter;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.MailboxTestSuite;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.Provisioning.DirectoryEntryVisitor;
 import com.zimbra.cs.mailbox.DeliveryContext;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -20,6 +22,7 @@ import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.mail.DirectInsertionMailboxManager;
 import com.zimbra.cs.service.util.ItemId;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -30,11 +33,6 @@ import org.junit.jupiter.api.Test;
 
 @Disabled
 public class ReplyTest extends MailboxTestSuite {
-
-	@BeforeAll
-	static void setup() throws Exception {
-		MailboxManager.setInstance(new DirectInsertionMailboxManager());
-	}
 
 	private Account getAccount1() throws Exception {
 		return createAccount()
@@ -54,8 +52,8 @@ public class ReplyTest extends MailboxTestSuite {
 
 		String sampleMsg = getSampleMsg(acct2, acct1);
 
-		Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
-		Mailbox mbox2 = MailboxManager.getInstance().getMailboxByAccount(acct2);
+		Mailbox mbox1 = getMailboxManager().getMailboxByAccount(acct1);
+		Mailbox mbox2 = getMailboxManager().getMailboxByAccount(acct2);
 
 		RuleManager.clearCachedRules(acct1);
 		String filterScript = "if anyof (true) { reply \"Hello World\"" + "    stop;" + "}";
@@ -82,8 +80,8 @@ public class ReplyTest extends MailboxTestSuite {
 
 		String sampleMsg = getSampleMsg(acct2, acct1);
 
-		Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
-		Mailbox mbox2 = MailboxManager.getInstance().getMailboxByAccount(acct2);
+		Mailbox mbox1 = getMailboxManager().getMailboxByAccount(acct1);
+		Mailbox mbox2 = getMailboxManager().getMailboxByAccount(acct2);
 
 		RuleManager.clearCachedRules(acct1);
 		String filterScript = "require \"variables\";\n"
@@ -98,5 +96,10 @@ public class ReplyTest extends MailboxTestSuite {
 				.getIds(MailItem.Type.MESSAGE).get(0);
 		Message notifyMsg = mbox2.getMessageById(null, item);
 		assertEquals("Hello World", notifyMsg.getFragment());
+	}
+
+	private static @NotNull DirectInsertionMailboxManager getMailboxManager()
+			throws ServiceException {
+		return new DirectInsertionMailboxManager();
 	}
 }
