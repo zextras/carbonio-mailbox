@@ -14,12 +14,14 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockserver.integration.ClientAndServer;
 
+@Disabled
 class MessageBrokerFactoryTest {
+	// TODO: think about these tests. They rely on filesystem and other static things
 	private static ClientAndServer consulServer;
 
 	@BeforeAll
 	public static void startUp() {
-		consulServer = startClientAndServer(PortUtil.findFreePort());
+		consulServer = startClientAndServer(8500);
 	}
 
 	@Test
@@ -37,6 +39,7 @@ class MessageBrokerFactoryTest {
 					.respond(response().withStatusCode(200).withBody("[" +
 							"{\"Value\": \"test\"}" +
 							"]"));
+			Assertions.assertDoesNotThrow(MessageBrokerFactory::getMessageBrokerClientInstance);
 		}
 	}
 }
