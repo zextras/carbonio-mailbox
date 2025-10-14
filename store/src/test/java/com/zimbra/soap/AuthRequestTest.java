@@ -32,7 +32,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-@Tag("special")
+
 public class AuthRequestTest extends MailboxTestSuite {
 
 	private static String account;

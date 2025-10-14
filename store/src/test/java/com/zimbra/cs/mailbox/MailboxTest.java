@@ -53,7 +53,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-@Tag("special")
+
 public final class MailboxTest extends MailboxTestSuite {
 
 	private Account account;

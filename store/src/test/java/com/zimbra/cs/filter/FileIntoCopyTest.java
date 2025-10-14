@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import qa.unittest.TestUtil;
 
-@Tag("special")
+
 class FileIntoCopyTest extends MailboxTestSuite {
 
 	@TempDir

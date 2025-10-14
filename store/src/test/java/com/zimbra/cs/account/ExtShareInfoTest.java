@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
  * @author zimbra
  */
 
-@Tag("special")
+
 class ExtShareInfoTest extends MailboxTestSuite {
 
 	private Account ownerAcct = null;

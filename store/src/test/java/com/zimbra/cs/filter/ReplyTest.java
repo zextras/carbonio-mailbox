@@ -36,7 +36,7 @@ import com.zimbra.cs.service.util.ItemId;
  * @author zimbra
  */
 
-@Tag("special")
+
 public class ReplyTest extends MailboxTestSuite {
 
 	@BeforeAll

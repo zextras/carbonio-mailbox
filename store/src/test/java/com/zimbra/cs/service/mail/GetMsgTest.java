@@ -48,7 +48,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-@Tag("special")
+
 @Disabled
 public class GetMsgTest extends MailboxTestSuite {
   private static final String desc = "The following is a new meeting request";

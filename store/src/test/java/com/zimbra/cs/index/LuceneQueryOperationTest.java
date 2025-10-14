@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-@Tag("special")
+
 public final class LuceneQueryOperationTest extends MailboxTestSuite {
 
 	private Account account;

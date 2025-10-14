@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
  * Unit test for {@link GetFolderRequest}.
  */
 
-@Tag("special")
+
 public final class GetFolderTest {
 
     private static Unmarshaller unmarshaller;
