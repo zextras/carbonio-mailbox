@@ -59,7 +59,7 @@ public class SetRecoveryAccountTest extends MailboxTestSuite {
 	@Test
 	void test4797() throws Exception {
 		var recoveryAccount = createAccount().create();
-		Account testAccount4797 = createAccount()
+		final Account testAccount4797 = createAccount()
 				.withAttribute(
 						Provisioning.A_zimbraFeatureResetPasswordStatus,
 						FeatureResetPasswordStatus.enabled.toString())
@@ -78,14 +78,14 @@ public class SetRecoveryAccountTest extends MailboxTestSuite {
 		new SetRecoveryAccount().handle(req, ServiceTestUtil.getRequestContext(testAccount4797));
 
 		// Refresh account to get updated attributes
-		testAccount4797 = Provisioning.getInstance().getAccountById(testAccount4797.getId());
+		final Account refreshedAccount = Provisioning.getInstance().getAccountById(testAccount4797.getId());
 
 		// Verify that the recovery email address is updated into ldap and
 		// status is set to pending
-		assertEquals(recoveryAccount.getName(), testAccount4797.getPrefPasswordRecoveryAddress());
+		assertEquals(recoveryAccount.getName(), refreshedAccount.getPrefPasswordRecoveryAddress());
 		assertEquals(
 				PrefPasswordRecoveryAddressStatus.pending.toString(),
-				testAccount4797.getAttrs().get(Provisioning.A_zimbraPrefPasswordRecoveryAddressStatus));
+				refreshedAccount.getAttrs().get(Provisioning.A_zimbraPrefPasswordRecoveryAddressStatus));
 
 		// Verify that recovery email address received the verification email
 		Message msg = (Message) recoveryMailbox.getItemList(null, MailItem.Type.MESSAGE).get(0);
