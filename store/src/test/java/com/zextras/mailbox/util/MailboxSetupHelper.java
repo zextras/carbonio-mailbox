@@ -76,6 +76,7 @@ public class MailboxSetupHelper {
 	}
 
 	public void setUp(MailboxTestData mailboxTestData) throws Exception {
+		LC.reload();
 		System.setProperty("zimbra.native.required", "false");
 		System.setProperty(
 				"zimbra.config",

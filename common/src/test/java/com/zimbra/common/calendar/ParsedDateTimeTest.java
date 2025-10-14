@@ -32,6 +32,7 @@ class ParsedDateTimeTest {
     writer.write("BEGIN:VCALENDAR\r\nEND:VCALENDAR");
     writer.close();
     TimeZoneMap tzmap = new TimeZoneMap(localTZ);
+    LC.timezone_file.setDefault(tzFile.getAbsolutePath());
 
     ParsedDateTime pd;
     // Cross-over dates in October
