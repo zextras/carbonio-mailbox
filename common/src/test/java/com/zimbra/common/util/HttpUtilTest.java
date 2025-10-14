@@ -352,7 +352,7 @@ public final class HttpUtilTest {
     // Use a servlet request mock
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     Mockito.when(request.getPathInfo()).thenReturn(pathInfoWithoutFilename);
-    Mockito.when(request.getHeader(Mockito.eq("User-Agent"))).thenReturn(ua);
+    Mockito.when(request.getHeader("User-Agent")).thenReturn(ua);
 
     Object [] mocks = {
         request
@@ -383,7 +383,7 @@ public final class HttpUtilTest {
     // Use a servlet request mock
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     Mockito.when(request.getPathInfo()).thenReturn(pathInfoWithoutFilename);
-    Mockito.when(request.getHeader(Mockito.eq("User-Agent"))).thenReturn(ua);
+    Mockito.when(request.getHeader("User-Agent")).thenReturn(ua);
 
     Object [] mocks = {
         request
@@ -412,7 +412,7 @@ public final class HttpUtilTest {
     // Use a servlet request mock
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     Mockito.when(request.getPathInfo()).thenReturn(pathInfoWithoutFilename);
-    Mockito.when(request.getHeader(Mockito.eq("User-Agent"))).thenReturn(ua);
+    Mockito.when(request.getHeader("User-Agent")).thenReturn(ua);
 
     Object [] mocks = {
         request
@@ -442,7 +442,7 @@ public final class HttpUtilTest {
     // Use a servlet request mock
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     Mockito.when(request.getPathInfo()).thenReturn(pathInfoWithFilename);
-    Mockito.when(request.getHeader(Mockito.eq("User-Agent"))).thenReturn(ua);
+    Mockito.when(request.getHeader("User-Agent")).thenReturn(ua);
 
     Object [] mocks = {
         request
@@ -474,7 +474,7 @@ public final class HttpUtilTest {
     // Use a servlet request mock
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     Mockito.when(request.getPathInfo()).thenReturn(pathInfoWithoutFilename);
-    Mockito.when(request.getHeader(Mockito.eq("User-Agent"))).thenReturn(ua);
+    Mockito.when(request.getHeader("User-Agent")).thenReturn(ua);
 
     Object [] mocks = {
         request
@@ -503,7 +503,7 @@ public final class HttpUtilTest {
     // Use a servlet request mock
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     Mockito.when(request.getPathInfo()).thenReturn(pathInfoWithFilename);
-    Mockito.when(request.getHeader(Mockito.eq("User-Agent"))).thenReturn(ua);
+    Mockito.when(request.getHeader("User-Agent")).thenReturn(ua);
 
     Object [] mocks = {
         request
@@ -532,7 +532,7 @@ public final class HttpUtilTest {
     // Use a servlet request mock
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     Mockito.when(request.getPathInfo()).thenReturn(pathInfoWithoutFilename);
-    Mockito.when(request.getHeader(Mockito.eq("User-Agent"))).thenReturn(ua);
+    Mockito.when(request.getHeader("User-Agent")).thenReturn(ua);
 
     Object [] mocks = {
         request

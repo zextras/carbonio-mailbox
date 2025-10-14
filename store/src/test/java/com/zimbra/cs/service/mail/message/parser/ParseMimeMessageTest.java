@@ -6,7 +6,6 @@ package com.zimbra.cs.service.mail.message.parser;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.google.common.collect.Maps;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.AccountAction;
 import com.zextras.mailbox.util.MailMessageBuilder;
@@ -44,7 +43,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
@@ -53,11 +51,8 @@ import javax.mail.internet.MimeMultipart;
 import org.dom4j.QName;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 
 @Tag("special")
 public final class ParseMimeMessageTest extends MailboxTestSuite {

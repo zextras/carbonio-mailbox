@@ -520,7 +520,7 @@ public class DbPool {
     }
 
     @VisibleForTesting
-    public static synchronized void clear() throws Exception {
+    public static synchronized void clear() {
         isShutdown = false;
     }
 

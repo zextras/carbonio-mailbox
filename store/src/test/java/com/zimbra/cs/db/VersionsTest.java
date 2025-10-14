@@ -10,7 +10,6 @@ import com.zextras.mailbox.MailboxTestSuite;
 import org.apache.commons.cli.Options;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Disabled
