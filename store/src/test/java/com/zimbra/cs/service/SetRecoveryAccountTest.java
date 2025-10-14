@@ -24,15 +24,15 @@ import com.zimbra.cs.service.mail.SetRecoveryAccount;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.SetRecoveryAccountRequest;
 import com.zimbra.soap.type.Channel;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
 public class SetRecoveryAccountTest extends MailboxTestSuite {
 
-	@BeforeEach
-	public void setUp() throws Exception {
-
+	@BeforeAll
+	public static void setUp() throws Exception {
 		MailboxManager.setInstance(new DirectInsertionMailboxManager());
 	}
 

@@ -17,6 +17,7 @@ import com.zimbra.cs.mailbox.ContactAutoComplete.ContactEntry;
 import com.zimbra.cs.mime.ParsedContact;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.mail.internet.InternetAddress;
@@ -37,13 +38,11 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
     final Account account = createAccount().create();
     result.rankings = new ContactRankings(account.getId());
     ContactAutoComplete.ContactEntry contact = new ContactAutoComplete.ContactEntry();
-    contact.mDisplayName = "C1";
     contact.mEmail = getRandomMail();
     result.addEntry(contact);
     assertEquals(1, result.entries.size());
 
     contact = new ContactAutoComplete.ContactEntry();
-    contact.mDisplayName = "C2";
     contact.mEmail = getRandomMail();
     result.addEntry(contact);
     assertEquals(2, result.entries.size());
@@ -56,15 +55,18 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
     final Account account = createAccount().create();
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
     Map<String, Object> fields = new HashMap<>();
-    fields.put(ContactConstants.A_firstName, "First");
-    fields.put(ContactConstants.A_lastName, "Last");
+    // note: I think this test fails because some other tests call "clear" and are using the same "last" and "first" keywords
+    final String firstName = "CraftedWord";
+    fields.put(ContactConstants.A_firstName, firstName);
+    final String lastName = "MyOtherPal";
+    fields.put(ContactConstants.A_lastName, lastName);
     fields.put(ContactConstants.A_email, getRandomMail());
     mbox.createContact(null, new ParsedContact(fields), Mailbox.ID_FOLDER_CONTACTS, null);
 
-    ContactAutoComplete autocomplete = new ContactAutoComplete(mbox.getAccount(),
+    ContactAutoComplete autocomplete = new ContactAutoComplete(account,
         new OperationContext(mbox));
-    assertEquals(1, autocomplete.query("first last", null, 100).entries.size());
-    assertEquals(1, autocomplete.query("last first", null, 100).entries.size());
+    assertEquals(1, autocomplete.query( firstName + " " + lastName, List.of(Mailbox.ID_FOLDER_CONTACTS), 100).entries.size());
+    assertEquals(1, autocomplete.query(lastName + " " + firstName, List.of(Mailbox.ID_FOLDER_CONTACTS), 100).entries.size());
   }
 
   @Disabled
