@@ -7,14 +7,36 @@
 package com.zimbra.cs.db;
 
 import com.zextras.mailbox.MailboxTestSuite;
+import com.zimbra.common.localconfig.LC;
+import java.io.File;
 import org.apache.commons.cli.Options;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 @Tag("special")
-class VersionsTest extends MailboxTestSuite {
+class VersionsTest {
+
+	@TempDir
+	private static File tempDir;
+
+	@BeforeAll
+	static void setUp() throws Exception {
+		LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
+		HSQLDB.createDatabase(tempDir.getAbsolutePath());
+		DbPool.startup();
+	}
+
+	@AfterAll
+	static void tearDown() throws Exception {
+		DbPool.clear();
+		DbPool.shutdown();
+	}
 
 	@Test
 	void testDBVersionMatches() {
