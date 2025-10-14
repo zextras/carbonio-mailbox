@@ -14,7 +14,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockserver.integration.ClientAndServer;
 
-@Disabled
 class MessageBrokerFactoryTest {
 	private static ClientAndServer consulServer;
 
