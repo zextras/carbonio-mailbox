@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Test;
  * @author zimbra
  */
 
-@Disabled
 public class NotifyTest extends MailboxTestSuite {
 
 	@BeforeAll
