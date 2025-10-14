@@ -197,13 +197,6 @@ public class SendMsgTest extends MailboxTestSuite {
 
     Mailbox mbox = mailboxManager.getMailboxByAccount(receiver);
 
-    // Configure test timezones.ics file.
-    File tzFile = File.createTempFile("timezones-", ".ics");
-    BufferedWriter writer = new BufferedWriter(new FileWriter(tzFile));
-    writer.write("BEGIN:VCALENDAR\r\nEND:VCALENDAR");
-    writer.close();
-    LC.timezone_file.setDefault(tzFile.getAbsolutePath());
-
     InputStream is = this.getClass().getResourceAsStream("bug-69862-invite.txt");
     ParsedMessage pm = new ParsedMessage(ByteUtil.getContent(is, -1), false);
     mbox.addMessage(null, pm, MailboxTest.STANDARD_DELIVERY_OPTIONS, null);
