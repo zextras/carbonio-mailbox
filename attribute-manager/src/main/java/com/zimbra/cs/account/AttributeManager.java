@@ -10,6 +10,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import com.zimbra.cs.account.util.SetUtil;
+import com.zimbra.cs.account.util.W3cDomUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -174,8 +175,7 @@ public class AttributeManager {
 
     for (String file : ATTRS_FILES) {
       try (InputStream inputStream = attributeStream.open(file)) {
-        final SAXReader saxReader = new SAXReader();
-        Document doc = saxReader.read(inputStream);
+        Document doc = W3cDomUtil.parseXMLToDom4jDocUsingSecureProcessing(inputStream);
         Element root = doc.getRootElement();
         if (root.getName().equals(E_ATTRS)) {
           loadAttrs(file, doc);
@@ -185,7 +185,7 @@ public class AttributeManager {
           logger.warning( String.format("while loading attrs, ignored unknown file: %s", file));
         }
 
-      } catch (IOException | DocumentException e) {
+      } catch (IOException e) {
         throw new AttributeManagerException("error loading attrs file: " + file);
       }
     }

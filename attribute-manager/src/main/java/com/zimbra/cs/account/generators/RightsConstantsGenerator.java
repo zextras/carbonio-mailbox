@@ -3,6 +3,7 @@ package com.zimbra.cs.account.generators;
 import com.zimbra.cs.account.AttributeManagerException;
 import com.zimbra.cs.account.FileGenUtil;
 import com.zimbra.cs.account.util.StringUtil;
+import com.zimbra.cs.account.util.W3cDomUtil;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,8 +47,7 @@ public class RightsConstantsGenerator {
 
 	private static UserAdminRights loadRightsFromFile(InputStream fileContent)
 			throws Exception {
-		final SAXReader saxReader = new SAXReader();
-		Document doc = saxReader.read(fileContent);
+		Document doc = W3cDomUtil.parseXMLToDom4jDocUsingSecureProcessing(fileContent);
 		Element root = doc.getRootElement();
 		if (!root.getName().equals(E_RIGHTS)) {
 			throw new AttributeManagerException("root tag is not " + E_RIGHTS);
