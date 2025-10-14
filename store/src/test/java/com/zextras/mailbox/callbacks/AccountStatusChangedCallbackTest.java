@@ -27,19 +27,36 @@ class AccountStatusChangedCallbackTest extends MailboxTestSuite {
   @Test
   void shouldNotFail_When_ExecutingUserStatusChangedCallback_And_EventIsPublishedCorrectly() {
     CallbackContext context = Mockito.mock(CallbackContext.class);
-    String attrName = "fake";
-    Account entry = Mockito.mock(Account.class);
-
-    Mockito.when(context.isDoneAndSetIfNot(AccountStatus.class)).thenReturn(false);
-    Mockito.when(context.isCreate()).thenReturn(false);
-    Mockito.when(entry.getAccountStatus(any(Provisioning.class))).thenReturn("active");
-    Mockito.when(entry.getId()).thenReturn("fake-account-id");
+		Account entry = Mockito.mock(Account.class);
+    setupMocks(context, entry);
 
     Function<UserStatusChanged, Boolean> mockPublishEvent = Mockito.mock(Function.class);
     final AccountStatus accountStatus = new AccountStatus(mockPublishEvent);
     Mockito.when(mockPublishEvent.apply(any(UserStatusChanged.class))).thenReturn(true);
 
-    assertDoesNotThrow(() -> accountStatus.postModify(context, attrName, entry));
+    assertDoesNotThrow(() -> accountStatus.postModify(context, "fake", entry));
+    Mockito.verify(mockPublishEvent).apply(any(UserStatusChanged.class));
+  }
+
+  private static void setupMocks(CallbackContext context, Account entry) {
+    Mockito.when(context.isDoneAndSetIfNot(AccountStatus.class)).thenReturn(false);
+    Mockito.when(context.isCreate()).thenReturn(false);
+    Mockito.when(entry.getAccountStatus(any(Provisioning.class))).thenReturn("active");
+    Mockito.when(entry.getId()).thenReturn("fake-account-id");
+  }
+
+  @Test
+  void shouldNotFail_When_PublishEventThrows() {
+    CallbackContext context = Mockito.mock(CallbackContext.class);
+		Account entry = Mockito.mock(Account.class);
+
+    setupMocks(context, entry);
+
+    Function<UserStatusChanged, Boolean> mockPublishEvent = Mockito.mock(Function.class);
+    final AccountStatus accountStatus = new AccountStatus(mockPublishEvent);
+    Mockito.doThrow(RuntimeException.class).when(mockPublishEvent).apply(any(UserStatusChanged.class));
+
+    assertDoesNotThrow(() -> accountStatus.postModify(context, "fake", entry));
     Mockito.verify(mockPublishEvent).apply(any(UserStatusChanged.class));
   }
 }
