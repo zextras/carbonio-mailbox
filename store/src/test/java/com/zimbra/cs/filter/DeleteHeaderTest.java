@@ -60,14 +60,6 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 			+ "Subject: example\n"
 			+ "to: test@zimbra.com\n";
 
-	@BeforeAll
-	public static void init() throws Exception {
-
-		// this MailboxManager does everything except actually send mail
-		MailboxManager.setInstance(new DirectInsertionMailboxManager());
-
-	}
-
 	/*
 	 * Delete all X-Test-Header
 	 */

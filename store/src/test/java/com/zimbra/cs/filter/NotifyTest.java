@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.google.common.collect.Maps;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.account.Key;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.DeliveryContext;
@@ -36,12 +37,6 @@ import org.junit.jupiter.api.Test;
 
 public class NotifyTest extends MailboxTestSuite {
 
-	@BeforeAll
-	public static void init() throws Exception {
-		// this MailboxManager does everything except actually send mail
-		MailboxManager.setInstance(new DirectInsertionMailboxManager());
-	}
-
 	@Test
 	void filterValidToField() {
 		try {
@@ -49,9 +44,9 @@ public class NotifyTest extends MailboxTestSuite {
 			Account acct1 = createAccount().withAttribute(Provisioning.A_zimbraSieveNotifyActionRFCCompliant, "FALSE").create();;
 			Account acct2 = createAccount().withAttribute(Provisioning.A_zimbraSieveNotifyActionRFCCompliant, "FALSE").create();;
 
-			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(
+			Mailbox mbox1 = getMailboxManager().getMailboxByAccount(
 					acct1);
-			Mailbox mbox2 = MailboxManager.getInstance().getMailboxByAccount(
+			Mailbox mbox2 = getMailboxManager().getMailboxByAccount(
 					acct2);
 			RuleManager.clearCachedRules(acct1);
 			String filterScript =
@@ -76,6 +71,10 @@ public class NotifyTest extends MailboxTestSuite {
 
 	}
 
+	private static MailboxManager getMailboxManager() throws ServiceException {
+		return new DirectInsertionMailboxManager();
+	}
+
 	@Test
 	void testNotifyMailtoWithMimeVariable() {
 
@@ -93,8 +92,8 @@ public class NotifyTest extends MailboxTestSuite {
 					+ "[\"*\"];"
 					+ "keep;"
 					+ "stop; }";
-			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
-			Mailbox mbox2 = MailboxManager.getInstance().getMailboxByAccount(acct2);
+			Mailbox mbox1 = getMailboxManager().getMailboxByAccount(acct1);
+			Mailbox mbox2 = getMailboxManager().getMailboxByAccount(acct2);
 			RuleManager.clearCachedRules(acct1);
 			acct1.setMailSieveScript(filterScript);
 			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox1),

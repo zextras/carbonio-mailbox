@@ -66,13 +66,6 @@ public class AddHeaderTest extends MailboxTestSuite {
 			"MIME-Version: 1.0",
 			"Content-Transfer-Encoding: 7bit"};
 
-	@BeforeAll
-	public static void init() throws Exception {
-		// this MailboxManager does everything except actually send mail
-		MailboxManager.setInstance(new DirectInsertionMailboxManager());
-
-	}
-
 	/*
 	 * Adding new header
 	 */

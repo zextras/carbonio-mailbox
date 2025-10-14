@@ -67,9 +67,6 @@ public class ErejectTest extends MailboxTestSuite {
     attrs = Maps.newHashMap();
     attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
     prov.createAccount("test2@zimbra.com", "secret", attrs);
-
-    // this MailboxManager does everything except actually send mail
-    MailboxManager.setInstance(new DirectInsertionMailboxManager());
   }
 
   /*
