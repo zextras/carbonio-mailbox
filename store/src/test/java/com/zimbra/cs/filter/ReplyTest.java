@@ -11,19 +11,15 @@ import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.Provisioning.DirectoryEntryVisitor;
 import com.zimbra.cs.mailbox.DeliveryContext;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.mail.DirectInsertionMailboxManager;
 import com.zimbra.cs.service.util.ItemId;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -98,7 +94,7 @@ public class ReplyTest extends MailboxTestSuite {
 		assertEquals("Hello World", notifyMsg.getFragment());
 	}
 
-	private static @NotNull DirectInsertionMailboxManager getMailboxManager()
+	private static DirectInsertionMailboxManager getMailboxManager()
 			throws ServiceException {
 		return new DirectInsertionMailboxManager();
 	}
