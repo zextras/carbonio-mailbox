@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.account.callback;
 
-import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.carbonio.message_broker.events.services.mailbox.UserStatusChanged;
 import com.zextras.mailbox.messagebroker.MessageBrokerFactory;
 import com.zimbra.common.account.Key;
@@ -20,18 +19,36 @@ import com.zimbra.cs.account.Provisioning;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 
 public class AccountStatus extends AttributeCallback {
 
+    private static class PublishStatusChangedHandler implements Function<UserStatusChanged, Boolean> {
+
+        @Override
+        public Boolean apply(UserStatusChanged userStatusChanged) {
+            try {
+                // allows bypassing broker during tests, since this class is instantiated via reflection
+                final boolean brokerEnabled = Objects.isNull(System.getProperty("broker.disabled"));
+                if (brokerEnabled) {
+                    return MessageBrokerFactory.getMessageBrokerClientInstance().publish(userStatusChanged);
+                }
+                return true;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     public AccountStatus() {
-        // used only because this class is called with reflection
+        publishStatusChanged = new PublishStatusChangedHandler();
     }
 
-    public AccountStatus(MessageBrokerClient messageBrokerClient) {
-        this.messageBrokerClient = messageBrokerClient;
+    public AccountStatus(Function<UserStatusChanged, Boolean> publishStatusChanged) {
+        this.publishStatusChanged = publishStatusChanged;
     }
 
-    private MessageBrokerClient messageBrokerClient;
+    private final Function<UserStatusChanged, Boolean> publishStatusChanged;
     /**
      * disable mail delivery if account status is changed to closed
      * reset lockout attributes if account status is changed to active
@@ -74,10 +91,7 @@ public class AccountStatus extends AttributeCallback {
         if (!context.isCreate()) {
             if (entry instanceof Account) {
                 try {
-                    final String disabled = System.getProperty("broker.disabled");
-                    if (disabled == null) {
-                        publishStatusChangedEvent((Account)entry);
-                    }
+                    publishStatusChangedEvent((Account)entry);
                     handleAccountStatusClosed((Account)entry);
                 } catch (Exception e) {
                     ZimbraLog.account.warn("Exception thrown on account status changed callback", e);
@@ -92,11 +106,7 @@ public class AccountStatus extends AttributeCallback {
         String userId = account.getId();
 
         try {
-            if (Objects.isNull(messageBrokerClient)) {
-                messageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
-            }
-            boolean result = messageBrokerClient.publish(
-                new UserStatusChanged(userId, status.toUpperCase()));
+            boolean result = publishStatusChanged.apply(new UserStatusChanged(userId, status.toUpperCase()));
             if (result) {
                 ZimbraLog.messageBroker.info("Published status changed event for user: " + userId);
             } else {
