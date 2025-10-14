@@ -47,13 +47,10 @@ public class RedirectCopyTest extends MailboxTestSuite {
 		prov.createAccount("test1@zimbra.com", "secret", attrs);
 		attrs = Maps.newHashMap();
 		attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-		Account acct = prov.createAccount("test2@zimbra.com", "secret", attrs);
+		prov.createAccount("test2@zimbra.com", "secret", attrs);
 		attrs = Maps.newHashMap();
 		attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
 		prov.createAccount("test3@zimbra.com", "secret", attrs);
-		Server server = Provisioning.getInstance().getServer(acct);
-		// this MailboxManager does everything except actually send mail
-		MailboxManager.setInstance(new DirectInsertionMailboxManager());
 	}
 
 	@Test
@@ -66,8 +63,8 @@ public class RedirectCopyTest extends MailboxTestSuite {
 			Account account2 = Provisioning.getInstance().get(Key.AccountBy.name,
 					"test3@zimbra.com");
 			RuleManager.clearCachedRules(account);
-			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
-			Mailbox mbox2 = MailboxManager.getInstance().getMailboxByAccount(account2);
+			Mailbox mbox = getMailboxManager().getMailboxByAccount(account);
+			Mailbox mbox2 = getMailboxManager().getMailboxByAccount(account2);
 			account.setMailSieveScript(filterScript);
 			String raw = "From: test1@zimbra.com\n" + "To: test2@zimbra.com\n" + "Subject: Test\n"
 					+ "\n" + "Hello World";
@@ -86,6 +83,10 @@ public class RedirectCopyTest extends MailboxTestSuite {
 		}
 	}
 
+	private static MailboxManager getMailboxManager() throws ServiceException {
+		return new DirectInsertionMailboxManager();
+	}
+
 	@Test
 	void testPlainRedirect() {
 		String filterPlainRedirectScript = "require [\"redirect\"];\n"
@@ -96,8 +97,8 @@ public class RedirectCopyTest extends MailboxTestSuite {
 			Account account2 = Provisioning.getInstance().get(Key.AccountBy.name,
 					"test3@zimbra.com");
 			RuleManager.clearCachedRules(account);
-			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
-			Mailbox mbox2 = MailboxManager.getInstance().getMailboxByAccount(account2);
+			Mailbox mbox = getMailboxManager().getMailboxByAccount(account);
+			Mailbox mbox2 = getMailboxManager().getMailboxByAccount(account2);
 			account.setMailSieveScript(filterPlainRedirectScript);
 			String raw = "From: test1@zimbra.com\n" + "To: test2@zimbra.com\n" + "Subject: Test\n"
 					+ "\n" + "Hello World";
@@ -124,7 +125,7 @@ public class RedirectCopyTest extends MailboxTestSuite {
 			Account account = Provisioning.getInstance().get(Key.AccountBy.name,
 					"test1@zimbra.com");
 			RuleManager.clearCachedRules(account);
-			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+			Mailbox mbox = getMailboxManager().getMailboxByAccount(account);
 			account.setMailSieveScript(filterScriptPattern1);
 			String rawReal = "From: test1@zimbra.com\n" + "To: test2@zimbra.com\n"
 					+ "Subject: Test\n" + "\n" + "Hello World";
@@ -154,8 +155,8 @@ public class RedirectCopyTest extends MailboxTestSuite {
 				+ "redirect \"" + accountRedirectName + "\";\n";
 		try {
 			RuleManager.clearCachedRules(account);
-			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
-			Mailbox mboxRedirect = MailboxManager.getInstance().getMailboxByAccount(accountRedirect);
+			Mailbox mbox = getMailboxManager().getMailboxByAccount(account);
+			Mailbox mboxRedirect = getMailboxManager().getMailboxByAccount(accountRedirect);
 			account.setMailSieveScript(filterScript);
 			String body = StringUtils.leftPad("", 999, "あ");
 

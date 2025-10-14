@@ -43,11 +43,6 @@ class FileIntoCopyTest extends MailboxTestSuite {
 	@TempDir
 	private Path tempDir;
 
-	@BeforeEach
-	public void setUp() throws Exception {
-		MailboxManager.setInstance(new DirectInsertionMailboxManager());
-	}
-
 
 	@Test
 	void testCopyFileInto() {
