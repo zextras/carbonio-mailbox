@@ -20,7 +20,9 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ZimbraAuthToken;
 import com.zimbra.cs.mailbox.DeliveryContext;
 import com.zimbra.cs.mailbox.DeliveryOptions;
+import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailServiceException;
+import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
@@ -51,7 +53,6 @@ import javax.mail.internet.MimeMultipart;
 import org.dom4j.QName;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -102,7 +103,6 @@ public final class ParseMimeMessageTest extends MailboxTestSuite {
 
   @Test
   void parseMimeMsgSoap_withMsgAttachment() throws Exception {
-    // TODO: check why this test keeps failing randomly
     Account acct = createAccount().create();
     OperationContext octxt = new OperationContext(acct);
     var mbox = MailboxManager.getInstance().createMailbox(octxt, acct);
@@ -115,7 +115,7 @@ public final class ParseMimeMessageTest extends MailboxTestSuite {
             .addAttachmentFromResources("/test-save-to-files.txt")
             .build();
     var deliveryOptions = new DeliveryOptions();
-    deliveryOptions.setFolderId(mbox.getId());
+    deliveryOptions.setFolderId(Mailbox.ID_FOLDER_INBOX);
     var msg = mbox.addMessage(octxt, message, deliveryOptions, new DeliveryContext());
 
     Element rootEl = new Element.JSONElement(MailConstants.E_SEND_MSG_REQUEST);
