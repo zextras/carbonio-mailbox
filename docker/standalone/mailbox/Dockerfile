@@ -1,9 +1,7 @@
 FROM maven:3-eclipse-temurin-17-alpine AS build
 
-RUN apk add --no-cache git
 WORKDIR /build
 
-COPY .git                             .git
 # Copy all project files
 COPY pom.xml                          pom.xml
 COPY store                            store
