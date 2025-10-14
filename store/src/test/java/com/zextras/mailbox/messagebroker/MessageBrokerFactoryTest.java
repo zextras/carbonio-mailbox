@@ -14,14 +14,12 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockserver.integration.ClientAndServer;
 
-@Disabled
 class MessageBrokerFactoryTest {
-	// TODO: think about these tests. They rely on filesystem and other static things
 	private static ClientAndServer consulServer;
 
 	@BeforeAll
 	public static void startUp() {
-		consulServer = startClientAndServer(8500);
+		consulServer = startClientAndServer(PortUtil.findFreePort());
 	}
 
 	@Test
@@ -31,6 +29,7 @@ class MessageBrokerFactoryTest {
 	}
 
 	@Test
+	@Disabled("this test needs RabbitMQ up, else healthcheck will fail")
 	void shouldCreateClient_WhenConsulTokenProvided() {
 		try (MockedStatic<Files> mockFileSystem = Mockito.mockStatic(Files.class, Mockito.CALLS_REAL_METHODS)) {
 			mockFileSystem.when(() -> Files.readString(any())).thenReturn("");
