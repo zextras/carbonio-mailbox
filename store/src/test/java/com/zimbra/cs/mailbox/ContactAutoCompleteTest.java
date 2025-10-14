@@ -83,7 +83,7 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
   }
 
   private static String getRandomMail() {
-    return UUID.randomUUID() + "@domain.com";
+    return UUID.randomUUID() + "@" + UUID.randomUUID()  + ".com";
   }
 
   @Test

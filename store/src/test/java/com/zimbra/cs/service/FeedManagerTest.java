@@ -8,6 +8,7 @@ package com.zimbra.cs.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.base.Charsets;
+import com.zimbra.common.localconfig.ConfigException;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.cs.mime.MPartInfo;
@@ -24,7 +25,9 @@ import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.util.List;
 import org.apache.http.client.utils.URIBuilder;
+import org.dom4j.DocumentException;
 import org.eclipse.jetty.http.HttpStatus;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -35,6 +38,11 @@ public class FeedManagerTest {
 	public void setUp() {
 		LC.zimbra_feed_manager_blacklist.setDefault("10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,fd00::/8");
 		LC.zimbra_feed_manager_whitelist.setDefault("");
+	}
+
+	@AfterAll
+	static void tearDown() throws DocumentException, ConfigException {
+		LC.reload();
 	}
 
 	@Test

@@ -16,6 +16,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
+import com.zimbra.cs.index.ZimbraAnalyzer;
 import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapClient;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapPoolConfig;
@@ -121,6 +122,7 @@ public class MailboxSetupHelper {
 		RightManager.getInstance();
 		ScheduledTaskManager.startup();
 		System.setProperty("broker.disabled", "true");
+		ZimbraAnalyzer.setInstance(new ZimbraAnalyzer());
 	}
 
   public void initData(MailboxTestData mailboxTestData) throws Exception {

@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.index;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.IOException;
@@ -37,7 +38,7 @@ import com.zimbra.cs.index.analysis.UniversalAnalyzer;
  * @author ysasaki
  */
 public final class ZimbraAnalyzer extends Analyzer {
-    private static final ZimbraAnalyzer SINGLETON = new ZimbraAnalyzer();
+    private static ZimbraAnalyzer SINGLETON = new ZimbraAnalyzer();
     private static final Map<String, Analyzer> ANALYZERS = new ConcurrentHashMap<>();
     static {
         ANALYZERS.put("StandardAnalyzer", new ForwardingAnalyzer(new StandardAnalyzer(LuceneIndex.VERSION)));
@@ -45,7 +46,12 @@ public final class ZimbraAnalyzer extends Analyzer {
 
     private final Analyzer defaultAnalyzer = new UniversalAnalyzer();
 
-    private ZimbraAnalyzer() {
+    public ZimbraAnalyzer() {
+    }
+
+    @VisibleForTesting
+    public static void setInstance(ZimbraAnalyzer instance) {
+        SINGLETON = instance;
     }
 
     /***

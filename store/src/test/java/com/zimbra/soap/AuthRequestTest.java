@@ -152,8 +152,7 @@ public class AuthRequestTest extends MailboxTestSuite {
 				.addAttribute(AccountConstants.A_BY, AccountConstants.A_NAME).addText(account1.getName());
 		authRequestElement.addUniqueElement(AccountConstants.E_RECOVERY_CODE).addText(testCode);
 
-		final Element responseElement = new Auth().handle(authRequestElement,
-				ServiceTestUtil.getRequestContext(account1));
+		final Element responseElement = new Auth().handle(authRequestElement, null);
 		final AuthToken authToken = AuthToken.getAuthToken(
 				responseElement.getElement(AccountConstants.E_AUTH_TOKEN).getText());
 

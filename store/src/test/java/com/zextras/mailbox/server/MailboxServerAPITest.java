@@ -64,6 +64,7 @@ class MailboxServerAPITest {
 	@AfterAll
 	static void tearDown() throws Exception {
 		mailboxServer.stop();
+		LC.reload();
 	}
 
 	private String getUserEndpoint() {
