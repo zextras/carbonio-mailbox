@@ -912,12 +912,6 @@ EOF
             -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
           </argLine>
-          <excludes>
-            <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.SearchActionTest.java</exclude>
-          </excludes>
         </configuration>
       </plugin>
       <plugin>
@@ -931,12 +925,6 @@ EOF
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
           </argLine>
-          <excludes>
-            <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.SearchActionTest.java</exclude>
-          </excludes>
         </configuration>
       </plugin>
       <plugin>
