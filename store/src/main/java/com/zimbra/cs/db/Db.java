@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.db;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
@@ -77,6 +78,10 @@ public abstract class Db {
         return sDatabase;
     }
 
+    @VisibleForTesting
+    public static void setInstance(Db db) {
+        sDatabase = db ;
+    }
     /** Returns whether the currently-configured database supports the given
      *  {@link Db.Capability}. */
     public static boolean supports(Db.Capability capability) {

@@ -207,9 +207,7 @@ public class DbPool {
         }
         PoolConfig pconfig = Db.getInstance().getPoolConfig();
 
-        String drivers = System.getProperty("jdbc.drivers");
-        if (drivers == null)
-            System.setProperty("jdbc.drivers", pconfig.mDriverClassName);
+        System.setProperty("jdbc.drivers", pconfig.mDriverClassName);
 
         sRootUrl = pconfig.mRootUrl;
         sLoggerRootUrl = pconfig.mLoggerUrl;
@@ -521,7 +519,10 @@ public class DbPool {
 
     @VisibleForTesting
     public static synchronized void clear() {
+        // TODO: avoid all this static an singleton usages
         isShutdown = false;
+        sIsInitialized = false;
+        ZimbraConnectionFactory.close();
     }
 
     public static void disableUsageWarning() {

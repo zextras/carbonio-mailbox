@@ -7,6 +7,7 @@ package com.zextras.mailbox.servlet;
 import com.google.inject.servlet.GuiceFilter;
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zimbra.common.localconfig.LC;
+import com.zimbra.cs.db.Db;
 import com.zimbra.cs.db.DbPool;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -29,10 +30,9 @@ import org.testcontainers.utility.DockerImageName;
 
 @Tag("api")
 @Testcontainers
-@Disabled
 class HealthServletTest {
 
-   private static final String DB_USER = "test";
+  private static final String DB_USER = "test";
   private static final String DB_PASSWORD = "test";
 
   @Container
@@ -137,13 +137,15 @@ class HealthServletTest {
   }
 
   private void withDb(ThrowingRunnable runnable) throws Exception {
-//    DbPool.startup();
+    DbPool.startup();
     try {
       runnable.run();
     } catch (Exception e) {
       throw new RuntimeException(e);
     } finally {
-//      DbPool.shutdown();
+      DbPool.shutdown();
+      DbPool.clear();
+      Db.setInstance(null);
     }
   }
 
