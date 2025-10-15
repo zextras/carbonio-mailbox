@@ -15,10 +15,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.Mockito;
 
 public class FileLogReaderTest extends MailboxTestSuite {
 
@@ -32,8 +32,7 @@ public class FileLogReaderTest extends MailboxTestSuite {
 	@BeforeEach
 	public void setUp() throws Exception {
 		logfile = File.createTempFile("logfile", null, folder);
-		RedoLogManager mockRedoLogManager =
-				EasyMock.createNiceMock(RedoLogManager.class);
+		RedoLogManager mockRedoLogManager = Mockito.mock(RedoLogManager.class);
 		logReader = new FileLogReader(logfile);
 		logWriter = new FileLogWriter(mockRedoLogManager, logfile,
 				0 /* no fsync thread */);
@@ -41,13 +40,10 @@ public class FileLogReaderTest extends MailboxTestSuite {
 
 	private void writeOp(TransactionId id) throws IOException {
 		logWriter.open();
-		RedoableOp op = EasyMock.createMockBuilder(CopyItem.class)
-				.withConstructor()
-				.addMockedMethod("getTransactionId")
-				.createMock();
-		EasyMock.expect(op.getTransactionId()).andStubReturn(id);
+		RedoableOp op = Mockito.spy(new CopyItem());
+		Mockito.when(op.getTransactionId()).thenReturn(id);
 
-		EasyMock.replay(op);
+
 		logWriter.log(op, op.getInputStream(), true /* synchronous */);
 		logWriter.close();
 	}

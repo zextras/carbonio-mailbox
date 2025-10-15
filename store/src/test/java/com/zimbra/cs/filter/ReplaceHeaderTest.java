@@ -174,9 +174,6 @@ public class ReplaceHeaderTest extends MailboxTestSuite {
 		attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
 		prov.createAccount("test4@zimbra.com", "secret", attrs);
 
-		// this MailboxManager does everything except actually send mail
-		MailboxManager.setInstance(new DirectInsertionMailboxManager());
-
 	}
 
 

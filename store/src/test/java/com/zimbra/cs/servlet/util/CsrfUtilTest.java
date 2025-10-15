@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 
 /**
@@ -53,23 +53,16 @@ public class CsrfUtilTest extends MailboxTestSuite {
 	public static void tearDownAfterClass() throws Exception {
 	}
 
-	/**
-	 * Test method for
-	 * {@link com.zimbra.cs.servlet.util.CsrfUtil#isCsrfRequest(javax.servlet.http.HttpServletRequest,
-	 * boolean, java.util.List)} .
-	 */
 	@Test
 	final void testIsCsrfRequest() {
 
 		List<String> urlsWithDisabledCsrfCheck = new ArrayList<String>();
 		urlsWithDisabledCsrfCheck.add("/AuthRequest");
-		HttpServletRequest request = EasyMock
-				.createMock(HttpServletRequest.class);
-		EasyMock.expect(request.getMethod()).andReturn("POST");
-		EasyMock.expect(request.getRequestURI()).andReturn(
+		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+		Mockito.when(request.getMethod()).thenReturn("POST");
+		Mockito.when(request.getRequestURI()).thenReturn(
 				"service/soap/AuthRequest");
 		try {
-			EasyMock.replay(request);
 			boolean csrfReq = CsrfUtil.doCsrfCheck(request,
 					null);
 			assertEquals(false, csrfReq);
@@ -85,13 +78,12 @@ public class CsrfUtilTest extends MailboxTestSuite {
 
 		List<String> urlsWithDisabledCsrfCheck = new ArrayList<String>();
 		urlsWithDisabledCsrfCheck.add("/AuthRequest");
-		HttpServletRequest request = EasyMock
-				.createMock(HttpServletRequest.class);
-		EasyMock.expect(request.getMethod()).andReturn("GET");
-		EasyMock.expect(request.getRequestURI()).andReturn(
+		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+		Mockito.when(request.getMethod()).thenReturn("GET");
+		Mockito.when(request.getRequestURI()).thenReturn(
 				"service/soap/AuthRequest");
 		try {
-			EasyMock.replay(request);
+			
 			boolean csrfReq = CsrfUtil.doCsrfCheck(request,
 					null);
 			assertEquals(false, csrfReq);
@@ -156,20 +148,20 @@ public class CsrfUtilTest extends MailboxTestSuite {
 	@Test
 	final void testIsCsrfRequestWhenCsrfCheckIsTurnedOn() {
 
-		String[] allowedRefHost = new String[1];
-		HttpServletRequest request = EasyMock
-				.createMock(HttpServletRequest.class);
-		EasyMock.expect(request.getHeader(HttpHeaders.HOST)).andReturn(
+		String[] allowedRefHost = getAllowedRefHost();
+		HttpServletRequest request = Mockito
+				.mock(HttpServletRequest.class);
+		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
 				"example.com");
-		EasyMock.expect(request.getServerName()).andReturn("example.com");
-		EasyMock.expect(request.getServerName()).andReturn("example.com");
-		EasyMock.expect(request.getHeader("X-Forwarded-Host")).andReturn(null);
-		EasyMock.expect(request.getMethod()).andReturn("POST");
-		EasyMock.expect(request.getHeader(HttpHeaders.REFERER)).andReturn(null);
+		Mockito.when(request.getServerName()).thenReturn("example.com");
+		Mockito.when(request.getServerName()).thenReturn("example.com");
+		Mockito.when(request.getHeader("X-Forwarded-Host")).thenReturn(null);
+		Mockito.when(request.getMethod()).thenReturn("POST");
+		Mockito.when(request.getHeader(HttpHeaders.REFERER)).thenReturn(null);
 
 		try {
 
-			EasyMock.replay(request);
+			
 			boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
 			assertEquals(false, csrfReq);
 
@@ -179,23 +171,27 @@ public class CsrfUtilTest extends MailboxTestSuite {
 		}
 	}
 
+	private static String[] getAllowedRefHost() {
+		return new String[]{"test"};
+	}
+
 	@Test
 	final void testIsCsrfRequestForSameReferer() {
 
-		String[] allowedRefHost = new String[1];
-		HttpServletRequest request = EasyMock
-				.createMock(HttpServletRequest.class);
-		EasyMock.expect(request.getHeader(HttpHeaders.HOST)).andReturn(
+		String[] allowedRefHost = getAllowedRefHost();
+		HttpServletRequest request = Mockito
+				.mock(HttpServletRequest.class);
+		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
 				"www.example.com");
-		EasyMock.expect(request.getServerName()).andReturn("www.example.com");
-		EasyMock.expect(request.getHeader("X-Forwarded-Host")).andReturn(null);
-		EasyMock.expect(request.getHeader(HttpHeaders.REFERER)).andReturn(
+		Mockito.when(request.getServerName()).thenReturn("www.example.com");
+		Mockito.when(request.getHeader("X-Forwarded-Host")).thenReturn(null);
+		Mockito.when(request.getHeader(HttpHeaders.REFERER)).thenReturn(
 				"http://www.example.com/zimbra/#15");
-		EasyMock.expect(request.getMethod()).andReturn("POST");
+		Mockito.when(request.getMethod()).thenReturn("POST");
 
 		try {
 
-			EasyMock.replay(request);
+			
 			boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
 			assertEquals(false, csrfReq);
 
@@ -212,18 +208,18 @@ public class CsrfUtilTest extends MailboxTestSuite {
 		allowedRefHost[0] = "www.newexample.com";
 		allowedRefHost[1] = "www.zextras.com:8080";
 		allowedRefHost[2] = "www.abc.com";
-		HttpServletRequest request = EasyMock
-				.createMock(HttpServletRequest.class);
-		EasyMock.expect(request.getHeader(HttpHeaders.HOST)).andReturn(
+		HttpServletRequest request = Mockito
+				.mock(HttpServletRequest.class);
+		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
 				"example.com");
-		EasyMock.expect(request.getServerName()).andReturn("example.com");
-		EasyMock.expect(request.getHeader("X-Forwarded-Host")).andReturn(null);
-		EasyMock.expect(request.getHeader(HttpHeaders.REFERER)).andReturn(
+		Mockito.when(request.getServerName()).thenReturn("example.com");
+		Mockito.when(request.getHeader("X-Forwarded-Host")).thenReturn(null);
+		Mockito.when(request.getHeader(HttpHeaders.REFERER)).thenReturn(
 				"http://www.newexample.com");
-		EasyMock.expect(request.getMethod()).andReturn("POST");
+		Mockito.when(request.getMethod()).thenReturn("POST");
 
 		try {
-			EasyMock.replay(request);
+			
 			boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
 			assertEquals(false, csrfReq);
 
@@ -236,20 +232,20 @@ public class CsrfUtilTest extends MailboxTestSuite {
 	@Test
 	final void testIsCsrfRequestForAllowedRefHostListEmptyAndNonMatchingHost() {
 
-		String[] allowedRefHost = new String[1];
-		HttpServletRequest request = EasyMock
-				.createMock(HttpServletRequest.class);
-		EasyMock.expect(request.getHeader(HttpHeaders.HOST)).andReturn(
+		String[] allowedRefHost = getAllowedRefHost();
+		HttpServletRequest request = Mockito
+				.mock(HttpServletRequest.class);
+		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
 				"example.com");
-		EasyMock.expect(request.getServerName()).andReturn("example.com");
-		EasyMock.expect(request.getHeader("X-Forwarded-Host")).andReturn(null);
-		EasyMock.expect(request.getHeader(HttpHeaders.REFERER)).andReturn(
+		Mockito.when(request.getServerName()).thenReturn("example.com");
+		Mockito.when(request.getHeader("X-Forwarded-Host")).thenReturn(null);
+		Mockito.when(request.getHeader(HttpHeaders.REFERER)).thenReturn(
 				"http://www.newexample.com");
-		EasyMock.expect(request.getMethod()).andReturn("POST");
+		Mockito.when(request.getMethod()).thenReturn("POST");
 
 		try {
 
-			EasyMock.replay(request);
+			
 			boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
 			assertEquals(true, csrfReq);
 
@@ -263,18 +259,18 @@ public class CsrfUtilTest extends MailboxTestSuite {
 	final void testIsCsrfRequestForRefererNotInMatchHost() {
 
 		String[] allowedRefHost = new String[3];
-		HttpServletRequest request = EasyMock
-				.createMock(HttpServletRequest.class);
-		EasyMock.expect(request.getHeader("X-Forwarded-Host")).andReturn(null);
-		EasyMock.expect(request.getHeader(HttpHeaders.HOST)).andReturn(
+		HttpServletRequest request = Mockito
+				.mock(HttpServletRequest.class);
+		Mockito.when(request.getHeader("X-Forwarded-Host")).thenReturn(null);
+		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
 				"example.com");
-		EasyMock.expect(request.getServerName()).andReturn("example.com");
-		EasyMock.expect(request.getHeader(HttpHeaders.REFERER)).andReturn(
+		Mockito.when(request.getServerName()).thenReturn("example.com");
+		Mockito.when(request.getHeader(HttpHeaders.REFERER)).thenReturn(
 				"http://www.newexample.com");
-		EasyMock.expect(request.getMethod()).andReturn("POST");
+		Mockito.when(request.getMethod()).thenReturn("POST");
 
 		try {
-			EasyMock.replay(request);
+			
 			boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
 			assertEquals(true, csrfReq);
 		} catch (IOException e) {
@@ -286,20 +282,20 @@ public class CsrfUtilTest extends MailboxTestSuite {
 	@Test
 	final void testIsCsrfRequestForSameRefererWithUrlHavingPort() {
 
-		String[] allowedRefHost = new String[1];
-		HttpServletRequest request = EasyMock
-				.createMock(HttpServletRequest.class);
-		EasyMock.expect(request.getHeader(HttpHeaders.HOST)).andReturn(
+		String[] allowedRefHost = getAllowedRefHost();
+		HttpServletRequest request = Mockito
+				.mock(HttpServletRequest.class);
+		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
 				"www.example.com:7070");
-		EasyMock.expect(request.getServerName()).andReturn(
+		Mockito.when(request.getServerName()).thenReturn(
 				"www.example.com:7070");
-		EasyMock.expect(request.getHeader("X-Forwarded-Host")).andReturn(null);
-		EasyMock.expect(request.getHeader(HttpHeaders.REFERER)).andReturn(
+		Mockito.when(request.getHeader("X-Forwarded-Host")).thenReturn(null);
+		Mockito.when(request.getHeader(HttpHeaders.REFERER)).thenReturn(
 				"http://www.example.com:7070");
-		EasyMock.expect(request.getMethod()).andReturn("POST");
+		Mockito.when(request.getMethod()).thenReturn("POST");
 		try {
 
-			EasyMock.replay(request);
+			
 			boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
 			assertEquals(false, csrfReq);
 
@@ -312,19 +308,19 @@ public class CsrfUtilTest extends MailboxTestSuite {
 	@Test
 	final void testIsCsrfRequestForSameRefererWithHttpsUrl() {
 
-		String[] allowedRefHost = new String[1];
-		HttpServletRequest request = EasyMock
-				.createMock(HttpServletRequest.class);
-		EasyMock.expect(request.getHeader(HttpHeaders.HOST)).andReturn(
+		String[] allowedRefHost = getAllowedRefHost();
+		HttpServletRequest request = Mockito
+				.mock(HttpServletRequest.class);
+		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
 				"mail.zimbra.com");
-		EasyMock.expect(request.getServerName()).andReturn("mail.zimbra.com");
-		EasyMock.expect(request.getHeader("X-Forwarded-Host")).andReturn(null);
-		EasyMock.expect(request.getHeader(HttpHeaders.REFERER)).andReturn(
+		Mockito.when(request.getServerName()).thenReturn("mail.zimbra.com");
+		Mockito.when(request.getHeader("X-Forwarded-Host")).thenReturn(null);
+		Mockito.when(request.getHeader(HttpHeaders.REFERER)).thenReturn(
 				"https://mail.zimbra.com/zimbra/");
-		EasyMock.expect(request.getMethod()).andReturn("POST");
+		Mockito.when(request.getMethod()).thenReturn("POST");
 		try {
 
-			EasyMock.replay(request);
+			
 			boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
 			assertEquals(false, csrfReq);
 
@@ -337,17 +333,17 @@ public class CsrfUtilTest extends MailboxTestSuite {
 	@Test
 	final void testIsCsrfRequestForSameRefererWithXFowardedHostHdr() {
 
-		String[] allowedRefHost = new String[1];
-		HttpServletRequest request = EasyMock
-				.createMock(HttpServletRequest.class);
-		EasyMock.expect(request.getHeader("X-Forwarded-Host")).andReturn(
+		String[] allowedRefHost = getAllowedRefHost();
+		HttpServletRequest request = Mockito
+				.mock(HttpServletRequest.class);
+		Mockito.when(request.getHeader("X-Forwarded-Host")).thenReturn(
 				"mail.zimbra.com");
-		EasyMock.expect(request.getHeader(HttpHeaders.REFERER)).andReturn(
+		Mockito.when(request.getHeader(HttpHeaders.REFERER)).thenReturn(
 				"https://mail.zimbra.com/zimbra/");
-		EasyMock.expect(request.getMethod()).andReturn("POST");
+		Mockito.when(request.getMethod()).thenReturn("POST");
 		try {
 
-			EasyMock.replay(request);
+			
 			boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
 			assertEquals(false, csrfReq);
 

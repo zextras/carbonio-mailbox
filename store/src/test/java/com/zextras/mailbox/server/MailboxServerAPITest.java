@@ -22,14 +22,14 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-@Tag("api")
+@Tag("e2e")
 class MailboxServerAPITest {
 
 	private static MailboxServer mailboxServer;
 	private static final int USER_HTTP_PORT = PortUtil.findFreePort();
 	private static final int USER_HTTPS_PORT = PortUtil.findFreePort();
 	private static final int ADMIN_PORT = PortUtil.findFreePort();
-  @TempDir
+	@TempDir
 	private static File tmpDir;
 
 	@BeforeAll
@@ -38,14 +38,15 @@ class MailboxServerAPITest {
 		final String timezoneFile = MailboxServerAPITest.class.getResource("/timezones-test.ics")
 				.getFile();
 
-		var localConfigFilePath = MailboxServerAPITest.class.getResource("/localconfig-test.xml").getPath();
+		var localConfigFilePath = MailboxServerAPITest.class.getResource("/localconfig-test.xml")
+				.getPath();
 
 		var localConfigFile = new File(localConfigFilePath);
 		var tmpLocalConfigFile = new File(tmpDir, "localconfig-test.xml");
 		Files.copy(localConfigFile.toPath(), tmpLocalConfigFile.toPath());
 
 		System.setProperty("zimbra.config", tmpLocalConfigFile.getAbsolutePath());
-		System.setProperty("org.eclipse.jetty.util.log.announce","false");
+		System.setProperty("org.eclipse.jetty.util.log.announce", "false");
 		// For some reason these localconfig values are used by SoapProvisioning/ZClient
 		LC.zimbra_admin_service_scheme.setDefault("https://");
 		LC.zimbra_zmprov_default_soap_server.setDefault("localhost");
@@ -61,6 +62,7 @@ class MailboxServerAPITest {
 	@AfterAll
 	static void tearDown() throws Exception {
 		mailboxServer.stop();
+		LC.reload();
 	}
 
 	private String getUserEndpoint() {
@@ -77,35 +79,32 @@ class MailboxServerAPITest {
 
 	@Test
 	void shouldAuthenticateStandardUser() throws Exception {
-		try(SoapClient soapClient = new SoapClient(getUserEndpoint())) {
-			final SoapResponse soapResponse = soapClient.newRequest()
-					.setSoapBody(new AuthRequest(AccountSelector.fromName("test@test.com"), "password"))
-					.call();
+		SoapClient soapClient = new SoapClient(getUserEndpoint());
+		final SoapResponse soapResponse = soapClient.newRequest()
+				.setSoapBody(new AuthRequest(AccountSelector.fromName("test@test.com"), "password"))
+				.call();
 
-			Assertions.assertEquals(200, soapResponse.statusCode());
-		}
+		Assertions.assertEquals(200, soapResponse.statusCode());
 	}
 
 	@Test
 	void shouldAuthenticateStandardUser_OnHttpsPort() throws Exception {
-		try(SoapClient soapClient = new SoapClient(getUserHttpsEndpoint())) {
-			final SoapResponse soapResponse = soapClient.newRequest()
-					.setSoapBody(new AuthRequest(AccountSelector.fromName("test@test.com"), "password"))
-					.call();
+		SoapClient soapClient = new SoapClient(getUserHttpsEndpoint());
+		final SoapResponse soapResponse = soapClient.newRequest()
+				.setSoapBody(new AuthRequest(AccountSelector.fromName("test@test.com"), "password"))
+				.call();
 
-			Assertions.assertEquals(200, soapResponse.statusCode());
-		}
+		Assertions.assertEquals(200, soapResponse.statusCode());
 	}
 
 	@Test
 	void shouldAuthenticateAdminUser() throws Exception {
-		try(SoapClient soapClient = new SoapClient(getAdminEndpoint())) {
-			final SoapResponse soapResponse =  soapClient.newRequest()
-					.setSoapBody(new AuthRequest(AccountSelector.fromName("admin@test.com"), "password"))
-					.call();
+		SoapClient soapClient = new SoapClient(getAdminEndpoint());
+		final SoapResponse soapResponse = soapClient.newRequest()
+				.setSoapBody(new AuthRequest(AccountSelector.fromName("admin@test.com"), "password"))
+				.call();
 
-			Assertions.assertEquals(200, soapResponse.statusCode());
-		}
+		Assertions.assertEquals(200, soapResponse.statusCode());
 	}
 
 }

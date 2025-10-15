@@ -31,7 +31,6 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-
 public class AuthRequestTest extends MailboxTestSuite {
 
 	private static String account;
@@ -62,7 +61,6 @@ public class AuthRequestTest extends MailboxTestSuite {
 
 		try {
 			Element element = JaxbUtil.jaxbToElement(authRequest);
-			String xml = element.toString();
 			assertTrue(element.hasChildren());
 			Element account = element.getElement("account");
 			Element pwdE = element.getElement("password");
@@ -84,7 +82,6 @@ public class AuthRequestTest extends MailboxTestSuite {
 
 		try {
 			Element element = JaxbUtil.jaxbToElement(authRequest);
-			String xml = element.toString();
 
 			Element account = element.getElement("account");
 			assertEquals(username, account.getText(), "Username embedded in request is incorrect");

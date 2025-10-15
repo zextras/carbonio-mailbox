@@ -4,6 +4,7 @@ import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.mailbox.FolderConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -58,7 +59,7 @@ class EmptyCalendarTrashTest extends SoapTestSuite {
 
         var soapResponse = getSoapClient().executeSoap(account, new EmptyCalendarTrashRequest());
 
-        assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+        assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
         assertTrue(mbox.getCalendarsInTrash(null).isEmpty());
     }
 
@@ -71,7 +72,7 @@ class EmptyCalendarTrashTest extends SoapTestSuite {
 
         var soapResponse = getSoapClient().executeSoap(account, new EmptyCalendarTrashRequest());
 
-        assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+        assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
         assertDoesNotThrow(() -> mbox.getFolderById(null, contactId));
     }
 
@@ -84,7 +85,7 @@ class EmptyCalendarTrashTest extends SoapTestSuite {
 
         var soapResponse = getSoapClient().executeSoap(account, new EmptyCalendarTrashRequest());
 
-        assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+        assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
         var groupInfoAfterEmptyCalendarTrash = getGroupInfoAfterDeletion("myGroup");
         assertEquals(1, groupInfoAfterEmptyCalendarTrash.getCalendarIds().size());
         assertEquals(otherCalendarId, groupInfoAfterEmptyCalendarTrash.getCalendarIds().get(0));
@@ -131,7 +132,7 @@ class EmptyCalendarTrashTest extends SoapTestSuite {
         request.setCalendarIds(calendarIds);
 
         var soapResponse = getSoapClient().executeSoap(acc, request);
-        assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+        assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
         final var response = parseSoapResponse(soapResponse, CreateCalendarGroupResponse.class);
         return response.getGroup();
     }
@@ -142,7 +143,7 @@ class EmptyCalendarTrashTest extends SoapTestSuite {
         folder.setDefaultView(type.toString());
         final var createFolderRequest = new CreateFolderRequest(folder);
         final var createFolderResponse = getSoapClient().executeSoap(account, createFolderRequest);
-        assertEquals(HttpStatus.SC_OK, createFolderResponse.getStatusLine().getStatusCode());
+        assertEquals(HttpStatus.SC_OK, createFolderResponse.statusCode());
         return parseSoapResponse(createFolderResponse, CreateFolderResponse.class).getFolder().getId();
     }
 
@@ -151,13 +152,13 @@ class EmptyCalendarTrashTest extends SoapTestSuite {
 
         final var soapResponse = getSoapClient().executeSoap(account, request);
 
-        assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+        assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
         return parseSoapResponse(soapResponse, GetCalendarGroupsResponse.class).getGroups();
     }
 
-    private static <T> T parseSoapResponse(HttpResponse httpResponse, Class<T> clazz)
+    private static <T> T parseSoapResponse(SoapResponse response, Class<T> clazz)
             throws IOException, ServiceException {
-        final var responseBody = EntityUtils.toString(httpResponse.getEntity());
+        final var responseBody = response.body();
         final var rootElement =
                 parseXML(responseBody)
                         .getElement("Body")

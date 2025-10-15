@@ -80,7 +80,7 @@ public class MailboxEnvironmentSetupHelper {
 
 		LC.zimbra_server_hostname.setDefault(APP_SERVER_NAME);
 		LC.timezone_file.setDefault(timeZoneFile);
-		HSQLDB.createDatabase();
+		HSQLDB.createDatabase(LC.zimbra_home.value() + "/build/test");
 
 		final InMemoryLdapServer inMemoryLdapServer = new Builder().
 				withLdapPort(LDAP_PORT)

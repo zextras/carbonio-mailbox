@@ -4,6 +4,7 @@ import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -33,11 +34,6 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
 
 	private Account account;
 
-  @BeforeAll
-  static void init() {
-		Provisioning provisioning = Provisioning.getInstance();
-    
-  }
 
   @BeforeEach
   void setUp() throws Exception {
@@ -59,7 +55,7 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
 
-    assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
     var response = parseSoapResponse(soapResponse, ModifyCalendarGroupResponse.class);
     var group = response.getGroup();
     assertEquals(modifiedCalendarList, group.getCalendarIds());
@@ -80,7 +76,7 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
 
-    assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
     var response = parseSoapResponse(soapResponse, ModifyCalendarGroupResponse.class);
     var group = response.getGroup();
     assertEquals(modifiedCalendarList, group.getCalendarIds());
@@ -103,7 +99,7 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
 
-    assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
     var response = parseSoapResponse(soapResponse, ModifyCalendarGroupResponse.class);
     var group = response.getGroup();
     assertEquals(groupNameModified, group.getName());
@@ -125,7 +121,7 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
 
-    assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
     var response = parseSoapResponse(soapResponse, ModifyCalendarGroupResponse.class);
     var group = response.getGroup();
     assertNull(group.getCalendarIds());
@@ -137,7 +133,7 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
     folder.setDefaultView("appointment");
     final var createFolderRequest = new CreateFolderRequest(folder);
     final var createFolderResponse = getSoapClient().executeSoap(account, createFolderRequest);
-    assertEquals(HttpStatus.SC_OK, createFolderResponse.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, createFolderResponse.statusCode());
     return parseSoapResponse(createFolderResponse, CreateFolderResponse.class).getFolder();
   }
 
@@ -147,13 +143,13 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
     request.setCalendarIds(calendarIds);
 
     var soapResponse = getSoapClient().executeSoap(acc, request);
-    assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
     return parseSoapResponse(soapResponse, CreateCalendarGroupResponse.class);
   }
 
-  private static <T> T parseSoapResponse(HttpResponse httpResponse, Class<T> clazz)
+  private static <T> T parseSoapResponse(SoapResponse soapResponse, Class<T> clazz)
           throws IOException, ServiceException {
-    final var responseBody = EntityUtils.toString(httpResponse.getEntity());
+    final var responseBody = soapResponse.body();
     final var rootElement =
             parseXML(responseBody)
                     .getElement("Body")

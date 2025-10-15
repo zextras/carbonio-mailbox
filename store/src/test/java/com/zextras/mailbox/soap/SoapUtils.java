@@ -4,6 +4,7 @@
 
 package com.zextras.mailbox.soap;
 
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.soap.Element;
 import com.zimbra.soap.JaxbUtil;
 import org.apache.http.HttpResponse;
@@ -15,9 +16,8 @@ public class SoapUtils {
     return EntityUtils.toString(response.getEntity());
   }
 
-  public static <T> T getSoapResponse(HttpResponse response, String bodyKey, Class<T> expected) throws Exception {
-    final String soapResponse = getResponse(response);
-    return JaxbUtil.elementToJaxb(Element.parseXML(soapResponse).getElement("Body").getElement(
+  public static <T> T getSoapResponse(SoapResponse response, String bodyKey, Class<T> expected) throws Exception {
+    return JaxbUtil.elementToJaxb(Element.parseXML(response.body()).getElement("Body").getElement(
         bodyKey), expected);
   }
 

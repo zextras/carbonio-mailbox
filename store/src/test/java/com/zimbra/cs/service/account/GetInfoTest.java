@@ -33,7 +33,7 @@ class GetInfoTest extends SoapTestSuite {
 
     final var response = getSoapClient().executeSoap(account, request);
 
-    assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, response.statusCode());
   }
 
   @ParameterizedTest
@@ -54,7 +54,7 @@ class GetInfoTest extends SoapTestSuite {
 
     final var response = getSoapClient().executeSoap(account, request);
 
-    assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, response.statusCode());
   }
 
   @Test
@@ -68,8 +68,8 @@ class GetInfoTest extends SoapTestSuite {
 
     final var response = getSoapClient().executeSoap(account, request);
 
-    assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-    final var body = EntityUtils.toString(response.getEntity());
+    assertEquals(HttpStatus.SC_OK, response.statusCode());
+    final var body = response.body();
     assertTrue(body.contains("amavisWhitelistSender"));
     assertTrue(body.contains("amavisBlacklistSender"));
   }
@@ -88,8 +88,8 @@ class GetInfoTest extends SoapTestSuite {
 
     final var response = getSoapClient().executeSoap(account, request);
 
-    assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-    final var body = EntityUtils.toString(response.getEntity());
+    assertEquals(HttpStatus.SC_OK, response.statusCode());
+    final var body = response.body();
     assertTrue(body.contains("<attr name=\"zimbraFeatureMailEnabled\">FALSE</attr>"));
   }
 }

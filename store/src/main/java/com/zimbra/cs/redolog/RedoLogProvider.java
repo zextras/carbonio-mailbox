@@ -8,6 +8,7 @@
  */
 package com.zimbra.cs.redolog;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.util.Zimbra;
@@ -31,6 +32,11 @@ public abstract class RedoLogProvider {
 
     public static RedoLogProvider getInstance() {
     	return theInstance;
+    }
+
+    @VisibleForTesting
+    public static void setInstance(RedoLogProvider redoLogProvider) {
+        theInstance = redoLogProvider;
     }
 
     private static RedoLogProvider loadProvider()

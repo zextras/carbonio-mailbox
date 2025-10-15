@@ -47,6 +47,18 @@
 
   <packaging>jar</packaging>
   <build>
+    <resources>
+      <resource>
+        <directory>${ldap.generated.dir}</directory>
+        <includes>
+          <include>*.ldif</include>
+          <include>config/**</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${project.basedir}/src/main/resources</directory>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -55,7 +67,7 @@
         <executions>
           <execution>
             <id>add-zattr</id>
-            <phase>generate-sources</phase>
+            <phase>process-sources</phase>
             <goals>
               <goal>add-source</goal>
             </goals>
@@ -63,24 +75,6 @@
               <sources>
                 <source>${generated-sources}/zattr/</source>
               </sources>
-            </configuration>
-          </execution>
-          <execution>
-            <id>add-ldap-files</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>add-resource</goal>
-            </goals>
-            <configuration>
-              <resources>
-                <resource>
-                  <directory>${ldap.generated.dir}</directory>
-                  <includes>
-                    <include>*.ldif</include>
-                    <include>config/**</include>
-                  </includes>
-                </resource>
-              </resources>
             </configuration>
           </execution>
         </executions>
@@ -111,24 +105,6 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.0</version>
         <executions>
-          <execution>
-            <id>generate-ldap-version</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>sh</executable>
-              <arguments>
-                <argument>-c</argument>
-                <argument>mkdir -p ${ldap.generated.dir} &amp;&amp; \
-                  git log -1 \
-                  --pretty=format:%at \
-                  ${project.basedir}/../attribute-manager/src/main/resources/conf/attrs/attrs.xml \
-                  > ${ldap.generated.dir}/attrs-schema</argument>
-              </arguments>
-            </configuration>
-          </execution>
           <execution>
             <id>generate-ZAttrAccount</id>
             <phase>generate-sources</phase>
@@ -240,6 +216,7 @@
             <phase>generate-resources</phase>
             <configuration>
               <target>
+                <copy todir="${ldap.generated.dir}/" file="${ldap.dir}/attrs-schema" />
                 <copy todir="${ldap.generated.dir}/" file="${ldap.dir}/carbonio.ldif" />
                 <copy todir="${ldap.generated.dir}/" file="${ldap.dir}/mimehandlers.ldif" />
                 <copy todir="${ldap.generated.dir}/schema" file="${ldap.dir}/amavisd.schema" />

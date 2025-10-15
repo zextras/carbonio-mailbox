@@ -21,7 +21,6 @@ import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
-import com.zimbra.cs.service.mail.DirectInsertionMailboxManager;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.store.file.VolumeBlob;
@@ -31,20 +30,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import qa.unittest.TestUtil;
+
 
 class FileIntoCopyTest extends MailboxTestSuite {
 
 	@TempDir
 	private Path tempDir;
-
-	@BeforeEach
-	public void setUp() throws Exception {
-		MailboxManager.setInstance(new DirectInsertionMailboxManager());
-	}
 
 
 	@Test

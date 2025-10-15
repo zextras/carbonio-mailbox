@@ -114,7 +114,7 @@ public class ZimbraServlet extends HttpServlet {
 
   private static final int MAX_PROXY_HOPCOUNT = 3;
 
-  private static Map<String, ZimbraServlet> sServlets = new HashMap<>();
+  private static final Map<String, ZimbraServlet> sServlets = new HashMap<>();
 
   private int[] mAllowedPorts;
 
@@ -157,10 +157,6 @@ public class ZimbraServlet extends HttpServlet {
 
       // Store reference to this servlet for accessor
       synchronized (sServlets) {
-        String name = getServletName();
-        if (sServlets.containsKey(name)) {
-          Zimbra.halt("Attempted to instantiate a second instance of " + name);
-        }
         sServlets.put(getServletName(), this);
         mLog.debug("Added " + getServletName() + " to the servlet list");
       }

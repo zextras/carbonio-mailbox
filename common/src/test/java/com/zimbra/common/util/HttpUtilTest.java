@@ -5,14 +5,12 @@
 
 package com.zimbra.common.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.easymock.EasyMock;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.common.util.HttpUtil.Browser;
+import javax.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 /**
  * Unit test for {@link HttpUtil}.
@@ -352,15 +350,15 @@ public final class HttpUtilTest {
     String pathInfoWithoutFilename = "/path/info/";
 
     // Use a servlet request mock
-    HttpServletRequest request = EasyMock.createNiceMock(HttpServletRequest.class);
-    EasyMock.expect(request.getPathInfo()).andReturn(pathInfoWithoutFilename);
-    EasyMock.expect(request.getHeader(EasyMock.eq("User-Agent"))).andReturn(ua).anyTimes();
+    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+    Mockito.when(request.getPathInfo()).thenReturn(pathInfoWithoutFilename);
+    Mockito.when(request.getHeader("User-Agent")).thenReturn(ua);
 
     Object [] mocks = {
         request
     };
 
-    EasyMock.replay(mocks);
+    
 
     assertEquals("attachement; filename=\"ascii.txt\"", HttpUtil.createContentDisposition(request,  "attachement", asciiFilename));
     assertEquals("attachement; filename*=UTF-8''space%22%20space.txt", HttpUtil.createContentDisposition(request,  "attachement", asciiQuote));
@@ -383,15 +381,15 @@ public final class HttpUtilTest {
     String pathInfoWithoutFilename = "/path/info/";
 
     // Use a servlet request mock
-    HttpServletRequest request = EasyMock.createNiceMock(HttpServletRequest.class);
-    EasyMock.expect(request.getPathInfo()).andReturn(pathInfoWithoutFilename);
-    EasyMock.expect(request.getHeader(EasyMock.eq("User-Agent"))).andReturn(ua).anyTimes();
+    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+    Mockito.when(request.getPathInfo()).thenReturn(pathInfoWithoutFilename);
+    Mockito.when(request.getHeader("User-Agent")).thenReturn(ua);
 
     Object [] mocks = {
         request
     };
 
-    EasyMock.replay(mocks);
+    
 
     assertEquals("attachement; filename=\"ascii.txt\"", HttpUtil.createContentDisposition(request,  "attachement", asciiFilename));
     assertEquals("attachement; filename*=UTF-8''space%22%20space.txt", HttpUtil.createContentDisposition(request,  "attachement", asciiQuote));
@@ -412,15 +410,15 @@ public final class HttpUtilTest {
     String pathInfoWithoutFilename = "/path/info/";
 
     // Use a servlet request mock
-    HttpServletRequest request = EasyMock.createNiceMock(HttpServletRequest.class);
-    EasyMock.expect(request.getPathInfo()).andReturn(pathInfoWithoutFilename).anyTimes();
-    EasyMock.expect(request.getHeader(EasyMock.eq("User-Agent"))).andReturn(ua).anyTimes();
+    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+    Mockito.when(request.getPathInfo()).thenReturn(pathInfoWithoutFilename);
+    Mockito.when(request.getHeader("User-Agent")).thenReturn(ua);
 
     Object [] mocks = {
         request
     };
 
-    EasyMock.replay(mocks);
+    
 
     assertEquals("attachement; filename=\"ascii.txt\"", HttpUtil.createContentDisposition(request,  "attachement", asciiFilename));
     assertEquals("attachement; filename=space\" space.txt", HttpUtil.createContentDisposition(request,  "attachement", asciiQuote));
@@ -442,15 +440,15 @@ public final class HttpUtilTest {
     String pathInfoWithFilename = "/path/info/Wikip\u00E9dia.txt";
 
     // Use a servlet request mock
-    HttpServletRequest request = EasyMock.createNiceMock(HttpServletRequest.class);
-    EasyMock.expect(request.getPathInfo()).andReturn(pathInfoWithFilename).anyTimes();
-    EasyMock.expect(request.getHeader(EasyMock.eq("User-Agent"))).andReturn(ua).anyTimes();
+    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+    Mockito.when(request.getPathInfo()).thenReturn(pathInfoWithFilename);
+    Mockito.when(request.getHeader("User-Agent")).thenReturn(ua);
 
     Object [] mocks = {
         request
     };
 
-    EasyMock.replay(mocks);
+    
 
     assertEquals("attachement; filename=\"ascii.txt\"", HttpUtil.createContentDisposition(request,  "attachement", asciiFilename));
     assertEquals("attachement; filename=space\" space.txt", HttpUtil.createContentDisposition(request,  "attachement", asciiQuote));
@@ -474,15 +472,15 @@ public final class HttpUtilTest {
     String pathInfoWithoutFilename = "/path/info/";
 
     // Use a servlet request mock
-    HttpServletRequest request = EasyMock.createNiceMock(HttpServletRequest.class);
-    EasyMock.expect(request.getPathInfo()).andReturn(pathInfoWithoutFilename).anyTimes();
-    EasyMock.expect(request.getHeader(EasyMock.eq("User-Agent"))).andReturn(ua).anyTimes();
+    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+    Mockito.when(request.getPathInfo()).thenReturn(pathInfoWithoutFilename);
+    Mockito.when(request.getHeader("User-Agent")).thenReturn(ua);
 
     Object [] mocks = {
         request
     };
 
-    EasyMock.replay(mocks);
+    
 
     assertEquals("attachement; filename=\"ascii.txt\"", HttpUtil.createContentDisposition(request,  "attachement", asciiFilename));
     assertEquals("attachement; filename=space\" space.txt", HttpUtil.createContentDisposition(request,  "attachement", asciiQuote));
@@ -503,15 +501,15 @@ public final class HttpUtilTest {
     String pathInfoWithFilename = "/path/info/Wikip\u00E9dia.txt";
 
     // Use a servlet request mock
-    HttpServletRequest request = EasyMock.createNiceMock(HttpServletRequest.class);
-    EasyMock.expect(request.getPathInfo()).andReturn(pathInfoWithFilename).anyTimes();
-    EasyMock.expect(request.getHeader(EasyMock.eq("User-Agent"))).andReturn(ua).anyTimes();
+    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+    Mockito.when(request.getPathInfo()).thenReturn(pathInfoWithFilename);
+    Mockito.when(request.getHeader("User-Agent")).thenReturn(ua);
 
     Object [] mocks = {
         request
     };
 
-    EasyMock.replay(mocks);
+    
 
     assertEquals("attachement; filename=\"ascii.txt\"", HttpUtil.createContentDisposition(request,  "attachement", asciiFilename));
     assertEquals("attachement; filename=space\" space.txt", HttpUtil.createContentDisposition(request,  "attachement", asciiQuote));
@@ -532,15 +530,15 @@ public final class HttpUtilTest {
     String pathInfoWithoutFilename = "/path/info/";
 
     // Use a servlet request mock
-    HttpServletRequest request = EasyMock.createNiceMock(HttpServletRequest.class);
-    EasyMock.expect(request.getPathInfo()).andReturn(pathInfoWithoutFilename);
-    EasyMock.expect(request.getHeader(EasyMock.eq("User-Agent"))).andReturn(ua).anyTimes();
+    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+    Mockito.when(request.getPathInfo()).thenReturn(pathInfoWithoutFilename);
+    Mockito.when(request.getHeader("User-Agent")).thenReturn(ua);
 
     Object [] mocks = {
         request
     };
 
-    EasyMock.replay(mocks);
+    
 
     assertEquals("attachement; filename=\"ascii.txt\"", HttpUtil.createContentDisposition(request,  "attachement", asciiFilename));
     assertEquals("attachement; filename*=UTF-8''space%22%20space.txt", HttpUtil.createContentDisposition(request,  "attachement", asciiQuote));

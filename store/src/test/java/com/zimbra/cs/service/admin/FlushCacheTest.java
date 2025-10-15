@@ -3,6 +3,7 @@ package com.zimbra.cs.service.admin;
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
@@ -22,7 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -136,20 +136,20 @@ public class FlushCacheTest extends SoapTestSuite {
         return cacheSelector;
     }
 
-    private HttpResponse doCall(Account caller, CacheSelector cacheSelector) throws Exception {
+    private SoapResponse doCall(Account caller, CacheSelector cacheSelector) throws Exception {
         final FlushCacheRequest request = new FlushCacheRequest(cacheSelector);
         return getSoapClient().newRequest().setCaller(caller).setSoapBody(request).execute();
     }
 
-    private void assertOk(HttpResponse response) {
+    private void assertOk(SoapResponse response) {
         assertStatus(response, HttpStatus.SC_OK);
     }
 
-    private void assertFailure(HttpResponse response) {
+    private void assertFailure(SoapResponse response) {
         assertStatus(response, HttpStatus.SC_UNPROCESSABLE_ENTITY);
     }
 
-    private void assertStatus(HttpResponse response, int status) {
-        Assertions.assertEquals(status, response.getStatusLine().getStatusCode());
+    private void assertStatus(SoapResponse response, int status) {
+        Assertions.assertEquals(status, response.statusCode());
     }
 }

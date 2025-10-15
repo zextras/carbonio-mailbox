@@ -1,6 +1,7 @@
 package com.zimbra.cs.service.admin;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Cos;
 import com.zimbra.cs.account.Provisioning;
@@ -32,11 +33,11 @@ class CreateSystemRetentionPolicyTest extends SoapTestSuite {
     final CreateSystemRetentionPolicyRequest request = CreateSystemRetentionPolicyRequest.newPurgeRequest(
         Policy.newSystemPolicy("PurgePolicy", "10d"));
 
-    final HttpResponse response =
+    final SoapResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-    final String responseBody = EntityUtils.toString(response.getEntity());
+    Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
+    final String responseBody = response.body();
     Assertions.assertTrue(responseBody.contains("policy name=\"PurgePolicy\" lifetime=\"10d\""));
   }
 
@@ -49,11 +50,11 @@ class CreateSystemRetentionPolicyTest extends SoapTestSuite {
         Policy.newSystemPolicy("PurgePolicy", "10d"));
     request.setCos(new CosSelector(CosBy.id, cos.getId()));
 
-    final HttpResponse response =
+    final SoapResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-    final String responseBody = EntityUtils.toString(response.getEntity());
+    Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
+    final String responseBody = response.body();
     Assertions.assertTrue(responseBody.contains("policy name=\"PurgePolicy\" lifetime=\"10d\""));
   }
 
@@ -65,11 +66,11 @@ class CreateSystemRetentionPolicyTest extends SoapTestSuite {
         Policy.newSystemPolicy("PurgePolicy", "10d"));
     request.setCos(new CosSelector(CosBy.id, "No such COS"));
 
-    final HttpResponse response =
+    final SoapResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, response.getStatusLine().getStatusCode());
-    final String responseBody = EntityUtils.toString(response.getEntity());
+    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, response.statusCode());
+    final String responseBody = response.body();
     Assertions.assertTrue(responseBody.contains("no such cos: No such COS"));
   }
 
@@ -78,11 +79,11 @@ class CreateSystemRetentionPolicyTest extends SoapTestSuite {
     final Account adminAccount = createAccount().asGlobalAdmin().create();
     final CreateSystemRetentionPolicyRequest request = new CreateSystemRetentionPolicyRequest();
 
-    final HttpResponse response =
+    final SoapResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, response.getStatusLine().getStatusCode());
-    final String responseBody = EntityUtils.toString(response.getEntity());
+    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, response.statusCode());
+    final String responseBody = response.body();
     Assertions.assertTrue(responseBody.contains("No purge policy specified."));
   }
 
@@ -91,11 +92,11 @@ class CreateSystemRetentionPolicyTest extends SoapTestSuite {
     final Account userAccount = createAccount().create();
     final CreateSystemRetentionPolicyRequest request = new CreateSystemRetentionPolicyRequest();
 
-    final HttpResponse response =
+    final SoapResponse response =
         getSoapClient().newRequest().setCaller(userAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, response.getStatusLine().getStatusCode());
-    final String responseBody = EntityUtils.toString(response.getEntity());
+    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, response.statusCode());
+    final String responseBody = response.body();
     Assertions.assertTrue(responseBody.contains("permission denied: need adequate admin token"));
   }
 }

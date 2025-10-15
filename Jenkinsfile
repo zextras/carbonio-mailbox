@@ -1,10 +1,10 @@
 library(
-    identifier: 'jenkins-packages-build-library@1.0.4',
-    retriever: modernSCM([
-        $class: 'GitSCMSource',
-        remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
-        credentialsId: 'jenkins-integration-with-github-account'
-    ])
+        identifier: 'jenkins-packages-build-library@1.0.4',
+        retriever: modernSCM([
+                $class       : 'GitSCMSource',
+                remote       : 'git@github.com:zextras/jenkins-packages-build-library.git',
+                credentialsId: 'jenkins-integration-with-github-account'
+        ])
 )
 
 boolean isBuildingTag() {
@@ -12,7 +12,7 @@ boolean isBuildingTag() {
 }
 
 String profile = isBuildingTag() ? '-Pprod' :
-    (env.BRANCH_NAME == 'devel' ? '-Pdev' : '')
+        (env.BRANCH_NAME == 'devel' ? '-Pdev' : '')
 
 pipeline {
     agent {
@@ -37,14 +37,14 @@ pipeline {
 
     parameters {
         booleanParam defaultValue: false,
-            description: 'Upload packages in playground repositories.',
-            name: 'PLAYGROUND'
+                description: 'Upload packages in playground repositories.',
+                name: 'PLAYGROUND'
         booleanParam defaultValue: false,
-            description: 'Skip test and sonar analysis.',
-            name: 'SKIP_TEST_WITH_COVERAGE'
+                description: 'Skip test and sonar analysis.',
+                name: 'SKIP_TEST_WITH_COVERAGE'
         booleanParam defaultValue: false,
-            description: 'Skip sonar analysis.',
-            name: 'SKIP_SONARQUBE'
+                description: 'Skip sonar analysis.',
+                name: 'SKIP_SONARQUBE'
     }
 
     tools {
@@ -66,9 +66,11 @@ pipeline {
         }
 
         stage('Build') {
-            steps {
-                container('jdk-17') {
-                    sh """
+            parallel {
+                stage('Maven build') {
+                    steps {
+                        container('jdk-17') {
+                            sh """
                         mvn ${MVN_OPTS} \
                             -DskipTests=true \
                             clean install
@@ -77,32 +79,39 @@ pipeline {
                                 mailbox-ldap-lib client common packages soap jython-libs \
                                 staging/
                     """
-                    stash includes: 'staging/**', name: 'staging'
+                            stash includes: 'staging/**', name: 'staging'
+                        }
+                    }
                 }
-            }
-        }
-        stage('Build containers') {
-            steps {
-                container('dind') {
-                    withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                        sh 'docker buildx bake'
+                stage('Build containers') {
+                    steps {
+                        container('dind') {
+                            withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                                sh 'docker buildx bake'
+                            }
+                        }
                     }
                 }
             }
         }
 
-        stage('UT, IT & API tests') {
-            when {
-                expression {
-                    params.SKIP_TEST_WITH_COVERAGE == false
-                }
-            }
+
+        stage('UT, IT') {
             steps {
                 container('jdk-17') {
-                    sh "mvn ${MVN_OPTS} verify"
+                    sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,flaky,e2e"
                 }
                 junit allowEmptyResults: true,
-                    testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+            }
+        }
+        stage('Flaky, API, E2E tests') {
+            steps {
+                container('jdk-17') {
+                    sh "cd store && mvn ${MVN_OPTS} verify -Dgroups=flaky,api && mvn ${MVN_OPTS} verify -Dgroups=e2e"
+                }
+                junit allowEmptyResults: true,
+                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
             }
         }
 
@@ -161,34 +170,34 @@ pipeline {
                                 tagVersions = ['devel', 'latest']
                             }
                             dockerHelper.buildImage([
-                                dockerfile: 'docker/standalone/mailbox/Dockerfile',
-                                imageName: 'registry.dev.zextras.com/dev/carbonio-mailbox',
-                                imageTags: tagVersions,
-                                ocLabels: [
-                                    title: 'Carbonio Mailbox',
-                                    descriptionFile: 'docker/standalone/mailbox/description.md',
-                                    version: tagVersions[0]
-                                ]
+                                    dockerfile: 'docker/standalone/mailbox/Dockerfile',
+                                    imageName : 'registry.dev.zextras.com/dev/carbonio-mailbox',
+                                    imageTags : tagVersions,
+                                    ocLabels  : [
+                                            title          : 'Carbonio Mailbox',
+                                            descriptionFile: 'docker/standalone/mailbox/description.md',
+                                            version        : tagVersions[0]
+                                    ]
                             ])
                             dockerHelper.buildImage([
-                                dockerfile: 'docker/standalone/mariadb/Dockerfile',
-                                imageName: 'registry.dev.zextras.com/dev/carbonio-mariadb',
-                                imageTags: tagVersions,
-                                ocLabels: [
-                                    title: 'Carbonio MariaDB',
-                                    descriptionFile: 'docker/standalone/mariadb/description.md',
-                                    version: tagVersions[0]
-                                ]
+                                    dockerfile: 'docker/standalone/mariadb/Dockerfile',
+                                    imageName : 'registry.dev.zextras.com/dev/carbonio-mariadb',
+                                    imageTags : tagVersions,
+                                    ocLabels  : [
+                                            title          : 'Carbonio MariaDB',
+                                            descriptionFile: 'docker/standalone/mariadb/description.md',
+                                            version        : tagVersions[0]
+                                    ]
                             ])
                             dockerHelper.buildImage([
-                                dockerfile: 'docker/standalone/openldap/Dockerfile',
-                                imageName: 'registry.dev.zextras.com/dev/carbonio-openldap',
-                                imageTags: tagVersions,
-                                ocLabels: [
-                                    title: 'Carbonio OpenLDAP',
-                                    descriptionFile: 'docker/standalone/openldap/description.md',
-                                    version: tagVersions[0]
-                                ]
+                                    dockerfile: 'docker/standalone/openldap/Dockerfile',
+                                    imageName : 'registry.dev.zextras.com/dev/carbonio-openldap',
+                                    imageTags : tagVersions,
+                                    ocLabels  : [
+                                            title          : 'Carbonio OpenLDAP',
+                                            descriptionFile: 'docker/standalone/openldap/description.md',
+                                            version        : tagVersions[0]
+                                    ]
                             ])
                         }
                     }
@@ -200,27 +209,27 @@ pipeline {
             steps {
                 echo 'Building deb/rpm packages'
                 buildStage([
-                    skipStash: true,
-                    buildDirs: ['staging/packages'],
-                    overrides: [
-                        ubuntu: [
-                            preBuildScript: '''
+                        skipStash: true,
+                        buildDirs: ['staging/packages'],
+                        overrides: [
+                                ubuntu: [
+                                        preBuildScript: '''
                                 apt-get update
                                 apt-get install -y --no-install-recommends rsync
                             '''
+                                ]
                         ]
-                    ]
                 ])
             }
         }
 
         stage('Upload artifacts')
-        {
-            steps {
-                uploadStage(
-                    packages: yapHelper.getPackageNames('staging/packages/yap.json')
-                )
-            }
-        }
+                {
+                    steps {
+                        uploadStage(
+                                packages: yapHelper.getPackageNames('staging/packages/yap.json')
+                        )
+                    }
+                }
     }
 }

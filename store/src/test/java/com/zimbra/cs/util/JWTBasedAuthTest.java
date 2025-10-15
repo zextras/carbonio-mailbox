@@ -44,9 +44,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class JWTBasedAuthTest extends MailboxTestSuite {
 
@@ -128,24 +128,23 @@ public class JWTBasedAuthTest extends MailboxTestSuite {
 
 	@Test
 	void testGetSaltSoapContext() {
-		Element soapCtxt = EasyMock.createMock(Element.class);
+		Element soapCtxt = Mockito.mock(Element.class);
 		String salt = "s1";
-		EasyMock.expect(soapCtxt.getAttribute(HeaderConstants.E_JWT_SALT, null)).andReturn(salt);
-		EasyMock.replay(soapCtxt);
+		Mockito.when(soapCtxt.getAttribute(HeaderConstants.E_JWT_SALT, null)).thenReturn(salt);
 		String saltFound = JWTUtil.getSalt(soapCtxt, null);
 		assertEquals(salt, saltFound);
 	}
 
 	@Test
 	void testGetSaltCookie() {
-		HttpServletRequest req = EasyMock.createMock(HttpServletRequest.class);
+		HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
 		Cookie cookies[] = new Cookie[1];
 		String salt = "s1";
 		Cookie cookie = new Cookie("ZM_JWT", salt);
 		cookie.setHttpOnly(true);
 		cookies[0] = cookie;
-		EasyMock.expect(req.getCookies()).andReturn(cookies);
-		EasyMock.replay(req);
+		Mockito.when(req.getCookies()).thenReturn(cookies);
+		
 		Map<String, Object> engineCtxt = new HashMap<String, Object>();
 		engineCtxt.put(SoapServlet.SERVLET_REQUEST, req);
 		String saltFound = JWTUtil.getSalt(null, engineCtxt);
@@ -224,9 +223,9 @@ public class JWTBasedAuthTest extends MailboxTestSuite {
 
 	private UserServletContext mockServletConext(Account acct, boolean queryParamFlow)
 			throws ServiceException, AuthTokenException, UserServletException {
-		HttpServletRequest req = EasyMock.createMock(HttpServletRequest.class);
-		HttpServletResponse resp = EasyMock.createMock(HttpServletResponse.class);
-		UserServlet usrSrv = EasyMock.createMock(UserServlet.class);
+		HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
+		HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
+		UserServlet usrSrv = Mockito.mock(UserServlet.class);
 		Cookie cookies[] = new Cookie[1];
 		String salt = "s1";
 		Cookie cookie = new Cookie("ZM_JWT", salt);
@@ -235,48 +234,47 @@ public class JWTBasedAuthTest extends MailboxTestSuite {
 		int port = 7071;
 		String jwt = generateJWT(acct, salt);
 		String jwtQP = queryParamFlow ? "auth=jwt&zjwt=" + jwt : "auth=jwt";
-		EasyMock.expect(req.getQueryString()).andReturn(jwtQP);
-		EasyMock.expect(req.getPathInfo()).andReturn("/" + acct.getName() + "/contacts");
-		EasyMock.expect(req.getCookies()).andReturn(cookies);
-		EasyMock.expect(req.getLocalPort()).andReturn(port);
+		Mockito.when(req.getQueryString()).thenReturn(jwtQP);
+		Mockito.when(req.getPathInfo()).thenReturn("/" + acct.getName() + "/contacts");
+		Mockito.when(req.getCookies()).thenReturn(cookies);
+		Mockito.when(req.getLocalPort()).thenReturn(port);
 		jwt = queryParamFlow ? null : "Bearer " + jwt;
-		EasyMock.expect(req.getHeader(Constants.AUTH_HEADER)).andReturn(jwt);
-		EasyMock.replay(req);
+		Mockito.when(req.getHeader(Constants.AUTH_HEADER)).thenReturn(jwt);
+		
 		UserServletContext context = new UserServletContext(req, resp, usrSrv);
 		return context;
 	}
 
 	@Test
 	void testZimbraQoSFilterExtractUserId() throws AuthFailedServiceException, AuthTokenException {
-		HttpServletRequest req = EasyMock.createMock(HttpServletRequest.class);
+		HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
 		Cookie cookies[] = new Cookie[1];
 		String salt = "s1";
 		Cookie cookie = new Cookie("ZM_JWT", salt);
 		cookie.setHttpOnly(true);
 		cookies[0] = cookie;
 		String jwt = generateJWT(acct, salt);
-		EasyMock.expect(req.getCookies()).andReturn(cookies);
-		EasyMock.expectLastCall().times(2);
-		EasyMock.expect(req.getHeader(Constants.AUTH_HEADER)).andReturn("Bearer " + jwt);
+		Mockito.when(req.getCookies()).thenReturn(cookies);
+		Mockito.when(req.getHeader(Constants.AUTH_HEADER)).thenReturn("Bearer " + jwt);
 		int port = 7071;
-		EasyMock.expect(req.getLocalPort()).andReturn(port);
-		EasyMock.replay(req);
+		Mockito.when(req.getLocalPort()).thenReturn(port);
+		
 		String accountId = ZimbraQoSFilter.extractUserId(req);
 		assertEquals(acct.getId(), accountId);
 	}
 
 	@Test
 	void testJWTCookieSizeLimit() {
-		HttpServletRequest req = EasyMock.createMock(HttpServletRequest.class);
-		HttpServletResponse resp = EasyMock.createMock(HttpServletResponse.class);
+		HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
+		HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
 		Cookie cookies[] = new Cookie[1];
 		String generatedSalt = RandomStringUtils.random(4095, true, true);
 		Cookie cookie = new Cookie("ZM_JWT", generatedSalt);
 		cookie.setHttpOnly(true);
 		cookies[0] = cookie;
 		try {
-			EasyMock.expect(req.getCookies()).andReturn(cookies);
-			EasyMock.replay(req);
+			Mockito.when(req.getCookies()).thenReturn(cookies);
+			
 			ZimbraJWToken jwt = new ZimbraJWToken(acct);
 			jwt.encode(req, resp, false);
 			fail("testJWTCookieSize failed");

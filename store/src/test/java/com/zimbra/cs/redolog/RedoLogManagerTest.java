@@ -11,10 +11,10 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.mailbox.MailboxOperation;
 import com.zimbra.cs.redolog.op.RedoableOp;
 import java.io.File;
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class RedoLogManagerTest extends MailboxTestSuite {
 
@@ -67,10 +67,10 @@ public class RedoLogManagerTest extends MailboxTestSuite {
 				previousFile,
 				"No rollover occured, so previous log file should be NULL.");
 
-		RedoableOp op = EasyMock.createMockBuilder(RedoableOp.class)
-				.withConstructor(MailboxOperation.Preview)
-				.createMock();
-
+		RedoableOp op = Mockito.mock(RedoableOp.class,
+				Mockito.withSettings()
+						.useConstructor(MailboxOperation.Preview)
+						.defaultAnswer(Mockito.CALLS_REAL_METHODS));
 		// Run the operation and log.
 		op.start(7 /* timestamp */);
 		op.log();

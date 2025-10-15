@@ -1,6 +1,5 @@
 package com.zimbra.cs.service.mail;
 
-import static com.zextras.mailbox.soap.SoapUtils.getResponse;
 import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
@@ -10,13 +9,13 @@ import static org.mockserver.model.HttpResponse.response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.files.entities.NodeId;
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.MailMessageBuilder;
 import com.zextras.mailbox.util.AccountAction;
+import com.zextras.mailbox.util.MailMessageBuilder;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mime.ParsedMessage;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -64,10 +63,10 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
         + "<attachments draftId=\"%s\" partName=\"%s\"/>"
         + "</CreateSmartLinksRequest>", draftWithAttachment.getId(), attachmentPartName);
 
-    HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
+    SoapResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
 
-    final String xmlResponse = getResponse(resp);
-    assertEquals(HttpStatus.SC_OK, resp.getStatusLine().getStatusCode());
+    final String xmlResponse = resp.body();
+    assertEquals(HttpStatus.SC_OK, resp.statusCode());
     assertFalse(xmlResponse.contains("Fault"));
     String expected = "<CreateSmartLinksResponse xmlns=\"urn:zimbraMail\">" +
         "<smartLinks publicUrl=\"" + publicUrl + "\"/>" +
@@ -84,10 +83,10 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
         + "<attachments draftId=\"%s\" partName=\"%s\"/>"
         + "</CreateSmartLinksRequest>", draftWithAttachment.getId(), "invalid-part-name");
 
-    HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
+    SoapResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
 
-    final String xmlResponse = getResponse(resp);
-    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.getStatusLine().getStatusCode());
+    final String xmlResponse = resp.body();
+    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.statusCode());
     assertTrue(xmlResponse.contains("Fault"));
     assertTrue(xmlResponse.contains("<Code>service.NOT_FOUND</Code>"));
   }
@@ -101,10 +100,10 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
         + "<attachments draftId=\"%s\" partName=\"%s\"/>"
         + "</CreateSmartLinksRequest>", draftWithAttachment.getId(), "42");
 
-    HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
+    SoapResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
 
-    final String xmlResponse = getResponse(resp);
-    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.getStatusLine().getStatusCode());
+    final String xmlResponse = resp.body();
+    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.statusCode());
     assertTrue(xmlResponse.contains("Fault"));
     assertTrue(xmlResponse.contains("<Code>service.NOT_FOUND</Code>"));
   }
@@ -116,10 +115,10 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
     mockCreateLinkOnFilesResponse(publicUrl);
     String xmlRequest = "<CreateSmartLinksRequest xmlns=\"urn:zimbraMail\"></CreateSmartLinksRequest>";
 
-    HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
+    SoapResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
 
-    final String xmlResponse = getResponse(resp);
-    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.getStatusLine().getStatusCode());
+    final String xmlResponse = resp.body();
+    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.statusCode());
     assertTrue(xmlResponse.contains("Fault"));
     
     assertTrue(xmlResponse.contains("<Code>service.INVALID_REQUEST</Code>"));
@@ -135,10 +134,10 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
         + "<attachments draftId=\"%s\" partName=\"%s\"/>"
         + "</CreateSmartLinksRequest>", "invalid-draft-id", attachmentPartName);
 
-    HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
+    SoapResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
 
-    final String xmlResponse = getResponse(resp);
-    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.getStatusLine().getStatusCode());
+    final String xmlResponse = resp.body();
+    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.statusCode());
     assertTrue(xmlResponse.contains("Fault"));
     assertTrue(xmlResponse.contains("<Code>service.PARSE_ERROR</Code>"));
   }
@@ -153,10 +152,10 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
         + "<attachments draftId=\"%s\" partName=\"%s\"/>"
         + "</CreateSmartLinksRequest>", "42", attachmentPartName);
 
-    HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
+    SoapResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
 
-    final String xmlResponse = getResponse(resp);
-    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.getStatusLine().getStatusCode());
+    final String xmlResponse = resp.body();
+    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.statusCode());
     assertTrue(xmlResponse.contains("Fault"));
     assertTrue(xmlResponse.contains("<Code>service.NOT_FOUND</Code>"));
   }
@@ -171,13 +170,13 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
         + "<attachments draftId=\"%s\" partName=\"%s\"/>"
         + "</CreateSmartLinksRequest>", draftWithAttachment.getId(), attachmentPartName);
 
-    HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
+    SoapResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
 
-    final String xmlResponse = getResponse(resp);
+    final String xmlResponse = resp.body();
     assertTrue(xmlResponse.contains("Fault"));
     assertTrue(xmlResponse.contains("<Code>service.FAILURE</Code>"));
     assertTrue(xmlResponse.contains("Files upload failed"));
-    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.statusCode());
   }
 
   @Test
@@ -190,10 +189,10 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
         + "<attachments draftId=\"%s\" partName=\"%s\"/>"
         + "</CreateSmartLinksRequest>", draftWithAttachment.getId(), attachmentPartName);
 
-    HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
+    SoapResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
 
-    final String xmlResponse = getResponse(resp);
-    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.getStatusLine().getStatusCode());
+    final String xmlResponse = resp.body();
+    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.statusCode());
     assertTrue(xmlResponse.contains("Fault"));
     assertTrue(xmlResponse.contains("<Code>service.FAILURE</Code>"));
     assertTrue(xmlResponse.contains("Files CreateLink failed"));

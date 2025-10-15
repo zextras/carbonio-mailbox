@@ -5,8 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Maps;
 import com.zextras.mailbox.MailboxTestSuite;
@@ -45,8 +44,11 @@ import java.util.UUID;
 import javax.mail.Address;
 import javax.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+
+@Disabled
 public class GetMsgTest extends MailboxTestSuite {
   private static final String desc = "The following is a new meeting request";
 

@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.db;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.lang.reflect.Constructor;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -24,6 +25,11 @@ import com.zimbra.cs.db.DbPool.PoolConfig;
 public class ZimbraConnectionFactory extends DriverManagerConnectionFactory {
 
     private static ConnectionFactory sConnFactory = null;
+
+    @VisibleForTesting
+    static void close() {
+        sConnFactory = null;
+    }
     public static ConnectionFactory getConnectionFactory(PoolConfig pconfig) {
         if (sConnFactory == null) {
             String className = LC.zimbra_class_dbconnfactory.value();

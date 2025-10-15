@@ -9,6 +9,7 @@ import static com.zimbra.client.ZEmailAddress.EMAIL_TYPE_TO;
 import com.zextras.mailbox.util.AccountAction;
 import com.zextras.mailbox.util.CreateAccount;
 import com.zextras.mailbox.util.SoapClient;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
@@ -90,10 +91,10 @@ public class SoapTestSuite {
       throws Exception {
     final CreateAppointmentRequest createAppointmentRequest = new CreateAppointmentRequest();
     createAppointmentRequest.setMsg(msg);
-    final HttpResponse response = getSoapClient().executeSoap(authenticatedAccount,
+    final SoapResponse response = getSoapClient().executeSoap(authenticatedAccount,
         createAppointmentRequest);
-    String soapResponse = SoapUtils.getResponse(response);
-    Assertions.assertEquals(200, response.getStatusLine().getStatusCode(),
+    String soapResponse = response.body();
+    Assertions.assertEquals(200, response.statusCode(),
         "Create appointment failed with:\n" + soapResponse);
     return SoapUtils.getSoapResponse(soapResponse, MailConstants.E_CREATE_APPOINTMENT_RESPONSE,
         CreateAppointmentResponse.class);
@@ -108,10 +109,10 @@ public class SoapTestSuite {
     msg.setEmailAddresses(List.of(new EmailAddrInfo(to, EMAIL_TYPE_TO)));
     forwardAppointmentRequest.setMsg(msg);
 
-    final HttpResponse response = getSoapClient().executeSoap(authenticatedAccount,
+    final SoapResponse response = getSoapClient().executeSoap(authenticatedAccount,
         forwardAppointmentRequest);
-    String soapResponse = SoapUtils.getResponse(response);
-    Assertions.assertEquals(200, response.getStatusLine().getStatusCode(),
+    String soapResponse = response.body();
+    Assertions.assertEquals(200, response.statusCode(),
         "Forward appointment failed with:\n" + soapResponse);
     return SoapUtils.getSoapResponse(soapResponse, MailConstants.E_FORWARD_APPOINTMENT_RESPONSE,
         ForwardAppointmentResponse.class);

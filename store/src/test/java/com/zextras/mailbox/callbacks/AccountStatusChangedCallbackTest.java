@@ -15,6 +15,7 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.callback.AccountStatus;
 import com.zimbra.cs.account.callback.CallbackContext;
+import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -24,20 +25,38 @@ class AccountStatusChangedCallbackTest extends MailboxTestSuite {
    * This just tests that if calls are successful no other exceptions are thrown.
    */
   @Test
-  void shouldNotFail_When_ExecutingUserStatusChangedCallback_And_EventIsPublishedCorrectly() throws Exception {
-    final AccountStatus accountStatus = new AccountStatus();
+  void shouldNotFail_When_ExecutingUserStatusChangedCallback_And_EventIsPublishedCorrectly() {
     CallbackContext context = Mockito.mock(CallbackContext.class);
-    String attrName = "fake";
-    Account entry = Mockito.mock(Account.class);
+		Account entry = Mockito.mock(Account.class);
+    setupMocks(context, entry);
 
+    Function<UserStatusChanged, Boolean> mockPublishEvent = Mockito.mock(Function.class);
+    final AccountStatus accountStatus = new AccountStatus(mockPublishEvent);
+    Mockito.when(mockPublishEvent.apply(any(UserStatusChanged.class))).thenReturn(true);
+
+    assertDoesNotThrow(() -> accountStatus.postModify(context, "fake", entry));
+    Mockito.verify(mockPublishEvent).apply(any(UserStatusChanged.class));
+  }
+
+  private static void setupMocks(CallbackContext context, Account entry) {
     Mockito.when(context.isDoneAndSetIfNot(AccountStatus.class)).thenReturn(false);
     Mockito.when(context.isCreate()).thenReturn(false);
     Mockito.when(entry.getAccountStatus(any(Provisioning.class))).thenReturn("active");
     Mockito.when(entry.getId()).thenReturn("fake-account-id");
+  }
 
-    MessageBrokerClient mockedMessageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
-    Mockito.when(mockedMessageBrokerClient.publish(any(UserStatusChanged.class))).thenReturn(true);
+  @Test
+  void shouldNotFail_When_PublishEventThrows() {
+    CallbackContext context = Mockito.mock(CallbackContext.class);
+		Account entry = Mockito.mock(Account.class);
 
-    assertDoesNotThrow(() -> accountStatus.postModify(context, attrName, entry));
+    setupMocks(context, entry);
+
+    Function<UserStatusChanged, Boolean> mockPublishEvent = Mockito.mock(Function.class);
+    final AccountStatus accountStatus = new AccountStatus(mockPublishEvent);
+    Mockito.doThrow(RuntimeException.class).when(mockPublishEvent).apply(any(UserStatusChanged.class));
+
+    assertDoesNotThrow(() -> accountStatus.postModify(context, "fake", entry));
+    Mockito.verify(mockPublishEvent).apply(any(UserStatusChanged.class));
   }
 }

@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.L10nUtil;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -20,34 +19,32 @@ import java.util.Locale;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMultipart;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 
 /**
  * @author zimbra
  */
-class ExtShareInfoTest extends MailboxTestSuite {
 
-	private Account ownerAcct = null;
-	private Account testAcct = null;
+@Tag("flaky")
+class ExtShareInfoTest extends MailboxTestSuite {
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeEach
 	public void setUp() throws Exception {
-		ownerAcct = createAccount().create();
-		testAcct = createAccount().withAttribute(ZAttrProvisioning.A_zimbraIsExternalVirtualAccount,
-				"TRUE").create();
 
 		// this MailboxManager does everything except use SMTP to deliver mail
 		MailboxManager.setInstance(new DirectInsertionMailboxManager());
-		L10nUtil.setMsgClassLoader("../store-conf/conf/msgs");
 	}
 
 	@Test
-	void testGenNotifyBody() {
-
+	void testGenNotifyBody() throws Exception {
+		var ownerAcct = createAccount().create();
+		var testAcct = createAccount().withAttribute(ZAttrProvisioning.A_zimbraIsExternalVirtualAccount,
+				"TRUE").create();
 		Locale locale = new Locale("en", "US");
 		ShareInfoData sid = new ShareInfoData();
 		sid.setGranteeDisplayName("Demo User Three");

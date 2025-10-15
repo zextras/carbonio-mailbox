@@ -4,6 +4,7 @@ import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -24,20 +25,13 @@ import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("api")
 class DeleteCalendarGroupTest extends SoapTestSuite {
-    
-    private static Provisioning provisioning;
 
     private Account account;
-
-    @BeforeAll
-    static void init() {
-        provisioning = Provisioning.getInstance();
-        
-    }
-
     @BeforeEach
     void setUp() throws Exception {
         account = createAccount().create();
@@ -58,7 +52,7 @@ class DeleteCalendarGroupTest extends SoapTestSuite {
 
         final var soapResponse = getSoapClient().executeSoap(account, request);
 
-        assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+        assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
 
         var groups = searchGroups(account).getGroups();
         assertEquals(groupsCountPlusAllCalendar(1), groups.size());
@@ -73,7 +67,7 @@ class DeleteCalendarGroupTest extends SoapTestSuite {
 
         final var soapResponse = getSoapClient().executeSoap(account, request);
 
-        assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, soapResponse.getStatusLine().getStatusCode());
+        assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, soapResponse.statusCode());
     }
 
     private CreateCalendarGroupResponse addGroupTo(Account account, String name, List<String> ids) throws Exception {
@@ -83,7 +77,7 @@ class DeleteCalendarGroupTest extends SoapTestSuite {
 
         final var soapResponse = getSoapClient().executeSoap(account, request);
 
-        assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+        assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
         return parseSoapResponse(soapResponse, CreateCalendarGroupResponse.class);
     }
 
@@ -93,13 +87,13 @@ class DeleteCalendarGroupTest extends SoapTestSuite {
         folder.setDefaultView("appointment");
         final var createFolderRequest = new CreateFolderRequest(folder);
         final var createFolderResponse = getSoapClient().executeSoap(account, createFolderRequest);
-        assertEquals(HttpStatus.SC_OK, createFolderResponse.getStatusLine().getStatusCode());
+        assertEquals(HttpStatus.SC_OK, createFolderResponse.statusCode());
         return parseSoapResponse(createFolderResponse, CreateFolderResponse.class).getFolder();
     }
 
-    private static <T> T parseSoapResponse(HttpResponse httpResponse, Class<T> clazz)
-            throws IOException, ServiceException {
-        final var responseBody = EntityUtils.toString(httpResponse.getEntity());
+    private static <T> T parseSoapResponse(SoapResponse soapResponse, Class<T> clazz)
+            throws ServiceException {
+        final var responseBody = soapResponse.body();
         final var rootElement =
                 parseXML(responseBody)
                         .getElement("Body")
@@ -112,7 +106,7 @@ class DeleteCalendarGroupTest extends SoapTestSuite {
 
         final var soapResponse = getSoapClient().executeSoap(account, request);
 
-        assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+        assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
         return parseSoapResponse(soapResponse, GetCalendarGroupsResponse.class);
     }
 

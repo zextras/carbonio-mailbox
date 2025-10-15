@@ -6,7 +6,7 @@
 package com.zimbra.cs.db;
 
 import com.google.common.base.Joiner;
-import com.zextras.mailbox.util.TestConfig;
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.db.DbPool.PoolConfig;
@@ -34,10 +34,19 @@ import org.hsqldb.cmdline.SqlFile;
  */
 public class HSQLDB extends Db {
 
+
+    @Deprecated
+    public static void createDatabase() throws Exception {
+        final String volumeDirectory = LC.zimbra_home.value() + "/build/test";
+        final String path = new File(volumeDirectory).getAbsolutePath();
+        createDatabase(path);
+    }
+
+
     /**
      * Populates ZIMBRA and MBOXGROUP1 schema.
      */
-    public static void createDatabase() throws Exception {
+    public static void createDatabase(String volumeDirectory) throws Exception {
         PreparedStatement stmt = null;
         ResultSet rs = null;
 			try (var conn = getHSQLDBConnection()) {
@@ -48,7 +57,7 @@ public class HSQLDB extends Db {
 				if (rs.next() && rs.getInt(1) > 0) {
 					return; // already exists
 				}
-				createZimbraDatabase(conn);
+				createZimbraDatabase(conn, volumeDirectory);
 				createMailboxDatabase(conn);
 			} finally {
 				DbPool.closeResults(rs);
@@ -74,11 +83,10 @@ public class HSQLDB extends Db {
 			}
 		}
 
-    private static void createZimbraDatabase(Connection conn) throws Exception {
-        final String volumeDirectory = TestConfig.getInstance().volumeDirectory();
+    private static void createZimbraDatabase(Connection conn, String volumeDirectory) throws Exception {
         Map<String, String> vars = Map.of(
                 "DATABASE_NAME", DbMailbox.getDatabaseName(1),
-                "VOLUME_BASE_DIRECTORY", new File(volumeDirectory).getAbsolutePath());
+                "VOLUME_BASE_DIRECTORY", volumeDirectory);
         execute(conn, "db.sql", vars);
     }
 

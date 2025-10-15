@@ -63,8 +63,7 @@ public class GetMsgTest extends MailboxTestSuite {
         new GreenMail(
             new ServerSetup[] {
               new ServerSetup(
-                  SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP),
-              new ServerSetup(9000, "127.0.0.1", ServerSetup.PROTOCOL_IMAP)
+                  SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
             });
     sender = createAccount().withUsername("test").create();
     shared = createAccount().withUsername("shared").create();

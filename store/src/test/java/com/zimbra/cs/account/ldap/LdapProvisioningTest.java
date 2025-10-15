@@ -196,6 +196,7 @@ public class LdapProvisioningTest extends MailboxTestSuite {
 
   @Test
   void should_throw_exception_when_recovery_code_based_auth_and_carbonio_auth_mechanism_is_registered() throws ServiceException {
+    // WARN: affects other tests because it register carbonio advanced as auth mechanism
     ZimbraCustomAuth.register(AuthMech.carbonioAdvanced.name(), new TestCustomAuth());
 
     var domain = UUID.randomUUID() + ".com";

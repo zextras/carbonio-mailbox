@@ -17,6 +17,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -26,11 +27,11 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-@Tag("api")
+@Tag("e2e")
 @Testcontainers
-class HealthServletTest {
+public class HealthServletTest {
 
-   private static final String DB_USER = "test";
+  private static final String DB_USER = "test";
   private static final String DB_PASSWORD = "test";
 
   @Container
@@ -41,6 +42,12 @@ class HealthServletTest {
           .withDatabaseName("zimbra");
 
   private static Server server;
+
+  @BeforeAll
+  static void setUp() {
+    // ensure proper driver is applied
+    LC.zimbra_class_database.setDefault("com.zimbra.cs.db.MariaDB");
+    }
 
   @BeforeEach
   void beforeEach() throws Exception {
@@ -141,7 +148,7 @@ class HealthServletTest {
     } catch (Exception e) {
       throw new RuntimeException(e);
     } finally {
-      DbPool.shutdown();
+      DbPool.shutDownAndClear();
     }
   }
 

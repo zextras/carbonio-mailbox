@@ -22,14 +22,18 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+
+@Tag("flaky")
 class EmailChannelTest extends MailboxTestSuite {
 
 	private static GreenMail mta;
@@ -49,6 +53,11 @@ class EmailChannelTest extends MailboxTestSuite {
 	@BeforeEach
 	void cleanup() {
 		mta.reset();
+	}
+
+	@AfterAll
+	static void tearDown() {
+		mta.stop();
 	}
 
 	@Test
@@ -81,7 +90,7 @@ class EmailChannelTest extends MailboxTestSuite {
 
 	@Test
 	void shouldSendEmailWithRecoveryCode() throws Exception {
-		final Account account = this.createAccount().create();
+		final Account account = createAccount().create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
 
 		new EmailChannel().sendAndStoreSetRecoveryAccountCode(account, MailboxManager.getInstance()

@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.account.auth;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,11 @@ public abstract class ZimbraCustomAuth {
          * register known custom auth 
          */
         ZimbraCustomAuth.register("hosted", new HostedAuth());
+    }
+
+    @VisibleForTesting
+    public static synchronized void clear() {
+        mHandlers.clear();
     }
 
     /*

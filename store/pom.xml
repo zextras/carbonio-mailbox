@@ -283,12 +283,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>easymock</artifactId>
-      <groupId>org.easymock</groupId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <artifactId>xmlunit-core</artifactId>
       <groupId>org.xmlunit</groupId>
       <scope>test</scope>
@@ -786,6 +780,34 @@
               </arguments>
             </configuration>
           </execution>
+          <!-- BuildInfo -->
+          <execution>
+            <id>generate-buildinfo</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>/bin/bash</executable>
+              <arguments>
+                <argument>-c</argument>
+                <argument><![CDATA[
+                  mkdir -p ${generated-resources}/com/zimbra/cs/util/ && cat <<EOF > ${generated-resources}/com/zimbra/cs/util/buildInfo.properties
+MAJORVERSION=${parsedVersion.majorVersion}
+MINORVERSION=${parsedVersion.minorVersion}
+MICROVERSION=${parsedVersion.incrementalVersion}
+RELCLASS=ZEXTRAS
+RELNUM=0
+BUILDNUM=${build.timestamp.yyyymm}
+VERSION=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}_ZEXTRAS_${build.timestamp.yyyymm}
+RELEASE=carbonio
+DATE=${build.timestamp.yyyymm}
+HOST=carbonio
+EOF
+                ]]></argument>
+              </arguments>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <!-- Add buildinfo sources -->
@@ -883,44 +905,26 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <forkCount>4</forkCount>
-          <reuseForks>false</reuseForks>
-          <parallel>classes</parallel>
+          <forkCount>${surefire.forkCount}</forkCount>
+          <reuseForks>${surefire.reuseForks}</reuseForks>
           <argLine>@{argLine} -Dserver.dir=${project.basedir}
-            -Djunit.jupiter.execution.parallel.enabled=true
-            -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
             -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
           </argLine>
-          <excludes>
-            <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.SearchActionTest.java</exclude>
-          </excludes>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
-          <forkCount>4</forkCount>
-          <reuseForks>false</reuseForks>
-          <parallel>classes</parallel>
+          <forkCount>${surefire.forkCount}</forkCount>
+          <reuseForks>${surefire.reuseForks}</reuseForks>
           <argLine>@{argLine} -Dserver.dir=${project.basedir}
-            -Djunit.jupiter.execution.parallel.enabled=true
-            -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
             -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
           </argLine>
-          <excludes>
-            <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
-            <exclude>com.zimbra.cs.service.mail.SearchActionTest.java</exclude>
-          </excludes>
         </configuration>
       </plugin>
       <plugin>
@@ -979,41 +983,6 @@
           </execution>
         </executions>
       </plugin>
-
-      <plugin>
-        <artifactId>exec-maven-plugin</artifactId>
-        <groupId>org.codehaus.mojo</groupId>
-        <version>${maven-exec-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>generate-buildinfo</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>/bin/bash</executable>
-              <arguments>
-                <argument>-c</argument>
-                <argument><![CDATA[
-                  mkdir -p ${generated-resources}/com/zimbra/cs/util/ && cat <<EOF > ${generated-resources}/com/zimbra/cs/util/buildInfo.properties
-MAJORVERSION=${parsedVersion.majorVersion}
-MINORVERSION=${parsedVersion.minorVersion}
-MICROVERSION=${parsedVersion.incrementalVersion}
-RELCLASS=ZEXTRAS
-RELNUM=0
-BUILDNUM=${build.timestamp.yyyymm}
-VERSION=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}_ZEXTRAS_${build.timestamp.yyyymm}
-RELEASE=carbonio
-DATE=${build.timestamp.yyyymm}
-HOST=carbonio
-EOF
-                ]]></argument>
-              </arguments>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
@@ -1066,6 +1035,8 @@ EOF
 
   </build>
   <properties>
+    <surefire.reuseForks>true</surefire.reuseForks>
+    <surefire.forkCount>1</surefire.forkCount>
     <build.dir>target</build.dir>
     <maven-exec-plugin.version>3.1.0</maven-exec-plugin.version>
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>

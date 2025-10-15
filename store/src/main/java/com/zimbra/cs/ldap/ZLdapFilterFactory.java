@@ -6,11 +6,7 @@
 package com.zimbra.cs.ldap;
 
 import com.google.common.collect.Lists;
-import com.zimbra.common.util.CsvWriter;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.ldap.unboundid.UBIDLdapFilterFactory;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,12 +18,10 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
   private static ZLdapFilterFactory SINGLETON;
 
   public static synchronized void setInstance(ZLdapFilterFactory factory) {
-    assert (SINGLETON == null);
     SINGLETON = factory;
   }
 
   public static ZLdapFilterFactory getInstance() {
-    assert (SINGLETON != null);
     return SINGLETON;
   }
 
@@ -197,57 +191,13 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
       return LdapOp.SEARCH.name() + "_" + name(); // + ": " + template;
     }
 
-    private String getTemplate() {
-      return template;
-    }
   }
 
-  /**
-   * Generate the filter explanation csv file. Called from build.xml
-   *
-   * @param args
-   * @throws IOException
-   * @throws LdapException
-   */
-  public static void main(String[] args) throws IOException, LdapException {
-    if (args.length != 1) {
-      System.out.println(
-          "usage: zmjava " + ZLdapFilterFactory.class.getCanonicalName() + " <output file name>");
-      System.exit(1);
-    }
-
-    /*
-     * This tool is called during during dev-dist target, LDAP server
-     * is not up in production build.
-     * LdapClient.getInstance() will cause attempt to make an LDAP connection,
-     *
-     * Just use UBID LdapClient directly.  TODO: separate LdapClient.getInstance()
-     * into two parts: one doesn't require LDAP connection (for initializing
-     * SearchScope and FilterFactory instances), one does(for initializing LdapContext
-     * class).
-     */
-    // LdapClient.getInstance();
-    UBIDLdapFilterFactory.initialize();
-    ZLdapFilterFactory filterFactory = new UBIDLdapFilterFactory();
-    ZLdapFilterFactory.setInstance(filterFactory);
-
-    String fileName = args[0];
-    CsvWriter writer = new CsvWriter(new FileWriter(fileName));
-
-    writer.writeRow("filtername", "template");
-
-    for (FilterId filterId : FilterId.values()) {
-      writer.writeRow(filterId.getStatString(), filterId.getTemplate());
-    }
-    writer.close();
-  }
 
   /**
    * Encodes the provided value into a form suitable for use as the assertion value in the string
    * representation of a search filter.
    *
-   * @param value
-   * @return
    */
   public abstract String encodeValue(String value);
 

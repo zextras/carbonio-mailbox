@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -30,6 +31,8 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
+
+@Tag("flaky")
 public final class LuceneQueryOperationTest extends MailboxTestSuite {
 
 	private Account account;

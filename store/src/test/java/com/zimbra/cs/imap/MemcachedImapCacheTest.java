@@ -30,12 +30,6 @@ import org.junit.jupiter.api.Test;
  */
 public class MemcachedImapCacheTest extends MailboxTestSuite {
 
-	@BeforeAll
-	static void setup() {
-		final String timezoneFilePath = MemcachedImapCacheTest.class.getResource("/timezones-test.ics").getPath();
-		LC.timezone_file.setDefault(timezoneFilePath);
-	}
-
 	/**
 	 * @throws java.lang.Exception
 	 */

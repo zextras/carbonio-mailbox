@@ -7,27 +7,26 @@ package com.zimbra.soap.mail;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zimbra.soap.mail.message.GetFolderResponse;
+import com.zimbra.soap.mail.type.Acl;
+import com.zimbra.soap.mail.type.Folder;
+import com.zimbra.soap.mail.type.Grant;
+import com.zimbra.soap.mail.type.ItemType;
+import com.zimbra.soap.mail.type.SearchFolder;
+import com.zimbra.soap.type.GrantGranteeType;
 import java.util.EnumSet;
 import java.util.List;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
-
-import com.zimbra.soap.mail.type.Acl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import com.zimbra.soap.mail.message.GetFolderResponse;
-import com.zimbra.soap.mail.type.Folder;
-import com.zimbra.soap.mail.type.Grant;
-import com.zimbra.soap.type.GrantGranteeType;
-import com.zimbra.soap.mail.type.ItemType;
-import com.zimbra.soap.mail.type.SearchFolder;
-
 /**
  * Unit test for {@link GetFolderRequest}.
  */
+
+
 public final class GetFolderTest {
 
     private static Unmarshaller unmarshaller;

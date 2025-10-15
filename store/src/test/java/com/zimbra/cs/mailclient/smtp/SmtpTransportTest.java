@@ -9,27 +9,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.base.Charsets;
 import com.sun.mail.smtp.SMTPMessage;
-import com.zextras.mailbox.util.PortUtil;
-import com.zimbra.common.calendar.WellKnownTimeZones;
-import com.zimbra.common.localconfig.LC;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.zmime.ZMimeMessage;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.db.DbPool;
-import com.zimbra.cs.db.HSQLDB;
-import com.zimbra.cs.ephemeral.EphemeralStore;
-import com.zimbra.cs.ephemeral.InMemoryEphemeralStore;
-import com.zimbra.cs.ephemeral.migrate.InMemoryMigrationInfo;
-import com.zimbra.cs.ephemeral.migrate.MigrationInfo;
-import com.zimbra.cs.index.IndexStore;
-import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.store.MockStoreManager;
-import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.util.JMSession;
 import com.zimbra.cs.util.MockTcpServer;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.util.Properties;
 import javax.mail.Address;
 import javax.mail.MessagingException;
@@ -41,8 +25,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.util.SharedByteArrayInputStream;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -50,50 +32,11 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-final class SmtpTransportTest {
+final class SmtpTransportTest extends MailboxTestSuite {
 
 	private MockTcpServer server;
 	private static final int PORT = 9025;
 
-
-    @BeforeAll
-    public static void init() throws Exception {
-			MigrationInfo.setFactory(InMemoryMigrationInfo.Factory.class);
-			EphemeralStore.setFactory(InMemoryEphemeralStore.Factory.class);
-			System.setProperty(
-					"zimbra.config", "src/test/resources/localconfig-test.xml");
-			LC.reload();
-			LC.zimbra_home.setDefault(Files.createTempDirectory("mailbox_home_").toAbsolutePath().toString());
-			// substitute test TZ file
-			String timezonefilePath = "src/test/resources/timezones-test.ics";
-			File d = new File(timezonefilePath);
-			if (!d.exists()) {
-				throw new FileNotFoundException("timezones-test.ics not found in " + timezonefilePath);
-			}
-			LC.timezone_file.setDefault(timezonefilePath);
-			WellKnownTimeZones.loadFromFile(d);
-			LC.zimbra_tmp_directory.setDefault(Files.createTempDirectory("server_tmp_dir_").toAbsolutePath().toString());
-			// substitute test DS config file
-			String dsfilePath = "src/test/resources/datasource-test.xml";
-			d = new File(dsfilePath);
-			if (!d.exists()) {
-				throw new FileNotFoundException("datasource-test.xml not found in " + dsfilePath);
-			}
-			LC.data_source_config.setDefault(dsfilePath);
-			// default MIME handlers are now set up in MockProvisioning constructor
-
-			LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
-			DbPool.startup();
-			HSQLDB.createDatabase();
-
-			MailboxManager.setInstance(null);
-			IndexStore.setFactory(LC.zimbra_class_index_store_factory.value());
-
-			LC.zimbra_class_store.setDefault(MockStoreManager.class.getName());
-			StoreManager.getInstance().startup();
-			StoreManager.setInstance(new MockStoreManager());
-			StoreManager.getInstance().startup();
-    }
 
 	@AfterEach
 	void tearDown() {
