@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-@Tag("flaky")
+@Tag("e2e")
 class VersionsTest {
 
 	@TempDir
