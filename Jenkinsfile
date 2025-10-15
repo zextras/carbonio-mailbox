@@ -105,7 +105,7 @@ pipeline {
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
             }
         }
-        stage('Flaky && API tests') {
+        stage('Flaky, API, E2E tests') {
             steps {
                 container('jdk-17') {
                     sh "cd store && mvn ${MVN_OPTS} verify -Dgroups=flaky,api && mvn ${MVN_OPTS} verify -Dgroups=e2e"
