@@ -12,12 +12,10 @@ import org.apache.commons.cli.Options;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-@Disabled
-class VersionsTest {
+public class VersionsTest {
 
 	@TempDir
 	private static File tempDir;
@@ -31,8 +29,7 @@ class VersionsTest {
 
 	@AfterAll
 	static void tearDown() throws Exception {
-		DbPool.clear();
-		DbPool.shutdown();
+		DbPool.shutDownAndClear();
 	}
 
 	@Test

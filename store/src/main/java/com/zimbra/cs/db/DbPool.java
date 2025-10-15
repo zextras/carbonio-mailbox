@@ -518,11 +518,13 @@ public class DbPool {
     }
 
     @VisibleForTesting
-    public static synchronized void clear() {
+    public static synchronized void shutDownAndClear() throws Exception {
         // TODO: avoid all this static an singleton usages
+        DbPool.shutdown();
         isShutdown = false;
         sIsInitialized = false;
         ZimbraConnectionFactory.close();
+        Db.setInstance(null);
     }
 
     public static void disableUsageWarning() {

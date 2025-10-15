@@ -6,16 +6,13 @@ package com.zextras.mailbox.servlet;
 
 import com.google.inject.servlet.GuiceFilter;
 import com.zextras.mailbox.util.JettyServerFactory;
-import com.zimbra.common.localconfig.ConfigException;
 import com.zimbra.common.localconfig.LC;
-import com.zimbra.cs.db.Db;
 import com.zimbra.cs.db.DbPool;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.dom4j.DocumentException;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.junit.jupiter.api.AfterEach;
@@ -32,7 +29,7 @@ import org.testcontainers.utility.DockerImageName;
 
 @Tag("e2e")
 @Testcontainers
-class HealthServletTest {
+public class HealthServletTest {
 
   private static final String DB_USER = "test";
   private static final String DB_PASSWORD = "test";
@@ -151,9 +148,7 @@ class HealthServletTest {
     } catch (Exception e) {
       throw new RuntimeException(e);
     } finally {
-      DbPool.shutdown();
-      DbPool.clear();
-      Db.setInstance(null);
+      DbPool.shutDownAndClear();
     }
   }
 

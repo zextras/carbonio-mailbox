@@ -157,8 +157,7 @@ public class MailboxSetupHelper {
 		inMemoryLdapServer.clear();
 		RedoLogProvider.getInstance().shutdown();
 		RedoLogProvider.setInstance(null);
-		DbPool.shutdown();
-		DbPool.clear();
+		DbPool.shutDownAndClear();
 		inMemoryLdapServer.shutDown(true);
 		// TODO: avoid shutting down with explicit static method calls
 		UBIDLdapClient.shutdown();
