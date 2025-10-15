@@ -120,6 +120,7 @@
             <configuration>
               <executable>sh</executable>
               <arguments>
+                <argument>-x</argument>
                 <argument>-c</argument>
                 <argument>mkdir -p ${ldap.generated.dir} &amp;&amp; \
                   git log -1 \

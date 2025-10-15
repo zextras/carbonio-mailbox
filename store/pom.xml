@@ -992,8 +992,9 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>/bin/bash</executable>
+              <executable>/bin/sh</executable>
               <arguments>
+                <argument>-x</argument>
                 <argument>-c</argument>
                 <argument><![CDATA[
                   mkdir -p ${generated-resources}/com/zimbra/cs/util/ && cat <<EOF > ${generated-resources}/com/zimbra/cs/util/buildInfo.properties
