@@ -10,7 +10,6 @@ import com.zimbra.common.localconfig.ConfigException;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.db.Db;
 import com.zimbra.cs.db.DbPool;
-import com.zimbra.cs.db.HSQLDB;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -23,7 +22,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -49,7 +47,7 @@ class HealthServletTest {
   private static Server server;
 
   @BeforeAll
-  static void setUp() throws DocumentException, ConfigException {
+  static void setUp() {
     // ensure proper driver is applied
     LC.zimbra_class_database.setDefault("com.zimbra.cs.db.MariaDB");
     }

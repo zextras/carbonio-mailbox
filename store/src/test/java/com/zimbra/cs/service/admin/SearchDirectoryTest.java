@@ -14,11 +14,9 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.admin.message.SearchDirectoryRequest;
 import com.zimbra.soap.admin.message.SearchDirectoryResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import org.apache.http.HttpStatus;
-import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -102,7 +100,7 @@ class SearchDirectoryTest extends SoapTestSuite {
     assertFalse(lastPageResponse.isMore());
   }
 
-  private static SearchDirectoryResponse parseSoapResponse(SoapResponse soapResponse) throws IOException, ServiceException {
+  private static SearchDirectoryResponse parseSoapResponse(SoapResponse soapResponse) throws ServiceException {
     final String responseBody = soapResponse.body();
     final Element rootElement = parseXML(responseBody).getElement("Body").getElement("SearchDirectoryResponse");
     return JaxbUtil.elementToJaxb(rootElement, SearchDirectoryResponse.class);

@@ -79,7 +79,7 @@ public abstract class Db {
     }
 
     @VisibleForTesting
-    public static void setInstance(Db db) {
+    public static synchronized void setInstance(Db db) {
         sDatabase = db ;
     }
     /** Returns whether the currently-configured database supports the given

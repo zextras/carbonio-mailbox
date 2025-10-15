@@ -20,8 +20,6 @@ import java.util.Objects;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -60,8 +58,6 @@ public class SoapClient {
 					// Allow all
 				}
 			};
-
-	private BasicCookieStore cookieStore;
 
 	public SoapClient(String endpoint) {
 		this.endpoint = endpoint;

@@ -25,7 +25,6 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.SetRecoveryAccountRequest;
 import com.zimbra.soap.type.Channel;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +33,7 @@ import org.junit.jupiter.api.Test;
 public class SetRecoveryAccountTest extends MailboxTestSuite {
 
 	@BeforeAll
-	public static void setUp() throws Exception {
+	static void setUp() throws Exception {
 		MailboxManager.setInstance(new DirectInsertionMailboxManager());
 	}
 

@@ -3,7 +3,6 @@ package com.zimbra.cs.service.admin;
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.SoapClient;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Account;
@@ -24,7 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;

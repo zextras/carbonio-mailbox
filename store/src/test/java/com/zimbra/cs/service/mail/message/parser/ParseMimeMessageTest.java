@@ -20,7 +20,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ZimbraAuthToken;
 import com.zimbra.cs.mailbox.DeliveryContext;
 import com.zimbra.cs.mailbox.DeliveryOptions;
-import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -53,11 +52,10 @@ import javax.mail.internet.MimeMultipart;
 import org.dom4j.QName;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 
-public final class ParseMimeMessageTest extends MailboxTestSuite {
+final class ParseMimeMessageTest extends MailboxTestSuite {
   private static Provisioning provisioning;
 
   @BeforeAll

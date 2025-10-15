@@ -7,9 +7,7 @@ package com.zimbra.cs.filter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.google.common.collect.Maps;
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -23,11 +21,6 @@ import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.mail.DirectInsertionMailboxManager;
 import com.zimbra.cs.service.util.ItemId;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -41,8 +34,10 @@ public class NotifyTest extends MailboxTestSuite {
 	void filterValidToField() {
 		try {
 
-			Account acct1 = createAccount().withAttribute(Provisioning.A_zimbraSieveNotifyActionRFCCompliant, "FALSE").create();;
-			Account acct2 = createAccount().withAttribute(Provisioning.A_zimbraSieveNotifyActionRFCCompliant, "FALSE").create();;
+			Account acct1 = createAccount().withAttribute(
+					Provisioning.A_zimbraSieveNotifyActionRFCCompliant, "FALSE").create();
+			Account acct2 = createAccount().withAttribute(
+					Provisioning.A_zimbraSieveNotifyActionRFCCompliant, "FALSE").create();
 
 			Mailbox mbox1 = getMailboxManager().getMailboxByAccount(
 					acct1);
@@ -50,7 +45,8 @@ public class NotifyTest extends MailboxTestSuite {
 					acct2);
 			RuleManager.clearCachedRules(acct1);
 			String filterScript =
-					"require [\"enotify\"];if anyof (true) { notify \"" + acct2.getName() + "\" \"\" \"Hello World\""
+					"require [\"enotify\"];if anyof (true) { notify \"" + acct2.getName()
+							+ "\" \"\" \"Hello World\""
 							+ "[\"*\"];" + "    keep;" + "}";
 			acct1.setMailSieveScript(filterScript);
 			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(
@@ -79,8 +75,11 @@ public class NotifyTest extends MailboxTestSuite {
 	void testNotifyMailtoWithMimeVariable() {
 
 		try {
-			Account acct1 = createAccount().withAttribute(Provisioning.A_zimbraSieveNotifyActionRFCCompliant, "FALSE").create();;
-			Account acct2 = createAccount().withAttribute(Provisioning.A_zimbraSieveNotifyActionRFCCompliant, "FALSE").create();;
+			Account acct1 = createAccount().withAttribute(
+					Provisioning.A_zimbraSieveNotifyActionRFCCompliant, "FALSE").create();
+
+			Account acct2 = createAccount().withAttribute(
+					Provisioning.A_zimbraSieveNotifyActionRFCCompliant, "FALSE").create();
 
 			String sampleMsg = "from: abc@zimbra.com\n"
 					+ "Subject: Hello\n"

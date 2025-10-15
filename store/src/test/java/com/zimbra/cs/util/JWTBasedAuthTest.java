@@ -255,7 +255,6 @@ public class JWTBasedAuthTest extends MailboxTestSuite {
 		cookies[0] = cookie;
 		String jwt = generateJWT(acct, salt);
 		Mockito.when(req.getCookies()).thenReturn(cookies);
-//		Mockito.vwhenLastCall().times(2);
 		Mockito.when(req.getHeader(Constants.AUTH_HEADER)).thenReturn("Bearer " + jwt);
 		int port = 7071;
 		Mockito.when(req.getLocalPort()).thenReturn(port);

@@ -11,7 +11,6 @@ import com.google.common.collect.Maps;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
@@ -46,9 +45,6 @@ import com.zimbra.soap.mail.message.SendMsgRequest;
 import com.zimbra.soap.mail.type.EmailAddrInfo;
 import com.zimbra.soap.mail.type.MsgToSend;
 import com.zimbra.soap.type.KeyValuePair;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -63,7 +59,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 
