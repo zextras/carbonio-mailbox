@@ -23,8 +23,8 @@
       <groupId>zextras</groupId>
     </dependency>
     <dependency>
-      <artifactId>attribute-manager</artifactId>
-      <groupId>zextras</groupId>
+      <artifactId>mailbox-attribute-manager</artifactId>
+      <groupId>com.zextras</groupId>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -47,18 +47,6 @@
 
   <packaging>jar</packaging>
   <build>
-    <resources>
-      <resource>
-        <directory>${ldap.generated.dir}</directory>
-        <includes>
-          <include>*.ldif</include>
-          <include>config/**</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>${project.basedir}/src/main/resources</directory>
-      </resource>
-    </resources>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -121,127 +109,6 @@
               </arguments>
             </configuration>
           </execution>
-          <execution>
-            <id>generate-ldap-schema</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>java</goal>
-            </goals>
-            <configuration>
-              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-              <arguments>
-                <argument>-a</argument>
-                <argument>generateLdapSchema</argument>
-                <argument>-t</argument>
-                <argument>${ldap.dir}/carbonio.schema-template</argument>
-                <argument>-o</argument>
-                <argument>${ldap.generated.dir}/schema/carbonio.schema</argument>
-              </arguments>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-schema-ldif</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>java</goal>
-            </goals>
-            <configuration>
-              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-              <arguments>
-                <argument>-a</argument>
-                <argument>generateSchemaLdif</argument>
-                <argument>-t</argument>
-                <argument>${ldap.dir}/carbonio.schema-template</argument>
-                <argument>-o</argument>
-                <argument>${ldap.generated.dir}/schema/carbonio.ldif</argument>
-              </arguments>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-globalconfig-ldif</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>java</goal>
-            </goals>
-            <configuration>
-              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-              <arguments>
-                <argument>-a</argument>
-                <argument>generateGlobalConfigLdif</argument>
-                <argument>-o</argument>
-                <argument>${ldap.generated.dir}/zimbra_globalconfig.ldif</argument>
-              </arguments>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-defaultCOS-ldif</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>java</goal>
-            </goals>
-            <configuration>
-              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-              <arguments>
-                <argument>-a</argument>
-                <argument>generateDefaultCOSLdif</argument>
-                <argument>-o</argument>
-                <argument>${ldap.generated.dir}/zimbra_defaultcos.ldif</argument>
-              </arguments>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-defaultExternalCOS-ldif</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>java</goal>
-            </goals>
-            <configuration>
-              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-              <arguments>
-                <argument>-a</argument>
-                <argument>generateDefaultExternalCOSLdif</argument>
-                <argument>-o</argument>
-                <argument>${ldap.generated.dir}/zimbra_defaultexternalcos.ldif</argument>
-              </arguments>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
-          <execution>
-            <id>copy-ldap-files</id>
-            <phase>generate-resources</phase>
-            <configuration>
-              <target>
-                <copy todir="${ldap.generated.dir}/" file="${ldap.dir}/attrs-schema" />
-                <copy todir="${ldap.generated.dir}/" file="${ldap.dir}/carbonio.ldif" />
-                <copy todir="${ldap.generated.dir}/" file="${ldap.dir}/mimehandlers.ldif" />
-                <copy todir="${ldap.generated.dir}/schema" file="${ldap.dir}/amavisd.schema" />
-                <copy todir="${ldap.generated.dir}/schema" file="${ldap.dir}/amavisd.ldif" />
-                <copy todir="${ldap.generated.dir}/schema" file="${ldap.dir}/opendkim.ldif" />
-
-                <copy todir="${ldap.generated.dir}/config" file="${ldap.config.dir}/cn=config.ldif" />
-                <copy todir="${ldap.generated.dir}/config/cn=config" file="${ldap.config.dir}/cn=config/cn=module{0}.ldif" />
-                <copy todir="${ldap.generated.dir}/config/cn=config" file="${ldap.config.dir}/cn=config/cn=schema.ldif" />
-                <copy todir="${ldap.generated.dir}/config/cn=config" file="${ldap.config.dir}/cn=config/olcDatabase={0}config.ldif" />
-                <copy todir="${ldap.generated.dir}/config/cn=config" file="${ldap.config.dir}/cn=config/olcDatabase={-1}frontend.ldif" />
-                <copy todir="${ldap.generated.dir}/config/cn=config" file="${ldap.config.dir}/cn=config/olcDatabase={1}monitor.ldif" />
-                <copy todir="${ldap.generated.dir}/config/cn=config/" file="${ldap.config.dir}/cn=config/olcDatabase={2}mdb.ldif" />
-                <copy todir="${ldap.generated.dir}/config/cn=config/olcDatabase={2}mdb" file="${ldap.config.dir}/cn=config/olcDatabase={2}mdb/olcOverlay={0}dynlist.ldif" />
-                <copy todir="${ldap.generated.dir}/config/cn=config/olcDatabase={2}mdb" file="${ldap.config.dir}/cn=config/olcDatabase={2}mdb/olcOverlay={1}unique.ldif" />
-                <copy todir="${ldap.generated.dir}/config/cn=config/olcDatabase={2}mdb" file="${ldap.config.dir}/cn=config/olcDatabase={2}mdb/olcOverlay={2}noopsrch.ldif" />
-                <copy todir="${ldap.generated.dir}/updates/">
-                  <fileset dir="${ldap.dir}/src/updates/" includes="**" />
-                </copy>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
         </executions>
       </plugin>
 
@@ -254,8 +121,6 @@
     <generated-sources>${project.build.directory}/generated-sources</generated-sources>
     <generated-zattr>${generated-sources}/zattr/com/zimbra/common/account</generated-zattr>
     <ldap.dir>${project.basedir}/ldap</ldap.dir>
-    <ldap.generated.dir>${ldap.dir}/generated</ldap.generated.dir>
-    <ldap.config.dir>${ldap.dir}/config</ldap.config.dir>
   </properties>
 
 </project>
