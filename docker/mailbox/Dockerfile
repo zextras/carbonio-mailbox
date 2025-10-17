@@ -14,7 +14,7 @@ COPY right-manager                    right-manager
 COPY client                           client
 COPY store-conf                       store-conf
 
-RUN --mount=type=cache,target=/root/.m2 mvn clean install -DskipTests
+RUN mvn -U clean install -DskipTests
 
 FROM eclipse-temurin:17-jre-jammy
 
