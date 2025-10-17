@@ -170,32 +170,22 @@ pipeline {
                                 tagVersions = ['devel', 'latest']
                             }
                             dockerHelper.buildImage([
-                                    dockerfile: 'docker/standalone/mailbox/Dockerfile',
+                                    dockerfile: 'docker/mailbox/Dockerfile',
                                     imageName : 'registry.dev.zextras.com/dev/carbonio-mailbox',
                                     imageTags : tagVersions,
                                     ocLabels  : [
                                             title          : 'Carbonio Mailbox',
-                                            descriptionFile: 'docker/standalone/mailbox/description.md',
+                                            descriptionFile: 'docker/mailbox/description.md',
                                             version        : tagVersions[0]
                                     ]
                             ])
                             dockerHelper.buildImage([
-                                    dockerfile: 'docker/standalone/mariadb/Dockerfile',
+                                    dockerfile: 'docker/mariadb/Dockerfile',
                                     imageName : 'registry.dev.zextras.com/dev/carbonio-mariadb',
                                     imageTags : tagVersions,
                                     ocLabels  : [
                                             title          : 'Carbonio MariaDB',
-                                            descriptionFile: 'docker/standalone/mariadb/description.md',
-                                            version        : tagVersions[0]
-                                    ]
-                            ])
-                            dockerHelper.buildImage([
-                                    dockerfile: 'docker/standalone/openldap/Dockerfile',
-                                    imageName : 'registry.dev.zextras.com/dev/carbonio-openldap',
-                                    imageTags : tagVersions,
-                                    ocLabels  : [
-                                            title          : 'Carbonio OpenLDAP',
-                                            descriptionFile: 'docker/standalone/openldap/description.md',
+                                            descriptionFile: 'docker/mariadb/description.md',
                                             version        : tagVersions[0]
                                     ]
                             ])

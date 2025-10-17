@@ -5,7 +5,6 @@ WORKDIR /build
 # Copy all project files
 COPY pom.xml                          pom.xml
 COPY store                            store
-COPY attribute-manager                attribute-manager
 COPY mailbox-ldap-lib                 mailbox-ldap-lib
 COPY soap                             soap
 COPY store-extra-runtime-dependencies store-extra-runtime-dependencies
@@ -33,7 +32,7 @@ ADD https://github.com/open-telemetry/opentelemetry-java-instrumentation/release
 
 COPY --from=build /build/store/target/zm-store.jar /opt/zextras/mailbox/jars/mailbox.jar
 COPY --from=build /build/store/target/dependencies/* /opt/zextras/mailbox/jars/
-COPY docker/standalone/mailbox/log4j.properties /opt/zextras/conf/log4j.properties
+COPY docker/mailbox/log4j.properties /opt/zextras/conf/log4j.properties
 COPY --from=build /build/store-conf/conf/datasource.xml /opt/zextras/conf/
 
 ENV LDAP_URL="ldap://openldap:1389"
@@ -79,13 +78,13 @@ ENV TRACING_OPTIONS=""
 
 COPY store/db/create_database.sql /opt/zextras/db/
 
-COPY docker/standalone/mailbox/localconfig/localconfig.xml /localconfig/localconfig.xml
+COPY docker/mailbox/localconfig/localconfig.xml /localconfig/localconfig.xml
 
 RUN mkdir -p /opt/zextras/mailboxd/etc/ && keytool -genkey -keyalg RSA \
     -dname "cn=Unknown, ou=Unknown, o=Unknown, c=Unknown" \
     -keystore /opt/zextras/mailboxd/etc/keystore -keysize 2048 -validity 1461 \
     -keypass testkey1 -storepass teststore1
 
-COPY docker/standalone/mailbox/entrypoint.sh .
+COPY docker/mailbox/entrypoint.sh .
 
 ENTRYPOINT ["./entrypoint.sh"]
