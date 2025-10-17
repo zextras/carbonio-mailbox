@@ -9,15 +9,26 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.io.ByteStreams;
 import com.zextras.mailbox.MailboxTestSuite;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.L10nUtil;
 import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.index.IndexDocument;
 import com.zimbra.cs.index.LuceneFields;
 import com.zimbra.cs.index.analysis.RFC822AddressTokenStream;
+import com.zimbra.cs.mime.ParsedMessage.CalendarPartInfo;
 import java.util.Arrays;
 import java.util.List;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import org.apache.lucene.document.Document;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -131,5 +142,41 @@ public final class ParsedMessageTest extends MailboxTestSuite {
   raw = ByteStreams.toByteArray(getClass().getResourceAsStream("smime-signed.txt"));
   pm = new ParsedMessage(raw, false);
   assertNotEquals(pm.getFragment(null), msgWasEncrypted, "normal message fragment");
+ }
+
+ @Test
+ void shouldReturnCalendarPartAfterAnalysis_whenMessageHasTextCalendarPartWithoutMethod()
+		 throws MessagingException, ServiceException {
+  final String invite = Util.generateInvite();
+  final MimeMessage message = generateMessageWithInvite(invite, "charset=UTF-8");
+  final ParsedMessage parsedMessage = new ParsedMessage(message, true);
+  parsedMessage.analyzeFully();
+  final CalendarPartInfo calendarPartInfo = parsedMessage.getCalendarPartInfo();
+  Assertions.assertNull(calendarPartInfo, "message has no calendar part");
+ }
+
+ private MimeMessage generateMessageWithInvite(String invite, String calendarHeader) throws MessagingException {
+  MimeMessage message = new MimeMessage((Session) null);
+  message.setFrom(new InternetAddress("organizer@example.com"));
+  message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("attendee@example.com"));
+  message.setSubject("Meeting Request");
+
+  // Create text part
+  MimeBodyPart textPart = new MimeBodyPart();
+  textPart.setText("Please see the meeting invitation attached.", "UTF-8");
+
+  // Create calendar part
+  MimeBodyPart calendarPart = new MimeBodyPart();
+  calendarPart.setContent(invite, "text/calendar;" + calendarHeader);
+
+  // Combine into multipart/alternative
+  MimeMultipart multipart = new MimeMultipart("alternative");
+  multipart.addBodyPart(textPart);
+  multipart.addBodyPart(calendarPart);
+
+  // Set content and save
+  message.setContent(multipart);
+  message.saveChanges();
+  return message;
  }
 }

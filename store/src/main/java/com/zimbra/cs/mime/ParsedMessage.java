@@ -1090,6 +1090,10 @@ public final class ParsedMessage {
         } else {
             ignoreCalendar = true;
         }
+        String methodParam = (new ContentType(mpi.getMimePart().getContentType())).getParameter("method");
+        if (methodParam == null && !LC.calendar_allow_invite_without_method.booleanValue()) {
+            ignoreCalendar = true;
+        }
         String toRet = "";
         try {
             // ignore multipart "container" parts
