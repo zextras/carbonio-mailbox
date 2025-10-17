@@ -22,7 +22,7 @@ package() {
 
   cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
 
-  unzip -o store/target/dependencies/mailbox-attribute-manager-4.23.1.jar 'conf/*' 'attrs-schema' -d attribute-manager
+  unzip -o store/target/dependencies/mailbox-attribute-manager-*.jar 'conf/*' 'attrs-schema' -d attribute-manager
   install -D "attribute-manager/attrs-schema" \
     "${pkgdir}/opt/zextras/conf/attrs-schema"
 
