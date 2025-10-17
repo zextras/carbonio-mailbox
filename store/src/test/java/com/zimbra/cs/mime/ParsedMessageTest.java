@@ -159,8 +159,6 @@ public final class ParsedMessageTest extends MailboxTestSuite {
  @Test
  void shouldReturnCalendarPartAfterAnalysis_whenMessageHasTextCalendarPartWithoutMethod()
 		 throws MessagingException, ServiceException {
-  // FIXME: needs mail capabilities to properly parse calendar item.
-  //  see: ZMimeBodyPart#38 where we call mc.addMailcap( for example
   final String invite = Util.generateInvite();
   final MimeMessage message = generateMessageWithInvite(invite);
 
