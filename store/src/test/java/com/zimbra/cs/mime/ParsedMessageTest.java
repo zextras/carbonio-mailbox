@@ -19,11 +19,11 @@ import com.zimbra.cs.index.analysis.RFC822AddressTokenStream;
 import com.zimbra.cs.mime.ParsedMessage.CalendarPartInfo;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import javax.activation.DataHandler;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -41,56 +41,66 @@ import org.junit.jupiter.api.Test;
 public final class ParsedMessageTest extends MailboxTestSuite {
 
  /**
-  * @see http://tools.ietf.org/html/rfc2822#appendix-A.5
+  * @see <a href="https://tools.ietf.org/html/rfc2822#appendix-A.5">rfc2822#appendix-A.5</a>
   */
  @Test
  void rfc2822a5() throws Exception {
-  String raw =
-    "From: Pete(A wonderful \\) chap) <pete(his account)@(comment)silly.test(his host)>\n" +
-      "To: Chris <c@(xxx bbb)public.example>,\n" +
-      "         joe@example.org,\n" +
-      "  John <jdoe@one.test> (my dear friend); (the end of the group)\n" +
-      "Cc:(Empty list)(start)Undisclosed recipients  :(nobody(that I know))  ;\n" +
-      "Date: Thu,\n" +
-      "      13\n" +
-      "        Feb\n" +
-      "          1969\n" +
-      "      23:32\n" +
-      "               -0330 (Newfoundland Time)\n" +
-      "Message-ID:              <testabcd.1234@silly.test>\n" +
-      "\n" +
-      "Testing.";
-
-  ParsedMessage msg = new ParsedMessage(raw.getBytes(), false);
-  List<IndexDocument> docs = msg.getLuceneDocuments();
+  final List<IndexDocument> docs = getIndexDocuments();
   assertEquals(1, docs.size());
   Document doc = docs.get(0).toDocument();
 
-  RFC822AddressTokenStream from = (RFC822AddressTokenStream) doc.getFieldable(
-    LuceneFields.L_H_FROM).tokenStreamValue();
-  assertEquals(Arrays.asList("pete", "a", "wonderful", "chap", "pete", "his", "account", "comment",
-      "silly.test", "his", "host", "pete@silly.test", "pete", "@silly.test", "silly.test"),
-    from.getAllTokens());
+   try (RFC822AddressTokenStream from = (RFC822AddressTokenStream) doc.getFieldable(
+       LuceneFields.L_H_FROM).tokenStreamValue()) {
+     assertEquals(Arrays.asList("pete", "a", "wonderful", "chap", "pete", "his", "account", "comment",
+         "silly.test", "his", "host", "pete@silly.test", "pete", "@silly.test", "silly.test"),
+       from.getAllTokens());
+   }
 
-  RFC822AddressTokenStream to = (RFC822AddressTokenStream) doc.getFieldable(
-    LuceneFields.L_H_TO).tokenStreamValue();
-  assertEquals(Arrays.asList("chris", "c@", "c", "xxx", "bbb", "public.example", "joe@example.org", "joe",
-    "@example.org", "example.org", "example", "@example", "john", "jdoe@one.test", "jdoe", "@one.test",
-    "one.test", "my", "dear", "friend", "the", "end", "of", "the", "group", "c@public.example", "c",
-    "@public.example", "public.example"), to.getAllTokens());
+   try (RFC822AddressTokenStream to = (RFC822AddressTokenStream) doc.getFieldable(
+       LuceneFields.L_H_TO).tokenStreamValue()) {
+     assertEquals(Arrays.asList("chris", "c@", "c", "xxx", "bbb", "public.example", "joe@example.org", "joe",
+       "@example.org", "example.org", "example", "@example", "john", "jdoe@one.test", "jdoe", "@one.test",
+       "one.test", "my", "dear", "friend", "the", "end", "of", "the", "group", "c@public.example", "c",
+       "@public.example", "public.example"), to.getAllTokens());
+   }
 
-  RFC822AddressTokenStream cc = (RFC822AddressTokenStream) doc.getFieldable(
-    LuceneFields.L_H_CC).tokenStreamValue();
-  assertEquals(Arrays.asList("empty", "list", "start", "undisclosed", "recipients", "nobody", "that", "i",
-    "know"), cc.getAllTokens());
+   try (RFC822AddressTokenStream cc = (RFC822AddressTokenStream) doc.getFieldable(
+       LuceneFields.L_H_CC).tokenStreamValue()) {
+     assertEquals(Arrays.asList("empty", "list", "start", "undisclosed", "recipients", "nobody", "that", "i",
+       "know"), cc.getAllTokens());
+   }
 
-  RFC822AddressTokenStream xEnvFrom = (RFC822AddressTokenStream) doc.getFieldable(
-    LuceneFields.L_H_X_ENV_FROM).tokenStreamValue();
-  assertEquals(0, xEnvFrom.getAllTokens().size());
+   try (RFC822AddressTokenStream xEnvFrom = (RFC822AddressTokenStream) doc.getFieldable(
+       LuceneFields.L_H_X_ENV_FROM).tokenStreamValue()) {
+     assertEquals(0, xEnvFrom.getAllTokens().size());
+   }
 
-  RFC822AddressTokenStream xEnvTo = (RFC822AddressTokenStream) doc.getFieldable(
-    LuceneFields.L_H_X_ENV_TO).tokenStreamValue();
-  assertEquals(0, xEnvTo.getAllTokens().size());
+   try (RFC822AddressTokenStream xEnvTo = (RFC822AddressTokenStream) doc.getFieldable(
+       LuceneFields.L_H_X_ENV_TO).tokenStreamValue()) {
+     assertEquals(0, xEnvTo.getAllTokens().size());
+   }
+ }
+
+ private static List<IndexDocument> getIndexDocuments() throws ServiceException {
+  String raw =
+      """
+          From: Pete(A wonderful \\) chap) <pete(his account)@(comment)silly.test(his host)>
+          To: Chris <c@(xxx bbb)public.example>,
+                   joe@example.org,
+            John <jdoe@one.test> (my dear friend); (the end of the group)
+          Cc:(Empty list)(start)Undisclosed recipients  :(nobody(that I know))  ;
+          Date: Thu,
+                13
+                  Feb
+                    1969
+                23:32
+                         -0330 (Newfoundland Time)
+          Message-ID:              <testabcd.1234@silly.test>
+          
+          Testing.""";
+
+  ParsedMessage msg = new ParsedMessage(raw.getBytes(), false);
+   return msg.getLuceneDocuments();
  }
 
  @Test
@@ -137,11 +147,11 @@ public final class ParsedMessageTest extends MailboxTestSuite {
    msgWasEncrypted = "";
   }
 
-  byte[] raw = ByteStreams.toByteArray(getClass().getResourceAsStream("smime-encrypted.txt"));
+  byte[] raw = ByteStreams.toByteArray(Objects.requireNonNull(getClass().getResourceAsStream("smime-encrypted.txt")));
   ParsedMessage pm = new ParsedMessage(raw, false);
   assertEquals(msgWasEncrypted, pm.getFragment(null), "encrypted-message fragment");
 
-  raw = ByteStreams.toByteArray(getClass().getResourceAsStream("smime-signed.txt"));
+  raw = ByteStreams.toByteArray(Objects.requireNonNull(getClass().getResourceAsStream("smime-signed.txt")));
   pm = new ParsedMessage(raw, false);
   assertNotEquals(pm.getFragment(null), msgWasEncrypted, "normal message fragment");
  }
@@ -152,7 +162,7 @@ public final class ParsedMessageTest extends MailboxTestSuite {
   // FIXME: needs mail capabilities to properly parse calendar item.
   //  see: ZMimeBodyPart#38 where we call mc.addMailcap( for example
   final String invite = Util.generateInvite();
-  final MimeMessage message = generateMessageWithInvite(invite, "charset=UTF-8");
+  final MimeMessage message = generateMessageWithInvite(invite);
 
   final ParsedMessage parsedMessage = new ParsedMessage(message, true);
   parsedMessage.analyzeFully();
@@ -160,7 +170,7 @@ public final class ParsedMessageTest extends MailboxTestSuite {
   Assertions.assertNotNull(calendarPartInfo, "message has no calendar part");
  }
 
- private MimeMessage generateMessageWithInvite(String invite, String calendarHeader) throws MessagingException {
+ private MimeMessage generateMessageWithInvite(String invite) throws MessagingException {
   MimeMessage message = new MimeMessage((Session) null);
   message.setFrom(new InternetAddress("organizer@example.com"));
   message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("attendee@example.com"));
