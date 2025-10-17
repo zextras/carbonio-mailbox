@@ -69,7 +69,7 @@ pipeline {
                         container('jdk-17') {
                             sh """
                         mvn ${MVN_OPTS} \
-                            -U -DskipTests=true \
+                            -DskipTests=true \
                             clean install
                         mkdir staging
                         cp -a store* milter* right-manager \
