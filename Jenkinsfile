@@ -92,20 +92,13 @@ pipeline {
             }
         }
 
-
-        stage('UT, IT') {
+        stage('Test') {
             steps {
                 container('jdk-17') {
-                    sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,flaky,e2e"
-                }
-                junit allowEmptyResults: true,
-                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
-            }
-        }
-        stage('Flaky, API, E2E tests') {
-            steps {
-                container('jdk-17') {
-                    sh "cd store && mvn ${MVN_OPTS} verify -Dgroups=flaky,api && mvn ${MVN_OPTS} verify -Dgroups=e2e"
+                    sh """
+                        mvn ${MVN_OPTS} verify -DexcludedGroups=api,flaky,e2e
+                        cd store && mvn ${MVN_OPTS} verify -Dgroups=flaky,api && mvn ${MVN_OPTS} verify -Dgroups=e2e
+                    """
                 }
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
