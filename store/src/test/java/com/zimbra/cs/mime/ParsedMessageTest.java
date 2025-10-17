@@ -19,6 +19,7 @@ import com.zimbra.cs.index.analysis.RFC822AddressTokenStream;
 import com.zimbra.cs.mime.ParsedMessage.CalendarPartInfo;
 import java.util.Arrays;
 import java.util.List;
+import javax.activation.DataHandler;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -27,6 +28,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 import org.apache.lucene.document.Document;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -151,6 +153,7 @@ public final class ParsedMessageTest extends MailboxTestSuite {
   //  see: ZMimeBodyPart#38 where we call mc.addMailcap( for example
   final String invite = Util.generateInvite();
   final MimeMessage message = generateMessageWithInvite(invite, "charset=UTF-8");
+
   final ParsedMessage parsedMessage = new ParsedMessage(message, true);
   parsedMessage.analyzeFully();
   final CalendarPartInfo calendarPartInfo = parsedMessage.getCalendarPartInfo();
@@ -169,7 +172,11 @@ public final class ParsedMessageTest extends MailboxTestSuite {
 
   // Create calendar part
   MimeBodyPart calendarPart = new MimeBodyPart();
-  calendarPart.setContent(invite, "text/calendar;" + calendarHeader);
+  calendarPart.setDataHandler(
+      new DataHandler(
+          new ByteArrayDataSource(invite.getBytes(), "text/calendar; charset=UTF-8")
+      )
+  );
 
   // Combine into multipart/alternative
   MimeMultipart multipart = new MimeMultipart("alternative");
