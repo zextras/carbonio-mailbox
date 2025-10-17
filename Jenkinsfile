@@ -97,7 +97,7 @@ pipeline {
                 container('jdk-17') {
                     sh """
                         mvn ${MVN_OPTS} verify -DexcludedGroups=api,flaky,e2e
-                        cd store && mvn ${MVN_OPTS} verify -Dgroups=flaky,api && mvn ${MVN_OPTS} verify -Dgroups=e2e
+                        mvn ${MVN_OPTS} verify -Dgroups=flaky,api && mvn ${MVN_OPTS} verify -Dgroups=e2e
                     """
                 }
                 junit allowEmptyResults: true,
