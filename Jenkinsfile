@@ -35,6 +35,15 @@ pipeline {
         timeout(time: 2, unit: 'HOURS')
     }
 
+    parameters {
+        booleanParam defaultValue: false,
+                description: 'Skip test and sonar analysis.',
+                name: 'SKIP_TEST_WITH_COVERAGE'
+        booleanParam defaultValue: false,
+                description: 'Skip sonar analysis.',
+                name: 'SKIP_SONARQUBE'
+    }
+
     tools {
         jfrog 'jfrog-cli'
     }
@@ -83,22 +92,43 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('UT, IT') {
             steps {
-                withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                    container('jdk-17') {
-                        sh """
-                        mvn ${MVN_OPTS} verify -DexcludedGroups=api,flaky,e2e
-                        mvn ${MVN_OPTS} verify -Dgroups=flaky,api
-                        mvn ${MVN_OPTS} verify -Dgroups=e2e
-                        mvn ${MVN_OPTS} sonar:sonar \
-                                -Dsonar.junit.reportPaths=target/surefire-reports,target/failsafe-reports \
-                                -Dsonar.exclusions=**/com/zimbra/soap/mail/type/*.java,**/com/zimbra/soap/mail/message/*.java,**/com/zimbra/cs/account/ZAttr*.java,**/com/zimbra/common/account/ZAttr*.java
-                    """
-                    }
+                container('jdk-17') {
+                    sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,flaky,e2e"
                 }
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+            }
+        }
+        stage('Flaky, API, E2E tests') {
+            steps {
+                container('jdk-17') {
+                    sh "cd store && mvn ${MVN_OPTS} verify -Dgroups=flaky,api && mvn ${MVN_OPTS} verify -Dgroups=e2e"
+                }
+                junit allowEmptyResults: true,
+                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+            }
+        }
+
+        stage('Sonarqube Analysis') {
+            when {
+                allOf {
+                    expression { params.SKIP_SONARQUBE == false }
+                    expression { params.SKIP_TEST_WITH_COVERAGE == false }
+                }
+            }
+            steps {
+                container('jdk-17') {
+                    withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
+                        sh """
+                            mvn ${MVN_OPTS} \
+                                sonar:sonar \
+                                -Dsonar.junit.reportPaths=target/surefire-reports,target/failsafe-reports \
+                                -Dsonar.exclusions=**/com/zimbra/soap/mail/type/*.java,**/com/zimbra/soap/mail/message/*.java,**/com/zimbra/cs/account/ZAttr*.java,**/com/zimbra/common/account/ZAttr*.java
+                        """
+                    }
+                }
             }
         }
 
