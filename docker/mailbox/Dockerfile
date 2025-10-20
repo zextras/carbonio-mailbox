@@ -26,6 +26,11 @@ RUN mkdir -p /opt/zextras/mailbox/jars/ && \
 
 COPY --from=build /build/store/src/test/resources/timezones-test.ics /opt/zextras/conf/timezones.ics
 COPY --from=build /build/store-conf/conf/msgs/* /opt/zextras/conf/msgs/
+# Mime detection
+COPY --from=build /build/store-conf/conf/magic /opt/zextras/conf/magic
+COPY --from=build /build/store-conf/conf/magic.zimbra /opt/zextras/conf/magic.zimbra
+COPY --from=build /build/store-conf/conf/globs2 /opt/zextras/conf/msgs/globs2
+COPY --from=build /build/store-conf/conf/globs2.zimbra /opt/zextras/conf/msgs/globs2.zimbra
 COPY --from=build /build/store-conf/conf/owasp_policy.xml /opt/zextras/conf/owasp_policy.xml
 ADD https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar \
     /opt/zextras/opentelemetry-javaagent.jar
