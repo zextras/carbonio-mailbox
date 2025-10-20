@@ -828,29 +828,23 @@
     <mockserver.version>5.13.0</mockserver.version>
     <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
   </properties>
+  <distributionManagement>
+    <repository>
+      <id>artifactory</id>
+      <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
+    </repository>
+      <snapshotRepository>
+        <id>artifactory</id>
+        <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
+      </snapshotRepository>
+  </distributionManagement>
   <version>${revision}${changelist}</version>
   <profiles>
-    <!-- Allows deploy to Zextras public maven repo -->
     <profile>
       <id>prod</id>
-      <distributionManagement>
-        <repository>
-          <id>artifactory</id>
-          <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
-        </repository>
-      </distributionManagement>
       <properties>
         <changelist></changelist>
       </properties>
-    </profile>
-    <profile>
-      <id>dev</id>
-      <distributionManagement>
-        <snapshotRepository>
-          <id>artifactory</id>
-          <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
-        </snapshotRepository>
-      </distributionManagement>
     </profile>
   </profiles>
 
@@ -866,6 +860,17 @@
     <repository>
       <id>zextras-java-sdk</id>
       <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
+    </repository>
+    <repository>
+      <id>zextras-public-snapshots</id>
+      <name>Zextras public maven snapshot repository</name>
+      <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </repository>
   </repositories>
   <pluginRepositories>
