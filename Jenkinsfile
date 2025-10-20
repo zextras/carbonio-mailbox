@@ -84,7 +84,7 @@ pipeline {
                     steps {
                         container('dind') {
                             withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                                sh 'docker buildx bake'
+                                sh 'docker buildx bake --no-cache'
                             }
                         }
                     }
