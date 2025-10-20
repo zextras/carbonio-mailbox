@@ -17,9 +17,6 @@
       "name": "common-appserver-conf"
     },
     {
-      "name": "directory-server"
-    },
-    {
       "name": "mailbox-jar"
     }
   ]

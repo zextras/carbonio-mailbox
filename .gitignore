@@ -41,3 +41,4 @@ target/
 /data/
 /node_modules/
 /mailbox-ldap-lib/ldap/generated/
+/attribute-manager/

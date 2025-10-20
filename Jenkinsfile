@@ -37,9 +37,6 @@ pipeline {
 
     parameters {
         booleanParam defaultValue: false,
-                description: 'Upload packages in playground repositories.',
-                name: 'PLAYGROUND'
-        booleanParam defaultValue: false,
                 description: 'Skip test and sonar analysis.',
                 name: 'SKIP_TEST_WITH_COVERAGE'
         booleanParam defaultValue: false,
@@ -75,7 +72,7 @@ pipeline {
                             -DskipTests=true \
                             clean install
                         mkdir staging
-                        cp -a store* milter* attribute-manager right-manager \
+                        cp -a store* milter* right-manager \
                                 mailbox-ldap-lib client common packages soap jython-libs \
                                 staging/
                     """
@@ -87,14 +84,13 @@ pipeline {
                     steps {
                         container('dind') {
                             withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                                sh 'docker buildx bake'
+                                sh 'docker buildx bake --no-cache'
                             }
                         }
                     }
                 }
             }
         }
-
 
         stage('UT, IT') {
             steps {
@@ -126,7 +122,7 @@ pipeline {
                 container('jdk-17') {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         sh """
-                            mvn ${MVN_OPTS} -DskipTests \
+                            mvn ${MVN_OPTS} \
                                 sonar:sonar \
                                 -Dsonar.junit.reportPaths=target/surefire-reports,target/failsafe-reports \
                                 -Dsonar.exclusions=**/com/zimbra/soap/mail/type/*.java,**/com/zimbra/soap/mail/message/*.java,**/com/zimbra/cs/account/ZAttr*.java,**/com/zimbra/common/account/ZAttr*.java
@@ -170,32 +166,22 @@ pipeline {
                                 tagVersions = ['devel', 'latest']
                             }
                             dockerHelper.buildImage([
-                                    dockerfile: 'docker/standalone/mailbox/Dockerfile',
+                                    dockerfile: 'docker/mailbox/Dockerfile',
                                     imageName : 'registry.dev.zextras.com/dev/carbonio-mailbox',
                                     imageTags : tagVersions,
                                     ocLabels  : [
                                             title          : 'Carbonio Mailbox',
-                                            descriptionFile: 'docker/standalone/mailbox/description.md',
+                                            descriptionFile: 'docker/mailbox/description.md',
                                             version        : tagVersions[0]
                                     ]
                             ])
                             dockerHelper.buildImage([
-                                    dockerfile: 'docker/standalone/mariadb/Dockerfile',
+                                    dockerfile: 'docker/mariadb/Dockerfile',
                                     imageName : 'registry.dev.zextras.com/dev/carbonio-mariadb',
                                     imageTags : tagVersions,
                                     ocLabels  : [
                                             title          : 'Carbonio MariaDB',
-                                            descriptionFile: 'docker/standalone/mariadb/description.md',
-                                            version        : tagVersions[0]
-                                    ]
-                            ])
-                            dockerHelper.buildImage([
-                                    dockerfile: 'docker/standalone/openldap/Dockerfile',
-                                    imageName : 'registry.dev.zextras.com/dev/carbonio-openldap',
-                                    imageTags : tagVersions,
-                                    ocLabels  : [
-                                            title          : 'Carbonio OpenLDAP',
-                                            descriptionFile: 'docker/standalone/openldap/description.md',
+                                            descriptionFile: 'docker/mariadb/description.md',
                                             version        : tagVersions[0]
                                     ]
                             ])

@@ -14,8 +14,8 @@
       <groupId>zextras</groupId>
     </dependency>
     <dependency>
-      <artifactId>attribute-manager</artifactId>
-      <groupId>zextras</groupId>
+      <artifactId>mailbox-attribute-manager</artifactId>
+      <groupId>com.zextras</groupId>
     </dependency>
     <dependency>
       <groupId>javax.xml.bind</groupId>

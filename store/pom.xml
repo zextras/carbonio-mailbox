@@ -488,8 +488,8 @@
     </dependency>
 
     <dependency>
-      <artifactId>attribute-manager</artifactId>
-      <groupId>zextras</groupId>
+      <artifactId>mailbox-attribute-manager</artifactId>
+      <groupId>com.zextras</groupId>
     </dependency>
     <dependency>
       <artifactId>right-manager</artifactId>

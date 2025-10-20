@@ -1,24 +1,19 @@
 group "default" {
-  targets = ["mailbox", "ldap", "mariadb", "postfix"]
+  targets = ["mailbox", "mariadb"]
   output = [{ type = "cacheonly" }]
-}
-
-target "ldap" {
-  context = "."
-  dockerfile = "docker/standalone/openldap/Dockerfile"
 }
 
 target "mailbox" {
   context = "."
-  dockerfile = "docker/standalone/mailbox/Dockerfile"
+  dockerfile = "docker/mailbox/Dockerfile"
 }
 
 target "postfix" {
   context = "."
-  dockerfile = "docker/standalone/postfix/Dockerfile"
+  dockerfile = "docker/postfix/Dockerfile"
 }
 
 target "mariadb" {
   context = "."
-  dockerfile = "docker/standalone/mariadb/Dockerfile"
+  dockerfile = "docker/mariadb/Dockerfile"
 }
