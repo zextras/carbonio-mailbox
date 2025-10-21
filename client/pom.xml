@@ -56,10 +56,6 @@
       <artifactId>zm-common</artifactId>
       <groupId>zextras</groupId>
     </dependency>
-    <dependency>
-      <artifactId>mailbox-ldap-lib</artifactId>
-      <groupId>zextras</groupId>
-    </dependency>
 
     <dependency>
       <artifactId>zm-soap</artifactId>

@@ -496,10 +496,6 @@
       <groupId>zextras</groupId>
     </dependency>
     <dependency>
-      <artifactId>mailbox-ldap-lib</artifactId>
-      <groupId>zextras</groupId>
-    </dependency>
-    <dependency>
       <groupId>zextras</groupId>
       <artifactId>store-extra-runtime-dependencies</artifactId>
       <type>pom</type>
