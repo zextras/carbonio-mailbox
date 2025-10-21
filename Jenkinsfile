@@ -75,7 +75,7 @@ pipeline {
                             -DskipTests=true \
                             clean install
                         mkdir staging
-                        cp -a store* milter* right-manager \
+                        cp -a store* right-manager \
                                 client common packages soap jython-libs \
                                 staging/
                     """
