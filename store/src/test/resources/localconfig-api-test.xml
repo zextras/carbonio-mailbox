@@ -32,6 +32,6 @@
     <value>false</value>
   </key>
   <key name="localized_msgs_directory">
-    <value>conf/msgs</value>
+    <value>./conf/msgs</value>
   </key>
 </localconfig>
