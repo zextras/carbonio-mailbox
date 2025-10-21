@@ -60,7 +60,7 @@ class ModifyPrefsTest extends MailboxTestSuite {
       }
     });
 
-    L10nUtil.setMsgClassLoader("../store-conf/conf/msgs");
+    L10nUtil.setMsgClassLoader("conf/msgs");
   }
 
 

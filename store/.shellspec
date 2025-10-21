@@ -1,3 +1,0 @@
---require spec_helper
---helperdir spec/helper
---shell bash
