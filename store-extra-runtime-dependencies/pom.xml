@@ -42,10 +42,6 @@
       <groupId>org.codehaus.woodstox</groupId>
     </dependency>
     <dependency>
-      <artifactId>javax.ws.rs-api</artifactId>
-      <groupId>javax.ws.rs</groupId>
-    </dependency>
-    <dependency>
       <artifactId>neethi</artifactId>
       <groupId>org.apache.neethi</groupId>
     </dependency>
@@ -56,14 +52,6 @@
     <dependency>
       <artifactId>wsdl4j</artifactId>
       <groupId>wsdl4j</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>jsr181-api</artifactId>
-      <groupId>javax.jws</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>jsr311-api</artifactId>
-      <groupId>javax.ws.rs</groupId>
     </dependency>
     <dependency>
       <artifactId>jackson-dataformat-smile</artifactId>
