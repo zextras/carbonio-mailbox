@@ -24,7 +24,7 @@ makedepends=(
 package() {
   cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
 
-  install -D "store/target/versions-init.sql" \
+  install -D "store/db/versions-init.sql" \
     "${pkgdir}/opt/zextras/db/versions-init.sql"
   install -D "store/db/db.sql" \
     "${pkgdir}/opt/zextras/db/db.sql"
