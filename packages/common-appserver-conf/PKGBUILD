@@ -48,9 +48,9 @@ package() {
   install -D "attribute-manager/conf/rights/user-rights.xml" \
     "${pkgdir}/opt/zextras/conf/rights/user-rights.xml"
 
-  install -D "milter-conf/conf/milter.log4j.properties" \
+  install -D "store/milter/conf/milter.log4j.properties" \
     "${pkgdir}/opt/zextras/conf/milter.log4j.properties"
-  install -D "milter-conf/conf/mta_milter_options.in" \
+  install -D "store/milter/conf/mta_milter_options.in" \
     "${pkgdir}/opt/zextras/conf/mta_milter_options.in"
   install -D "store-conf/conf/datasource.xml" \
     "${pkgdir}/opt/zextras/conf/datasource.xml"

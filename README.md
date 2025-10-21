@@ -7,11 +7,11 @@
 This repository contains the source code of Carbonio Mailbox which consists of several subcomponents
 and their roles:
 
+
+- **common**: provides classes of common use (utilities, constants, etc.)
 - **client**: client package to interact with the mailbox
-- **common**: package providing classes of common use, like utilities, clients and common parameters
-- **native**: package to load native libraries
-- **soap**: package describing SOAP APIs and tools to generate wsdl documentation
-- **store**: the mailbox service and servlets (SOAP APIs, IMAP, POP3 and CLI)
+- **soap**: describes SOAP APIs and contains wsdl documentation
+- **store**: the mailbox service (API handlers, Milter, IMAP, POP3, CLI and others)
 
 ## Building Carbonio Mailbox from source
 Requirements:
@@ -23,24 +23,13 @@ Build the Code by running:
    $ mvn clean install -DskipTests
    ```
 
-## Adding an attribute to LDAP
-- add the attribute definition in [attrs.xml](store/src/main/resources/conf/attrs/attrs.xml)  
-- add the migration files by following the instructions in [updates](store/ldap/src/updates/attrs/ReadMe.md)
-- update the tests in AttributeManagerTest.java that check on the attributes 
-  count number
-
 ## Generating SOAP DOCS
 > mvn antrun:run@generate-soap-docs
 
 ## Local Mailbox (Development)
 
-### 1. Mailbox in Container
-See [docker/standalone/README.md](docker/standalone/README.md)
-
-### 2. Local Sample Mailbox (java main)
 Run the main class [SampleLocalMailbox](store/src/test/java/com/zextras/mailbox).  
 This will start a Mailbox with in-memory LDAP and an HSQLDB database.
-
 
 ## RC
 Managed with **Github Actions**.
