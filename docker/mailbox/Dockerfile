@@ -5,7 +5,6 @@ WORKDIR /build
 # Copy all project files
 COPY pom.xml                          pom.xml
 COPY store                            store
-COPY mailbox-ldap-lib                 mailbox-ldap-lib
 COPY soap                             soap
 COPY store-extra-runtime-dependencies store-extra-runtime-dependencies
 COPY jython-libs                      jython-libs
