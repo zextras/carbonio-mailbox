@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.stream.XMLStreamException;
 
 /** The wsdl service servlet - serves up files comprising Zimbra's WSDL definition */
 public class WsdlServlet extends ZimbraServlet {
@@ -69,11 +70,15 @@ public class WsdlServlet extends ZimbraServlet {
         ByteUtil.copy(is, true /* closeIn */, resp.getOutputStream(), false /* closeOut */);
       } else {
         Domain domain = getBestDomain(req.getServerName());
-        if (!WsdlGenerator.handleRequestForWsdl(
-            pathInfo, resp.getOutputStream(), getSoapURL(domain), getSoapAdminURL(domain))) {
-          resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-        }
-      }
+				try {
+					if (!WsdlGenerator.handleRequestForWsdl(
+							pathInfo, resp.getOutputStream(), getSoapURL(domain), getSoapAdminURL(domain))) {
+						resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+					}
+				} catch (XMLStreamException e) {
+          resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				}
+			}
     } finally {
       ZimbraLog.clearContext();
     }
