@@ -75,8 +75,8 @@ pipeline {
                             -DskipTests=true \
                             clean install
                         mkdir staging
-                        cp -a store* milter* right-manager \
-                                mailbox-ldap-lib client common packages soap jython-libs \
+                        cp -a store* right-manager \
+                                client common packages soap jython-libs \
                                 staging/
                     """
                             stash includes: 'staging/**', name: 'staging'

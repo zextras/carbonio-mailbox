@@ -496,10 +496,6 @@
       <groupId>zextras</groupId>
     </dependency>
     <dependency>
-      <artifactId>mailbox-ldap-lib</artifactId>
-      <groupId>zextras</groupId>
-    </dependency>
-    <dependency>
       <groupId>zextras</groupId>
       <artifactId>store-extra-runtime-dependencies</artifactId>
       <type>pom</type>
@@ -613,6 +609,22 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.0</version>
         <executions>
+          <execution>
+            <id>generate-rights-message-properties</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.generators.RightsConstantsGenerator</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>genMessageProperties</argument>
+                <argument>-o</argument>
+                <argument>${generated-resources}</argument>
+              </arguments>
+            </configuration>
+          </execution>
           <execution>
             <id>generate-ZAttrAccount</id>
             <phase>generate-sources</phase>
@@ -852,48 +864,6 @@ EOF
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <dependencies>
-          <dependency>
-            <artifactId>ant-contrib</artifactId>
-            <exclusions>
-              <exclusion>
-                <artifactId>ant</artifactId>
-                <groupId>ant</groupId>
-              </exclusion>
-            </exclusions>
-            <groupId>ant-contrib</groupId>
-            <version>1.0b3</version>
-          </dependency>
-          <dependency>
-            <artifactId>ant-nodeps</artifactId>
-            <groupId>org.apache.ant</groupId>
-            <version>1.8.1</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <!-- Generate versions-init.sql + LDAP version -->
-          <execution>
-            <configuration>
-              <target>
-                <property name="maven_compile_classpath" refid="maven.compile.classpath" />
-                <taskdef classpathref="maven.plugin.classpath"
-                  resource="net/sf/antcontrib/antlib.xml" />
-                <ant antfile="${basedir}/ant-store.xml">
-                  <target name="create-version-sql" />
-                </ant>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <phase>prepare-package</phase>
-            <id>generate-sql-version</id>
-          </execution>
-        </executions>
-        <groupId>org.apache.maven.plugins</groupId>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>

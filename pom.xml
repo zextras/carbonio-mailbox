@@ -784,11 +784,9 @@
   <modules>
     <module>common</module>
     <module>right-manager</module>
-    <module>mailbox-ldap-lib</module>
     <module>client</module>
     <module>soap</module>
     <module>store</module>
-    <module>store-conf</module>
     <module>store-extra-runtime-dependencies</module>
     <module>jython-libs</module>
   </modules>

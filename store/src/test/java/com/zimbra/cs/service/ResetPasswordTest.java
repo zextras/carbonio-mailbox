@@ -50,7 +50,7 @@ public class ResetPasswordTest extends MailboxTestSuite {
 
 		MailboxManager.setInstance(new DirectInsertionMailboxManager());
 
-		L10nUtil.setMsgClassLoader("../store-conf/conf/msgs");
+		L10nUtil.setMsgClassLoader("conf/msgs");
 	}
 
 	public static class DirectInsertionMailboxManager extends MailboxManager {

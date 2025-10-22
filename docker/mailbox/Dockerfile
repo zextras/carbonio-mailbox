@@ -5,14 +5,12 @@ WORKDIR /build
 # Copy all project files
 COPY pom.xml                          pom.xml
 COPY store                            store
-COPY mailbox-ldap-lib                 mailbox-ldap-lib
 COPY soap                             soap
 COPY store-extra-runtime-dependencies store-extra-runtime-dependencies
 COPY jython-libs                      jython-libs
 COPY common                           common
 COPY right-manager                    right-manager
 COPY client                           client
-COPY store-conf                       store-conf
 
 RUN --mount=type=cache,target=/root/.m2 mvn clean install -DskipTests
 
@@ -25,20 +23,20 @@ RUN mkdir -p /opt/zextras/mailbox/jars/ && \
     mkdir -p /opt/zextras/log
 
 COPY --from=build /build/store/src/test/resources/timezones-test.ics /opt/zextras/conf/timezones.ics
-COPY --from=build /build/store-conf/conf/msgs/* /opt/zextras/conf/msgs/
+COPY --from=build /build/store/conf/msgs/* /opt/zextras/conf/msgs/
 # Mime detection
-COPY --from=build /build/store-conf/conf/magic /opt/zextras/conf/magic
-COPY --from=build /build/store-conf/conf/magic.zimbra /opt/zextras/conf/magic.zimbra
-COPY --from=build /build/store-conf/conf/globs2 /opt/zextras/conf/msgs/globs2
-COPY --from=build /build/store-conf/conf/globs2.zimbra /opt/zextras/conf/msgs/globs2.zimbra
-COPY --from=build /build/store-conf/conf/owasp_policy.xml /opt/zextras/conf/owasp_policy.xml
+COPY --from=build /build/store/conf/magic /opt/zextras/conf/magic
+COPY --from=build /build/store/conf/magic.zimbra /opt/zextras/conf/magic.zimbra
+COPY --from=build /build/store/conf/globs2 /opt/zextras/conf/msgs/globs2
+COPY --from=build /build/store/conf/globs2.zimbra /opt/zextras/conf/msgs/globs2.zimbra
+COPY --from=build /build/store/conf/owasp_policy.xml /opt/zextras/conf/owasp_policy.xml
 ADD https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar \
     /opt/zextras/opentelemetry-javaagent.jar
 
 COPY --from=build /build/store/target/zm-store.jar /opt/zextras/mailbox/jars/mailbox.jar
 COPY --from=build /build/store/target/dependencies/* /opt/zextras/mailbox/jars/
 COPY docker/mailbox/log4j.properties /opt/zextras/conf/log4j.properties
-COPY --from=build /build/store-conf/conf/datasource.xml /opt/zextras/conf/
+COPY --from=build /build/store/conf/datasource.xml /opt/zextras/conf/
 
 ENV LDAP_URL="ldap://openldap:1389"
 ENV LDAP_ROOT_PASSWORD=qh6hWZvc

@@ -17,17 +17,17 @@ priority="optional"
 
 package() {
   cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
-  gunzip -dc store-conf/conf/common/common-passwords.gz > common-passwords.txt
+  gunzip -dc store/conf/common/common-passwords.gz > common-passwords.txt
 
-  install -D "store-conf/conf/globs2" \
+  install -D "store/conf/globs2" \
     "${pkgdir}/opt/zextras/conf/globs2"
-  install -D "store-conf/conf/magic" \
+  install -D "store/conf/magic" \
     "${pkgdir}/opt/zextras/conf/magic"
-  install -D "store-conf/conf/magic.zimbra" \
+  install -D "store/conf/magic.zimbra" \
     "${pkgdir}/opt/zextras/conf/magic.zimbra"
-  install -D "store-conf/conf/globs2.zimbra" \
+  install -D "store/conf/globs2.zimbra" \
     "${pkgdir}/opt/zextras/conf/globs2.zimbra"
-  install -D "store-conf/conf/contacts/contact-fields.xml" \
+  install -D "store/conf/contacts/contact-fields.xml" \
     "${pkgdir}/opt/zextras/conf/contact-fields.xml"
   install -D "common-passwords.txt" \
     "${pkgdir}/opt/zextras/conf/common-passwords.txt"
