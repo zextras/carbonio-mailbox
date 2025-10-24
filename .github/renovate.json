@@ -1,0 +1,9 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "github>zextras/infra-renovate-config",
+    "github>zextras/infra-renovate-config:java",
+    "github>zextras/infra-renovate-config:javascript",
+    "github>zextras/infra-renovate-config:docker"
+  ]
+}
