@@ -75,7 +75,7 @@ public class SaveDraft extends MailDocumentHandler {
         boolean wantModSeq = request.getAttributeBool(MailConstants.A_WANT_MODIFIED_SEQUENCE, false);
         Element msgElem = request.getElement(MailConstants.E_MSG);
 
-        int id = new ItemIdentifier(msgElem.getAttribute(MailConstants.A_ID, "-1"), null).id;
+        int id = getId(msgElem);
         String originalId = msgElem.getAttribute(MailConstants.A_ORIG_ID, null);
         ItemId iidOrigid = originalId == null ? null : new ItemId(originalId, zsc);
         String replyType = msgElem.getAttribute(MailConstants.A_REPLY_TYPE, null);
@@ -173,6 +173,10 @@ public class SaveDraft extends MailDocumentHandler {
         }
 
         return generateResponse(zsc, ifmt, octxt, mbox, msg, wantImapUid, wantModSeq);
+    }
+
+    static int getId(Element msgElem) throws ServiceException {
+        return new ItemIdentifier(msgElem.getAttribute(MailConstants.A_ID, "-1"), null).id;
     }
 
     protected boolean schedulesAutoSendTask() {
