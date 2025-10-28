@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.common.mailbox.ItemIdentifier;
 import com.zimbra.cs.service.mail.message.parser.MimeMessageData;
 import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
 import java.io.IOException;
@@ -74,7 +75,7 @@ public class SaveDraft extends MailDocumentHandler {
         boolean wantModSeq = request.getAttributeBool(MailConstants.A_WANT_MODIFIED_SEQUENCE, false);
         Element msgElem = request.getElement(MailConstants.E_MSG);
 
-        int id = (int) msgElem.getAttributeLong(MailConstants.A_ID, Mailbox.ID_AUTO_INCREMENT);
+        int id = new ItemIdentifier(msgElem.getAttribute(MailConstants.A_ID, "-1"), null).id;
         String originalId = msgElem.getAttribute(MailConstants.A_ORIG_ID, null);
         ItemId iidOrigid = originalId == null ? null : new ItemId(originalId, zsc);
         String replyType = msgElem.getAttribute(MailConstants.A_REPLY_TYPE, null);
