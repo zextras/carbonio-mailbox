@@ -12,13 +12,14 @@ import com.google.common.collect.Maps;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.AccountAction;
 import com.zextras.mailbox.util.MailMessageBuilder;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.common.soap.SoapParseException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
@@ -34,8 +35,9 @@ import com.zimbra.soap.mail.type.PartInfo;
 import com.zimbra.soap.mail.type.SaveDraftMsg;
 import javax.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class SaveDraftTest extends MailboxTestSuite {
 
@@ -186,5 +188,23 @@ public class SaveDraftTest extends MailboxTestSuite {
 						.build();
 
 		return AccountAction.Factory.getDefault().forAccount(account).saveDraft(draft);
+	}
+
+	@ParameterizedTest
+	@CsvSource({
+					"273,f404365b-b938-4900-b8e8-acc8783b3b8c:273",
+					"273,273",
+					"-1,-1"
+	})
+	void getId(Integer expectedId, String text) throws SoapParseException, ServiceException {
+		Element element = Element.JSONElement.parseJSON("""
+						{ "id":"%s" }
+						""".formatted(text));
+		assertEquals(expectedId, SaveDraft.getId(element));
+	}
+
+	@Test
+	void getMissingId() throws SoapParseException, ServiceException {
+		assertEquals(-1, SaveDraft.getId(Element.JSONElement.parseJSON("{  }")));
 	}
 }
