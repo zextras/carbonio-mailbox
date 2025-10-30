@@ -102,7 +102,7 @@ class GetInfoTest extends SoapTestSuite {
   void attributesSectionProvidesAccountStatusAttribute() throws Exception {
     final var account =
         createAccount()
-            .withAttribute(Provisioning.A_zimbraAccountStatus, AccountStatus.active)
+            .withAttribute(Provisioning.A_zimbraAccountStatus, AccountStatus.active.toString())
             .create();
     final var response = getAttributesSection(account);
 
