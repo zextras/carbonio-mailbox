@@ -19,26 +19,28 @@ import io.minio.errors.InternalException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.ServerException;
 import io.minio.errors.XmlParserException;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 public class MinIOStoreManager extends StoreManager {
 
-	private static MinioClient minioClient;
+	private final MinioClient minioClient;
+	private final String bucketName;
+
+	MinIOStoreManager(MinioClient minioClient, String bucketName) {
+		this.minioClient = minioClient;
+		this.bucketName = bucketName;
+	}
 
 	@Override
 	public void startup() throws IOException, ServiceException {
-		final String url = LC.minio_store_url.value();
-		final String user = LC.minio_store_user.value();
-		final String password = LC.minio_store_password.value();
-		minioClient =
-				MinioClient.builder()
-						.endpoint(url)
-						.credentials(user, password)
-						.build();
 	}
 
 	@Override
@@ -97,7 +99,8 @@ public class MinIOStoreManager extends StoreManager {
 
 	@Override
 	public BlobBuilder getBlobBuilder() throws IOException, ServiceException {
-		return new MinIOIncomingBlobBuilder(new MinioBlob("mailbox-blobs/" + UUID.randomUUID()));
+		final String key = "/" + UUID.randomUUID();
+		return new MinIOIncomingBlobBuilder(new MinioBlob(key, generateEmptyFile(key)));
 	}
 
 	@Override
@@ -112,18 +115,37 @@ public class MinIOStoreManager extends StoreManager {
 	@Override
 	public StagedBlob stage(InputStream data, long actualSize, Mailbox mbox)
 			throws IOException, ServiceException {
-		final MinioBlob minioBlob = new MinioBlob(
-				"mailbox-blobs/" + mbox.getAccountId() + "/" + UUID.randomUUID());
-
-		store(minioBlob.getKey(), data, actualSize);
+		final String pathname = mbox.getAccountId() + "/" + UUID.randomUUID();
+		final File file = generateEmptyFile(pathname);
+		Files.copy(data, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		final MinioBlob minioBlob = new MinioBlob(pathname, file);
+		try (InputStream fis = Files.newInputStream(file.toPath())) {
+			storeOnMinIO(minioBlob.getKey(), fis, actualSize);
+		}
 		return new MinioStagedBlob(minioBlob.getKey(), mbox,"", actualSize);
 	}
 
-	private static void store(String key, InputStream data, long actualSize)
+	private static File generateEmptyFile(String pathname) throws ServiceException {
+		final File file = new File(LC.zimbra_home.value() + "/" + pathname);
+		final boolean exists = Files.exists(file.toPath());
+
+		try {
+			if (!exists) {
+				final String parent = file.getParent();
+				Files.createDirectories(Paths.get(parent));
+				Files.createFile(file.toPath());
+			}
+		} catch (IOException e) {
+			throw ServiceException.FAILURE("Failed to create empty file", e);
+		}
+		return file;
+	}
+
+	private void storeOnMinIO(String key, InputStream data, long actualSize)
 			throws IOException, ServiceException {
 		try {
 			minioClient.putObject(PutObjectArgs.builder()
-					.bucket("mailbox-blobs")
+					.bucket(bucketName)
 					.stream(data, actualSize, 10 * 1024 * 1024)
 					.object(key)
 					.build()
@@ -140,7 +162,7 @@ public class MinIOStoreManager extends StoreManager {
 		MinioBlob minioBlob = (MinioBlob) blob;
 		final long rawSize = minioBlob.getRawSize();
 		final String key = minioBlob.getKey();
-		store(key, minioBlob.getInputStream(), rawSize);
+		storeOnMinIO(key, minioBlob.getInputStream(), rawSize);
 		return new MinioStagedBlob(key, mbox, "", rawSize);
 	}
 
@@ -202,8 +224,8 @@ public class MinIOStoreManager extends StoreManager {
 	public static class MinioBlob extends Blob {
 		private final String key;
 
-		public MinioBlob(String key) {
-			super(null); // no file
+		public MinioBlob(String key, File file) {
+			super(file);
 			this.key = key;
 		}
 
