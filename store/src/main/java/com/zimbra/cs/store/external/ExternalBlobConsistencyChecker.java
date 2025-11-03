@@ -78,7 +78,7 @@ public class ExternalBlobConsistencyChecker extends BlobConsistencyChecker {
             bi.path = unexpected;
             results.unexpectedBlobs.put(0, bi);
             try {
-                Blob blob = sm.getLocalBlob(mbox, unexpected, false);
+                ExternalBlob blob = sm.getLocalBlob(mbox, unexpected, false);
                 bi.fileSize = blob.getFile().length();
             } catch (IOException ioe) {
                 //log this?
@@ -96,7 +96,7 @@ public class ExternalBlobConsistencyChecker extends BlobConsistencyChecker {
         } else {
             try {
                 unexpectedBlobPaths.remove(mblob.getLocator());
-                Blob blob = sm.getLocalBlob(mbox, mblob.getLocator(), false);
+                ExternalBlob blob = sm.getLocalBlob(mbox, mblob.getLocator(), false);
                 if (blob == null) {
                     results.missingBlobs.put(blobInfo.itemId, blobInfo);
                 } else {

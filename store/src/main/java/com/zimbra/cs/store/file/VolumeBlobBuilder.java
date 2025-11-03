@@ -13,9 +13,9 @@ import com.zimbra.cs.store.Blob;
 import com.zimbra.cs.store.BlobBuilder;
 import com.zimbra.cs.volume.VolumeManager;
 
-public final class VolumeBlobBuilder extends BlobBuilder {
+public final class VolumeBlobBuilder extends FileBlobBuilder<VolumeBlob> {
 
-    VolumeBlobBuilder(Blob targetBlob) {
+    VolumeBlobBuilder(VolumeBlob targetBlob) {
         super(targetBlob);
     }
 
@@ -37,7 +37,7 @@ public final class VolumeBlobBuilder extends BlobBuilder {
 
 
     @Override
-    protected int getCompressionThreshold() {
+    public int getCompressionThreshold() {
         try {
             return (int) VolumeManager.getInstance().getVolume(getVolumeId()).getCompressionThreshold();
         } catch (ServiceException e) {
@@ -47,7 +47,7 @@ public final class VolumeBlobBuilder extends BlobBuilder {
     }
 
     @Override
-    public Blob finish() throws IOException, ServiceException {
+    public VolumeBlob finish() throws IOException, ServiceException {
         if (isFinished()) {
             return blob;
         }

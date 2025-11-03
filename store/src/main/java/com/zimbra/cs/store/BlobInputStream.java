@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.store;
 
+import com.zimbra.cs.store.file.FileBlob;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -85,7 +86,7 @@ implements SharedInputStream, InputStreamSource {
     /**
      * Constructs a <tt>BlobInputStream</tt> that reads an entire blob.
      */
-    public BlobInputStream(Blob blob) throws IOException {
+    public BlobInputStream(FileBlob blob) throws IOException {
         this(blob.getFile(), blob.getRawSize(), null, null, null);
     }
 

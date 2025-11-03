@@ -7,12 +7,14 @@ package com.zimbra.cs.store.external;
 
 import com.zimbra.cs.store.Blob;
 import com.zimbra.cs.store.BlobBuilder;
+import com.zimbra.cs.store.file.FileBlobBuilder;
+import com.zimbra.cs.store.file.VolumeBlob;
 
 /**
  * Wrapper around BlobBuilder for package visibility
  */
-public class ExternalBlobBuilder extends BlobBuilder {
-    protected ExternalBlobBuilder(Blob targetBlob) {
+public class ExternalBlobBuilder extends FileBlobBuilder<ExternalBlob> {
+    protected ExternalBlobBuilder(ExternalBlob targetBlob) {
         super(targetBlob);
     }
 }

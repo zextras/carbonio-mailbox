@@ -32,7 +32,7 @@ import com.zimbra.znative.IO;
 /**
  * @since 2004.10.13
  */
-public class FileBlobStore extends StoreManager {
+public class FileBlobStore extends StoreManager<VolumeBlob> {
     protected static final VolumeManager MANAGER = VolumeManager.getInstance();
 
     @Override
@@ -67,7 +67,7 @@ public class FileBlobStore extends StoreManager {
         }
     }
 
-    private Blob getUniqueIncomingBlob() throws IOException, ServiceException {
+    private VolumeBlob getUniqueIncomingBlob() throws IOException, ServiceException {
         Volume volume = MANAGER.getCurrentMessageVolume();
         IncomingDirectory incdir = volume.getIncomingDirectory();
         if (incdir == null) {
@@ -79,18 +79,17 @@ public class FileBlobStore extends StoreManager {
     }
 
     @Override
-    public BlobBuilder getBlobBuilder() throws IOException, ServiceException {
-        Blob blob = getUniqueIncomingBlob();
+    public BlobBuilder<VolumeBlob> getBlobBuilder() throws IOException, ServiceException {
+        VolumeBlob blob = getUniqueIncomingBlob();
         return new VolumeBlobBuilder(blob);
     }
 
     @Override
-    public Blob storeIncoming(InputStream in, boolean storeAsIs)
+    public VolumeBlob storeIncoming(InputStream in, boolean storeAsIs)
     throws IOException, ServiceException {
-        BlobBuilder builder = getBlobBuilder();
+        var builder = getBlobBuilder();
         // if the blob is already compressed, *don't* calculate a digest/size from what we write
         builder.disableCompression(storeAsIs).disableDigest(storeAsIs);
-
         return builder.init().append(in).finish();
     }
 
@@ -103,9 +102,9 @@ public class FileBlobStore extends StoreManager {
     }
 
     @Override
-    public VolumeStagedBlob stage(Blob blob, Mailbox mbox) throws IOException {
+    public VolumeStagedBlob stage(VolumeBlob blob, Mailbox mbox) throws IOException {
         // mailbox store is on the same volume as incoming directory, so no need to stage the blob
-        return new VolumeStagedBlob(mbox, (VolumeBlob) blob);
+        return new VolumeStagedBlob(mbox, blob);
     }
 
     @Override
@@ -113,7 +112,7 @@ public class FileBlobStore extends StoreManager {
     throws IOException, ServiceException {
         Volume volume = MANAGER.getCurrentMessageVolume();
         //FileBlobStore optimizes copy by using link where possible
-        return link(src.getLocalBlob(), destMbox, destItemId, destRevision, volume.getId());
+        return link((VolumeBlob) src.getLocalBlob(), destMbox, destItemId, destRevision, volume.getId());
     }
 
     /**
@@ -122,20 +121,20 @@ public class FileBlobStore extends StoreManager {
      * It is only to be used for FileBlobStore specific code such as BlobMover
      * @param src
      * @param destMbox
-     * @param destMsgId mail_item.id value for message in destMbox
+     * @param destItemId mail_item.id value for message in destMbox
      * @param destRevision mail_item.mod_content value for message in destMbox
      * @param destVolumeId mail_item.volume_id for message in dest Mbox
      * @return MailboxBlob object representing the linked blob
      * @throws IOException
      * @throws ServiceException
      */
-    public VolumeMailboxBlob copy(Blob src, Mailbox destMbox, int destItemId, int destRevision, short destVolumeId)
+    public VolumeMailboxBlob copy(FileBlob src, Mailbox destMbox, int destItemId, int destRevision, short destVolumeId)
     throws IOException, ServiceException {
         Volume volume = MANAGER.getVolume(destVolumeId);
         return copy(src, destMbox, destItemId, destRevision, volume);
     }
 
-    private VolumeMailboxBlob copy(Blob src, Mailbox destMbox, int destItemId, int destRevision, Volume destVolume)
+    private VolumeMailboxBlob copy(FileBlob src, Mailbox destMbox, int destItemId, int destRevision, Volume destVolume)
     throws IOException, ServiceException {
         File srcFile = src.getFile();
         if (!srcFile.exists()) {
@@ -186,7 +185,7 @@ public class FileBlobStore extends StoreManager {
         return link(blob, destMbox, destItemId, destRevision, volume.getId());
     }
 
-    public VolumeMailboxBlob link(Blob src, Mailbox destMbox, int destItemId, int destRevision, short destVolumeId)
+    public VolumeMailboxBlob link(VolumeBlob src, Mailbox destMbox, int destItemId, int destRevision, short destVolumeId)
     throws IOException, ServiceException {
         File srcFile = src.getFile();
         if (!srcFile.exists()) {
@@ -300,7 +299,7 @@ public class FileBlobStore extends StoreManager {
         if (mblob == null) {
             return false;
         }
-        return deleteFile(mblob.getLocalBlob().getFile());
+        return deleteFile(((VolumeBlob) mblob.getLocalBlob()).getFile());
     }
 
     @Override
@@ -315,7 +314,7 @@ public class FileBlobStore extends StoreManager {
     }
 
     @Override
-    public boolean delete(Blob blob) throws IOException {
+    public boolean delete(VolumeBlob blob) throws IOException {
         if (blob == null) {
             return false;
         }
@@ -354,11 +353,11 @@ public class FileBlobStore extends StoreManager {
         if (mboxBlob == null) {
             return null;
         }
-        return getContent(mboxBlob.getLocalBlob());
+        return getContent((VolumeBlob) mboxBlob.getLocalBlob());
     }
 
     @Override
-    public InputStream getContent(Blob blob) throws IOException {
+    public InputStream getContent(VolumeBlob blob) throws IOException {
         if (blob == null) {
             return null;
         }

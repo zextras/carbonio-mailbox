@@ -58,9 +58,9 @@ public class StoreIncomingBlob extends RedoableOp {
         mMailboxIdList = list;
     }
 
-    public void setBlobBodyInfo(File file) {
-        mData = new RedoableOpData(file);
-        mPath = file.getPath();
+    public void setBlobBodyInfo(byte[] data, String path) {
+        mData = new RedoableOpData(data);
+        mPath = path;
     }
 
     public void setBlobBodyInfo(DataSource ds, int dataLength, String path) {

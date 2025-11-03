@@ -1,6 +1,5 @@
 package com.zimbra.cs.store.minio;
 
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.store.Blob;
@@ -9,8 +8,7 @@ import com.zimbra.cs.store.MailboxBlob;
 import com.zimbra.cs.store.MailboxBlob.MailboxBlobInfo;
 import com.zimbra.cs.store.StagedBlob;
 import com.zimbra.cs.store.StoreManager;
-import io.minio.BucketExistsArgs;
-import io.minio.MakeBucketArgs;
+import com.zimbra.cs.store.minio.MinIOStoreManager.MinioBlob;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.ErrorResponseException;
@@ -19,16 +17,15 @@ import io.minio.errors.InternalException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.ServerException;
 import io.minio.errors.XmlParserException;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
+import javax.activation.DataSource;
 
-public class MinIOStoreManager extends StoreManager {
+public class MinIOStoreManager extends StoreManager<MinioBlob> {
 
 	private final MinioClient minioClient;
 	private final String bucketName;
@@ -51,35 +48,6 @@ public class MinIOStoreManager extends StoreManager {
 		}
 	}
 
-	private String getBucketName() {
-		return "";
-	}
-
-	private String getIncomingBucket() {
-		final String incoming = "incoming";
-		createBucketIfNotExists(incoming);
-		return incoming;
-	}
-
-	private boolean createBucketIfNotExists(String bucketName) {
-
-		// Check if the bucket exists
-		try {
-			boolean found = minioClient.bucketExists(BucketExistsArgs.builder()
-					.bucket(bucketName)
-					.build());
-			if (!found) {
-				minioClient.makeBucket(MakeBucketArgs.builder()
-						.bucket(bucketName)
-						.build());
-				return true;
-			}
-		} catch (Exception e) {
-			// ignore
-		}
-		return false;
-	}
-
 	@Override
 	public boolean supports(StoreFeature feature) {
 		switch (feature) {
@@ -98,13 +66,13 @@ public class MinIOStoreManager extends StoreManager {
 	}
 
 	@Override
-	public BlobBuilder getBlobBuilder() throws IOException, ServiceException {
+	public BlobBuilder<MinioBlob> getBlobBuilder() throws IOException, ServiceException {
 		final String key = "/incoming/" + UUID.randomUUID();
 		return new MinIOIncomingBlobBuilder(new MinioBlob(key));
 	}
 
 	@Override
-	public Blob storeIncoming(InputStream data, boolean storeAsIs)
+	public MinioBlob storeIncoming(InputStream data, boolean storeAsIs)
 			throws IOException, ServiceException {
 		final String key = "/incoming/" + UUID.randomUUID();
 		final int unknownSize = -1;
@@ -143,10 +111,9 @@ public class MinIOStoreManager extends StoreManager {
 	}
 
 	@Override
-	public StagedBlob stage(Blob blob, Mailbox mbox) throws IOException, ServiceException {
-		MinioBlob minioBlob = (MinioBlob) blob;
-		final long rawSize = minioBlob.getRawSize();
-		return stageOnMinIO(mbox, minioBlob.getInputStream(), rawSize);
+	public StagedBlob stage(MinioBlob blob, Mailbox mbox) throws IOException, ServiceException {
+		final long rawSize = blob.getRawSize();
+		return stageOnMinIO(mbox, blob.getInputStream(), rawSize);
 	}
 
 	@Override
@@ -168,7 +135,7 @@ public class MinIOStoreManager extends StoreManager {
 	}
 
 	@Override
-	public boolean delete(Blob blob) throws IOException {
+	public boolean delete(MinioBlob blob) throws IOException {
 		return false;
 	}
 
@@ -194,7 +161,7 @@ public class MinIOStoreManager extends StoreManager {
 	}
 
 	@Override
-	public InputStream getContent(Blob blob) throws IOException {
+	public InputStream getContent(MinioBlob blob) throws IOException {
 		return null;
 	}
 
@@ -208,8 +175,29 @@ public class MinIOStoreManager extends StoreManager {
 
 		private final String key;
 
+		@Override
+		public InputStream getInputStream() throws IOException {
+			return null;
+		}
+
+		@Override
+		public byte[] getContent() throws IOException {
+			return new byte[0];
+		}
+
 		public MinioBlob(String key) {
+			super(key);
 			this.key = key;
+		}
+
+		@Override
+		public long getRawSize() throws IOException {
+			return 0;
+		}
+
+		@Override
+		public String getName() {
+			return key;
 		}
 
 		public String getKey() {
@@ -236,19 +224,81 @@ public class MinIOStoreManager extends StoreManager {
 		}
 	}
 
-	public static class MinIOIncomingBlobBuilder extends BlobBuilder {
+	public static class MinIOIncomingBlobBuilder implements BlobBuilder<MinioBlob> {
 
 		private final MinioBlob blob;
 
 		public MinIOIncomingBlobBuilder(MinioBlob blob) {
-			super(blob);
 			this.blob = blob;
 		}
 
-		@Override
-		public BlobBuilder init() throws IOException, ServiceException {
+		public BlobBuilder<MinioBlob> init() {
 			return this;
 		}
 
+		@Override
+		public long getSizeHint() {
+			return 0;
+		}
+
+		@Override
+		public long getTotalBytes() {
+			return 0;
+		}
+
+		@Override
+		public BlobBuilder<MinioBlob> disableCompression(boolean disable) {
+			return null;
+		}
+
+		@Override
+		public int getCompressionThreshold() {
+			return 0;
+		}
+
+		@Override
+		public BlobBuilder<MinioBlob> disableDigest(boolean disable) {
+			return null;
+		}
+
+		@Override
+		public BlobBuilder<MinioBlob> append(InputStream in) throws IOException {
+			return null;
+		}
+
+		@Override
+		public BlobBuilder<MinioBlob> append(byte[] b) throws IOException {
+			return null;
+		}
+
+		@Override
+		public BlobBuilder<MinioBlob> append(byte[] b, int off, int len) throws IOException {
+			return null;
+		}
+
+		@Override
+		public BlobBuilder<MinioBlob> append(ByteBuffer bb) throws IOException {
+			return null;
+		}
+
+		@Override
+		public MinioBlob finish() throws IOException, ServiceException {
+			return null;
+		}
+
+		@Override
+		public MinioBlob getBlob() {
+			return null;
+		}
+
+		@Override
+		public boolean isFinished() {
+			return false;
+		}
+
+		@Override
+		public void dispose() {
+
+		}
 	}
 }

@@ -20,14 +20,10 @@ public class ExternalBlobInputStream extends BlobInputStream {
     protected String locator;
     protected Mailbox mbox;
 
-    public ExternalBlobInputStream(Blob blob) throws IOException {
+    public ExternalBlobInputStream(ExternalBlob blob) throws IOException {
         super(blob);
-        if (blob instanceof ExternalBlob) {
-            locator = ((ExternalBlob) blob).getLocator();
-            mbox = ((ExternalBlob) blob).getMbox();
-        } else {
-            Assert.fail("ExternalBlobInputStream constructor Blob instance not ExternalBlob");
-        }
+            locator = blob.getLocator();
+            mbox = blob.getMbox();
     }
 
     private ExternalBlobInputStream(File file, long rawSize, Long start, Long end, BlobInputStream parent) throws IOException {
@@ -74,7 +70,7 @@ public class ExternalBlobInputStream extends BlobInputStream {
         } else {
             ZimbraLog.store.debug("blob file no longer on disk, fetching from remote store");
             ExternalStoreManager sm = (ExternalStoreManager) StoreManager.getInstance();
-            Blob blob = sm.getLocalBlob(mbox, locator, false);
+            ExternalBlob blob = sm.getLocalBlob(mbox, locator, false);
             return blob.getFile();
         }
     }

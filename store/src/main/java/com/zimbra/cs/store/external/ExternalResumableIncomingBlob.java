@@ -20,7 +20,7 @@ import com.zimbra.cs.store.BufferingIncomingBlob;
  */
 public abstract class ExternalResumableIncomingBlob extends BufferingIncomingBlob {
 
-    public ExternalResumableIncomingBlob(String id, BlobBuilder blobBuilder, Object ctx) throws ServiceException, IOException {
+    public ExternalResumableIncomingBlob(String id, BlobBuilder<ExternalBlob> blobBuilder, Object ctx) throws ServiceException, IOException {
         super(id, blobBuilder, ctx);
     }
 

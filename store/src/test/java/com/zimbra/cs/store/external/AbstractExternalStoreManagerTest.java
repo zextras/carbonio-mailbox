@@ -19,6 +19,8 @@ import com.zimbra.cs.store.StagedBlob;
 import com.zimbra.cs.store.StoreManager;
 import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import qa.unittest.TestUtil;
 
@@ -44,8 +46,9 @@ public abstract class AbstractExternalStoreManagerTest extends AbstractStoreMana
   if (sm instanceof ExternalStoreManager) {
    ((ExternalStoreManager) sm).clearCache();
   }
-  blob.getFile().delete();
-  assertFalse(blob.getFile().exists());
+  final Path path = Path.of(blob.getPath());
+  Files.deleteIfExists(path);
+  assertFalse(Files.exists(path));
 
   //create new stream spanning the whole blob
   InputStream newStream = ((BlobInputStream) stream).newStream(0, -1);
@@ -73,8 +76,10 @@ public abstract class AbstractExternalStoreManagerTest extends AbstractStoreMana
   if (sm instanceof ExternalStoreManager) {
    ((ExternalStoreManager) sm).clearCache();
   }
-  blob.getFile().delete();
-  assertFalse(blob.getFile().exists());
+
+  final Path path = Path.of(blob.getPath());
+  Files.deleteIfExists(path);
+  assertFalse(Files.exists(path));
 
   //now get it again. this would bomb if it only looked in cache
   stream = sm.getContent(mblob.getLocalBlob());

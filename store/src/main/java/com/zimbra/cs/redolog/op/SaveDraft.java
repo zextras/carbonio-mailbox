@@ -70,7 +70,7 @@ public class SaveDraft extends CreateMessage {
                 in = new GZIPInputStream(in);
 
             blob = sm.storeIncoming(in);
-            ParsedMessage pm = new ParsedMessage(blob.getFile(), getTimestamp(), mbox.attachmentsIndexingEnabled());
+            ParsedMessage pm = new ParsedMessage(blob.getContent(), getTimestamp(), mbox.attachmentsIndexingEnabled());
 
             mbox.saveDraft(getOperationContext(), pm, getMessageId());
         } finally {

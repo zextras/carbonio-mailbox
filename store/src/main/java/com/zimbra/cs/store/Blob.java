@@ -8,6 +8,7 @@
  */
 package com.zimbra.cs.store;
 
+import io.vavr.collection.Array;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +16,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.zip.GZIPInputStream;
 
+import javax.activation.DataSource;
 import org.apache.commons.io.FileUtils;
 
 import com.google.common.base.MoreObjects;
@@ -29,65 +31,37 @@ import com.zimbra.common.zmime.ZSharedFileInputStream;
  * in the mailbox's directory.  The linked blob in mailbox directory
  * is represented by a MailboxBlob object.
  */
-public class Blob {
-    private File file;
-    private String path;
+public abstract class Blob {
     private Boolean compressed = null;
     private String digest;
-    private Long rawSize;
-
-    protected Blob(final File file) {
-        if (file == null) {
-            throw new NullPointerException("file cannot be null");
-        }
-
-        this.file = file;
-        this.path = file.getAbsolutePath();
-    }
-    protected Blob() {
-        // TODO: check if it is really required to have a file, else we need to define another structure
-    }
-
-    protected Blob(File file, long rawSize, String digest) {
-        this(file);
-        this.rawSize = rawSize;
-        this.digest = digest;
-    }
-
-    public void copy(Blob blob) throws IOException {
-        setFile(blob.getFile());
-        setPath(blob.getPath());
-        setCompressed(blob.isCompressed());
-        setDigest(blob.getDigest());
-        setRawSize(blob.getRawSize());
-    }
-
-    public File getFile() {
-        return file;
-    }
+    protected Long rawSize;
 
     public String getPath() {
         return path;
     }
 
-    public InputStream getInputStream() throws IOException {
-        InputStream in = new ZSharedFileInputStream(file);
-        if (isCompressed()) {
-            in = new GZIPInputStream(in);
-        }
-        return in;
+    private final String path;
+
+    public abstract InputStream getInputStream() throws IOException;
+    public abstract byte[] getContent() throws IOException;
+
+    protected Blob(String path) {
+        this.path = path;
+        // TODO: check if it is really required to have a file, else we need to define another structure
     }
 
-    public boolean isCompressed() throws IOException {
-        if (compressed == null) {
-            if (rawSize != null && rawSize == file.length()) {
-                this.compressed = Boolean.FALSE;
-            } else {
-                this.compressed = FileUtil.isGzipped(file);
-            }
-        }
-        return compressed;
+    protected Blob(String path, long rawSize, String digest) {
+        this(path);
+        this.rawSize = rawSize;
+        this.digest = digest;
     }
+
+    public void copy(Blob blob) throws IOException {
+        setDigest(blob.getDigest());
+        setRawSize(blob.getRawSize());
+    }
+
+
 
     /** Returns the SHA-256 digest of this blob's uncompressed data,
      *  encoded in base64. */
@@ -100,18 +74,9 @@ public class Blob {
 
     /** Returns the size of the blob's data.  If the blob is compressed,
      *  returns the uncompressed size. */
-    public long getRawSize() throws IOException {
-        if (rawSize == null) {
-            if (!isCompressed()) {
-                this.rawSize = file.length();
-            } else {
-                initializeSizeAndDigest();
-            }
-        }
-        return rawSize;
-    }
+    public abstract long getRawSize() throws IOException;
 
-    private void initializeSizeAndDigest() throws IOException {
+    protected void initializeSizeAndDigest() throws IOException {
         InputStream in = null;
         try {
             // Get the stream using the local method.  FileBlobStore.getContent()
@@ -151,15 +116,6 @@ public class Blob {
         return this;
     }
 
-    public Blob setFile(File file) {
-        this.file = file;
-        return this;
-    }
-
-    public Blob setPath(String path) {
-        this.path = path;
-        return this;
-    }
 
     public Blob copyCachedDataFrom(final Blob other) {
         if (compressed == null && other.compressed != null) {
@@ -173,15 +129,16 @@ public class Blob {
         }
         return this;
     }
-
-    public void renameTo(final String newPath) throws IOException {
-        if (!path.equals(newPath)) {
-            File newFile = new File(newPath);
-            FileUtils.moveFile(file, newFile);
-            this.path = newPath;
-            this.file = newFile;
-        }
-    }
+//
+    // Checkme: was unused
+//    public void renameTo(final String newPath) throws IOException {
+//        if (!path.equals(newPath)) {
+//            File newFile = new File(newPath);
+//            FileUtils.moveFile(file, newFile);
+//            this.path = newPath;
+//            this.file = newFile;
+//        }
+//    }
 
     @Override public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -189,4 +146,6 @@ public class Blob {
             .add("size", rawSize)
             .add("compressed", compressed).toString();
     }
+
+    public abstract String getName();
 }

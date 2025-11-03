@@ -12,6 +12,7 @@ import com.zimbra.cs.store.AbstractBlobConsistencyCheckTest;
 import com.zimbra.cs.store.MailboxBlob;
 import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.store.file.BlobConsistencyChecker;
+import com.zimbra.cs.store.file.FileBlob;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class ExternalBlobConsistencyCheckTest extends AbstractBlobConsistencyChe
 
     @Override
     protected void appendText(MailboxBlob blob, String text) throws IOException {
-        FileWriter writer = new FileWriter(blob.getLocalBlob().getFile(), true);
+        FileWriter writer = new FileWriter(((FileBlob) blob.getLocalBlob()).getFile(), true);
         writer.write(text);
         writer.close();
     }

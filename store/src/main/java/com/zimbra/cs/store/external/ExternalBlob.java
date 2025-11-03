@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.store.external;
 
+import com.zimbra.cs.store.file.FileBlob;
 import java.io.File;
 
 import com.zimbra.common.util.FileCache;
@@ -15,7 +16,7 @@ import com.zimbra.cs.store.Blob;
  * Wrapper around Blob for constructor visibility and to allow construction from FileCache.Item
  *
  */
-public class ExternalBlob extends Blob {
+public class ExternalBlob extends FileBlob {
 
     protected String locator;
     protected Mailbox mbox;
