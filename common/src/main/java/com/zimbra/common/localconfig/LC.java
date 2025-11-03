@@ -1283,6 +1283,11 @@ public final class LC {
   public static final KnownKey public_share_advertising_scope =
       KnownKey.newKey(PUBLIC_SHARE_VISIBILITY.samePrimaryDomain.toString());
 
+
+  // MinIO
+  public static final KnownKey minio_store_url = KnownKey.newKey("");
+  public static final KnownKey minio_store_user = KnownKey.newKey("");
+  public static final KnownKey minio_store_password = KnownKey.newKey("");
   // Triton integration
   public static final KnownKey triton_store_url = KnownKey.newKey("");
   public static final KnownKey triton_hash_type = KnownKey.newKey("SHA0");
