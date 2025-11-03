@@ -37,7 +37,7 @@ import com.zimbra.cs.store.StoreManager;
  * Abstract base class for external store integration.
  * Uses local incoming directory during blob creation and maintains local file cache of retrieved blobs to minimize remote round-trips
  */
-public abstract class ExternalStoreManager extends StoreManager<ExternalBlob> implements ExternalBlobIO {
+public abstract class ExternalStoreManager extends StoreManager<ExternalBlob, ExternalStagedBlob> implements ExternalBlobIO {
 
     private final IncomingDirectory incoming = new IncomingDirectory(LC.zimbra_tmp_directory.value() + File.separator + "incoming");
     protected FileCache<String> localCache;
@@ -88,7 +88,7 @@ public abstract class ExternalStoreManager extends StoreManager<ExternalBlob> im
         //stores which de-dupe need to override this method appropriately
         InputStream is = getContent(src);
         try {
-            StagedBlob staged = stage(is, src.getSize(), destMbox);
+            ExternalStagedBlob staged = stage(is, src.getSize(), destMbox);
             return link(staged, destMbox, destItemId, destRevision);
         } finally {
             ByteUtil.closeStream(is);
@@ -101,13 +101,12 @@ public abstract class ExternalStoreManager extends StoreManager<ExternalBlob> im
     }
 
     @Override
-    public boolean delete(StagedBlob staged) throws IOException {
-        ExternalStagedBlob blob = (ExternalStagedBlob) staged;
+    public boolean delete(ExternalStagedBlob staged) throws IOException {
         // we only delete a staged blob if it hasn't already been added to the mailbox
-        if (blob == null || blob.isInserted()) {
+        if (staged == null || staged.isInserted()) {
             return true;
         }
-        return deleteFromStore(blob.getLocator(), blob.getMailbox());
+        return deleteFromStore(staged.getLocator(), staged.getMailbox());
     }
 
     @Override
@@ -201,14 +200,14 @@ public abstract class ExternalStoreManager extends StoreManager<ExternalBlob> im
     }
 
     @Override
-    public MailboxBlob link(StagedBlob src, Mailbox destMbox, int destMsgId, int destRevision) throws IOException,
+    public MailboxBlob link(ExternalStagedBlob src, Mailbox destMbox, int destMsgId, int destRevision) throws IOException,
     ServiceException {
         // link is a noop
         return renameTo(src, destMbox, destMsgId, destRevision);
     }
 
     @Override
-    public MailboxBlob renameTo(StagedBlob src, Mailbox destMbox, int destMsgId, int destRevision) throws IOException,
+    public MailboxBlob renameTo(ExternalStagedBlob src, Mailbox destMbox, int destMsgId, int destRevision) throws IOException,
     ServiceException {
         // rename is a noop
         ExternalStagedBlob staged = (ExternalStagedBlob) src;
@@ -224,7 +223,7 @@ public abstract class ExternalStoreManager extends StoreManager<ExternalBlob> im
     }
 
     @Override
-    public StagedBlob stage(ExternalBlob blob, Mailbox mbox) throws IOException, ServiceException {
+    public ExternalStagedBlob stage(ExternalBlob blob, Mailbox mbox) throws IOException, ServiceException {
         if (supports(StoreFeature.RESUMABLE_UPLOAD) && blob instanceof ExternalUploadedBlob) {
             ZimbraLog.store.debug("blob already uploaded, just need to commit");
             String locator = ((ExternalResumableUpload) this).finishUpload((ExternalUploadedBlob) blob);
@@ -238,7 +237,7 @@ public abstract class ExternalStoreManager extends StoreManager<ExternalBlob> im
         } else {
             InputStream is = getContent(blob);
             try {
-                StagedBlob staged = stage(is, blob.getRawSize(), mbox);
+                ExternalStagedBlob staged = stage(is, blob.getRawSize(), mbox);
                 if (staged != null && staged.getLocator() != null) {
                     localCache.put(staged.getLocator(), getContent(blob));
                 }
@@ -250,7 +249,7 @@ public abstract class ExternalStoreManager extends StoreManager<ExternalBlob> im
     }
 
     @Override
-    public StagedBlob stage(InputStream in, long actualSize, Mailbox mbox) throws ServiceException, IOException {
+    public ExternalStagedBlob stage(InputStream in, long actualSize, Mailbox mbox) throws ServiceException, IOException {
         if (actualSize < 0) {
             ExternalBlob blob = storeIncoming(in);
             try {

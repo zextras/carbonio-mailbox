@@ -1,5 +1,6 @@
 package com.zimbra.cs.store.minio;
 
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.store.Blob;
@@ -9,6 +10,9 @@ import com.zimbra.cs.store.MailboxBlob.MailboxBlobInfo;
 import com.zimbra.cs.store.StagedBlob;
 import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.store.minio.MinIOStoreManager.MinioBlob;
+import com.zimbra.cs.store.minio.MinIOStoreManager.MinioStagedBlob;
+import io.minio.GetObjectArgs;
+import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.ErrorResponseException;
@@ -17,15 +21,15 @@ import io.minio.errors.InternalException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.ServerException;
 import io.minio.errors.XmlParserException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
-import javax.activation.DataSource;
 
-public class MinIOStoreManager extends StoreManager<MinioBlob> {
+public class MinIOStoreManager extends StoreManager<MinioBlob, MinioStagedBlob> {
 
 	private final MinioClient minioClient;
 	private final String bucketName;
@@ -33,6 +37,14 @@ public class MinIOStoreManager extends StoreManager<MinioBlob> {
 	MinIOStoreManager(MinioClient minioClient, String bucketName) {
 		this.minioClient = minioClient;
 		this.bucketName = bucketName;
+	}
+
+	public MinIOStoreManager() {
+		this.minioClient = MinioClient.builder()
+				.endpoint(LC.minio_store_url.value())
+				.credentials(LC.minio_store_user.value(), LC.minio_store_password.value())
+				.build();
+		this.bucketName = "mailbox-blobs";
 	}
 
 	@Override
@@ -77,11 +89,11 @@ public class MinIOStoreManager extends StoreManager<MinioBlob> {
 		final String key = "/incoming/" + UUID.randomUUID();
 		final int unknownSize = -1;
 		uploadOnMinIo(data, unknownSize, key);
-		return new MinioBlob(key);
+		return getFromMinIo(key);
 	}
 
 	@Override
-	public StagedBlob stage(InputStream data, long actualSize, Mailbox mbox)
+	public MinioStagedBlob stage(InputStream data, long actualSize, Mailbox mbox)
 			throws IOException, ServiceException {
 		return stageOnMinIO(mbox, data, actualSize);
 	}
@@ -89,12 +101,11 @@ public class MinIOStoreManager extends StoreManager<MinioBlob> {
 	private MinioStagedBlob stageOnMinIO(Mailbox mailbox, InputStream data, long actualSize)
 			throws IOException, ServiceException {
 		final String pathname = mailbox.getAccountId() + "/" + UUID.randomUUID();
-		final MinioStagedBlob minioStagedBlob = new MinioStagedBlob(pathname, mailbox, "", actualSize);
-		uploadOnMinIo(data, actualSize, minioStagedBlob.getKey());
-		return minioStagedBlob;
+		final MinioBlob minioBlob = uploadOnMinIo(data, actualSize, pathname);
+		return new MinioStagedBlob(mailbox, minioBlob);
 	}
 
-	private void uploadOnMinIo(InputStream data, long actualSize, String key)
+	private MinioBlob uploadOnMinIo(InputStream data, long actualSize, String key)
 			throws IOException, ServiceException {
 		try {
 			minioClient.putObject(PutObjectArgs.builder()
@@ -103,6 +114,24 @@ public class MinIOStoreManager extends StoreManager<MinioBlob> {
 					.object(key)
 					.build()
 			);
+			return getFromMinIo(key);
+		} catch (ErrorResponseException | ServerException | NoSuchAlgorithmException |
+						 InvalidResponseException | InvalidKeyException | InternalException |
+						 InsufficientDataException | XmlParserException e) {
+			throw ServiceException.FAILURE(e.getMessage(), e);
+		}
+	}
+
+	private MinioBlob getFromMinIo(String key)
+			throws IOException, ServiceException {
+		try {
+			final GetObjectResponse minIOResponse = minioClient.getObject(GetObjectArgs.builder()
+					.bucket(bucketName)
+					.object(key)
+					.build()
+			);
+			final byte[] bytes = minIOResponse.readAllBytes();
+			return new MinioBlob(key, bytes, bytes.length);
 		} catch (ErrorResponseException | ServerException | NoSuchAlgorithmException |
 						 InvalidResponseException | InvalidKeyException | InternalException |
 						 InsufficientDataException | XmlParserException e) {
@@ -111,7 +140,7 @@ public class MinIOStoreManager extends StoreManager<MinioBlob> {
 	}
 
 	@Override
-	public StagedBlob stage(MinioBlob blob, Mailbox mbox) throws IOException, ServiceException {
+	public MinioStagedBlob stage(MinioBlob blob, Mailbox mbox) throws IOException, ServiceException {
 		final long rawSize = blob.getRawSize();
 		return stageOnMinIO(mbox, blob.getInputStream(), rawSize);
 	}
@@ -123,13 +152,16 @@ public class MinIOStoreManager extends StoreManager<MinioBlob> {
 	}
 
 	@Override
-	public MailboxBlob link(StagedBlob src, Mailbox destMbox, int destMsgId, int destRevision)
+	public MailboxBlob link(MinioStagedBlob src, Mailbox destMbox, int destMsgId, int destRevision)
 			throws IOException, ServiceException {
-		return null;
+		// TODO: double check destination name, msg id and revision, they are not used atm
+		final MinioStagedBlob minioStagedBlob = stageOnMinIO(destMbox,
+				src.getMinIoBlob().getInputStream(), src.getMinIoBlob().getRawSize());
+		return new MinIOMailboxBlob(destMbox, destMsgId, destRevision, "", minioStagedBlob.getMinIoBlob());
 	}
 
 	@Override
-	public MailboxBlob renameTo(StagedBlob src, Mailbox destMbox, int destMsgId, int destRevision)
+	public MailboxBlob renameTo(MinioStagedBlob src, Mailbox destMbox, int destMsgId, int destRevision)
 			throws IOException, ServiceException {
 		return null;
 	}
@@ -140,7 +172,7 @@ public class MinIOStoreManager extends StoreManager<MinioBlob> {
 	}
 
 	@Override
-	public boolean delete(StagedBlob staged) throws IOException {
+	public boolean delete(MinioStagedBlob staged) throws IOException {
 		return false;
 	}
 
@@ -174,17 +206,25 @@ public class MinIOStoreManager extends StoreManager<MinioBlob> {
 	public static class MinioBlob extends Blob {
 
 		private final String key;
+		private byte[] data;
+		private int size;
 
 		@Override
 		public InputStream getInputStream() throws IOException {
-			return null;
+			return new ByteArrayInputStream(data);
 		}
 
 		@Override
 		public byte[] getContent() throws IOException {
-			return new byte[0];
+			return this.data;
 		}
 
+		public MinioBlob(String key, byte[] data, int size) {
+			super(key);
+			this.key = key;
+			this.data = data;
+			this.size = size;
+		}
 		public MinioBlob(String key) {
 			super(key);
 			this.key = key;
@@ -192,7 +232,7 @@ public class MinIOStoreManager extends StoreManager<MinioBlob> {
 
 		@Override
 		public long getRawSize() throws IOException {
-			return 0;
+			return size;
 		}
 
 		@Override
@@ -207,15 +247,15 @@ public class MinIOStoreManager extends StoreManager<MinioBlob> {
 
 	public static class MinioStagedBlob extends StagedBlob {
 
-		private final String key;
+		private final MinioBlob minioBlob;
 
-		public MinioStagedBlob(String key, Mailbox mbox, String digest, long size) {
-			super(mbox, digest, size);
-			this.key = key;
+		public MinioStagedBlob(Mailbox mailbox, MinioBlob minioBlob) {
+			super(mailbox, "", minioBlob.size);
+			this.minioBlob = minioBlob;
 		}
 
-		public String getKey() {
-			return key;
+		public MinioBlob getMinIoBlob() {
+			return minioBlob;
 		}
 
 		@Override

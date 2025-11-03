@@ -3,13 +3,8 @@ package com.zimbra.cs.store.minio;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.mailbox.Folder;
-import com.zimbra.cs.mailbox.Folder.FolderOptions;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.store.Blob;
-import com.zimbra.cs.store.MailboxBlob;
-import com.zimbra.cs.store.StagedBlob;
 import com.zimbra.cs.store.minio.MinIOStoreManager.MinioBlob;
 import com.zimbra.cs.store.minio.MinIOStoreManager.MinioStagedBlob;
 import io.minio.BucketExistsArgs;
@@ -80,7 +75,7 @@ class MinIOStoreManagerTest extends MailboxTestSuite {
 		final MinIOStoreManager minIOStoreManager = getMinIOStoreManager();
 		final String testData = "test data";
 
-		final MinioBlob blob = (MinioBlob) minIOStoreManager.storeIncoming(
+		final MinioBlob blob = minIOStoreManager.storeIncoming(
 				generateByData(testData), true);
 
 		final GetObjectResponse object = getObjectFromMinIO(blob.getKey());
@@ -96,7 +91,7 @@ class MinIOStoreManagerTest extends MailboxTestSuite {
 
 	private static GetObjectResponse getObjectFromMinIO(MinioStagedBlob stagedBlob)
 			throws ErrorResponseException, InsufficientDataException, InternalException, InvalidKeyException, InvalidResponseException, IOException, NoSuchAlgorithmException, ServerException, XmlParserException {
-		return getObjectFromMinIO(stagedBlob.getKey());
+		return getObjectFromMinIO(stagedBlob.getMinIoBlob().getKey());
 	}
 
 	private static GetObjectResponse getObjectFromMinIO(String key)

@@ -32,7 +32,7 @@ import com.zimbra.znative.IO;
 /**
  * @since 2004.10.13
  */
-public class FileBlobStore extends StoreManager<VolumeBlob> {
+public class FileBlobStore extends StoreManager<VolumeBlob, VolumeStagedBlob> {
     protected static final VolumeManager MANAGER = VolumeManager.getInstance();
 
     @Override
@@ -178,10 +178,10 @@ public class FileBlobStore extends StoreManager<VolumeBlob> {
     }
 
     @Override
-    public VolumeMailboxBlob link(StagedBlob src, Mailbox destMbox, int destItemId, int destRevision)
+    public VolumeMailboxBlob link(VolumeStagedBlob src, Mailbox destMbox, int destItemId, int destRevision)
     throws IOException, ServiceException {
         Volume volume = MANAGER.getCurrentMessageVolume();
-        VolumeBlob blob = ((VolumeStagedBlob) src).getLocalBlob();
+        VolumeBlob blob = src.getLocalBlob();
         return link(blob, destMbox, destItemId, destRevision, volume.getId());
     }
 
@@ -249,10 +249,10 @@ public class FileBlobStore extends StoreManager<VolumeBlob> {
     }
 
     @Override
-    public VolumeMailboxBlob renameTo(StagedBlob src, Mailbox destMbox, int destItemId, int destRevision)
+    public VolumeMailboxBlob renameTo(VolumeStagedBlob src, Mailbox destMbox, int destItemId, int destRevision)
     throws IOException, ServiceException {
         Volume volume = MANAGER.getCurrentMessageVolume();
-        VolumeBlob blob = ((VolumeStagedBlob) src).getLocalBlob();
+        VolumeBlob blob = src.getLocalBlob();
         File srcFile = blob.getFile();
         String srcPath = srcFile.getAbsolutePath();
         if (!srcFile.exists()) {
@@ -303,14 +303,13 @@ public class FileBlobStore extends StoreManager<VolumeBlob> {
     }
 
     @Override
-    public boolean delete(StagedBlob staged) throws IOException {
-        VolumeStagedBlob vsb = (VolumeStagedBlob) staged;
+    public boolean delete(VolumeStagedBlob staged) throws IOException {
         // we only delete a staged blob if the caller never saw it as an incoming blob
         //  (this prevents killing the incoming blob in a multi-user delivery, for instance)
-        if (staged == null || !vsb.wasStagedDirectly()) {
+        if (staged == null || !staged.wasStagedDirectly()) {
             return false;
         }
-        return deleteFile(vsb.getLocalBlob().getFile());
+        return deleteFile(staged.getLocalBlob().getFile());
     }
 
     @Override

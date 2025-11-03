@@ -106,7 +106,7 @@ public class StoreManagerNegativeTest extends MailboxTestSuite {
 	}
 
 
-	private class BrokenStreamingStoreManager extends SimpleStreamingStoreManager implements
+	private static class BrokenStreamingStoreManager extends SimpleStreamingStoreManager implements
 			ExternalResumableUpload {
 
 		@Override

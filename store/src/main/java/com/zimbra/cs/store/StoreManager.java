@@ -18,7 +18,7 @@ import com.zimbra.cs.util.Zimbra;
 import java.io.IOException;
 import java.io.InputStream;
 
-public abstract class StoreManager<T extends Blob> {
+public abstract class StoreManager<T extends Blob, X extends StagedBlob> {
 
   private static StoreManager sInstance;
   private static Integer diskStreamingThreshold;
@@ -159,7 +159,7 @@ public abstract class StoreManager<T extends Blob> {
    * @param actualSize the content size, or {@code -1} if the content size is not available
    * @param mbox the mailbox
    */
-  public abstract StagedBlob stage(InputStream data, long actualSize, Mailbox mbox)
+  public abstract X stage(InputStream data, long actualSize, Mailbox mbox)
       throws IOException, ServiceException;
 
   /**
@@ -169,7 +169,7 @@ public abstract class StoreManager<T extends Blob> {
    * @param data the data stream
    * @param mbox the mailbox
    */
-  public StagedBlob stage(InputStream data, Mailbox mbox) throws IOException, ServiceException {
+  public X stage(InputStream data, Mailbox mbox) throws IOException, ServiceException {
     return stage(data, -1, mbox);
   }
 
@@ -184,7 +184,7 @@ public abstract class StoreManager<T extends Blob> {
    * @throws IOException
    * @throws ServiceException
    */
-  public abstract StagedBlob stage(T blob, Mailbox mbox) throws IOException, ServiceException;
+  public abstract X stage(T blob, Mailbox mbox) throws IOException, ServiceException;
 
   /**
    * Create a copy in destMbox mailbox with message ID of destMsgId that points to srcBlob.
@@ -217,7 +217,7 @@ public abstract class StoreManager<T extends Blob> {
    * @throws ServiceException
    */
   public abstract MailboxBlob link(
-      StagedBlob src, Mailbox destMbox, int destMsgId, int destRevision)
+      X src, Mailbox destMbox, int destMsgId, int destRevision)
       throws IOException, ServiceException;
 
   /**
@@ -233,7 +233,7 @@ public abstract class StoreManager<T extends Blob> {
    * @throws ServiceException
    */
   public abstract MailboxBlob renameTo(
-      StagedBlob src, Mailbox destMbox, int destMsgId, int destRevision)
+      X src, Mailbox destMbox, int destMsgId, int destRevision)
       throws IOException, ServiceException;
 
   /**
@@ -274,7 +274,7 @@ public abstract class StoreManager<T extends Blob> {
    * @return true if blob was actually deleted
    * @throws IOException
    */
-  public abstract boolean delete(StagedBlob staged) throws IOException;
+  public abstract boolean delete(X staged) throws IOException;
 
   /**
    * Deletes a blob staged to the target mailbox. If blob doesn't exist, no exception is thrown and
@@ -283,7 +283,7 @@ public abstract class StoreManager<T extends Blob> {
    * @param staged
    * @return true if blob was actually deleted
    */
-  public boolean quietDelete(StagedBlob staged) {
+  public boolean quietDelete(X staged) {
     if (staged == null) {
       return true;
     }
