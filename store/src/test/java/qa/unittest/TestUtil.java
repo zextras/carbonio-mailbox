@@ -142,6 +142,12 @@ public class TestUtil {
         DeliveryOptions dopt = new DeliveryOptions().setFolderId(folderId).setFlags(Flag.BITMASK_UNREAD);
         return mbox.addMessage(null, pm, dopt, null);
     }
+    public static Message addMimeMessage(Mailbox mbox, String mimeMessageAsString) throws Exception {
+        ParsedMessage pm = new ParsedMessage(mimeMessageAsString.getBytes(), System.currentTimeMillis(), false);
+        DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
+        return mbox.addMessage(null, pm, dopt, null);
+    }
+
 
     public static Message addMessage(Mailbox mbox, ParsedMessage pm) throws Exception {
         DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);

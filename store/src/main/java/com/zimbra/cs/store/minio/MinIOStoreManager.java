@@ -88,8 +88,7 @@ public class MinIOStoreManager extends StoreManager<MinioBlob, MinioStagedBlob> 
 			throws IOException, ServiceException {
 		final String key = "/incoming/" + UUID.randomUUID();
 		final int unknownSize = -1;
-		uploadOnMinIo(data, unknownSize, key);
-		return getFromMinIo(key);
+		return uploadOnMinIo(data, unknownSize, key);
 	}
 
 	@Override
@@ -151,13 +150,25 @@ public class MinIOStoreManager extends StoreManager<MinioBlob, MinioStagedBlob> 
 		return null;
 	}
 
+	/**
+	 * This method actually links the message in the same mailbox also.
+	 * The message is stored in incoming, then staged, then linked to a path with the fully qualified item id
+	 * @param src
+	 * @param destMbox
+	 * @param destMsgId    mail_item.id value for message in destMbox
+	 * @param destRevision mail_item.mod_content value for message in destMbox
+	 * @return
+	 * @throws IOException
+	 * @throws ServiceException
+	 */
 	@Override
 	public MailboxBlob link(MinioStagedBlob src, Mailbox destMbox, int destMsgId, int destRevision)
 			throws IOException, ServiceException {
-		// TODO: double check destination name, msg id and revision, they are not used atm
-		final MinioStagedBlob minioStagedBlob = stageOnMinIO(destMbox,
-				src.getMinIoBlob().getInputStream(), src.getMinIoBlob().getRawSize());
-		return new MinIOMailboxBlob(destMbox, destMsgId, destRevision, "", minioStagedBlob.getMinIoBlob());
+		final String minIOKey = getMinIOKey(destMbox, destMsgId, destRevision, "");
+		final MinioBlob originalBlob = src.getMinIoBlob();
+		final MinioBlob minioBlob = uploadOnMinIo(originalBlob.getInputStream(),
+				originalBlob.getRawSize(), minIOKey);
+		return new MinIOMailboxBlob(destMbox, destMsgId, destRevision, "", minioBlob);
 	}
 
 	@Override
@@ -181,15 +192,30 @@ public class MinIOStoreManager extends StoreManager<MinioBlob, MinioStagedBlob> 
 		return false;
 	}
 
+	private String getMinIOKey(Mailbox mbox, int itemId, int revision, String locator) {
+		return mbox.getAccountId() + "/" + itemId + "/" + revision;
+	}
 	@Override
 	public MailboxBlob getMailboxBlob(Mailbox mbox, int itemId, int revision, String locator,
 			boolean validate) throws ServiceException {
-		return null;
+		final MinioBlob fromMinIo;
+		try {
+			fromMinIo = getFromMinIo(getMinIOKey(mbox, itemId, revision, locator));
+		} catch (IOException e) {
+			throw ServiceException.FAILURE(e.getMessage(), e);
+		}
+		return new MinIOMailboxBlob(mbox, itemId, revision, locator, fromMinIo);
 	}
 
 	@Override
 	public InputStream getContent(MailboxBlob mboxBlob) throws IOException {
-		return null;
+		final String minIOKey = getMinIOKey(mboxBlob.getMailbox(), mboxBlob.getItemId(),
+				mboxBlob.getRevision(), mboxBlob.getLocator());
+		try {
+			return getFromMinIo(minIOKey).getInputStream();
+		} catch (ServiceException e) {
+			throw new IOException(e.getMessage(), e);
+		}
 	}
 
 	@Override

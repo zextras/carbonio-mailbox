@@ -5,13 +5,16 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.store.StoreManager;
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
+import qa.unittest.MessageBuilder;
 import qa.unittest.TestUtil;
 
 public class MinIOStoreManagerApiTest extends MailboxTestSuite {
@@ -51,7 +54,30 @@ public class MinIOStoreManagerApiTest extends MailboxTestSuite {
 	void shouldStoreMessageInMinIO() throws Exception {
 		final Account account = createAccount().create();
 		final Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
-		TestUtil.addMessage(mailbox, "Test minio");
+		final Message message = TestUtil.addMessage(mailbox, "Test minio");
 
+		final Message messageById = mailbox.getMessageById(null, message.getId());
+
+		Assertions.assertEquals(messageById.getSubject(), "Test minio");
+	}
+
+	@Test
+	void shouldStoreAndRetrieveMailContent() throws Exception {
+		final Account account = createAccount().create();
+		final Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
+		final String body = "This is the body stored on minio";
+		final String from = "from-account@test.com";
+		final String subject = "Test minio";
+		final String mimeMessage = new MessageBuilder().withSubject(subject)
+				.withFrom(from)
+				.withBody(body).create();
+		final Message message = TestUtil.addMimeMessage(mailbox, mimeMessage);
+
+		final Message messageById = mailbox.getMessageById(null, message.getId());
+
+		final String stringBody = new String(messageById.getContent());
+		Assertions.assertTrue(stringBody.contains(body));
+		Assertions.assertTrue(stringBody.contains("Subject: " + subject));
+		Assertions.assertTrue(stringBody.contains("From: " + from));
 	}
 }
