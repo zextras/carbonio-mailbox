@@ -3,8 +3,14 @@ package com.zimbra.cs.store.minio;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.mailbox.Folder;
+import com.zimbra.cs.mailbox.Folder.FolderOptions;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.store.Blob;
+import com.zimbra.cs.store.MailboxBlob;
+import com.zimbra.cs.store.StagedBlob;
+import com.zimbra.cs.store.minio.MinIOStoreManager.MinioBlob;
 import com.zimbra.cs.store.minio.MinIOStoreManager.MinioStagedBlob;
 import io.minio.BucketExistsArgs;
 import io.minio.GetObjectArgs;
@@ -21,7 +27,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -57,7 +62,7 @@ class MinIOStoreManagerTest extends MailboxTestSuite {
 	}
 
 	@Test
-	void shouldStoreData() throws Exception {
+	void shouldStoreDataUsingInputStream() throws Exception {
 		final Mailbox mailbox = createMailbox();
 		final MinIOStoreManager minIOStoreManager = getMinIOStoreManager();
 		final String testData = "test data";
@@ -70,6 +75,20 @@ class MinIOStoreManagerTest extends MailboxTestSuite {
 		Assertions.assertEquals(testData, new String(contentBytes));
 	}
 
+	@Test
+	void shouldStoreIncoming() throws Exception {
+		final MinIOStoreManager minIOStoreManager = getMinIOStoreManager();
+		final String testData = "test data";
+
+		final MinioBlob blob = (MinioBlob) minIOStoreManager.storeIncoming(
+				generateByData(testData), true);
+
+		final GetObjectResponse object = getObjectFromMinIO(blob.getKey());
+		final byte[] contentBytes = object.readAllBytes();
+		Assertions.assertTrue(object.object().contains("incoming"));
+		Assertions.assertEquals(testData, new String(contentBytes));
+	}
+
 	private static ByteArrayInputStream generateByData(String testData) {
 		return new ByteArrayInputStream(
 				testData.getBytes());
@@ -77,9 +96,14 @@ class MinIOStoreManagerTest extends MailboxTestSuite {
 
 	private static GetObjectResponse getObjectFromMinIO(MinioStagedBlob stagedBlob)
 			throws ErrorResponseException, InsufficientDataException, InternalException, InvalidKeyException, InvalidResponseException, IOException, NoSuchAlgorithmException, ServerException, XmlParserException {
+		return getObjectFromMinIO(stagedBlob.getKey());
+	}
+
+	private static GetObjectResponse getObjectFromMinIO(String key)
+			throws ErrorResponseException, InsufficientDataException, InternalException, InvalidKeyException, InvalidResponseException, IOException, NoSuchAlgorithmException, ServerException, XmlParserException {
 		return minioClient.getObject(GetObjectArgs.builder().
 				bucket(BUCKET_NAME).
-				object(stagedBlob.getKey()).
+				object(key).
 				build());
 	}
 

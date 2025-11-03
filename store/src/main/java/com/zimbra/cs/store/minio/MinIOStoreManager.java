@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
@@ -55,6 +54,7 @@ public class MinIOStoreManager extends StoreManager {
 	private String getBucketName() {
 		return "";
 	}
+
 	private String getIncomingBucket() {
 		final String incoming = "incoming";
 		createBucketIfNotExists(incoming);
@@ -99,49 +99,34 @@ public class MinIOStoreManager extends StoreManager {
 
 	@Override
 	public BlobBuilder getBlobBuilder() throws IOException, ServiceException {
-		final String key = "/" + UUID.randomUUID();
-		return new MinIOIncomingBlobBuilder(new MinioBlob(key, generateEmptyFile(key)));
+		final String key = "/incoming/" + UUID.randomUUID();
+		return new MinIOIncomingBlobBuilder(new MinioBlob(key));
 	}
 
 	@Override
 	public Blob storeIncoming(InputStream data, boolean storeAsIs)
 			throws IOException, ServiceException {
-		BlobBuilder builder = getBlobBuilder();
-		// if the blob is already compressed, *don't* calculate a digest/size from what we write
-		builder.disableCompression(storeAsIs).disableDigest(storeAsIs);
-		return builder.init().append(data).finish();
+		final String key = "/incoming/" + UUID.randomUUID();
+		final int unknownSize = -1;
+		uploadOnMinIo(data, unknownSize, key);
+		return new MinioBlob(key);
 	}
 
 	@Override
 	public StagedBlob stage(InputStream data, long actualSize, Mailbox mbox)
 			throws IOException, ServiceException {
-		final String pathname = mbox.getAccountId() + "/" + UUID.randomUUID();
-		final File file = generateEmptyFile(pathname);
-		Files.copy(data, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-		final MinioBlob minioBlob = new MinioBlob(pathname, file);
-		try (InputStream fis = Files.newInputStream(file.toPath())) {
-			storeOnMinIO(minioBlob.getKey(), fis, actualSize);
-		}
-		return new MinioStagedBlob(minioBlob.getKey(), mbox,"", actualSize);
+		return stageOnMinIO(mbox, data, actualSize);
 	}
 
-	private static File generateEmptyFile(String pathname) throws ServiceException {
-		final File file = new File(LC.zimbra_home.value() + "/" + pathname);
-		final boolean exists = Files.exists(file.toPath());
-
-		try {
-			if (!exists) {
-				final String parent = file.getParent();
-				Files.createDirectories(Paths.get(parent));
-				Files.createFile(file.toPath());
-			}
-		} catch (IOException e) {
-			throw ServiceException.FAILURE("Failed to create empty file", e);
-		}
-		return file;
+	private MinioStagedBlob stageOnMinIO(Mailbox mailbox, InputStream data, long actualSize)
+			throws IOException, ServiceException {
+		final String pathname = mailbox.getAccountId() + "/" + UUID.randomUUID();
+		final MinioStagedBlob minioStagedBlob = new MinioStagedBlob(pathname, mailbox, "", actualSize);
+		uploadOnMinIo(data, actualSize, minioStagedBlob.getKey());
+		return minioStagedBlob;
 	}
 
-	private void storeOnMinIO(String key, InputStream data, long actualSize)
+	private void uploadOnMinIo(InputStream data, long actualSize, String key)
 			throws IOException, ServiceException {
 		try {
 			minioClient.putObject(PutObjectArgs.builder()
@@ -161,9 +146,7 @@ public class MinIOStoreManager extends StoreManager {
 	public StagedBlob stage(Blob blob, Mailbox mbox) throws IOException, ServiceException {
 		MinioBlob minioBlob = (MinioBlob) blob;
 		final long rawSize = minioBlob.getRawSize();
-		final String key = minioBlob.getKey();
-		storeOnMinIO(key, minioBlob.getInputStream(), rawSize);
-		return new MinioStagedBlob(key, mbox, "", rawSize);
+		return stageOnMinIO(mbox, minioBlob.getInputStream(), rawSize);
 	}
 
 	@Override
@@ -222,10 +205,10 @@ public class MinIOStoreManager extends StoreManager {
 	}
 
 	public static class MinioBlob extends Blob {
+
 		private final String key;
 
-		public MinioBlob(String key, File file) {
-			super(file);
+		public MinioBlob(String key) {
 			this.key = key;
 		}
 
@@ -233,7 +216,9 @@ public class MinIOStoreManager extends StoreManager {
 			return key;
 		}
 	}
+
 	public static class MinioStagedBlob extends StagedBlob {
+
 		private final String key;
 
 		public MinioStagedBlob(String key, Mailbox mbox, String digest, long size) {
@@ -252,11 +237,18 @@ public class MinIOStoreManager extends StoreManager {
 	}
 
 	public static class MinIOIncomingBlobBuilder extends BlobBuilder {
-		private final Blob blob;
 
-		public MinIOIncomingBlobBuilder(Blob blob) {
+		private final MinioBlob blob;
+
+		public MinIOIncomingBlobBuilder(MinioBlob blob) {
 			super(blob);
 			this.blob = blob;
 		}
+
+		@Override
+		public BlobBuilder init() throws IOException, ServiceException {
+			return this;
+		}
+
 	}
 }

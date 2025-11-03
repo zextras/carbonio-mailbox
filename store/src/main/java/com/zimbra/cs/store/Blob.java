@@ -44,6 +44,9 @@ public class Blob {
         this.file = file;
         this.path = file.getAbsolutePath();
     }
+    protected Blob() {
+        // TODO: check if it is really required to have a file, else we need to define another structure
+    }
 
     protected Blob(File file, long rawSize, String digest) {
         this(file);
