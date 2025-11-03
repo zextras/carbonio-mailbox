@@ -5,6 +5,7 @@ import io.minio.GetObjectArgs;
 import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import io.minio.RemoveObjectArgs;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
@@ -61,5 +62,21 @@ public class MinIOBlobClientAdapter {
 
 	public void close() throws Exception {
 		minioClient.close();
+	}
+
+	public boolean deleteFromMinIo(String key) throws ServiceException {
+		try {
+			minioClient.removeObject(
+					RemoveObjectArgs.builder()
+							.bucket(bucketName)
+							.object(key)
+							.build()
+			);
+			return true;
+		} catch (IOException | ErrorResponseException | ServerException | NoSuchAlgorithmException |
+						 InvalidResponseException | InvalidKeyException | InternalException |
+						 InsufficientDataException | XmlParserException e) {
+			throw ServiceException.FAILURE(e.getMessage(), e);
+		}
 	}
 }

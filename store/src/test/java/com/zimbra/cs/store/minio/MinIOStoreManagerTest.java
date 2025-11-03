@@ -82,6 +82,21 @@ class MinIOStoreManagerTest extends MailboxTestSuite {
 		Assertions.assertEquals(testData, new String(contentBytes));
 	}
 
+	@Test
+	void shouldDeleteBlob() throws Exception {
+		final MinIOStoreManager minIOStoreManager = getMinIOStoreManager();
+		final String testData = "test data";
+		final MinioBlob blob = minIOStoreManager.storeIncoming(
+				generateByData(testData), true);
+		final GetObjectResponse object = getObjectFromMinIO(blob.getKey());
+		Assertions.assertNotNull(object);
+
+		minIOStoreManager.delete(blob);
+		final Exception exception = Assertions.assertThrows(Exception.class,
+				() -> getObjectFromMinIO(blob.getKey()));
+		Assertions.assertTrue(exception.getMessage().contains("The specified key does not exist."));
+	}
+
 	private static ByteArrayInputStream generateByData(String testData) {
 		return new ByteArrayInputStream(
 				testData.getBytes());

@@ -132,21 +132,40 @@ public class MinIOStoreManager extends StoreManager<MinioBlob, MinioStagedBlob> 
 
 	@Override
 	public boolean delete(MinioBlob blob) throws IOException {
-		return false;
+		try {
+			return minIOBlobAdapter.deleteFromMinIo(blob.getKey());
+		} catch (ServiceException e) {
+			// TODO: log?
+			return false;
+		}
 	}
 
 	@Override
 	public boolean delete(MinioStagedBlob staged) throws IOException {
-		return false;
+		try {
+			return minIOBlobAdapter.deleteFromMinIo(staged.getMinIoBlob().getKey());
+		} catch (ServiceException e) {
+			// TODO: log?
+			return false;
+		}
 	}
 
 	@Override
 	public boolean delete(MailboxBlob mblob) throws IOException {
-		return false;
+		try {
+			return minIOBlobAdapter.deleteFromMinIo(getMinIOKey(mblob));
+		} catch (ServiceException e) {
+			// TODO: log?
+			return false;
+		}
 	}
 
 	private String getMinIOKey(Mailbox mbox, int itemId, int revision, String locator) {
 		return mbox.getAccountId() + "/" + itemId + "/" + revision;
+	}
+	private String getMinIOKey(MailboxBlob mailboxBlob) {
+		return getMinIOKey(mailboxBlob.getMailbox(), mailboxBlob.getItemId(),
+				mailboxBlob.getRevision(), mailboxBlob.getLocator());
 	}
 
 	@Override
@@ -163,8 +182,7 @@ public class MinIOStoreManager extends StoreManager<MinioBlob, MinioStagedBlob> 
 
 	@Override
 	public InputStream getContent(MailboxBlob mboxBlob) throws IOException {
-		final String minIOKey = getMinIOKey(mboxBlob.getMailbox(), mboxBlob.getItemId(),
-				mboxBlob.getRevision(), mboxBlob.getLocator());
+		final String minIOKey = getMinIOKey(mboxBlob);
 		try {
 			return minIOBlobAdapter.getFromMinIo(minIOKey).getInputStream();
 		} catch (ServiceException e) {
