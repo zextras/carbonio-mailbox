@@ -6,6 +6,11 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-stdlib-jdk8</artifactId>
+        <version>1.9.10</version>
+      </dependency>
+      <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm</artifactId>
         <version>${asm.version}</version>
@@ -771,10 +776,10 @@
         <artifactId>carbonio-message-broker-sdk</artifactId>
         <version>${carbonio-message-broker-sdk.version}</version>
       </dependency>
-       <dependency>
-         <groupId>commons-net</groupId>
-         <artifactId>commons-net</artifactId>
-         <version>3.10.0</version>
+      <dependency>
+        <groupId>commons-net</groupId>
+        <artifactId>commons-net</artifactId>
+        <version>3.10.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -831,10 +836,10 @@
       <id>artifactory</id>
       <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
     </repository>
-      <snapshotRepository>
-        <id>artifactory</id>
-        <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
-      </snapshotRepository>
+    <snapshotRepository>
+      <id>artifactory</id>
+      <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
+    </snapshotRepository>
   </distributionManagement>
   <version>${revision}${changelist}</version>
   <profiles>
@@ -905,17 +910,17 @@
               <phase>validate</phase>
               <configuration>
                 <target>
-                  <pathconvert property="compile_classpath_value" refid="maven.compile.classpath" />
-                  <pathconvert property="runtime_classpath_value" refid="maven.runtime.classpath" />
-                  <pathconvert property="test_classpath_value" refid="maven.test.classpath" />
+                  <pathconvert property="compile_classpath_value" refid="maven.compile.classpath"/>
+                  <pathconvert property="runtime_classpath_value" refid="maven.runtime.classpath"/>
+                  <pathconvert property="test_classpath_value" refid="maven.test.classpath"/>
                   <propertyfile file="${project.build.directory}/mvn-ant-shared-build.properties">
                     <!-- used during generate soap docs task -->
-                    <entry key="compile_classpath" value="${compile_classpath_value}" />
-                    <entry key="runtime_classpath" value="${runtime_classpath_value}" />
-                    <entry key="test_classpath" value="${test_classpath_value}" />
+                    <entry key="compile_classpath" value="${compile_classpath_value}"/>
+                    <entry key="runtime_classpath" value="${runtime_classpath_value}"/>
+                    <entry key="test_classpath" value="${test_classpath_value}"/>
                   </propertyfile>
                   <propertyfile file="${project.build.directory}/mvn-ant-shared-build.properties">
-                    <entry key="mvn_revision" value="${revision}" />
+                    <entry key="mvn_revision" value="${revision}"/>
                   </propertyfile>
                 </target>
               </configuration>
@@ -1036,10 +1041,10 @@
               <configuration>
                 <rules>
                   <!-- No duplicate version of dependency in POM -->
-                  <banDuplicatePomDependencyVersions />
+                  <banDuplicatePomDependencyVersions/>
                   <!-- Dependencies must converge.
                   If it fails use dependency management to declare which one to use. -->
-                  <dependencyConvergence />
+                  <dependencyConvergence/>
                 </rules>
               </configuration>
             </execution>
