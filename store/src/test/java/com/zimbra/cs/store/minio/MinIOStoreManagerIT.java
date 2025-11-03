@@ -17,7 +17,7 @@ import org.testcontainers.containers.GenericContainer;
 import qa.unittest.MessageBuilder;
 import qa.unittest.TestUtil;
 
-public class MinIOStoreManagerApiTest extends MailboxTestSuite {
+public class MinIOStoreManagerIT extends MailboxTestSuite {
 	private static GenericContainer<?> minioContainer;
 	private static MinioClient minioClient;
 	private static final String BUCKET_NAME = "mailbox-blobs";
