@@ -3,7 +3,6 @@ package com.zimbra.cs.store.minio;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.store.Blob;
 import com.zimbra.cs.store.MailboxBlob;
-import com.zimbra.cs.store.minio.MinIOStoreManager.MinioBlob;
 import java.io.IOException;
 
 public class MinIOMailboxBlob extends MailboxBlob {

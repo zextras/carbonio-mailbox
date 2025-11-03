@@ -5,8 +5,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.store.minio.MinIOStoreManager.MinioBlob;
-import com.zimbra.cs.store.minio.MinIOStoreManager.MinioStagedBlob;
 import io.minio.BucketExistsArgs;
 import io.minio.GetObjectArgs;
 import io.minio.GetObjectResponse;
