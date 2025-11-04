@@ -1,6 +1,6 @@
 package com.zimbra.cs.store.storages;
 
-import com.zextras.filestore.model.MailboxItemIdentifier;
+import com.zextras.filestore.model.NodeIdentifier;
 import com.zextras.storages.api.StoragesClient;
 import com.zimbra.common.service.ServiceException;
 import java.io.IOException;
@@ -16,24 +16,23 @@ public class StoragesClientAdapter {
 	public StoragesBlob upload(InputStream data, long actualSize, StorageKey key)
 			throws IOException, ServiceException {
 		try {
-			final MailboxItemIdentifier mailboxItemIdentifier = fromKey(key);
-			storagesClient.uploadPut(mailboxItemIdentifier, data, actualSize);
+			var identifier = fromKey(key);
+			storagesClient.uploadPut(identifier, data, actualSize);
 			return get(key);
 		} catch (Exception e) {
 			throw ServiceException.FAILURE(e.getMessage(), e);
 		}
 	}
 
-	private MailboxItemIdentifier fromKey(StorageKey key) {
-		return new MailboxItemIdentifier(key.itemId(),
-				key.revision(), key.accountId());
+	private static NodeIdentifier fromKey(StorageKey key) {
+		return new NodeIdentifier(key.path());
 	}
 
 	public StoragesBlob get(StorageKey key)
 			throws IOException, ServiceException {
 		try {
-			final MailboxItemIdentifier mailboxItemIdentifier = fromKey(key);
-			final InputStream download = storagesClient.download(mailboxItemIdentifier);
+			var identifier = fromKey(key);
+			final InputStream download = storagesClient.download(identifier);
 			final byte[] bytes = download.readAllBytes();
 			return new StoragesBlob(key, bytes, bytes.length);
 		} catch (Exception e) {
@@ -44,18 +43,14 @@ public class StoragesClientAdapter {
 
 	public boolean delete(StorageKey key) throws ServiceException {
 		try {
-			final MailboxItemIdentifier mailboxItemIdentifier = fromKey(key);
-			storagesClient.delete(mailboxItemIdentifier);
+			var identifier = fromKey(key);
+			storagesClient.delete(identifier);
 			return true;
 		} catch (Exception e) {
 			throw ServiceException.FAILURE(e.getMessage(), e);
 		}
 	}
 
-	public record StorageKey(String accountId, int revision, int itemId, String locator){
-
-		public String toPath() {
-			return accountId + "/" + revision + "/" + itemId;
-		}
+	public record StorageKey(String path){
 	}
 }

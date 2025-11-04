@@ -15,7 +15,7 @@ class StoragesIncomingBlobBuilderTest {
 
 	@Test
 	void shouldReturnBuilderInSetters() throws IOException {
-		final StorageKey key = getStorageKey();
+		final StorageKey key = getStorageAccountIdKey();
 		final StoragesIncomingBlobBuilder builder = new StoragesIncomingBlobBuilder(key);
 		final BlobBuilder<StoragesBlob> builderInstance = builder.append("aaa".getBytes())
 				.append(new ByteArrayInputStream("bbb".getBytes()))
@@ -24,22 +24,24 @@ class StoragesIncomingBlobBuilderTest {
 		Assertions.assertNotNull(builderInstance);
 	}
 
-	private static StorageKey getStorageKey() {
-		return new StorageKey(accountId, 0, 0, "");
+	private static StorageKey getStorageAccountIdKey() {
+		return new StorageKey(accountId);
 	}
 
 	@Test
 	void shouldBuildABlobWithGivenKeyAndData() throws IOException, ServiceException {
-		final StoragesIncomingBlobBuilder builder = new StoragesIncomingBlobBuilder(getStorageKey());
+		final StoragesIncomingBlobBuilder builder = new StoragesIncomingBlobBuilder(
+				getStorageAccountIdKey());
 		final StoragesBlob blob = builder.append("aaa".getBytes()).finish();
 
-		Assertions.assertEquals(accountId,blob.getKey().accountId());
+		Assertions.assertEquals(accountId, blob.getKey().path());
 		Assertions.assertEquals("aaa", new String(blob.getContent()));
 	}
 
 	@Test
 	void shouldOverrideContentWhenAppending() throws IOException, ServiceException {
-		final StoragesIncomingBlobBuilder builder = new StoragesIncomingBlobBuilder(getStorageKey());
+		final StoragesIncomingBlobBuilder builder = new StoragesIncomingBlobBuilder(
+				getStorageAccountIdKey());
 		final StoragesBlob blob = builder.append("aaa".getBytes())
 				.append(new ByteArrayInputStream("bbb".getBytes()))
 				.finish();

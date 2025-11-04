@@ -14,6 +14,7 @@ import com.zimbra.cs.store.storages.StoragesClientAdapter.StorageKey;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
+import org.jetbrains.annotations.NotNull;
 
 public class StoragesManager extends StoreManager<StoragesBlob, StoragesStagedBlob> {
 
@@ -55,15 +56,18 @@ public class StoragesManager extends StoreManager<StoragesBlob, StoragesStagedBl
 
 	@Override
 	public BlobBuilder<StoragesBlob> getBlobBuilder() throws IOException, ServiceException {
-		// TODO: storages supports specific items, not incoming
-		final StorageKey key = new StorageKey("incoming-" + UUID.randomUUID(), 0, 0, "");
+		final StorageKey key = incomingStorageKey();
 		return new StoragesIncomingBlobBuilder(key);
+	}
+
+	private static StorageKey incomingStorageKey() {
+		return new StorageKey("incoming/" + UUID.randomUUID());
 	}
 
 	@Override
 	public StoragesBlob storeIncoming(InputStream data, boolean storeAsIs)
 			throws IOException, ServiceException {
-		var key =new StorageKey("incoming-" + UUID.randomUUID(), 0, 0, "");
+		var key = incomingStorageKey();
 		final int unknownSize = -1;
 		return storagesClientAdapter.upload(data, unknownSize, key);
 	}
@@ -77,7 +81,7 @@ public class StoragesManager extends StoreManager<StoragesBlob, StoragesStagedBl
 	private StoragesStagedBlob stageOnMinIO(Mailbox mailbox, InputStream data, long actualSize)
 			throws IOException, ServiceException {
 		// TODO: this could lead to overwritten data, again storage should support generic data
-		final StorageKey pathname = new StorageKey(mailbox.getAccountId(), 0, 0, "");
+		final StorageKey pathname = new StorageKey(mailbox.getAccountId() + "/" + UUID.randomUUID());
 		final StoragesBlob minioBlob = storagesClientAdapter.upload(data, actualSize, pathname);
 		return new StoragesStagedBlob(mailbox, minioBlob);
 	}
@@ -159,7 +163,10 @@ public class StoragesManager extends StoreManager<StoragesBlob, StoragesStagedBl
 	}
 
 	private StorageKey getKey(Mailbox mbox, int itemId, int revision, String locator) {
-		return new StorageKey(mbox.getAccountId(),itemId, revision, "");
+		if (Strings.isNullOrEmpty(locator)) {
+			return new StorageKey(mbox.getAccountId() + "/" + itemId + "/" + revision);
+		}
+		return new StorageKey(mbox.getAccountId() + "/" + itemId + "/" + revision + "/" + locator);
 	}
 
 	private StorageKey getKey(MailboxBlob mailboxBlob) {

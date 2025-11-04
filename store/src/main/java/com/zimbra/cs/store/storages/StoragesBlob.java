@@ -23,7 +23,7 @@ public class StoragesBlob extends Blob {
 	}
 
 	public StoragesBlob(StorageKey key, byte[] data, int size) {
-		super(key.toPath());
+		super(key.path());
 		this.key = key;
 		this.data = data;
 		this.size = size;
@@ -40,7 +40,7 @@ public class StoragesBlob extends Blob {
 
 	@Override
 	public String getName() {
-		return key.toPath();
+		return key.path();
 	}
 
 	public StorageKey getKey() {
