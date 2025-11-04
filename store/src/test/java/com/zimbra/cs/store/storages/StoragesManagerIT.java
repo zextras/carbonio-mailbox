@@ -1,7 +1,6 @@
 package com.zimbra.cs.store.storages;
 
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.storages.api.StoragesClient;
@@ -17,38 +16,35 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockserver.integration.ClientAndServer;
-import org.mockserver.mock.Expectation;
-import org.mockserver.model.HttpResponse;
 import qa.unittest.MessageBuilder;
 import qa.unittest.TestUtil;
 
 public class StoragesManagerIT extends MailboxTestSuite {
-	private static StoragesClient storagesClient;
-	private static ClientAndServer storagesServer;
+
+	private static StoragesServerMock storagesServerMock;
 
 	@BeforeAll
 	static void setup() {
-		storagesServer = startClientAndServer(20010);
-		storagesClient = StoragesClient.atUrl("http://localhost:20010");
+		storagesServerMock = new StoragesServerMock();
+		StoragesClient storagesClient = StoragesClient.atUrl(storagesServerMock.getUrl());
 		StoreManager.setInstance(new StoragesManager(new StoragesClientAdapter(storagesClient)));
 	}
 
 	@AfterAll
 	static void teardown() {
-		storagesServer.stop();
+		storagesServerMock.stop();
 		StoreManager.setInstance(null);
 	}
 	@BeforeEach
 	void setUp() throws Exception {
-		storagesServer.reset();
+		storagesServerMock.reset();
 	}
 
 	@Test
 	void shouldStoreMessageInMinIO() throws Exception {
 		final Account account = createAccount().create();
 		final Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
-		mockStoragesUpload("anything");
+		storagesServerMock.mockStoragesUpload("anything");
 		final Message message = TestUtil.addMessage(mailbox, "Test minio");
 
 		final Message messageById = mailbox.getMessageById(null, message.getId());
@@ -61,7 +57,7 @@ public class StoragesManagerIT extends MailboxTestSuite {
 		final Account account = createAccount().create();
 		final Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
 		final String anyContent = "any content";
-		mockStoragesUpload(anyContent);
+		storagesServerMock.mockStoragesUpload(anyContent);
 		final Message message = TestUtil.addMessage(mailbox, "Test minio");
 
 		final MailItem copied = mailbox.copy(null, message.getId(), Type.MESSAGE,
@@ -81,7 +77,7 @@ public class StoragesManagerIT extends MailboxTestSuite {
 		final String mimeMessage = new MessageBuilder().withSubject(subject)
 				.withFrom(from)
 				.withBody(body).create();
-		mockStoragesUpload(mimeMessage);
+		storagesServerMock.mockStoragesUpload(mimeMessage);
 		final Message message = TestUtil.addMimeMessage(mailbox, mimeMessage);
 
 		final Message messageById = mailbox.getMessageById(null, message.getId());
@@ -92,32 +88,5 @@ public class StoragesManagerIT extends MailboxTestSuite {
 		Assertions.assertTrue(stringBody.contains("From: " + from));
 	}
 
-	private static void mockStoragesUpload(String content) {
-		var jsonResponse = "{\n"
-				+ "  \"query\": {\n"
-				+ "    \"node\": \"node\",\n"
-				+ "    \"version\": 1,\n"
-				+ "    \"type\": \"type\"\n"
-				+ "  },\n"
-				+ "  \"resource\": \"filePath\",\n"
-				+ "  \"digest\": \"digest\",\n"
-				+ "  \"digest_algorithm\": \"SHA-256\",\n"
-				+ "  \"size\": \"100\"\n"
-				+ "}\n";
-		storagesServer
-				.when(request().withPath("/upload"))
-				.respond(
-						HttpResponse.response(jsonResponse)
-								.withStatusCode(200));
-		mockStoragesDownload(content);
-	}
-	private static Expectation[] mockStoragesDownload(String content) {
-		return storagesServer
-				.when(request().withPath("/download"))
-				.respond(
-						HttpResponse.response()
-								.withHeader("Content-Type", "application/octet-stream")
-								.withBody(content.getBytes())
-								.withStatusCode(200));
-	}
+
 }

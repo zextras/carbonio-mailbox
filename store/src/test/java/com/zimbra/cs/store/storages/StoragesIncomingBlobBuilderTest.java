@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 
 class StoragesIncomingBlobBuilderTest {
 
+	private static String accountId = "test";
+
 	@Test
 	void shouldReturnBuilderInSetters() throws IOException {
 		final StorageKey key = getStorageKey();
@@ -23,7 +25,7 @@ class StoragesIncomingBlobBuilderTest {
 	}
 
 	private static StorageKey getStorageKey() {
-		return new StorageKey("test", 0, 0, "");
+		return new StorageKey(accountId, 0, 0, "");
 	}
 
 	@Test
@@ -31,7 +33,7 @@ class StoragesIncomingBlobBuilderTest {
 		final StoragesIncomingBlobBuilder builder = new StoragesIncomingBlobBuilder(getStorageKey());
 		final StoragesBlob blob = builder.append("aaa".getBytes()).finish();
 
-		Assertions.assertEquals("test",blob.getKey());
+		Assertions.assertEquals(accountId,blob.getKey().accountId());
 		Assertions.assertEquals("aaa", new String(blob.getContent()));
 	}
 
