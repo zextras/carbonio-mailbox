@@ -1,7 +1,5 @@
 package com.zimbra.cs.store.minio;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.store.BlobBuilder;
 import java.io.ByteArrayInputStream;
