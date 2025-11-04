@@ -13,17 +13,16 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.mailbox.DeliveryOptions;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.store.MailboxBlob.MailboxBlobInfo;
 import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.store.file.BlobReference;
+import com.zimbra.cs.store.file.FileBlob;
 import com.zimbra.cs.store.file.FileBlobStore;
 import com.zimbra.cs.util.SpoolingCache;
 import com.zimbra.cs.volume.Volume;
@@ -108,7 +107,7 @@ public class DbVolumeBlobsTest extends MailboxTestSuite {
 		DbVolumeBlobs.addBlobReference(conn, mbox, vol, msg);
 
 		String digest = msg.getBlob().getDigest();
-		String path = msg.getBlob().getLocalBlob().getFile().getPath();
+		String path = msg.getBlob().getLocalBlob().getPath();
 		List<BlobReference> blobs = DbVolumeBlobs.getBlobReferences(conn, digest, vol);
 		assertEquals(1, blobs.size());
 		BlobReference ref = blobs.get(0);
@@ -196,7 +195,7 @@ public class DbVolumeBlobsTest extends MailboxTestSuite {
 									("From: from" + i + "@zimbra.com\r\nTo: to1@zimbra.com").getBytes(), false),
 							opt,
 							null);
-			digestToPath.put(msg.getDigest(), msg.getBlob().getLocalBlob().getFile().getPath());
+			digestToPath.put(msg.getDigest(), msg.getBlob().getLocalBlob().getPath());
 		}
 		Iterable<MailboxBlobInfo> allBlobs = null;
 		allBlobs = DbMailItem.getAllBlobs(conn, mbox.getSchemaGroupId(), vol.getId(), -1, -1);
@@ -264,7 +263,7 @@ public class DbVolumeBlobsTest extends MailboxTestSuite {
 									("From: from" + i + "@zimbra.com\r\nTo: to1@zimbra.com").getBytes(), false),
 							opt,
 							null);
-			digestToPath.put(msg.getDigest(), msg.getBlob().getLocalBlob().getFile().getPath());
+			digestToPath.put(msg.getDigest(), msg.getBlob().getLocalBlob().getPath());
 			mbox.delete(null, msg.getId(), msg.getType());
 		}
 
@@ -305,7 +304,7 @@ public class DbVolumeBlobsTest extends MailboxTestSuite {
 		DbVolumeBlobs.addBlobReference(conn, mbox, vol, msg);
 
 		String digest = msg.getBlob().getDigest();
-		String path = msg.getBlob().getLocalBlob().getFile().getPath();
+		String path = msg.getBlob().getLocalBlob().getPath();
 		List<BlobReference> blobs = DbVolumeBlobs.getBlobReferences(conn, digest, vol);
 		assertEquals(1, blobs.size());
 		assertEquals(path, getPath(blobs.get(0)));
@@ -357,7 +356,7 @@ public class DbVolumeBlobsTest extends MailboxTestSuite {
 		DbVolumeBlobs.addBlobReference(conn, mbox, vol, msg);
 
 		String digest = msg.getBlob().getDigest();
-		String path = msg.getBlob().getLocalBlob().getFile().getPath();
+		String path = msg.getBlob().getLocalBlob().getPath();
 		List<BlobReference> blobs = DbVolumeBlobs.getBlobReferences(conn, digest, vol);
 		assertEquals(1, blobs.size());
 		assertEquals(path, getPath(blobs.get(0)));
@@ -371,7 +370,7 @@ public class DbVolumeBlobsTest extends MailboxTestSuite {
 
 		Set<String> paths = new HashSet<String>();
 		paths.add(path);
-		paths.add(msg2.getBlob().getLocalBlob().getFile().getPath());
+		paths.add(msg2.getBlob().getLocalBlob().getPath());
 
 		assertEquals(2, blobs.size());
 		for (BlobReference ref : blobs) {
@@ -385,7 +384,7 @@ public class DbVolumeBlobsTest extends MailboxTestSuite {
 		blobs = DbVolumeBlobs.getBlobReferences(conn, digest, vol);
 		assertEquals(1, blobs.size());
 		BlobReference ref = blobs.get(0);
-		path = msg2.getBlob().getLocalBlob().getFile().getPath();
+		path = msg2.getBlob().getLocalBlob().getPath();
 
 		assertEquals(path, getPath(ref));
 		assertEquals(mbox2.getId(), ref.getMailboxId());
@@ -432,7 +431,7 @@ public class DbVolumeBlobsTest extends MailboxTestSuite {
 		assertEquals(1, blobs.size());
 
 		Set<String> paths = new HashSet<String>();
-		paths.add(msg.getBlob().getLocalBlob().getFile().getPath());
+		paths.add(msg.getBlob().getLocalBlob().getPath());
 		for (BlobReference ref : blobs) {
 			assertTrue(paths.remove(getPath(ref)));
 			assertEquals(vol.getId(), ref.getVolumeId());
@@ -443,7 +442,7 @@ public class DbVolumeBlobsTest extends MailboxTestSuite {
 		assertEquals(1, blobs.size());
 
 		paths = new HashSet<String>();
-		paths.add(msg2.getBlob().getLocalBlob().getFile().getPath());
+		paths.add(msg2.getBlob().getLocalBlob().getPath());
 		for (BlobReference ref : blobs) {
 			assertTrue(paths.remove(getPath(ref)));
 			assertEquals(vol2.getId(), ref.getVolumeId());
@@ -452,7 +451,7 @@ public class DbVolumeBlobsTest extends MailboxTestSuite {
 		blobs = DbVolumeBlobs.getBlobReferences(conn, digest, vol);
 
 		paths = new HashSet<String>();
-		paths.add(msg.getBlob().getLocalBlob().getFile().getPath());
+		paths.add(msg.getBlob().getLocalBlob().getPath());
 
 		assertEquals(1, blobs.size());
 		for (BlobReference ref : blobs) {
@@ -462,7 +461,7 @@ public class DbVolumeBlobsTest extends MailboxTestSuite {
 		blobs = DbVolumeBlobs.getBlobReferences(conn, digest, vol2);
 
 		paths = new HashSet<String>();
-		paths.add(msg2.getBlob().getLocalBlob().getFile().getPath());
+		paths.add(msg2.getBlob().getLocalBlob().getPath());
 
 		assertEquals(1, blobs.size());
 		for (BlobReference ref : blobs) {
@@ -475,7 +474,7 @@ public class DbVolumeBlobsTest extends MailboxTestSuite {
 		blobs = DbVolumeBlobs.getBlobReferences(conn, digest, vol2);
 
 		paths = new HashSet<String>();
-		paths.add(msg2.getBlob().getLocalBlob().getFile().getPath());
+		paths.add(msg2.getBlob().getLocalBlob().getPath());
 
 		assertEquals(1, blobs.size());
 		for (BlobReference ref : blobs) {
@@ -489,7 +488,7 @@ public class DbVolumeBlobsTest extends MailboxTestSuite {
 		assertEquals(1, blobs.size());
 
 		paths = new HashSet<String>();
-		paths.add(msg2.getBlob().getLocalBlob().getFile().getPath());
+		paths.add(msg2.getBlob().getLocalBlob().getPath());
 		for (BlobReference ref : blobs) {
 			assertTrue(paths.remove(getPath(ref)));
 		}
@@ -497,7 +496,7 @@ public class DbVolumeBlobsTest extends MailboxTestSuite {
 		blobs = DbVolumeBlobs.getBlobReferences(conn, digest, vol2);
 
 		paths = new HashSet<String>();
-		paths.add(msg2.getBlob().getLocalBlob().getFile().getPath());
+		paths.add(msg2.getBlob().getLocalBlob().getPath());
 
 		assertEquals(1, blobs.size());
 		for (BlobReference ref : blobs) {

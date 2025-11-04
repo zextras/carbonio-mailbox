@@ -9,7 +9,7 @@ import java.io.File;
 
 import com.zimbra.cs.store.Blob;
 
-public class VolumeBlob extends Blob {
+public class VolumeBlob extends FileBlob {
     private final short volumeId;
 
     public VolumeBlob(File file, short volumeId) {

@@ -156,6 +156,7 @@ public final class ParsedMessage {
     /**
      * Creates a <tt>ParsedMessage</tt> from a file already stored on disk.
      * @param file the file on disk.
+     *  TODO: check me, appears unused after refactor of Blob
      */
     public ParsedMessage(File file, Long receivedDate, boolean indexAttachments) throws ServiceException, IOException {
         initialize(file, receivedDate, indexAttachments);

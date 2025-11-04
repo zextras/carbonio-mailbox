@@ -21,7 +21,7 @@ public class ExternalUploadedBlob extends ExternalBlob {
      * @param uploadId: The remote system's identifier for the upload
      * @throws IOException
      */
-    protected ExternalUploadedBlob(Blob blob, String uploadId) throws IOException {
+    protected ExternalUploadedBlob(ExternalBlob blob, String uploadId) throws IOException {
         super(blob.getFile(), blob.getRawSize(), blob.getDigest());
         this.uploadId = uploadId;
     }

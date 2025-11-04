@@ -26,11 +26,6 @@ class RedoableOpData {
         mLength = data.length;
     }
     
-    RedoableOpData(File file) {
-        mDataSource = new FileDataSource(file);
-        mLength = (int) file.length();
-    }
-    
     RedoableOpData(File file, long offset, int length) {
         mDataSource = new FileSegmentDataSource(file, offset, length);
         mLength = length;

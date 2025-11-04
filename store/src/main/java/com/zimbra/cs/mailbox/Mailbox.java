@@ -2090,7 +2090,7 @@ public class Mailbox implements MailboxStore {
    * Removes all items of a specified type from the <tt>Mailbox</tt>'s caches. There may be some
    * collateral damage: purging non-tag, non-folder types will drop the entire item cache.
    *
-   * @param type The type of item to completely uncache. {@link MailItem#TYPE_UNKNOWN} uncaches all
+   * @param type The type of item to completely uncache. {@link MailItem.Type#UNKNOWN} uncaches all
    *     items.
    */
   public void purge(MailItem.Type type) {
@@ -2810,7 +2810,7 @@ public class Mailbox implements MailboxStore {
    *     will be ignored for right checking purpose; the OperationContext object associated with the
    *     top-most transaction will be used for right checking purpose instead.
    * @param itemId The item whose permissions we need to query.
-   * @param type The item's type, or {@link MailItem#TYPE_UNKNOWN}.
+   * @param type The item's type, or {@link MailItem.Type#UNKNOWN}.
    * @return An OR'ed-together set of rights, e.g. {@link ACL#RIGHT_READ} and {@link
    *     ACL#RIGHT_INSERT}.
    * @throws ServiceException The following error codes are possible:
@@ -7168,14 +7168,14 @@ public class Mailbox implements MailboxStore {
           // Subsequent CreateMessage ops will reference this blob.
           storeRedoRecorder = new StoreIncomingBlob(digest, msgSize, dctxt.getMailboxIdList());
           storeRedoRecorder.start(getOperationTimestampMillis());
-          storeRedoRecorder.setBlobBodyInfo(blob.getFile());
+          storeRedoRecorder.setBlobBodyInfo(blob.getContent(), blob.getPath());
           storeRedoRecorder.log();
         }
         // Link to the file created by StoreIncomingBlob.
         redoRecorder.setMessageLinkInfo(blob.getPath());
       } else {
         // Store the blob data inside the CreateMessage op.
-        redoRecorder.setMessageBodyInfo(blob.getFile());
+        redoRecorder.setMessageBodyInfo(blob.getContent(), blob.getPath());
       }
 
       // step 6: link to existing blob
@@ -9010,11 +9010,6 @@ public class Mailbox implements MailboxStore {
    *
    * @param octxt the operation context
    * @param path the slash-separated folder path
-   * @param attrs the folder attributes, or <tt>0</tt> for the default attributes
-   * @param defaultView the folder view, or <tt>0</tt> for the default view
-   * @param flags the folder flags, or <tt>0</tt> for no flags
-   * @param color the folder color, or {@link MailItem#DEFAULT_COLOR}
-   * @param url the folder URL, or <tt>null</tt>
    * @return the new folder
    * @see Folder#getAttributes()
    * @see Folder#getDefaultView()

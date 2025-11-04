@@ -5,21 +5,11 @@
 
 package com.zimbra.cs.mime;
 
-import java.io.File;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import com.zimbra.cs.store.Blob;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class ParsedDocumentTest {
-
-    private static class FakeBlob extends Blob {
-        public FakeBlob(File file, long size) {
-            super(file, size, "fake-digest");
-        }
-    }
 
  @Test
  void test2GBFileSize() throws Exception {
@@ -36,15 +26,5 @@ public class ParsedDocumentTest {
   long negative2GB = -2147483648;
   assertEquals(negative2GB, int2GB);
   assertEquals("-2147483648", Integer.toString(int2GB));
-
-//        // No size truncation on ParsedDocument of <2GB file
-//        FakeBlob blob2GBMinus = new FakeBlob(new File("/dev/null"), size2GBMinus);
-//        ParsedDocument pd2GBMinus = new ParsedDocument(blob2GBMinus, "blob-2gb-minus.txt", "text/plain", System.currentTimeMillis(), "creator", "desc", false);
-//        Assert.assertEquals(size2GBMinus, pd2GBMinus.getSize());
-//
-//        // No size truncation on ParsedDocument of 2GB file
-//        FakeBlob blob2GB = new FakeBlob(new File("/dev/null"), size2GB);
-//        ParsedDocument pd2GB = new ParsedDocument(blob2GB, "blob-2gb.txt", "text/plain", System.currentTimeMillis(), "creator", "desc", false);
-//        Assert.assertEquals(size2GB, pd2GB.getSize());
  }
 }

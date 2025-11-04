@@ -32,7 +32,7 @@ public class ParsedMessageOptions {
     public ParsedMessageOptions(Blob blob, byte[] buffer, Long receivedDate,
         Boolean indexAttachments) throws IOException {
         if (buffer == null)
-            setContent(blob.getFile());
+            setContent(blob.getContent());
         else
             setContent(buffer);
         setDigest(blob.getDigest()).setSize(blob.getRawSize());

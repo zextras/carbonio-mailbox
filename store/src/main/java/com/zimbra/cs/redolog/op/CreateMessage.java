@@ -250,10 +250,10 @@ implements CreateCalendarItemPlayer, CreateCalendarItemRecorder {
         mPath = ":streamed:";
     }
 
-    public void setMessageBodyInfo(File dataFile) {
+    public void setMessageBodyInfo(byte[] data, String path) {
         mMsgBodyType = MSGBODY_INLINE;
-        mData = new RedoableOpData(dataFile);
-        mPath = dataFile.getPath();
+        mData = new RedoableOpData(data);
+        mPath = path;
     }
 
     public void setMessageLinkInfo(String linkSrcPath) {
@@ -487,7 +487,7 @@ implements CreateCalendarItemPlayer, CreateCalendarItemRecorder {
             ParsedMessage pm = null;
             try {
                 ParsedMessageOptions opt = new ParsedMessageOptions()
-                    .setContent(blob.getFile())
+                    .setContent(blob.getContent())
                     .setReceivedDate(mReceivedDate)
                     .setAttachmentIndexing(mbox.attachmentsIndexingEnabled())
                     .setSize(mMsgSize)

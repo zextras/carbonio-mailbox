@@ -51,6 +51,7 @@ import com.zimbra.cs.store.Blob;
 import com.zimbra.cs.store.BlobInputStream;
 import com.zimbra.cs.store.MailboxBlob;
 import com.zimbra.cs.store.StoreManager;
+import com.zimbra.cs.store.file.FileBlob;
 import com.zimbra.cs.util.Zimbra;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -731,7 +732,10 @@ public class ZimbraLmtpBackend implements LmtpBackend {
             // Update the MimeMessage with the blob that's stored inside the mailbox,
             // since the incoming blob will be deleted.
             Blob storedBlob = mblob.getLocalBlob();
-            bis.fileMoved(storedBlob.getFile());
+            if (storedBlob instanceof FileBlob) {
+              // TODO: check me
+              bis.fileMoved(((FileBlob) storedBlob).getFile());
+            }
             MessageCache.cacheMessage(
                 mblob.getDigest(), mimeSource.getOriginalMessage(), mimeSource.getMimeMessage());
           } catch (IOException e) {
@@ -767,7 +771,7 @@ public class ZimbraLmtpBackend implements LmtpBackend {
             in,
             getRecipientsEmailAddress(serverRecipients),
             env.getSender().getEmailAddress(),
-            blob.getFile().getName(),
+            blob.getName(),
             blob.getRawSize());
         if (success) {
           setDeliveryStatuses(serverRecipients, LmtpReply.DELIVERY_OK);

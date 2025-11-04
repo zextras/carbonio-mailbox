@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.store;
 
+import com.zimbra.cs.store.external.ExternalBlob;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -18,7 +19,7 @@ import com.zimbra.common.service.ServiceException;
 public class BufferingIncomingBlob extends IncomingBlob
 {
     protected final String id;
-    protected BlobBuilder blobBuilder;
+    protected BlobBuilder<ExternalBlob> blobBuilder;
     private Object ctx;
     private long expectedSize;
     private boolean expectedSizeSet;

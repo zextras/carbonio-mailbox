@@ -17,8 +17,9 @@ import com.zimbra.cs.store.file.FileBlobStore;
 import com.zimbra.cs.util.Zimbra;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
-public abstract class StoreManager {
+public abstract class StoreManager<T extends Blob, X extends StagedBlob> {
 
   private static StoreManager sInstance;
   private static Integer diskStreamingThreshold;
@@ -63,7 +64,9 @@ public abstract class StoreManager {
 
   /** Used for unit testing. */
   public static void setInstance(StoreManager instance) {
-    ZimbraLog.store.info("Setting StoreManager to " + instance.getClass().getName());
+    if (!Objects.isNull(instance)) {
+      ZimbraLog.store.info("Setting StoreManager to " + instance.getClass().getName());
+    }
     sInstance = instance;
   }
 
@@ -124,20 +127,18 @@ public abstract class StoreManager {
    * @throws IOException if an I/O error occurred
    * @throws ServiceException if a service exception occurred
    */
-  public abstract BlobBuilder getBlobBuilder() throws IOException, ServiceException;
+  public abstract BlobBuilder<T> getBlobBuilder() throws IOException, ServiceException;
 
   /**
    * Store a blob in incoming directory. Blob will be compressed if volume supports compression and
    * blob size is over the compression threshold.
    *
    * @param data
-   * @param sizeHint used for determining whether data should be compressed
-   * @param digest
    * @return
    * @throws IOException
    * @throws ServiceException
    */
-  public Blob storeIncoming(InputStream data) throws IOException, ServiceException {
+  public T storeIncoming(InputStream data) throws IOException, ServiceException {
     return storeIncoming(data, false);
   }
 
@@ -145,13 +146,12 @@ public abstract class StoreManager {
    * Store a blob in incoming directory.
    *
    * @param data
-   * @param callback
    * @param storeAsIs if true, store the blob as is even if volume supports compression
    * @return
    * @throws IOException
    * @throws ServiceException
    */
-  public abstract Blob storeIncoming(InputStream data, boolean storeAsIs)
+  public abstract T storeIncoming(InputStream data, boolean storeAsIs)
       throws IOException, ServiceException;
 
   /**
@@ -160,10 +160,9 @@ public abstract class StoreManager {
    *
    * @param data the data stream
    * @param actualSize the content size, or {@code -1} if the content size is not available
-   * @param callback callback, or {@code null}
    * @param mbox the mailbox
    */
-  public abstract StagedBlob stage(InputStream data, long actualSize, Mailbox mbox)
+  public abstract X stage(InputStream data, long actualSize, Mailbox mbox)
       throws IOException, ServiceException;
 
   /**
@@ -171,10 +170,9 @@ public abstract class StoreManager {
    * <code>Mailbox</code> via {@link #link(StagedBlob, Mailbox, int, int)} or {@link #renameTo}.
    *
    * @param data the data stream
-   * @param callback callback, or {@code null}
    * @param mbox the mailbox
    */
-  public StagedBlob stage(InputStream data, Mailbox mbox) throws IOException, ServiceException {
+  public X stage(InputStream data, Mailbox mbox) throws IOException, ServiceException {
     return stage(data, -1, mbox);
   }
 
@@ -189,7 +187,7 @@ public abstract class StoreManager {
    * @throws IOException
    * @throws ServiceException
    */
-  public abstract StagedBlob stage(Blob blob, Mailbox mbox) throws IOException, ServiceException;
+  public abstract X stage(T blob, Mailbox mbox) throws IOException, ServiceException;
 
   /**
    * Create a copy in destMbox mailbox with message ID of destMsgId that points to srcBlob.
@@ -222,7 +220,7 @@ public abstract class StoreManager {
    * @throws ServiceException
    */
   public abstract MailboxBlob link(
-      StagedBlob src, Mailbox destMbox, int destMsgId, int destRevision)
+      X src, Mailbox destMbox, int destMsgId, int destRevision)
       throws IOException, ServiceException;
 
   /**
@@ -238,27 +236,27 @@ public abstract class StoreManager {
    * @throws ServiceException
    */
   public abstract MailboxBlob renameTo(
-      StagedBlob src, Mailbox destMbox, int destMsgId, int destRevision)
+      X src, Mailbox destMbox, int destMsgId, int destRevision)
       throws IOException, ServiceException;
 
   /**
    * Deletes a blob from incoming directory. If blob doesn't exist, no exception is thrown and false
    * is returned.
    *
-   * @param blobFile
+   * @param blob
    * @return true if blob was actually deleted
    * @throws IOException
    */
-  public abstract boolean delete(Blob blob) throws IOException;
+  public abstract boolean delete(T blob) throws IOException;
 
   /**
    * Deletes a blob from incoming directory. If blob doesn't exist, no exception is thrown and false
    * is returned.
    *
-   * @param blobFile
+   * @param blob
    * @return true if blob was actually deleted
    */
-  public boolean quietDelete(Blob blob) {
+  public boolean quietDelete(T blob) {
     if (blob == null) {
       return true;
     }
@@ -279,7 +277,7 @@ public abstract class StoreManager {
    * @return true if blob was actually deleted
    * @throws IOException
    */
-  public abstract boolean delete(StagedBlob staged) throws IOException;
+  public abstract boolean delete(X staged) throws IOException;
 
   /**
    * Deletes a blob staged to the target mailbox. If blob doesn't exist, no exception is thrown and
@@ -288,7 +286,7 @@ public abstract class StoreManager {
    * @param staged
    * @return true if blob was actually deleted
    */
-  public boolean quietDelete(StagedBlob staged) {
+  public boolean quietDelete(X staged) {
     if (staged == null) {
       return true;
     }
@@ -388,7 +386,7 @@ public abstract class StoreManager {
    * @return
    * @throws IOException
    */
-  public abstract InputStream getContent(Blob blob) throws IOException;
+  public abstract InputStream getContent(T blob) throws IOException;
 
   /**
    * Deletes a user's entire store. SHOULD BE CALLED CAREFULLY. No going back.

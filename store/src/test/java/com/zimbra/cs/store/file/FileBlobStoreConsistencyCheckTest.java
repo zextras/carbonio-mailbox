@@ -48,7 +48,7 @@ public class FileBlobStoreConsistencyCheckTest extends AbstractBlobConsistencyCh
 
     @Override
     protected void appendText(MailboxBlob blob, String text) throws IOException {
-        FileWriter writer = new FileWriter(blob.getLocalBlob().getFile(), true);
+        FileWriter writer = new FileWriter(((FileBlob) blob.getLocalBlob()).getFile(), true);
         writer.write(text);
         writer.close();
     }

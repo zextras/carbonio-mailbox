@@ -61,4 +61,10 @@
   <key name="files_service_url">
     <value>CARBONIO_FILES_SERVICE_URL</value>
   </key>
+  <key name="storages_service_url">
+    <value>CARBONIO_STORAGES_SERVICE_URL</value>
+  </key>
+  <key name="zimbra_class_store">
+    <value>MAILBOX_STORE_CLASS</value>
+  </key>
 </localconfig>
