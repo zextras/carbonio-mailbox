@@ -46,6 +46,8 @@ ENV MARIADB_URL=mariadb
 ENV MARIADB_PORT=3306
 ENV CARBONIO_FILES_SERVICE_URL="http://carbonio-files:10000"
 ENV CARBONIO_PREVIEW_SERVICE_URL="http://carbonio-preview:10000"
+ENV CARBONIO_STORAGES_SERVICE_URL=""
+ENV MAILBOX_STORE_CLASS="com.zimbra.cs.store.file.FileBlobStore"
 ENV MAILBOXD_JAVA_OPTS="-Xss256k -Xms1996m -Xmx1996m"
 ARG BASE_JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
               -Dhttps.protocols=TLSv1.2,TLSv1.3 \

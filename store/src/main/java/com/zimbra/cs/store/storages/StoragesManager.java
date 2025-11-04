@@ -14,7 +14,6 @@ import com.zimbra.cs.store.storages.StoragesClientAdapter.StorageKey;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
-import org.jetbrains.annotations.NotNull;
 
 public class StoragesManager extends StoreManager<StoragesBlob, StoragesStagedBlob> {
 
@@ -25,7 +24,7 @@ public class StoragesManager extends StoreManager<StoragesBlob, StoragesStagedBl
 	}
 
 	public StoragesManager() {
-		var storagesClient = StoragesClient.atUrl(LC.storages_url.value());
+		var storagesClient = StoragesClient.atUrl(LC.storages_service_url.value());
 		this.storagesClientAdapter = new StoragesClientAdapter(storagesClient);
 	}
 

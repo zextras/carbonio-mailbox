@@ -14,6 +14,8 @@ sed -i -e "s/MARIADB_PORT/${MARIADB_PORT}/g" /localconfig/localconfig.xml
 sed -i -e "s/SERVER_HOSTNAME/${HOSTNAME}/g" /localconfig/localconfig.xml
 sed -i -e "s#CARBONIO_FILES_SERVICE_URL#${CARBONIO_FILES_SERVICE_URL}#g" /localconfig/localconfig.xml
 sed -i -e "s#CARBONIO_PREVIEW_SERVICE_URL#${CARBONIO_PREVIEW_SERVICE_URL}#g" /localconfig/localconfig.xml
+sed -i -e "s#CARBONIO_STORAGES_SERVICE_URL#${CARBONIO_STORAGES_SERVICE_URL}#g" /localconfig/localconfig.xml
+sed -i -e "s#MAILBOX_STORE_CLASS#${MAILBOX_STORE_CLASS}#g" /localconfig/localconfig.xml
 
 SERVER_EXISTS=$(/usr/bin/zmprov -l gs "${HOSTNAME}" 2>&1)
 if [[ $SERVER_EXISTS == *"account.NO_SUCH_SERVER"* ]]; then
