@@ -65,7 +65,7 @@ public class MinIOStoreManager extends StoreManager<MinioBlob, MinioStagedBlob> 
 	@Override
 	public BlobBuilder<MinioBlob> getBlobBuilder() throws IOException, ServiceException {
 		final String key = "/incoming/" + UUID.randomUUID();
-		return new MinIOIncomingBlobBuilder(new MinioBlob(key));
+		return new MinIOIncomingBlobBuilder(key);
 	}
 
 	@Override

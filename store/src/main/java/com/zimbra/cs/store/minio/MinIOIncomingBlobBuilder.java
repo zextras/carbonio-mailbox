@@ -5,14 +5,18 @@ import com.zimbra.cs.store.BlobBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
-// TODO: implement build logic, it is used in few places
+// TODO: double check build logic, it is used in few places
 public class MinIOIncomingBlobBuilder implements BlobBuilder<MinioBlob> {
 
-	private final MinioBlob blob;
+	private byte[] dataToSet;
+	private final String key;
+	private int size;
+	private boolean isFinished = false;
 
-	public MinIOIncomingBlobBuilder(MinioBlob blob) {
-		this.blob = blob;
+	public MinIOIncomingBlobBuilder(String key) {
+		this.key = key;
 	}
 
 	public BlobBuilder<MinioBlob> init() {
@@ -26,61 +30,72 @@ public class MinIOIncomingBlobBuilder implements BlobBuilder<MinioBlob> {
 
 	@Override
 	public long getTotalBytes() {
-		return 0;
+		if (Objects.isNull(dataToSet)) {
+			return 0;
+		}
+		return this.dataToSet.length;
 	}
 
 	@Override
 	public BlobBuilder<MinioBlob> disableCompression(boolean disable) {
-		return null;
+		return this;
 	}
 
 	@Override
 	public int getCompressionThreshold() {
+		// TODO: do we support compression on minio?
 		return 0;
 	}
 
 	@Override
 	public BlobBuilder<MinioBlob> disableDigest(boolean disable) {
-		return null;
+		// TODO: digest?
+		return this;
 	}
 
 	@Override
 	public BlobBuilder<MinioBlob> append(InputStream in) throws IOException {
-		return null;
+		this.dataToSet = in.readAllBytes();
+		this.size = dataToSet.length;
+		return this;
 	}
 
 	@Override
 	public BlobBuilder<MinioBlob> append(byte[] b) throws IOException {
-		return null;
+		this.dataToSet = b;
+		this.size = b.length;
+		return this;
 	}
 
 	@Override
 	public BlobBuilder<MinioBlob> append(byte[] b, int off, int len) throws IOException {
-		return null;
+		// TODO: append to data or overwrite existing?
+		this.dataToSet = b;
+		this.size = len;
+		return this;
 	}
 
 	@Override
 	public BlobBuilder<MinioBlob> append(ByteBuffer bb) throws IOException {
-		return null;
+		this.dataToSet = bb.array();
+		return this;
 	}
 
 	@Override
 	public MinioBlob finish() throws IOException, ServiceException {
-		return null;
-	}
-
-	@Override
-	public MinioBlob getBlob() {
-		return null;
+		isFinished = true;
+		return new MinioBlob(key, dataToSet, size);
 	}
 
 	@Override
 	public boolean isFinished() {
-		return false;
+		return isFinished;
 	}
 
 	@Override
 	public void dispose() {
-
+		this.dataToSet = null;
+		this.isFinished = false;
+		this.size = 0;
 	}
 }

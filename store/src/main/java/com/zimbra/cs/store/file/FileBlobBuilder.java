@@ -262,12 +262,6 @@ public class FileBlobBuilder<T extends FileBlob> implements BlobBuilder<T> {
 		return file.getAbsolutePath() + ": data size=" + totalBytes + ", file size=" + file.length() + ", isCompressed=" + compressed;
 	}
 
-	public T getBlob() {
-		if (!finished)
-			throw new IllegalStateException("Blob builder not finished");
-		return blob;
-	}
-
 	public boolean isFinished() {
 		return finished;
 	}

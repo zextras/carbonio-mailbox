@@ -39,8 +39,6 @@ public interface BlobBuilder<T extends Blob> {
     @SuppressWarnings("unused")
     T finish() throws IOException, ServiceException;
 
-    T getBlob();
-
     boolean isFinished();
 
     // Clean up and dispose of blob file

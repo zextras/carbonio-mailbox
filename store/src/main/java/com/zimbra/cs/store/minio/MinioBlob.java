@@ -8,8 +8,8 @@ import java.io.InputStream;
 public class MinioBlob extends Blob {
 
 	private final String key;
-	private byte[] data;
-	private int size;
+	private final byte[] data;
+	private final int size;
 
 	@Override
 	public InputStream getInputStream() throws IOException {
@@ -26,11 +26,6 @@ public class MinioBlob extends Blob {
 		this.key = key;
 		this.data = data;
 		this.size = size;
-	}
-
-	public MinioBlob(String key) {
-		super(key);
-		this.key = key;
 	}
 
 	@Override
