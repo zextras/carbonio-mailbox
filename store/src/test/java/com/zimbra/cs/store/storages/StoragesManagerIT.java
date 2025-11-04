@@ -1,4 +1,7 @@
-package com.zimbra.cs.store.minio;
+package com.zimbra.cs.store.storages;
+
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import static org.mockserver.model.HttpRequest.request;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.storages.api.StoragesClient;
@@ -9,20 +12,31 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.store.StoreManager;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockserver.integration.ClientAndServer;
+import org.mockserver.mock.Expectation;
+import org.mockserver.model.HttpResponse;
 import qa.unittest.MessageBuilder;
 import qa.unittest.TestUtil;
 
 public class StoragesManagerIT extends MailboxTestSuite {
 	private static StoragesClient storagesClient;
+	private static ClientAndServer storagesServer;
 
 	@BeforeAll
-	static void setupContainer() {
-		storagesClient = Mockito.mock(StoragesClient.class);
+	static void setup() {
+		storagesServer = startClientAndServer(20010);
+		storagesClient = StoragesClient.atUrl("http://localhost:20010");
 		StoreManager.setInstance(new StoragesManager(new StoragesClientAdapter(storagesClient)));
+	}
+
+	@AfterAll
+	static void teardown() {
+		storagesServer.stop();
+		StoreManager.setInstance(null);
 	}
 
 	@Test
@@ -57,6 +71,7 @@ public class StoragesManagerIT extends MailboxTestSuite {
 		final String mimeMessage = new MessageBuilder().withSubject(subject)
 				.withFrom(from)
 				.withBody(body).create();
+		mockStoragesUpload();
 		final Message message = TestUtil.addMimeMessage(mailbox, mimeMessage);
 
 		final Message messageById = mailbox.getMessageById(null, message.getId());
@@ -65,5 +80,13 @@ public class StoragesManagerIT extends MailboxTestSuite {
 		Assertions.assertTrue(stringBody.contains(body));
 		Assertions.assertTrue(stringBody.contains("Subject: " + subject));
 		Assertions.assertTrue(stringBody.contains("From: " + from));
+	}
+
+	private static Expectation[] mockStoragesUpload() {
+		return storagesServer
+				.when(request().withPath("/upload"))
+				.respond(
+						HttpResponse.response("")
+								.withStatusCode(200));
 	}
 }

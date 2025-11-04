@@ -1,13 +1,14 @@
-package com.zimbra.cs.store.minio;
+package com.zimbra.cs.store.storages;
 
 import com.zimbra.cs.store.Blob;
+import com.zimbra.cs.store.storages.StoragesClientAdapter.StorageKey;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class StoragesBlob extends Blob {
 
-	private final String key;
+	private final StorageKey key;
 	private final byte[] data;
 	private final int size;
 
@@ -21,8 +22,8 @@ public class StoragesBlob extends Blob {
 		return this.data;
 	}
 
-	public StoragesBlob(String key, byte[] data, int size) {
-		super(key);
+	public StoragesBlob(StorageKey key, byte[] data, int size) {
+		super(key.toPath());
 		this.key = key;
 		this.data = data;
 		this.size = size;
@@ -39,10 +40,10 @@ public class StoragesBlob extends Blob {
 
 	@Override
 	public String getName() {
-		return key;
+		return key.toPath();
 	}
 
-	public String getKey() {
+	public StorageKey getKey() {
 		return key;
 	}
 }

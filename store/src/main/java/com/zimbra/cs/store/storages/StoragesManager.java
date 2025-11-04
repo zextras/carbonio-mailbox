@@ -1,4 +1,4 @@
-package com.zimbra.cs.store.minio;
+package com.zimbra.cs.store.storages;
 
 import com.google.common.base.Strings;
 import com.zextras.storages.api.StoragesClient;
@@ -10,6 +10,7 @@ import com.zimbra.cs.store.BlobBuilder;
 import com.zimbra.cs.store.MailboxBlob;
 import com.zimbra.cs.store.MailboxBlob.MailboxBlobInfo;
 import com.zimbra.cs.store.StoreManager;
+import com.zimbra.cs.store.storages.StoragesClientAdapter.StorageKey;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
@@ -23,8 +24,8 @@ public class StoragesManager extends StoreManager<StoragesBlob, StoragesStagedBl
 	}
 
 	public StoragesManager() {
-		var minioClient = StoragesClient.atUrl(LC.storages_url.value());
-		this.storagesClientAdapter = new StoragesClientAdapter(minioClient);
+		var storagesClient = StoragesClient.atUrl(LC.storages_url.value());
+		this.storagesClientAdapter = new StoragesClientAdapter(storagesClient);
 	}
 
 	@Override
@@ -54,14 +55,15 @@ public class StoragesManager extends StoreManager<StoragesBlob, StoragesStagedBl
 
 	@Override
 	public BlobBuilder<StoragesBlob> getBlobBuilder() throws IOException, ServiceException {
-		final String key = "/incoming/" + UUID.randomUUID();
+		// TODO: storages supports specific items, not incoming
+		final StorageKey key = new StorageKey("incoming-" + UUID.randomUUID(), 0, 0, "");
 		return new StoragesIncomingBlobBuilder(key);
 	}
 
 	@Override
 	public StoragesBlob storeIncoming(InputStream data, boolean storeAsIs)
 			throws IOException, ServiceException {
-		final String key = "/incoming/" + UUID.randomUUID();
+		var key =new StorageKey("incoming-" + UUID.randomUUID(), 0, 0, "");
 		final int unknownSize = -1;
 		return storagesClientAdapter.upload(data, unknownSize, key);
 	}
@@ -74,7 +76,8 @@ public class StoragesManager extends StoreManager<StoragesBlob, StoragesStagedBl
 
 	private StoragesStagedBlob stageOnMinIO(Mailbox mailbox, InputStream data, long actualSize)
 			throws IOException, ServiceException {
-		final String pathname = mailbox.getAccountId() + "/" + UUID.randomUUID();
+		// TODO: this could lead to overwritten data, again storage should support generic data
+		final StorageKey pathname = new StorageKey(mailbox.getAccountId(), 0, 0, "");
 		final StoragesBlob minioBlob = storagesClientAdapter.upload(data, actualSize, pathname);
 		return new StoragesStagedBlob(mailbox, minioBlob);
 	}
@@ -91,7 +94,7 @@ public class StoragesManager extends StoreManager<StoragesBlob, StoragesStagedBl
 	public MailboxBlob copy(MailboxBlob src, Mailbox destMbox, int destMsgId, int destRevision)
 			throws IOException, ServiceException {
 		final String locator = src.getLocator();
-		final String minIOKey = getMinIOKey(destMbox, destMsgId, destRevision, locator);
+		var minIOKey = getKey(destMbox, destMsgId, destRevision, locator);
 		final Blob originalBlob = src.getLocalBlob();
 		final long rawSize = originalBlob.getRawSize();
 		final StoragesBlob minioBlob = storagesClientAdapter.upload(originalBlob.getInputStream(), rawSize, minIOKey);
@@ -112,7 +115,7 @@ public class StoragesManager extends StoreManager<StoragesBlob, StoragesStagedBl
 	@Override
 	public MailboxBlob link(StoragesStagedBlob src, Mailbox destMbox, int destMsgId, int destRevision)
 			throws IOException, ServiceException {
-		final String minIOKey = getMinIOKey(destMbox, destMsgId, destRevision, "");
+		var minIOKey = getKey(destMbox, destMsgId, destRevision, "");
 		final StoragesBlob originalBlob = src.getMinIoBlob();
 		final StoragesBlob minioBlob = storagesClientAdapter.upload(originalBlob.getInputStream(),
 				originalBlob.getRawSize(), minIOKey);
@@ -148,22 +151,19 @@ public class StoragesManager extends StoreManager<StoragesBlob, StoragesStagedBl
 	@Override
 	public boolean delete(MailboxBlob mblob) throws IOException {
 		try {
-			return storagesClientAdapter.delete(getMinIOKey(mblob));
+			return storagesClientAdapter.delete(getKey(mblob));
 		} catch (ServiceException e) {
 			// TODO: log?
 			return false;
 		}
 	}
 
-	private String getMinIOKey(Mailbox mbox, int itemId, int revision, String locator) {
-		if (Strings.isNullOrEmpty(locator)) {
-			return mbox.getAccountId() + "/" + itemId + "/" + revision;
-		}
-		return mbox.getAccountId() + "/" + itemId + "/" + revision + "/" + locator;
+	private StorageKey getKey(Mailbox mbox, int itemId, int revision, String locator) {
+		return new StorageKey(mbox.getAccountId(),itemId, revision, "");
 	}
 
-	private String getMinIOKey(MailboxBlob mailboxBlob) {
-		return getMinIOKey(mailboxBlob.getMailbox(), mailboxBlob.getItemId(),
+	private StorageKey getKey(MailboxBlob mailboxBlob) {
+		return getKey(mailboxBlob.getMailbox(), mailboxBlob.getItemId(),
 				mailboxBlob.getRevision(), mailboxBlob.getLocator());
 	}
 
@@ -172,7 +172,7 @@ public class StoragesManager extends StoreManager<StoragesBlob, StoragesStagedBl
 			boolean validate) throws ServiceException {
 		final StoragesBlob fromMinIo;
 		try {
-			fromMinIo = storagesClientAdapter.get(getMinIOKey(mbox, itemId, revision, locator));
+			fromMinIo = storagesClientAdapter.get(getKey(mbox, itemId, revision, locator));
 		} catch (IOException e) {
 			throw ServiceException.FAILURE(e.getMessage(), e);
 		}
@@ -181,7 +181,7 @@ public class StoragesManager extends StoreManager<StoragesBlob, StoragesStagedBl
 
 	@Override
 	public InputStream getContent(MailboxBlob mboxBlob) throws IOException {
-		final String minIOKey = getMinIOKey(mboxBlob);
+		var minIOKey = getKey(mboxBlob);
 		try {
 			return storagesClientAdapter.get(minIOKey).getInputStream();
 		} catch (ServiceException e) {
@@ -199,7 +199,7 @@ public class StoragesManager extends StoreManager<StoragesBlob, StoragesStagedBl
 			throws IOException, ServiceException {
 		blobs.forEach(
 				blob -> {
-					final String blobKey = getMinIOKey(mbox, blob.itemId, blob.revision, blob.locator);
+					var blobKey = getKey(mbox, blob.itemId, blob.revision, blob.locator);
 					try {
 						storagesClientAdapter.delete(blobKey);
 					} catch (ServiceException e) {

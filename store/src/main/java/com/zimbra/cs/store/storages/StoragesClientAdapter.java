@@ -1,4 +1,4 @@
-package com.zimbra.cs.store.minio;
+package com.zimbra.cs.store.storages;
 
 import com.zextras.filestore.model.MailboxItemIdentifier;
 import com.zextras.storages.api.StoragesClient;
@@ -13,21 +13,26 @@ public class StoragesClientAdapter {
 		this.storagesClient = storagesClient;
 	}
 
-	public StoragesBlob upload(InputStream data, long actualSize, String key)
+	public StoragesBlob upload(InputStream data, long actualSize, StorageKey key)
 			throws IOException, ServiceException {
 		try {
-			final MailboxItemIdentifier mailboxItemIdentifier = new MailboxItemIdentifier(key);
-			storagesClient.uploadPut(mailboxItemIdentifier, data);
+			final MailboxItemIdentifier mailboxItemIdentifier = fromKey(key);
+			storagesClient.uploadPut(mailboxItemIdentifier, data, actualSize);
 			return get(key);
 		} catch (Exception e) {
 			throw ServiceException.FAILURE(e.getMessage(), e);
 		}
 	}
 
-	public StoragesBlob get(String key)
+	private MailboxItemIdentifier fromKey(StorageKey key) {
+		return new MailboxItemIdentifier(key.itemId(),
+				key.revision(), key.accountId());
+	}
+
+	public StoragesBlob get(StorageKey key)
 			throws IOException, ServiceException {
 		try {
-			final MailboxItemIdentifier mailboxItemIdentifier = new MailboxItemIdentifier(key);
+			final MailboxItemIdentifier mailboxItemIdentifier = fromKey(key);
 			final InputStream download = storagesClient.download(mailboxItemIdentifier);
 			final byte[] bytes = download.readAllBytes();
 			return new StoragesBlob(key, bytes, bytes.length);
@@ -37,13 +42,20 @@ public class StoragesClientAdapter {
 	}
 
 
-	public boolean delete(String key) throws ServiceException {
+	public boolean delete(StorageKey key) throws ServiceException {
 		try {
-			final MailboxItemIdentifier mailboxItemIdentifier = new MailboxItemIdentifier(key);
+			final MailboxItemIdentifier mailboxItemIdentifier = fromKey(key);
 			storagesClient.delete(mailboxItemIdentifier);
 			return true;
 		} catch (Exception e) {
 			throw ServiceException.FAILURE(e.getMessage(), e);
+		}
+	}
+
+	public record StorageKey(String accountId, int revision, int itemId, String locator){
+
+		public String toPath() {
+			return accountId + "/" + revision + "/" + itemId;
 		}
 	}
 }

@@ -1,4 +1,6 @@
-package com.zimbra.cs.store.minio;
+package com.zimbra.cs.store.storages;
+
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.storages.api.StoragesClient;
@@ -6,19 +8,31 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.store.StoreManager;
 import java.io.ByteArrayInputStream;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.mockserver.integration.ClientAndServer;
 
 class StoragesManagerTest extends MailboxTestSuite {
 
 	private static StoragesClient storagesClient;
-
+	private static ClientAndServer storagesServer;
 	@BeforeAll
-	static void setupContainer() {
-		storagesClient = Mockito.mock(StoragesClient.class);
+	static void setup() {
+		storagesServer = startClientAndServer(20010);
+		storagesClient = StoragesClient.atUrl("http://localhost:20010");
+		StoreManager.setInstance(new StoragesManager(new StoragesClientAdapter(storagesClient)));
 	}
+
+	@AfterAll
+	static void teardown() {
+		storagesServer.stop();
+		StoreManager.setInstance(null);
+	}
+
 
 	@Test
 	void shouldStoreDataUsingInputStream() throws Exception {

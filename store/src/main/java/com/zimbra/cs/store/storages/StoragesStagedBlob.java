@@ -1,4 +1,4 @@
-package com.zimbra.cs.store.minio;
+package com.zimbra.cs.store.storages;
 
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.store.StagedBlob;

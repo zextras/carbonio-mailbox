@@ -1,7 +1,8 @@
-package com.zimbra.cs.store.minio;
+package com.zimbra.cs.store.storages;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.store.BlobBuilder;
+import com.zimbra.cs.store.storages.StoragesClientAdapter.StorageKey;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -11,11 +12,11 @@ import java.util.Objects;
 public class StoragesIncomingBlobBuilder implements BlobBuilder<StoragesBlob> {
 
 	private byte[] dataToSet;
-	private final String key;
+	private final StorageKey key;
 	private int size;
 	private boolean isFinished = false;
 
-	public StoragesIncomingBlobBuilder(String key) {
+	public StoragesIncomingBlobBuilder(StorageKey key) {
 		this.key = key;
 	}
 
