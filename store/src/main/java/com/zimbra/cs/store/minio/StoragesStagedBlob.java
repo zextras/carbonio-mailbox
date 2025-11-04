@@ -3,16 +3,16 @@ package com.zimbra.cs.store.minio;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.store.StagedBlob;
 
-public class MinioStagedBlob extends StagedBlob {
+public class StoragesStagedBlob extends StagedBlob {
 
-	private final MinioBlob minioBlob;
+	private final StoragesBlob minioBlob;
 
-	public MinioStagedBlob(Mailbox mailbox, MinioBlob minioBlob) {
+	public StoragesStagedBlob(Mailbox mailbox, StoragesBlob minioBlob) {
 		super(mailbox, "", minioBlob.getSize());
 		this.minioBlob = minioBlob;
 	}
 
-	public MinioBlob getMinIoBlob() {
+	public StoragesBlob getMinIoBlob() {
 		return minioBlob;
 	}
 

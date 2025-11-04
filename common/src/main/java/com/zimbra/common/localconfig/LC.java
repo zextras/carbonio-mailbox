@@ -1285,7 +1285,7 @@ public final class LC {
 
 
   // MinIO
-  public static final KnownKey minio_store_url = KnownKey.newKey("");
+  public static final KnownKey storages_url = KnownKey.newKey("");
   public static final KnownKey minio_store_user = KnownKey.newKey("");
   public static final KnownKey minio_store_password = KnownKey.newKey("");
   // Triton integration

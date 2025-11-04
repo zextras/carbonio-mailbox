@@ -5,13 +5,13 @@ import com.zimbra.cs.store.Blob;
 import com.zimbra.cs.store.MailboxBlob;
 import java.io.IOException;
 
-public class MinIOMailboxBlob extends MailboxBlob {
+public class StoragesMailboxBlob extends MailboxBlob {
 
-	private final MinioBlob blob;
+	private final StoragesBlob blob;
 
-	public MinIOMailboxBlob(Mailbox mbox, int itemId, int revision, String locator, MinioBlob blob) {
+	public StoragesMailboxBlob(Mailbox mbox, int itemId, int revision, String locator, StoragesBlob blob) {
 		super(mbox, itemId, revision, locator);
-		// TODO: maybe use the minioclient to retrieve data?
+		// TODO: maybe use the client to retrieve data?
 		this.blob = blob;
 	}
 

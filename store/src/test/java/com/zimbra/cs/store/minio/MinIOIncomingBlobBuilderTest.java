@@ -12,8 +12,8 @@ class MinIOIncomingBlobBuilderTest {
 
 	@Test
 	void shouldReturnBuilderInSetters() throws IOException {
-		final MinIOIncomingBlobBuilder builder = new MinIOIncomingBlobBuilder("test");
-		final BlobBuilder<MinioBlob> builderInstance = builder.append("aaa".getBytes())
+		final StoragesIncomingBlobBuilder builder = new StoragesIncomingBlobBuilder("test");
+		final BlobBuilder<StoragesBlob> builderInstance = builder.append("aaa".getBytes())
 				.append(new ByteArrayInputStream("bbb".getBytes()))
 				.append(new StringInputStream("ccc"))
 				.disableDigest(true);
@@ -22,8 +22,8 @@ class MinIOIncomingBlobBuilderTest {
 
 	@Test
 	void shouldBuildABlobWithGivenKeyAndData() throws IOException, ServiceException {
-		final MinIOIncomingBlobBuilder builder = new MinIOIncomingBlobBuilder("test");
-		final MinioBlob blob = builder.append("aaa".getBytes()).finish();
+		final StoragesIncomingBlobBuilder builder = new StoragesIncomingBlobBuilder("test");
+		final StoragesBlob blob = builder.append("aaa".getBytes()).finish();
 
 		Assertions.assertEquals("test",blob.getKey());
 		Assertions.assertEquals("aaa", new String(blob.getContent()));
@@ -31,8 +31,8 @@ class MinIOIncomingBlobBuilderTest {
 
 	@Test
 	void shouldOverrideContentWhenAppending() throws IOException, ServiceException {
-		final MinIOIncomingBlobBuilder builder = new MinIOIncomingBlobBuilder("test");
-		final MinioBlob blob = builder.append("aaa".getBytes())
+		final StoragesIncomingBlobBuilder builder = new StoragesIncomingBlobBuilder("test");
+		final StoragesBlob blob = builder.append("aaa".getBytes())
 				.append(new ByteArrayInputStream("bbb".getBytes()))
 				.finish();
 

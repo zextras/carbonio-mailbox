@@ -5,7 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class MinioBlob extends Blob {
+public class StoragesBlob extends Blob {
 
 	private final String key;
 	private final byte[] data;
@@ -21,7 +21,7 @@ public class MinioBlob extends Blob {
 		return this.data;
 	}
 
-	public MinioBlob(String key, byte[] data, int size) {
+	public StoragesBlob(String key, byte[] data, int size) {
 		super(key);
 		this.key = key;
 		this.data = data;

@@ -8,18 +8,18 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 
 // TODO: double check build logic, it is used in few places
-public class MinIOIncomingBlobBuilder implements BlobBuilder<MinioBlob> {
+public class StoragesIncomingBlobBuilder implements BlobBuilder<StoragesBlob> {
 
 	private byte[] dataToSet;
 	private final String key;
 	private int size;
 	private boolean isFinished = false;
 
-	public MinIOIncomingBlobBuilder(String key) {
+	public StoragesIncomingBlobBuilder(String key) {
 		this.key = key;
 	}
 
-	public BlobBuilder<MinioBlob> init() {
+	public BlobBuilder<StoragesBlob> init() {
 		return this;
 	}
 
@@ -37,7 +37,7 @@ public class MinIOIncomingBlobBuilder implements BlobBuilder<MinioBlob> {
 	}
 
 	@Override
-	public BlobBuilder<MinioBlob> disableCompression(boolean disable) {
+	public BlobBuilder<StoragesBlob> disableCompression(boolean disable) {
 		return this;
 	}
 
@@ -48,27 +48,27 @@ public class MinIOIncomingBlobBuilder implements BlobBuilder<MinioBlob> {
 	}
 
 	@Override
-	public BlobBuilder<MinioBlob> disableDigest(boolean disable) {
+	public BlobBuilder<StoragesBlob> disableDigest(boolean disable) {
 		// TODO: digest?
 		return this;
 	}
 
 	@Override
-	public BlobBuilder<MinioBlob> append(InputStream in) throws IOException {
+	public BlobBuilder<StoragesBlob> append(InputStream in) throws IOException {
 		this.dataToSet = in.readAllBytes();
 		this.size = dataToSet.length;
 		return this;
 	}
 
 	@Override
-	public BlobBuilder<MinioBlob> append(byte[] b) throws IOException {
+	public BlobBuilder<StoragesBlob> append(byte[] b) throws IOException {
 		this.dataToSet = b;
 		this.size = b.length;
 		return this;
 	}
 
 	@Override
-	public BlobBuilder<MinioBlob> append(byte[] b, int off, int len) throws IOException {
+	public BlobBuilder<StoragesBlob> append(byte[] b, int off, int len) throws IOException {
 		// TODO: append to data or overwrite existing?
 		this.dataToSet = b;
 		this.size = len;
@@ -76,15 +76,15 @@ public class MinIOIncomingBlobBuilder implements BlobBuilder<MinioBlob> {
 	}
 
 	@Override
-	public BlobBuilder<MinioBlob> append(ByteBuffer bb) throws IOException {
+	public BlobBuilder<StoragesBlob> append(ByteBuffer bb) throws IOException {
 		this.dataToSet = bb.array();
 		return this;
 	}
 
 	@Override
-	public MinioBlob finish() throws IOException, ServiceException {
+	public StoragesBlob finish() throws IOException, ServiceException {
 		isFinished = true;
-		return new MinioBlob(key, dataToSet, size);
+		return new StoragesBlob(key, dataToSet, size);
 	}
 
 	@Override
