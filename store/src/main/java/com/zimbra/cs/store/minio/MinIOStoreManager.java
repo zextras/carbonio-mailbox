@@ -1,5 +1,6 @@
 package com.zimbra.cs.store.minio;
 
+import com.google.common.base.Strings;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -161,8 +162,12 @@ public class MinIOStoreManager extends StoreManager<MinioBlob, MinioStagedBlob> 
 	}
 
 	private String getMinIOKey(Mailbox mbox, int itemId, int revision, String locator) {
-		return mbox.getAccountId() + "/" + itemId + "/" + revision;
+		if (Strings.isNullOrEmpty(locator)) {
+			return mbox.getAccountId() + "/" + itemId + "/" + revision;
+		}
+		return mbox.getAccountId() + "/" + itemId + "/" + revision + "/" + locator;
 	}
+
 	private String getMinIOKey(MailboxBlob mailboxBlob) {
 		return getMinIOKey(mailboxBlob.getMailbox(), mailboxBlob.getItemId(),
 				mailboxBlob.getRevision(), mailboxBlob.getLocator());
