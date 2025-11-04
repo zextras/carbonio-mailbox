@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.store.Blob;
 import com.zimbra.cs.store.BlobBuilder;
 import com.zimbra.cs.store.MailboxBlob;
 import com.zimbra.cs.store.MailboxBlob.MailboxBlobInfo;
@@ -100,7 +101,12 @@ public class MinIOStoreManager extends StoreManager<MinioBlob, MinioStagedBlob> 
 	@Override
 	public MailboxBlob copy(MailboxBlob src, Mailbox destMbox, int destMsgId, int destRevision)
 			throws IOException, ServiceException {
-		return null;
+		final String locator = src.getLocator();
+		final String minIOKey = getMinIOKey(destMbox, destMsgId, destRevision, locator);
+		final Blob originalBlob = src.getLocalBlob();
+		final long rawSize = originalBlob.getRawSize();
+		final MinioBlob minioBlob = minIOBlobAdapter.uploadOnMinIo(originalBlob.getInputStream(), rawSize, minIOKey);
+		return new MinIOMailboxBlob(destMbox, destMsgId, destRevision, locator, minioBlob);
 	}
 
 	/**

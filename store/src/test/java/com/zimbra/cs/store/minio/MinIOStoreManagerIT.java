@@ -3,6 +3,8 @@ package com.zimbra.cs.store.minio;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.mailbox.MailItem;
+import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Message;
@@ -59,6 +61,17 @@ public class MinIOStoreManagerIT extends MailboxTestSuite {
 		final Message messageById = mailbox.getMessageById(null, message.getId());
 
 		Assertions.assertEquals(messageById.getSubject(), "Test minio");
+	}
+	@Test
+	void shouldCopyMessageInMinIO() throws Exception {
+		final Account account = createAccount().create();
+		final Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
+		final Message message = TestUtil.addMessage(mailbox, "Test minio");
+
+		final MailItem copied = mailbox.copy(null, message.getId(), Type.MESSAGE,
+				Mailbox.ID_FOLDER_DRAFTS);
+
+		Assertions.assertEquals(copied.getSubject(), "Test minio");
 	}
 
 	@Test
