@@ -5,6 +5,7 @@ import com.zimbra.cs.store.BlobBuilder;
 import com.zimbra.cs.store.storages.StoragesClientAdapter.StorageKey;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.UUID;
 import org.hsqldb.lib.StringInputStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ class StoragesIncomingBlobBuilderTest {
 	}
 
 	private static StorageKey getStorageAccountIdKey() {
-		return new StorageKey(accountId);
+		return new StorageKey(accountId, UUID.randomUUID().toString());
 	}
 
 	@Test
@@ -34,7 +35,7 @@ class StoragesIncomingBlobBuilderTest {
 				getStorageAccountIdKey());
 		final StoragesBlob blob = builder.append("aaa".getBytes()).finish();
 
-		Assertions.assertEquals(accountId, blob.getKey().path());
+		Assertions.assertEquals(accountId, blob.getKey().basePath());
 		Assertions.assertEquals("aaa", new String(blob.getContent()));
 	}
 

@@ -1,6 +1,6 @@
 package com.zimbra.cs.store.storages;
 
-import com.zextras.filestore.model.NodeIdentifier;
+import com.zextras.filestore.model.FileIdentifier;
 import com.zextras.storages.api.StoragesClient;
 import com.zimbra.common.service.ServiceException;
 import java.io.IOException;
@@ -24,8 +24,8 @@ public class StoragesClientAdapter {
 		}
 	}
 
-	private static NodeIdentifier fromKey(StorageKey key) {
-		return new NodeIdentifier(key.path());
+	private static FileIdentifier fromKey(StorageKey key) {
+		return new FileIdentifier(key.basePath(), key.itemId());
 	}
 
 	public StoragesBlob get(StorageKey key)
@@ -51,6 +51,6 @@ public class StoragesClientAdapter {
 		}
 	}
 
-	public record StorageKey(String path){
+	public record StorageKey(String basePath, String itemId){
 	}
 }

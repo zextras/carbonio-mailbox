@@ -60,7 +60,7 @@ public class StoragesManager extends StoreManager<StoragesBlob, StoragesStagedBl
 	}
 
 	private static StorageKey incomingStorageKey() {
-		return new StorageKey("incoming-" + UUID.randomUUID());
+		return new StorageKey("incoming", UUID.randomUUID().toString());
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class StoragesManager extends StoreManager<StoragesBlob, StoragesStagedBl
 
 	private StoragesStagedBlob stageOnMinIO(Mailbox mailbox, InputStream data, long actualSize)
 			throws IOException, ServiceException {
-		final StorageKey pathname = new StorageKey(mailbox.getAccountId() + "-" + UUID.randomUUID());
+		final StorageKey pathname = new StorageKey(mailbox.getAccountId(), UUID.randomUUID().toString());
 		final StoragesBlob minioBlob = storagesClientAdapter.upload(data, actualSize, pathname);
 		return new StoragesStagedBlob(mailbox, minioBlob);
 	}
@@ -162,9 +162,9 @@ public class StoragesManager extends StoreManager<StoragesBlob, StoragesStagedBl
 
 	private StorageKey getKey(Mailbox mbox, int itemId, int revision, String locator) {
 		if (Strings.isNullOrEmpty(locator)) {
-			return new StorageKey(mbox.getAccountId() + "-" + itemId + "-" + revision);
+			return new StorageKey(mbox.getAccountId(), itemId + "-" + revision);
 		}
-		return new StorageKey(mbox.getAccountId() + "-" + itemId + "-" + revision + "-" + locator);
+		return new StorageKey(mbox.getAccountId(), itemId + "-" + revision + "-" + locator);
 	}
 
 	private StorageKey getKey(MailboxBlob mailboxBlob) {
