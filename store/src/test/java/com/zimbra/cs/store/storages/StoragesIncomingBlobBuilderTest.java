@@ -6,7 +6,6 @@ import com.zimbra.cs.store.storages.StoragesClientAdapter.StorageKey;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.hsqldb.lib.StringInputStream;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

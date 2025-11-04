@@ -17,6 +17,7 @@ import com.zimbra.cs.store.file.FileBlobStore;
 import com.zimbra.cs.util.Zimbra;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 public abstract class StoreManager<T extends Blob, X extends StagedBlob> {
 
@@ -63,7 +64,9 @@ public abstract class StoreManager<T extends Blob, X extends StagedBlob> {
 
   /** Used for unit testing. */
   public static void setInstance(StoreManager instance) {
-    ZimbraLog.store.info("Setting StoreManager to " + instance.getClass().getName());
+    if (!Objects.isNull(instance)) {
+      ZimbraLog.store.info("Setting StoreManager to " + instance.getClass().getName());
+    }
     sInstance = instance;
   }
 
