@@ -20,9 +20,6 @@
   <key name="postfix_tls_eecdh_strong_curve">
     <value>prime256v1</value>
   </key>
-  <key name="postfix_smtpd_tls_eecdh_grade">
-    <value>ultra</value>
-  </key>
   <key name="postfix_smtp_tls_policy_maps">
     <value>lmdb:/opt/zextras/conf/postfix_tls_policy_file</value>
   </key>
