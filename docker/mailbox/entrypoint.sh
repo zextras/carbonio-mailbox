@@ -16,6 +16,7 @@ sed -i -e "s#CARBONIO_FILES_SERVICE_URL#${CARBONIO_FILES_SERVICE_URL}#g" /localc
 sed -i -e "s#CARBONIO_PREVIEW_SERVICE_URL#${CARBONIO_PREVIEW_SERVICE_URL}#g" /localconfig/localconfig.xml
 
 SERVER_EXISTS=$(/usr/bin/zmprov -l gs "${HOSTNAME}" 2>&1)
+echo "Server check: ${SERVER_EXISTS}"
 if [[ $SERVER_EXISTS == *"account.NO_SUCH_SERVER"* ]]; then
   echo "Creating server ${HOSTNAME}"
   /usr/bin/zmprov -l cs "${HOSTNAME}" zimbraServiceInstalled mailbox \
