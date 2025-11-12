@@ -56,11 +56,11 @@ ARG BASE_JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
     -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/*"
 
 RUN mkdir -p /staging/usr/bin && \
-    echo "#!/bin/sh\njava ${BASE_JAVA_ARGS} com.zimbra.cs.account.ProvUtil \"\$@\"" > /staging/usr/bin/zmprov && \
+    printf '#!/bin/sh\njava %s com.zimbra.cs.account.ProvUtil "$@"\n' "${BASE_JAVA_ARGS}" > /staging/usr/bin/zmprov && \
     chmod +x /staging/usr/bin/zmprov && \
-    echo "#!/bin/sh\njava ${BASE_JAVA_ARGS} com.zimbra.cs.util.GalSyncAccountUtil \"\$@\"" > /staging/usr/bin/zmgsautil && \
+    printf '#!/bin/sh\njava %s com.zimbra.cs.util.GalSyncAccountUtil "$@"\n' "${BASE_JAVA_ARGS}" > /staging/usr/bin/zmgsautil && \
     chmod +x /staging/usr/bin/zmgsautil && \
-    echo "#!/bin/sh\njava ${BASE_JAVA_ARGS} com.zimbra.cs.zclient.ZMailboxUtil \"\$@\"" > /staging/usr/bin/zmmailbox && \
+    printf '#!/bin/sh\njava %s com.zimbra.cs.zclient.ZMailboxUtil "$@"\n' "${BASE_JAVA_ARGS}" > /staging/usr/bin/zmmailbox && \
     chmod +x /staging/usr/bin/zmmailbox
 
 # Generate keystore using Alpine-based builder stage
