@@ -164,9 +164,9 @@ public final class SearchGrants {
       Entry entry;
       try {
         if (tt == TargetType.zimlet) {
-          entry = TargetType.lookupTarget(prov, tt, TargetBy.name, sgr.cn);
+          entry = TargetTypeLookup.lookupTarget(prov, tt, TargetBy.name, sgr.cn);
         } else {
-          entry = TargetType.lookupTarget(prov, tt, TargetBy.id, sgr.zimbraId, needFullDL, true);
+          entry = TargetTypeLookup.lookupTarget(prov, tt, TargetBy.id, sgr.zimbraId, needFullDL, true);
         }
         if (entry == null) {
           ZimbraLog.acl.warn("cannot find target by id %s", sgr.zimbraId);
@@ -239,7 +239,7 @@ public final class SearchGrants {
 
   /** search grants granted to any of the grantees, granted on any of the target types. */
   SearchGrantsResults doSearch() throws ServiceException {
-    Map<String, Set<String>> basesAndOcs = TargetType.getSearchBasesAndOCs(prov, targetTypes);
+    Map<String, Set<String>> basesAndOcs = TargetTypeLookup.getSearchBasesAndOCs(prov, targetTypes);
     SearchGrantsResults results = new SearchGrantsResults(prov);
     SearchGrantVisitor visitor = new SearchGrantVisitor(results);
     long start = 0;

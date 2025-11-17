@@ -4,24 +4,15 @@
 
 package com.zimbra.cs.service.admin;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import com.google.common.collect.Maps;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.common.collect.Maps;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -32,19 +23,24 @@ import com.zimbra.soap.admin.type.ContactBackupServer;
 import com.zimbra.soap.admin.type.ContactBackupServer.ContactBackupStatus;
 import com.zimbra.soap.admin.type.ServerSelector;
 import com.zimbra.soap.admin.type.ServerSelector.ServerBy;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class ContactBackupApiTest {
-    private static Provisioning prov = null;
+public class ContactBackupApiTest extends MailboxTestSuite {
     private static final String DOMAIN_NAME = "zimbra.com";
     private static final String BUG_NUMBER = "zcs3594";
     private static final String ADMIN = "admin_" + BUG_NUMBER + "@" + DOMAIN_NAME;
+    private static Provisioning prov = null;
     private static Account admin = null;
 
     @BeforeAll
     public static void init() throws Exception {
-        MailboxTestUtil.initServer();
         prov = Provisioning.getInstance();
-
+        prov.createDomain(DOMAIN_NAME, Maps.newHashMap());
         Map<String, Object> attrs = Maps.newHashMap();
         attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
         attrs.put(Provisioning.A_zimbraIsAdminAccount, true); // set admin account
@@ -53,10 +49,6 @@ public class ContactBackupApiTest {
         MailboxManager.getInstance().getMailboxByAccount(admin);
     }
 
-    @AfterAll
-    public static void tearDown() throws Exception {
-        MailboxTestUtil.clearData();
-    }
 
  @Test
  void testContactBackupApiWithStart() throws Exception {

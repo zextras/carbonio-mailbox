@@ -17,12 +17,6 @@
       "name": "common-appserver-conf"
     },
     {
-      "name": "common-appserver-native-lib"
-    },
-    {
-      "name": "directory-server"
-    },
-    {
       "name": "mailbox-jar"
     }
   ]

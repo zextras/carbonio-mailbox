@@ -7,13 +7,11 @@ package com.zimbra.cs.index.query;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zextras.mailbox.util.AccountUtil;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -21,20 +19,14 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-public final class FieldQueryTest {
+public final class FieldQueryTest extends MailboxTestSuite {
 
   private static Mailbox mailbox;
 
   @BeforeAll
   public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-    final Account account = AccountUtil.createAccount();
+    final Account account = createAccount().create();
     mailbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
-  }
-
-  @BeforeEach
-  public void setUp() throws Exception {
-    MailboxTestUtil.clearData();
   }
 
  @Test

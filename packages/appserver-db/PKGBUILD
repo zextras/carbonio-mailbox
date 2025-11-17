@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver-db"
-pkgver="4.23.1"
+pkgver="4.23.2"
 pkgrel="1"
 pkgdesc="Carbonio Appserver DB Files"
 arch=('x86_64')
@@ -22,9 +22,9 @@ makedepends=(
 )
 
 package() {
-  cd "${srcdir}"/../../staging
+  cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
 
-  install -D "store/target/versions-init.sql" \
+  install -D "store/db/versions-init.sql" \
     "${pkgdir}/opt/zextras/db/versions-init.sql"
   install -D "store/db/db.sql" \
     "${pkgdir}/opt/zextras/db/db.sql"

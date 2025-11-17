@@ -98,7 +98,7 @@ public class AllowedAttrs implements AccessManager.AttrRightChecker {
         for (String attr : attrsNeeded) {
             String attrName = getActualAttrName(attr);
             
-            HardRules.checkForbiddenAttr(attrName);
+            AttributeForbiddenRules.checkForbiddenAttr(attrName);
             
             if (!allowed.contains(attrName)) {
                 /*
@@ -109,7 +109,7 @@ public class AllowedAttrs implements AccessManager.AttrRightChecker {
                  */
                 // return false;
                 throw ServiceException.PERM_DENIED("cannot access attribute " + attrName +
-                        " on " + TargetType.getTargetType(target) + " target " +
+                        " on " + TargetTypeLookup.getTargetType(target) + " target " +
                         target.getLabel());
             }
         }
@@ -156,7 +156,7 @@ public class AllowedAttrs implements AccessManager.AttrRightChecker {
         for (Map.Entry<String, Object> attr : attrsNeeded.entrySet()) {
             String attrName = getActualAttrName(attr.getKey());
             
-            HardRules.checkForbiddenAttr(attrName);
+            AttributeForbiddenRules.checkForbiddenAttr(attrName);
             
             if (!allowAll && !allowed.contains(attrName)) {
                 /*
@@ -167,7 +167,7 @@ public class AllowedAttrs implements AccessManager.AttrRightChecker {
                  */
                 // return false;
                 throw ServiceException.PERM_DENIED("cannot access attribute " + attrName +
-                        " on " + TargetType.getTargetType(target) + " target " +
+                        " on " + TargetTypeLookup.getTargetType(target) + " target " +
                         target.getLabel());
             }
             

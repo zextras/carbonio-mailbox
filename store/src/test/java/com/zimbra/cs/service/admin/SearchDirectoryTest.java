@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.CreateAccount;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
@@ -13,19 +14,16 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.admin.message.SearchDirectoryRequest;
 import com.zimbra.soap.admin.message.SearchDirectoryResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("api")
 class SearchDirectoryTest extends SoapTestSuite {
-  private static CreateAccount.Factory createAccountFactory;
+  
 	private static Account adminAccount;
   private static Account secondAccount;
   private static Account firstAccount;
@@ -34,7 +32,7 @@ class SearchDirectoryTest extends SoapTestSuite {
   static void setUp() throws Exception {
 		Provisioning provisioning = Provisioning.getInstance();
     provisioning.createDomain("different.com", new HashMap<>());
-    createAccountFactory = getCreateAccountFactory();
+    
     adminAccount = newAccountOn(getDefaultDomainName()).withUsername("admin.account").asGlobalAdmin().create();
     secondAccount = newAccountOn(getDefaultDomainName()).withUsername("second.account").create();
     firstAccount = newAccountOn(getDefaultDomainName()).withUsername("first.account").create();
@@ -42,13 +40,13 @@ class SearchDirectoryTest extends SoapTestSuite {
 
   @Test
   void searchAccountsInADomain() throws Exception {
-    HttpResponse httpResponse = getSoapClient().newRequest()
+    SoapResponse SoapResponse = getSoapClient().newRequest()
         .setCaller(adminAccount)
         .setSoapBody(searchAccountsByDomain(getDefaultDomainName()))
         .execute();
 
-    assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
-    SearchDirectoryResponse response = parseSoapResponse(httpResponse);
+    assertEquals(HttpStatus.SC_OK, SoapResponse.statusCode());
+    SearchDirectoryResponse response = parseSoapResponse(SoapResponse);
     List<AccountInfo> accounts = response.getAccounts();
     assertEquals(1 + 2, accounts.size());
     assertEquals(adminAccount.getId(), accounts.get(0).getId());
@@ -59,13 +57,13 @@ class SearchDirectoryTest extends SoapTestSuite {
 
   @Test
   void searchAccountPaginationFirstPage() throws Exception {
-    HttpResponse firstPageHttpResponse = getSoapClient().newRequest()
+    SoapResponse firstPageSoapResponse = getSoapClient().newRequest()
         .setCaller(adminAccount)
         .setSoapBody(searchAccountsByDomain(getDefaultDomainName(), 1, 0))
         .execute();
 
-    assertEquals(HttpStatus.SC_OK, firstPageHttpResponse.getStatusLine().getStatusCode());
-    SearchDirectoryResponse firstPageResponse = parseSoapResponse(firstPageHttpResponse);
+    assertEquals(HttpStatus.SC_OK, firstPageSoapResponse.statusCode());
+    SearchDirectoryResponse firstPageResponse = parseSoapResponse(firstPageSoapResponse);
     assertEquals(1, firstPageResponse.getAccounts().size());
     assertEquals(adminAccount.getName(), firstPageResponse.getAccounts().get(0).getName());
     assertEquals(3, firstPageResponse.getSearchTotal());
@@ -74,13 +72,13 @@ class SearchDirectoryTest extends SoapTestSuite {
 
   @Test
   void searchAccountPaginationSecondPage() throws Exception {
-    HttpResponse secondPageHttpResponse = getSoapClient().newRequest()
+    SoapResponse secondPageSoapResponse = getSoapClient().newRequest()
         .setCaller(adminAccount)
         .setSoapBody(searchAccountsByDomain(getDefaultDomainName(), 1, 1))
         .execute();
 
-    assertEquals(HttpStatus.SC_OK, secondPageHttpResponse.getStatusLine().getStatusCode());
-    SearchDirectoryResponse secondPageResponse = parseSoapResponse(secondPageHttpResponse);
+    assertEquals(HttpStatus.SC_OK, secondPageSoapResponse.statusCode());
+    SearchDirectoryResponse secondPageResponse = parseSoapResponse(secondPageSoapResponse);
     assertEquals(1, secondPageResponse.getAccounts().size());
     assertEquals(firstAccount.getName(), secondPageResponse.getAccounts().get(0).getName());
     assertEquals(3, secondPageResponse.getSearchTotal());
@@ -89,21 +87,21 @@ class SearchDirectoryTest extends SoapTestSuite {
 
   @Test
   void searchAccountPaginationLastPage() throws Exception {
-    final HttpResponse lastPageHttpResponse = getSoapClient().newRequest()
+    final SoapResponse lastPageSoapResponse = getSoapClient().newRequest()
         .setCaller(adminAccount)
         .setSoapBody(searchAccountsByDomain(getDefaultDomainName(), 1, 2))
         .execute();
 
-    assertEquals(HttpStatus.SC_OK, lastPageHttpResponse.getStatusLine().getStatusCode());
-    SearchDirectoryResponse lastPageResponse = parseSoapResponse(lastPageHttpResponse);
+    assertEquals(HttpStatus.SC_OK, lastPageSoapResponse.statusCode());
+    SearchDirectoryResponse lastPageResponse = parseSoapResponse(lastPageSoapResponse);
     assertEquals(1, lastPageResponse.getAccounts().size());
     assertEquals(secondAccount.getName(), lastPageResponse.getAccounts().get(0).getName());
     assertEquals(3, lastPageResponse.getSearchTotal());
     assertFalse(lastPageResponse.isMore());
   }
 
-  private static SearchDirectoryResponse parseSoapResponse(HttpResponse httpResponse) throws IOException, ServiceException {
-    final String responseBody = EntityUtils.toString(httpResponse.getEntity());
+  private static SearchDirectoryResponse parseSoapResponse(SoapResponse soapResponse) throws ServiceException {
+    final String responseBody = soapResponse.body();
     final Element rootElement = parseXML(responseBody).getElement("Body").getElement("SearchDirectoryResponse");
     return JaxbUtil.elementToJaxb(rootElement, SearchDirectoryResponse.class);
   }
@@ -129,7 +127,7 @@ class SearchDirectoryTest extends SoapTestSuite {
   }
 
   private static CreateAccount newAccountOn(String domain) {
-    return createAccountFactory.get().withDomain(domain);
+    return createAccount().withDomain(domain);
   }
 
 }

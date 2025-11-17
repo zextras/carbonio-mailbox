@@ -2,13 +2,13 @@ package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Version;
-import com.zimbra.cs.account.AttributeCallback;
 import com.zimbra.cs.account.AttributeCardinality;
 import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeFlag;
 import com.zimbra.cs.account.AttributeInfo;
+import com.zimbra.cs.account.AttributeManagerException;
 import com.zimbra.cs.account.AttributeServerType;
-
+import com.zimbra.cs.account.AttributeVersion;
 import java.util.List;
 import java.util.Set;
 
@@ -57,8 +57,13 @@ class DescribeArgs {
           throw ServiceException.INVALID_REQUEST(
               "entry type is already specified as " + descArgs.mAttrClass, null);
         }
-        AttributeClass ac = AttributeClass.fromString(args[i]);
-        if (ac == null || !ac.isProvisionable()) {
+				AttributeClass ac = null;
+				try {
+					ac = AttributeClass.fromString(args[i]);
+				} catch (AttributeManagerException e) {
+					throw ServiceException.FAILURE(e.getMessage());
+				}
+				if (ac == null || !ac.isProvisionable()) {
           String name = ac == null ? "null" : ac.name();
           throw ServiceException.INVALID_REQUEST("invalid entry type " + name, null);
         }
@@ -165,10 +170,7 @@ class DescribeArgs {
           out = ai.getValue();
           break;
         case callback:
-          AttributeCallback acb = ai.getCallback();
-          if (acb != null) {
-            out = acb.getClass().getSimpleName();
-          }
+          out = ai.getCallbackClassName();
           break;
         case immutable:
           out = Boolean.toString(ai.isImmutable());
@@ -213,10 +215,10 @@ class DescribeArgs {
           out = formatRequiresRestart(ai);
           break;
         case since:
-          List<Version> since = ai.getSince();
+          List<AttributeVersion> since = ai.getSince();
           if (since != null) {
             StringBuilder sb = new StringBuilder();
-            for (Version version : since) {
+            for (AttributeVersion version : since) {
               sb.append(version.toString()).append(",");
             }
             sb.setLength(sb.length() - 1);
@@ -224,7 +226,7 @@ class DescribeArgs {
           }
           break;
         case deprecatedSince:
-          Version depreSince = ai.getDeprecatedSince();
+          AttributeVersion depreSince = ai.getDeprecatedSince();
           if (depreSince != null) {
             out = depreSince.toString();
           }

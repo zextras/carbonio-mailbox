@@ -23,6 +23,7 @@ import com.zimbra.cs.account.accesscontrol.RightCommand;
 import com.zimbra.cs.account.accesscontrol.RightModifier;
 import com.zimbra.cs.account.auth.AuthContext;
 import com.zimbra.cs.account.gal.GalOp;
+import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.account.names.NameUtil;
 import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.gal.GalSearchParams;
@@ -346,7 +347,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
           }
 
           if (singleton == null) {
-            singleton = new com.zimbra.cs.account.ldap.LdapProvisioning(cacheMode);
+            singleton = LdapProvisioning.create(cacheMode);
             ZimbraLog.account.error("defaulting to " + singleton.getClass().getCanonicalName());
           }
         }
@@ -2150,7 +2151,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public Identity getDefaultIdentity(Account account) throws ServiceException {
     Map<String, Object> attrs = new HashMap<>();
     Set<String> identityAttrs =
-        AttributeManager.getInstance().getAttrsInClass(AttributeClass.identity);
+        StoreAttributeManager.getInstance().getAttrsInClass(AttributeClass.identity);
 
     for (String name : identityAttrs) {
       String value = account.getAttr(name, null);

@@ -79,7 +79,11 @@
       <artifactId>json</artifactId>
       <groupId>org.json</groupId>
     </dependency>
-
+    <dependency>
+      <groupId>com.zextras</groupId>
+      <artifactId>mailbox-attribute-manager</artifactId>
+      <scope>runtime</scope>
+    </dependency>
     <dependency>
       <artifactId>dom4j</artifactId>
       <groupId>org.dom4j</groupId>
@@ -143,7 +147,6 @@
       <!-- TODO: this is also defined in zm-zcs-lib -->
       <artifactId>nekohtml</artifactId>
       <groupId>net.sourceforge.nekohtml</groupId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -151,14 +154,6 @@
       <artifactId>jfreechart</artifactId>
       <groupId>org.jfree</groupId>
     </dependency>
-
-    <!--    <dependency>-->
-    <!--      &lt;!&ndash; TODO: this is also defined in zm-zcs-lib &ndash;&gt;-->
-    <!--      <artifactId>jcommon</artifactId>-->
-    <!--      <groupId>org.jfree</groupId>-->
-    <!--      <version>1.0.23</version>-->
-    <!--    </dependency>-->
-
 
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -179,14 +174,8 @@
     </dependency>
 
     <dependency>
-      <artifactId>easymock</artifactId>
-      <groupId>org.easymock</groupId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <artifactId>zm-native</artifactId>
-      <groupId>zextras</groupId>
+      <groupId>com.zextras</groupId>
+      <artifactId>mailbox-native</artifactId>
     </dependency>
   </dependencies>
   <modelVersion>4.0.0</modelVersion>
@@ -203,6 +192,50 @@
             <exclude>**/Log4j2Plugins.dat</exclude>
           </excludes>
         </configuration>
+      </plugin>
+      <!-- Generate ZAttr and LDAP schema -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>generate-ZAttrAccount</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateProvisioning</argument>
+                <argument>-r</argument>
+                <argument>${generated-zattr}/ZAttrProvisioning.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Add zattr -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <id>add-zattr</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${generated-sources}/zattr/</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -242,5 +275,9 @@
       </plugin>
     </plugins>
   </build>
+  <properties>
+    <generated-sources>${project.build.directory}/generated-sources</generated-sources>
+    <generated-zattr>${generated-sources}/zattr/com/zimbra/common/account</generated-zattr>
+  </properties>
 
 </project>

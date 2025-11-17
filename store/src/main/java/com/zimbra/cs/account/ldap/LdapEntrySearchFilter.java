@@ -16,6 +16,7 @@ import com.zimbra.cs.account.EntrySearchFilter.Operator;
 import com.zimbra.cs.account.EntrySearchFilter.Single;
 import com.zimbra.cs.account.EntrySearchFilter.Term;
 import com.zimbra.cs.account.EntrySearchFilter.Visitor;
+import com.zimbra.cs.account.StoreAttributeManager;
 import com.zimbra.cs.ldap.ZLdapFilterFactory;
 
 /*
@@ -147,7 +148,7 @@ public class LdapEntrySearchFilter {
             
             AttributeManager attrMgr = null;
             try {
-                attrMgr = AttributeManager.getInstance();
+                attrMgr = StoreAttributeManager.getInstance();
             } catch (ServiceException e) {
                 ZimbraLog.account.warn("failed to get AttributeManager instance", e);
             }

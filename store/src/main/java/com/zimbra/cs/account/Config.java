@@ -20,7 +20,7 @@ import java.util.Map;
  *
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class Config extends ZAttrConfig {
+public class Config extends ZAttrConfig implements AttributeConfig {
     
     private Map<String, Object> mDomainDefaults = new HashMap<>();
     private Map<String, Object> mServerDefaults = new HashMap<>();

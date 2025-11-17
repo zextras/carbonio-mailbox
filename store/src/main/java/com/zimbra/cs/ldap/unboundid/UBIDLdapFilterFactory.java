@@ -65,11 +65,7 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
   private static Filter FILTER_ALL_INTERNAL_ACCOUNTS;
   private static Filter FILTER_ALL_ADDRESS_LISTS;
 
-  private static boolean initialized = false;
-
   public static synchronized void initialize() throws LdapException {
-    assert (!initialized);
-    initialized = true;
 
     try {
       _initialize();

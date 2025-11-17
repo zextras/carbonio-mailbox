@@ -32,6 +32,7 @@ import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.accesscontrol.RightModifier;
 import com.zimbra.cs.account.accesscontrol.TargetType;
 import com.zimbra.cs.account.commands.ProvUtilCommandHandlersFactory;
+import com.zimbra.cs.account.ldap.LdapAttributeCallbackHelper;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.ldap.LdapClient;
@@ -544,7 +545,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   }
 
   private void checkDeprecatedAttrs(Map<String, ? extends Object> attrs) throws ServiceException {
-    AttributeManager am = AttributeManager.getInstance();
+    AttributeManager am = StoreAttributeManager.getInstance();
     boolean hadWarnings = false;
     for (String attr : attrs.keySet()) {
       AttributeInfo ai = am.getAttributeInfo(attr);
@@ -591,7 +592,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   private Map<String, Object> keyValueArrayToMultiMap(
       String[] args, int offset, boolean isCreateCmd)
 			throws IOException, ServiceException, CommandExitException {
-    AttributeManager attrMgr = AttributeManager.getInstance();
+    AttributeManager attrMgr = StoreAttributeManager.getInstance();
 
     Map<String, Object> attrs = new HashMap<>();
 
@@ -1129,7 +1130,11 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
 
   private void loadLdapSchemaExtensionAttrs() {
     if (prov instanceof LdapProv) {
-      AttributeManager.loadLdapSchemaExtensionAttrs((LdapProv) prov);
+      try {
+        LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).loadLdapSchemaExtensionAttrs((LdapProv) prov);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 

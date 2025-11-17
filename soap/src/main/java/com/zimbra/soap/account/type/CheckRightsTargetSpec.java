@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlElement;
 import com.google.common.collect.Lists;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.soap.type.TargetBy;
-import com.zimbra.soap.type.TargetType;
+import com.zimbra.cs.account.accesscontrol.TargetType.SoapTargetType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class CheckRightsTargetSpec {
@@ -25,7 +25,7 @@ public class CheckRightsTargetSpec {
      * @zm-api-field-description Target type
      */
     @XmlAttribute(name=AccountConstants.A_TYPE /* type */, required=true)
-    private TargetType targetType;
+    private SoapTargetType targetType;
 
     /**
      * @zm-api-field-tag target-by
@@ -55,7 +55,7 @@ public class CheckRightsTargetSpec {
         this(null, null, null, null);
     }
 
-    public CheckRightsTargetSpec(TargetType targetType, TargetBy targetBy, String targetKey,
+    public CheckRightsTargetSpec(SoapTargetType targetType, TargetBy targetBy, String targetKey,
             Iterable<String> rights) {
         setTargetType(targetType);
         setTargetBy(targetBy);
@@ -66,7 +66,7 @@ public class CheckRightsTargetSpec {
         }
     }
 
-    public void setTargetType(TargetType targetType) {
+    public void setTargetType(SoapTargetType targetType) {
         this.targetType = targetType;
     }
 
@@ -86,7 +86,7 @@ public class CheckRightsTargetSpec {
         rights.add(right);
     }
 
-    public TargetType getTargetType() {
+    public SoapTargetType getTargetType() {
         return targetType;
     }
 

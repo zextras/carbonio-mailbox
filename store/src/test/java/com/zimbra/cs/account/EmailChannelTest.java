@@ -22,14 +22,18 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+
+@Tag("flaky")
 class EmailChannelTest extends MailboxTestSuite {
 
 	private static GreenMail mta;
@@ -51,9 +55,14 @@ class EmailChannelTest extends MailboxTestSuite {
 		mta.reset();
 	}
 
+	@AfterAll
+	static void tearDown() {
+		mta.stop();
+	}
+
 	@Test
 	void shouldSendResetPasswordURL_ToRecoveryAddress() throws Exception {
-		final Account account = getCreateAccountFactory().get().create();
+		final Account account = createAccount().create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
 
 		EmailChannel.sendAndStoreResetPasswordURL(zsc, account,
@@ -69,7 +78,7 @@ class EmailChannelTest extends MailboxTestSuite {
 
 	@Test
 	void shouldSendEmailWithResetPasswordURL() throws Exception {
-		final Account account = getCreateAccountFactory().get().create();
+		final Account account = createAccount().create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
 
 		EmailChannel.sendAndStoreResetPasswordURL(zsc, account,
@@ -81,7 +90,7 @@ class EmailChannelTest extends MailboxTestSuite {
 
 	@Test
 	void shouldSendEmailWithRecoveryCode() throws Exception {
-		final Account account = this.getCreateAccountFactory().get().create();
+		final Account account = createAccount().create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
 
 		new EmailChannel().sendAndStoreSetRecoveryAccountCode(account, MailboxManager.getInstance()
@@ -93,7 +102,7 @@ class EmailChannelTest extends MailboxTestSuite {
 
 	@Test
 	void shouldSendEmailWithResetPasswordRecoveryCode() throws Exception {
-		final Account account = getCreateAccountFactory().get().create();
+		final Account account = createAccount().create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
 
 		new EmailChannel().sendAndStoreResetPasswordRecoveryCode(zsc, account, getRecoveryMap());
@@ -117,7 +126,7 @@ class EmailChannelTest extends MailboxTestSuite {
 	@ParameterizedTest
 	@MethodSource("dateTestCases")
 	void shouldSendResetPasswordURLMail_WithAccountPrefTimezone(String timeZone, String expected) throws Exception {
-		final Account account = getCreateAccountFactory().get().withAttribute(Provisioning.A_zimbraPrefTimeZoneId, timeZone)
+		final Account account = createAccount().withAttribute(Provisioning.A_zimbraPrefTimeZoneId, timeZone)
 				.create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
 

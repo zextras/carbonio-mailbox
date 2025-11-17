@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.account;
 
+import com.zimbra.cs.account.accesscontrol.TargetTypeLookup;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -97,7 +98,7 @@ public class DiscoverRights extends AccountDocumentHandler {
             Element eTargets = eParent.addElement(AccountConstants.E_TARGETS);
             eTargets.addAttribute(AccountConstants.A_RIGHT, right.getName());
             for (Entry target : sortedTargets) {
-                TargetType targetType = TargetType.getTargetType(target);
+                TargetType targetType = TargetTypeLookup.getTargetType(target);
                 Element eTarget = eTargets.addElement(AccountConstants.E_TARGET);
                 eTarget.addAttribute(AccountConstants.A_TYPE, targetType.getCode());
                 if (isDelegatedSendRight) {

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.CreateAccount;
 import com.zextras.mailbox.util.SoapClient;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
@@ -37,14 +38,14 @@ import org.junit.jupiter.api.Test;
 public class SearchUsersByFeatureTest extends SoapTestSuite {
   public static final String ACCOUNT_UID = "first.account";
   public static final String ACCOUNT_NAME = "name";
-  private static CreateAccount.Factory createAccountFactory;
+  
   private static Provisioning provisioning;
   private static Account userAccount;
 
   @BeforeAll
   static void setUp() throws Exception {
     provisioning = Provisioning.getInstance();
-    createAccountFactory = getCreateAccountFactory();
+    
     userAccount = buildAccount("user", "User").create();
   }
 
@@ -63,9 +64,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var account = buildAccount(ACCOUNT_UID, ACCOUNT_NAME).create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts(""))
-          .execute();
+          .call();
 
       // account + userAccount are in getDefaultDomainName()
       assertEquals(2, getResponse(httpResponse).getAccounts().size());
@@ -79,9 +80,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var account = buildAccount(ACCOUNT_UID, ACCOUNT_NAME).create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts(ACCOUNT_UID))
-          .execute();
+          .call();
 
       assertSuccessWithSingleAccount(httpResponse, account);
     } finally {
@@ -94,9 +95,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var account = buildAccount(ACCOUNT_UID, ACCOUNT_NAME).create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts(getDefaultDomainName()))
-          .execute();
+          .call();
 
       // account + userAccount are in getDefaultDomainName()
       assertEquals(2, getResponse(httpResponse).getAccounts().size());
@@ -110,9 +111,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var account = buildAccount(ACCOUNT_UID, "@#./$\\").create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts("@#./$\\"))
-          .execute();
+          .call();
 
       assertSuccessWithSingleAccount(httpResponse, account);
     } finally {
@@ -125,9 +126,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var account = buildAccount(ACCOUNT_UID.toLowerCase(), ACCOUNT_NAME).create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts(ACCOUNT_UID.toUpperCase()))
-          .execute();
+          .call();
 
       assertSuccessWithSingleAccount(httpResponse, account);
     } finally {
@@ -139,9 +140,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
   void searchUserPartialUid() throws Exception {
     var account = buildAccount(ACCOUNT_UID, ACCOUNT_NAME).create();
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts(ACCOUNT_UID.substring(0, 2)))
-          .execute();
+          .call();
 
       assertSuccessWithSingleAccount(httpResponse, account);
     } finally {
@@ -154,9 +155,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var account = buildAccount(ACCOUNT_UID, ACCOUNT_NAME).create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts(ACCOUNT_NAME))
-          .execute();
+          .call();
 
       assertSuccessWithSingleAccount(httpResponse, account);
     } finally {
@@ -169,9 +170,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var account = buildAccount(ACCOUNT_UID, ACCOUNT_NAME).create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts(MessageFormat.format("{0}@{1}", ACCOUNT_UID, getDefaultDomainName())))
-          .execute();
+          .call();
 
       assertSuccessWithSingleAccount(httpResponse, account);
     } finally {
@@ -185,9 +186,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var account2 = buildAccount("second.account", "Test2").create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account"))
-          .execute();
+          .call();
 
       assertEquals(2, getResponse(httpResponse).getAccounts().size());
     } finally {
@@ -205,9 +206,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var account2 = buildAccount("second.account", "Test2").create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS))
-          .execute();
+          .call();
 
       assertEquals(1, getResponse(httpResponse).getAccounts().size());
     } finally {
@@ -224,9 +225,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var account2 = buildAccount("second.account", "Test2").create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS))
-          .execute();
+          .call();
 
       assertEquals(1, getResponse(httpResponse).getAccounts().size());
     } finally {
@@ -248,9 +249,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     domain.setDomainDefaultCOSId(cos.getId());
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS))
-          .execute();
+          .call();
 
       assertEquals(1, getResponse(httpResponse).getAccounts().size());
     } finally {
@@ -273,9 +274,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     anotherDomain.setDomainDefaultCOSId(cos.getId());
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS))
-          .execute();
+          .call();
 
       assertEquals(1, getResponse(httpResponse).getAccounts().size());
     } finally {
@@ -295,9 +296,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var account2 = withCos(cos2, buildAccount("second.account", "Test2")).create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS))
-          .execute();
+          .call();
 
       assertEquals(2, getResponse(httpResponse).getAccounts().size());
     } finally {
@@ -316,9 +317,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     ).create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS))
-          .execute();
+          .call();
 
       assertEquals(0, getResponse(httpResponse).getAccounts().size());
     } finally {
@@ -335,9 +336,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     ).create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS))
-          .execute();
+          .call();
 
       assertSuccessWithSingleAccount(httpResponse, account);
     } finally {
@@ -352,9 +353,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
         .withAttribute("zimbraHideInGal", "TRUE").create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account"))
-          .execute();
+          .call();
 
       assertEquals(0, getResponse(httpResponse).getAccounts().size());
     } finally {
@@ -368,9 +369,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var group = provisioning.createGroup("accounts-group@" + getDefaultDomainName(), new HashMap<>(), false);
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account"))
-          .execute();
+          .call();
 
       assertEquals(0, getResponse(httpResponse).getAccounts().size());
     } finally {
@@ -385,9 +386,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var account2 = withChatsFeature(true, buildAccount("second.account", "Test2")).create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS, 1, 0))
-          .execute();
+          .call();
 
       var response = getResponse(httpResponse);
       assertEquals(1, response.getAccounts().size());
@@ -407,9 +408,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var account4 = withChatsFeature(true, buildAccount("fourth.account", "Test4")).create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS, 10, 3))
-          .execute();
+          .call();
 
       var response = getResponse(httpResponse);
       assertEquals(1, response.getAccounts().size());
@@ -430,9 +431,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var account2 = buildAccount("second.account", "Test2", "anotherdomain.com").create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account"))
-          .execute();
+          .call();
 
       assertEquals(1, getResponse(httpResponse).getAccounts().size());
     } finally {
@@ -450,9 +451,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var account2 = buildAccount("second.account", "Test2", "anotherdomain.com").create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account"))
-          .execute();
+          .call();
 
       assertEquals(2, getResponse(httpResponse).getAccounts().size());
     } finally {
@@ -467,9 +468,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var account = buildAccount(ACCOUNT_UID, ACCOUNT_NAME).create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts(ACCOUNT_UID))
-          .execute();
+          .call();
 
       var returnedAccount = assertSuccessWithSingleAccount(httpResponse, account);
       var attributes = returnedAccount.getAttrList();
@@ -485,9 +486,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var account2 = buildAccount("aaa.account", "ZZZ").create();
 
     try {
-      HttpResponse httpResponse = buildRequest()
+      SoapResponse httpResponse = buildRequest()
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account"))
-          .execute();
+          .call();
 
       var returnedAccounts = getResponse(httpResponse).getAccounts();
       assertEquals(2, returnedAccounts.size());
@@ -499,8 +500,8 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     }
   }
 
-  private static SearchUsersByFeatureResponse parseSoapResponse(HttpResponse httpResponse) throws IOException, ServiceException {
-    final String responseBody = EntityUtils.toString(httpResponse.getEntity());
+  private static SearchUsersByFeatureResponse parseSoapResponse(SoapResponse soapResponse) throws IOException, ServiceException {
+    final String responseBody = soapResponse.body();
     final Element rootElement = parseXML(responseBody).getElement("Body").getElement("SearchUsersByFeatureResponse");
     return JaxbUtil.elementToJaxb(rootElement, SearchUsersByFeatureResponse.class);
   }
@@ -530,7 +531,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
   }
 
   private static CreateAccount buildAccount(String uid, String fullName, String domain) {
-    return createAccountFactory.get()
+    return createAccount()
         .withDomain(domain)
         .withUsername(uid)
         .withAttribute("displayName", fullName);
@@ -550,7 +551,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     return account;
   }
 
-  private static UserInfo assertSuccessWithSingleAccount(HttpResponse httpResponse, Account account) throws IOException, ServiceException {
+  private static UserInfo assertSuccessWithSingleAccount(SoapResponse httpResponse, Account account) throws IOException, ServiceException {
     SearchUsersByFeatureResponse response = getResponse(httpResponse);
     List<UserInfo> accounts = response.getAccounts();
     assertEquals(1, accounts.size());
@@ -580,9 +581,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     provisioning.deleteCos(cos.getId());
   }
 
-  private static SearchUsersByFeatureResponse getResponse(HttpResponse httpResponse) throws IOException, ServiceException {
-    assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
-    return parseSoapResponse(httpResponse);
+  private static SearchUsersByFeatureResponse getResponse(SoapResponse soapResponse) throws IOException, ServiceException {
+    assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
+    return parseSoapResponse(soapResponse);
   }
 
 

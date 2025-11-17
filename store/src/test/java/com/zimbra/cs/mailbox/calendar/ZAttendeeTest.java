@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.calendar.TimeZoneMap;
 import com.zimbra.common.calendar.WellKnownTimeZones;
 import com.zimbra.common.calendar.ZCalendar.ICalTok;
@@ -30,97 +31,91 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import org.hamcrest.core.StringContains;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
-public class ZAttendeeTest {
+public class ZAttendeeTest extends MailboxTestSuite {
 
-     public String testName;
-
- @BeforeEach
- public void setUp(TestInfo testInfo) throws Exception {
-  Optional<Method> testMethod = testInfo.getTestMethod();
-  if (testMethod.isPresent()) {
-   this.testName = testMethod.get().getName();
-  }
-  MailboxTestUtil.initServer();
-  MailboxTestUtil.clearData();
-  System.out.println( testName);
-  Provisioning prov = Provisioning.getInstance();
-  prov.createAccount("test@testdomain.com", "secret", Maps.<String, Object>newHashMap());
- }
+	@BeforeAll
+	public static void setUp() throws Exception {
+		Provisioning prov = Provisioning.getInstance();
+		prov.createDomain("testdomain.com", Maps.newHashMap());
+		prov.createAccount("test@testdomain.com", "secret", Maps.<String, Object>newHashMap());
+	}
 
 
- @Test
- void resourceRsvpTest() throws ServiceException {
-  ZAttendee attendee = new ZAttendee("test-resource@testdomain.com", "testResource", null, null, null, "RES", "NON", "AC", Boolean.TRUE,
-    null, null, null, null);
-  ZProperty prop = new ZProperty("ATTENDEE");
-  attendee.setProperty(prop);
-  ZParameter rsvpParam = prop.getParameter(ICalTok.RSVP);
-  assertTrue(Boolean.parseBoolean(rsvpParam.getValue()));
- }
+	@Test
+	void resourceRsvpTest() throws ServiceException {
+		ZAttendee attendee = new ZAttendee("test-resource@testdomain.com", "testResource", null, null,
+				null, "RES", "NON", "AC", Boolean.TRUE,
+				null, null, null, null);
+		ZProperty prop = new ZProperty("ATTENDEE");
+		attendee.setProperty(prop);
+		ZParameter rsvpParam = prop.getParameter(ICalTok.RSVP);
+		assertTrue(Boolean.parseBoolean(rsvpParam.getValue()));
+	}
 
- @Test
- void resourceRsvpTest2() throws ServiceException, IOException {
-  InputStream is = getClass().getResourceAsStream("Calendar_NewMeetingRequest_RsvpTrue.txt");
-  ParsedMessage pm = new ParsedMessage(ByteUtil.getContent(is, -1), false);
-  CalendarPartInfo cpi = pm.getCalendarPartInfo();
-  Iterator<ZComponent> compIter = cpi.cal.getComponentIterator();
-  while (compIter.hasNext()) {
-   ZComponent comp = compIter.next();
-   List<ZProperty> properties = Lists.newArrayList(comp.getPropertyIterator());
-   for (ZProperty prop : properties) {
-    if (prop.getName().equalsIgnoreCase("ATTENDEE")) {
-     ZAttendee attendee = new ZAttendee(prop);
-     assertTrue(attendee.getRsvp());
-    }
-   }
-  }
- }
+	@Test
+	void resourceRsvpTest2() throws ServiceException, IOException {
+		InputStream is = getClass().getResourceAsStream("Calendar_NewMeetingRequest_RsvpTrue.txt");
+		ParsedMessage pm = new ParsedMessage(ByteUtil.getContent(is, -1), false);
+		CalendarPartInfo cpi = pm.getCalendarPartInfo();
+		Iterator<ZComponent> compIter = cpi.cal.getComponentIterator();
+		while (compIter.hasNext()) {
+			ZComponent comp = compIter.next();
+			List<ZProperty> properties = Lists.newArrayList(comp.getPropertyIterator());
+			for (ZProperty prop : properties) {
+				if (prop.getName().equalsIgnoreCase("ATTENDEE")) {
+					ZAttendee attendee = new ZAttendee(prop);
+					assertTrue(attendee.getRsvp());
+				}
+			}
+		}
+	}
 
- @Test
- void resourceRsvpTest3() throws Exception {
-  InputStream is = getClass().getResourceAsStream("Calendar_NewMeetingRequest_RsvpFalse.txt");
-  ParsedMessage pm = new ParsedMessage(ByteUtil.getContent(is, -1), false);
-  CalendarPartInfo cpi = pm.getCalendarPartInfo();
-  Iterator<ZComponent> compIter = cpi.cal.getComponentIterator();
-  while (compIter.hasNext()) {
-   ZComponent comp = compIter.next();
-   List<ZProperty> properties = Lists.newArrayList(comp.getPropertyIterator());
-   for (ZProperty prop : properties) {
-    if (prop.getName().equalsIgnoreCase("ATTENDEE")) {
-     ZAttendee attendee = new ZAttendee(prop);
-     assertFalse(attendee.getRsvp());
-    }
-   }
-  }
- }
+	@Test
+	void resourceRsvpTest3() throws Exception {
+		InputStream is = getClass().getResourceAsStream("Calendar_NewMeetingRequest_RsvpFalse.txt");
+		ParsedMessage pm = new ParsedMessage(ByteUtil.getContent(is, -1), false);
+		CalendarPartInfo cpi = pm.getCalendarPartInfo();
+		Iterator<ZComponent> compIter = cpi.cal.getComponentIterator();
+		while (compIter.hasNext()) {
+			ZComponent comp = compIter.next();
+			List<ZProperty> properties = Lists.newArrayList(comp.getPropertyIterator());
+			for (ZProperty prop : properties) {
+				if (prop.getName().equalsIgnoreCase("ATTENDEE")) {
+					ZAttendee attendee = new ZAttendee(prop);
+					assertFalse(attendee.getRsvp());
+				}
+			}
+		}
+	}
 
- @Test
- void resourceRsvpTest4() throws Exception {
-  InputStream is = getClass().getResourceAsStream("Calendar_ChangeMeetingRequest_WO_Rsvp.txt");
-  ParsedMessage pm = new ParsedMessage(ByteUtil.getContent(is, -1), false);
-  CalendarPartInfo cpi = pm.getCalendarPartInfo();
-  Iterator<ZComponent> compIter = cpi.cal.getComponentIterator();
-  while (compIter.hasNext()) {
-   ZComponent comp = compIter.next();
-   List<ZProperty> properties = Lists.newArrayList(comp.getPropertyIterator());
-   for (ZProperty prop : properties) {
-    if (prop.getName().equalsIgnoreCase("ATTENDEE")) {
-     ZAttendee attendee = new ZAttendee(prop);
-     assertNull(attendee.getRsvp());
-    }
-   }
-  }
- }
+	@Test
+	void resourceRsvpTest4() throws Exception {
+		InputStream is = getClass().getResourceAsStream("Calendar_ChangeMeetingRequest_WO_Rsvp.txt");
+		ParsedMessage pm = new ParsedMessage(ByteUtil.getContent(is, -1), false);
+		CalendarPartInfo cpi = pm.getCalendarPartInfo();
+		Iterator<ZComponent> compIter = cpi.cal.getComponentIterator();
+		while (compIter.hasNext()) {
+			ZComponent comp = compIter.next();
+			List<ZProperty> properties = Lists.newArrayList(comp.getPropertyIterator());
+			for (ZProperty prop : properties) {
+				if (prop.getName().equalsIgnoreCase("ATTENDEE")) {
+					ZAttendee attendee = new ZAttendee(prop);
+					assertNull(attendee.getRsvp());
+				}
+			}
+		}
+	}
 
- @Test
- void nullRsvp() throws Exception {
-  TimeZoneMap tzMap = new TimeZoneMap(WellKnownTimeZones.getTimeZoneById("JST"));
-  Invite inv = new Invite(MailItem.Type.APPOINTMENT, ICalTok.ACCEPTED.toString(),
-    tzMap, false);
-  assertThat(inv.toString(), StringContains.containsString("rsvp: (not specified)"));
- }
+	@Test
+	void nullRsvp() throws Exception {
+		TimeZoneMap tzMap = new TimeZoneMap(WellKnownTimeZones.getTimeZoneById("JST"));
+		Invite inv = new Invite(MailItem.Type.APPOINTMENT, ICalTok.ACCEPTED.toString(),
+				tzMap, false);
+		assertThat(inv.toString(), StringContains.containsString("rsvp: (not specified)"));
+	}
 }

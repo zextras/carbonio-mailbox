@@ -18,6 +18,7 @@ import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.Alias;
 import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeManager;
+import com.zimbra.cs.account.AttributeManagerException;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.CalendarResource;
 import com.zimbra.cs.account.Cos;
@@ -27,6 +28,7 @@ import com.zimbra.cs.account.DynamicGroup;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.StoreAttributeManager;
 import com.zimbra.cs.account.accesscontrol.ACLAccessManager;
 import com.zimbra.cs.account.accesscontrol.AccessControlUtil;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
@@ -39,6 +41,7 @@ import com.zimbra.cs.account.accesscontrol.Right;
 import com.zimbra.cs.account.accesscontrol.RightCommand;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.cs.account.accesscontrol.TargetType;
+import com.zimbra.cs.account.accesscontrol.TargetTypeLookup;
 import com.zimbra.cs.account.names.NameUtil;
 import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -49,6 +52,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.management.AttributeNotFoundException;
 
 /**
  * This class serves as:
@@ -281,7 +285,7 @@ public abstract class AdminAccessControl {
     if (target instanceof Domain) {
       domain = (Domain) target;
     } else {
-      domain = TargetType.getTargetDomain(Provisioning.getInstance(), target);
+      domain = TargetTypeLookup.getTargetDomain(Provisioning.getInstance(), target);
     }
 
     // will throw if domain is not in an accessible state
@@ -325,8 +329,14 @@ public abstract class AdminAccessControl {
         if (attrName.charAt(0) == '+' || attrName.charAt(0) == '-')
           attrName = attrName.substring(1);
 
-        if (!AttributeManager.getInstance().isDomainAdminModifiable(attrName, attrClass)) {
-          throw ServiceException.PERM_DENIED("can not modify attr: " + attrName);
+        try {
+          final boolean isDomainAdminModifiable = StoreAttributeManager.getInstance()
+              .isDomainAdminModifiable(attrName, attrClass);
+          if (!isDomainAdminModifiable) {
+            throw ServiceException.PERM_DENIED("can not modify attr: " + attrName);
+          }
+        } catch (AttributeManagerException e) {
+          throw ServiceException.FAILURE(e.getMessage(), e);
         }
       }
     }
@@ -952,7 +962,7 @@ public abstract class AdminAccessControl {
           instanceof Alias) { // see comments in SearchDirectory.hasRightsToListDanglingAlias
         targetInfo = " for alias " + target.getLabel();
       } else {
-        targetInfo = " for " + TargetType.getTargetType(target).name() + " " + target.getLabel();
+        targetInfo = " for " + TargetTypeLookup.getTargetType(target).name() + " " + target.getLabel();
       }
 
       if (needed instanceof AdminRight) {
@@ -1113,7 +1123,7 @@ public abstract class AdminAccessControl {
       }
 
       // 2. see if the admin has the right on domain scope
-      String targetDomainName = targetType.getTargetDomainName(mProv, target);
+      String targetDomainName = TargetTypeLookup.getTargetDomainName(mProv, target);
       if (targetDomainName != null) {
         if (rbtt instanceof RightCommand.DomainedRightsByTargetType) {
           RightCommand.DomainedRightsByTargetType domainedRights =

@@ -5,18 +5,7 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.concurrent.TimeUnit;
+import static com.zimbra.cs.account.accesscontrol.generated.UserRights.R_sendToDistList;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -34,10 +23,12 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.AttributeManager;
 import com.zimbra.cs.account.Entry;
+import com.zimbra.cs.account.EntryType;
 import com.zimbra.cs.account.MailTarget;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
+import com.zimbra.cs.account.StoreAttributeManager;
 import com.zimbra.cs.account.accesscontrol.Right.RightType;
 import com.zimbra.cs.account.accesscontrol.RightBearer.Grantee;
 import com.zimbra.cs.account.accesscontrol.SearchGrants.GrantsOnTarget;
@@ -58,8 +49,18 @@ import com.zimbra.soap.admin.type.RightWithName;
 import com.zimbra.soap.admin.type.RightsEntriesInfo;
 import com.zimbra.soap.type.NamedElement;
 import com.zimbra.soap.type.TargetBy;
-
-import static com.zimbra.cs.account.accesscontrol.generated.UserRights.R_sendToDistList;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
 public class RightCommand {
     /*
@@ -233,7 +234,7 @@ public class RightCommand {
          */
         private ACE(TargetType targetType, Entry target, ZimbraACE ace) {
             mTargetType = targetType.getCode();
-            mTargetId = TargetType.getId(target);
+            mTargetId = TargetTypeLookup.getId(target);
             mTargetName = target.getLabel();
             mGranteeType = ace.getGranteeType().getCode();
             mGranteeId = ace.getGrantee();
@@ -419,7 +420,7 @@ public class RightCommand {
                 EffectiveAttrsInfo eAttrs)
         throws ServiceException {
             TreeMap<String, EffectiveAttr> attrs = new TreeMap<>();
-            AttributeManager am = AttributeManager.getInstance();
+            AttributeManager am = StoreAttributeManager.getInstance();
 
             for (EffectiveAttrInfo eAttr : eAttrs.getAttrs()) {
                 String attrName = eAttr.getName();
@@ -450,7 +451,7 @@ public class RightCommand {
         throws ServiceException {
             TreeMap<String, EffectiveAttr> attrs = new TreeMap<>();
 
-            AttributeManager am = AttributeManager.getInstance();
+            AttributeManager am = StoreAttributeManager.getInstance();
 
             for (Element eAttr : eAttrs.listElements(AdminConstants.E_A)) {
                 String attrName = eAttr.getAttribute(AdminConstants.A_N);
@@ -952,7 +953,7 @@ public class RightCommand {
 
         // target
         TargetType tt = TargetType.fromCode(targetType);
-        Entry targetEntry = TargetType.lookupTarget(prov, tt, targetBy, target);
+        Entry targetEntry = TargetTypeLookup.lookupTarget(prov, tt, targetBy, target);
 
         // right
         Right r = RightManager.getInstance().getRight(right);
@@ -1065,7 +1066,7 @@ public class RightCommand {
 
         // target
         TargetType tt = TargetType.fromCode(targetType);
-        Entry targetEntry = TargetType.lookupTarget(prov, tt, targetBy, target);
+        Entry targetEntry = TargetTypeLookup.lookupTarget(prov, tt, targetBy, target);
 
         // grantee
         GranteeType gt = GranteeType.GT_USER;
@@ -1075,7 +1076,7 @@ public class RightCommand {
         RightBearer rightBearer = RightBearer.newRightBearer(granteeEntry);
 
         EffectiveRights er = new EffectiveRights(targetType,
-                TargetType.getId(targetEntry), targetEntry.getLabel(),
+                TargetTypeLookup.getId(targetEntry), targetEntry.getLabel(),
                 granteeAcct.getId(), granteeAcct.getName());
 
         acc.getEffectiveRights(rightBearer, targetEntry, expandSetAttrs, expandGetAttrs, er);
@@ -1112,7 +1113,7 @@ public class RightCommand {
         RightBearer rightBearer = RightBearer.newRightBearer(granteeEntry);
 
         EffectiveRights er = new EffectiveRights(targetType,
-                TargetType.getId(targetEntry), targetEntry.getLabel(),
+                TargetTypeLookup.getId(targetEntry), targetEntry.getLabel(),
                 granteeAcct.getId(), granteeAcct.getName());
 
         acc.getEffectiveRights(rightBearer, targetEntry, true, true, er);
@@ -1136,7 +1137,7 @@ public class RightCommand {
         Entry targetEntry = null;
         if (targetType != null) {
             tt = TargetType.fromCode(targetType);
-            targetEntry = TargetType.lookupTarget(prov, tt, targetBy, target);
+            targetEntry = TargetTypeLookup.lookupTarget(prov, tt, targetBy, target);
         }
 
         // grantee
@@ -1187,7 +1188,7 @@ public class RightCommand {
             for (GrantsOnTarget grantsOnTarget : grantsOnTargets) {
                 Entry grantedOnEntry = grantsOnTarget.getTargetEntry();
                 ZimbraACL acl = grantsOnTarget.getAcl();
-                TargetType grantedOnTargetType = TargetType.getTargetType(grantedOnEntry);
+                TargetType grantedOnTargetType = TargetTypeLookup.getTargetType(grantedOnEntry);
                 grants.addGrants(grantedOnTargetType, grantedOnEntry, acl, granteeFilter, isGranteeAnAdmin);
             }
         }
@@ -1368,7 +1369,7 @@ public class RightCommand {
     private static final String MILTER_REFRESH_ERROR_MESSAGE = "Error while refreshing distribution list milter";
 
     private static void refreshMilter(Entry targetEntry, Right right) {
-        if (targetEntry.getEntryType().equals(Entry.EntryType.DISTRIBUTIONLIST) && right.equals(R_sendToDistList) ) {
+        if (targetEntry.getEntryType().equals(EntryType.DISTRIBUTIONLIST) && right.equals(R_sendToDistList) ) {
             try {
                 RefreshMilter.instance.refresh();
             } catch (IOException e) {
@@ -1390,7 +1391,7 @@ public class RightCommand {
         verifyAccessManager();
 
         // target
-        Entry targetEntry = TargetType.lookupTarget(prov, tt, targetBy, target);
+        Entry targetEntry = TargetTypeLookup.lookupTarget(prov, tt, targetBy, target);
 
         // right
         Right r = RightManager.getInstance().getRight(right);
@@ -1459,7 +1460,7 @@ public class RightCommand {
         verifyAccessManager();
 
         // target
-        Entry targetEntry = TargetType.lookupTarget(prov, tt, targetBy, target);
+        Entry targetEntry = TargetTypeLookup.lookupTarget(prov, tt, targetBy, target);
 
         // grantee
         NamedEntry granteeEntry = null;
@@ -1599,7 +1600,7 @@ public class RightCommand {
                 if (expandAllAtrts) {
                     Set<String> attrs = attrRight.getAllAttrs();
                     for (String attr : attrs) {
-                        if (right.getRightType() != RightType.setAttrs || !HardRules.isForbiddenAttr(attr)) {
+                        if (right.getRightType() != RightType.setAttrs || !AttributeForbiddenRules.isForbiddenAttr(attr)) {
                             eAttrs.addNonUniqueElement(AdminConstants.E_A).addAttribute(AdminConstants.A_N, attr);
                         }
                     }

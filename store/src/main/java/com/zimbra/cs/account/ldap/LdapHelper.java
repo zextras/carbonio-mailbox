@@ -5,8 +5,6 @@
 
 package com.zimbra.cs.account.ldap;
 
-import java.util.Map;
-
 import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Entry;
@@ -29,7 +27,7 @@ import com.zimbra.cs.ldap.ZSearchControls;
 import com.zimbra.cs.ldap.ZSearchResultEntry;
 import com.zimbra.cs.ldap.ZSearchResultEnumeration;
 import com.zimbra.cs.ldap.ZSearchScope;
-import com.zimbra.cs.ldap.unboundid.InMemoryLdapServer;
+import java.util.Map;
 
 public abstract class LdapHelper {
 
@@ -253,7 +251,7 @@ public abstract class LdapHelper {
     public long countEntries(String baseDN, ZLdapFilter filter, ZSearchControls searchControls,
             ZLdapContext initZlc, LdapServerType ldapServerType)
     throws ServiceException {
-        boolean noopSearchSupported = !InMemoryLdapServer.isOn() && DebugConfig.ldapNoopSearchSupported;
+        boolean noopSearchSupported = DebugConfig.ldapNoopSearchSupported;
 
         if (noopSearchSupported) {
             return countEntriesByNoopSearch(baseDN, filter,

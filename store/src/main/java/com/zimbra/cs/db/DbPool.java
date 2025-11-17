@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.db;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.SystemUtil;
@@ -206,9 +207,7 @@ public class DbPool {
         }
         PoolConfig pconfig = Db.getInstance().getPoolConfig();
 
-        String drivers = System.getProperty("jdbc.drivers");
-        if (drivers == null)
-            System.setProperty("jdbc.drivers", pconfig.mDriverClassName);
+        System.setProperty("jdbc.drivers", pconfig.mDriverClassName);
 
         sRootUrl = pconfig.mRootUrl;
         sLoggerRootUrl = pconfig.mLoggerUrl;
@@ -516,6 +515,16 @@ public class DbPool {
     public static synchronized void shutdown() throws Exception {
         isShutdown = true;
         close();
+    }
+
+    @VisibleForTesting
+    public static synchronized void shutDownAndClear() throws Exception {
+        // TODO: avoid all this static an singleton usages
+        DbPool.shutdown();
+        isShutdown = false;
+        sIsInitialized = false;
+        ZimbraConnectionFactory.close();
+        Db.setInstance(null);
     }
 
     public static void disableUsageWarning() {

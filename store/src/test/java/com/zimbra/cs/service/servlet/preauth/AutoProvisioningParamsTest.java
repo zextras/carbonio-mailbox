@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
@@ -15,17 +16,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-class AutoProvisioningParamsTest {
-
-  @BeforeAll
-  static void init() throws Exception {
-    MailboxTestUtil.initServer();
-  }
-
-  @AfterEach
-  public void tearDown() throws Exception {
-    MailboxTestUtil.clearData();
-  }
+class AutoProvisioningParamsTest extends MailboxTestSuite {
 
   @Test
   void autoProvisioningParams_should_setPropertiesCorrectly_when_usingBuilder() {

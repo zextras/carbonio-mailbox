@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.service.admin;
 
+import com.zimbra.cs.account.AttributeManagerException;
+import com.zimbra.cs.account.StoreAttributeManager;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -45,7 +47,7 @@ public class GetAttributeInfo extends AdminDocumentHandler {
                     " can be specified", null);
         }
         
-        AttributeManager attrMgr = AttributeManager.getInstance();
+        AttributeManager attrMgr = StoreAttributeManager.getInstance();
         
         Element response = zsc.createElement(AdminConstants.GET_ATTRIBUTE_INFO_RESPONSE);
         
@@ -55,8 +57,13 @@ public class GetAttributeInfo extends AdminDocumentHandler {
             }
         } else if (entryTypes != null) {
             for (String entry : entryTypes) {
-                AttributeClass attrClass = AttributeClass.fromString(entry.trim());
-                TreeSet<String> attrsOnEntry = new TreeSet<>(attrMgr.getAllAttrsInClass(attrClass));
+							AttributeClass attrClass = null;
+							try {
+								attrClass = AttributeClass.fromString(entry.trim());
+							} catch (AttributeManagerException e) {
+								throw ServiceException.FAILURE(e.getMessage(), e);
+							}
+							TreeSet<String> attrsOnEntry = new TreeSet<>(attrMgr.getAllAttrsInClass(attrClass));
                 for (String attr : attrsOnEntry) {
                     encodeAttr(response, attrMgr, attr);
                 }

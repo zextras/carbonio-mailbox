@@ -83,7 +83,7 @@ public class DiscoverUserRights {
                         }
                     }
                     TargetType targetTypeForRight = right.getTargetType();
-                    TargetType taregtTypeOfEntry = TargetType.getTargetType(targetEntry);
+                    TargetType taregtTypeOfEntry = TargetTypeLookup.getTargetType(targetEntry);
                     if (targetTypeForRight.equals(taregtTypeOfEntry) ||
                         (targetTypeForRight==TargetType.account && taregtTypeOfEntry==TargetType.calresource) ||
                         (targetTypeForRight==TargetType.dl && taregtTypeOfEntry==TargetType.group) ||

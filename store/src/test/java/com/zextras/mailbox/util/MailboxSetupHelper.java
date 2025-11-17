@@ -8,61 +8,73 @@ package com.zextras.mailbox.util;
 
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
-import com.zextras.carbonio.message_broker.MessageBrokerClient;
-import com.zextras.mailbox.messagebroker.MessageBrokerFactory;
 import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
 import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.common.calendar.WellKnownTimeZones;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.RightManager;
+import com.zimbra.cs.account.auth.ZimbraCustomAuth;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
+import com.zimbra.cs.index.ZimbraAnalyzer;
+import com.zimbra.cs.ldap.LdapClient;
+import com.zimbra.cs.ldap.unboundid.UBIDLdapClient;
+import com.zimbra.cs.ldap.unboundid.UBIDLdapPoolConfig;
+import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.ScheduledTaskManager;
+import com.zimbra.cs.redolog.DefaultRedoLogProvider;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.store.StoreManager;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.commons.io.FileUtils;
-import org.mockito.Mockito;
 
 public class MailboxSetupHelper {
 
 	private final Path mailboxHome;
 	private final Path mailboxTmpDirectory;
+  private final String timezoneFilePath;
+  private final String datasourceFilePath;
 	private final int ldapPort;
 
 	private final InMemoryLdapServer inMemoryLdapServer;
 
-	private MailboxSetupHelper(Path mailboxHome, Path tmpDirectory, int ldapPort, InMemoryLdapServer inMemoryLdapServer) {
+	private MailboxSetupHelper(Path mailboxHome, Path tmpDirectory, String timezoneFilePath, String datasourceFilePath, int ldapPort, InMemoryLdapServer inMemoryLdapServer) {
 		this.mailboxHome = mailboxHome;
 		this.mailboxTmpDirectory = tmpDirectory;
-		this.ldapPort = ldapPort;
+    this.timezoneFilePath = timezoneFilePath;
+    this.datasourceFilePath = datasourceFilePath;
+    this.ldapPort = ldapPort;
 		this.inMemoryLdapServer = inMemoryLdapServer;
 	}
 
-	public static MailboxSetupHelper create() {
-		try {
-			var ldapPort = PortUtil.findFreePort();
-			var inMemoryLdapServer = new Builder()
-					.withLdapPort(ldapPort)
-					.build();
-			final Path mailboxHome1 = Files.createTempDirectory("mailbox_home");
-			final Path mailboxTmp = Files.createTempDirectory("mailbox_tmp");
-			return new MailboxSetupHelper(mailboxHome1, mailboxTmp, ldapPort, inMemoryLdapServer);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+  public static MailboxSetupHelper create() {
+    try {
+      var ldapPort = PortUtil.findFreePort();
+      var inMemoryLdapServer = new Builder().withLdapPort(ldapPort).build();
+      final Path mailboxHome1 = Files.createTempDirectory("mailbox_home");
+      final Path mailboxTmp = Files.createTempDirectory("mailbox_tmp");
+      final String timezoneFilePath = "src/test/resources/timezones-test.ics";
+      final String datasourceFilePath = "src/test/resources/datasource-test.xml";
+      return new MailboxSetupHelper(
+          mailboxHome1,
+          mailboxTmp,
+          timezoneFilePath,
+          datasourceFilePath,
+          ldapPort,
+          inMemoryLdapServer);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
 
-	private void mockMessageBrokerClient() {
-			var messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
-			var mockedMessageBrokerFactory = Mockito.mockStatic(MessageBrokerFactory.class,
-					Mockito.CALLS_REAL_METHODS);
-			mockedMessageBrokerFactory.when(MessageBrokerFactory::getMessageBrokerClientInstance)
-					.thenReturn(messageBrokerClient);
+	private String getVolumeDirectory() {
+		return LC.zimbra_home.value() + "/build/test";
 	}
 
 	public void setUp(MailboxTestData mailboxTestData) throws Exception {
@@ -74,8 +86,21 @@ public class MailboxSetupHelper {
 										"/localconfig-api-test.xml"))
 						.getFile());
 
+		if (!Files.exists(mailboxHome)) {
+			Files.createDirectory(mailboxHome); // deleted in teardown
+		}
+		if (!Files.exists(mailboxTmpDirectory)) {
+			Files.createDirectory(mailboxTmpDirectory); // deleted in teardown
+		}
 		LC.zimbra_home.setDefault(mailboxHome.toAbsolutePath().toString());
 		LC.zimbra_tmp_directory.setDefault(mailboxTmpDirectory.toAbsolutePath().toString());
+
+		// substitute test TZ file
+		LC.timezone_file.setDefault(timezoneFilePath);
+		WellKnownTimeZones.loadFromFile(new File(timezoneFilePath));
+
+		// substitute test DS config file
+		LC.data_source_config.setDefault(datasourceFilePath);
 
 		LC.ldap_port.setDefault(ldapPort);
 
@@ -83,37 +108,45 @@ public class MailboxSetupHelper {
 		inMemoryLdapServer.initializeBasicData();
 
 		LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
+		final UBIDLdapPoolConfig poolConfig = UBIDLdapPoolConfig.createNewPool(true);
+		final UBIDLdapClient client = UBIDLdapClient.createNew(poolConfig);
+		LdapClient.setInstance(client);
+		Provisioning.setInstance(new LdapProvisioningWithMockMime(client));
 		this.initData(mailboxTestData);
-
+		HSQLDB.createDatabase(getVolumeDirectory());
 		DbPool.startup();
-		HSQLDB.createDatabase();
-
+		MailboxManager.setInstance(new MailboxManager());
+		RedoLogProvider.setInstance(new DefaultRedoLogProvider());
 		RedoLogProvider.getInstance().startup();
 		StoreManager.getInstance().startup();
 		RightManager.getInstance();
 		ScheduledTaskManager.startup();
-		mockMessageBrokerClient();
+		System.setProperty("broker.disabled", "true");
+		ZimbraAnalyzer.setInstance(new ZimbraAnalyzer());
+		ZimbraCustomAuth.clear();
 	}
 
-	public void initData(MailboxTestData mailboxTestData) throws Exception {
-		inMemoryLdapServer.initializeBasicData();
-		var provisioning = Provisioning.getInstance(Provisioning.CacheMode.OFF);
-		var lmtpPort = PortUtil.findFreePort();
+  public void initData(MailboxTestData mailboxTestData) throws Exception {
+    inMemoryLdapServer.initializeBasicData();
+		var provisioning = Provisioning.getInstance();
+    var lmtpPort = PortUtil.findFreePort();
 
-		final var server =
-				provisioning.createServer(
-						mailboxTestData.serverName(),
-						new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
-		server.setLmtpBindPort(lmtpPort);
+    final var server =
+        provisioning.createServer(
+            mailboxTestData.serverName(),
+            new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
+    server.setLmtpBindPort(lmtpPort);
 
-		server.setPop3SSLServerEnabled(false);
-		server.setPop3ServerEnabled(false);
+    server.setPop3SSLServerEnabled(false);
+    server.setPop3ServerEnabled(false);
 
-		server.setImapSSLServerEnabled(false);
-		server.setImapServerEnabled(false);
-		var domain = provisioning.createDomain(mailboxTestData.defaultDomain(), new HashMap<>());
-		domain.setId(mailboxTestData.defaultDomainId());
-	}
+    server.setImapSSLServerEnabled(false);
+    server.setImapServerEnabled(false);
+    var domain = provisioning.createDomain(mailboxTestData.defaultDomain(), new HashMap<>());
+		var config = provisioning.getConfig();
+		config.setDefaultDomainName(mailboxTestData.defaultDomain());
+    domain.setId(mailboxTestData.defaultDomainId());
+  }
 
 	public void clearData() throws Exception {
 		inMemoryLdapServer.clear();
@@ -123,7 +156,11 @@ public class MailboxSetupHelper {
 	public void tearDown() throws Exception {
 		inMemoryLdapServer.clear();
 		RedoLogProvider.getInstance().shutdown();
+		RedoLogProvider.setInstance(null);
+		DbPool.shutDownAndClear();
 		inMemoryLdapServer.shutDown(true);
+		// TODO: avoid shutting down with explicit static method calls
+		UBIDLdapClient.shutdown();
 		FileUtils.deleteDirectory(mailboxHome.toFile());
 		FileUtils.deleteDirectory(mailboxTmpDirectory.toFile());
 	}

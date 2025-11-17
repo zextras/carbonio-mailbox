@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.account.callback;
 
+import com.zimbra.cs.account.StoreAttributeManager;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -87,7 +88,7 @@ public class CheckPortConflict extends AttributeCallback {
 
         // sanity check, attrs.xml and the sPortAttrsToCheck map has to be in sync
         if (!sPortAttrs.contains(attrName) ||
-            !AttributeManager.getInstance().isServerInherited(attrName))
+            !StoreAttributeManager.getInstance().isServerInherited(attrName))
             assert(false);
 
         // server == null means the server entry is being created

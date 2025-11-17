@@ -7,7 +7,7 @@ package com.zimbra.cs.service.mail;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.AccountAction;
-import com.zextras.mailbox.util.CreateAccount;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Account;
@@ -32,36 +32,35 @@ import org.junit.jupiter.api.Test;
 @Tag("api")
 public class AutoCompleteTest extends SoapTestSuite {
 
-  private static CreateAccount.Factory createAccountFactory;
+  
   private static AccountAction.Factory accountActionFactory;
   public String testName;
 
   @BeforeAll
   static void beforeAll() throws Exception {
     Provisioning provisioning = Provisioning.getInstance();
-    createAccountFactory = getCreateAccountFactory();
+    
     accountActionFactory = getAccountActionFactory();
   }
   
   @Test
   void test3951() throws Exception {
-    Account account = createAccountFactory.get().create();
+    Account account = createAccount().create();
     Element request = new Element.XMLElement(MailConstants.AUTO_COMPLETE_REQUEST);
     request.addAttribute("name", " ");
-    final HttpResponse response = getSoapClient().newRequest().setCaller(account).setSoapBody(request)
+    final SoapResponse response = getSoapClient().newRequest().setCaller(account).setSoapBody(request)
         .execute();
     Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY,
-        response.getStatusLine().getStatusCode());
-    Assertions.assertTrue(new String(response.getEntity().getContent().readAllBytes(),
-        StandardCharsets.UTF_8).contains("invalid request: name parameter is empty"));
+        response.statusCode());
+    Assertions.assertTrue(response.body().contains("invalid request: name parameter is empty"));
   }
 
   @Test
   @DisplayName("Account 1, without READ permission on ROOT, requests account 2 contacts, get 500 permission denied.")
   void shouldThrowCannotAccessAccountFolderIfNoReadGrant() throws Exception {
     final String prefix = "test-";
-    final Account account1 = createAccountFactory.get().create();
-    final Account account2 = createAccountFactory.get().create();
+    final Account account1 = createAccount().create();
+    final Account account2 = createAccount().create();
     accountActionFactory.forAccount(account2).grantFolderRightTo(account1, "r",
         Mailbox.ID_FOLDER_CALENDAR);
     getSoapClient().executeSoap(account2, new CreateContactRequest(
@@ -69,12 +68,11 @@ public class AutoCompleteTest extends SoapTestSuite {
     getSoapClient().executeSoap(account2, new CreateContactRequest(
         new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com")));
     final Element request = JaxbUtil.jaxbToElement(new AutoCompleteRequest(prefix));
-    final HttpResponse execute = getSoapClient().newRequest()
+    final SoapResponse execute = getSoapClient().newRequest()
         .setCaller(account1).setRequestedAccount(account2).setSoapBody(request).execute();
-    final String responseBody = new String(execute.getEntity().getContent().readAllBytes(),
-        StandardCharsets.UTF_8);
+    final String responseBody = execute.body();
     Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY,
-        execute.getStatusLine().getStatusCode());
+        execute.statusCode());
     Assertions.assertTrue(
         responseBody.contains("Permission denied: cannot access requested folder"));
   }
@@ -83,20 +81,18 @@ public class AutoCompleteTest extends SoapTestSuite {
   @DisplayName("Account 1, without ANY Grants, executes Autocomplete requesting account 2, get 500 permission denied.")
   void shouldThrowCannotAccessAccountIfNoGrantsGiven() throws Exception {
     final String prefix = "test-";
-    final Account account1 = createAccountFactory.get().create();
-    final Account account2 = createAccountFactory.get().create();
+    final Account account1 = createAccount().create();
+    final Account account2 = createAccount().create();
     getSoapClient().newRequest()
         .setCaller(account2).setSoapBody(new CreateContactRequest(
             new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com"))).execute();
     getSoapClient().newRequest()
         .setCaller(account2).setSoapBody(new CreateContactRequest(
             new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com"))).execute();
-    final HttpResponse execute = getSoapClient().newRequest().setCaller(account1)
+    final SoapResponse execute = getSoapClient().newRequest().setCaller(account1)
         .setRequestedAccount(account2).setSoapBody(new AutoCompleteRequest(prefix)).execute();
-    final String responseBody = new String(execute.getEntity().getContent().readAllBytes(),
-        StandardCharsets.UTF_8);
-    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY,
-        execute.getStatusLine().getStatusCode());
+    final String responseBody = execute.body();
+    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, execute.statusCode());
     Assertions.assertTrue(
         responseBody.contains("permission denied: can not access account " + account2.getId()));
   }
@@ -105,8 +101,8 @@ public class AutoCompleteTest extends SoapTestSuite {
   @DisplayName("Account 1, with READ Grants on root, executes Autocomplete requesting account 2, gets contacts.")
   void shouldGetContactsOfSharedAccount() throws Exception {
     final String prefix = "test-";
-    final Account account1 = createAccountFactory.get().create();
-    final Account account2 = createAccountFactory.get().create();
+    final Account account1 = createAccount().create();
+    final Account account2 = createAccount().create();
     accountActionFactory.forAccount(account2)
         .grantFolderRightTo(account1, "r", Mailbox.ID_FOLDER_ROOT);
     getSoapClient().newRequest()
@@ -115,23 +111,22 @@ public class AutoCompleteTest extends SoapTestSuite {
     getSoapClient().newRequest()
         .setCaller(account2).setSoapBody(new CreateContactRequest(
             new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com"))).execute();
-    final HttpResponse execute = getSoapClient().newRequest().setCaller(account1)
+    final SoapResponse execute = getSoapClient().newRequest().setCaller(account1)
         .setRequestedAccount(account2).setSoapBody(new AutoCompleteRequest(prefix)).execute();
-    final String responseBody = new String(execute.getEntity().getContent().readAllBytes(),
-        StandardCharsets.UTF_8);
+    final String responseBody = execute.body();
     final AutoCompleteResponse autoCompleteResponse = JaxbUtil.elementToJaxb(
         Element.parseXML(responseBody).getElement("Body").getElement(
             MailConstants.AUTO_COMPLETE_RESPONSE), AutoCompleteResponse.class);
     Assertions.assertEquals(2, autoCompleteResponse.getMatches().size());
-    Assertions.assertEquals(HttpStatus.SC_OK, execute.getStatusLine().getStatusCode());
+    Assertions.assertEquals(HttpStatus.SC_OK, execute.statusCode());
   }
 
   @Test
   @DisplayName("Account 1, with READ Grants on Contacts and Emailed Contacts, requests autocomplete on account2 7 and 13 folder, gets contacts.")
   void shouldGetContactsOfSharedAccountWhenSettingFolders() throws Exception {
     final String prefix = "test-";
-    final Account account1 = createAccountFactory.get().create();
-    final Account account2 = createAccountFactory.get().create();
+    final Account account1 = createAccount().create();
+    final Account account2 = createAccount().create();
     accountActionFactory.forAccount(account2)
         .grantFolderRightTo(account1, "r", Mailbox.ID_FOLDER_ROOT);
     getSoapClient().newRequest()
@@ -147,15 +142,14 @@ public class AutoCompleteTest extends SoapTestSuite {
     final AutoCompleteRequest autoCompleteRequest = new AutoCompleteRequest(prefix);
     autoCompleteRequest.setFolderList(
         Mailbox.ID_FOLDER_AUTO_CONTACTS + "," + Mailbox.ID_FOLDER_CONTACTS);
-    final HttpResponse execute = getSoapClient().newRequest().setCaller(account1)
+    final SoapResponse execute = getSoapClient().newRequest().setCaller(account1)
         .setRequestedAccount(account2).setSoapBody(autoCompleteRequest).execute();
-    final String responseBody = new String(execute.getEntity().getContent().readAllBytes(),
-        StandardCharsets.UTF_8);
+    final String responseBody = execute.body();
     final AutoCompleteResponse autoCompleteResponse = JaxbUtil.elementToJaxb(
         Element.parseXML(responseBody).getElement("Body").getElement(
             MailConstants.AUTO_COMPLETE_RESPONSE), AutoCompleteResponse.class);
     Assertions.assertEquals(3, autoCompleteResponse.getMatches().size());
-    Assertions.assertEquals(HttpStatus.SC_OK, execute.getStatusLine().getStatusCode());
+    Assertions.assertEquals(HttpStatus.SC_OK, execute.statusCode());
   }
 
 }

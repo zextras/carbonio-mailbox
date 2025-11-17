@@ -11,7 +11,6 @@ import com.google.common.collect.Maps;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
@@ -46,9 +45,6 @@ import com.zimbra.soap.mail.message.SendMsgRequest;
 import com.zimbra.soap.mail.type.EmailAddrInfo;
 import com.zimbra.soap.mail.type.MsgToSend;
 import com.zimbra.soap.type.KeyValuePair;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,6 +60,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 
 public class SendMsgTest extends MailboxTestSuite {
 
@@ -194,13 +191,6 @@ public class SendMsgTest extends MailboxTestSuite {
     assertTrue(ZMimeMessage.usingZimbraParser(), "using Zimbra MIME parser");
 
     Mailbox mbox = mailboxManager.getMailboxByAccount(receiver);
-
-    // Configure test timezones.ics file.
-    File tzFile = File.createTempFile("timezones-", ".ics");
-    BufferedWriter writer = new BufferedWriter(new FileWriter(tzFile));
-    writer.write("BEGIN:VCALENDAR\r\nEND:VCALENDAR");
-    writer.close();
-    LC.timezone_file.setDefault(tzFile.getAbsolutePath());
 
     InputStream is = this.getClass().getResourceAsStream("bug-69862-invite.txt");
     ParsedMessage pm = new ParsedMessage(ByteUtil.getContent(is, -1), false);

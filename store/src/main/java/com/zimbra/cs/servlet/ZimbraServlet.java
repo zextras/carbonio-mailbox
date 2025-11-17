@@ -35,6 +35,7 @@ import com.zimbra.cs.service.util.JWTUtil;
 import com.zimbra.cs.servlet.util.AuthUtil;
 import com.zimbra.cs.util.Zimbra;
 import com.zimbra.soap.SoapServlet;
+import io.opentelemetry.api.trace.Span;
 import io.vavr.control.Try;
 import java.io.IOException;
 import java.io.InputStream;
@@ -113,7 +114,7 @@ public class ZimbraServlet extends HttpServlet {
 
   private static final int MAX_PROXY_HOPCOUNT = 3;
 
-  private static Map<String, ZimbraServlet> sServlets = new HashMap<>();
+  private static final Map<String, ZimbraServlet> sServlets = new HashMap<>();
 
   private int[] mAllowedPorts;
 
@@ -156,10 +157,6 @@ public class ZimbraServlet extends HttpServlet {
 
       // Store reference to this servlet for accessor
       synchronized (sServlets) {
-        String name = getServletName();
-        if (sServlets.containsKey(name)) {
-          Zimbra.halt("Attempted to instantiate a second instance of " + name);
-        }
         sServlets.put(getServletName(), this);
         mLog.debug("Added " + getServletName() + " to the servlet list");
       }
@@ -193,6 +190,12 @@ public class ZimbraServlet extends HttpServlet {
   @Override
   protected void service(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
+    Span currentSpan = Span.current();
+
+    if (currentSpan != null && currentSpan.getSpanContext().isValid()) {
+      String path = request.getRequestURI();
+      currentSpan.updateName(path);
+    }
     boolean allowed = isRequestOnAllowedPort(request);
     if (!allowed) {
       SoapProtocol soapProto = SoapProtocol.Soap12;

@@ -5,12 +5,12 @@
 
 package com.zimbra.cs.account.callback;
 
+import com.zimbra.cs.account.EmailValidator;
 import java.util.Map;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.AttributeCallback;
 import com.zimbra.cs.account.Entry;
-import com.zimbra.cs.account.AttributeInfo;
 
 /**
  * Callback for validating attributes that should've been declared
@@ -33,7 +33,7 @@ public class Email extends AttributeCallback {
         if (mod.unsetting())
             return;
         
-        AttributeInfo.validEmailAddress(mod.value(), false);
+        EmailValidator.validEmailAddress(mod.value(), false);
     }
     
     @Override

@@ -14,16 +14,13 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.soap.JaxbUtil;
-import java.io.Closeable;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Objects;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -34,15 +31,12 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 /**
  * A SoapClient that wraps the Body in an Envelope.
  */
-public class SoapClient implements Closeable {
+public class SoapClient {
 
 	/**
 	 * Endpoint in form of http://<host>:<port>/<basePath>
 	 */
 	private final String endpoint;
-
-	private final BasicCookieStore cookieStore;
-	private final CloseableHttpClient client;
 
 	private static final X509TrustManager TRUST_ALL_CERTS =
 			new X509TrustManager() {
@@ -67,42 +61,15 @@ public class SoapClient implements Closeable {
 
 	public SoapClient(String endpoint) {
 		this.endpoint = endpoint;
-		cookieStore = new BasicCookieStore();
-		try {
-			final SSLContext sslContext = SSLContext.getInstance("SSL");
-			sslContext.init(null, new TrustManager[]{TRUST_ALL_CERTS}, new java.security.SecureRandom());
-
-			client =
-					HttpClients.custom()
-							.setDefaultCookieStore(cookieStore)
-							.setSSLContext(sslContext)
-							.setSSLHostnameVerifier((hostname, session) -> true)
-							.setMaxConnTotal(100)
-							.setMaxConnPerRoute(100)
-							.build();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public void close() throws IOException {
-		client.close();
 	}
 
 	public record SoapResponse(int statusCode, String body) {
+
 	}
 
 	public static class Request {
 
-		private final BasicCookieStore cookieStore;
-		private final HttpClient client;
-
-		public Request(BasicCookieStore cookieStore, HttpClient client) {
-
-			this.cookieStore = cookieStore;
-			this.client = client;
-		}
+		private Request() {}
 
 		public Request setSoapBody(Element soapBody) {
 			this.soapBody = soapBody;
@@ -134,23 +101,45 @@ public class SoapClient implements Closeable {
 		private Account requestedAccount;
 		private String url = "/";
 
-		public HttpResponse execute() throws Exception {
+		private BasicCookieStore createCookieStore() {
+			return new BasicCookieStore();
+		}
 
+		private CloseableHttpClient getClient(BasicCookieStore cookieStore) {
+			try {
+				final SSLContext sslContext = SSLContext.getInstance("SSL");
+				sslContext.init(null, new TrustManager[]{TRUST_ALL_CERTS},
+						new java.security.SecureRandom());
+				return HttpClients.custom()
+						.setDefaultCookieStore(cookieStore)
+						.setSSLContext(sslContext)
+						.setSSLHostnameVerifier((hostname, session) -> true)
+						.setMaxConnTotal(100)
+						.setMaxConnPerRoute(100)
+						.build();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		public SoapResponse execute() throws Exception {
+			final BasicCookieStore cookieStore = createCookieStore();
 			if (!Objects.isNull(caller)) {
-				cookieStore.clear();
 				cookieStore.addCookie(createAuthCookie());
 			}
 
 			final HttpPost httpPost = new HttpPost();
 			httpPost.setURI(URI.create(this.url));
 			httpPost.setEntity(createEnvelop());
-			return client.execute(httpPost);
+			try (var client = getClient(cookieStore)) {
+				final CloseableHttpResponse response = client.execute(httpPost);
+				return new SoapResponse(response.getStatusLine().getStatusCode(), SoapUtils.getResponse(response));
+			}
+
 		}
 
 		public SoapResponse call() throws Exception {
-			final HttpResponse httpResponse = this.execute();
-			return new SoapResponse(httpResponse.getStatusLine().getStatusCode(),
-					SoapUtils.getResponse(httpResponse));
+			return this.execute();
 		}
 
 		private StringEntity createEnvelop() throws XmlParseException, UnsupportedEncodingException {
@@ -183,7 +172,7 @@ public class SoapClient implements Closeable {
 	}
 
 	public Request newRequest() {
-		return new Request(cookieStore, client).setBaseURL(this.endpoint);
+		return new Request().setBaseURL(this.endpoint);
 	}
 
 	/**
@@ -194,7 +183,7 @@ public class SoapClient implements Closeable {
 	 * @return
 	 * @throws Exception
 	 */
-	public HttpResponse executeSoap(Account account, Element soapBody) throws Exception {
+	public SoapResponse executeSoap(Account account, Element soapBody) throws Exception {
 		return newRequest().setCaller(account).setSoapBody(soapBody).execute();
 	}
 
@@ -204,7 +193,7 @@ public class SoapClient implements Closeable {
 	 * @return
 	 * @throws Exception
 	 */
-	public HttpResponse executeSoap(Account account, Object soapBodyPOJO) throws Exception {
+	public SoapResponse executeSoap(Account account, Object soapBodyPOJO) throws Exception {
 		return executeSoap(account, JaxbUtil.jaxbToElement(soapBodyPOJO));
 	}
 }

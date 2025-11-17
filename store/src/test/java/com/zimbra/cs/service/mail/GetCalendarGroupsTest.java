@@ -1,10 +1,10 @@
 package com.zimbra.cs.service.mail;
 
-import com.zextras.mailbox.util.CreateAccount;
 import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -32,19 +32,19 @@ import org.junit.jupiter.api.Test;
 class GetCalendarGroupsTest extends SoapTestSuite {
   private static final String ALL_CALENDARS_GROUP_NAME = "All calendars";
 
-  private static CreateAccount.Factory createAccountFactory;
+  
 
 	private Account account;
 
   @BeforeAll
   static void init() {
 		Provisioning provisioning = Provisioning.getInstance();
-    createAccountFactory = getCreateAccountFactory();
+    
   }
 
   @BeforeEach
   void setUp() throws Exception {
-    account = createAccountFactory.get().create();
+    account = createAccount().create();
   }
 
   @Test
@@ -53,7 +53,7 @@ class GetCalendarGroupsTest extends SoapTestSuite {
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
 
-    assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
     final var response = parseSoapResponse(soapResponse);
     assertEquals(1, response.getGroups().size());
     assertEquals(ALL_CALENDARS_GROUP_NAME, response.getGroups().get(0).getName());
@@ -69,7 +69,7 @@ class GetCalendarGroupsTest extends SoapTestSuite {
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
 
-    assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
     final var response = parseSoapResponse(soapResponse);
     assertEquals(1, response.getGroups().size());
     assertEquals(ALL_CALENDARS_GROUP_NAME, response.getGroups().get(0).getName());
@@ -91,7 +91,7 @@ class GetCalendarGroupsTest extends SoapTestSuite {
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
 
-    assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
     final var response = parseSoapResponse(soapResponse);
     assertEquals(3, response.getGroups().size());
     assertEquals(ALL_CALENDARS_GROUP_NAME, response.getGroups().get(0).getName());
@@ -117,7 +117,7 @@ class GetCalendarGroupsTest extends SoapTestSuite {
     folder.setDefaultView("appointment");
     final var createFolderRequest = new CreateFolderRequest(folder);
     final var createFolderResponse = getSoapClient().executeSoap(account, createFolderRequest);
-    assertEquals(HttpStatus.SC_OK, createFolderResponse.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, createFolderResponse.statusCode());
   }
 
   private void createGroupFor(Account acc, String groupName, List<String> calendarIds) throws Exception {
@@ -126,7 +126,7 @@ class GetCalendarGroupsTest extends SoapTestSuite {
     request.setCalendarIds(calendarIds);
 
     var response = getSoapClient().executeSoap(acc, request);
-    assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, response.statusCode());
   }
 
 
@@ -136,13 +136,13 @@ class GetCalendarGroupsTest extends SoapTestSuite {
     folder.setDefaultView("appointment");
     final var createFolderRequest = new CreateFolderRequest(folder);
     final var createFolderResponse = getSoapClient().executeSoap(account, createFolderRequest);
-    assertEquals(HttpStatus.SC_OK, createFolderResponse.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, createFolderResponse.statusCode());
     return parseSoapResponse(createFolderResponse, CreateFolderResponse.class).getFolder();
   }
 
-  private static <T> T parseSoapResponse(HttpResponse httpResponse, Class<T> clazz)
+  private static <T> T parseSoapResponse(SoapResponse httpResponse, Class<T> clazz)
           throws IOException, ServiceException {
-    final var responseBody = EntityUtils.toString(httpResponse.getEntity());
+    final var responseBody = httpResponse.body();
     final var rootElement =
             parseXML(responseBody)
                     .getElement("Body")
@@ -150,9 +150,9 @@ class GetCalendarGroupsTest extends SoapTestSuite {
     return JaxbUtil.elementToJaxb(rootElement, clazz);
   }
 
-  private static GetCalendarGroupsResponse parseSoapResponse(HttpResponse httpResponse)
+  private static GetCalendarGroupsResponse parseSoapResponse(SoapResponse soapResponse)
       throws IOException, ServiceException {
-    final var responseBody = EntityUtils.toString(httpResponse.getEntity());
+    final var responseBody = soapResponse.body();
     final var rootElement =
         parseXML(responseBody)
             .getElement("Body")

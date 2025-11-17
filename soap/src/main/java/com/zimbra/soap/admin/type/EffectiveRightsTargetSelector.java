@@ -5,14 +5,13 @@
 
 package com.zimbra.soap.admin.type;
 
+import com.zimbra.common.soap.AdminConstants;
+import com.zimbra.cs.account.accesscontrol.TargetType.SoapTargetType;
+import com.zimbra.soap.type.TargetBy;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
-
-import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.soap.type.TargetBy;
-import com.zimbra.soap.type.TargetType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class EffectiveRightsTargetSelector {
@@ -22,7 +21,7 @@ public class EffectiveRightsTargetSelector {
      * @zm-api-field-description Target type
      */
     @XmlAttribute(name=AdminConstants.A_TYPE, required=true)
-    private final TargetType type;
+    private final SoapTargetType type;
 
     /**
      * @zm-api-field-tag target-selector-by
@@ -47,13 +46,13 @@ public class EffectiveRightsTargetSelector {
             null);
     }
 
-    public EffectiveRightsTargetSelector(TargetType type, TargetBy by, String value) {
+    public EffectiveRightsTargetSelector(SoapTargetType type, TargetBy by, String value) {
         this.type = type;
         this.by = by;
         this.value = value;
     }
 
-    public TargetType getType() { return type; }
+    public SoapTargetType getType() { return type; }
     public TargetBy getBy() { return by; }
     public String getValue() { return value; }
 }

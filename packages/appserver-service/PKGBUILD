@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver-service"
-pkgver="4.23.1"
+pkgver="4.23.2"
 pkgrel="1"
 pkgdesc="Carbonio Mailbox Service"
 arch=('x86_64')
@@ -21,13 +21,13 @@ section="mail"
 priority="optional"
 
 package() {
-  cd "${srcdir}"/../../staging
+  cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
 
   # Mailbox
   install -Dm 755 packages/appserver-service/carbonio-mailbox \
     "${pkgdir}/usr/bin/carbonio-mailbox"
-  install -Dm 644 packages/appserver-service/carbonio-mailbox-setup.sh \
-    "${pkgdir}/etc/zextras/pending-setups.d/carbonio-mailbox.sh"
+  install -Dm 644 packages/appserver-service/411-carbonio-mailbox.sh \
+    "${pkgdir}/etc/zextras/pending-setups.d/411-carbonio-mailbox.sh"
   install -Dm 644 packages/appserver-service/carbonio-mailbox.hcl \
     "${pkgdir}/etc/zextras/service-discover/carbonio-mailbox.hcl"
   install -Dm 644 packages/appserver-service/carbonio-mailbox-sidecar.service \
@@ -42,8 +42,8 @@ package() {
   # Mailbox Admin
   install -Dm 755 packages/appserver-service/carbonio-mailbox-admin \
     "${pkgdir}/usr/bin/carbonio-mailbox-admin"
-  install -Dm 644 packages/appserver-service/carbonio-mailbox-admin-setup.sh \
-    "${pkgdir}/etc/zextras/pending-setups.d/carbonio-mailbox-admin.sh"
+  install -Dm 644 packages/appserver-service/421-carbonio-mailbox-admin.sh \
+    "${pkgdir}/etc/zextras/pending-setups.d/421-carbonio-mailbox-admin.sh"
   install -Dm 644 packages/appserver-service/carbonio-mailbox-admin.hcl \
     "${pkgdir}/etc/zextras/service-discover/carbonio-mailbox-admin.hcl"
   install -Dm 644 packages/appserver-service/carbonio-mailbox-admin-sidecar.service \
@@ -58,8 +58,8 @@ package() {
   # Mailbox NSLookup
   install -Dm 755 packages/appserver-service/carbonio-mailbox-nslookup \
     "${pkgdir}/usr/bin/carbonio-mailbox-nslookup"
-  install -Dm 644 packages/appserver-service/carbonio-mailbox-nslookup-setup.sh \
-    "${pkgdir}/etc/zextras/pending-setups.d/carbonio-mailbox-nslookup.sh"
+  install -Dm 644 packages/appserver-service/411-carbonio-mailbox-nslookup.sh \
+    "${pkgdir}/etc/zextras/pending-setups.d/411-carbonio-mailbox-nslookup.sh"
   install -Dm 644 packages/appserver-service/carbonio-mailbox-nslookup.hcl \
     "${pkgdir}/etc/zextras/service-discover/carbonio-mailbox-nslookup.hcl"
   install -Dm 644 packages/appserver-service/carbonio-mailbox-nslookup-sidecar.service \

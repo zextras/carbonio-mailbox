@@ -11,7 +11,6 @@ import com.zextras.mailbox.util.MailboxSetupHelper;
 import com.zextras.mailbox.util.SoapClient;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.servlet.FirstServlet;
 import com.zimbra.soap.SoapServlet;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,10 +76,8 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
     private final List<String> engineHandlers = new ArrayList<>();
 
     public SoapExtension create() {
-      final var firstServlet = createFirstServlet();
       final var soapServlet = createSecondServlet();
       final ServerWithConfiguration serverWithConfiguration = new JettyServerFactory()
-          .addServlet("/firstServlet", firstServlet)
           .addServlet(basePath + "*", soapServlet)
           .create();
       final var server =
@@ -88,12 +85,6 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
       final int serverPort = serverWithConfiguration.serverPort();
       final var soapClient = new SoapClient("http://localhost:" + serverPort + basePath);
       return new SoapExtension(serverPort, server, soapClient);
-    }
-
-    private static ServletHolder createFirstServlet() {
-      final var firstServlet = new ServletHolder(FirstServlet.class);
-      firstServlet.setInitOrder(1);
-      return firstServlet;
     }
 
     private ServletHolder createSecondServlet() {
@@ -128,7 +119,6 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
 
   @Override
   public void afterAll(ExtensionContext context) throws Exception {
-    soapClient.close();
     server.stop();
     mailboxSetupHelper.tearDown();
   }

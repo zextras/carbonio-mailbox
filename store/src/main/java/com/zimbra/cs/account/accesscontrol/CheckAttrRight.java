@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
+import com.zimbra.cs.account.StoreAttributeManager;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -59,7 +60,7 @@ public class CheckAttrRight extends CheckRight {
         super(target, rightNeeded, canDelegateNeeded);
 
         mGrantee = grantee;
-        mTargetType = TargetType.getTargetType(mTarget);
+        mTargetType = TargetTypeLookup.getTargetType(mTarget);
         mAttrRightNeeded = rightNeeded;
     }
 
@@ -95,7 +96,7 @@ public class CheckAttrRight extends CheckRight {
         // if the target is a domain-ed entry, get the domain of the target.
         // It is need for checking the cross domain right.
         //
-        Domain targetDomain = TargetType.getTargetDomain(mProv, mTarget);
+        Domain targetDomain = TargetTypeLookup.getTargetDomain(mProv, mTarget);
 
         if (!car.isAll()) {
             // check grants granted on entries from which the target entry can inherit
@@ -186,7 +187,7 @@ public class CheckAttrRight extends CheckRight {
 
         AllowedAttrs result;
 
-        AttributeClass klass = TargetType.getAttributeClass(mTarget);
+        AttributeClass klass = TargetTypeLookup.getAttributeClass(mTarget);
 
         if (car == CollectAttrsResult.ALLOW_ALL)
             result = processAllowAll(allowSome, denySome, klass);
@@ -468,7 +469,7 @@ public class CheckAttrRight extends CheckRight {
         } else {
             // get all attrs that can appear on the target entry
           Set<String> allowed = new HashSet<>(
-              AttributeManager.getInstance().getAllAttrsInClass(klass));
+              StoreAttributeManager.getInstance().getAllAttrsInClass(klass));
 
             // remove denied from all
             for (String d : denySome.keySet())

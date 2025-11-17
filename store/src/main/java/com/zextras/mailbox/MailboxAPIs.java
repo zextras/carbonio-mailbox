@@ -34,9 +34,9 @@ import com.zimbra.cs.servlet.ContextPathBasedThreadPoolBalancerFilter;
 import com.zimbra.cs.servlet.CsrfFilter;
 import com.zimbra.cs.servlet.DoSFilter;
 import com.zimbra.cs.servlet.ETagHeaderFilter;
-import com.zimbra.cs.servlet.FirstServlet;
 import com.zimbra.cs.servlet.RequestStringFilter;
 import com.zimbra.cs.servlet.SetHeaderFilter;
+import com.zimbra.cs.servlet.TracingSpanFilter;
 import com.zimbra.cs.servlet.ZimbraInvalidLoginFilter;
 import com.zimbra.cs.servlet.ZimbraQoSFilter;
 import com.zimbra.soap.SoapServlet;
@@ -63,10 +63,16 @@ public class MailboxAPIs {
 	}
 
 	private void addFilters(ServletContextHandler servletContextHandler) {
+		final FilterHolder tracingSpanFilter = new FilterHolder(TracingSpanFilter.class);
+		tracingSpanFilter.setName("TracingSpanFilter");
+		tracingSpanFilter.setAsyncSupported(true);
+		servletContextHandler.addFilter(tracingSpanFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
+
 		final FilterHolder guiceFilter = new FilterHolder(GuiceFilter.class);
 		guiceFilter.setName("guiceFilter");
 		guiceFilter.setAsyncSupported(true);
 		servletContextHandler.addFilter(guiceFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
+
 
 		final FilterHolder dosFilter = new FilterHolder(DoSFilter.class);
 		dosFilter.setName("DosFilter");
@@ -137,11 +143,6 @@ public class MailboxAPIs {
 		final String adminAndMTAPort = adminPortOnly + ", " + server.getMtaAuthPort();
 		final String userOnlyPorts = server.getMailPort() + ", " + server.getMailSSLPort();
 		final String userAndAdminPorts = server.getMailPort() + ", " + server.getMailSSLPort() + ", " + adminPortOnly;
-
-		final var firstServlet = new ServletHolder(FirstServlet.class);
-		firstServlet.setInitOrder(1);
-		firstServlet.setAsyncSupported(true);
-		servletContextHandler.addServlet(firstServlet, "/*");
 
 		final var extensionDispatcherServlet = new ServletHolder(ExtensionDispatcherServlet.class);
 		extensionDispatcherServlet.setName("ExtensionDispatcherServlet");

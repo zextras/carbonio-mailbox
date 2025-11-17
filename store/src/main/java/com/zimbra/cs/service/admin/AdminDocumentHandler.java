@@ -34,6 +34,7 @@ import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
+import com.zimbra.cs.account.StoreAttributeManager;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.PseudoTarget;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
@@ -748,7 +749,7 @@ public abstract class AdminDocumentHandler extends DocumentHandler implements Ad
 
     String[] attrs = attrsStr.split(",");
 
-    Set<String> attrsOnEntry = AttributeManager.getInstance().getAllAttrsInClass(klass);
+    Set<String> attrsOnEntry = StoreAttributeManager.getInstance().getAllAttrsInClass(klass);
     Set<String> validAttrs = new HashSet<>();
 
     for (String attr : attrs) {

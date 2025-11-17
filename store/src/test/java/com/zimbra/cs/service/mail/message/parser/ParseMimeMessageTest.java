@@ -6,6 +6,7 @@ package com.zimbra.cs.service.mail.message.parser;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.AccountAction;
 import com.zextras.mailbox.util.MailMessageBuilder;
 import com.zimbra.common.mime.MimeConstants;
@@ -20,8 +21,8 @@ import com.zimbra.cs.account.ZimbraAuthToken;
 import com.zimbra.cs.mailbox.DeliveryContext;
 import com.zimbra.cs.mailbox.DeliveryOptions;
 import com.zimbra.cs.mailbox.MailServiceException;
+import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
@@ -43,7 +44,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
@@ -52,102 +52,100 @@ import javax.mail.internet.MimeMultipart;
 import org.dom4j.QName;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public final class ParseMimeMessageTest {
 
-  private static Account account;
+final class ParseMimeMessageTest extends MailboxTestSuite {
+  private static Provisioning provisioning;
 
   @BeforeAll
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-    Provisioning prov = Provisioning.getInstance();
-    account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>(
-        Map.of(Provisioning.A_zimbraId, UUID.randomUUID().toString())
-    ));
+  static void setUpClass() {
+    provisioning = Provisioning.getInstance();
   }
 
-  @BeforeEach
-  public void setUp() throws Exception {
-    MailboxTestUtil.clearData();
+  private ZimbraSoapContext getMockSoapContext(Account account) throws ServiceException {
+    ZimbraSoapContext parent =
+        new ZimbraSoapContext(
+            (Element) null,
+            (QName) null,
+            (DocumentHandler) null,
+            Collections.<String, Object>emptyMap(),
+            SoapProtocol.SoapJS);
+    return new ZimbraSoapContext(parent, account.getId(), null);
   }
 
- @Test
- void parseMimeMsgSoap() throws Exception {
-  Element rootEl = new Element.JSONElement(MailConstants.E_SEND_MSG_REQUEST);
-  Element el = new Element.JSONElement(MailConstants.E_MSG);
-   el.addAttribute(MailConstants.E_SUBJECT, "dinner appt");
-   el.addUniqueElement(MailConstants.E_MIMEPART)
-    .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
-    .addAttribute(MailConstants.E_CONTENT, "foo bar");
-   el.addElement(MailConstants.E_EMAIL)
-    .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
-    .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
+  @Test
+  void parseMimeMsgSoap() throws Exception {
+    Element rootEl = new Element.JSONElement(MailConstants.E_SEND_MSG_REQUEST);
+    Element el = new Element.JSONElement(MailConstants.E_MSG);
+    el.addAttribute(MailConstants.E_SUBJECT, "dinner appt");
+    el.addUniqueElement(MailConstants.E_MIMEPART)
+        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
+        .addAttribute(MailConstants.E_CONTENT, "foo bar");
+    el.addElement(MailConstants.E_EMAIL)
+        .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
+        .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
 
-   rootEl.addUniqueElement(el);
-   Account acct = account;
-   OperationContext octxt = new OperationContext(acct);
-  ZimbraSoapContext zsc = getMockSoapContext();
+    rootEl.addUniqueElement(el);
+    Account acct = createAccount().create();
+    OperationContext octxt = new OperationContext(acct);
+    ZimbraSoapContext zsc = getMockSoapContext(acct);
 
-  MimeMessage mm =
-    ParseMimeMessage.parseMimeMsgSoap(
-      zsc, octxt, null, el, new MimeMessageData());
-  assertEquals("text/plain; charset=utf-8", mm.getContentType());
-  assertEquals("dinner appt", mm.getSubject());
-  assertEquals("rcpt@zimbra.com", mm.getHeader("To", ","));
-  assertEquals("7bit", mm.getHeader("Content-Transfer-Encoding", ","));
-  assertEquals("foo bar", mm.getContent());
- }
+    MimeMessage mm = ParseMimeMessage.parseMimeMsgSoap(zsc, octxt, null, el, new MimeMessageData());
+    assertEquals("text/plain; charset=utf-8", mm.getContentType());
+    assertEquals("dinner appt", mm.getSubject());
+    assertEquals("rcpt@zimbra.com", mm.getHeader("To", ","));
+    assertEquals("7bit", mm.getHeader("Content-Transfer-Encoding", ","));
+    assertEquals("foo bar", mm.getContent());
+  }
 
- @Test
+  @Test
   void parseMimeMsgSoap_withMsgAttachment() throws Exception {
-   Account acct = account;
-   OperationContext octxt = new OperationContext(acct);
-   var mbox = MailboxManager.getInstance().createMailbox(octxt, acct);
-   final ParsedMessage message = new MailMessageBuilder()
-       .from(acct.getName())
-       .addRecipient(acct.getName())
-       .subject("Test email")
-       .body("Hello there")
-       .addAttachmentFromResources("/test-save-to-files.txt")
-       .build();
-   var deliveryOptions = new DeliveryOptions();
-   deliveryOptions.setFolderId(mbox.getId());
-   var msg = mbox.addMessage(octxt, message, deliveryOptions, new DeliveryContext());
+    Account acct = createAccount().create();
+    OperationContext octxt = new OperationContext(acct);
+    var mbox = MailboxManager.getInstance().createMailbox(octxt, acct);
+    final ParsedMessage message =
+        new MailMessageBuilder()
+            .from(acct.getName())
+            .addRecipient(acct.getName())
+            .subject("Test email")
+            .body("Hello there")
+            .addAttachmentFromResources("/test-save-to-files.txt")
+            .build();
+    var deliveryOptions = new DeliveryOptions();
+    deliveryOptions.setFolderId(Mailbox.ID_FOLDER_INBOX);
+    var msg = mbox.addMessage(octxt, message, deliveryOptions, new DeliveryContext());
 
-   Element rootEl = new Element.JSONElement(MailConstants.E_SEND_MSG_REQUEST);
-   Element el = new Element.JSONElement(MailConstants.E_MSG);
-   el.addAttribute(MailConstants.E_SUBJECT, "dinner appt");
-   el.addUniqueElement(MailConstants.E_MIMEPART)
-       .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
-       .addAttribute(MailConstants.E_CONTENT, "foo bar");
-   el.addUniqueElement(MailConstants.E_EMAIL)
-       .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
-       .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
-   el.addUniqueElement(MailConstants.E_ATTACH)
-       .addUniqueElement(MailConstants.E_MSG)
-       .addAttribute(MailConstants.A_ID, acct.getId() + ":" + msg.getId());
+    Element rootEl = new Element.JSONElement(MailConstants.E_SEND_MSG_REQUEST);
+    Element el = new Element.JSONElement(MailConstants.E_MSG);
+    el.addAttribute(MailConstants.E_SUBJECT, "dinner appt");
+    el.addUniqueElement(MailConstants.E_MIMEPART)
+        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
+        .addAttribute(MailConstants.E_CONTENT, "foo bar");
+    el.addUniqueElement(MailConstants.E_EMAIL)
+        .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
+        .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
+    el.addUniqueElement(MailConstants.E_ATTACH)
+        .addUniqueElement(MailConstants.E_MSG)
+        .addAttribute(MailConstants.A_ID, acct.getId() + ":" + msg.getId());
 
-   rootEl.addUniqueElement(el);
+    rootEl.addUniqueElement(el);
 
+    ZimbraSoapContext zsc = getMockSoapContext(acct);
 
-   ZimbraSoapContext zsc = getMockSoapContext();
-
-   var messageData = new MimeMessageData();
-   MimeMessage mm =
-       ParseMimeMessage.parseMimeMsgSoap(
-           zsc, octxt, null, el, messageData);
-   assertTrue(mm.getContent() instanceof ZMimeMultipart);
-   var multiPartContent = (ZMimeMultipart) mm.getContent();
-   var attachedEmail = multiPartContent.getBodyPart(1);
-   assertEquals("message/rfc822", attachedEmail.getContentType());
-   assertEquals("attachment", attachedEmail.getDisposition());
-   assertEquals("Test email.eml", attachedEmail.getFileName());
- }
+    var messageData = new MimeMessageData();
+    MimeMessage mm = ParseMimeMessage.parseMimeMsgSoap(zsc, octxt, null, el, messageData);
+    assertTrue(mm.getContent() instanceof ZMimeMultipart);
+    var multiPartContent = (ZMimeMultipart) mm.getContent();
+    var attachedEmail = multiPartContent.getBodyPart(1);
+    assertEquals("message/rfc822", attachedEmail.getContentType());
+    assertEquals("attachment", attachedEmail.getDisposition());
+    assertEquals("Test email.eml", attachedEmail.getFileName());
+  }
 
   @Test
   void parseMimeMsgSoapWithEmptyFile_DoesNotAffectMtaMaxMessageSizeQuotaCheck() throws Exception {
+    Account account = createAccount().create();
     OperationContext octxt = new OperationContext(account);
     ZimbraSoapContext parent =
         new ZimbraSoapContext(
@@ -156,15 +154,16 @@ public final class ParseMimeMessageTest {
             (DocumentHandler) null,
             Collections.<String, Object>emptyMap(),
             SoapProtocol.SoapJS);
-    ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), account.getId(), null);
+    ZimbraSoapContext zsc =
+        new ZimbraSoapContext(parent, new ZimbraAuthToken(account), account.getId(), null);
     final Message draftWithFileAttachment = this.createDraftWithFileAttachment(account);
 
     // upload empty file
-    final InputStream uploadInputStream = this.getClass()
-        .getResourceAsStream("/empty-file.txt");
+    final InputStream uploadInputStream = this.getClass().getResourceAsStream("/empty-file.txt");
     final String filename = "emptyFile.txt";
-    final Upload upload = FileUploadServlet.saveUpload(uploadInputStream, filename,
-        "text/plain", account.getId(), true);
+    final Upload upload =
+        FileUploadServlet.saveUpload(
+            uploadInputStream, filename, "text/plain", account.getId(), true);
 
     final SaveDraftRequest sendMsgRequest = new SaveDraftRequest();
     final SaveDraftMsg msgToSend = new SaveDraftMsg();
@@ -179,18 +178,19 @@ public final class ParseMimeMessageTest {
     final Element rootElem = JaxbUtil.jaxbToElement(sendMsgRequest);
     final Element msgElement = rootElem.getElement(MailConstants.E_MSG);
 
-    final MimeMessage mimeMessage = ParseMimeMessage.parseDraftMimeMsgSoap(zsc, octxt, null,
-        msgElement, new MimeMessageData());
+    final MimeMessage mimeMessage =
+        ParseMimeMessage.parseDraftMimeMsgSoap(zsc, octxt, null, msgElement, new MimeMessageData());
 
     final ZMimeMultipart multiPart = getMimeMultiPart(mimeMessage);
-    Assertions.assertEquals (1, multiPart.getCount());
+    Assertions.assertEquals(1, multiPart.getCount());
     final BodyPart attachment = multiPart.getBodyPart(0);
-    Assertions.assertEquals ("", attachment.getContent());
-    Assertions.assertEquals (filename, attachment.getFileName());
+    Assertions.assertEquals("", attachment.getContent());
+    Assertions.assertEquals(filename, attachment.getFileName());
   }
 
   @Test
   void parseMimeMsgSoapWithSmartLink() throws Exception {
+    Account account = createAccount().create();
     OperationContext octxt = new OperationContext(account);
     ZimbraSoapContext parent =
         new ZimbraSoapContext(
@@ -199,7 +199,8 @@ public final class ParseMimeMessageTest {
             (DocumentHandler) null,
             Collections.<String, Object>emptyMap(),
             SoapProtocol.SoapJS);
-    ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), account.getId(), null);
+    ZimbraSoapContext zsc =
+        new ZimbraSoapContext(parent, new ZimbraAuthToken(account), account.getId(), null);
 
     // 1 save a draft message with attachments
     final Message draftWithFileAttachment = this.createDraftWithFileAttachment(account);
@@ -221,17 +222,19 @@ public final class ParseMimeMessageTest {
     final Element msgElement = rootElem.getElement(MailConstants.E_MSG);
 
     MimeMessage mimeMessageWithAttachment =
-        ParseMimeMessage.parseMimeMsgSoap(
-            zsc, octxt, null, msgElement, new MimeMessageData());
+        ParseMimeMessage.parseMimeMsgSoap(zsc, octxt, null, msgElement, new MimeMessageData());
     mimeMessageWithAttachment.getContent();
-    final String[] header = getMimeMultiPart(mimeMessageWithAttachment).getBodyPart(0)
-        .getHeader(ParseMimeMessage.SMART_LINK_HEADER);
+    final String[] header =
+        getMimeMultiPart(mimeMessageWithAttachment)
+            .getBodyPart(0)
+            .getHeader(ParseMimeMessage.SMART_LINK_HEADER);
     Assertions.assertNotNull(header);
     Assertions.assertTrue(header.length > 0);
   }
 
   @Test
   void parseMimeMsgSoapWithNewAttachmentShouldNotAddSmartLink() throws Exception {
+    Account account = createAccount().create();
     OperationContext octxt = new OperationContext(account);
     ZimbraSoapContext parent =
         new ZimbraSoapContext(
@@ -240,16 +243,18 @@ public final class ParseMimeMessageTest {
             (DocumentHandler) null,
             Collections.<String, Object>emptyMap(),
             SoapProtocol.SoapJS);
-    ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), account.getId(), null);
+    ZimbraSoapContext zsc =
+        new ZimbraSoapContext(parent, new ZimbraAuthToken(account), account.getId(), null);
 
     // 1 save a draft message with attachments
     final Message draft = this.createDraft(account);
 
     // 2 upload file
-    final InputStream uploadInputStream = this.getClass()
-        .getResourceAsStream("/test-save-to-files.txt");
-    final Upload upload = FileUploadServlet.saveUpload(uploadInputStream, "myFiletest.txt",
-        "text/plain", account.getId());
+    final InputStream uploadInputStream =
+        this.getClass().getResourceAsStream("/test-save-to-files.txt");
+    final Upload upload =
+        FileUploadServlet.saveUpload(
+            uploadInputStream, "myFiletest.txt", "text/plain", account.getId());
 
     // set attachment as smartlink
     final SaveDraftRequest sendMsgRequest = new SaveDraftRequest();
@@ -266,23 +271,22 @@ public final class ParseMimeMessageTest {
     final Element msgElement = rootElem.getElement(MailConstants.E_MSG);
 
     MimeMessage mimeMessageWithAttachment =
-        ParseMimeMessage.parseMimeMsgSoap(
-            zsc, octxt, null, msgElement, new MimeMessageData());
+        ParseMimeMessage.parseMimeMsgSoap(zsc, octxt, null, msgElement, new MimeMessageData());
     mimeMessageWithAttachment.getContent();
-    final String[] header = getMimeMultiPart(mimeMessageWithAttachment).getBodyPart(0)
-        .getHeader(ParseMimeMessage.SMART_LINK_HEADER);
+    final String[] header =
+        getMimeMultiPart(mimeMessageWithAttachment)
+            .getBodyPart(0)
+            .getHeader(ParseMimeMessage.SMART_LINK_HEADER);
     Assertions.assertNull(header);
   }
 
-
   @Test
   void parseMimeMsgSoap_IgnoresFileSizeMtaQuotaWhenNoAttachments() throws Exception {
-    var config = Provisioning.getInstance().getConfig();
+    var config = provisioning.getConfig();
     try {
-      config.modify(new HashMap<>(Map.of(
-          Provisioning.A_zimbraMtaMaxMessageSize, "1"
-      )));
+      config.modify(new HashMap<>(Map.of(Provisioning.A_zimbraMtaMaxMessageSize, "1")));
 
+      Account account = createAccount().create();
       OperationContext octxt = new OperationContext(account);
       ZimbraSoapContext parent =
           new ZimbraSoapContext(
@@ -291,7 +295,8 @@ public final class ParseMimeMessageTest {
               (DocumentHandler) null,
               Collections.<String, Object>emptyMap(),
               SoapProtocol.SoapJS);
-      ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), account.getId(), null);
+      ZimbraSoapContext zsc =
+          new ZimbraSoapContext(parent, new ZimbraAuthToken(account), account.getId(), null);
 
       // 1 save a draft message with attachments
       final Message draft = this.createDraft(account);
@@ -307,10 +312,10 @@ public final class ParseMimeMessageTest {
       final Element rootElem = JaxbUtil.jaxbToElement(sendMsgRequest);
       final Element msgElement = rootElem.getElement(MailConstants.E_MSG);
 
-      Assertions.assertDoesNotThrow( () -> {
-        ParseMimeMessage.parseMimeMsgSoap(
-            zsc, octxt, null, msgElement, new MimeMessageData());
-      });
+      Assertions.assertDoesNotThrow(
+          () -> {
+            ParseMimeMessage.parseMimeMsgSoap(zsc, octxt, null, msgElement, new MimeMessageData());
+          });
 
     } finally {
       config.unsetMtaMaxMessageSize();
@@ -319,12 +324,11 @@ public final class ParseMimeMessageTest {
 
   @Test
   void parseMimeMsgSoap_WithFileSizeExceedingMtaQuotaFails() throws Exception {
-    var config = Provisioning.getInstance().getConfig();
+    var config = provisioning.getConfig();
     try {
-      config.modify(new HashMap<>(Map.of(
-          Provisioning.A_zimbraMtaMaxMessageSize, "1"
-      )));
+      config.modify(new HashMap<>(Map.of(Provisioning.A_zimbraMtaMaxMessageSize, "1")));
 
+      Account account = createAccount().create();
       OperationContext octxt = new OperationContext(account);
       ZimbraSoapContext parent =
           new ZimbraSoapContext(
@@ -333,16 +337,18 @@ public final class ParseMimeMessageTest {
               (DocumentHandler) null,
               Collections.<String, Object>emptyMap(),
               SoapProtocol.SoapJS);
-      ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), account.getId(), null);
+      ZimbraSoapContext zsc =
+          new ZimbraSoapContext(parent, new ZimbraAuthToken(account), account.getId(), null);
 
       // 1 save a draft message with attachments
       final Message draft = this.createDraft(account);
 
       // 2 upload file
-      final InputStream uploadInputStream = this.getClass()
-          .getResourceAsStream("/test-save-to-files.txt");
-      final Upload upload = FileUploadServlet.saveUpload(uploadInputStream, "myFiletest.txt",
-          "text/plain", account.getId(), true);
+      final InputStream uploadInputStream =
+          this.getClass().getResourceAsStream("/test-save-to-files.txt");
+      final Upload upload =
+          FileUploadServlet.saveUpload(
+              uploadInputStream, "myFiletest.txt", "text/plain", account.getId(), true);
 
       // set attachment as smartlink
       final SaveDraftRequest sendMsgRequest = new SaveDraftRequest();
@@ -358,9 +364,10 @@ public final class ParseMimeMessageTest {
       final Element rootElem = JaxbUtil.jaxbToElement(sendMsgRequest);
       final Element msgElement = rootElem.getElement(MailConstants.E_MSG);
 
-      Assertions.assertThrows( MailServiceException.class, () -> {
-        ParseMimeMessage.parseMimeMsgSoap(
-            zsc, octxt, null, msgElement, new MimeMessageData());
+      Assertions.assertThrows(
+          MailServiceException.class,
+          () -> {
+            ParseMimeMessage.parseMimeMsgSoap(zsc, octxt, null, msgElement, new MimeMessageData());
           });
 
     } finally {
@@ -368,26 +375,27 @@ public final class ParseMimeMessageTest {
     }
   }
 
-
   @Test
   void parseDraftMimeMsgSoap() throws Exception {
     Element rootEl = new Element.JSONElement(MailConstants.E_SEND_MSG_REQUEST);
     Element msgElement = new Element.JSONElement(MailConstants.E_MSG);
     msgElement.addAttribute(MailConstants.E_SUBJECT, "dinner appt");
-    msgElement.addUniqueElement(MailConstants.E_MIMEPART)
+    msgElement
+        .addUniqueElement(MailConstants.E_MIMEPART)
         .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
         .addAttribute(MailConstants.E_CONTENT, "foo bar");
-    msgElement.addElement(MailConstants.E_EMAIL)
+    msgElement
+        .addElement(MailConstants.E_EMAIL)
         .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
         .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
 
     rootEl.addUniqueElement(msgElement);
+    Account account = createAccount().create();
     OperationContext octxt = new OperationContext(account);
-    ZimbraSoapContext zsc = getMockSoapContext();
+    ZimbraSoapContext zsc = getMockSoapContext(account);
 
     MimeMessage mm =
-        ParseMimeMessage.parseDraftMimeMsgSoap(
-            zsc, octxt, null, msgElement, new MimeMessageData());
+        ParseMimeMessage.parseDraftMimeMsgSoap(zsc, octxt, null, msgElement, new MimeMessageData());
     assertEquals("text/plain; charset=utf-8", mm.getContentType());
     assertEquals("dinner appt", mm.getSubject());
     assertEquals("rcpt@zimbra.com", mm.getHeader("To", ","));
@@ -397,36 +405,48 @@ public final class ParseMimeMessageTest {
 
   @Test
   void parseDraftMimeMsgSoap_addNewInlineAttachment() throws Exception {
-    final InputStream uploadInputStream = this.getClass()
-        .getResourceAsStream("/test-save-to-files.txt");
+    final InputStream uploadInputStream =
+        this.getClass().getResourceAsStream("/test-save-to-files.txt");
     final String filename = "myFiletest.txt";
-    final Upload upload = FileUploadServlet.saveUpload(uploadInputStream, filename,
-        "text/plain", account.getId(), true);
+    Account account = createAccount().create();
+    final Upload upload =
+        FileUploadServlet.saveUpload(
+            uploadInputStream, filename, "text/plain", account.getId(), true);
 
     Element request = new Element.JSONElement(MailConstants.E_SAVE_DRAFT_REQUEST);
     Element msgElement = new Element.JSONElement(MailConstants.E_MSG);
     msgElement.addAttribute(MailConstants.E_SUBJECT, "dinner appt");
     final String contentId = upload.getId() + "@carbonio";
-    final Element multiPart = msgElement.addUniqueElement(MailConstants.E_MIMEPART)
-        .addAttribute(MailConstants.A_CONTENT_TYPE, "multipart/alternative");
-    final Element multiPartRelated = multiPart.addUniqueElement(MailConstants.E_MIMEPART)
-        .addAttribute(MailConstants.A_CONTENT_TYPE, "multipart/related");
-    final Element inlineAttachment = multiPartRelated.addUniqueElement(MailConstants.E_MIMEPART)
-        .addAttribute(MailConstants.A_CONTENT_ID, contentId)
-        .addAttribute(MailConstants.A_CONTENT_DISPOSITION, "inline");
-    inlineAttachment.addUniqueElement(MailConstants.E_ATTACH)
+    final Element multiPart =
+        msgElement
+            .addUniqueElement(MailConstants.E_MIMEPART)
+            .addAttribute(MailConstants.A_CONTENT_TYPE, "multipart/alternative");
+    final Element multiPartRelated =
+        multiPart
+            .addUniqueElement(MailConstants.E_MIMEPART)
+            .addAttribute(MailConstants.A_CONTENT_TYPE, "multipart/related");
+    final Element inlineAttachment =
+        multiPartRelated
+            .addUniqueElement(MailConstants.E_MIMEPART)
+            .addAttribute(MailConstants.A_CONTENT_ID, contentId)
+            .addAttribute(MailConstants.A_CONTENT_DISPOSITION, "inline");
+    inlineAttachment
+        .addUniqueElement(MailConstants.E_ATTACH)
         .addAttribute(MailConstants.A_ATTACHMENT_ID, upload.getId());
 
-    msgElement.addElement(MailConstants.E_EMAIL)
+    msgElement
+        .addElement(MailConstants.E_EMAIL)
         .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
         .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
     request.addUniqueElement(msgElement);
     OperationContext octxt = new OperationContext(account);
     ZimbraSoapContext zsc = getZimbraSoapContext(account);
 
-    MimeMessage mm = ParseMimeMessage.parseDraftMimeMsgSoap(zsc, octxt, null, msgElement, new MimeMessageData());
+    MimeMessage mm =
+        ParseMimeMessage.parseDraftMimeMsgSoap(zsc, octxt, null, msgElement, new MimeMessageData());
 
-    final BodyPart newAttachment =  getMimeMultiPart(getMimeMultiPart(mm).getBodyPart(0)).getBodyPart(0);
+    final BodyPart newAttachment =
+        getMimeMultiPart(getMimeMultiPart(mm).getBodyPart(0)).getBodyPart(0);
     assertEquals(filename, newAttachment.getFileName());
     assertEquals("inline; filename=" + filename, newAttachment.getHeader("Content-Disposition")[0]);
     assertEquals("<" + contentId + ">", newAttachment.getHeader("Content-ID")[0]);
@@ -435,15 +455,13 @@ public final class ParseMimeMessageTest {
     assertNull(mm.getHeader("Content-Transfer-Encoding", ","));
   }
 
-
   @Test
   void parseDraftMimeMsgSoap_SucceedsEvenIfSizeExceedsMtaQuota() throws Exception {
-    var config = Provisioning.getInstance().getConfig();
+    var config = provisioning.getConfig();
     try {
-      config.modify(new HashMap<>(Map.of(
-          Provisioning.A_zimbraMtaMaxMessageSize, "1"
-      )));
+      config.modify(new HashMap<>(Map.of(Provisioning.A_zimbraMtaMaxMessageSize, "1")));
 
+      Account account = createAccount().create();
       OperationContext octxt = new OperationContext(account);
       ZimbraSoapContext zsc = getZimbraSoapContext(account);
 
@@ -451,10 +469,11 @@ public final class ParseMimeMessageTest {
       final Message draft = this.createDraft(account);
 
       // 2 upload file
-      final InputStream uploadInputStream = this.getClass()
-          .getResourceAsStream("/test-save-to-files.txt");
-      final Upload upload = FileUploadServlet.saveUpload(uploadInputStream, "myFiletest.txt",
-          "text/plain", account.getId(), true);
+      final InputStream uploadInputStream =
+          this.getClass().getResourceAsStream("/test-save-to-files.txt");
+      final Upload upload =
+          FileUploadServlet.saveUpload(
+              uploadInputStream, "myFiletest.txt", "text/plain", account.getId(), true);
 
       // set attachment as smartlink
       final SaveDraftRequest sendMsgRequest = new SaveDraftRequest();
@@ -470,199 +489,183 @@ public final class ParseMimeMessageTest {
       final Element rootElem = JaxbUtil.jaxbToElement(sendMsgRequest);
       final Element msgElement = rootElem.getElement(MailConstants.E_MSG);
 
-      Assertions.assertDoesNotThrow( () -> {
-        ParseMimeMessage.parseDraftMimeMsgSoap(
-            zsc, octxt, null, msgElement, new MimeMessageData());
-      });
+      Assertions.assertDoesNotThrow(
+          () -> {
+            ParseMimeMessage.parseDraftMimeMsgSoap(
+                zsc, octxt, null, msgElement, new MimeMessageData());
+          });
 
     } finally {
       config.unsetMtaMaxMessageSize();
     }
   }
 
- @Test
- void customMimeHeader() throws Exception {
+  @Test
+  void customMimeHeader() throws Exception {
     Element rootEl = new Element.JSONElement(MailConstants.E_SEND_MSG_REQUEST);
-  Element el = new Element.JSONElement(MailConstants.E_MSG);
-  el.addAttribute(MailConstants.E_SUBJECT, "subject");
-  el.addUniqueElement(MailConstants.E_MIMEPART)
-    .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
-    .addAttribute(MailConstants.E_CONTENT, "body");
-  el.addElement(MailConstants.E_EMAIL)
-    .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
-    .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
-  el.addElement(MailConstants.E_HEADER)
-    .addAttribute(MailConstants.A_NAME, "X-Zimbra-Test")
-    .setText("custom");
-  el.addElement(MailConstants.E_HEADER)
-    .addAttribute(MailConstants.A_NAME, "X-Zimbra-Test")
-    .setText("\u30ab\u30b9\u30bf\u30e0");
-  rootEl.addUniqueElement(el);
+    Element el = new Element.JSONElement(MailConstants.E_MSG);
+    el.addAttribute(MailConstants.E_SUBJECT, "subject");
+    el.addUniqueElement(MailConstants.E_MIMEPART)
+        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
+        .addAttribute(MailConstants.E_CONTENT, "body");
+    el.addElement(MailConstants.E_EMAIL)
+        .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
+        .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
+    el.addElement(MailConstants.E_HEADER)
+        .addAttribute(MailConstants.A_NAME, "X-Zimbra-Test")
+        .setText("custom");
+    el.addElement(MailConstants.E_HEADER)
+        .addAttribute(MailConstants.A_NAME, "X-Zimbra-Test")
+        .setText("\u30ab\u30b9\u30bf\u30e0");
+    rootEl.addUniqueElement(el);
 
-  Account acct = account;
-  OperationContext octxt = new OperationContext(acct);
-  ZimbraSoapContext zsc = getMockSoapContext();
+    Account acct = createAccount().create();
+    OperationContext octxt = new OperationContext(acct);
+    ZimbraSoapContext zsc = getMockSoapContext(acct);
 
-  MimeMessage mm;
-  try {
-   mm =
-     ParseMimeMessage.parseMimeMsgSoap(
-       zsc, octxt, null, el, new MimeMessageData());
-   fail();
-  } catch (ServiceException expected) {
-   assertEquals("invalid request: header 'X-Zimbra-Test' not allowed", expected.getMessage());
+    MimeMessage mm;
+    try {
+      mm = ParseMimeMessage.parseMimeMsgSoap(zsc, octxt, null, el, new MimeMessageData());
+      fail();
+    } catch (ServiceException expected) {
+      assertEquals("invalid request: header 'X-Zimbra-Test' not allowed", expected.getMessage());
+    }
+
+    provisioning
+        .getConfig()
+        .setCustomMimeHeaderNameAllowed(new String[] {"X-Zimbra-Test"});
+    mm = ParseMimeMessage.parseMimeMsgSoap(zsc, octxt, null, el, new MimeMessageData());
+    assertEquals("custom, =?utf-8?B?44Kr44K544K/44Og?=", mm.getHeader("X-Zimbra-Test", ", "));
   }
 
-  Provisioning.getInstance()
-    .getConfig()
-    .setCustomMimeHeaderNameAllowed(new String[]{"X-Zimbra-Test"});
-  mm =
-    ParseMimeMessage.parseMimeMsgSoap(
-      zsc, octxt, null, el, new MimeMessageData());
-  assertEquals("custom, =?utf-8?B?44Kr44K544K/44Og?=", mm.getHeader("X-Zimbra-Test", ", "));
- }
+  @Test
+  void attachedMessage() throws Exception {
+    Element rootEl = new Element.JSONElement(MailConstants.E_SEND_MSG_REQUEST);
+    Element el = new Element.JSONElement(MailConstants.E_MSG);
+    el.addAttribute(MailConstants.E_SUBJECT, "attach message");
+    el.addElement(MailConstants.E_EMAIL)
+        .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
+        .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
+    Element mp =
+        el.addUniqueElement(MailConstants.E_MIMEPART)
+            .addAttribute(MailConstants.A_CONTENT_TYPE, "multipart/mixed;");
+    mp.addElement(MailConstants.E_MIMEPART)
+        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
+        .addAttribute(MailConstants.E_CONTENT, "This is the outer message.");
+    mp.addElement(MailConstants.E_MIMEPART)
+        .addAttribute(MailConstants.A_CONTENT_TYPE, "message/rfc822")
+        .addAttribute(
+            MailConstants.E_CONTENT,
+            "From: inner-sender@zimbra.com\r\n"
+                + "To: inner-rcpt@zimbra.com\r\n"
+                + "Subject: inner-message\r\n"
+                + "Content-Type: text/plain\r\n"
+                + "Content-Transfer-Encoding: 7bit\r\n"
+                + "MIME-Version: 1.0\r\n\r\n"
+                + "This is the inner message.");
+    rootEl.addUniqueElement(el);
 
- @Test
- void attachedMessage() throws Exception {
-   Element rootEl = new Element.JSONElement(MailConstants.E_SEND_MSG_REQUEST);
-  Element el = new Element.JSONElement(MailConstants.E_MSG);
-  el.addAttribute(MailConstants.E_SUBJECT, "attach message");
-  el.addElement(MailConstants.E_EMAIL)
-    .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
-    .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
-  Element mp =
-    el.addUniqueElement(MailConstants.E_MIMEPART)
-      .addAttribute(MailConstants.A_CONTENT_TYPE, "multipart/mixed;");
-  mp.addElement(MailConstants.E_MIMEPART)
-    .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
-    .addAttribute(MailConstants.E_CONTENT, "This is the outer message.");
-  mp.addElement(MailConstants.E_MIMEPART)
-    .addAttribute(MailConstants.A_CONTENT_TYPE, "message/rfc822")
-    .addAttribute(
-      MailConstants.E_CONTENT,
-      "From: inner-sender@zimbra.com\r\n"
-        + "To: inner-rcpt@zimbra.com\r\n"
-        + "Subject: inner-message\r\n"
-        + "Content-Type: text/plain\r\n"
-        + "Content-Transfer-Encoding: 7bit\r\n"
-        + "MIME-Version: 1.0\r\n\r\n"
-        + "This is the inner message.");
-  rootEl.addUniqueElement(el);
+    Account acct = createAccount().create();
+    OperationContext octxt = new OperationContext(acct);
+    ZimbraSoapContext zsc = getMockSoapContext(acct);
 
-  Account acct = account;
-  OperationContext octxt = new OperationContext(acct);
-  ZimbraSoapContext zsc = getMockSoapContext();
+    MimeMessage mm = ParseMimeMessage.parseMimeMsgSoap(zsc, octxt, null, el, new MimeMessageData());
+    assertTrue(mm.getContentType().startsWith("multipart/mixed;"));
+    assertEquals("attach message", mm.getSubject());
+    assertEquals("rcpt@zimbra.com", mm.getHeader("To", ","));
+    MimeMultipart mmp = (MimeMultipart) mm.getContent();
+    assertEquals(2, mmp.getCount());
+    assertTrue(mmp.getContentType().startsWith("multipart/mixed;"));
 
-  MimeMessage mm =
-    ParseMimeMessage.parseMimeMsgSoap(
-      zsc, octxt, null, el, new MimeMessageData());
-  assertTrue(mm.getContentType().startsWith("multipart/mixed;"));
-  assertEquals("attach message", mm.getSubject());
-  assertEquals("rcpt@zimbra.com", mm.getHeader("To", ","));
-  MimeMultipart mmp = (MimeMultipart) mm.getContent();
-  assertEquals(2, mmp.getCount());
-  assertTrue(mmp.getContentType().startsWith("multipart/mixed;"));
+    MimeBodyPart part = (MimeBodyPart) mmp.getBodyPart(0);
+    assertEquals("text/plain; charset=utf-8", part.getContentType());
+    assertEquals("7bit", part.getHeader("Content-Transfer-Encoding", ","));
+    assertEquals("This is the outer message.", part.getContent());
 
-  MimeBodyPart part = (MimeBodyPart) mmp.getBodyPart(0);
-  assertEquals("text/plain; charset=utf-8", part.getContentType());
-  assertEquals("7bit", part.getHeader("Content-Transfer-Encoding", ","));
-  assertEquals("This is the outer message.", part.getContent());
+    part = (MimeBodyPart) mmp.getBodyPart(1);
+    assertEquals("message/rfc822; charset=utf-8", part.getContentType());
+    MimeMessage msg = (MimeMessage) part.getContent();
+    assertEquals("text/plain", msg.getContentType());
+    assertEquals("inner-message", msg.getSubject());
+    assertEquals("This is the inner message.", msg.getContent());
+  }
 
-  part = (MimeBodyPart) mmp.getBodyPart(1);
-  assertEquals("message/rfc822; charset=utf-8", part.getContentType());
-  MimeMessage msg = (MimeMessage) part.getContent();
-  assertEquals("text/plain", msg.getContentType());
-  assertEquals("inner-message", msg.getSubject());
-  assertEquals("This is the inner message.", msg.getContent());
- }
+  @Test
+  void shouldReturnElementWithGivenContentTypeWhenCalledGetFirstElementFromMimePartByType()
+      throws ServiceException {
+    // Setup
+    final Element jsonElement = new Element.JSONElement(MailConstants.E_MSG);
+    jsonElement.addAttribute(MailConstants.E_SUBJECT, "subject");
 
- @Test
- void shouldReturnElementWithGivenContentTypeWhenCalledGetFirstElementFromMimePartByType()
-   throws ServiceException {
-  // Setup
-  final Element jsonElement = new Element.JSONElement(MailConstants.E_MSG);
-  jsonElement.addAttribute(MailConstants.E_SUBJECT, "subject");
+    final Element multiMimePart =
+        jsonElement
+            .addUniqueElement(MailConstants.E_MIMEPART)
+            .addAttribute(MailConstants.A_CONTENT_TYPE, "multipart/alternative");
 
-  final Element multiMimePart =
-    jsonElement
-      .addUniqueElement(MailConstants.E_MIMEPART)
-      .addAttribute(MailConstants.A_CONTENT_TYPE, "multipart/alternative");
-
-  multiMimePart
-    .addNonUniqueElement(MailConstants.E_MIMEPART)
-    .addAttribute(MailConstants.A_CONTENT_TYPE, "text/html")
-    .addAttribute(MailConstants.E_CONTENT, "foo");
-
-  multiMimePart
-    .addNonUniqueElement(MailConstants.E_MIMEPART)
-    .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
-    .addAttribute(MailConstants.E_CONTENT, "loo");
-
-  multiMimePart
-    .addNonUniqueElement(MailConstants.E_MIMEPART)
-    .addAttribute(MailConstants.A_CONTENT_TYPE, "text/svg+xml")
-    .addAttribute(MailConstants.E_CONTENT, "too");
-
-  // Execute, first element with MimeConstants.CT_TEXT_PLAIN ContentType
-  final Optional<Element> expectedFirstTextMimePart =
-    ParseMimeMessage.getFirstElementFromMimePartByType(
-      jsonElement, MimeConstants.CT_TEXT_PLAIN);
-
-  // Verify, MimeConstants.CT_TEXT_PLAIN
-  assertTrue(expectedFirstTextMimePart.isPresent());
-  assertTrue(
     multiMimePart
-      .listElements(MailConstants.E_MIMEPART)
-      .contains(expectedFirstTextMimePart.get()));
-  assertEquals("loo", expectedFirstTextMimePart.get().getAttribute(MailConstants.E_CONTENT));
+        .addNonUniqueElement(MailConstants.E_MIMEPART)
+        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/html")
+        .addAttribute(MailConstants.E_CONTENT, "foo");
 
-  // Execute, first element with MimeConstants.CT_TEXT_HTML ContentType
-  final Optional<Element> expectedFirstTextHtmlMimePart =
-    ParseMimeMessage.getFirstElementFromMimePartByType(jsonElement, MimeConstants.CT_TEXT_HTML);
-
-  // Verify, MimeConstants.CT_TEXT_HTML
-  assertTrue(expectedFirstTextHtmlMimePart.isPresent());
-  assertTrue(
     multiMimePart
-      .listElements(MailConstants.E_MIMEPART)
-      .contains(expectedFirstTextHtmlMimePart.get()));
-  assertEquals("foo", expectedFirstTextHtmlMimePart.get().getAttribute(MailConstants.E_CONTENT));
- }
+        .addNonUniqueElement(MailConstants.E_MIMEPART)
+        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
+        .addAttribute(MailConstants.E_CONTENT, "loo");
 
+    multiMimePart
+        .addNonUniqueElement(MailConstants.E_MIMEPART)
+        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/svg+xml")
+        .addAttribute(MailConstants.E_CONTENT, "too");
+
+    // Execute, first element with MimeConstants.CT_TEXT_PLAIN ContentType
+    final Optional<Element> expectedFirstTextMimePart =
+        ParseMimeMessage.getFirstElementFromMimePartByType(
+            jsonElement, MimeConstants.CT_TEXT_PLAIN);
+
+    // Verify, MimeConstants.CT_TEXT_PLAIN
+    assertTrue(expectedFirstTextMimePart.isPresent());
+    assertTrue(
+        multiMimePart
+            .listElements(MailConstants.E_MIMEPART)
+            .contains(expectedFirstTextMimePart.get()));
+    assertEquals("loo", expectedFirstTextMimePart.get().getAttribute(MailConstants.E_CONTENT));
+
+    // Execute, first element with MimeConstants.CT_TEXT_HTML ContentType
+    final Optional<Element> expectedFirstTextHtmlMimePart =
+        ParseMimeMessage.getFirstElementFromMimePartByType(jsonElement, MimeConstants.CT_TEXT_HTML);
+
+    // Verify, MimeConstants.CT_TEXT_HTML
+    assertTrue(expectedFirstTextHtmlMimePart.isPresent());
+    assertTrue(
+        multiMimePart
+            .listElements(MailConstants.E_MIMEPART)
+            .contains(expectedFirstTextHtmlMimePart.get()));
+    assertEquals("foo", expectedFirstTextHtmlMimePart.get().getAttribute(MailConstants.E_CONTENT));
+  }
 
   private Message createDraftWithFileAttachment(Account account) throws Exception {
     final String accountName = account.getName();
-    final ParsedMessage message = new MailMessageBuilder()
-        .from(accountName)
-        .addRecipient(accountName)
-        .subject("Test email")
-        .body("Hello there")
-        .addAttachmentFromResources("/test-save-to-files.txt")
-        .build();
+    final ParsedMessage message =
+        new MailMessageBuilder()
+            .from(accountName)
+            .addRecipient(accountName)
+            .subject("Test email")
+            .body("Hello there")
+            .addAttachmentFromResources("/test-save-to-files.txt")
+            .build();
     return AccountAction.Factory.getDefault().forAccount(account).saveDraft(message);
   }
 
   private Message createDraft(Account account) throws Exception {
     final String accountName = account.getName();
-    final ParsedMessage message = new MailMessageBuilder()
-        .from(accountName)
-        .addRecipient(accountName)
-        .subject("Test email")
-        .body("Hello there")
-        .build();
+    final ParsedMessage message =
+        new MailMessageBuilder()
+            .from(accountName)
+            .addRecipient(accountName)
+            .subject("Test email")
+            .body("Hello there")
+            .build();
     return AccountAction.Factory.getDefault().forAccount(account).saveDraft(message);
-  }
-
-
-  private static ZimbraSoapContext getMockSoapContext() throws ServiceException {
-    ZimbraSoapContext parent =
-        new ZimbraSoapContext(
-            (Element) null,
-            (QName) null,
-            (DocumentHandler) null,
-            Collections.<String, Object>emptyMap(),
-            SoapProtocol.SoapJS);
-    return new ZimbraSoapContext(parent, account.getId(), null);
   }
 
   private ZimbraSoapContext getZimbraSoapContext(Account account) throws ServiceException {
@@ -680,7 +683,8 @@ public final class ParseMimeMessageTest {
     return (ZMimeMultipart) mm.getContent();
   }
 
-  private ZMimeMultipart getMimeMultiPart(BodyPart bodyPart) throws IOException, MessagingException {
+  private ZMimeMultipart getMimeMultiPart(BodyPart bodyPart)
+      throws IOException, MessagingException {
     return (ZMimeMultipart) bodyPart.getContent();
   }
 }

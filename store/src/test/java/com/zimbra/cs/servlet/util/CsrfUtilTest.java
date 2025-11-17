@@ -7,373 +7,350 @@ package com.zimbra.cs.servlet.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.easymock.EasyMock;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import com.google.common.collect.Maps;
 import com.google.common.net.HttpHeaders;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Pair;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ZimbraAuthToken;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import javax.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 
 /**
  * @author zimbra
- *
  */
-public class CsrfUtilTest {
+public class CsrfUtilTest extends MailboxTestSuite {
 
-    private static final long AUTH_TOKEN_EXPR = System.currentTimeMillis() + 60 * 1000 * 60;
-    private static final int CSRFTOKEN_SALT = 5;
-    private static final String ACCOUNT_ID = UUID.randomUUID().toString();
+	private static final long AUTH_TOKEN_EXPR = System.currentTimeMillis() + 60 * 1000 * 60;
+	private static final int CSRFTOKEN_SALT = 5;
+	private static Account acct;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @BeforeAll
-    public static void setUpBeforeClass() throws Exception {
-        byte[] nonce = new byte[16];
-        Random nonceGen = new Random();
-        nonceGen.nextBytes(nonce);
-        MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@BeforeAll
+	public static void setUpBeforeClass() throws Exception {
+		byte[] nonce = new byte[16];
+		Random nonceGen = new Random();
+		nonceGen.nextBytes(nonce);
+		acct = createAccount().create();
+	}
 
-        Map<String, Object> attrs = Maps.newHashMap();
-        attrs.put(Provisioning.A_zimbraId, ACCOUNT_ID);
-        prov.createAccount("test@zimbra.com", "secret", attrs);
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@AfterAll
+	public static void tearDownAfterClass() throws Exception {
+	}
 
-    }
+	@Test
+	final void testIsCsrfRequest() {
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @AfterAll
-    public static void tearDownAfterClass() throws Exception {
-    }
+		List<String> urlsWithDisabledCsrfCheck = new ArrayList<String>();
+		urlsWithDisabledCsrfCheck.add("/AuthRequest");
+		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+		Mockito.when(request.getMethod()).thenReturn("POST");
+		Mockito.when(request.getRequestURI()).thenReturn(
+				"service/soap/AuthRequest");
+		try {
+			boolean csrfReq = CsrfUtil.doCsrfCheck(request,
+					null);
+			assertEquals(false, csrfReq);
 
- /**
-  * Test method for
-  * {@link com.zimbra.cs.servlet.util.CsrfUtil#isCsrfRequest(javax.servlet.http.HttpServletRequest, boolean, java.util.List)}
-  * .
-  */
- @Test
- final void testIsCsrfRequest() {
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("Should not throw exception. ");
+		}
+	}
 
-  List<String> urlsWithDisabledCsrfCheck = new ArrayList<String>();
-  urlsWithDisabledCsrfCheck.add("/AuthRequest");
-  HttpServletRequest request = EasyMock
-    .createMock(HttpServletRequest.class);
-  EasyMock.expect(request.getMethod()).andReturn("POST");
-  EasyMock.expect(request.getRequestURI()).andReturn(
-    "service/soap/AuthRequest");
-  try {
-   EasyMock.replay(request);
-   boolean csrfReq = CsrfUtil.doCsrfCheck(request,
-     null);
-   assertEquals(false, csrfReq);
+	@Test
+	final void testIsCsrfRequestForGet() {
 
-  } catch (IOException e) {
-   e.printStackTrace();
-   fail("Should not throw exception. ");
-  }
- }
+		List<String> urlsWithDisabledCsrfCheck = new ArrayList<String>();
+		urlsWithDisabledCsrfCheck.add("/AuthRequest");
+		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+		Mockito.when(request.getMethod()).thenReturn("GET");
+		Mockito.when(request.getRequestURI()).thenReturn(
+				"service/soap/AuthRequest");
+		try {
+			
+			boolean csrfReq = CsrfUtil.doCsrfCheck(request,
+					null);
+			assertEquals(false, csrfReq);
 
- @Test
- final void testIsCsrfRequestForGet() {
-
-  List<String> urlsWithDisabledCsrfCheck = new ArrayList<String>();
-  urlsWithDisabledCsrfCheck.add("/AuthRequest");
-  HttpServletRequest request = EasyMock
-    .createMock(HttpServletRequest.class);
-  EasyMock.expect(request.getMethod()).andReturn("GET");
-  EasyMock.expect(request.getRequestURI()).andReturn(
-    "service/soap/AuthRequest");
-  try {
-   EasyMock.replay(request);
-   boolean csrfReq = CsrfUtil.doCsrfCheck(request,
-     null);
-   assertEquals(false, csrfReq);
-
-  } catch (IOException e) {
-   e.printStackTrace();
-   fail("Should not throw exception. ");
-  }
- }
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("Should not throw exception. ");
+		}
+	}
 
 
- @Test
- final void testDecodeValidCsrfToken() {
-  try {
-   Account acct = Provisioning.getInstance().getAccountByName(
-     "test@zimbra.com");
-   AuthToken authToken = new ZimbraAuthToken(acct);
+	@Test
+	final void testDecodeValidCsrfToken() {
+		try {
+			AuthToken authToken = new ZimbraAuthToken(acct);
 
-   String csrfToken = CsrfUtil.generateCsrfToken(acct.getId(),
-     AUTH_TOKEN_EXPR, CSRFTOKEN_SALT, authToken);
-   Pair<String, String> tokenParts = CsrfUtil.parseCsrfToken(csrfToken);
-   assertNotNull(tokenParts.getFirst());
-   assertNotNull(tokenParts.getSecond());
-   assertEquals("0", tokenParts.getSecond());
+			String csrfToken = CsrfUtil.generateCsrfToken(acct.getId(),
+					AUTH_TOKEN_EXPR, CSRFTOKEN_SALT, authToken);
+			Pair<String, String> tokenParts = CsrfUtil.parseCsrfToken(csrfToken);
+			assertNotNull(tokenParts.getFirst());
+			assertNotNull(tokenParts.getSecond());
+			assertEquals("0", tokenParts.getSecond());
 
-  } catch (ServiceException | AuthTokenException e) {
-   fail("Should not throw exception.");
-  }
- }
+		} catch (ServiceException | AuthTokenException e) {
+			fail("Should not throw exception.");
+		}
+	}
 
- @Test
- final void testIsValidCsrfTokenForAccountWithMultipleTokens() {
-  try {
-   Account acct = Provisioning.getInstance().getAccountByName(
-     "test@zimbra.com");
-   AuthToken authToken = new ZimbraAuthToken(acct);
+	@Test
+	final void testIsValidCsrfTokenForAccountWithMultipleTokens() {
+		try {
+			AuthToken authToken = new ZimbraAuthToken(acct);
 
-   String csrfToken1 = CsrfUtil.generateCsrfToken(acct.getId(),
-     AUTH_TOKEN_EXPR, CSRFTOKEN_SALT, authToken);
-   boolean validToken = CsrfUtil.isValidCsrfToken(csrfToken1, authToken);
-   assertTrue(validToken);
+			String csrfToken1 = CsrfUtil.generateCsrfToken(acct.getId(),
+					AUTH_TOKEN_EXPR, CSRFTOKEN_SALT, authToken);
+			boolean validToken = CsrfUtil.isValidCsrfToken(csrfToken1, authToken);
+			assertTrue(validToken);
 
 
-  } catch (ServiceException  e) {
-   fail("Should not throw exception.");
-  }
- }
+		} catch (ServiceException e) {
+			fail("Should not throw exception.");
+		}
+	}
 
- @Test
- final void testIsValidCsrfTokenForAccountWithNullAuthToken() {
-  try {
-   Account acct = Provisioning.getInstance().getAccountByName(
-     "test@zimbra.com");
-   AuthToken authToken = new ZimbraAuthToken(acct);
+	@Test
+	final void testIsValidCsrfTokenForAccountWithNullAuthToken() {
+		try {
+			AuthToken authToken = new ZimbraAuthToken(acct);
 
-   String csrfToken1 = CsrfUtil.generateCsrfToken(acct.getId(),
-     AUTH_TOKEN_EXPR, CSRFTOKEN_SALT, authToken);
-   boolean validToken = CsrfUtil.isValidCsrfToken(csrfToken1, null);
-   assertEquals(false, validToken);
+			String csrfToken1 = CsrfUtil.generateCsrfToken(acct.getId(),
+					AUTH_TOKEN_EXPR, CSRFTOKEN_SALT, authToken);
+			boolean validToken = CsrfUtil.isValidCsrfToken(csrfToken1, null);
+			assertEquals(false, validToken);
 
 
-  } catch (Exception  e) {
-   fail("Should not throw exception.");
-  }
- }
+		} catch (Exception e) {
+			fail("Should not throw exception.");
+		}
+	}
 
 
- @Test
- final void testIsCsrfRequestWhenCsrfCheckIsTurnedOn() {
+	@Test
+	final void testIsCsrfRequestWhenCsrfCheckIsTurnedOn() {
 
-  String []  allowedRefHost = new String [1];
-  HttpServletRequest request = EasyMock
-    .createMock(HttpServletRequest.class);
-  EasyMock.expect(request.getHeader(HttpHeaders.HOST)).andReturn(
-    "example.com");
-  EasyMock.expect(request.getServerName()).andReturn("example.com");
-  EasyMock.expect(request.getServerName()).andReturn("example.com");
-  EasyMock.expect(request.getHeader("X-Forwarded-Host")).andReturn(null);
-  EasyMock.expect(request.getMethod()).andReturn("POST");
-  EasyMock.expect(request.getHeader(HttpHeaders.REFERER)).andReturn(null);
+		String[] allowedRefHost = getAllowedRefHost();
+		HttpServletRequest request = Mockito
+				.mock(HttpServletRequest.class);
+		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
+				"example.com");
+		Mockito.when(request.getServerName()).thenReturn("example.com");
+		Mockito.when(request.getServerName()).thenReturn("example.com");
+		Mockito.when(request.getHeader("X-Forwarded-Host")).thenReturn(null);
+		Mockito.when(request.getMethod()).thenReturn("POST");
+		Mockito.when(request.getHeader(HttpHeaders.REFERER)).thenReturn(null);
 
-  try {
+		try {
 
-   EasyMock.replay(request);
-   boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
-   assertEquals(false, csrfReq);
+			
+			boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
+			assertEquals(false, csrfReq);
 
-  } catch (IOException e) {
-   e.printStackTrace();
-   fail("Should not throw exception. ");
-  }
- }
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("Should not throw exception. ");
+		}
+	}
 
- @Test
- final void testIsCsrfRequestForSameReferer() {
+	private static String[] getAllowedRefHost() {
+		return new String[]{"test"};
+	}
 
-  String []  allowedRefHost = new String [1];
-  HttpServletRequest request = EasyMock
-    .createMock(HttpServletRequest.class);
-  EasyMock.expect(request.getHeader(HttpHeaders.HOST)).andReturn(
-    "www.example.com");
-  EasyMock.expect(request.getServerName()).andReturn("www.example.com");
-  EasyMock.expect(request.getHeader("X-Forwarded-Host")).andReturn(null);
-  EasyMock.expect(request.getHeader(HttpHeaders.REFERER)).andReturn(
-    "http://www.example.com/zimbra/#15");
-  EasyMock.expect(request.getMethod()).andReturn("POST");
+	@Test
+	final void testIsCsrfRequestForSameReferer() {
 
-  try {
+		String[] allowedRefHost = getAllowedRefHost();
+		HttpServletRequest request = Mockito
+				.mock(HttpServletRequest.class);
+		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
+				"www.example.com");
+		Mockito.when(request.getServerName()).thenReturn("www.example.com");
+		Mockito.when(request.getHeader("X-Forwarded-Host")).thenReturn(null);
+		Mockito.when(request.getHeader(HttpHeaders.REFERER)).thenReturn(
+				"http://www.example.com/zimbra/#15");
+		Mockito.when(request.getMethod()).thenReturn("POST");
 
-   EasyMock.replay(request);
-   boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
-   assertEquals(false, csrfReq);
+		try {
 
-  } catch (IOException e) {
-   e.printStackTrace();
-   fail("Should not throw exception. ");
-  }
- }
+			
+			boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
+			assertEquals(false, csrfReq);
 
- @Test
- final void testIsCsrfRequestForRefererInMatchHost() {
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("Should not throw exception. ");
+		}
+	}
 
-  String []  allowedRefHost = new String [3];
-  allowedRefHost[0] = "www.newexample.com";
-  allowedRefHost[1] = "www.zextras.com:8080";
-  allowedRefHost[2] = "www.abc.com";
-  HttpServletRequest request = EasyMock
-    .createMock(HttpServletRequest.class);
-  EasyMock.expect(request.getHeader(HttpHeaders.HOST)).andReturn(
-    "example.com");
-  EasyMock.expect(request.getServerName()).andReturn("example.com");
-  EasyMock.expect(request.getHeader("X-Forwarded-Host")).andReturn(null);
-  EasyMock.expect(request.getHeader(HttpHeaders.REFERER)).andReturn(
-    "http://www.newexample.com");
-  EasyMock.expect(request.getMethod()).andReturn("POST");
+	@Test
+	final void testIsCsrfRequestForRefererInMatchHost() {
 
-  try {
-   EasyMock.replay(request);
-   boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
-   assertEquals(false, csrfReq);
+		String[] allowedRefHost = new String[3];
+		allowedRefHost[0] = "www.newexample.com";
+		allowedRefHost[1] = "www.zextras.com:8080";
+		allowedRefHost[2] = "www.abc.com";
+		HttpServletRequest request = Mockito
+				.mock(HttpServletRequest.class);
+		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
+				"example.com");
+		Mockito.when(request.getServerName()).thenReturn("example.com");
+		Mockito.when(request.getHeader("X-Forwarded-Host")).thenReturn(null);
+		Mockito.when(request.getHeader(HttpHeaders.REFERER)).thenReturn(
+				"http://www.newexample.com");
+		Mockito.when(request.getMethod()).thenReturn("POST");
 
-  } catch (IOException e) {
-   e.printStackTrace();
-   fail("Should not throw exception. ");
-  }
- }
+		try {
+			
+			boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
+			assertEquals(false, csrfReq);
 
- @Test
- final void testIsCsrfRequestForAllowedRefHostListEmptyAndNonMatchingHost() {
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("Should not throw exception. ");
+		}
+	}
 
-  String []  allowedRefHost = new String [1];
-  HttpServletRequest request = EasyMock
-    .createMock(HttpServletRequest.class);
-  EasyMock.expect(request.getHeader(HttpHeaders.HOST)).andReturn(
-    "example.com");
-  EasyMock.expect(request.getServerName()).andReturn("example.com");
-  EasyMock.expect(request.getHeader("X-Forwarded-Host")).andReturn(null);
-  EasyMock.expect(request.getHeader(HttpHeaders.REFERER)).andReturn(
-    "http://www.newexample.com");
-  EasyMock.expect(request.getMethod()).andReturn("POST");
+	@Test
+	final void testIsCsrfRequestForAllowedRefHostListEmptyAndNonMatchingHost() {
 
-  try {
+		String[] allowedRefHost = getAllowedRefHost();
+		HttpServletRequest request = Mockito
+				.mock(HttpServletRequest.class);
+		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
+				"example.com");
+		Mockito.when(request.getServerName()).thenReturn("example.com");
+		Mockito.when(request.getHeader("X-Forwarded-Host")).thenReturn(null);
+		Mockito.when(request.getHeader(HttpHeaders.REFERER)).thenReturn(
+				"http://www.newexample.com");
+		Mockito.when(request.getMethod()).thenReturn("POST");
 
-   EasyMock.replay(request);
-   boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
-   assertEquals(true, csrfReq);
+		try {
 
-  } catch (IOException e) {
-   e.printStackTrace();
-   fail("Should not throw exception. ");
-  }
- }
+			
+			boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
+			assertEquals(true, csrfReq);
 
- @Test
- final void testIsCsrfRequestForRefererNotInMatchHost() {
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("Should not throw exception. ");
+		}
+	}
 
-  String []  allowedRefHost = new String [3];
-  HttpServletRequest request = EasyMock
-    .createMock(HttpServletRequest.class);
-  EasyMock.expect(request.getHeader("X-Forwarded-Host")).andReturn(null);
-  EasyMock.expect(request.getHeader(HttpHeaders.HOST)).andReturn(
-    "example.com");
-  EasyMock.expect(request.getServerName()).andReturn("example.com");
-  EasyMock.expect(request.getHeader(HttpHeaders.REFERER)).andReturn(
-    "http://www.newexample.com");
-  EasyMock.expect(request.getMethod()).andReturn("POST");
+	@Test
+	final void testIsCsrfRequestForRefererNotInMatchHost() {
 
-  try {
-   EasyMock.replay(request);
-   boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
-   assertEquals(true, csrfReq);
-  } catch (IOException e) {
-   e.printStackTrace();
-   fail("Should not throw exception. ");
-  }
- }
+		String[] allowedRefHost = new String[3];
+		HttpServletRequest request = Mockito
+				.mock(HttpServletRequest.class);
+		Mockito.when(request.getHeader("X-Forwarded-Host")).thenReturn(null);
+		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
+				"example.com");
+		Mockito.when(request.getServerName()).thenReturn("example.com");
+		Mockito.when(request.getHeader(HttpHeaders.REFERER)).thenReturn(
+				"http://www.newexample.com");
+		Mockito.when(request.getMethod()).thenReturn("POST");
 
- @Test
- final void testIsCsrfRequestForSameRefererWithUrlHavingPort() {
+		try {
+			
+			boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
+			assertEquals(true, csrfReq);
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("Should not throw exception. ");
+		}
+	}
 
-  String []  allowedRefHost = new String [1];
-  HttpServletRequest request = EasyMock
-    .createMock(HttpServletRequest.class);
-  EasyMock.expect(request.getHeader(HttpHeaders.HOST)).andReturn(
-    "www.example.com:7070");
-  EasyMock.expect(request.getServerName()).andReturn(
-    "www.example.com:7070");
-  EasyMock.expect(request.getHeader("X-Forwarded-Host")).andReturn(null);
-  EasyMock.expect(request.getHeader(HttpHeaders.REFERER)).andReturn(
-    "http://www.example.com:7070");
-  EasyMock.expect(request.getMethod()).andReturn("POST");
-  try {
+	@Test
+	final void testIsCsrfRequestForSameRefererWithUrlHavingPort() {
 
-   EasyMock.replay(request);
-   boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
-   assertEquals(false, csrfReq);
+		String[] allowedRefHost = getAllowedRefHost();
+		HttpServletRequest request = Mockito
+				.mock(HttpServletRequest.class);
+		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
+				"www.example.com:7070");
+		Mockito.when(request.getServerName()).thenReturn(
+				"www.example.com:7070");
+		Mockito.when(request.getHeader("X-Forwarded-Host")).thenReturn(null);
+		Mockito.when(request.getHeader(HttpHeaders.REFERER)).thenReturn(
+				"http://www.example.com:7070");
+		Mockito.when(request.getMethod()).thenReturn("POST");
+		try {
 
-  } catch (IOException e) {
-   e.printStackTrace();
-   fail("Should not throw exception. ");
-  }
- }
+			
+			boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
+			assertEquals(false, csrfReq);
 
- @Test
- final void testIsCsrfRequestForSameRefererWithHttpsUrl() {
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("Should not throw exception. ");
+		}
+	}
 
-  String []  allowedRefHost = new String [1];
-  HttpServletRequest request = EasyMock
-    .createMock(HttpServletRequest.class);
-  EasyMock.expect(request.getHeader(HttpHeaders.HOST)).andReturn(
-    "mail.zimbra.com");
-  EasyMock.expect(request.getServerName()).andReturn("mail.zimbra.com");
-  EasyMock.expect(request.getHeader("X-Forwarded-Host")).andReturn(null);
-  EasyMock.expect(request.getHeader(HttpHeaders.REFERER)).andReturn(
-    "https://mail.zimbra.com/zimbra/");
-  EasyMock.expect(request.getMethod()).andReturn("POST");
-  try {
+	@Test
+	final void testIsCsrfRequestForSameRefererWithHttpsUrl() {
 
-   EasyMock.replay(request);
-   boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
-   assertEquals(false, csrfReq);
+		String[] allowedRefHost = getAllowedRefHost();
+		HttpServletRequest request = Mockito
+				.mock(HttpServletRequest.class);
+		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
+				"mail.zimbra.com");
+		Mockito.when(request.getServerName()).thenReturn("mail.zimbra.com");
+		Mockito.when(request.getHeader("X-Forwarded-Host")).thenReturn(null);
+		Mockito.when(request.getHeader(HttpHeaders.REFERER)).thenReturn(
+				"https://mail.zimbra.com/zimbra/");
+		Mockito.when(request.getMethod()).thenReturn("POST");
+		try {
 
-  } catch (IOException e) {
-   e.printStackTrace();
-   fail("Should not throw exception. ");
-  }
- }
+			
+			boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
+			assertEquals(false, csrfReq);
 
- @Test
- final void testIsCsrfRequestForSameRefererWithXFowardedHostHdr() {
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("Should not throw exception. ");
+		}
+	}
 
-  String []  allowedRefHost = new String [1];
-  HttpServletRequest request = EasyMock
-    .createMock(HttpServletRequest.class);
-  EasyMock.expect(request.getHeader("X-Forwarded-Host")).andReturn(
-    "mail.zimbra.com");
-  EasyMock.expect(request.getHeader(HttpHeaders.REFERER)).andReturn(
-    "https://mail.zimbra.com/zimbra/");
-  EasyMock.expect(request.getMethod()).andReturn("POST");
-  try {
+	@Test
+	final void testIsCsrfRequestForSameRefererWithXFowardedHostHdr() {
 
-   EasyMock.replay(request);
-   boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
-   assertEquals(false, csrfReq);
+		String[] allowedRefHost = getAllowedRefHost();
+		HttpServletRequest request = Mockito
+				.mock(HttpServletRequest.class);
+		Mockito.when(request.getHeader("X-Forwarded-Host")).thenReturn(
+				"mail.zimbra.com");
+		Mockito.when(request.getHeader(HttpHeaders.REFERER)).thenReturn(
+				"https://mail.zimbra.com/zimbra/");
+		Mockito.when(request.getMethod()).thenReturn("POST");
+		try {
 
-  } catch (IOException e) {
-   e.printStackTrace();
-   fail("Should not throw exception. ");
-  }
- }
+			
+			boolean csrfReq = CsrfUtil.isCsrfRequestBasedOnReferrer(request, allowedRefHost);
+			assertEquals(false, csrfReq);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("Should not throw exception. ");
+		}
+	}
 
 }

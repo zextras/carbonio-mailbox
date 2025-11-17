@@ -1,7 +1,7 @@
 package com.zimbra.cs.service.admin;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.CreateAccount;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Cos;
 import com.zimbra.cs.account.Provisioning;
@@ -20,83 +20,83 @@ import org.junit.jupiter.api.Test;
 
 @Tag("api")
 class CreateSystemRetentionPolicyTest extends SoapTestSuite {
-  private static CreateAccount.Factory createAccountFactory;
+  
 
   @BeforeAll
   static void setUp() {
-    createAccountFactory = getCreateAccountFactory();
+    
   }
 
   @Test
   void shouldSuccessfullyCreateSystemRetentionPolicy() throws Exception {
-    final Account adminAccount = createAccountFactory.get().asGlobalAdmin().create();
+    final Account adminAccount = createAccount().asGlobalAdmin().create();
     final CreateSystemRetentionPolicyRequest request = CreateSystemRetentionPolicyRequest.newPurgeRequest(
         Policy.newSystemPolicy("PurgePolicy", "10d"));
 
-    final HttpResponse response =
+    final SoapResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-    final String responseBody = EntityUtils.toString(response.getEntity());
+    Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
+    final String responseBody = response.body();
     Assertions.assertTrue(responseBody.contains("policy name=\"PurgePolicy\" lifetime=\"10d\""));
   }
 
   @Test
   void shouldSuccessfullyCreateSystemRetentionPolicyForCOS() throws Exception {
-    final Account adminAccount = createAccountFactory.get().asGlobalAdmin().create();
+    final Account adminAccount = createAccount().asGlobalAdmin().create();
     final Cos cos = Provisioning.getInstance().createCos("testCOS", new HashMap<>());
 
     final CreateSystemRetentionPolicyRequest request = CreateSystemRetentionPolicyRequest.newPurgeRequest(
         Policy.newSystemPolicy("PurgePolicy", "10d"));
     request.setCos(new CosSelector(CosBy.id, cos.getId()));
 
-    final HttpResponse response =
+    final SoapResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-    final String responseBody = EntityUtils.toString(response.getEntity());
+    Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
+    final String responseBody = response.body();
     Assertions.assertTrue(responseBody.contains("policy name=\"PurgePolicy\" lifetime=\"10d\""));
   }
 
   @Test
   void shouldDenyWhenNoSuchCOS() throws Exception {
-    final Account adminAccount = createAccountFactory.get().asGlobalAdmin().create();
+    final Account adminAccount = createAccount().asGlobalAdmin().create();
 
     final CreateSystemRetentionPolicyRequest request = CreateSystemRetentionPolicyRequest.newPurgeRequest(
         Policy.newSystemPolicy("PurgePolicy", "10d"));
     request.setCos(new CosSelector(CosBy.id, "No such COS"));
 
-    final HttpResponse response =
+    final SoapResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, response.getStatusLine().getStatusCode());
-    final String responseBody = EntityUtils.toString(response.getEntity());
+    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, response.statusCode());
+    final String responseBody = response.body();
     Assertions.assertTrue(responseBody.contains("no such cos: No such COS"));
   }
 
   @Test
   void shouldDenyWhenPurgeSystemRetentionPolicyNotSpecified() throws Exception {
-    final Account adminAccount = createAccountFactory.get().asGlobalAdmin().create();
+    final Account adminAccount = createAccount().asGlobalAdmin().create();
     final CreateSystemRetentionPolicyRequest request = new CreateSystemRetentionPolicyRequest();
 
-    final HttpResponse response =
+    final SoapResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, response.getStatusLine().getStatusCode());
-    final String responseBody = EntityUtils.toString(response.getEntity());
+    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, response.statusCode());
+    final String responseBody = response.body();
     Assertions.assertTrue(responseBody.contains("No purge policy specified."));
   }
 
   @Test
   void shouldDenyWhenNotAdminAccount() throws Exception {
-    final Account userAccount = createAccountFactory.get().create();
+    final Account userAccount = createAccount().create();
     final CreateSystemRetentionPolicyRequest request = new CreateSystemRetentionPolicyRequest();
 
-    final HttpResponse response =
+    final SoapResponse response =
         getSoapClient().newRequest().setCaller(userAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, response.getStatusLine().getStatusCode());
-    final String responseBody = EntityUtils.toString(response.getEntity());
+    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, response.statusCode());
+    final String responseBody = response.body();
     Assertions.assertTrue(responseBody.contains("permission denied: need adequate admin token"));
   }
 }

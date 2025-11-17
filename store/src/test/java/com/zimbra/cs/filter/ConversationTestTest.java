@@ -7,6 +7,7 @@ package com.zimbra.cs.filter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.AccountUtil;
 import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.cs.account.Account;
@@ -31,89 +32,83 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-public final class ConversationTestTest {
+public final class ConversationTestTest extends MailboxTestSuite {
 
- @BeforeAll
- public static void init() throws Exception {
-  MailboxTestUtil.initServer();
- }
+	@Test
+	void participated() throws Exception {
+		Account account = createAccount().create();
+		RuleManager.clearCachedRules(account);
+		account.setMailSieveScript("if conversation :where \"participated\" { tag \"participated\"; }");
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
- @BeforeEach
- public void setUp() throws Exception {
-  MailboxTestUtil.clearData();
- }
+		mbox.addMessage(new OperationContext(mbox),
+				new ParsedMessage("From: test1@zimbra.com\nSubject: test".getBytes(), false),
+				MailboxTest.STANDARD_DELIVERY_OPTIONS, new DeliveryContext());
 
- @Test
- void participated() throws Exception {
-  Account account = AccountUtil.createAccount();
-  RuleManager.clearCachedRules(account);
-  account.setMailSieveScript("if conversation :where \"participated\" { tag \"participated\"; }");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+		List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+				new ParsedMessage("From: test1@zimbra.com\nSubject: Re: test".getBytes(), false), 0,
+				account.getName(),
+				new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+		assertEquals(1, ids.size());
+		Message msg = mbox.getMessageById(null, ids.get(0).getId());
+		assertEquals(0, msg.getTags().length);
 
-  mbox.addMessage(new OperationContext(mbox),
-    new ParsedMessage("From: test1@zimbra.com\nSubject: test".getBytes(), false),
-    MailboxTest.STANDARD_DELIVERY_OPTIONS, new DeliveryContext());
+		DeliveryOptions dopt = new DeliveryOptions();
+		dopt.setFolderId(Mailbox.ID_FOLDER_SENT);
+		dopt.setFlags(Flag.BITMASK_FROM_ME);
+		mbox.addMessage(new OperationContext(mbox),
+				new ParsedMessage("From: test@zimbra.com\nSubject: Re: test".getBytes(), false),
+				dopt, new DeliveryContext());
 
-  List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
-    new ParsedMessage("From: test1@zimbra.com\nSubject: Re: test".getBytes(), false), 0, account.getName(),
-    new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-  assertEquals(1, ids.size());
-  Message msg = mbox.getMessageById(null, ids.get(0).getId());
-  assertEquals(0, msg.getTags().length);
+		ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+				new ParsedMessage("From: test1@zimbra.com\nSubject: Re: test".getBytes(), false), 0,
+				account.getName(),
+				new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+		assertEquals(1, ids.size());
+		msg = mbox.getMessageById(null, ids.get(0).getId());
+		assertEquals("participated", ArrayUtil.getFirstElement(msg.getTags()));
+	}
 
-  DeliveryOptions dopt = new DeliveryOptions();
-  dopt.setFolderId(Mailbox.ID_FOLDER_SENT);
-  dopt.setFlags(Flag.BITMASK_FROM_ME);
-  mbox.addMessage(new OperationContext(mbox),
-    new ParsedMessage("From: test@zimbra.com\nSubject: Re: test".getBytes(), false),
-    dopt, new DeliveryContext());
+	@Test
+	void started() throws Exception {
+		Account account = createAccount().create();
+		RuleManager.clearCachedRules(account);
+		account.setMailSieveScript("if conversation :where \"started\" { tag \"started\"; }");
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-  ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
-    new ParsedMessage("From: test1@zimbra.com\nSubject: Re: test".getBytes(), false), 0, account.getName(),
-    new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-  assertEquals(1, ids.size());
-  msg = mbox.getMessageById(null, ids.get(0).getId());
-  assertEquals("participated", ArrayUtil.getFirstElement(msg.getTags()));
- }
+		mbox.addMessage(new OperationContext(mbox),
+				new ParsedMessage("From: test1@zimbra.com\nSubject: test".getBytes(), false),
+				MailboxTest.STANDARD_DELIVERY_OPTIONS, new DeliveryContext());
 
- @Test
- void started() throws Exception {
-  Account account = AccountUtil.createAccount();
-  RuleManager.clearCachedRules(account);
-  account.setMailSieveScript("if conversation :where \"started\" { tag \"started\"; }");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+		DeliveryOptions dopt = new DeliveryOptions();
+		dopt.setFolderId(Mailbox.ID_FOLDER_SENT);
+		dopt.setFlags(Flag.BITMASK_FROM_ME);
+		mbox.addMessage(new OperationContext(mbox),
+				new ParsedMessage("From: test@zimbra.com\nSubject: Re: test".getBytes(), false),
+				dopt, new DeliveryContext());
 
-  mbox.addMessage(new OperationContext(mbox),
-    new ParsedMessage("From: test1@zimbra.com\nSubject: test".getBytes(), false),
-    MailboxTest.STANDARD_DELIVERY_OPTIONS, new DeliveryContext());
+		List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+				new ParsedMessage("From: test1@zimbra.com\nSubject: Re: test".getBytes(), false), 0,
+				account.getName(),
+				new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+		assertEquals(1, ids.size());
+		Message msg = mbox.getMessageById(null, ids.get(0).getId());
+		assertEquals(0, msg.getTags().length);
 
-  DeliveryOptions dopt = new DeliveryOptions();
-  dopt.setFolderId(Mailbox.ID_FOLDER_SENT);
-  dopt.setFlags(Flag.BITMASK_FROM_ME);
-  mbox.addMessage(new OperationContext(mbox),
-    new ParsedMessage("From: test@zimbra.com\nSubject: Re: test".getBytes(), false),
-    dopt, new DeliveryContext());
+		dopt = new DeliveryOptions();
+		dopt.setFolderId(Mailbox.ID_FOLDER_SENT);
+		dopt.setFlags(Flag.BITMASK_FROM_ME);
+		mbox.addMessage(new OperationContext(mbox),
+				new ParsedMessage("From: test@zimbra.com\nSubject: test1".getBytes(), false),
+				dopt, new DeliveryContext());
 
-  List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
-    new ParsedMessage("From: test1@zimbra.com\nSubject: Re: test".getBytes(), false), 0, account.getName(),
-    new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-  assertEquals(1, ids.size());
-  Message msg = mbox.getMessageById(null, ids.get(0).getId());
-  assertEquals(0, msg.getTags().length);
-
-  dopt = new DeliveryOptions();
-  dopt.setFolderId(Mailbox.ID_FOLDER_SENT);
-  dopt.setFlags(Flag.BITMASK_FROM_ME);
-  mbox.addMessage(new OperationContext(mbox),
-    new ParsedMessage("From: test@zimbra.com\nSubject: test1".getBytes(), false),
-    dopt, new DeliveryContext());
-
-  ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
-    new ParsedMessage("From: test1@zimbra.com\nSubject: Re: test1".getBytes(), false), 0, account.getName(),
-    new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-  assertEquals(1, ids.size());
-  msg = mbox.getMessageById(null, ids.get(0).getId());
-  assertEquals("started", ArrayUtil.getFirstElement(msg.getTags()));
- }
+		ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+				new ParsedMessage("From: test1@zimbra.com\nSubject: Re: test1".getBytes(), false), 0,
+				account.getName(),
+				new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+		assertEquals(1, ids.size());
+		msg = mbox.getMessageById(null, ids.get(0).getId());
+		assertEquals("started", ArrayUtil.getFirstElement(msg.getTags()));
+	}
 
 }

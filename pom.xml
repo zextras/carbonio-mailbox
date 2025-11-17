@@ -59,6 +59,11 @@
         <version>${jetty.version}</version>
       </dependency>
       <dependency>
+        <groupId>io.opentelemetry</groupId>
+        <artifactId>opentelemetry-api</artifactId>
+        <version>1.35.0</version>
+      </dependency>
+      <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-servlets</artifactId>
         <version>${jetty.version}</version>
@@ -151,7 +156,7 @@
       <dependency>
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
-        <version>1.5</version>
+        <version>1.6.0</version>
       </dependency>
       <dependency>
         <groupId>com.zextras.carbonio.files</groupId>
@@ -378,8 +383,23 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
+        <groupId>com.zextras</groupId>
+        <artifactId>mailbox-native</artifactId>
+        <version>4.23.1</version>
+      </dependency>
+      <dependency>
+        <groupId>com.zextras</groupId>
+        <artifactId>mailbox-attribute-manager</artifactId>
+        <version>4.24.1</version>
+      </dependency>
+      <dependency>
         <groupId>zextras</groupId>
-        <artifactId>zm-native</artifactId>
+        <artifactId>right-manager</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>zextras</groupId>
+        <artifactId>mailbox-ldap-lib</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -435,11 +455,6 @@
         <version>${mockito.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.easymock</groupId>
-        <artifactId>easymock</artifactId>
-        <version>5.2.0</version>
-      </dependency>
-      <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-core</artifactId>
         <version>2.10.0</version>
@@ -472,7 +487,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>${jackson.version}.2</version>
+        <version>${jackson.version}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
@@ -767,12 +782,11 @@
   <groupId>zextras</groupId>
   <modelVersion>4.0.0</modelVersion>
   <modules>
+    <module>common</module>
+    <module>right-manager</module>
+    <module>client</module>
     <module>soap</module>
     <module>store</module>
-    <module>client</module>
-    <module>common</module>
-    <module>native</module>
-    <module>store-conf</module>
     <module>store-extra-runtime-dependencies</module>
     <module>jython-libs</module>
   </modules>
@@ -788,9 +802,9 @@
     </test.argLine>
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jetty.version>9.4.56.v20240826</jetty.version>
+    <jetty.version>9.4.57.v20241219</jetty.version>
     <lucene.version>3.5.0</lucene.version>
-    <jackson.version>2.12.7</jackson.version>
+    <jackson.version>2.15.4</jackson.version>
     <bouncycastle.version>1.78.1</bouncycastle.version>
     <asm.version>8.0.1</asm.version>
     <guava.version>33.3.1-jre</guava.version>
@@ -800,41 +814,35 @@
     <dom4j.version>2.1.4</dom4j.version>
     <hsqldb.version>2.7.1</hsqldb.version>
     <mockito.version>5.2.0</mockito.version>
-    <unboundid-ldapsdk.version>2.3.5</unboundid-ldapsdk.version>
+    <unboundid-ldapsdk.version>4.0.5</unboundid-ldapsdk.version>
     <jsr305.version>3.0.2</jsr305.version>
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
-    <jersey.version>1.11</jersey.version>
+    <jersey.version>1.13</jersey.version>
     <carbonio-message-broker-sdk.version>0.1.2</carbonio-message-broker-sdk.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
     <!-- Mailbox version -->
-    <revision>25.9.0</revision>
+    <revision>25.12.0</revision>
     <mockserver.version>5.13.0</mockserver.version>
     <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
   </properties>
+  <distributionManagement>
+    <repository>
+      <id>artifactory</id>
+      <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
+    </repository>
+      <snapshotRepository>
+        <id>artifactory</id>
+        <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
+      </snapshotRepository>
+  </distributionManagement>
   <version>${revision}${changelist}</version>
   <profiles>
-    <!-- Allows deploy to Zextras public maven repo -->
     <profile>
       <id>prod</id>
-      <distributionManagement>
-        <repository>
-          <id>artifactory</id>
-          <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
-        </repository>
-      </distributionManagement>
       <properties>
         <changelist></changelist>
       </properties>
-    </profile>
-    <profile>
-      <id>dev</id>
-      <distributionManagement>
-        <snapshotRepository>
-          <id>artifactory</id>
-          <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
-        </snapshotRepository>
-      </distributionManagement>
     </profile>
   </profiles>
 
@@ -844,14 +852,6 @@
       <url>https://repo1.maven.org/maven2/</url>
     </repository>
     <repository>
-      <id>maven-redhat</id>
-      <url>https://maven.repository.redhat.com/ga/</url>
-    </repository>
-    <repository>
-      <id>nexus</id>
-      <url>https://repository.liferay.com/nexus/content/repositories/public/</url>
-    </repository>
-    <repository>
       <id>fuse</id>
       <url>https://repo.fusesource.com/maven2/</url>
     </repository>
@@ -859,19 +859,22 @@
       <id>zextras-java-sdk</id>
       <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
     </repository>
+    <repository>
+      <id>zextras-public-snapshots</id>
+      <name>Zextras public maven snapshot repository</name>
+      <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
   </repositories>
   <pluginRepositories>
     <pluginRepository>
       <id>central</id>
       <url>https://repo1.maven.org/maven2/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>maven-redhat</id>
-      <url>https://maven.repository.redhat.com/ga/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>nexus</id>
-      <url>https://repository.liferay.com/nexus/content/repositories/public/</url>
     </pluginRepository>
     <pluginRepository>
       <id>fuse</id>
@@ -905,15 +908,8 @@
                   <pathconvert property="compile_classpath_value" refid="maven.compile.classpath" />
                   <pathconvert property="runtime_classpath_value" refid="maven.runtime.classpath" />
                   <pathconvert property="test_classpath_value" refid="maven.test.classpath" />
-                  <!--mvn
-                  properties shared with all modules while building project-->
                   <propertyfile file="${project.build.directory}/mvn-ant-shared-build.properties">
-                    <!--required
-                    to set carbonio.buildinfo.version-->
-                    <entry key="mvn_revision" value="${revision}" />
-
-                    <!--properties
-                    needed by some ant tasks-->
+                    <!-- used during generate soap docs task -->
                     <entry key="compile_classpath" value="${compile_classpath_value}" />
                     <entry key="runtime_classpath" value="${runtime_classpath_value}" />
                     <entry key="test_classpath" value="${test_classpath_value}" />
@@ -1024,16 +1020,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.1.0</version>
-          <dependencies>
-            <!--
-            https://github-wiki-see.page/m/GoogleCloudPlatform/cloud-opensource-java/wiki/Linkage-Checker-Enforcer-Rule -->
-            <dependency>
-              <groupId>com.google.cloud.tools</groupId>
-              <artifactId>linkage-checker-enforcer-rules</artifactId>
-              <version>1.5.7</version>
-            </dependency>
-          </dependencies>
+          <version>3.6.1</version>
           <executions>
             <execution>
               <id>list-conflicts</id>
@@ -1055,33 +1042,6 @@
                   <dependencyConvergence />
                 </rules>
               </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        <!-- Analyze conflicts that can occur at runtime when forcing dependency -->
-        <plugin>
-          <groupId>com.spotify</groupId>
-          <artifactId>missinglink-maven-plugin</artifactId>
-          <version>0.2.5</version>
-          <configuration>
-            <failOnConflicts>true</failOnConflicts>
-            <excludeDependencies>
-              <excludeDependency>
-                <groupId>net.spy</groupId>
-                <artifactId>spymemcached</artifactId>
-              </excludeDependency>
-              <excludeDependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-              </excludeDependency>
-            </excludeDependencies>
-          </configuration>
-          <executions>
-            <execution>
-              <goals>
-                <goal>check</goal>
-              </goals>
-              <phase>process-classes</phase>
             </execution>
           </executions>
         </plugin>
@@ -1110,6 +1070,11 @@
               </goals>
             </execution>
           </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.openrewrite.maven</groupId>
+          <artifactId>rewrite-recipe-bom</artifactId>
+          <version>6.16.1</version>
         </plugin>
       </plugins>
     </pluginManagement>

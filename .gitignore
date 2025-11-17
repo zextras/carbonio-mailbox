@@ -40,3 +40,7 @@ target/
 /store/ldap/generated/
 /data/
 /node_modules/
+/mailbox-ldap-lib/ldap/generated/
+/attribute-manager/
+/store/cacerts
+/store/cacerts_trusted

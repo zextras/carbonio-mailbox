@@ -6,130 +6,127 @@ package com.zimbra.cs.redolog.op;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.mailbox.MailboxOperation;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.redolog.RedoLogManager;
 import com.zimbra.cs.redolog.RedoLogOutput;
 import com.zimbra.cs.redolog.TransactionId;
-import org.easymock.EasyMock;
-import org.easymock.EasyMockSupport;
-import org.junit.jupiter.api.BeforeAll;
+import java.io.InputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.io.InputStream;
+import org.mockito.Mockito;
+import org.mockito.quality.Strictness;
 
-public class RedoableOpTest extends EasyMockSupport {
-    private RedoLogManager mgr;
-    private RedoableOp op;
+public class RedoableOpTest extends MailboxTestSuite {
 
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-    }
+	private RedoLogManager mgr;
+	private RedoableOp op;
 
-    @BeforeEach
-    public void setUp() {
-        mgr = createStrictMock(RedoLogManager.class);
-        op = createMockBuilder(RedoableOp.class)
-                 .withConstructor(MailboxOperation.CopyItem, mgr)
-                 .addMockedMethod("toString")
-                 .createMock();
-    }
+	@BeforeEach
+	public void setUp() {
+		mgr = Mockito.mock(RedoLogManager.class, Mockito.withSettings().strictness(Strictness.STRICT_STUBS));
 
- @Test
- void constructor() {
-  assertNull(op.getTransactionId());
-  assertEquals(RedoableOp.UNKNOWN_ID, op.getMailboxId());
-  assertTrue(op.isStartMarker());
-  assertFalse(op.isEndMarker());
-  assertFalse(op.isDeleteOp());
- }
+		op = Mockito.mock(RedoableOp.class,
+				Mockito.withSettings()
+						.useConstructor(MailboxOperation.CopyItem, mgr)
+						.defaultAnswer(Mockito.CALLS_REAL_METHODS));
 
- @Test
- void startLogCommit() {
-  final TransactionId txnId = new TransactionId(1, 2);
-  EasyMock.expect(mgr.getNewTxnId()).andReturn(txnId);
-  mgr.log(op, false);
-  mgr.commit(op);
-  replayAll();
+		Mockito.doReturn("mocked-toString").when(op).toString();
+	}
 
-  op.start(7);
-  assertEquals(txnId, op.getTransactionId());
-  assertEquals(7, op.getTimestamp());
-  op.log(false);
-  op.setSerializedByteArray(new byte[3]);
-  op.commit();
-  assertNull(op.mSerializedByteArrayVector,
-    "Commit clears byte array.");
-  verifyAll();
- }
+	@Test
+	void constructor() {
+		assertNull(op.getTransactionId());
+		assertEquals(RedoableOp.UNKNOWN_ID, op.getMailboxId());
+		assertTrue(op.isStartMarker());
+		assertFalse(op.isEndMarker());
+		assertFalse(op.isDeleteOp());
+	}
 
- @Test
- void inactiveOp() {
-  replayAll();
-  op.commit();
-  op.abort();
-  // no calls to mock expected, op is not active until log()
-  verifyAll();
- }
+	@Test
+	void startLogCommit() {
+		final TransactionId txnId = new TransactionId(1, 2);
+		Mockito.when(mgr.getNewTxnId()).thenReturn(txnId);
+		mgr.log(op, false);
+		mgr.commit(op);
+		
 
- @Test
- void serialize() throws Exception {
-  op = createMockBuilder(RedoableOp.class)
-    .withConstructor(MailboxOperation.CopyItem, mgr)
-    .addMockedMethod("getTransactionId")
-    .createMock();
+		op.start(7);
+		assertEquals(txnId, op.getTransactionId());
+		assertEquals(7, op.getTimestamp());
+		op.log(false);
+		op.setSerializedByteArray(new byte[3]);
+		op.commit();
+		assertNull(op.mSerializedByteArrayVector,
+				"Commit clears byte array.");
+		
+	}
 
-  EasyMock.expect(op.getTransactionId())
-    .andReturn(new TransactionId(1, 2));
-  op.serializeData(EasyMock.anyObject(RedoLogOutput.class));
-  replayAll();
-  InputStream out = op.getInputStream();
-  assertNotNull(op.mSerializedByteArrayVector,
-    "getInputStream sets up internal vector.");
-  assertEquals(46, out.available(), "available bytes != 46");
-  byte[] bytes = new byte[RedoableOp.REDO_MAGIC.length()];
-  out.read(bytes);
-  assertEquals(RedoableOp.REDO_MAGIC, new String(bytes), "REDO_MAGIC missing in serialize.");
-  verifyAll();
- }
+	@Test
+	void inactiveOp() {
+		
+		op.commit();
+		op.abort();
+		// no calls to mock expected, op is not active until log()
+		
+	}
 
- @Test
- void chainedCommit() {
-  mgr.log(op, false);
-  mgr.commit(op);
+	@Test
+	void serialize() throws Exception {
+		op = Mockito.mock(RedoableOp.class,
+				Mockito.withSettings()
+						.useConstructor(MailboxOperation.CopyItem, mgr)
+						.defaultAnswer(Mockito.CALLS_REAL_METHODS));
 
-  RedoableOp subOp = createMock(RedoableOp.class);
-  subOp.commit();
-  replayAll();
-  op.addChainedOp(subOp);
+		Mockito.when(op.getTransactionId())
+				.thenReturn(new TransactionId(1, 2));
+		op.serializeData(Mockito.any(RedoLogOutput.class));
+		
+		InputStream out = op.getInputStream();
+		assertNotNull(op.mSerializedByteArrayVector,
+				"getInputStream sets up internal vector.");
+		assertEquals(46, out.available(), "available bytes != 46");
+		byte[] bytes = new byte[RedoableOp.REDO_MAGIC.length()];
+		out.read(bytes);
+		assertEquals(RedoableOp.REDO_MAGIC, new String(bytes), "REDO_MAGIC missing in serialize.");
+		
+	}
 
-  op.log(false);
-  op.commit();
-  verifyAll();
- }
+	@Test
+	void chainedCommit() {
+		mgr.log(op, false);
+		mgr.commit(op);
 
- @Test
- void chainedAbort() {
-  mgr.log(op, false);
-  mgr.abort(op);
+		RedoableOp subOp = Mockito.mock(RedoableOp.class);
+		subOp.commit();
+		
+		op.addChainedOp(subOp);
 
-  RedoableOp subOp = createMock(RedoableOp.class);
-  subOp.abort();
-  replayAll();
-  op.addChainedOp(subOp);
+		op.log(false);
+		op.commit();
+		
+	}
 
-  op.log(false);
-  op.abort();
-  verifyAll();
- }
+	@Test
+	void chainedAbort() {
+		mgr.log(op, false);
+		mgr.abort(op);
 
- @Test
- void checkSubclasses() throws Exception {
-  assertTrue(RedoableOp.checkSubclasses(),
-    "Some RedoableOp subclasses are incomplete.  "
-      + "Hint: Make sure the subclass defines a default"
-      + " constructor.");
-  MailboxTestUtil.clearData();
- }
+		RedoableOp subOp = Mockito.mock(RedoableOp.class);
+		subOp.abort();
+		
+		op.addChainedOp(subOp);
+
+		op.log(false);
+		op.abort();
+		
+	}
+
+	@Test
+	void checkSubclasses() throws Exception {
+		assertTrue(RedoableOp.checkSubclasses(),
+				"Some RedoableOp subclasses are incomplete.  "
+						+ "Hint: Make sure the subclass defines a default"
+						+ " constructor.");
+	}
 }

@@ -1,10 +1,10 @@
 package com.zimbra.cs.service.mail;
 
-import com.zextras.mailbox.util.CreateAccount;
 import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -38,21 +38,12 @@ import org.junit.jupiter.api.Test;
 @Tag("api")
 class DeleteCalendarTest extends SoapTestSuite {
 
-  private static CreateAccount.Factory createAccountFactory;
-  private static Provisioning provisioning;
-
   private Account account;
   private Mailbox mbox;
 
-  @BeforeAll
-  static void init() {
-    provisioning = Provisioning.getInstance();
-    createAccountFactory = getCreateAccountFactory();
-  }
-
   @BeforeEach
   void setUp() throws Exception {
-    account = createAccountFactory.get().create();
+    account = createAccount().create();
     mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   }
 
@@ -65,8 +56,8 @@ class DeleteCalendarTest extends SoapTestSuite {
 
     var soapResponse = getSoapClient().executeSoap(account, request);
     
-    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, soapResponse.getStatusLine().getStatusCode());
-    var responseBody = EntityUtils.toString(soapResponse.getEntity());
+    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, soapResponse.statusCode());
+    var responseBody = soapResponse.body();
     assertTrue(responseBody.contains("Item with ID " + folderId + " is NOT a calendar"));
   }
 
@@ -107,7 +98,7 @@ class DeleteCalendarTest extends SoapTestSuite {
     request.setCalendarIds(calendarIds);
 
     var soapResponse = getSoapClient().executeSoap(acc, request);
-    assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
     final var response = parseSoapResponse(soapResponse, CreateCalendarGroupResponse.class);
     return response.getGroup();
   }
@@ -117,7 +108,7 @@ class DeleteCalendarTest extends SoapTestSuite {
 
     final var request = new DeleteCalendarRequest(folderActionSelector);
     var soapResponse = getSoapClient().executeSoap(acc, request);
-    assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
     return parseSoapResponse(soapResponse, DeleteCalendarResponse.class);
   }
 
@@ -135,7 +126,7 @@ class DeleteCalendarTest extends SoapTestSuite {
     folder.setDefaultView(type.toString());
     final var createFolderRequest = new CreateFolderRequest(folder);
     final var createFolderResponse = getSoapClient().executeSoap(account, createFolderRequest);
-    assertEquals(HttpStatus.SC_OK, createFolderResponse.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, createFolderResponse.statusCode());
     return parseSoapResponse(createFolderResponse, CreateFolderResponse.class).getFolder();
   }
 
@@ -144,13 +135,13 @@ class DeleteCalendarTest extends SoapTestSuite {
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
 
-    assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, soapResponse.statusCode());
     return parseSoapResponse(soapResponse, GetCalendarGroupsResponse.class).getGroups();
   }
 
-  private static <T> T parseSoapResponse(HttpResponse httpResponse, Class<T> clazz)
+  private static <T> T parseSoapResponse(SoapResponse soapResponse, Class<T> clazz)
           throws IOException, ServiceException {
-    final var responseBody = EntityUtils.toString(httpResponse.getEntity());
+    final var responseBody = soapResponse.body();
     final var rootElement =
             parseXML(responseBody)
                     .getElement("Body")

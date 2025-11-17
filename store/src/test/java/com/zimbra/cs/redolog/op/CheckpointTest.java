@@ -4,60 +4,55 @@
 
 package com.zimbra.cs.redolog.op;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.zimbra.cs.mailbox.MailboxTestUtil;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.redolog.RedoLogInput;
 import com.zimbra.cs.redolog.RedoLogOutput;
 import com.zimbra.cs.redolog.TransactionId;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.LinkedHashSet;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class CheckpointTest {
-    private Checkpoint op;
+public class CheckpointTest extends MailboxTestSuite {
 
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-    }
+	private Checkpoint op;
 
- @Test
- void testDefaultConstructor() {
-  op = new Checkpoint();
-  assertEquals(0, op.getNumActiveTxns());
-  assertNull(op.getTransactionId());
- }
 
- @Test
- void testSetConstructor() {
-  LinkedHashSet<TransactionId> txns = new LinkedHashSet<TransactionId>();
-  txns.add(new TransactionId(1, 2));
-  txns.add(new TransactionId(3, 4));
+	@Test
+	void testDefaultConstructor() {
+		op = new Checkpoint();
+		assertEquals(0, op.getNumActiveTxns());
+		assertNull(op.getTransactionId());
+	}
 
-  op = new Checkpoint(txns);
-  assertEquals(new TransactionId(), op.getTransactionId());
-  assertEquals(2, op.getNumActiveTxns(), "expected 2 active transactions.");
-  assertEquals(txns, op.getActiveTxns(), "Transactions don't match.");
- }
+	@Test
+	void testSetConstructor() {
+		LinkedHashSet<TransactionId> txns = new LinkedHashSet<TransactionId>();
+		txns.add(new TransactionId(1, 2));
+		txns.add(new TransactionId(3, 4));
 
- @Test
- void serializeDeserialize() throws Exception {
-  LinkedHashSet<TransactionId> txns = new LinkedHashSet<TransactionId>();
-  txns.add(new TransactionId(1, 2));
-  txns.add(new TransactionId(3, 4));
+		op = new Checkpoint(txns);
+		assertEquals(new TransactionId(), op.getTransactionId());
+		assertEquals(2, op.getNumActiveTxns(), "expected 2 active transactions.");
+		assertEquals(txns, op.getActiveTxns(), "Transactions don't match.");
+	}
 
-  op = new Checkpoint(txns);
-  ByteArrayOutputStream out = new ByteArrayOutputStream();
-  op.serializeData(new RedoLogOutput(out));
+	@Test
+	void serializeDeserialize() throws Exception {
+		LinkedHashSet<TransactionId> txns = new LinkedHashSet<TransactionId>();
+		txns.add(new TransactionId(1, 2));
+		txns.add(new TransactionId(3, 4));
 
-  // reset op
-  op = new Checkpoint();
-  op.deserializeData(
-    new RedoLogInput(new ByteArrayInputStream(out.toByteArray())));
-  assertEquals(txns, op.getActiveTxns(), "Transactions don't match after deserialize.");
- }
+		op = new Checkpoint(txns);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		op.serializeData(new RedoLogOutput(out));
+
+		// reset op
+		op = new Checkpoint();
+		op.deserializeData(
+				new RedoLogInput(new ByteArrayInputStream(out.toByteArray())));
+		assertEquals(txns, op.getActiveTxns(), "Transactions don't match after deserialize.");
+	}
 }

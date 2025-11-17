@@ -3,7 +3,7 @@ package com.zimbra.cs.service.admin;
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.CreateAccount;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,19 +32,19 @@ import org.junit.jupiter.api.Test;
 @Tag("api")
 public class FlushCacheTest extends SoapTestSuite {
 
-    private static CreateAccount.Factory createAccountFactory;
+
     private static Provisioning provisioning;
 
     @BeforeAll
     public static void setUp() {
         provisioning = Provisioning.getInstance();
-        createAccountFactory = getCreateAccountFactory();
+
     }
 
     @Test
     public void shouldFlushCacheAccount_IfHasServerFlushRights() throws Exception {
-        final Account account = createAccountFactory.get().create();
-        final Account domainAdminAccount = createAccountFactory.get()
+        final Account account = createAccount().create();
+        final Account domainAdminAccount = createAccount()
                 .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE").create();
         grantFlushCacheRight(domainAdminAccount);
 
@@ -56,7 +55,7 @@ public class FlushCacheTest extends SoapTestSuite {
 
     @Test
     public void shouldFlushCacheDomain_IfHasServerFlushRights() throws Exception {
-        final Account domainAdminAccount = createAccountFactory.get()
+        final Account domainAdminAccount = createAccount()
                 .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE").create();
         final Domain domain = provisioning.getDomainById(domainAdminAccount.getDomainId());
         grantFlushCacheRight(domainAdminAccount);
@@ -68,7 +67,7 @@ public class FlushCacheTest extends SoapTestSuite {
 
     @Test
     public void shouldFlushCacheOfAnotherDomain_IfHasServerFlushRights() throws Exception {
-        final Account domainAdminAccount = createAccountFactory.get()
+        final Account domainAdminAccount = createAccount()
                 .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE").create();
         final Domain domain = provisioning.createDomain("otherDomain.com", new HashMap<>());
         grantFlushCacheRight(domainAdminAccount);
@@ -80,7 +79,7 @@ public class FlushCacheTest extends SoapTestSuite {
 
     @Test
     public void shouldFlushCacheServer_IfHasServerFlushRights() throws Exception {
-        final Account domainAdminAccount = createAccountFactory.get()
+        final Account domainAdminAccount = createAccount()
                 .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE").create();
         final Server server = provisioning.getServer(domainAdminAccount);
         grantFlushCacheRight(domainAdminAccount);
@@ -92,7 +91,7 @@ public class FlushCacheTest extends SoapTestSuite {
 
     @Test
     public void shouldFlushCacheOfAnotherServer_IfHasServerFlushRights() throws Exception {
-        final Account domainAdminAccount = createAccountFactory.get()
+        final Account domainAdminAccount = createAccount()
                 .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE").create();
         final Server server = provisioning.createServer(
                 "otherServer",
@@ -106,8 +105,8 @@ public class FlushCacheTest extends SoapTestSuite {
 
     @Test
     public void shouldReject_IfNoServerFlushRights() throws Exception {
-        final Account account = createAccountFactory.get().create();
-        final Account domainAdminAccount = createAccountFactory.get()
+        final Account account = createAccount().create();
+        final Account domainAdminAccount = createAccount()
                 .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE").create();
 
         final CacheSelector cacheSelector = cacheSelector(CacheEntryType.account, account.getId());
@@ -137,20 +136,20 @@ public class FlushCacheTest extends SoapTestSuite {
         return cacheSelector;
     }
 
-    private HttpResponse doCall(Account caller, CacheSelector cacheSelector) throws Exception {
+    private SoapResponse doCall(Account caller, CacheSelector cacheSelector) throws Exception {
         final FlushCacheRequest request = new FlushCacheRequest(cacheSelector);
         return getSoapClient().newRequest().setCaller(caller).setSoapBody(request).execute();
     }
 
-    private void assertOk(HttpResponse response) {
+    private void assertOk(SoapResponse response) {
         assertStatus(response, HttpStatus.SC_OK);
     }
 
-    private void assertFailure(HttpResponse response) {
+    private void assertFailure(SoapResponse response) {
         assertStatus(response, HttpStatus.SC_UNPROCESSABLE_ENTITY);
     }
 
-    private void assertStatus(HttpResponse response, int status) {
-        Assertions.assertEquals(status, response.getStatusLine().getStatusCode());
+    private void assertStatus(SoapResponse response, int status) {
+        Assertions.assertEquals(status, response.statusCode());
     }
 }

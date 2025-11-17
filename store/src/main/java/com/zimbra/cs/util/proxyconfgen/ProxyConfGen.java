@@ -1481,7 +1481,7 @@ public class ProxyConfGen {
             "https",
             ProxyConfValueType.STRING,
             ProxyConfOverride.SERVER,
-            "Reverse Proxy Mail Mode - can be https|redirect"));
+            "Reverse Proxy Mail Mode - can be https|redirect|both"));
     mConfVars.put(
         "web.server_name.default",
         new ProxyConfVar(
@@ -2332,6 +2332,9 @@ public class ProxyConfGen {
       expandTemplate(
           new File(mTemplateDir, getWebHttpModeConfTemplate("redirect")),
           new File(mConfIncludesDir, getWebHttpModeConf("redirect")));
+      expandTemplate(
+          new File(mTemplateDir, getWebHttpModeConfTemplate("both")),
+          new File(mConfIncludesDir, getWebHttpModeConf("both")));
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("web.carbonio.admin.default")),
           new File(mConfIncludesDir, getConfFileName("web.carbonio.admin.default")));

@@ -6,7 +6,6 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.soap.SoapUtils;
-import com.zextras.mailbox.util.CreateAccount;
 import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.mailbox.FolderConstants;
 import com.zimbra.common.service.ServiceException;
@@ -66,7 +65,7 @@ import org.junit.jupiter.api.Test;
 class ModifyAppointmentTest extends SoapTestSuite {
 
   private static MailboxManager mailboxManager;
-  private static CreateAccount.Factory createAccountFactory;
+  
   private static GreenMail greenMail;
 
   @BeforeAll
@@ -81,7 +80,7 @@ class ModifyAppointmentTest extends SoapTestSuite {
     var provisioning = Provisioning.getInstance();
     provisioning.getLocalServer().setSmtpPort(smtpPort);
     mailboxManager = MailboxManager.getInstance();
-    createAccountFactory = getCreateAccountFactory();
+    
   }
 
   private static CalendarItem getCalendarItemById(Account account, String id) throws ServiceException {
@@ -102,8 +101,8 @@ class ModifyAppointmentTest extends SoapTestSuite {
 
   @Test
   void should_reset_participationStatus_when_dateTime_is_modified() throws Exception {
-    var organizer = createAccountFactory.get().withUsername(UUID.randomUUID().toString()).create();
-    var attendee = createAccountFactory.get().withUsername(UUID.randomUUID().toString()).create();
+    var organizer = createAccount().withUsername(UUID.randomUUID().toString()).create();
+    var attendee = createAccount().withUsername(UUID.randomUUID().toString()).create();
     var eventTitle = "Event Title";
     var timezone = "Asia/Calcutta";
     var startTime = "20250907T163000";
@@ -136,8 +135,8 @@ class ModifyAppointmentTest extends SoapTestSuite {
 
   @Test
   void modify_appointment_should_throw_no_such_item_exception_when_item_not_found() throws Exception {
-    var organizer = createAccountFactory.get().withUsername(UUID.randomUUID().toString()).create();
-    var attendee = createAccountFactory.get().withUsername(UUID.randomUUID().toString()).create();
+    var organizer = createAccount().withUsername(UUID.randomUUID().toString()).create();
+    var attendee = createAccount().withUsername(UUID.randomUUID().toString()).create();
     var eventTitle = "Event Title";
     var timezone = "Asia/Calcutta";
     var startTime = "20250907T163000";
@@ -156,8 +155,8 @@ class ModifyAppointmentTest extends SoapTestSuite {
 
   @Test
   void modify_appointment_should_throw_invalid_reuqest_exception_when_item_is_in_trash() throws Exception {
-    var organizer = createAccountFactory.get().withUsername(UUID.randomUUID().toString()).create();
-    var attendee = createAccountFactory.get().withUsername(UUID.randomUUID().toString()).create();
+    var organizer = createAccount().withUsername(UUID.randomUUID().toString()).create();
+    var attendee = createAccount().withUsername(UUID.randomUUID().toString()).create();
     var eventTitle = "Event Title";
     var timezone = "Asia/Calcutta";
     var startTime = "20250907T163000";
@@ -183,8 +182,8 @@ class ModifyAppointmentTest extends SoapTestSuite {
 
   @Test
   void shouldNotifyAllAttendees_WhenUpdatingAppointment_OnASharedCalendar() throws Exception {
-    var userA = createAccountFactory.get().withUsername("userA").create();
-    var userB = createAccountFactory.get().withUsername("userB").create();
+    var userA = createAccount().withUsername("userA").create();
+    var userB = createAccount().withUsername("userB").create();
     var userC = "userC@test.com";
 
     var userACalendar = getFirstCalendar(userA);
@@ -347,8 +346,8 @@ class ModifyAppointmentTest extends SoapTestSuite {
 
     var response = getSoapClient().executeSoap(authenticatedAccount,
         modifyAppointmentRequest);
-    var soapResponse = SoapUtils.getResponse(response);
-    Assertions.assertEquals(200, response.getStatusLine().getStatusCode(),
+    var soapResponse = response.body();
+    Assertions.assertEquals(200, response.statusCode(),
         "ModifyAppointment failed with: \n" + soapResponse);
 
     return SoapUtils.getSoapResponse(soapResponse, MailConstants.E_MODIFY_APPOINTMENT_RESPONSE,
@@ -368,7 +367,7 @@ class ModifyAppointmentTest extends SoapTestSuite {
     }});
     var response = getSoapClient().executeSoap(authenticatedAccount,
         shareNotificationRequest);
-    Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
+    Assertions.assertEquals(200, response.statusCode());
     return SoapUtils.getSoapResponse(response, MailConstants.E_SEND_SHARE_NOTIFICATION_RESPONSE,
         SendShareNotificationResponse.class);
   }
@@ -387,7 +386,7 @@ class ModifyAppointmentTest extends SoapTestSuite {
     var folderActionRequest = new FolderActionRequest(grantRequest);
     var response = getSoapClient().executeSoap(authenticatedAccount,
         folderActionRequest);
-    Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
+    Assertions.assertEquals(200, response.statusCode());
     return SoapUtils.getSoapResponse(response, MailConstants.E_FOLDER_ACTION_RESPONSE,
         FolderActionResponse.class);
   }

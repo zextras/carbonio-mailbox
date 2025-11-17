@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.admin;
 
+import com.zimbra.cs.account.accesscontrol.TargetTypeLookup;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class GetGrants extends RightDocumentHandler {
 
             // check if the authed admin has right to view grants on the desired target
             TargetType tt = TargetType.fromCode(targetType);
-            Entry targetEntry = TargetType.lookupTarget(prov, tt, targetBy, target);
+            Entry targetEntry = TargetTypeLookup.lookupTarget(prov, tt, targetBy, target);
 
             // targetEntry cannot be null by now, because lookupTarget would have thrown
             // if the specified target does not exist
@@ -73,7 +74,7 @@ public class GetGrants extends RightDocumentHandler {
         for (RightCommand.ACE ace : grants.getACEs()) {
             TargetType tt = TargetType.fromCode(ace.targetType());
             // has to look up target by name, because zimlet can only be looked up by name
-            Entry targetEntry = TargetType.lookupTarget(prov, tt, TargetBy.name, ace.targetName());
+            Entry targetEntry = TargetTypeLookup.lookupTarget(prov, tt, TargetBy.name, ace.targetName());
             String targetKey = ace.targetType() + "-" + ace.targetId();
             if (!OKedTarget.contains(targetKey)) {
                 checkRight(zsc, targetEntry, Admin.R_viewGrants);

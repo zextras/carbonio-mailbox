@@ -13,7 +13,7 @@ import com.zimbra.cs.account.DistributionList;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.DynamicGroup;
 import com.zimbra.cs.account.Entry;
-import com.zimbra.cs.account.Entry.EntryType;
+import com.zimbra.cs.account.EntryType;
 import com.zimbra.cs.account.Identity;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.Signature;

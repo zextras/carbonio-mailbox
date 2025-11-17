@@ -3,7 +3,6 @@ package com.zimbra.cs.service.mail;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.CreateAccount;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.JSONElement;
@@ -38,19 +37,19 @@ import org.junit.jupiter.api.Test;
 class CreateCalendarItemExceptionTest  extends SoapTestSuite {
 
   private static MailboxManager mailboxManager;
-  private static CreateAccount.Factory createAccountFactory;
+  
 
   @BeforeAll
   static void setUpClass() throws Exception {
     var provisioning = Provisioning.getInstance();
     mailboxManager = MailboxManager.getInstance();
-    createAccountFactory = getCreateAccountFactory();
+    
   }
 
   @Test
   void should_reset_participationStatus_when_dateTime_is_modified() throws Exception {
-    var organizer = createAccountFactory.get().withUsername(UUID.randomUUID().toString()).create();
-    var attendee = createAccountFactory.get().withUsername(UUID.randomUUID().toString()).create();
+    var organizer = createAccount().withUsername(UUID.randomUUID().toString()).create();
+    var attendee = createAccount().withUsername(UUID.randomUUID().toString()).create();
     var eventTitle = "Event Title";
     var timezone = "Asia/Calcutta";
     var startTime = "20250907T163000";

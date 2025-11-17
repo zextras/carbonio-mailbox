@@ -21,7 +21,9 @@ import com.zimbra.cs.account.AutoProvisionThread;
 import com.zimbra.cs.account.ExternalAccountManagerTask;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
+import com.zimbra.cs.account.StoreAttributeManager;
 import com.zimbra.cs.account.accesscontrol.RightManager;
+import com.zimbra.cs.account.ldap.LdapAttributeCallbackHelper;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.Versions;
@@ -36,7 +38,6 @@ import com.zimbra.cs.mailbox.acl.AclPushTask;
 import com.zimbra.cs.memcached.MemcachedConnector;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.server.ServerManager;
-import com.zimbra.cs.servlet.FirstServlet;
 import com.zimbra.cs.session.SessionCache;
 import com.zimbra.cs.session.WaitSetMgr;
 import com.zimbra.cs.stats.ZimbraPerf;
@@ -64,11 +65,7 @@ public final class Zimbra {
     throw new IllegalStateException("Utility class");
   }
 
-  /**
-   * Sets system properties before the server fully starts up. Note that there's a potential race
-   * condition if {@link FirstServlet} or another servlet faults in classes or references properties
-   * before they're set here.
-   */
+
   private static void setSystemProperties() {
     System.setProperty("mail.mime.decodetext.strict", "false");
     System.setProperty("mail.mime.encodefilename", "true");
@@ -192,9 +189,6 @@ public final class Zimbra {
     if (sInited) return;
 
     sIsMailboxd = forMailboxd;
-    if (sIsMailboxd) {
-      FirstServlet.waitForInitialization();
-    }
 
     Provisioning prov = Provisioning.getInstance();
     Server server = prov.getLocalServer();
@@ -233,7 +227,7 @@ public final class Zimbra {
     if (prov instanceof LdapProv) {
       ((LdapProv) prov).waitForLdapServer();
       if (forMailboxd) {
-        AttributeManager.loadLdapSchemaExtensionAttrs((LdapProv) prov);
+        LdapAttributeCallbackHelper.get(StoreAttributeManager.getInstance()).loadLdapSchemaExtensionAttrs((LdapProv) prov);
       }
     }
 

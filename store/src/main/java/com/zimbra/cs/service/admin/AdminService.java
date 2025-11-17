@@ -14,12 +14,18 @@ import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.rmgmt.RemoteCertbot;
+import com.zimbra.cs.rmgmt.RemoteManager;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
+import io.vavr.Function2;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @zm-service-description The Admin Service includes commands for server, account and mailbox
@@ -27,6 +33,14 @@ import java.util.Map;
  * @since May 26, 2004
  */
 public class AdminService implements DocumentService {
+
+  private Function<RemoteManager, RemoteCertbot> getCertBotSupplier() {
+      return RemoteCertbot::getRemoteCertbot;
+  }
+
+  private Function2<Mailbox, Domain, CertificateNotificationManager> getNotificationManagerSupplier() {
+    return CertificateNotificationManager::getCertificateNotificationManager;
+  }
 
   @Override
   public void registerHandlers(DocumentDispatcher dispatcher) throws ServiceException {
@@ -80,7 +94,7 @@ public class AdminService implements DocumentService {
         AdminConstants.GET_ACCOUNT_MEMBERSHIP_REQUEST, new GetAccountMembership());
 
     // certbot
-    dispatcher.registerHandler(AdminConstants.ISSUE_CERT_REQUEST, new IssueCert());
+    dispatcher.registerHandler(AdminConstants.ISSUE_CERT_REQUEST, new IssueCert(getCertBotSupplier(), getNotificationManagerSupplier()));
 
     // domain
     dispatcher.registerHandler(AdminConstants.CREATE_DOMAIN_REQUEST, new CreateDomain());

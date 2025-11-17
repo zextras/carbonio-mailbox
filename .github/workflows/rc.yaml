@@ -1,0 +1,18 @@
+name: Open PR for RC
+
+on:
+  push:
+    branches:
+      - "rc"
+
+jobs:
+  create_pr_repo_sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create pull request
+        id: open-pr
+        uses: repo-sync/pull-request@v2
+        with:
+          destination_branch: "main"
+          pr_title: "chore: RC"

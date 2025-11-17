@@ -7,30 +7,18 @@ package com.zimbra.cs.mailbox;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zextras.mailbox.util.AccountUtil;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.util.Constants;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.util.TypedIdList;
 import java.util.List;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ConversationTest {
-
- @BeforeAll
- public static void init() throws Exception {
-  MailboxTestUtil.initServer();
- }
-
- @BeforeEach
- public void setUp() throws Exception {
-  MailboxTestUtil.clearData();
- }
+public class ConversationTest extends MailboxTestSuite {
 
  @Test
  void delete() throws Exception {
-  final Account account = AccountUtil.createAccount();
+  final Account account = createAccount().create();
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   mbox.beginTrackingSync();
   // root message in Inbox
@@ -70,7 +58,7 @@ public class ConversationTest {
 
  @Test
  void expiry() throws Exception {
-  Account account = AccountUtil.createAccount();
+  Account account = createAccount().create();
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   // root message in Inbox
