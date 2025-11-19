@@ -1,9 +1,9 @@
 library(
-        identifier: 'jenkins-packages-build-library@1.0.4',
+        identifier: 'jenkins-lib-common@1.1.2',
         retriever: modernSCM([
-                $class       : 'GitSCMSource',
-                remote       : 'git@github.com:zextras/jenkins-packages-build-library.git',
-                credentialsId: 'jenkins-integration-with-github-account'
+                $class: 'GitSCMSource',
+                credentialsId: 'jenkins-integration-with-github-account',
+                remote: 'git@github.com:zextras/jenkins-lib-common.git',
         ])
 )
 
@@ -37,9 +37,6 @@ pipeline {
 
     parameters {
         booleanParam defaultValue: false,
-                description: 'Upload packages in playground repositories.',
-                name: 'PLAYGROUND'
-        booleanParam defaultValue: false,
                 description: 'Skip test and sonar analysis.',
                 name: 'SKIP_TEST_WITH_COVERAGE'
         booleanParam defaultValue: false,
@@ -47,20 +44,17 @@ pipeline {
                 name: 'SKIP_SONARQUBE'
     }
 
-    tools {
-        jfrog 'jfrog-cli'
-    }
-
     triggers {
         cron(env.BRANCH_NAME == 'devel' ? 'H 5 * * *' : '')
     }
 
     stages {
-        stage('Checkout') {
+        stage('Setup') {
             steps {
                 checkout scm
                 script {
                     gitMetadata()
+                    properties(defaultPipelineProperties())
                 }
             }
         }
@@ -152,45 +146,26 @@ pipeline {
             }
         }
 
-        stage('Publish containers') {
-            when {
-                expression {
-                    return isBuildingTag() || env.BRANCH_NAME == 'devel'
-                }
-            }
+        stage('Publish docker images') {
             steps {
-                container('dind') {
-                    withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                        script {
-                            Set<String> tagVersions = []
-                            if (isBuildingTag()) {
-                                tagVersions = [env.TAG_NAME, 'stable']
-                            } else {
-                                tagVersions = ['devel', 'latest']
-                            }
-                            dockerHelper.buildImage([
-                                    dockerfile: 'docker/mailbox/Dockerfile',
-                                    imageName : 'registry.dev.zextras.com/dev/carbonio-mailbox',
-                                    imageTags : tagVersions,
-                                    ocLabels  : [
-                                            title          : 'Carbonio Mailbox',
-                                            descriptionFile: 'docker/mailbox/description.md',
-                                            version        : tagVersions[0]
-                                    ]
-                            ])
-                            dockerHelper.buildImage([
-                                    dockerfile: 'docker/mariadb/Dockerfile',
-                                    imageName : 'registry.dev.zextras.com/dev/carbonio-mariadb',
-                                    imageTags : tagVersions,
-                                    ocLabels  : [
-                                            title          : 'Carbonio MariaDB',
-                                            descriptionFile: 'docker/mariadb/description.md',
-                                            version        : tagVersions[0]
-                                    ]
-                            ])
-                        }
-                    }
-                }
+                dockerStage([
+                        dockerfile: 'docker/mailbox/Dockerfile',
+                        imageName : 'carbonio-mailbox',
+                        ocLabels  : [
+                            title          : 'Carbonio Mailbox',
+                            descriptionFile: 'docker/mailbox/description.md',
+                            version        : "${isBuildingTag() ? env.TAG_NAME : 'devel'}"
+                        ]
+                ])
+                dockerStage([
+                        dockerfile: 'docker/mariadb/Dockerfile',
+                        imageName : 'carbonio-mariadb',
+                        ocLabels  : [
+                                title          : 'Carbonio MariaDB',
+                                descriptionFile: 'docker/mariadb/description.md',
+                                version        : "${isBuildingTag() ? env.TAG_NAME : 'devel'}"
+                        ]
+                ])
             }
         }
 
@@ -213,12 +188,15 @@ pipeline {
         }
 
         stage('Upload artifacts')
-                {
-                    steps {
-                        uploadStage(
-                                packages: yapHelper.getPackageNames('staging/packages/yap.json')
-                        )
-                    }
-                }
+        {
+            tools {
+                jfrog 'jfrog-cli'
+            }
+            steps {
+                uploadStage(
+                        packages: yapHelper.getPackageNames('staging/packages/yap.json')
+                )
+            }
+        }
     }
 }
