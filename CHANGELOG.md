@@ -1,5 +1,12 @@
 
 
+## 4.23.3 (2025-11-27)
+
+
+### Bug Fixes
+
+* [CO-2836] handle calendar groups with no calendarIds ([#868](https://github.com/zextras/carbonio-mailbox/issues/868)) ([407b661](https://github.com/zextras/carbonio-mailbox/commit/407b66131fa792dc349453aaf724f5bfb38b7f30))
+
 ## 4.23.2 (2025-11-17)
 
 ## [4.23.1](https://github.com/zextras/carbonio-mailbox/compare/4.23.0...4.23.1) (2025-09-01)
