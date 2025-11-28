@@ -3,11 +3,13 @@ package com.zimbra.cs.service.mail;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
+import com.zimbra.cs.mailbox.MailItem.CustomMetadata;
 import com.zimbra.cs.mailbox.Metadata;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class CalendarGroupCodec {
@@ -19,8 +21,12 @@ public class CalendarGroupCodec {
     }
 
     protected static List<String> decodeCalendarIds(Folder group) throws ServiceException {
+        final CustomMetadata customData = group.getCustomData(CALENDAR_IDS_SECTION_KEY);
+        if (Objects.isNull(customData)) {
+            return List.of();
+        }
         final var encodedList =
-                group.getCustomData(CALENDAR_IDS_SECTION_KEY).get(CALENDAR_IDS_METADATA_KEY);
+                customData.get(CALENDAR_IDS_METADATA_KEY);
         return !encodedList.isEmpty()
                 ? Arrays.stream(encodedList.split(LIST_SEPARATOR)).toList()
                 : List.of();
