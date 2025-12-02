@@ -82,6 +82,9 @@ pipeline {
         }
 
         stage('Scan for vulnerabilities') {
+            tools {
+                jfrog 'jfrog-cli'
+            }
             steps {
                 container('jfrog') {
                     script{
@@ -90,6 +93,8 @@ pipeline {
                         // sh './frogbot scan-pull-request'
                     }
                 }
+                jf 'c add --url=$JF_URL --access-token=$JF_ACCESS_TOKEN'
+                jf 'audit --sast --format=sarif > jfrog_sast.sarif'
             }
         }
 
