@@ -328,7 +328,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
                   singleton =
                       (Provisioning) klass.getConstructor(CacheMode.class).newInstance(cacheMode);
                 } catch (NoSuchMethodException e) {
-                  ZimbraLog.account.error(
+                  ZimbraLog.account.info(
                       "could not find constructor with CacheMode parameter '"
                           + className
                           + "'; defaulting to LdapProvisioning",
@@ -338,7 +338,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
                 singleton = (Provisioning) klass.newInstance();
               }
             } catch (Exception e) {
-              ZimbraLog.account.error(
+              ZimbraLog.account.info(
                   "could not instantiate Provisioning interface of class '"
                       + className
                       + "'; defaulting to LdapProvisioning",
