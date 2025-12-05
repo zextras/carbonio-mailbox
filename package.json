@@ -6,7 +6,7 @@
   },
   "devDependencies": {
     "release-it": "^17.10.0",
-    "@release-it/conventional-changelog": "^9.0.3",
+    "@release-it/conventional-changelog": "^9.0.4",
     "@release-it/bumper": "^6.0.1"
   }
 }
