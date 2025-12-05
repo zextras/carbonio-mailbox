@@ -368,17 +368,17 @@
         <version>3.1.0</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
+        <groupId>com.zextras</groupId>
         <artifactId>zm-common</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
+        <groupId>com.zextras</groupId>
         <artifactId>zm-client</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
+        <groupId>com.zextras</groupId>
         <artifactId>zm-soap</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -393,28 +393,28 @@
         <version>4.24.1</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
+        <groupId>com.zextras</groupId>
         <artifactId>right-manager</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
+        <groupId>com.zextras</groupId>
         <artifactId>mailbox-ldap-lib</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
+        <groupId>com.zextras</groupId>
         <artifactId>zm-store</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
+        <groupId>com.zextras</groupId>
         <artifactId>zm-store</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
+        <groupId>com.zextras</groupId>
         <artifactId>store-extra-runtime-dependencies</artifactId>
         <type>pom</type>
         <version>${project.version}</version>
@@ -779,7 +779,7 @@
     </dependencies>
   </dependencyManagement>
 
-  <groupId>zextras</groupId>
+  <groupId>com.zextras</groupId>
   <modelVersion>4.0.0</modelVersion>
   <modules>
     <module>common</module>
@@ -822,7 +822,7 @@
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
     <!-- Mailbox version -->
-    <revision>26.3.0</revision>
+    <revision>4.23.3</revision>
     <mockserver.version>5.13.0</mockserver.version>
     <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
   </properties>
