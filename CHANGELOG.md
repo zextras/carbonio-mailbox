@@ -1,5 +1,12 @@
 
 
+## 4.23.4 (2025-12-05)
+
+
+### Bug Fixes
+
+* [CO-2946] ldap client startup logs ([#890](https://github.com/zextras/carbonio-mailbox/issues/890)) ([9abb278](https://github.com/zextras/carbonio-mailbox/commit/9abb27820fa008863fb1c6eb8f5f8b9a053da981))
+
 ## 4.23.3 (2025-11-27)
 
 

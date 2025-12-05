@@ -249,7 +249,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 		}
 	}
 
-  private LdapProvisioning(CacheMode cacheMode) throws LdapException {
+  public LdapProvisioning(CacheMode cacheMode) throws LdapException {
     this(cacheMode, LdapClient.getInstanceIfLDAPavailable());
   }
 
