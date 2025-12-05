@@ -39,14 +39,7 @@ JAVA_OPTS="-Dfile.encoding=UTF-8 -server \
                          -Dzimbra.native.required=false \
                          -Dlog4j.configurationFile=/opt/zextras/conf/log4j.properties \
                          -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/*"
-if [ -z "${TRACING_OPTIONS}" ]; then
-  exec java ${JAVA_OPTS} \
-    -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 \
-    com.zextras.mailbox.Mailbox
-else
-  exec java -javaagent:/opt/zextras/opentelemetry-javaagent.jar \
-    ${JAVA_OPTS} \
-    ${TRACING_OPTIONS} \
-    -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 \
-    com.zextras.mailbox.Mailbox
-fi
+
+exec java ${JAVA_OPTS} \
+  -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 \
+  com.zextras.mailbox.Mailbox

@@ -95,8 +95,7 @@ ENV LDAP_URL="ldap://openldap:1389" \
     MARIADB_PORT=3306 \
     CARBONIO_FILES_SERVICE_URL="http://carbonio-files:10000" \
     CARBONIO_PREVIEW_SERVICE_URL="http://carbonio-preview:10000" \
-    MAILBOXD_JAVA_OPTS="-Xss256k -Xms1996m -Xmx1996m" \
-    TRACING_OPTIONS=""
+    MAILBOXD_JAVA_OPTS="-Xss256k -Xms1996m -Xmx1996m"
 
 COPY docker/mailbox/entrypoint.sh .
 
