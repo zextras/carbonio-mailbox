@@ -23,16 +23,11 @@ import com.zimbra.cs.rmgmt.RemoteCertbot;
 import com.zimbra.cs.rmgmt.RemoteCommands;
 import com.zimbra.cs.rmgmt.RemoteManager;
 import com.zimbra.cs.service.AuthProvider;
-import com.zimbra.cs.service.MockHttpServletRequest;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -53,11 +48,6 @@ public class IssueCertTest extends MailboxTestSuite {
   private Provisioning provisioning;
   private Account accountMakingRequest;
   private Domain domain;
-
-  @BeforeAll
-  static void init() {
-      MockedStatic<RemoteManager> staticRemoteManager = mockStatic(RemoteManager.class);
-  }
 
   private static IssueCert getIssueCert() {
     return new IssueCert((RemoteManager remoteManager) -> remoteCertbot, (Mailbox mbox, Domain domain) -> notificationManager);
@@ -99,6 +89,8 @@ public class IssueCertTest extends MailboxTestSuite {
 
   @Test
   void handleShouldSupplyAsyncAndReturnResponse() throws Exception {
+    try (MockedStatic<RemoteManager> ignored = mockStatic(RemoteManager.class)) {
+
     var request = getRequest(domain.getId());
     domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
     domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
@@ -136,6 +128,7 @@ public class IssueCertTest extends MailboxTestSuite {
     assertEquals(IssueCert.RESPONSE, message.getText());
 
     verify(remoteCertbot).supplyAsync(notificationManager, expectedCommand);
+    }
   }
 
   @Test
@@ -183,17 +176,5 @@ public class IssueCertTest extends MailboxTestSuite {
         "system failure: Issuing LetsEncrypt certificate command requires carbonio-proxy. Make sure"
             + " carbonio-proxy is installed, up and running.",
         exception.getMessage());
-  }
-
-  private static class MockRequest extends MockHttpServletRequest {
-
-    public MockRequest() throws MalformedURLException {
-      super("test".getBytes(StandardCharsets.UTF_8), new URL("http://localhost:8080/service"), "");
-    }
-
-    @Override
-    public String getRequestURI() {
-      return "";
-    }
   }
 }
