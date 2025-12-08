@@ -3,7 +3,6 @@ package com.zimbra.cs.rmgmt;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.service.admin.CertificateNotificationManager;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -14,9 +13,6 @@ import java.util.concurrent.CompletableFuture;
  * @since 23.3.0
  */
 public class RemoteCertbot {
-  private static final String CHAIN = "--preferred-chain";
-  private static final String SHORT_CHAIN = "\"ISRG Root X1\"";
-  private static final String CHAIN_TYPE = "short";
   private static final String WEBROOT = "--webroot -w";
   private static final String WEBROOT_PATH = "/opt/zextras";
   private static final String AGREEMENT = "--agree-tos";
@@ -59,23 +55,17 @@ public class RemoteCertbot {
    * @param remoteCommand {@link com.zimbra.cs.rmgmt.RemoteCommands}
    * @param email domain admin email who tries to execute a command (should be agreed to the ACME
    *     server's Subscriber Agreement)
-   * @param chain long (default) or short (should be specified by domain admin in {@link
-   *     com.zimbra.soap.admin.message.IssueCertRequest} request with the key word "short")
    * @param domainName a value of domain attribute zimbraDomainName
    * @param publicServiceHostName a value of domain attribute zimbraPublicServiceHostname
    * @param virtualHosts a value/ values of domain attribute zimbraVirtualHostname
    * @return created command
    */
-  public String createCommand(String remoteCommand, String email, String chain, String domainName,
+  public String createCommand(String remoteCommand, String email, String domainName,
       String publicServiceHostName, String[] virtualHosts) {
 
     this.stringBuilder = new StringBuilder();
 
     stringBuilder.append(remoteCommand);
-
-    if (Objects.equals(chain, CHAIN_TYPE)) {
-      addSubCommand(" ", CHAIN, SHORT_CHAIN);
-    }
 
     addSubCommand(" ", AGREEMENT, EMAIL, email, NON_INTERACTIVELY, KEEP,
         WEBROOT, WEBROOT_PATH, CERT_NAME, domainName);

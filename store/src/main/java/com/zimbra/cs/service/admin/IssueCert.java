@@ -80,9 +80,6 @@ public class IssueCert extends AdminDocumentHandler {
         checkDomainRight(zsc, domain, AdminRights.R_setDomainAdminDomainAttrs);
     final String adminMail = adminAccessControl.mAuthedAcct.getMail();
 
-    final String chainType =
-        request.getAttribute(AdminConstants.A_CHAIN_TYPE, AdminConstants.DEFAULT_CHAIN);
-
     final String domainName =
         Optional.ofNullable(domain.getDomainName())
             .orElseThrow(
@@ -121,7 +118,6 @@ public class IssueCert extends AdminDocumentHandler {
         certbot.createCommand(
             RemoteCommands.CERTBOT_CERTONLY,
             adminMail,
-            chainType,
             domainName,
             publicServiceHostname,
             virtualHostNames);
