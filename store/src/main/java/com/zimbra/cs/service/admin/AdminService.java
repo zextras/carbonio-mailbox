@@ -16,6 +16,7 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.Server;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.rmgmt.RemoteCertbot;
@@ -36,6 +37,16 @@ public class AdminService implements DocumentService {
 
   private Function<RemoteManager, RemoteCertbot> getCertBotSupplier() {
       return RemoteCertbot::getRemoteCertbot;
+  }
+
+  private Function<Server, RemoteManager> getRemoteManagerByServer() {
+    return (Server proxyServer) -> {
+			try {
+				return RemoteManager.getRemoteManager(proxyServer);
+			} catch (ServiceException e) {
+				throw new RuntimeException(e);
+			}
+		};
   }
 
   private Function2<Mailbox, Domain, CertificateNotificationManager> getNotificationManagerSupplier() {
@@ -94,7 +105,7 @@ public class AdminService implements DocumentService {
         AdminConstants.GET_ACCOUNT_MEMBERSHIP_REQUEST, new GetAccountMembership());
 
     // certbot
-    dispatcher.registerHandler(AdminConstants.ISSUE_CERT_REQUEST, new IssueCert(getCertBotSupplier(), getNotificationManagerSupplier()));
+    dispatcher.registerHandler(AdminConstants.ISSUE_CERT_REQUEST, new IssueCert(getRemoteManagerByServer(), getCertBotSupplier(), getNotificationManagerSupplier()));
 
     // domain
     dispatcher.registerHandler(AdminConstants.CREATE_DOMAIN_REQUEST, new CreateDomain());

@@ -18,6 +18,7 @@ import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.Server;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.rmgmt.RemoteCertbot;
 import com.zimbra.cs.rmgmt.RemoteCommands;
@@ -42,6 +43,7 @@ public class IssueCertTest extends MailboxTestSuite {
   private String publicServiceHostName;
   private String virtualHostName;
   private static final RemoteCertbot remoteCertbot = mock(RemoteCertbot.class);
+  private static final RemoteManager remoteManager = mock(RemoteManager.class);
   private static final CertificateNotificationManager notificationManager = mock(CertificateNotificationManager.class);
 
   private final IssueCert handler = getIssueCert();
@@ -51,7 +53,7 @@ public class IssueCertTest extends MailboxTestSuite {
   private Domain domain;
 
   private static IssueCert getIssueCert() {
-    return new IssueCert((RemoteManager remoteManager) -> remoteCertbot, (Mailbox mbox, Domain domain) -> notificationManager);
+    return new IssueCert((Server proxyServer) -> remoteManager,  (RemoteManager remoteManager) -> remoteCertbot, (Mailbox mbox, Domain domain) -> notificationManager);
   }
 
   @BeforeEach
@@ -90,8 +92,6 @@ public class IssueCertTest extends MailboxTestSuite {
 
   @Test
   void handleShouldSupplyAsyncAndReturnResponse() throws Exception {
-    try (MockedStatic<RemoteManager> ignored = mockStatic(RemoteManager.class)) {
-
     var request = getRequest(domain.getId());
     domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
     domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
@@ -129,7 +129,6 @@ public class IssueCertTest extends MailboxTestSuite {
     assertEquals(IssueCert.RESPONSE, message.getText());
 
     verify(remoteCertbot).supplyAsync(notificationManager, expectedCommand);
-    }
   }
 
   @Test
