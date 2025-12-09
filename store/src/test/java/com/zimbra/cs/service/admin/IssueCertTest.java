@@ -3,6 +3,7 @@ package com.zimbra.cs.service.admin;
 import static com.zimbra.common.soap.AdminConstants.A_DOMAIN;
 import static com.zimbra.common.soap.AdminConstants.E_MESSAGE;
 import static com.zimbra.common.soap.AdminConstants.ISSUE_CERT_REQUEST;
+import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -24,9 +25,14 @@ import com.zimbra.cs.rmgmt.RemoteCertbot;
 import com.zimbra.cs.rmgmt.RemoteCommands;
 import com.zimbra.cs.rmgmt.RemoteManager;
 import com.zimbra.cs.service.AuthProvider;
+import com.zimbra.cs.service.MockHttpServletRequest;
 import com.zimbra.soap.SoapEngine;
+import com.zimbra.soap.SoapServlet;
 import com.zimbra.soap.ZimbraSoapContext;
 import io.vavr.control.Try;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -89,6 +95,25 @@ public class IssueCertTest extends MailboxTestSuite {
     var request = new XMLElement(ISSUE_CERT_REQUEST);
     request.addNonUniqueElement(A_DOMAIN).addText(domainId);
     return request;
+  }
+
+  @Test
+  void shouldProxyRequestIfAccountIsOnAnotherServer() throws Exception {
+    // FIXME: these tests are crooked because they rely too much on mocks and were made with unreal mocked scenarios.
+    //  the reality is much more complex. The httprequest checks the context when proxying.
+    //  Also is not possible to create a user with a server that does not exists, which is what this test was relying on.
+    var request = getRequest(domain.getId());
+    IssueCert issueCert = Mockito.spy(getIssueCert());
+    provisioning.createServer("otherServer.com", new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
+    accountMakingRequest.setMailHost("otherServer.com");
+
+    context.put(SoapServlet.SERVLET_REQUEST, new MockRequest());
+
+    ServiceException serviceException = assertThrows(ServiceException.class,
+        () -> issueCert.handle(request, context));
+
+    assertEquals(ServiceException.PROXY_ERROR, serviceException.getCode());
+    verify(issueCert).proxyRequestToAccountServer(Mockito.any(), Mockito.any(), Mockito.any());;
   }
 
   @Test
@@ -177,5 +202,17 @@ public class IssueCertTest extends MailboxTestSuite {
         "system failure: Issuing LetsEncrypt certificate command requires carbonio-proxy. Make sure"
             + " carbonio-proxy is installed, up and running.",
         exception.getMessage());
+  }
+
+  private static class MockRequest extends MockHttpServletRequest {
+
+    public MockRequest() throws MalformedURLException, UnsupportedEncodingException {
+      super("test".getBytes("UTF-8"), new URL("http://localhost:8080/service"), "");
+    }
+
+    @Override
+    public String getRequestURI() {
+      return "";
+    }
   }
 }
