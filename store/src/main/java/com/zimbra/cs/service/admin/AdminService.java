@@ -24,6 +24,7 @@ import com.zimbra.cs.rmgmt.RemoteManager;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 import io.vavr.Function2;
+import io.vavr.control.Try;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -35,13 +36,9 @@ import java.util.function.Function;
  */
 public class AdminService implements DocumentService {
 
-  private Function<Server, RemoteCertbot> getCertBotSupplier() {
+  private Function<Server, Try<RemoteCertbot>> getCertBotSupplier() {
     return (Server proxyServer) -> {
-      try {
-        return RemoteCertbot.getRemoteCertbot(proxyServer);
-      } catch (ServiceException e) {
-        throw new RuntimeException(e);
-      }
+      return Try.of(() -> RemoteCertbot.getRemoteCertbot(proxyServer));
     };
   }
 

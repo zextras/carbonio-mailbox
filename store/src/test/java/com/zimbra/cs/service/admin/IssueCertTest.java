@@ -26,6 +26,7 @@ import com.zimbra.cs.rmgmt.RemoteManager;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
+import io.vavr.control.Try;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -53,7 +54,7 @@ public class IssueCertTest extends MailboxTestSuite {
   private Domain domain;
 
   private static IssueCert getIssueCert() {
-    return new IssueCert((Server proxyServer) -> remoteCertbot, (Mailbox mbox, Domain domain) -> notificationManager);
+    return new IssueCert((Server proxyServer) -> Try.success(remoteCertbot), (Mailbox mbox, Domain domain) -> notificationManager);
   }
 
   @BeforeEach

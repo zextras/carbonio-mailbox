@@ -16,6 +16,7 @@ import com.zimbra.cs.rmgmt.RemoteCommands;
 import com.zimbra.cs.rmgmt.RemoteManager;
 import com.zimbra.soap.ZimbraSoapContext;
 import io.vavr.Function2;
+import io.vavr.control.Try;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -29,13 +30,13 @@ import java.util.function.Function;
  */
 public class IssueCert extends AdminDocumentHandler {
 
-  private final Function<Server,RemoteCertbot> certBotProvider;
+  private final Function<Server, Try<RemoteCertbot>> certBotProvider;
   private final Function2<Mailbox, Domain, CertificateNotificationManager> notificationManagerProvider;
   public static final String RESPONSE =
       "The System is processing your certificate generation request.\n"
           + "It will send the result to the Global and Domain notification recipients.";
 
-	public IssueCert(Function<Server, RemoteCertbot> certBotProvider,
+	public IssueCert(Function<Server, Try<RemoteCertbot>> certBotProvider,
 			Function2<Mailbox, Domain, CertificateNotificationManager> notificationManagerProvider) {
 		this.certBotProvider = certBotProvider;
 		this.notificationManagerProvider = notificationManagerProvider;
@@ -112,7 +113,9 @@ public class IssueCert extends AdminDocumentHandler {
 
     ZimbraLog.rmgmt.info("Issuing LetsEncrypt cert for domain " + domainName);
 
-    final RemoteCertbot certbot = certBotProvider.apply(proxyServer);
+    final RemoteCertbot certbot = certBotProvider.apply(proxyServer).getOrElseThrow(
+        throwable -> ServiceException.FAILURE("Failed to  instantiate certbot for server", throwable)
+    );
     final String command =
         certbot.createCommand(
             RemoteCommands.CERTBOT_CERTONLY,
