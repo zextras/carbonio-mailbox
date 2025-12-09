@@ -53,7 +53,7 @@ public class IssueCertTest extends MailboxTestSuite {
   private Domain domain;
 
   private static IssueCert getIssueCert() {
-    return new IssueCert((Server proxyServer) -> remoteManager,  (RemoteManager remoteManager) -> remoteCertbot, (Mailbox mbox, Domain domain) -> notificationManager);
+    return new IssueCert((Server proxyServer) -> remoteCertbot, (Mailbox mbox, Domain domain) -> notificationManager);
   }
 
   @BeforeEach

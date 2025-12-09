@@ -29,16 +29,14 @@ import java.util.function.Function;
  */
 public class IssueCert extends AdminDocumentHandler {
 
-  private final Function<Server, RemoteManager> remoteManagerFunction;
-  private final Function<RemoteManager,RemoteCertbot> certBotProvider;
+  private final Function<Server,RemoteCertbot> certBotProvider;
   private final Function2<Mailbox, Domain, CertificateNotificationManager> notificationManagerProvider;
   public static final String RESPONSE =
       "The System is processing your certificate generation request.\n"
           + "It will send the result to the Global and Domain notification recipients.";
 
-	public IssueCert(Function<Server, RemoteManager> remoteManagerFunction, Function<RemoteManager, RemoteCertbot> certBotProvider,
+	public IssueCert(Function<Server, RemoteCertbot> certBotProvider,
 			Function2<Mailbox, Domain, CertificateNotificationManager> notificationManagerProvider) {
-		this.remoteManagerFunction = remoteManagerFunction;
 		this.certBotProvider = certBotProvider;
 		this.notificationManagerProvider = notificationManagerProvider;
 	}
@@ -114,8 +112,7 @@ public class IssueCert extends AdminDocumentHandler {
 
     ZimbraLog.rmgmt.info("Issuing LetsEncrypt cert for domain " + domainName);
 
-    final RemoteManager remoteManager = remoteManagerFunction.apply(proxyServer);
-    final RemoteCertbot certbot = certBotProvider.apply(remoteManager);
+    final RemoteCertbot certbot = certBotProvider.apply(proxyServer);
     final String command =
         certbot.createCommand(
             RemoteCommands.CERTBOT_CERTONLY,

@@ -1,6 +1,7 @@
 package com.zimbra.cs.rmgmt;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.account.Server;
 import com.zimbra.cs.service.admin.CertificateNotificationManager;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
@@ -44,6 +45,10 @@ public class RemoteCertbot {
    */
   public static RemoteCertbot getRemoteCertbot(RemoteManager remoteManager) {
     return new RemoteCertbot(remoteManager);
+  }
+
+  public static RemoteCertbot getRemoteCertbot(Server server) throws ServiceException {
+    return new RemoteCertbot(RemoteManager.getRemoteManager(server));
   }
 
   /**

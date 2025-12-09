@@ -35,18 +35,14 @@ import java.util.function.Function;
  */
 public class AdminService implements DocumentService {
 
-  private Function<RemoteManager, RemoteCertbot> getCertBotSupplier() {
-      return RemoteCertbot::getRemoteCertbot;
-  }
-
-  private Function<Server, RemoteManager> getRemoteManagerByServer() {
+  private Function<Server, RemoteCertbot> getCertBotSupplier() {
     return (Server proxyServer) -> {
-			try {
-				return RemoteManager.getRemoteManager(proxyServer);
-			} catch (ServiceException e) {
-				throw new RuntimeException(e);
-			}
-		};
+      try {
+        return RemoteCertbot.getRemoteCertbot(proxyServer);
+      } catch (ServiceException e) {
+        throw new RuntimeException(e);
+      }
+    };
   }
 
   private Function2<Mailbox, Domain, CertificateNotificationManager> getNotificationManagerSupplier() {
@@ -105,7 +101,7 @@ public class AdminService implements DocumentService {
         AdminConstants.GET_ACCOUNT_MEMBERSHIP_REQUEST, new GetAccountMembership());
 
     // certbot
-    dispatcher.registerHandler(AdminConstants.ISSUE_CERT_REQUEST, new IssueCert(getRemoteManagerByServer(), getCertBotSupplier(), getNotificationManagerSupplier()));
+    dispatcher.registerHandler(AdminConstants.ISSUE_CERT_REQUEST, new IssueCert(getCertBotSupplier(), getNotificationManagerSupplier()));
 
     // domain
     dispatcher.registerHandler(AdminConstants.CREATE_DOMAIN_REQUEST, new CreateDomain());
