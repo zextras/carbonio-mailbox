@@ -1,5 +1,12 @@
 
 
+## 4.23.5 (2025-12-09)
+
+
+### Bug Fixes
+
+* [CO-2961] protocol http does not support https connection ([#898](https://github.com/zextras/carbonio-mailbox/issues/898)) ([f5ed683](https://github.com/zextras/carbonio-mailbox/commit/f5ed683afc5524ee3cdc03251fe3342d4130c34d))
+
 ## 4.23.4 (2025-12-05)
 
 
