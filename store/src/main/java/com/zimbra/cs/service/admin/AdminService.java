@@ -37,9 +37,7 @@ import java.util.function.Function;
 public class AdminService implements DocumentService {
 
   private Function<Server, Try<RemoteCertbot>> getCertBotSupplier() {
-    return (Server proxyServer) -> {
-      return Try.of(() -> RemoteCertbot.getRemoteCertbot(proxyServer));
-    };
+    return (Server proxyServer) -> Try.of(() -> RemoteCertbot.getRemoteCertbot(proxyServer));
   }
 
   private Function2<Mailbox, Domain, CertificateNotificationManager> getNotificationManagerSupplier() {
