@@ -20,6 +20,7 @@ import io.vavr.control.Try;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Admin Handler class to issue a LetsEncrypt certificate for a domain using {@link com.zimbra.cs.rmgmt.RemoteManager},
@@ -30,13 +31,13 @@ import java.util.function.Function;
  */
 public class IssueCert extends AdminDocumentHandler {
 
-  private final Function<Server, Try<RemoteCertbot>> certBotProvider;
+  private final Supplier<Try<RemoteCertbot>> certBotProvider;
   private final Function2<Mailbox, Domain, CertificateNotificationManager> notificationManagerProvider;
   public static final String RESPONSE =
       "The System is processing your certificate generation request.\n"
           + "It will send the result to the Global and Domain notification recipients.";
 
-	public IssueCert(Function<Server, Try<RemoteCertbot>> certBotProvider,
+	public IssueCert(Supplier<Try<RemoteCertbot>> certBotProvider,
 			Function2<Mailbox, Domain, CertificateNotificationManager> notificationManagerProvider) {
 		this.certBotProvider = certBotProvider;
 		this.notificationManagerProvider = notificationManagerProvider;
@@ -101,19 +102,9 @@ public class IssueCert extends AdminDocumentHandler {
                     ServiceException.FAILURE(
                         "Domain " + domainName + " must have at least one VirtualHostName."));
 
-    final Server proxyServer =
-        prov.getAllServers().stream()
-            .filter(Server::hasProxyService)
-            .findFirst()
-            .orElseThrow(
-                () ->
-                    ServiceException.FAILURE(
-                        "Issuing LetsEncrypt certificate command requires carbonio-proxy. "
-                            + "Make sure carbonio-proxy is installed, up and running."));
-
     ZimbraLog.rmgmt.info("Issuing LetsEncrypt cert for domain " + domainName);
 
-    final RemoteCertbot certbot = certBotProvider.apply(proxyServer).getOrElseThrow(
+    final RemoteCertbot certbot = certBotProvider.get().getOrElseThrow(
         throwable -> ServiceException.FAILURE("Failed to  instantiate certbot for server", throwable)
     );
     final String command =

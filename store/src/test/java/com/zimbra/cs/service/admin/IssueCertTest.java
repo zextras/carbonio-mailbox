@@ -6,7 +6,6 @@ import static com.zimbra.common.soap.AdminConstants.ISSUE_CERT_REQUEST;
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -19,11 +18,9 @@ import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.Server;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.rmgmt.RemoteCertbot;
 import com.zimbra.cs.rmgmt.RemoteCommands;
-import com.zimbra.cs.rmgmt.RemoteManager;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.MockHttpServletRequest;
 import com.zimbra.soap.SoapEngine;
@@ -38,7 +35,6 @@ import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.testcontainers.shaded.com.google.common.collect.Maps;
 
@@ -50,7 +46,6 @@ public class IssueCertTest extends MailboxTestSuite {
   private String publicServiceHostName;
   private String virtualHostName;
   private static final RemoteCertbot remoteCertbot = mock(RemoteCertbot.class);
-  private static final RemoteManager remoteManager = mock(RemoteManager.class);
   private static final CertificateNotificationManager notificationManager = mock(CertificateNotificationManager.class);
 
   private final IssueCert handler = getIssueCert();
@@ -60,7 +55,7 @@ public class IssueCertTest extends MailboxTestSuite {
   private Domain domain;
 
   private static IssueCert getIssueCert() {
-    return new IssueCert((Server proxyServer) -> Try.success(remoteCertbot), (Mailbox mbox, Domain domain) -> notificationManager);
+    return new IssueCert(() -> Try.success(remoteCertbot), (Mailbox mbox, Domain domain) -> notificationManager);
   }
 
   @BeforeEach
@@ -187,20 +182,6 @@ public class IssueCertTest extends MailboxTestSuite {
         assertThrows(ServiceException.class, () -> handler.handle(request, context));
     assertEquals(
         String.format("system failure: Domain %s must have at least one VirtualHostName.", domain.getName()),
-        exception.getMessage());
-  }
-
-  @Test
-  void handleShouldThrowServiceExceptionWhenNoServerWithProxyIsAvailable() throws Exception {
-    var request = getRequest(domain.getId());
-    domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
-    domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
-    domain.modify(domainAttributes);
-    final ServiceException exception =
-        assertThrows(ServiceException.class, () -> handler.handle(request, context));
-    assertEquals(
-        "system failure: Issuing LetsEncrypt certificate command requires carbonio-proxy. Make sure"
-            + " carbonio-proxy is installed, up and running.",
         exception.getMessage());
   }
 

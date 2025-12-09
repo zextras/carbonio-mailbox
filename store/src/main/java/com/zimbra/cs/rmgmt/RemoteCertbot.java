@@ -1,6 +1,7 @@
 package com.zimbra.cs.rmgmt;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.service.admin.CertificateNotificationManager;
 import java.nio.charset.StandardCharsets;
@@ -45,10 +46,6 @@ public class RemoteCertbot {
    */
   public static RemoteCertbot getRemoteCertbot(RemoteManager remoteManager) {
     return new RemoteCertbot(remoteManager);
-  }
-
-  public static RemoteCertbot getRemoteCertbot(Server server) throws ServiceException {
-    return new RemoteCertbot(RemoteManager.getRemoteManager(server));
   }
 
   /**
@@ -117,5 +114,26 @@ public class RemoteCertbot {
     for (String param : params) {
       this.stringBuilder.append(delimiter).append(param);
     }
+  }
+
+  public static class RemoteCertbotProvider {
+      private final Provisioning provisioning;
+
+      public RemoteCertbotProvider(Provisioning provisioning) {
+          this.provisioning = provisioning;
+      }
+
+      public RemoteCertbot getRemoteCertbot() throws ServiceException {
+          final Server proxyServer =
+                  provisioning.getAllServers().stream()
+                          .filter(Server::hasProxyService)
+                          .findFirst()
+                          .orElseThrow(
+                                  () ->
+                                          ServiceException.FAILURE(
+                                                  "Issuing LetsEncrypt certificate command requires carbonio-proxy. "
+                                                          + "Make sure carbonio-proxy is installed, up and running."));
+          return new RemoteCertbot(RemoteManager.getRemoteManager(proxyServer));
+      }
   }
 }
