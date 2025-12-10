@@ -44,37 +44,12 @@ import org.testcontainers.shaded.com.google.common.collect.Maps;
 // FIXME
 public class IssueCertTest extends SoapTestSuite {
 
-//  @BeforeEach
-//  public void setUp() throws Exception {
-//    Mockito.reset(remoteCertbot);
-//    Mockito.reset(notificationManager);
-//    provisioning = Provisioning.getInstance();
-//    var domainName = UUID.randomUUID() + ".example.com";
-//    virtualHostName = "virtual." + domainName;
-//    publicServiceHostName = "public." + domainName;
-//    domain = provisioning.createDomain(domainName, Maps.newHashMap());
-//    accountMakingRequest = provisioning.createAccount(
-//        UUID.randomUUID() + "@" + domain.getDomainName(),
-//        "secret",
-//        new HashMap<>() {
-//          {
-//            put(ZAttrProvisioning.A_zimbraIsAdminAccount, "TRUE");
-//          }
-//        });
-//
-//      ZimbraSoapContext zsc = new ZimbraSoapContext(
-//				AuthProvider.getAuthToken(accountMakingRequest, true),
-//				accountMakingRequest.getId(),
-//				SoapProtocol.Soap12,
-//				SoapProtocol.Soap12);
-//    this.context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
-//  }
-//
-//  Element getRequest(String domainId) {
-//    var request = new XMLElement(ISSUE_CERT_REQUEST);
-//    request.addNonUniqueElement(A_DOMAIN).addText(domainId);
-//    return request;
-//  }
+  private Account adminAccount;
+
+  @BeforeEach
+  public void setUp() throws Exception {
+    adminAccount = createAccount().asGlobalAdmin().create();
+  }
 
 //  @Test
 //  void shouldProxyRequestIfAccountIsOnAnotherServer() throws Exception {
@@ -139,10 +114,8 @@ public class IssueCertTest extends SoapTestSuite {
   @Test
   void shouldReturnInvalidRequest_WhenNoSuchDomain() throws Exception {
       String nonExistingDomain = "nonExistingDomain.com";
-      final Account adminAccount = createAccount().asGlobalAdmin().create();
-      IssueCertRequest issueCertRequest = new IssueCertRequest(nonExistingDomain);
 
-      String body = getSoapClient().executeSoap(adminAccount, issueCertRequest).body();
+      String body = executeIssueCertApi(nonExistingDomain).body();
 
       assertTrue(body.contains(String.format("invalid request: Domain with id %s could not be found.", nonExistingDomain)));
   }
@@ -150,41 +123,33 @@ public class IssueCertTest extends SoapTestSuite {
   @Test
   void shouldFail_WhenNoPublicServiceHostName() throws Exception {
     final Domain domain = createDomain();
-    final Account adminAccount = createAccount().asGlobalAdmin().create();
     final HashMap<String, Object> attrs = Maps.newHashMap();
     attrs.put(ZAttrProvisioning.A_zimbraVirtualHostname, "virtual." + domain.getName());
     domain.modify(attrs);
 
-    final SoapResponse soapResponse = getSoapClient().executeSoap(adminAccount,
-        new IssueCertRequest(domain.getId()));
+    String body = executeIssueCertApi(domain.getId()).body();
 
     final String errorMessage = String.format(
         "system failure: Domain %s must have PublicServiceHostname.", domain.getName());
     assertTrue(
-        soapResponse.body().contains(errorMessage));
+        body.contains(errorMessage));
   }
-//
-//  @Test
-//  void handleShouldThrowServiceExceptionWhenNoVirtualHostName() throws Exception {
-//    var request = getRequest(domain.getId());
-//    domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
-//    domain.modify(domainAttributes);
-//    final ServiceException exception =
-//        assertThrows(ServiceException.class, () -> handler.handle(request, context));
-//    assertEquals(
-//        String.format("system failure: Domain %s must have at least one VirtualHostName.", domain.getName()),
-//        exception.getMessage());
-//  }
 
-  private static class MockRequest extends MockHttpServletRequest {
 
-    public MockRequest() throws MalformedURLException, UnsupportedEncodingException {
-      super("test".getBytes("UTF-8"), new URL("http://localhost:8080/service"), "");
-    }
+  @Test
+  void shouldFail_whenNoVirtualHostName() throws Exception {
+    final Domain domain = createDomain();
+    final HashMap<String, Object> attrs = Maps.newHashMap();
+    attrs.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, "public." + domain.getName());
+    domain.modify(attrs);
 
-    @Override
-    public String getRequestURI() {
-      return "";
-    }
+    String body = executeIssueCertApi(domain.getId()).body();
+
+    assertTrue(body.contains(String.format("system failure: Domain %s must have at least one VirtualHostName.", domain.getName())));
+  }
+
+  private SoapResponse executeIssueCertApi(String domainId) throws Exception {
+    return getSoapClient().executeSoap(adminAccount,
+        new IssueCertRequest(domainId));
   }
 }
