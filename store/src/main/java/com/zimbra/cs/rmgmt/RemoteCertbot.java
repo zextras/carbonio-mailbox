@@ -6,6 +6,7 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.service.admin.CertificateNotificationManager;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 /**
  * RemoteCertbot class interacts with "Certbot" - an acme client for managing Let’s Encrypt
@@ -32,20 +33,6 @@ public class RemoteCertbot {
 
   private RemoteCertbot(RemoteManager remoteManager) {
     this.remoteManager = remoteManager;
-  }
-
-  /**
-   * Instantiates a RemoteCertbot object.
-   *
-   * @param remoteManager {@link com.zimbra.cs.rmgmt.RemoteManager} which will be used to execute
-   *  remote commands with.
-   * @return an instantiated object
-   *
-   * @author Yuliya Aheeva
-   * @since 23.5.0
-   */
-  public static RemoteCertbot getRemoteCertbot(RemoteManager remoteManager) {
-    return new RemoteCertbot(remoteManager);
   }
 
   /**
@@ -118,9 +105,12 @@ public class RemoteCertbot {
 
   public static class RemoteCertbotProvider {
       private final Provisioning provisioning;
+      private final Function<Server, RemoteManager> remoteManagerProvider;
 
-      public RemoteCertbotProvider(Provisioning provisioning) {
+      public RemoteCertbotProvider(Provisioning provisioning,
+          Function<Server, RemoteManager> remoteManagerProvider) {
           this.provisioning = provisioning;
+          this.remoteManagerProvider = remoteManagerProvider;
       }
 
       public RemoteCertbot getRemoteCertbot() throws ServiceException {
@@ -133,7 +123,7 @@ public class RemoteCertbot {
                                           ServiceException.FAILURE(
                                                   "Issuing LetsEncrypt certificate command requires carbonio-proxy. "
                                                           + "Make sure carbonio-proxy is installed, up and running."));
-          return new RemoteCertbot(RemoteManager.getRemoteManager(proxyServer));
+          return new RemoteCertbot(remoteManagerProvider.apply(proxyServer));
       }
   }
 }
