@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -42,17 +43,6 @@ import org.testcontainers.shaded.com.google.common.collect.Maps;
 
 // FIXME
 public class IssueCertTest extends SoapTestSuite {
-  private final Map<String, Object> context = new HashMap<>();
-  private final Map<String, Object> domainAttributes = new HashMap<>();
-
-  private String publicServiceHostName;
-  private String virtualHostName;
-  private static final RemoteCertbot remoteCertbot = mock(RemoteCertbot.class);
-  private static final CertificateNotificationManager notificationManager = mock(CertificateNotificationManager.class);
-
-  private Provisioning provisioning;
-  private Account accountMakingRequest;
-  private Domain domain;
 
 //  @BeforeEach
 //  public void setUp() throws Exception {
@@ -147,26 +137,32 @@ public class IssueCertTest extends SoapTestSuite {
 //  }
 
   @Test
-  void handleShouldThrowServiceExceptionWhenNoSuchDomain() throws Exception {
-      String domainId = "nonExistingDomain.com";
+  void shouldReturnInvalidRequest_WhenNoSuchDomain() throws Exception {
+      String nonExistingDomain = "nonExistingDomain.com";
       final Account adminAccount = createAccount().asGlobalAdmin().create();
-      IssueCertRequest issueCertRequest = new IssueCertRequest("nonExistingDomain.com");
+      IssueCertRequest issueCertRequest = new IssueCertRequest(nonExistingDomain);
+
       String body = getSoapClient().executeSoap(adminAccount, issueCertRequest).body();
 
-      assertTrue(body.contains("invalid request: Domain with id nonExistingDomain.com could not be found."));
+      assertTrue(body.contains(String.format("invalid request: Domain with id %s could not be found.", nonExistingDomain)));
   }
 
-//  @Test
-//  void handleShouldThrowServiceExceptionWhenNoPublicServiceHostName() throws Exception {
-//    var request = getRequest(domain.getId());
-//    domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
-//    domain.modify(domainAttributes);
-//    final ServiceException exception =
-//        assertThrows(ServiceException.class, () -> handler.handle(request, context));
-//    assertEquals(
-//        String.format("system failure: Domain %s must have PublicServiceHostname.", domain.getName()),
-//        exception.getMessage());
-//  }
+  @Test
+  void shouldFail_WhenNoPublicServiceHostName() throws Exception {
+    final Domain domain = createDomain();
+    final Account adminAccount = createAccount().asGlobalAdmin().create();
+    final HashMap<String, Object> attrs = Maps.newHashMap();
+    attrs.put(ZAttrProvisioning.A_zimbraVirtualHostname, "virtual." + domain.getName());
+    domain.modify(attrs);
+
+    final SoapResponse soapResponse = getSoapClient().executeSoap(adminAccount,
+        new IssueCertRequest(domain.getId()));
+
+    final String errorMessage = String.format(
+        "system failure: Domain %s must have PublicServiceHostname.", domain.getName());
+    assertTrue(
+        soapResponse.body().contains(errorMessage));
+  }
 //
 //  @Test
 //  void handleShouldThrowServiceExceptionWhenNoVirtualHostName() throws Exception {

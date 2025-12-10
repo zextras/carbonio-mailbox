@@ -6,6 +6,7 @@ package com.zextras.mailbox.soap;
 
 import static com.zimbra.client.ZEmailAddress.EMAIL_TYPE_TO;
 
+import com.google.common.collect.Maps;
 import com.zextras.mailbox.util.AccountAction;
 import com.zextras.mailbox.util.CreateAccount;
 import com.zextras.mailbox.util.SoapClient;
@@ -14,6 +15,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.account.AccountService;
@@ -29,6 +31,7 @@ import com.zimbra.soap.mail.type.EmailAddrInfo;
 import com.zimbra.soap.mail.type.Msg;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import org.apache.http.HttpResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -50,6 +53,13 @@ public class SoapTestSuite {
     return new CreateAccount.Factory(Provisioning.getInstance(),
         getDefaultDomainName()).get();
   }
+  protected static Domain createDomain() {
+		try {
+			return Provisioning.getInstance().createDomain(UUID.randomUUID() + ".com", Maps.newHashMap());
+		} catch (ServiceException e) {
+			throw new RuntimeException(e);
+		}
+	}
   protected static AccountAction.Factory getAccountActionFactory() throws ServiceException {
     return AccountAction.Factory.getDefault();
   }
