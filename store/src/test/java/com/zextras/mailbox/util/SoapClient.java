@@ -126,6 +126,7 @@ public class SoapClient {
 		}
 
 		public SoapResponse execute() throws Exception {
+			// Cookie: ZM_AUTH_TOKEN
 			final BasicCookieStore cookieStore = createCookieStore();
 			if (!Objects.isNull(caller)) {
 				cookieStore.addCookie(createAuthCookie());
@@ -155,12 +156,7 @@ public class SoapClient {
 				envelope = SoapProtocol.Soap12.soapEnvelope(soapBody, ctxt);
 			} else {
 				SoapUtil.addTargetAccountToCtxt(ctxt, requestedAccount.getId(), requestedAccount.getName());
-				final Element headerXml =
-						Element.parseXML(
-								String.format(
-										"<context xmlns=\"urn:zimbra\"><account by=\"id\">%s</account></context>",
-										requestedAccount.getId()));
-				envelope = SoapProtocol.Soap12.soapEnvelope(soapBody, headerXml);
+				envelope = SoapProtocol.Soap12.soapEnvelope(soapBody, ctxt);
 			}
 			return new StringEntity(envelope.toString());
 		}
