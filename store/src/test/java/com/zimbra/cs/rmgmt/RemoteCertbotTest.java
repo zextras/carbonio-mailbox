@@ -9,7 +9,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.rmgmt.RemoteCertbot.RemoteCertbotProvider;
 import com.zimbra.cs.service.admin.CertificateNotificationManager;
-import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -21,7 +20,6 @@ public class RemoteCertbotTest extends MailboxTestSuite {
   private final String publicServiceHostName = "public.example.com";
   private final String[] virtualHostNames = {"virtual1.example.com", "virtual2.example.com"};
   private final String mail = "admin@example.com";
-
 
 	@BeforeAll
 	static void setUp() throws ServiceException {

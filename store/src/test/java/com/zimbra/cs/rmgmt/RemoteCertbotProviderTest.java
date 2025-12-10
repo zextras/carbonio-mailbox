@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class RemoteCertbotProviderTest extends MailboxTestSuite {
 
     @Test
-    void handleShouldThrowServiceExceptionWhenNoServerWithProxyIsAvailable() throws Exception {
+    void shouldThrowServiceExceptionWhenNoServerWithProxyIsAvailable() {
         RemoteCertbot.RemoteCertbotProvider remoteCertbotProvider = new RemoteCertbot
                 .RemoteCertbotProvider(Provisioning.getInstance(), (Server server) -> Mockito.mock(RemoteManager.class));
 
@@ -23,5 +23,4 @@ class RemoteCertbotProviderTest extends MailboxTestSuite {
                         + " carbonio-proxy is installed, up and running.",
                 exception.getMessage());
     }
-
 }

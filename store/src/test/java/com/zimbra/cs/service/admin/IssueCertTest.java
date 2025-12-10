@@ -34,7 +34,7 @@ public class IssueCertTest extends SoapTestSuite {
 
     final SoapResponse soapResponse = executeIssueCertApi(globalAdminOnOtherServer, domain.getId());
 
-    // Note: target server does not exists, but whate matters is that it tries to proxy
+    // Note: target server does not exist, but what matters is that it tries to proxy
     assertTrue(soapResponse.body().contains("error while proxying request to target server"));
   }
 
