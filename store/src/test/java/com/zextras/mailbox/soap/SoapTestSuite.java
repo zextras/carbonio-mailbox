@@ -23,6 +23,7 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.account.AccountService;
 import com.zimbra.cs.service.admin.AdminService;
+import com.zimbra.cs.service.admin.TestableAdminService;
 import com.zimbra.cs.service.mail.MailServiceWithoutTracking;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -47,7 +48,7 @@ public class SoapTestSuite {
 
   @RegisterExtension
   private static final SoapExtension soapExtension = new SoapExtension.Builder()
-      .addEngineHandler(AdminService.class.getName())
+      .addEngineHandler(TestableAdminService.class.getName())
       .addEngineHandler(AccountService.class.getName())
       .addEngineHandler(MailServiceWithoutTracking.class.getName())
       .create();
@@ -63,6 +64,9 @@ public class SoapTestSuite {
 			throw new RuntimeException(e);
 		}
 	}
+  protected static Provisioning getProvisioning() {
+    return Provisioning.getInstance();
+  }
 
   protected static Server createMailServer() {
     try {

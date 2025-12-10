@@ -7,7 +7,9 @@ import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
+import com.zimbra.cs.rmgmt.RemoteCommands;
 import com.zimbra.soap.admin.message.IssueCertRequest;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,47 +38,27 @@ public class IssueCertTest extends SoapTestSuite {
     // Note: target server does not exists, but whate matters is that it tries to proxy
     assertTrue(soapResponse.body().contains("error while proxying request to target server"));
   }
-//
-//  @Test
-//  void handleShouldSupplyAsyncAndReturnResponse() throws Exception {
-//    var request = getRequest(domain.getId());
-//    domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, publicServiceHostName);
-//    domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, virtualHostName);
-//
-//    domain.modify(domainAttributes);
-//
-//    final String serverName = "serverName";
-//
-//    provisioning.createServer(
-//        serverName, new HashMap<>() {
-//            {
-//                put(ZAttrProvisioning.A_cn, serverName);
-//                put(ZAttrProvisioning.A_zimbraServiceEnabled, Provisioning.SERVICE_PROXY);
-//            }
-//        });
-//
-//    final String expectedCommand =
-//        "certbot certonly --agree-tos --email " + accountMakingRequest.getName()
-//            + " -n --keep --webroot -w /opt/zextras "
-//            + "--cert-name  " + domain.getName()
-//            + "-d " + publicServiceHostName + " -d " + virtualHostName;
-//
-//    when(remoteCertbot.createCommand(
-//        RemoteCommands.CERTBOT_CERTONLY,
-//        accountMakingRequest.getName(),
-//        domain.getName(),
-//        publicServiceHostName,
-//        domain.getVirtualHostname()))
-//        .thenReturn(expectedCommand);
-//
-//    final Element response = handler.handle(request, context);
-//    final Element message = response.getElement(E_MESSAGE);
-//
-//    assertEquals(domain.getName(), message.getAttribute(A_DOMAIN));
-//    assertEquals(IssueCert.RESPONSE, message.getText());
-//
-//    verify(remoteCertbot).supplyAsync(notificationManager, expectedCommand);
-//  }
+
+  @Test
+  void shouldSucceedWhenProxyServerAvailable() throws Exception {
+
+    final Domain domain = createDomain();
+    var domainAttributes = new HashMap<String, Object>();
+    domainAttributes.put(ZAttrProvisioning.A_zimbraPublicServiceHostname, "public." + domain.getName());
+    domainAttributes.put(ZAttrProvisioning.A_zimbraVirtualHostname, "virtual." + domain.getName());
+    domain.modify(domainAttributes);
+    final String serverName = "serverName";
+
+    getProvisioning().createServer(
+        serverName, new HashMap<>() {
+            {
+                put(ZAttrProvisioning.A_cn, serverName);
+                put(ZAttrProvisioning.A_zimbraServiceEnabled, Provisioning.SERVICE_PROXY);
+            }
+        });
+    final SoapResponse soapResponse = executeIssueCertApi(domain.getId());
+    assertEquals(200, soapResponse.statusCode());
+  }
 
   @Test
   void shouldReturnInvalidRequest_WhenNoSuchDomain() throws Exception {

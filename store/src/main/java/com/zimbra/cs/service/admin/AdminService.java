@@ -37,7 +37,7 @@ import java.util.function.Supplier;
  */
 public class AdminService implements DocumentService {
 
-  private Function<Server, RemoteManager> getRemoteManagerProvider() {
+  protected Function<Server, RemoteManager> getRemoteManagerProvider() {
     return (Server server) -> {
 			try {
 				return RemoteManager.getRemoteManager(server);
