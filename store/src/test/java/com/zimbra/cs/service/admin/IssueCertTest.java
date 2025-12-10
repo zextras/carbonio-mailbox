@@ -1,47 +1,20 @@
 package com.zimbra.cs.service.admin;
 
-import static com.zimbra.common.soap.AdminConstants.A_DOMAIN;
-import static com.zimbra.common.soap.AdminConstants.E_MESSAGE;
-import static com.zimbra.common.soap.AdminConstants.ISSUE_CERT_REQUEST;
-import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.account.ZAttrProvisioning;
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.Element;
-import com.zimbra.common.soap.Element.XMLElement;
-import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.rmgmt.RemoteCertbot;
-import com.zimbra.cs.rmgmt.RemoteCommands;
-import com.zimbra.cs.service.AuthProvider;
-import com.zimbra.cs.service.MockHttpServletRequest;
-import com.zimbra.soap.SoapEngine;
-import com.zimbra.soap.SoapServlet;
-import com.zimbra.soap.ZimbraSoapContext;
+import com.zimbra.cs.account.Server;
 import com.zimbra.soap.admin.message.IssueCertRequest;
-import io.vavr.control.Try;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.testcontainers.shaded.com.google.common.collect.Maps;
 
-// FIXME
 public class IssueCertTest extends SoapTestSuite {
 
   private Account adminAccount;
@@ -51,24 +24,18 @@ public class IssueCertTest extends SoapTestSuite {
     adminAccount = createAccount().asGlobalAdmin().create();
   }
 
-//  @Test
-//  void shouldProxyRequestIfAccountIsOnAnotherServer() throws Exception {
-//    // FIXME: these tests are crooked because they rely too much on mocks and were made with unreal mocked scenarios.
-//    //  the reality is much more complex. The httprequest checks the context when proxying.
-//    //  Also is not possible to create a user with a server that does not exists, which is what this test was relying on.
-//    var request = getRequest(domain.getId());
-//    IssueCert issueCert = Mockito.spy(getIssueCert());
-//    provisioning.createServer("otherServer.com", new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
-//    accountMakingRequest.setMailHost("otherServer.com");
-//
-//    context.put(SoapServlet.SERVLET_REQUEST, new MockRequest());
-//
-//    ServiceException serviceException = assertThrows(ServiceException.class,
-//        () -> issueCert.handle(request, context));
-//
-//    assertEquals(ServiceException.PROXY_ERROR, serviceException.getCode());
-//    verify(issueCert).proxyRequestToAccountServer(Mockito.any(), Mockito.any(), Mockito.any());;
-//  }
+  @Test
+  void shouldProxyRequestIfAccountIsOnAnotherServer() throws Exception {
+    final Server server = createMailServer();
+    final Account globalAdminOnOtherServer = createAccount().asGlobalAdmin().create();
+    globalAdminOnOtherServer.modify(Maps.newHashMap(Map.of(ZAttrProvisioning.A_zimbraMailHost, server.getName())));
+    final Domain domain = createDomain();
+
+    final SoapResponse soapResponse = executeIssueCertApi(globalAdminOnOtherServer, domain.getId());
+
+    // Note: target server does not exists, but whate matters is that it tries to proxy
+    assertTrue(soapResponse.body().contains("error while proxying request to target server"));
+  }
 //
 //  @Test
 //  void handleShouldSupplyAsyncAndReturnResponse() throws Exception {
@@ -149,7 +116,11 @@ public class IssueCertTest extends SoapTestSuite {
   }
 
   private SoapResponse executeIssueCertApi(String domainId) throws Exception {
-    return getSoapClient().executeSoap(adminAccount,
+    return executeIssueCertApi(adminAccount, domainId);
+  }
+
+  private SoapResponse executeIssueCertApi(Account account, String domainId) throws Exception {
+    return getSoapClient().executeSoap(account,
         new IssueCertRequest(domainId));
   }
 }

@@ -8,11 +8,14 @@ import com.zextras.mailbox.soap.SoapUtils;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapProtocol;
+import com.zimbra.common.soap.SoapUtil;
 import com.zimbra.common.soap.XmlParseException;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.service.AuthProvider;
+import com.zimbra.cs.service.AuthProviderException;
 import com.zimbra.soap.JaxbUtil;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -142,11 +145,16 @@ public class SoapClient {
 			return this.execute();
 		}
 
-		private StringEntity createEnvelop() throws XmlParseException, UnsupportedEncodingException {
+		private StringEntity createEnvelop()
+				throws ServiceException, UnsupportedEncodingException {
 			Element envelope;
+
+			var authToken = AuthProvider.getAuthToken(caller, isAdminAccount()).toZAuthToken();
+			final Element ctxt = SoapUtil.toCtxt(SoapProtocol.Soap12, authToken);
 			if (Objects.isNull(requestedAccount)) {
-				envelope = SoapProtocol.Soap12.soapEnvelope(soapBody);
+				envelope = SoapProtocol.Soap12.soapEnvelope(soapBody, ctxt);
 			} else {
+				SoapUtil.addTargetAccountToCtxt(ctxt, requestedAccount.getId(), requestedAccount.getName());
 				final Element headerXml =
 						Element.parseXML(
 								String.format(
@@ -159,7 +167,7 @@ public class SoapClient {
 
 		private BasicClientCookie createAuthCookie() throws AuthTokenException, ServiceException {
 			final var authToken = AuthProvider.getAuthToken(caller, isAdminAccount());
-			final var name = ZimbraCookie.authTokenCookieName(false);
+			final var name = ZimbraCookie.authTokenCookieName(isAdminAccount());
 			final var cookie = new BasicClientCookie(name, authToken.getEncoded());
 			cookie.setDomain(caller.getServerName());
 			cookie.setPath("/");
