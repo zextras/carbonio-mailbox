@@ -9,7 +9,6 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
-import com.zimbra.cs.rmgmt.RemoteCommands;
 import com.zimbra.soap.admin.message.IssueCertRequest;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +39,7 @@ public class IssueCertTest extends SoapTestSuite {
   }
 
   @Test
-  void shouldSucceedWhenProxyServerAvailable() throws Exception {
+  void shouldSucceed_WhenProxyServerAvailable_AndDomainHasPublicAndVirtualHostnames() throws Exception {
 
     final Domain domain = createDomain();
     var domainAttributes = new HashMap<String, Object>();
@@ -56,7 +55,10 @@ public class IssueCertTest extends SoapTestSuite {
                 put(ZAttrProvisioning.A_zimbraServiceEnabled, Provisioning.SERVICE_PROXY);
             }
         });
+
     final SoapResponse soapResponse = executeIssueCertApi(domain.getId());
+
+    assertTrue(soapResponse.body().contains("The System is processing your certificate generation request."));
     assertEquals(200, soapResponse.statusCode());
   }
 
