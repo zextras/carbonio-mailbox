@@ -7,15 +7,13 @@ package com.zextras.mailbox.util;
 import com.zextras.mailbox.soap.SoapUtils;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.soap.HeaderConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.soap.SoapUtil;
-import com.zimbra.common.soap.XmlParseException;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.service.AuthProvider;
-import com.zimbra.cs.service.AuthProviderException;
 import com.zimbra.soap.JaxbUtil;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -134,7 +132,7 @@ public class SoapClient {
 
 			final HttpPost httpPost = new HttpPost();
 			httpPost.setURI(URI.create(this.url));
-			httpPost.setEntity(createEnvelop());
+			httpPost.setEntity(createEnvelope());
 			try (var client = getClient(cookieStore)) {
 				final CloseableHttpResponse response = client.execute(httpPost);
 				return new SoapResponse(response.getStatusLine().getStatusCode(), SoapUtils.getResponse(response));
@@ -146,17 +144,21 @@ public class SoapClient {
 			return this.execute();
 		}
 
-		private StringEntity createEnvelop()
+		private StringEntity createEnvelope()
 				throws ServiceException, UnsupportedEncodingException {
 			Element envelope;
-
-			var authToken = AuthProvider.getAuthToken(caller, isAdminAccount()).toZAuthToken();
-			final Element ctxt = SoapUtil.toCtxt(SoapProtocol.Soap12, authToken);
-			if (Objects.isNull(requestedAccount)) {
-				envelope = SoapProtocol.Soap12.soapEnvelope(soapBody, ctxt);
+			Element header = SoapUtil.createEmptyContext(SoapProtocol.Soap12);
+			if (!Objects.isNull(caller)) {
+				var authToken = AuthProvider.getAuthToken(caller, isAdminAccount()).toZAuthToken();
+				header = SoapUtil.toCtxt(SoapProtocol.Soap12, authToken);
+			}
+			if (!Objects.isNull(requestedAccount)) {
+				SoapUtil.addTargetAccountToCtxt(header, requestedAccount.getId(), requestedAccount.getName());
+			}
+			if (Objects.isNull(header)) {
+				envelope = SoapProtocol.Soap12.soapEnvelope(soapBody);
 			} else {
-				SoapUtil.addTargetAccountToCtxt(ctxt, requestedAccount.getId(), requestedAccount.getName());
-				envelope = SoapProtocol.Soap12.soapEnvelope(soapBody, ctxt);
+				envelope = SoapProtocol.Soap12.soapEnvelope(soapBody, header);
 			}
 			return new StringEntity(envelope.toString());
 		}
