@@ -12,8 +12,12 @@ import com.zextras.mailbox.util.CreateAccount.Factory;
 import com.zextras.mailbox.util.MailboxSetupHelper;
 import com.zextras.mailbox.util.MailboxTestData;
 import com.zextras.mailbox.util.MailboxTestExtension;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.Server;
+import java.util.HashMap;
+import java.util.UUID;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 public abstract class MailboxTestSuite {
@@ -32,6 +36,17 @@ public abstract class MailboxTestSuite {
 	protected static CreateAccount createAccount() {
 		return new Factory(Provisioning.getInstance(),
 				MailboxTestSuite.DEFAULT_DOMAIN_NAME).get();
+	}
+
+	protected static Server createProxyServer() throws ServiceException {
+		final String serverName = UUID.randomUUID() + ".com";
+		return Provisioning.getInstance().createServer(
+				serverName, new HashMap<>() {
+					{
+						put(ZAttrProvisioning.A_cn, serverName);
+						put(ZAttrProvisioning.A_zimbraServiceEnabled, Provisioning.SERVICE_PROXY);
+					}
+				});
 	}
 	protected static AccountAction.Factory getAccountActionFactory() throws ServiceException {
 		return AccountAction.Factory.getDefault();

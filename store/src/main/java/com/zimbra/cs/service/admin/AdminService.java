@@ -16,6 +16,7 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.Server;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.rmgmt.RemoteCertbot;
@@ -23,9 +24,11 @@ import com.zimbra.cs.rmgmt.RemoteManager;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 import io.vavr.Function2;
+import io.vavr.control.Try;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * @zm-service-description The Admin Service includes commands for server, account and mailbox
@@ -34,8 +37,17 @@ import java.util.function.Function;
  */
 public class AdminService implements DocumentService {
 
-  private Function<RemoteManager, RemoteCertbot> getCertBotSupplier() {
-      return RemoteCertbot::getRemoteCertbot;
+  protected Function<Server, RemoteManager> getRemoteManagerProvider() {
+    return (Server server) -> {
+			try {
+				return RemoteManager.getRemoteManager(server);
+			} catch (ServiceException e) {
+				throw new RuntimeException(e);
+			}
+		};
+  }
+  private Supplier<Try<RemoteCertbot>> getCertBotSupplier() {
+    return () -> Try.of(() -> new RemoteCertbot.RemoteCertbotProvider(Provisioning.getInstance(), getRemoteManagerProvider()).getRemoteCertbot());
   }
 
   private Function2<Mailbox, Domain, CertificateNotificationManager> getNotificationManagerSupplier() {

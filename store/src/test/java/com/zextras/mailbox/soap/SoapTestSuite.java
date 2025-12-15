@@ -5,19 +5,25 @@
 package com.zextras.mailbox.soap;
 
 import static com.zimbra.client.ZEmailAddress.EMAIL_TYPE_TO;
+import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
+import com.google.common.collect.Maps;
 import com.zextras.mailbox.util.AccountAction;
 import com.zextras.mailbox.util.CreateAccount;
 import com.zextras.mailbox.util.SoapClient;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.Server;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.account.AccountService;
 import com.zimbra.cs.service.admin.AdminService;
+import com.zimbra.cs.service.admin.TestableAdminService;
 import com.zimbra.cs.service.mail.MailServiceWithoutTracking;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -29,7 +35,8 @@ import com.zimbra.soap.mail.type.EmailAddrInfo;
 import com.zimbra.soap.mail.type.Msg;
 import java.util.HashMap;
 import java.util.List;
-import org.apache.http.HttpResponse;
+import java.util.Map;
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
@@ -41,7 +48,7 @@ public class SoapTestSuite {
 
   @RegisterExtension
   private static final SoapExtension soapExtension = new SoapExtension.Builder()
-      .addEngineHandler(AdminService.class.getName())
+      .addEngineHandler(TestableAdminService.class.getName())
       .addEngineHandler(AccountService.class.getName())
       .addEngineHandler(MailServiceWithoutTracking.class.getName())
       .create();
@@ -49,6 +56,25 @@ public class SoapTestSuite {
   protected static CreateAccount createAccount() {
     return new CreateAccount.Factory(Provisioning.getInstance(),
         getDefaultDomainName()).get();
+  }
+  protected static Domain createDomain() {
+		try {
+			return Provisioning.getInstance().createDomain(UUID.randomUUID() + ".com", Maps.newHashMap());
+		} catch (ServiceException e) {
+			throw new RuntimeException(e);
+		}
+	}
+  protected static Provisioning getProvisioning() {
+    return Provisioning.getInstance();
+  }
+
+  protected static Server createMailServer() {
+    try {
+      return Provisioning.getInstance().createServer(UUID.randomUUID() + ".com", Maps.newHashMap(
+          Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
+    } catch (ServiceException e) {
+      throw new RuntimeException(e);
+    }
   }
   protected static AccountAction.Factory getAccountActionFactory() throws ServiceException {
     return AccountAction.Factory.getDefault();
