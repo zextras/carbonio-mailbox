@@ -26,8 +26,8 @@
       <artifactId>httpcore</artifactId>
     </dependency>
     <dependency>
-      <artifactId>mail</artifactId>
-      <groupId>javax.mail</groupId>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>javax.mail</artifactId>
     </dependency>
 
     <dependency>

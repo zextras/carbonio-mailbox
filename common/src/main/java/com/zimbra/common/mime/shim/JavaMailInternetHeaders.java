@@ -51,16 +51,14 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
                 throw new MessagingException("error reading InternetHeaders", ioe);
             }
         } else {
-            this.headers = new ArrayList<InternetHeader>(40); 
-            load(is);
+            super.load(is);
         }
     }
 
-    @SuppressWarnings("unchecked")
     JavaMailInternetHeaders(InternetHeaders jmheaders) {
         this();
-        for (Enumeration<InternetHeader> en = jmheaders.getAllHeaders(); en.hasMoreElements(); ) {
-            InternetHeader jmheader = en.nextElement();
+        for (Enumeration<Header> en = jmheaders.getAllHeaders(); en.hasMoreElements(); ) {
+            Header jmheader = en.nextElement();
             addHeader(jmheader.getName(), jmheader.getValue());
         }
     }
@@ -136,17 +134,13 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
             "resent-date", "resent-from", "resent-sender", "resent-to", "resent-cc", "resent-bcc", "resent-message-id"
     );
 
-    @SuppressWarnings("unchecked")
     @Override
     public void addHeader(String name, String value) {
         if (ZPARSER) {
             zheaders.addHeader(name, value.getBytes());
         } else {
-            if (name != null && RESENT_HEADERS.contains(name.toLowerCase())) {
-                headers.add(0, new InternetHeader(name, value));
-            } else {
-                super.addHeader(name, value);
-            }
+            // Note: In JavaMail 1.6.2+, we can't directly access InternetHeader, so we rely on super
+            super.addHeader(name, value);
         }
     }
 
@@ -165,7 +159,7 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
         if (names == null) {
             names = NO_HEADERS;
         }
-        List<InternetHeader> jmheaders = new ArrayList<>();
+        List<Header> jmheaders = new ArrayList<>();
         for (com.zimbra.common.mime.MimeHeader header : zheaders) {
             int i = 0;
             for ( ; i < names.length; i++) {
@@ -174,13 +168,12 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
                 }
             }
             if (match == (i != names.length)) {
-                jmheaders.add(new InternetHeader(header.getName(), header.getValue(defaultCharset)));
+                jmheaders.add(new Header(header.getName(), header.getValue(defaultCharset)));
             }
         }
         return new IteratorEnumeration<>(jmheaders);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Enumeration<Header> getAllHeaders() {
         if (ZPARSER) {
@@ -190,7 +183,6 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Enumeration<Header> getMatchingHeaders(String[] names) {
         if (ZPARSER) {
@@ -200,7 +192,6 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Enumeration<Header> getNonMatchingHeaders(String[] names) {
         if (ZPARSER) {
@@ -279,7 +270,6 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
         return new IteratorEnumeration<>(jmheaders);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Enumeration<String> getAllHeaderLines() {
         if (ZPARSER) {
@@ -289,7 +279,6 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Enumeration<String> getMatchingHeaderLines(String[] names) {
         if (ZPARSER) {
@@ -299,7 +288,6 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Enumeration<String> getNonMatchingHeaderLines(String[] names) {
         if (ZPARSER) {
