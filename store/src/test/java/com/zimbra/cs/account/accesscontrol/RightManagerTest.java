@@ -31,7 +31,7 @@ class RightManagerTest {
   }
 
   private void assertRightsLoaded(RightManager rightManager) throws ServiceException {
-    Assertions.assertEquals(419, rightManager.getAllAdminRights().size());
+    Assertions.assertEquals(420, rightManager.getAllAdminRights().size());
     Assertions.assertEquals(11, rightManager.getAllUserRights().size());
 
     final AdminRight domainAdminRights = rightManager.getAdminRight("domainAdminRights");
