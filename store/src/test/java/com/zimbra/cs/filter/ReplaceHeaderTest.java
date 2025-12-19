@@ -94,6 +94,7 @@ public class ReplaceHeaderTest extends MailboxTestSuite {
 			+ "\tFri, 24 Jun 2016 01:45:31 -0400 (EDT)\n"
 			+ "X-Test-Header: =?utf-8?B?W1NQQU1d5pel5\r\n\tpys6Kqe44Gu5Lu25ZCN?=\n"
 			+ "X-Spam-Score: 85\n"
+			+ "Date: Fri, 19 Dec 2025 11:22:33 +0100 (CET)"
 			+ "from: test2@zimbra.com\n"
 			+ "Subject: example\n"
 			+ "to: test@zimbra.com\n";
@@ -139,6 +140,7 @@ public class ReplaceHeaderTest extends MailboxTestSuite {
 					+ " by zcs-ubuntu.local (Postfix) with ESMTPS id 2822F2C2648\r\n"
 					+ " for <user1@domain1.zimbra.com>; Wed,  7 Dec 2016 15:10:58 +0900 (JST)",
 			"Message-ID: <46941357.16.1482318459470.JavaMail.zimbra@dev07>",
+			"Date: Fri, 19 Dec 2025 11:22:33 +0100 (CET)",
 			"MIME-Version: 1.0",
 			"Content-Transfer-Encoding: 7bit",
 			"X-Dummy-Header: ABC",
@@ -643,7 +645,7 @@ public class ReplaceHeaderTest extends MailboxTestSuite {
 					break;
 				}
 			}
-			assertEquals("line1 [test] line3", headerValue);
+			assertEquals("line1\t[test]\tline3", headerValue);
 		} catch (Exception e) {
 			fail("No exception should be thrown: " + e.getMessage());
 		}
@@ -752,7 +754,7 @@ public class ReplaceHeaderTest extends MailboxTestSuite {
 					break;
 				}
 			}
-			assertEquals("[test]=?utf-8?B?W1NQQU1d5pel5 pys6Kqe44Gu5Lu25ZCN?=", headerValue);
+			assertEquals("[test]=?utf-8?B?W1NQQU1d5pel5\tpys6Kqe44Gu5Lu25ZCN?=", headerValue);
 		} catch (Exception e) {
 			fail("No exception should be thrown: " + e.getMessage());
 		}
@@ -921,7 +923,8 @@ public class ReplaceHeaderTest extends MailboxTestSuite {
 				String value = header + ": " + temp.getValue();
 				if ("X-New-Header".equals(header)) {
 					assertEquals("X-New-Header: new value", value);
-				} else {
+				}
+				else {
 					assertEquals(sampleBaseMsg7[index], value);
 				}
 				index++;
