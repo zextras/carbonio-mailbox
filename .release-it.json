@@ -15,6 +15,11 @@
       },
       "out": [
         {
+          "file": "pom.xml",
+          "type": "text/plain",
+          "path": "<revision>"
+        },
+        {
           "file": "packages/**/PKGBUILD",
           "type": "text/plain",
           "path": "pkgrel="

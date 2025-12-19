@@ -4,14 +4,14 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>zm-mailbox</artifactId>
-    <groupId>zextras</groupId>
+    <groupId>com.zextras</groupId>
     <version>${revision}${changelist}</version>
   </parent>
   <artifactId>right-manager</artifactId>
   <dependencies>
     <dependency>
       <artifactId>zm-common</artifactId>
-      <groupId>zextras</groupId>
+      <groupId>com.zextras</groupId>
     </dependency>
     <dependency>
       <artifactId>mailbox-attribute-manager</artifactId>

@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>zm-mailbox</artifactId>
-    <groupId>zextras</groupId>
+    <groupId>com.zextras</groupId>
     <version>${revision}${changelist}</version>
   </parent>
 
@@ -16,7 +16,7 @@
   <dependencies>
     <dependency>
       <artifactId>zm-common</artifactId>
-      <groupId>zextras</groupId>
+      <groupId>com.zextras</groupId>
     </dependency>
     <dependency>
       <artifactId>guava</artifactId>
@@ -96,7 +96,7 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>zextras</groupId>
+      <groupId>com.zextras</groupId>
       <artifactId>right-manager</artifactId>
     </dependency>
   </dependencies>

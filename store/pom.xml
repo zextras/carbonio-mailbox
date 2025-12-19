@@ -7,7 +7,7 @@
 
   <parent>
     <artifactId>zm-mailbox</artifactId>
-    <groupId>zextras</groupId>
+    <groupId>com.zextras</groupId>
     <version>${revision}${changelist}</version>
   </parent>
 
@@ -472,14 +472,14 @@
     </dependency>
     <dependency>
       <artifactId>zm-common</artifactId>
-      <groupId>zextras</groupId>
+      <groupId>com.zextras</groupId>
     </dependency>
     <dependency>
       <artifactId>zm-client</artifactId>
-      <groupId>zextras</groupId>
+      <groupId>com.zextras</groupId>
     </dependency>
     <dependency>
-      <groupId>zextras</groupId>
+      <groupId>com.zextras</groupId>
       <artifactId>zm-soap</artifactId>
     </dependency>
     <dependency>
@@ -493,10 +493,10 @@
     </dependency>
     <dependency>
       <artifactId>right-manager</artifactId>
-      <groupId>zextras</groupId>
+      <groupId>com.zextras</groupId>
     </dependency>
     <dependency>
-      <groupId>zextras</groupId>
+      <groupId>com.zextras</groupId>
       <artifactId>store-extra-runtime-dependencies</artifactId>
       <type>pom</type>
       <scope>runtime</scope>
