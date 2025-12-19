@@ -60,14 +60,19 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 			+ "Subject: example\n"
 			+ "to: test@zimbra.com\n";
 
+	private void applySieveScriptToIncomingMessage(Account account, Mailbox mailbox, ParsedMessage parsedMessage) throws Exception {
+		RuleManager.applyRulesToIncomingMessage(
+				new OperationContext(mailbox), mailbox, parsedMessage, 0, account.getName(),
+				null, new DeliveryContext(),
+				Mailbox.ID_FOLDER_INBOX, true);
+	}
 	/*
 	 * Delete all X-Test-Header
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
 	void testDeleteHeaderXTestHeaderAll() throws ServiceException {
 		var acct1 = createAccount().create();
-		String[] expected = {"Received: from edge01e.zimbra.com ([127.0.0.1])\r\n"
+		String[] expectedHeaders = {"Received: from edge01e.zimbra.com ([127.0.0.1])\r\n"
 				+ "\tby localhost (edge01e.zimbra.com [127.0.0.1]) (amavisd-new, port 10032)\r\n"
 				+ "\twith ESMTP id DN6rfD1RkHD7; Fri, 24 Jun 2016 01:45:31 -0400 (EDT)",
 				"Received: from localhost (localhost [127.0.0.1])\r\n"
@@ -92,7 +97,9 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 				"to: test@zimbra.com",
 				"Content-Transfer-Encoding: 7bit",
 				"MIME-Version: 1.0",
-				"Message-ID:"};
+				"Date:",
+				"Message-ID:"
+		};
 
 		try {
 			String filterScript = "require [\"editheader\"];\n"
@@ -104,11 +111,8 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 			RuleManager.clearCachedRules(acct1);
 			acct1.setSieveEditHeaderEnabled(true);
 			acct1.setAdminSieveScriptBefore(filterScript);
-			RuleManager.applyRulesToIncomingMessage(
-					new OperationContext(mbox1), mbox1, new ParsedMessage(
-							sampleBaseMsg.getBytes(), false), 0, acct1.getName(),
-					null, new DeliveryContext(),
-					Mailbox.ID_FOLDER_INBOX, true);
+			final ParsedMessage parsedMessage = new ParsedMessage(sampleBaseMsg.getBytes(), false);
+			applySieveScriptToIncomingMessage(acct1, mbox1, parsedMessage);
 			Integer itemId = mbox1.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(MailItem.Type.MESSAGE)
 					.get(0);
 			Message message = mbox1.getMessageById(null, itemId);
@@ -135,8 +139,10 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 					String header = (String) e.nextElement();
 					if (header.startsWith("Message-ID:")) {
 						header = "Message-ID:";
+					} else if (header.startsWith("Date:")) {
+						header = "Date:";
 					}
-					assertEquals(expected[i++], header);
+					assertEquals(expectedHeaders[i++], header);
 				}
 			}
 		} catch (Exception e) {
