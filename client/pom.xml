@@ -54,12 +54,12 @@
 
     <dependency>
       <artifactId>zm-common</artifactId>
-      <groupId>zextras</groupId>
+      <groupId>com.zextras</groupId>
     </dependency>
 
     <dependency>
       <artifactId>zm-soap</artifactId>
-      <groupId>zextras</groupId>
+      <groupId>com.zextras</groupId>
     </dependency>
   </dependencies>
   <modelVersion>4.0.0</modelVersion>
@@ -68,7 +68,7 @@
 
   <parent>
     <artifactId>zm-mailbox</artifactId>
-    <groupId>zextras</groupId>
+    <groupId>com.zextras</groupId>
     <version>${revision}${changelist}</version>
   </parent>
 
