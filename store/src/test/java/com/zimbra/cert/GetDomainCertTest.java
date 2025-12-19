@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.zimbra.common.account.Key.DomainBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.XMLElement;
@@ -43,7 +42,7 @@ public class GetDomainCertTest {
 
   @Test
   public void shouldReturnInvalidIfNoSuchDomain() throws Exception {
-    when(provisioning.get(DomainBy.id, domainId)).thenReturn(null);
+    when(provisioning.getDomainById(domainId)).thenReturn(null);
 
     final GetDomainCert getDomainCert = new GetDomainCert();
     final XMLElement request = new XMLElement(GET_DOMAIN_CERT_REQUEST);
@@ -58,7 +57,7 @@ public class GetDomainCertTest {
   @Test
   public void shouldReturnInvalidIfNoDomainCert() throws Exception {
     final Domain domain = mock(Domain.class);
-    when(provisioning.get(DomainBy.id, domainId)).thenReturn(domain);
+    when(provisioning.getDomainById(domainId)).thenReturn(domain);
     when(domain.getSSLCertificate()).thenReturn(null);
 
     final GetDomainCert getDomainCert = new GetDomainCert();
@@ -75,7 +74,7 @@ public class GetDomainCertTest {
   @Test
   public void shouldThrowExceptionWithInvalidCertData() throws Exception {
     final Domain domain = mock(Domain.class);
-    when(provisioning.get(DomainBy.id, domainId)).thenReturn(domain);
+    when(provisioning.getDomainById(domainId)).thenReturn(domain);
     when(domain.getDomainName()).thenReturn("domainName");
     when(domain.getSSLCertificate())
         .thenReturn(
@@ -98,7 +97,7 @@ public class GetDomainCertTest {
   @Test
   public void shouldReturnSuccessForDomainWithValidCert() throws Exception {
     final Domain domain = mock(Domain.class);
-    when(provisioning.get(DomainBy.id, domainId)).thenReturn(domain);
+    when(provisioning.getDomainById(domainId)).thenReturn(domain);
     when(domain.getDomainName()).thenReturn("domainName");
     when(domain.getSSLCertificate())
         .thenReturn(

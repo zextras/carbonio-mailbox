@@ -1581,7 +1581,6 @@ public final class AdminConstants {
 
   // cert
   public static final String A_CHAIN_TYPE = "chainType";
-  public static final String DEFAULT_CHAIN = "long";
 
   public static final String A_NEW_NAME = "newName";
   public static final String A_FORCE_DELETE = "forceDelete";

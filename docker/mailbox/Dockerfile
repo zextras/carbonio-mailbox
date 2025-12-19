@@ -64,14 +64,14 @@ RUN mkdir -p /staging/usr/bin && \
     chmod +x /staging/usr/bin/zmmailbox
 
 # Generate keystore using Alpine-based builder stage
-FROM --platform=$BUILDPLATFORM eclipse-temurin:17-jre-alpine AS keystore-builder
+FROM --platform=$BUILDPLATFORM eclipse-temurin:21-jre-alpine AS keystore-builder
 RUN mkdir -p /keystore && \
     keytool -genkey -keyalg RSA \
     -dname "cn=Unknown, ou=Unknown, o=Unknown, c=Unknown" \
     -keystore /keystore/keystore -keysize 2048 -validity 1461 \
     -keypass testkey1 -storepass teststore1
 
-FROM eclipse-temurin:17-jre-jammy
+FROM eclipse-temurin:21-jre-jammy
 
 # Copy entire staged directory structure
 COPY --from=build /staging /
@@ -95,8 +95,7 @@ ENV LDAP_URL="ldap://openldap:1389" \
     MARIADB_PORT=3306 \
     CARBONIO_FILES_SERVICE_URL="http://carbonio-files:10000" \
     CARBONIO_PREVIEW_SERVICE_URL="http://carbonio-preview:10000" \
-    MAILBOXD_JAVA_OPTS="-Xss256k -Xms1996m -Xmx1996m" \
-    TRACING_OPTIONS=""
+    MAILBOXD_JAVA_OPTS="-Xss256k -Xms1996m -Xmx1996m"
 
 COPY docker/mailbox/entrypoint.sh .
 

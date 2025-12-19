@@ -48,7 +48,8 @@ public class GetDomainCert extends AdminDocumentHandler {
 
     Provisioning prov = Provisioning.getInstance();
     String domainId = request.getAttribute(AdminConstants.A_DOMAIN);
-    Domain domain = prov.get(DomainBy.id, domainId);
+    Domain domain = prov.getDomainById(domainId);
+    prov.reload(domain);
 
     if (domain == null) {
       throw ServiceException.INVALID_REQUEST(
