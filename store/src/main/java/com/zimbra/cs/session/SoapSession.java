@@ -275,16 +275,26 @@ public class SoapSession extends Session {
               filtered.recordModified(
                   item, chg.why | MODIFIED_CONVERSATION_FLAGS, (MailItem) chg.preModifyObj);
             } else if (isVisible) {
-              filtered.recordModified(item, chg.why, (MailItem) chg.preModifyObj);
-              // if it's an unmoved visible message and it had a tag/flag/unread change,
-              // make sure the conv shows up in the modified or created list
-              if (item instanceof Message && (moved || (chg.why & BASIC_CONVERSATION_FLAGS) != 0)) {
-                forceConversationModification(
-                    (Message) item,
-                    chg,
-                    pms,
-                    filtered,
-                    moved ? MODIFIED_CONVERSATION_FLAGS : BASIC_CONVERSATION_FLAGS);
+              int why = chg.why;
+              // prevent name/color/flags changes on shared calendar folders
+              if (item instanceof Folder
+                  && Mailbox.isCalendarFolder((Folder) item)
+                  && folderIsDirectlySharedWithUser((Folder) item, mAuthenticatedAccountId)) {
+                why &= ~(Change.NAME | Change.COLOR | Change.FLAGS);
+              }
+              if (why != 0) {
+                filtered.recordModified(item, why, (MailItem) chg.preModifyObj);
+                // if it's an unmoved visible message, and it had a tag/flag/unread change,
+                // make sure the conv shows up in the modified or created list
+                if (item instanceof Message
+                    && (moved || (chg.why & BASIC_CONVERSATION_FLAGS) != 0)) {
+                  forceConversationModification(
+                      (Message) item,
+                      chg,
+                      pms,
+                      filtered,
+                      moved ? MODIFIED_CONVERSATION_FLAGS : BASIC_CONVERSATION_FLAGS);
+                }
               }
             } else if (moved) {
               filtered.recordDeleted((MailItem) chg.preModifyObj);
@@ -329,6 +339,23 @@ public class SoapSession extends Session {
           ZimbraLog.session.warn("exception during forceConversationModification", e);
         }
       }
+    }
+
+    /**
+     * Returns true if the folder is directly shared with the given user (via ACL).
+     */
+    private boolean folderIsDirectlySharedWithUser(Folder folder, String userId) {
+      if (folder == null || folder.getACL() == null) return false;
+      try {
+        for (com.zimbra.cs.mailbox.ACL.Grant grant : folder.getACL().getGrants()) {
+          if (grant.getGranteeId() != null && grant.getGranteeId().equals(userId)) {
+            return true;
+          }
+        }
+      } catch (Exception e) {
+        // ignore and return false
+      }
+      return false;
     }
   }
 
