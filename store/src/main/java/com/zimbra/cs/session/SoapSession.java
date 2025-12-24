@@ -278,7 +278,6 @@ public class SoapSession extends Session {
               int why = chg.why;
               // prevent name/color/flags changes on shared calendar folders
               if (item instanceof Folder
-                  && Mailbox.isCalendarFolder((Folder) item)
                   && folderIsDirectlySharedWithUser((Folder) item, mAuthenticatedAccountId)) {
                 why &= ~(Change.NAME | Change.COLOR | Change.FLAGS);
               }
@@ -344,7 +343,7 @@ public class SoapSession extends Session {
     /**
      * Returns true if the folder is directly shared with the given user (via ACL).
      */
-    private boolean folderIsDirectlySharedWithUser(Folder folder, String userId) {
+    boolean folderIsDirectlySharedWithUser(Folder folder, String userId) {
       if (folder == null || folder.getACL() == null) return false;
       try {
         for (com.zimbra.cs.mailbox.ACL.Grant grant : folder.getACL().getGrants()) {
