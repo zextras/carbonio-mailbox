@@ -20,6 +20,14 @@ depends=(
 section="mail"
 priority="optional"
 
+source=(
+  "systemd-sysuser.conf"
+)
+
+sha256sums=(
+  'e153e64827d0401afde735249e21f99eaeb8a053b9b0dc643ea8fbcd8c876ece'
+)
+
 package() {
   cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
 
@@ -74,20 +82,16 @@ package() {
   # systemd unit
   install -Dm 644 packages/appserver-service/carbonio-appserver.service \
     "${pkgdir}/usr/lib/systemd/system/carbonio-appserver.service"
+
+  # systemd sysusers.d
+  install -Dm644 packages/appserver-service/systemd-sysuser.conf \
+    "${pkgdir}/usr/lib/sysusers.d/carbonio-appserver-service.conf"
 }
 
 postinst() {
-  getent group 'zextras' >/dev/null \
-    || groupadd -r 'zextras'
-  getent passwd 'zextras' >/dev/null \
-    || useradd -r -M -d '/opt/zextras' -g 'zextras' -s /bin/bash 'zextras'
-
-  getent group 'carbonio-mailbox' >/dev/null \
-    || groupadd -r 'carbonio-mailbox'
-  getent passwd 'carbonio-mailbox' >/dev/null \
-    || useradd -r -M -g 'carbonio-mailbox' -s /sbin/nologin 'carbonio-mailbox'
-
-  usermod -a -G 'carbonio-mailbox' 'zextras'
+  # Create carbonio-mailbox user/group and add zextras to carbonio-mailbox group
+  # Note: zextras user/group is created by carbonio-core sysusers.d
+  systemd-sysusers /usr/lib/sysusers.d/carbonio-appserver-service.conf >/dev/null 2>&1 || :
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload &>/dev/null || :
