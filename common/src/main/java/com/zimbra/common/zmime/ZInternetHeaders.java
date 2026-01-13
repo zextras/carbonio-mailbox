@@ -26,7 +26,6 @@ public class ZInternetHeaders extends InternetHeaders {
 
     private ZMimePart parent;
     private boolean ordered = true;
-    // TODO: double check this refactored logic
     /** Our own list of headers, used when ZPARSER is true. This avoids type conflicts
      *  with the inherited {@code headers} field which expects InternetHeaders.InternetHeader objects. */
     private List<ZInternetHeader> zheaders;
