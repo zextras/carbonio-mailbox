@@ -277,9 +277,11 @@ public class SoapSession extends Session {
             } else if (isVisible) {
               int why = chg.why;
               // prevent name/color/flags changes on shared calendar folders
-              if (item instanceof Folder
-                  && folderIsDirectlySharedWithUser((Folder) item, mAuthenticatedAccountId)) {
-                why &= ~(Change.NAME | Change.COLOR | Change.FLAGS);
+              boolean isSharedFolder = item instanceof Folder
+                  && folderIsDirectlySharedWithUser((Folder) item, mAuthenticatedAccountId);
+              if (isSharedFolder) {
+                int restrictedChangesForSharedFolders = Change.NAME | Change.COLOR | Change.FLAGS;
+                why &= ~restrictedChangesForSharedFolders;
               }
               if (why != 0) {
                 filtered.recordModified(item, why, (MailItem) chg.preModifyObj);
