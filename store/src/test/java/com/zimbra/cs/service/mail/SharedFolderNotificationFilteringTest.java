@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("api")
-public class SharedFolderNotificationFilteringTest extends SoapTestSuite {
+class SharedFolderNotificationFilteringTest extends SoapTestSuite {
 
   private static MailboxManager mailboxManager;
 
@@ -44,7 +44,7 @@ public class SharedFolderNotificationFilteringTest extends SoapTestSuite {
 
   /** Tests that name changes on shared calendar folders are filtered out from notifications. */
   @Test
-  public void nameChangeOnSharedCalendarFolderIsFilteredOut() throws Exception {
+  void nameChangeOnSharedCalendarFolderIsFilteredOut() throws Exception {
     var userACalendar = getFirstCalendar(ownerAccount);
     shareFolder(ownerAccount, granteeAccount, userACalendar.getId());
     createMountpoint(granteeAccount, userACalendar, "test shared calendar", "appointment");
@@ -71,7 +71,7 @@ public class SharedFolderNotificationFilteringTest extends SoapTestSuite {
 
   /** Tests that color changes on shared mail folders are filtered out from notifications. */
   @Test
-  public void colorChangeOnSharedMailFolderIsFilteredOut() throws Exception {
+  void colorChangeOnSharedMailFolderIsFilteredOut() throws Exception {
     // Create a mail folder
     var mailbox = mailboxManager.getMailboxByAccount(ownerAccount);
     var mailFolder =
@@ -103,7 +103,7 @@ public class SharedFolderNotificationFilteringTest extends SoapTestSuite {
 
   /** Tests that name changes on shared mail folders are filtered out from notifications. */
   @Test
-  public void nameChangeOnSharedMailFolderIsFilteredOut() throws Exception {
+  void nameChangeOnSharedMailFolderIsFilteredOut() throws Exception {
     // Create a mail folder
     var mailbox = mailboxManager.getMailboxByAccount(ownerAccount);
     var mailFolder =
@@ -135,7 +135,7 @@ public class SharedFolderNotificationFilteringTest extends SoapTestSuite {
 
   /** Tests that color changes on shared contact folders are filtered out from notifications. */
   @Test
-  public void colorChangeOnSharedContactFolderIsFilteredOut() throws Exception {
+  void colorChangeOnSharedContactFolderIsFilteredOut() throws Exception {
     // Create a contact folder
     var mailbox = mailboxManager.getMailboxByAccount(ownerAccount);
     var contactFolder =
@@ -168,7 +168,7 @@ public class SharedFolderNotificationFilteringTest extends SoapTestSuite {
 
   /** Tests that multiple changes (color, name) on a shared folder are all filtered out. */
   @Test
-  public void multipleRestrictedChangesOnSharedFolderAreFilteredOut() throws Exception {
+  void multipleRestrictedChangesOnSharedFolderAreFilteredOut() throws Exception {
     var userACalendar = getFirstCalendar(ownerAccount);
     shareFolder(ownerAccount, granteeAccount, userACalendar.getId());
     createMountpoint(
