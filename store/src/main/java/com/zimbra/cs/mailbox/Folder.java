@@ -1799,7 +1799,7 @@ public class Folder extends MailItem implements FolderStore {
    * @param authenticatedUserId the Zimbra account ID of the user to check
    * @return {@code true} if the folder has an ACL grant for the specified user, {@code false} otherwise
    */
-  public boolean isDirectlySharedWithUser(String authenticatedUserId) {
+  public boolean isSharedWithUser(String authenticatedUserId) {
     try {
       ACL folderAcl = getOrLoadAcl();
       if (folderAcl == null) {

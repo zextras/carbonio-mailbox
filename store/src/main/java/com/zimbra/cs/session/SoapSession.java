@@ -281,7 +281,7 @@ public class SoapSession extends Session {
               // Filter out name/color/flags changes on shared folders to prevent notification spam
               boolean isSharedFolder =
                   item instanceof Folder folder
-                      && folder.isDirectlySharedWithUser(mAuthenticatedAccountId);
+                      && folder.isSharedWithUser(mAuthenticatedAccountId);
               if (isSharedFolder) {
                 int restrictedChangesForSharedFolders = Change.NAME | Change.COLOR | Change.FLAGS;
                 why &= ~restrictedChangesForSharedFolders;
