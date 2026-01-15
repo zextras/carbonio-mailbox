@@ -1786,6 +1786,63 @@ public class Folder extends MailItem implements FolderStore {
     return false;
   }
 
+  /**
+   * Checks if this folder is directly shared with a specific user via ACL grants.
+   *
+   * <p>This method determines whether this folder has been directly shared with the specified
+   * user by checking if an ACL grant exists for that user. The check uses
+   * {@link ACL.Grant#isGrantee(String)} to match the user against all grants on the folder.
+   *
+   * <p>If the folder's ACL is not loaded (null), this method will attempt to load the effective ACL
+   * from the database before performing the check.
+   *
+   * @param authenticatedUserId the Zimbra account ID of the user to check
+   * @return {@code true} if the folder has an ACL grant for the specified user, {@code false} otherwise
+   */
+  public boolean isSharedWithUser(String authenticatedUserId) {
+    try {
+      ACL folderAcl = getOrLoadAcl();
+      if (folderAcl == null) {
+        return false;
+      }
+
+      return hasGrantForUser(folderAcl, authenticatedUserId);
+    } catch (Exception e) {
+      // Suppress exceptions and default to not shared
+      return false;
+    }
+  }
+
+  /**
+   * Retrieves this folder's ACL, loading it from the database if not already loaded.
+   *
+   * @return the folder's ACL, or {@code null} if unavailable
+   */
+  private ACL getOrLoadAcl() {
+    ACL acl = getACL();
+    if (acl == null) {
+      // ACL not loaded - fetch the effective ACL from the database
+      acl = getEffectiveACL();
+    }
+    return acl;
+  }
+
+  /**
+   * Checks if the ACL contains a grant for the specified user.
+   *
+   * @param acl the ACL to check
+   * @param userId the user ID to look for
+   * @return {@code true} if a grant exists for the user, {@code false} otherwise
+   */
+  private boolean hasGrantForUser(ACL acl, String userId) {
+    for (ACL.Grant grant : acl.getGrants()) {
+      if (grant.isGrantee(userId)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   @Override
   public ItemIdentifier getFolderItemIdentifier() {
     return ItemIdentifier.fromAccountIdAndItemId(mMailbox.getAccountId(), getId());

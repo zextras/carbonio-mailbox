@@ -97,10 +97,22 @@ public class SoapClient {
 			return this;
 		}
 
+		public Request setSessionId(String sessionId) {
+			this.sessionId = sessionId;
+			return this;
+		}
+
+		public Request enableSession() {
+			this.enableSession = true;
+			return this;
+		}
+
 		private Element soapBody;
 		private Account caller;
 		private Account requestedAccount;
 		private String url = "/";
+		private String sessionId;
+		private boolean enableSession = false;
 
 		private BasicCookieStore createCookieStore() {
 			return new BasicCookieStore();
@@ -155,6 +167,13 @@ public class SoapClient {
 			if (!Objects.isNull(requestedAccount)) {
 				SoapUtil.addTargetAccountToCtxt(header, requestedAccount.getId(), requestedAccount.getName());
 			}
+			// Add session support
+			if (enableSession || sessionId != null) {
+				Element sessionElement = header.addUniqueElement(HeaderConstants.E_SESSION);
+				if (sessionId != null) {
+					sessionElement.addAttribute(HeaderConstants.A_ID, sessionId);
+				}
+			}
 			if (Objects.isNull(header)) {
 				envelope = SoapProtocol.Soap12.soapEnvelope(soapBody);
 			} else {
@@ -179,6 +198,25 @@ public class SoapClient {
 
 	public Request newRequest() {
 		return new Request().setBaseURL(this.endpoint);
+	}
+
+	/**
+	 * Creates a new request with session enabled.
+	 *
+	 * @return Request with session enabled
+	 */
+	public Request newSessionRequest() {
+		return new Request().setBaseURL(this.endpoint).enableSession();
+	}
+
+	/**
+	 * Creates a new request with specific session ID.
+	 *
+	 * @param sessionId the session ID to use
+	 * @return Request with session ID set
+	 */
+	public Request newSessionRequest(String sessionId) {
+		return new Request().setBaseURL(this.endpoint).setSessionId(sessionId);
 	}
 
 	/**
