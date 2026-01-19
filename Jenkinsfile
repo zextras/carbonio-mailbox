@@ -132,9 +132,7 @@ pipeline {
 
         stage('Publish SNAPSHOT to maven') {
             when {
-                expression {
-                    return env.BRANCH_NAME == 'devel'
-                }
+                not { buildingTag() }
             }
             steps {
                 container('jdk-17') {
@@ -149,9 +147,7 @@ pipeline {
 
         stage('Publish to maven') {
             when {
-                expression {
-                    return isBuildingTag()
-                }
+                buildingTag()
             }
             steps {
                 container('jdk-17') {
