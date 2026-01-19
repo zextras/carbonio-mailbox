@@ -41,18 +41,14 @@ import org.slf4j.LoggerFactory;
  */
 public class ProxyPurgeUtil {
 
-  static final String MEMCACHED_PORT = "11211";
   private static final Logger LOG = LoggerFactory.getLogger(ProxyPurgeUtil.class);
 
 
   public static void run(String[] args) throws ServiceException, CommandExitException {
     CommandLine commandLine;
-    ArrayList<String> servers;
-    ArrayList<String> accounts;
     String outputFormat;
     boolean purge;
     Provisioning prov;
-    List<Server> memcachedServers;
     String logLevel = "INFO";
 
     /* Parse the command-line arguments, and display usage if necessary */
@@ -74,27 +70,16 @@ public class ProxyPurgeUtil {
     /* Initialize the logging system and the zimbra environment */
     prov = Provisioning.getInstance();
 
-        /* Get the list of servers running the memcached service
-           this is equivalent to the $(zmprov gamcs) command
-         */
-    memcachedServers = prov.getAllServers(Provisioning.SERVICE_MEMCACHED);
-    servers = new ArrayList<>();
-
-    for (Server s : memcachedServers) {
-      String serverName = s.getAttr(ZAttrProvisioning.A_zimbraMemcachedBindAddress, "localhost");
-      String servicePort = s.getAttr(ZAttrProvisioning.A_zimbraMemcachedBindPort,
-          MEMCACHED_PORT);
-      servers.add(serverName + ":" + servicePort);
-    }
-
-    accounts = getAccounts(commandLine);
-    servers.addAll(getCacheServers(commandLine));
+    // ATTENTION: The purge logic assumes there is only one registered memcached server in the service mesh.
+    final var servers = new ArrayList<String>();
+    servers.add(prov.getConfig().getAttr(ZAttrProvisioning.A_carbonioMemcachedEndpoint, "127.78.0.7:20006"));
 
     if (servers.isEmpty()) {
       LOG.error("No memcached servers found, and none specified (--help for help)");
       throw new CommandExitException(1);
     }
 
+    final var accounts = getAccounts(commandLine);
     if (accounts.isEmpty()) {
       LOG.error("No accounts specified (--help for help)");
       throw new CommandExitException(1);
@@ -115,6 +100,7 @@ public class ProxyPurgeUtil {
 
     purgeAccounts(servers, accounts, purge, outputFormat);
   }
+
   public static void main(String[] args) throws ServiceException {
 		try {
 			run(args);
@@ -133,8 +119,8 @@ public class ProxyPurgeUtil {
    * @param outputformat format of the output in case of printing
    * @throws ServiceException
    */
-  private static void purgeAccounts(List<String> servers, List<String> accounts, boolean purge,
-      String outputformat) throws ServiceException, CommandExitException {
+  private static void purgeAccounts(final List<String> servers, final List<String> accounts, final boolean purge, final String outputformat)
+    throws ServiceException, CommandExitException {
 
     Provisioning prov = Provisioning.getInstance();
 
