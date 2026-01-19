@@ -152,20 +152,6 @@ public class ProxyPurgeUtil {
       }
     }
 
-    if (servers == null) {
-      List<Server> memcachedServers = prov.getAllServers(Provisioning.SERVICE_MEMCACHED);
-      servers = new ArrayList<>();
-
-      for (Server server : memcachedServers) {
-        String serverName = server.getAttr(ZAttrProvisioning.A_zimbraMemcachedBindAddress,
-            "localhost");
-        String servicePort = server.getAttr(ZAttrProvisioning.A_zimbraMemcachedBindPort,
-            MEMCACHED_PORT);
-        servers.add(serverName + ":" + servicePort);
-      }
-
-    }
-
     // Connect to all memcached servers.
     int numServers = servers.size();
     ArrayList<ZimbraMemcachedClient> zmcs = new ArrayList<>();
