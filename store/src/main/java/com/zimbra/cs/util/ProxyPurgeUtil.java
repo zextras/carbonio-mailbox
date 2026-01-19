@@ -133,7 +133,7 @@ public class ProxyPurgeUtil {
    * @param outputformat format of the output in case of printing
    * @throws ServiceException
    */
-  public static void purgeAccounts(List<String> servers, List<String> accounts, boolean purge,
+  private static void purgeAccounts(List<String> servers, List<String> accounts, boolean purge,
       String outputformat) throws ServiceException, CommandExitException {
 
     Provisioning prov = Provisioning.getInstance();
@@ -477,4 +477,3 @@ public class ProxyPurgeUtil {
   }
 
 }
-
