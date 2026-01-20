@@ -39,10 +39,10 @@ pipeline {
         booleanParam defaultValue: false,
                 description: 'Upload packages in playground repositories.',
                 name: 'PLAYGROUND'
-        booleanParam defaultValue: false,
+        booleanParam defaultValue: true,
                 description: 'Skip test and sonar analysis.',
                 name: 'SKIP_TEST_WITH_COVERAGE'
-        booleanParam defaultValue: false,
+        booleanParam defaultValue: true,
                 description: 'Skip sonar analysis.',
                 name: 'SKIP_SONARQUBE'
     }
