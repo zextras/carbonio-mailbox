@@ -793,14 +793,14 @@
   <packaging>pom</packaging>
 
   <properties>
-    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.source>21</maven.compiler.source>
     <test.argLine>
       -Dserver.dir=${project.basedir}
       -Djunit.jupiter.execution.parallel.enabled=true
       -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
       -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
     </test.argLine>
-    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <sonar.version>5.5.0.6356</sonar.version>
     <jetty.version>9.4.57.v20241219</jetty.version>
@@ -996,7 +996,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.6.1</version>
           <executions>
             <execution>
               <id>analyze</id>
