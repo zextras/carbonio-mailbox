@@ -450,11 +450,6 @@
         <version>${mockito.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-inline</artifactId>
-        <version>${mockito.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-core</artifactId>
         <version>2.10.0</version>
@@ -814,7 +809,7 @@
     <log4j.version>2.20.0</log4j.version>
     <dom4j.version>2.1.4</dom4j.version>
     <hsqldb.version>2.7.1</hsqldb.version>
-    <mockito.version>5.2.0</mockito.version>
+    <mockito.version>5.21.0</mockito.version>
     <unboundid-ldapsdk.version>4.0.5</unboundid-ldapsdk.version>
     <jsr305.version>3.0.2</jsr305.version>
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
