@@ -1,18 +1,20 @@
 [Unit]
-Description=Mailbox carbonio proxy sidecar
+Description=Carbonio Mailbox Sidecar
 Documentation=https://docs.zextras.com/
 Requires=network-online.target
-After=network-online.target
+After=network-online.target carbonio-appserver.service
+BindsTo=carbonio-appserver.service
 PartOf=carbonio-appserver.target
 
 [Service]
+Slice=carbonio-appserver.slice
 User=carbonio-mailbox
 ExecStart=/usr/bin/consul connect envoy \
     -token-file /etc/carbonio/mailbox/service-discover/token \
     -admin-bind localhost:0 \
     -sidecar-for carbonio-mailbox
 Restart=on-failure
-RestartSec=15
+RestartSec=15s
 ExecReload=/usr/bin/kill -HUP $MAINPID
 KillSignal=SIGINT
 LimitNOFILE=65536

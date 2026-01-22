@@ -2,17 +2,19 @@
 Description=Carbonio Mailbox NSLookup proxy sidecar
 Documentation=https://docs.zextras.com/
 Requires=network-online.target
-After=network-online.target
+After=network-online.target carbonio-appserver.service
+BindsTo=carbonio-appserver.service
 PartOf=carbonio-appserver.target
 
 [Service]
+Slice=carbonio-appserver.slice
 User=carbonio-mailbox
 ExecStart=/usr/bin/consul connect envoy \
     -token-file /etc/carbonio/mailbox-nslookup/service-discover/token \
     -admin-bind localhost:0 \
     -sidecar-for carbonio-mailbox-nslookup
 Restart=on-failure
-RestartSec=15
+RestartSec=15s
 ExecReload=/usr/bin/kill -HUP $MAINPID
 KillSignal=SIGINT
 LimitNOFILE=65536
