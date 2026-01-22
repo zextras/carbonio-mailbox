@@ -171,8 +171,7 @@ pipeline {
                         imageName : 'carbonio-mailbox',
                         ocLabels  : [
                             title          : 'Carbonio Mailbox',
-                            descriptionFile: 'docker/mailbox/description.md',
-                            version        : "${isBuildingTag() ? env.TAG_NAME : 'devel'}"
+                            descriptionFile: 'docker/mailbox/description.md'
                         ]
                 ])
                 dockerStage([
@@ -180,8 +179,7 @@ pipeline {
                         imageName : 'carbonio-mariadb',
                         ocLabels  : [
                                 title          : 'Carbonio MariaDB',
-                                descriptionFile: 'docker/mariadb/description.md',
-                                version        : "${isBuildingTag() ? env.TAG_NAME : 'devel'}"
+                                descriptionFile: 'docker/mariadb/description.md'
                         ]
                 ])
             }
