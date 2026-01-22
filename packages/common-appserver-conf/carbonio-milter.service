@@ -5,21 +5,50 @@ Wants=carbonio-configd.service
 PartOf=carbonio-mta.target
 
 [Service]
+Slice=carbonio-mta.slice
 User=zextras
 EnvironmentFile=-/opt/zextras/data/systemd.env
-ExecStart=/opt/zextras/common/lib/jvm/java/bin/java \
-  -XX:ErrorFile=/opt/zextras/log \
-  -client \
-  $java_options \
+ExecStart=/bin/bash -c 'exec /opt/zextras/common/lib/jvm/java/bin/java \
+  -Dfile.encoding=UTF-8 \
+  -XX:+UseContainerSupport \
+  -XX:MaxGCPauseMillis=100 \
+  -XX:+HeapDumpOnOutOfMemoryError \
+  -XX:HeapDumpPath=/opt/zextras/log/ \
+  -XX:+ExitOnOutOfMemoryError \
+  -XX:ErrorFile=/opt/zextras/log/milter_hs_err_pid%p.log \
   -Dzimbra.home=/opt/zextras \
-  -Djava.library.path=$java_library_path \
-  -classpath ${java_ext_dirs}:/opt/zextras/mailbox/jars/*:/opt/zextras/conf \
-  -Dlog4j.configurationFile=file:/opt/zextras/conf/milter.log4j.properties \
+  -Djava.library.path=/opt/zextras/lib \
   -Dzimbra.config=/opt/zextras/conf/localconfig.xml \
-  com.zimbra.cs.milter.MilterServer
+  $mailboxd_java_options \
+  -Dlog4j.configurationFile=file:/opt/zextras/conf/milter.log4j.properties \
+  -Xms${java_xms}m \
+  -Xmx${java_xmx}m \
+  -classpath /opt/zextras/mailbox/jars/*:/opt/zextras/conf \
+  com.zimbra.cs.milter.MilterServer'
 LimitNOFILE=524288
 Restart=on-failure
 SuccessExitStatus=143
+
+# Security hardening (enhanced profile - Java milter service)
+# Note: MemoryDenyWriteExecute disabled for JVM JIT compilation
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+ProtectKernelLogs=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallArchitectures=native
+ProtectHostname=yes
+ProtectClock=yes
 
 [Install]
 WantedBy=carbonio-mta.target

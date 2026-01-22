@@ -1,19 +1,43 @@
 [Unit]
 Description=Carbonio Appserver DB Daemon
-After=carbonio-configd.service
-Wants=carbonio-configd.service
 PartOf=carbonio-appserver.target
 
 [Service]
+Slice=carbonio-appserver.slice
 User=zextras
-EnvironmentFile=-/opt/zextras/data/systemd.env
 ExecStart=/opt/zextras/common/bin/mysqld_safe \
-  --defaults-file=${mysql_mycnf} \
+  --defaults-file=/opt/zextras/conf/my.cnf \
   --external-locking \
-  --log-error=${mysql_errlogfile} \
+  --log-error=/opt/zextras/log/mysql_error.log \
   --malloc-lib=/opt/zextras/common/lib/libjemalloc.so \
   --ledir=/opt/zextras/common/sbin
 LimitNOFILE=524288
+Restart=on-failure
+RestartSec=5s
+
+# Security hardening (standard profile - database service)
+# Note: PrivateTmp disabled for MySQL socket access
+# Note: MemoryDenyWriteExecute disabled for MySQL memory operations
+ProtectSystem=strict
+ProtectHome=yes
+PrivateDevices=yes
+NoNewPrivileges=yes
+RemoveIPC=yes
+CapabilityBoundingSet=
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+ProtectKernelLogs=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+SystemCallArchitectures=native
+ProtectHostname=yes
+ProtectClock=yes
 
 [Install]
 WantedBy=carbonio-appserver.target

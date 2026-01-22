@@ -20,14 +20,6 @@ depends=(
 section="mail"
 priority="optional"
 
-source=(
-  "systemd-sysuser.conf"
-)
-
-sha256sums=(
-  'e153e64827d0401afde735249e21f99eaeb8a053b9b0dc643ea8fbcd8c876ece'
-)
-
 package() {
   cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
 

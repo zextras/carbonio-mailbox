@@ -1,10 +1,11 @@
 [Unit]
 Description=Carbonio Appserver Daemon
-After=carbonio-appserver-db.service
-Wants=carbonio-appserver-db.service
+After=carbonio-appserver-db.service carbonio-configd.service
+Wants=carbonio-appserver-db.service carbonio-configd.service
 PartOf=carbonio-appserver.target
 
 [Service]
+Slice=carbonio-appserver.slice
 User=zextras
 EnvironmentFile=-/opt/zextras/data/systemd.env
 ExecStartPre=echo REWRITE \
@@ -15,23 +16,53 @@ ExecStartPre=echo REWRITE \
   zextras \
   zextrasAdmin \
   zimlet \
-  | netcat -w $configd_rewrite_timeout localhost $configd_listen_port
+  | netcat -w 120 localhost 7171
 ExecStartPre=-/opt/zextras/bin/zmtlsctl
-ExecStart=/opt/zextras/common/bin/java \
+ExecStart=/bin/bash -c 'exec /opt/zextras/common/bin/java \
   -Dfile.encoding=UTF-8 \
-  $mailboxd_java_options \
-  -Xms${java_xms}m \
-  -Xmx${java_xmx}m \
+  -XX:+UseContainerSupport \
+  -XX:+ParallelRefProcEnabled \
+  -XX:+AlwaysPreTouch \
+  -XX:+HeapDumpOnOutOfMemoryError \
+  -XX:HeapDumpPath=/opt/zextras/log/ \
+  -XX:+ExitOnOutOfMemoryError \
   -Djava.io.tmpdir=/opt/zextras/mailboxd/work \
   -Djava.library.path=/opt/zextras/lib \
   -Dzimbra.config=/opt/zextras/conf/localconfig.xml \
+  $mailboxd_java_options \
+  -Xms${java_xms}m \
+  -Xmx${java_xmx}m \
   -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/* \
-  com.zextras.mailbox.Mailbox
+  com.zextras.mailbox.Mailbox'
 LimitNOFILE=524288
-RestartSec=3
+RestartSec=3s
 Restart=on-failure
 SuccessExitStatus=143
 StandardError=append:/opt/zextras/log/zmmailboxd.out
+
+# Security hardening (standard profile - Java application server)
+# Note: MemoryDenyWriteExecute disabled for JIT compilation
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+NoNewPrivileges=yes
+RemoveIPC=yes
+CapabilityBoundingSet=
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+ProtectKernelLogs=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+SystemCallArchitectures=native
+ProtectHostname=yes
+ProtectClock=yes
 
 [Install]
 WantedBy=carbonio-appserver.target
