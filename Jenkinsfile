@@ -9,8 +9,15 @@ library(
 
 properties(defaultPipelineProperties())
 
+// env.TAG_NAME is set by jenkins only in a tag build
+// It is not available in a branch build, even if the commit is tagged
 boolean isBuildingTag() {
     return env.TAG_NAME ? true : false
+}
+
+// env.GIT_TAG is set by jenkins-lib-common if head is tagged and only after calling gitMetadata()
+boolean isCommitTagged() {
+    return env.GIT_TAG ? true : false
 }
 
 String profile = isBuildingTag() ? '-Pprod' :
@@ -209,9 +216,44 @@ pipeline {
                 jfrog 'jfrog-cli'
             }
             steps {
+                // TODO: figure out where to upload when doing continuous delivery
                 uploadStage(
                         packages: yapHelper.getPackageNames('staging/packages/yap.json')
                 )
+            }
+        }
+        stage('Bump version and tag') {
+            agent {
+                node {
+                    label 'nodejs-v1'
+                }
+            }
+            when {
+                allOf {
+                    branch 'devel'
+                    expression { !isCommitTagged() }
+                }
+            }
+            steps {
+                script {
+                    checkout scm
+                    gitMetadata()
+                    container('nodejs-20') {
+                        withCredentials([usernamePassword(credentialsId: 'jenkins-integration-with-github-account', usernameVariable: 'GH_USERNAME', passwordVariable: 'GH_TOKEN')]) {
+                            sh 'apt-get update && apt-get install -y jq openssh-client'
+                            sh """
+                            npx \
+                            --package semantic-release \
+                            --package @semantic-release/commit-analyzer \
+                            --package @semantic-release/release-notes-generator \
+                            --package @semantic-release/exec \
+                            --package @semantic-release/git \
+                            --package conventional-changelog-conventionalcommits \
+                            semantic-release
+                        """
+                        }
+                    }
+                }
             }
         }
     }
