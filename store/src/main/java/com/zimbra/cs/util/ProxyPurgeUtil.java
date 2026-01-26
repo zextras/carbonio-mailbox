@@ -35,20 +35,33 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*
+IMPORTANT:
+ProxyPurgeUtil class is used in the following cases:
+- proxypurge.sh script:   When a SysAdmin explicitly wants to purge a Memcached instance.
+                          The script accepts a parameter representing the service endpoint <server:port> otherwise,
+                          we must assume we are running on a proxy machine and use, as the default value,
+                          the upstream Consul endpoint configured on carbonio-proxy.
+- promoteAccounts method: At the end of a "carbonio MailReplica promoteAccounts accounts <email>" operation,
+                          the method purgeAccounts is invoked via ZAL purgeMemcachedAccounts method.
+                          In this case, we read the carbonioMemcachedEndpoint attribute and use, as the default value,
+                          the upstream Consul endpoint configured on carbonio-mailbox.
+*/
+
 /**
  * @author mansoor peerbhoy
  */
 public class ProxyPurgeUtil {
 
   private static final Logger LOG = LoggerFactory.getLogger(ProxyPurgeUtil.class);
-  private static final String MEMCACHED_MESH_UPSTREAM = "127.78.0.7:20006";
+  private static final String MEMCACHED_MESH_UPSTREAM_FOR_MAILBOX = "127.78.0.7:20006";
+  private static final String MEMCACHED_MESH_UPSTREAM_FOR_PROXY = "127.78.0.7:20014";
 
 
 public static void run(String[] args) throws ServiceException, CommandExitException {
     CommandLine commandLine;
     String outputFormat;
     boolean purge;
-    Provisioning prov;
     String logLevel = "INFO";
 
     /* Parse the command-line arguments, and display usage if necessary */
@@ -68,11 +81,14 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
     }
 
     /* Initialize the logging system and the zimbra environment */
-    prov = Provisioning.getInstance();
+    final var prov = Provisioning.getInstance();
 
-    // ATTENTION: The purge logic assumes there is only one registered memcached server in the service mesh.
-    final var servers = new ArrayList<String>();
-    servers.add(prov.getConfig().getAttr(ZAttrProvisioning.A_carbonioMemcachedEndpoint, MEMCACHED_MESH_UPSTREAM));
+    // First use case: code invoked by proxypurge.sh script.
+    // Get all servers form command line arguments then fallback on proxy's upstream
+    final var servers = getCacheServers(commandLine);
+    if (servers.isEmpty()) {
+      servers.add(MEMCACHED_MESH_UPSTREAM_FOR_PROXY);
+    }
 
     if (servers.isEmpty()) {
       LOG.error("No memcached servers found, and none specified (--help for help)");
@@ -119,10 +135,13 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
    * @param outputformat format of the output in case of printing
    * @throws ServiceException
    */
-  private static void purgeAccounts(final List<String> servers, final List<String> accounts, final boolean purge, final String outputformat)
+  public static void purgeAccounts(final List<String> servers, final List<String> accounts, final boolean purge, final String outputformat)
     throws ServiceException, CommandExitException {
 
     Provisioning prov = Provisioning.getInstance();
+
+    final var servers = new ArrayList<String>();
+    servers.add(prov.getConfig().getAttr(ZAttrProvisioning.A_carbonioMemcachedEndpoint, MEMCACHED_MESH_UPSTREAM_FOR_MAILBOX));
 
     // Some sanity checks.
     if (accounts == null || accounts.isEmpty()) {
