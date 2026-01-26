@@ -90,11 +90,6 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
       servers.add(MEMCACHED_MESH_UPSTREAM_FOR_PROXY);
     }
 
-    if (servers.isEmpty()) {
-      LOG.error("No memcached servers found, and none specified (--help for help)");
-      throw new CommandExitException(1);
-    }
-
     final var accounts = getAccounts(commandLine);
     if (accounts.isEmpty()) {
       LOG.error("No accounts specified (--help for help)");
