@@ -14,7 +14,6 @@ import com.zimbra.common.util.memcached.ZimbraMemcachedClient;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.LdapServerType;
@@ -42,9 +41,10 @@ import org.slf4j.LoggerFactory;
 public class ProxyPurgeUtil {
 
   private static final Logger LOG = LoggerFactory.getLogger(ProxyPurgeUtil.class);
+  private static final String MEMCACHED_MESH_UPSTREAM = "127.78.0.7:20006";
 
 
-  public static void run(String[] args) throws ServiceException, CommandExitException {
+public static void run(String[] args) throws ServiceException, CommandExitException {
     CommandLine commandLine;
     String outputFormat;
     boolean purge;
@@ -72,7 +72,7 @@ public class ProxyPurgeUtil {
 
     // ATTENTION: The purge logic assumes there is only one registered memcached server in the service mesh.
     final var servers = new ArrayList<String>();
-    servers.add(prov.getConfig().getAttr(ZAttrProvisioning.A_carbonioMemcachedEndpoint, "127.78.0.7:20006"));
+    servers.add(prov.getConfig().getAttr(ZAttrProvisioning.A_carbonioMemcachedEndpoint, MEMCACHED_MESH_UPSTREAM));
 
     if (servers.isEmpty()) {
       LOG.error("No memcached servers found, and none specified (--help for help)");
