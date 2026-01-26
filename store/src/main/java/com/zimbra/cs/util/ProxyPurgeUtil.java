@@ -83,8 +83,8 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
     /* Initialize the logging system and the zimbra environment */
     final var prov = Provisioning.getInstance();
 
-    // First use case: code invoked by proxypurge.sh script.
-    // Get all servers form command line arguments then fallback on proxy's upstream
+  // First use case: code invoked by proxypurge.sh script.
+  // Get all servers form command line arguments then fallback on proxy's upstream
     final var servers = getCacheServers(commandLine);
     if (servers.isEmpty()) {
       servers.add(MEMCACHED_MESH_UPSTREAM_FOR_PROXY);
@@ -130,13 +130,17 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
    * @param outputformat format of the output in case of printing
    * @throws ServiceException
    */
-  public static void purgeAccounts(final List<String> servers, final List<String> accounts, final boolean purge, final String outputformat)
+  public static void purgeAccounts(List<String> servers, final List<String> accounts, final boolean purge, final String outputformat)
     throws ServiceException, CommandExitException {
 
     Provisioning prov = Provisioning.getInstance();
 
-    final var servers = new ArrayList<String>();
-    servers.add(prov.getConfig().getAttr(ZAttrProvisioning.A_carbonioMemcachedEndpoint, MEMCACHED_MESH_UPSTREAM_FOR_MAILBOX));
+    // Second use case: code invoked by Mailbox and ZAL.
+    // Get single endpoint from the attribute then fallback on mailbox's upstream
+    if (servers == null){
+      servers = new ArrayList<>();
+      servers.add(prov.getConfig().getAttr(ZAttrProvisioning.A_carbonioMemcachedEndpoint, MEMCACHED_MESH_UPSTREAM_FOR_MAILBOX));
+    }
 
     // Some sanity checks.
     if (accounts == null || accounts.isEmpty()) {
