@@ -390,7 +390,7 @@
       <dependency>
         <groupId>com.zextras</groupId>
         <artifactId>mailbox-attribute-manager</artifactId>
-        <version>4.25.1</version>
+        <version>4.26.0</version>
       </dependency>
       <dependency>
         <groupId>com.zextras</groupId>
@@ -1081,11 +1081,6 @@
           <groupId>org.openrewrite.maven</groupId>
           <artifactId>rewrite-recipe-bom</artifactId>
           <version>6.16.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.sonarsource.scanner.maven</groupId>
-          <artifactId>sonar-maven-plugin</artifactId>
-          <version>5.5.0.6356</version>
         </plugin>
       </plugins>
     </pluginManagement>

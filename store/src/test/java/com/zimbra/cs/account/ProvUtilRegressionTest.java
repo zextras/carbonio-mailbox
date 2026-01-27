@@ -190,7 +190,6 @@ public class ProvUtilRegressionTest {
           "createServer someName zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
           "deleteServer 8a64a712-cceb-4e03-b5ce-c131481bb455",
           "deleteServer someName",
-          "getAllMemcachedServers",
           "getAllMtaAuthURLs",
           "getAllServers -v",
           "getAllServers -v -e mta",
