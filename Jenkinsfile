@@ -64,7 +64,7 @@ pipeline {
             parallel {
                 stage('Maven build') {
                     steps {
-                        container('jdk-17') {
+                        container('jdk-21') {
                             sh """
                         mvn ${MVN_OPTS} \
                             -DskipTests=true \
@@ -92,7 +92,7 @@ pipeline {
 
         stage('UT, IT') {
             steps {
-                container('jdk-17') {
+                container('jdk-21') {
                     sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,flaky,e2e"
                 }
                 junit allowEmptyResults: true,
@@ -101,7 +101,7 @@ pipeline {
         }
         stage('Flaky, API, E2E tests') {
             steps {
-                container('jdk-17') {
+                container('jdk-21') {
                     sh "cd store && mvn ${MVN_OPTS} verify -Dgroups=flaky,api && mvn ${MVN_OPTS} verify -Dgroups=e2e"
                 }
                 junit allowEmptyResults: true,
@@ -117,7 +117,7 @@ pipeline {
                 }
             }
             steps {
-                container('jdk-17') {
+                container('jdk-21') {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         sh """
                             mvn ${MVN_OPTS} \
@@ -135,7 +135,7 @@ pipeline {
                 not { buildingTag() }
             }
             steps {
-                container('jdk-17') {
+                container('jdk-21') {
                     withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
                         script {
                             sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -DskipTests=true"
@@ -150,7 +150,7 @@ pipeline {
                 buildingTag()
             }
             steps {
-                container('jdk-17') {
+                container('jdk-21') {
                     withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
                         script {
                             sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -Dchangelist= -DskipTests=true"
