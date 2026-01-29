@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM maven:3-eclipse-temurin-17-alpine AS build
+FROM --platform=$BUILDPLATFORM maven:3-eclipse-temurin-21-alpine AS build
 
 WORKDIR /build
 
