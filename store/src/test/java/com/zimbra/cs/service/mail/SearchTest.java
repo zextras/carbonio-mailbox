@@ -49,12 +49,6 @@ public class SearchTest extends MailboxTestSuite {
     testAccount = provisioning.createAccount("test@test.com", "password", new HashMap<>());
   }
 
-//  @BeforeEach
-//  public void setUp() throws Exception {
-//    clearData();
-//    initData();
-//  }
-
   @Test
   void mute() throws Exception {
     Account acct = Provisioning.getInstance().getAccountByName("test@zimbra.com");
