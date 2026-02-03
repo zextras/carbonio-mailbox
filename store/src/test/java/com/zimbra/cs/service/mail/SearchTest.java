@@ -347,9 +347,9 @@ public class SearchTest extends MailboxTestSuite {
   }
 
   /**
-     * Simple data class to hold search results
-     */
-    private record SearchResult(List<Element> hits, String sortBy) {
+   * Simple data class to hold search results
+   */
+  private record SearchResult(List<Element> hits, String sortBy) {
 
   }
 
