@@ -18,8 +18,7 @@ backup=(
   "opt/zextras/conf/localconfig.xml"
 )
 
-package() {
-
+_package() {
   cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
 
   unzip -o store/target/dependencies/mailbox-attribute-manager-*.jar 'conf/*' 'attrs-schema' -d attribute-manager
@@ -60,7 +59,6 @@ package() {
     "${pkgdir}/opt/zextras/conf/log4j.properties.in"
   install -D "store/conf/stats.conf.in" \
     "${pkgdir}/opt/zextras/conf/stats.conf.in"
-
 
   install -D "store/conf/msgs/L10nMsg.properties" \
     "${pkgdir}/opt/zextras/conf/msgs/L10nMsg.properties"
@@ -201,66 +199,124 @@ package() {
   install -D "store/conf/msgs/ZsMsg_zh_TW.properties" \
     "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_zh_TW.properties"
 
+}
 
+_package_systemd() {
   # systemd unit
-  install -Dm 644 packages/common-appserver-conf/carbonio-milter.service \
+  install -Dm644 packages/common-appserver-conf/carbonio-milter.service \
     "${pkgdir}/usr/lib/systemd/system/carbonio-milter.service"
 }
 
-postinst__apt() {
-  # Update LC mailboxd_java_options for JDK17 on post-upgrade
-  if [ "$1" = "configure" ] && [ ! -z "$2" ]; then
-    echo -n "*Updating mailboxd_java_options for JDK17..."
-    java_options=$(su - zextras -c "/opt/zextras/bin/zmlocalconfig -m nokey mailboxd_java_options 2> /dev/null")
-    new_java_options="$java_options"
-    needs_update=false
-    if ! echo "$java_options" | grep -q -e '-Djava.security.egd'; then
-      new_java_options="$new_java_options -Djava.security.egd=file:/dev/./urandom"
-      needs_update=true
-    fi
-    if ! echo "$java_options" | grep -q -e '--add-opens\ java.base/java.lang=ALL-UNNAMED'; then
-      new_java_options="$new_java_options --add-opens java.base/java.lang=ALL-UNNAMED"
-      needs_update=true
-    fi
-    if $needs_update; then
-      new_java_options="$(echo "$new_java_options" | sed -e 's/^[[:space:]]*//')"
-      su - zextras -c "/opt/zextras/bin/zmlocalconfig -f -e mailboxd_java_options='$new_java_options' 2> /dev/null"
-      if [ "$?" -eq 0 ]; then
-        echo "done."
-      else
-        echo "failed."
-      fi
+_postinst_upgrade_java_options() {
+  echo -n "*Updating mailboxd_java_options for JDK17..."
+  java_options=$(su - zextras -c "/opt/zextras/bin/zmlocalconfig -m nokey mailboxd_java_options 2> /dev/null")
+  new_java_options="$java_options"
+  needs_update=false
+  if ! echo "$java_options" | grep -q -e '-Djava.security.egd'; then
+    new_java_options="$new_java_options -Djava.security.egd=file:/dev/./urandom"
+    needs_update=true
+  fi
+  if ! echo "$java_options" | grep -q -e '--add-opens\ java.base/java.lang=ALL-UNNAMED'; then
+    new_java_options="$new_java_options --add-opens java.base/java.lang=ALL-UNNAMED"
+    needs_update=true
+  fi
+  if $needs_update; then
+    new_java_options="$(echo "$new_java_options" | sed -e 's/^[[:space:]]*//')"
+    su - zextras -c "/opt/zextras/bin/zmlocalconfig -f -e mailboxd_java_options='$new_java_options' 2> /dev/null"
+    if [ "$?" -eq 0 ]; then
+      echo "done."
     else
-      echo "already up-to-date."
+      echo "failed."
     fi
+  else
+    echo "already up-to-date."
   fi
 }
 
-postinst__yum() {
+_postinst_systemd() {
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload &>/dev/null || :
+    systemctl enable carbonio-milter.service &>/dev/null || :
+  fi
+}
+
+_prerm_systemd() {
+  if [ -d /run/systemd/system ]; then
+    systemctl --no-reload disable --now carbonio-milter.service &>/dev/null || :
+  fi
+}
+
+package() {
+  _package
+  _package_systemd
+}
+
+package__rocky_8() {
+  _package
+}
+
+package__rocky_9() {
+  _package
+  _package_systemd
+}
+
+package__ubuntu_jammy() {
+  _package
+}
+
+package__ubuntu_noble() {
+  _package
+  _package_systemd
+}
+
+postinst__ubuntu_jammy() {
+  # Update LC mailboxd_java_options for JDK17 on post-upgrade
+  if [ "$1" = "configure" ] && [ ! -z "$2" ]; then
+    _postinst_upgrade_java_options
+  fi
+}
+
+postinst__ubuntu_noble() {
+  # Update LC mailboxd_java_options for JDK17 on post-upgrade
+  if [ "$1" = "configure" ] && [ ! -z "$2" ]; then
+    _postinst_upgrade_java_options
+  fi
+
+  _postinst_systemd
+}
+
+postinst__rocky_8() {
   # Update LC mailboxd_java_options for JDK17 on post-upgrade
   if [ "$1" -eq 2 ]; then
-    echo -n "*Updating mailboxd_java_options for JDK17..."
-    java_options=$(su - zextras -c "/opt/zextras/bin/zmlocalconfig -m nokey mailboxd_java_options 2> /dev/null")
-    new_java_options="$java_options"
-    needs_update=false
-    if ! echo "$java_options" | grep -q -e '-Djava.security.egd'; then
-      new_java_options="$new_java_options -Djava.security.egd=file:/dev/./urandom"
-      needs_update=true
-    fi
-    if ! echo "$java_options" | grep -q -e '--add-opens\ java.base/java.lang=ALL-UNNAMED'; then
-      new_java_options="$new_java_options --add-opens java.base/java.lang=ALL-UNNAMED"
-      needs_update=true
-    fi
-    if $needs_update; then
-      new_java_options="$(echo "$new_java_options" | sed -e 's/^[[:space:]]*//')"
-      su - zextras -c "/opt/zextras/bin/zmlocalconfig -f -e mailboxd_java_options='$new_java_options' 2> /dev/null"
-      if [ "$?" -eq 0 ]; then
-        echo "done."
-      else
-        echo "failed."
-      fi
-    else
-      echo "already up-to-date."
-    fi
+    _postinst_upgrade_java_options
+  fi
+}
+
+postinst__rocky_9() {
+  # Update LC mailboxd_java_options for JDK17 on post-upgrade
+  if [ "$1" -eq 2 ]; then
+    _postinst_upgrade_java_options
+  fi
+
+  _postinst_systemd
+}
+
+prerm__ubuntu_noble() {
+  _prerm_systemd
+}
+
+prerm__rocky_9() {
+  _prerm_systemd
+}
+
+postrm__ubuntu_noble() {
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload &>/dev/null || :
+  fi
+}
+
+postrm__rocky_9() {
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload &>/dev/null || :
   fi
 }
