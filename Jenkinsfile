@@ -109,37 +109,18 @@ pipeline {
             }
         }
 
-        stage('Generate SOAP API Docs') {
+        stage('Build and Package API Docs') {
+            when {
+                buildingTag()
+            }
             steps {
                 container('jdk-21') {
                     sh """
                         cd soap
                         mvn ${MVN_OPTS} antrun:run@generate-soap-docs
                         cd ..
-                    """
-                }
-            }
-        }
-
-        stage('Package API Docs') {
-            steps {
-                container('jdk-21') {
-                    sh """
                         VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-                        mkdir -p api-docs
-                        if [ -d "soap/target/docs/soap" ]; then
-                            cp -r soap/target/docs/soap api-docs/
-                        fi
-                        if [ -d "soap/target/docs/soapapi-changelog" ]; then
-                            cp -r soap/target/docs/soapapi-changelog api-docs/
-                        fi
-                        if [ -f "soap/target/docs/soapapi-doc.zip" ]; then
-                            cp soap/target/docs/soapapi-doc.zip api-docs/
-                        fi
-                        if [ -f "soap/target/docs/soapapi-changelog.zip" ]; then
-                            cp soap/target/docs/soapapi-changelog.zip api-docs/
-                        fi
-                        tar -czf carbonio-mailbox-api-docs-\${VERSION}.tar.gz api-docs/
+                        tar -czf carbonio-mailbox-api-docs-\${VERSION}.tar.gz soap/target/docs/
                     """
                 }
                 archiveArtifacts artifacts: 'carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
