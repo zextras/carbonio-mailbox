@@ -118,7 +118,7 @@ pipeline {
                         cd ..
                         VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
                         mkdir -p artifacts
-                        tar -czf artifacts/carbonio-mailbox-api-docs-\${VERSION}.tar.gz soap/target/docs/
+                        tar -czf artifacts/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
                     """
                 }
                 archiveArtifacts artifacts: 'artifacts/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
