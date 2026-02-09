@@ -110,9 +110,6 @@ pipeline {
         }
 
         stage('Build and Package API Docs') {
-            when {
-                buildingTag()
-            }
             steps {
                 container('jdk-21') {
                     sh """
