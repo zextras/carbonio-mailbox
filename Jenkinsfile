@@ -117,10 +117,11 @@ pipeline {
                         mvn ${MVN_OPTS} antrun:run@generate-soap-docs
                         cd ..
                         VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-                        tar -czf carbonio-mailbox-api-docs-\${VERSION}.tar.gz soap/target/docs/
+                        mkdir -p artifacts
+                        tar -czf artifacts/carbonio-mailbox-api-docs-\${VERSION}.tar.gz soap/target/docs/
                     """
                 }
-                archiveArtifacts artifacts: 'carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'artifacts/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
             }
         }
 
