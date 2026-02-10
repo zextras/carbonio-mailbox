@@ -109,6 +109,22 @@ pipeline {
             }
         }
 
+        stage('Build and Package API Docs') {
+            steps {
+                container('jdk-21') {
+                    sh """
+                        cd soap
+                        mvn ${MVN_OPTS} antrun:run@generate-soap-docs
+                        cd ..
+                        VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+                        mkdir -p artifacts
+                        tar -czf artifacts/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
+                    """
+                }
+                archiveArtifacts artifacts: 'artifacts/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
+            }
+        }
+
         stage('Sonarqube Analysis') {
             when {
                 allOf {
