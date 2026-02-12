@@ -1,5 +1,5 @@
 library(
-        identifier: 'jenkins-lib-common@1.1.2',
+        identifier: 'jenkins-lib-common@feat/add-maven',
         retriever: modernSCM([
                 $class: 'GitSCMSource',
                 credentialsId: 'jenkins-integration-with-github-account',
@@ -13,9 +13,6 @@ boolean isBuildingTag() {
     return env.TAG_NAME ? true : false
 }
 
-String profile = isBuildingTag() ? '-Pprod' :
-        (env.BRANCH_NAME == 'devel' ? '-Pdev' : '')
-
 pipeline {
     agent {
         node {
@@ -24,7 +21,6 @@ pipeline {
     }
 
     environment {
-        MVN_OPTS = "-Ddebug=0 -Dis-production=1 ${profile}"
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
         JAVA_OPTS = '-Dfile.encoding=UTF8'
         LC_ALL = 'C.UTF-8'
@@ -60,49 +56,43 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            parallel {
-                stage('Maven build') {
-                    steps {
-                        container('jdk-21') {
-                            sh """
-                        mvn ${MVN_OPTS} \
-                            -DskipTests=true \
-                            clean install
-                        mkdir staging
-                        cp -a store* right-manager \
-                                client common packages soap jython-libs \
-                                staging/
-                    """
-                            stash includes: 'staging/**', name: 'staging'
-                        }
-                    }
-                }
-                stage('Build containers') {
-                    steps {
-                        container('dind') {
-                            withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                                sh 'docker buildx bake --no-cache'
-                            }
-                        }
+        stage('Build containers') {
+            steps {
+                container('dind') {
+                    withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                        sh 'docker buildx bake --no-cache'
                     }
                 }
             }
         }
 
-        stage('UT, IT') {
+        stage('Maven') {
             steps {
-                container('jdk-21') {
-                    sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,flaky,e2e"
+                script {
+                    mavenStage(
+                            container: 'jdk-21',
+                            buildGoals: 'clean install',
+                            postBuildScript: '''\
+                                mkdir staging
+                                cp -a store* right-manager \
+                                        client common packages soap jython-libs \
+                                        staging/
+                            '''.stripIndent().trim(),
+                            testOpts: [DexcludedGroups: 'api,flaky,e2e'],
+                            skipTests: params.SKIP_TEST_WITH_COVERAGE,
+                            skipCoverage: params.SKIP_TEST_WITH_COVERAGE,
+                            skipSonar: params.SKIP_SONARQUBE || params.SKIP_TEST_WITH_COVERAGE,
+                            mvnOpts: [Ddebug: '0', 'Dis-production': '1']
+                    )
                 }
-                junit allowEmptyResults: true,
-                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+                stash includes: 'staging/**', name: 'staging'
             }
         }
+
         stage('Flaky, API, E2E tests') {
             steps {
                 container('jdk-21') {
-                    sh "cd store && mvn ${MVN_OPTS} verify -Dgroups=flaky,api && mvn ${MVN_OPTS} verify -Dgroups=e2e"
+                    sh "cd store && mvn verify -B -Dgroups=flaky,api && mvn verify -B -Dgroups=e2e"
                 }
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
@@ -122,57 +112,6 @@ pipeline {
                     """
                 }
                 archiveArtifacts artifacts: 'artifacts/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
-            }
-        }
-
-        stage('Sonarqube Analysis') {
-            when {
-                allOf {
-                    expression { params.SKIP_SONARQUBE == false }
-                    expression { params.SKIP_TEST_WITH_COVERAGE == false }
-                }
-            }
-            steps {
-                container('jdk-21') {
-                    withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                        sh """
-                            mvn ${MVN_OPTS} \
-                                sonar:sonar \
-                                -Dsonar.junit.reportPaths=target/surefire-reports,target/failsafe-reports \
-                                -Dsonar.exclusions=**/com/zimbra/soap/mail/type/*.java,**/com/zimbra/soap/mail/message/*.java,**/com/zimbra/cs/account/ZAttr*.java,**/com/zimbra/common/account/ZAttr*.java
-                        """
-                    }
-                }
-            }
-        }
-
-        stage('Publish SNAPSHOT to maven') {
-            when {
-                not { buildingTag() }
-            }
-            steps {
-                container('jdk-21') {
-                    withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                        script {
-                            sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -DskipTests=true"
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('Publish to maven') {
-            when {
-                buildingTag()
-            }
-            steps {
-                container('jdk-21') {
-                    withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                        script {
-                            sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -Dchangelist= -DskipTests=true"
-                        }
-                    }
-                }
             }
         }
 
