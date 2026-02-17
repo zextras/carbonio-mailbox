@@ -282,8 +282,9 @@ public class Mailbox implements MailboxStore {
   @Deprecated public static final int ID_FOLDER_PROFILE = FolderConstants.ID_FOLDER_PROFILE; // 18;
 
   public static final int ID_FOLDER_UNSUBSCRIBE = FolderConstants.ID_FOLDER_UNSUBSCRIBE; // 19;
+  public static final int ID_FOLDER_ARCHIVE = FolderConstants.ID_FOLDER_ARCHIVE; // 20;
   // This id should be incremented if any new ID_FOLDER_* is added.
-  public static final int HIGHEST_SYSTEM_ID = FolderConstants.HIGHEST_SYSTEM_ID; // 19;
+  public static final int HIGHEST_SYSTEM_ID = FolderConstants.HIGHEST_SYSTEM_ID; // 20;
 
   public static final int FIRST_USER_ID = 256;
 
@@ -2265,6 +2266,19 @@ public class Mailbox implements MailboxStore {
           "Trash",
           system,
           MailItem.Type.UNKNOWN,
+          0,
+          MailItem.DEFAULT_COLOR_RGB,
+          null,
+          null,
+          null);
+      Folder.create(
+          ID_FOLDER_ARCHIVE,
+          UUIDUtil.generateUUID(),
+          this,
+          userRoot,
+          "Archive",
+          system,
+          Type.MESSAGE,
           0,
           MailItem.DEFAULT_COLOR_RGB,
           null,
