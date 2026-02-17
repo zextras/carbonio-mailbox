@@ -2271,19 +2271,7 @@ public class Mailbox implements MailboxStore {
           null,
           null,
           null);
-      Folder.create(
-          ID_FOLDER_ARCHIVE,
-          UUIDUtil.generateUUID(),
-          this,
-          userRoot,
-          "Archive",
-          system,
-          Type.MESSAGE,
-          0,
-          MailItem.DEFAULT_COLOR_RGB,
-          null,
-          null,
-          null);
+      AddArchiveFolderUtil.createArchiveFolder(this, userRoot, system);
       Folder.create(
           ID_FOLDER_SPAM,
           UUIDUtil.generateUUID(),
@@ -4473,7 +4461,7 @@ public class Mailbox implements MailboxStore {
    *
    * @throws NoSuchItemException if the folder does not exist
    */
-  Folder getFolderById(int id) throws ServiceException {
+  public Folder getFolderById(int id) throws ServiceException {
     return (Folder) getItemById(id, MailItem.Type.FOLDER);
   }
 
