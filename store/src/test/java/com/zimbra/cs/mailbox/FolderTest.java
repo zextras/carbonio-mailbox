@@ -72,6 +72,16 @@ class FolderTest extends MailboxTestSuite {
     }
 
  @Test
+ void accountShouldHaveAnArchiveFolder() throws Exception {
+  Account acct = Provisioning.getInstance().getAccountByName(testAccount.getName());
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+  Folder archive = mbox.getFolderById(null, Mailbox.ID_FOLDER_ARCHIVE);
+  assertNotNull(archive, "Archive folder should have been added");
+  assertEquals("Archive", archive.getName(), "Archive folder should have correct name");
+  assertEquals(Folder.FOLDER_IS_IMMUTABLE, archive.getAttributes(), "Archive folder should have correct attributes");
+ }
+
+ @Test
  void imapMODSEQ() throws Exception {
   Account acct = Provisioning.getInstance().getAccountByName(testAccount.getName());
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
