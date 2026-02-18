@@ -2558,6 +2558,9 @@ public abstract class ImapHandler {
                 case Mailbox.ID_FOLDER_SPAM:
                     attrs.append(attrs.length() == 0 ? "" : " ").append(returnXList ? "\\Spam" : "\\Junk");
                     break;
+                case Mailbox.ID_FOLDER_ARCHIVE:
+                    attrs.append(attrs.length() == 0 ? "" : " ").append("\\Archive");
+                    break;
                 default:
                     String query = path.getFolder() instanceof SearchFolderStore ?
                             ((SearchFolderStore) path.getFolder()).getQuery() : null;
