@@ -17,7 +17,6 @@ public class AddArchiveFolderUtil {
 
   private static final byte ARCHIVE_SYSTEM_FOLDER_ATTRIBUTES = Folder.FOLDER_IS_IMMUTABLE;
   private static final String ARCHIVE_FOLDER_NAME = "Archive";
-  private static final String ARCHIVE_BACKUP_NAME_PREFIX = "Archive_old";
 
   private AddArchiveFolderUtil() {
     // utility class, do not instantiate
@@ -61,11 +60,6 @@ public class AddArchiveFolderUtil {
     mailbox.lock(true);
 
     try {
-      // Handle user archive folder rename BEFORE starting transaction
-      // since rename manages its own transaction
-      handleExistingUserArchiveFolder(mailbox, accountId);
-
-      // Now create the system folder in a transaction
       mailbox.beginTransaction("createArchiveFolder", null);
       try {
         Folder userRoot = mailbox.getFolderById(null, Mailbox.ID_FOLDER_USER_ROOT);
@@ -88,34 +82,6 @@ public class AddArchiveFolderUtil {
     }
   }
 
-  private static void handleExistingUserArchiveFolder(Mailbox mailbox, String accountId)
-      throws ServiceException {
-
-    try {
-      Folder userRoot = mailbox.getFolderById(null, Mailbox.ID_FOLDER_USER_ROOT);
-      Folder existingArchive = userRoot.findSubfolder(ARCHIVE_FOLDER_NAME);
-
-      if (existingArchive != null && existingArchive.getId() != ID_FOLDER_ARCHIVE) {
-        String availableName = findAvailableFolderName(userRoot, ARCHIVE_BACKUP_NAME_PREFIX);
-
-        ZimbraLog.mailbox.info(
-            "Renaming existing user Archive folder (ID=%d) to '%s' for account %s",
-            existingArchive.getId(), availableName, accountId);
-
-        // rename manages its own transaction, so we don't wrap it
-        mailbox.rename(
-            null,
-            existingArchive.getId(),
-            existingArchive.getType(),
-            availableName,
-            existingArchive.getFolderId());
-      }
-    } catch (MailServiceException.NoSuchItemException e) {
-      // USER_ROOT doesn't exist yet - that's fine, just continue
-      ZimbraLog.mailbox.debug("USER_ROOT not found for account %s", accountId);
-    }
-  }
-
   public static void createArchiveFolder(
       Mailbox mailbox, Folder userRoot, byte systemFolderAttributes) throws ServiceException {
 
@@ -132,18 +98,5 @@ public class AddArchiveFolderUtil {
         null,
         null,
         null);
-  }
-
-  @SuppressWarnings("SameParameterValue")
-  private static String findAvailableFolderName(Folder parent, String baseName) {
-    String candidate = baseName;
-    int suffix = 1;
-
-    while (parent.findSubfolder(candidate) != null) {
-      candidate = baseName + "_" + suffix;
-      suffix++;
-    }
-
-    return candidate;
   }
 }
