@@ -5,8 +5,11 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -66,11 +69,16 @@ public class DiscoverUserRights {
 
         Map<Right, Set<Entry>> result = Maps.newHashMap();
 
+        var userDistributionLists = new HashSet<>(prov.getDistributionLists(acct));
         for (SearchGrants.GrantsOnTarget grants : searchResults) {
             Entry targetEntry = grants.getTargetEntry();
             ZimbraACL acl = grants.getAcl();
 
-            for (ZimbraACE ace : acl.getAllACEs()) {
+            List<ZimbraACE> aces = acl.getAllACEs().stream().filter( ace -> {
+                boolean isDistributionList = ace.getGranteeType().equals(GranteeType.GT_GROUP);
+                return !isDistributionList || (userDistributionLists.contains(ace.getGrantee()));
+            } ).toList();
+            for (ZimbraACE ace : aces) {
                 Right right = ace.getRight();
 
                 if (rights.contains(right) && !isSameEntry(targetEntry, acct)) {
