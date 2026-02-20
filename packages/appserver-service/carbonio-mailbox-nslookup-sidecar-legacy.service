@@ -3,7 +3,6 @@ Description=Carbonio Mailbox NSLookup Sidecar
 Documentation=https://docs.zextras.com/
 Requires=network-online.target
 After=network-online.target
-PartOf=carbonio-appserver.target
 
 [Service]
 User=carbonio-mailbox
@@ -18,4 +17,4 @@ KillSignal=SIGINT
 LimitNOFILE=65536
 
 [Install]
-WantedBy=carbonio-appserver.target
+WantedBy=multi-user.target

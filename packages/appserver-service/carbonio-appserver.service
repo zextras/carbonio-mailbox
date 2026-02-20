@@ -1,7 +1,7 @@
 [Unit]
 Description=Carbonio Appserver Daemon
-After=carbonio-appserver-db.service
-Wants=carbonio-appserver-db.service
+After=carbonio-appserver-db.service carbonio-configd.service
+Wants=carbonio-appserver-db.service carbonio-configd.service
 PartOf=carbonio-appserver.target
 
 [Service]
@@ -15,7 +15,7 @@ ExecStartPre=echo REWRITE \
   zextras \
   zextrasAdmin \
   zimlet \
-  | netcat -w $configd_rewrite_timeout localhost $configd_listen_port
+  | netcat -w 120 localhost 7171
 ExecStartPre=-/opt/zextras/bin/zmtlsctl
 ExecStart=/opt/zextras/common/bin/java \
   -Dfile.encoding=UTF-8 \
@@ -28,7 +28,7 @@ ExecStart=/opt/zextras/common/bin/java \
   -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/* \
   com.zextras.mailbox.Mailbox
 LimitNOFILE=524288
-RestartSec=3
+RestartSec=3s
 Restart=on-failure
 SuccessExitStatus=143
 StandardError=append:/opt/zextras/log/zmmailboxd.out

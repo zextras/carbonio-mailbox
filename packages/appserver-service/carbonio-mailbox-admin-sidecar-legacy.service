@@ -1,16 +1,15 @@
 [Unit]
-Description=Carbonio Mailbox NSLookup Sidecar
+Description=Carbonio Mailbox Admin Sidecar
 Documentation=https://docs.zextras.com/
 Requires=network-online.target
 After=network-online.target
-PartOf=carbonio-appserver.target
 
 [Service]
 User=carbonio-mailbox
 ExecStart=/usr/bin/consul connect envoy \
-    -token-file /etc/carbonio/mailbox-nslookup/service-discover/token \
+    -token-file /etc/carbonio/mailbox-admin/service-discover/token \
     -admin-bind localhost:0 \
-    -sidecar-for carbonio-mailbox-nslookup
+    -sidecar-for carbonio-mailbox-admin
 Restart=on-failure
 RestartSec=15s
 ExecReload=/usr/bin/kill -HUP $MAINPID
@@ -18,4 +17,4 @@ KillSignal=SIGINT
 LimitNOFILE=65536
 
 [Install]
-WantedBy=carbonio-appserver.target
+WantedBy=multi-user.target
