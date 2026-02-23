@@ -499,15 +499,6 @@ public class MailboxManager {
       // if TRUE, then the mailbox is actually opened, so we need to notify listeners of the mailbox
       // being loaded
       notifyMailboxLoaded(mbox);
-
-      // Ensure Archive folder exists for existing mailboxes
-      try {
-        AddArchiveFolderUtil.addArchiveFolderToAccount(
-            mbox.getAccountId(), Provisioning.getInstance());
-      } catch (ServiceException e) {
-        ZimbraLog.mailbox.warn(
-            "Failed to create Archive folder for mailbox %d: %s", mbox.getId(), e.getMessage());
-      }
     }
 
     ZimbraPerf.STOPWATCH_MBOX_GET.stop(startTime);
