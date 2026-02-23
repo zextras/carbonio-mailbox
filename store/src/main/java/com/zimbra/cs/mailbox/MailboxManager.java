@@ -502,7 +502,7 @@ public class MailboxManager {
 
       // Ensure Archive folder exists for existing mailboxes
       try {
-        AddArchiveFolderUtil.addArchiveFolderToAccount(
+        new AddArchiveFolderUtil().addArchiveFolderToAccount(
             mbox.getAccountId(), Provisioning.getInstance());
       } catch (ServiceException e) {
         ZimbraLog.mailbox.warn(

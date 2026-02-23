@@ -9,6 +9,7 @@ import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.mailbox.MailItem.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -70,11 +71,13 @@ class AddArchiveFolderUtilTest extends MailboxTestSuite {
   void shouldNotDuplicateArchiveFolderWhenCalledMultipleTimes() throws Exception {
     Account account = Provisioning.getInstance().getAccountByName(testAccount.getName());
 
-    AddArchiveFolderUtil.addArchiveFolderToAccount(account.getId(), provisioning);
+    final AddArchiveFolderUtil addArchiveFolderUtil = new AddArchiveFolderUtil();
+
+    addArchiveFolderUtil.addArchiveFolderToAccount(account.getId(), provisioning);
     Folder firstArchive = testMailbox.getFolderById(null, Mailbox.ID_FOLDER_ARCHIVE);
     assertNotNull(firstArchive, "Archive folder should exist after first call");
 
-    AddArchiveFolderUtil.addArchiveFolderToAccount(account.getId(), provisioning);
+    addArchiveFolderUtil.addArchiveFolderToAccount(account.getId(), provisioning);
     Folder secondArchive = testMailbox.getFolderById(null, Mailbox.ID_FOLDER_ARCHIVE);
     assertNotNull(secondArchive, "Archive folder should still exist");
     assertEquals(
@@ -86,7 +89,9 @@ class AddArchiveFolderUtilTest extends MailboxTestSuite {
     String nonExistentAccountId = "non-existent-account-id-12345";
 
     assertDoesNotThrow(
-        () -> AddArchiveFolderUtil.addArchiveFolderToAccount(nonExistentAccountId, provisioning),
+        () ->
+            new AddArchiveFolderUtil()
+                .addArchiveFolderToAccount(nonExistentAccountId, provisioning),
         "Should not throw exception for non-existent account");
   }
 }

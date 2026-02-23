@@ -2271,7 +2271,7 @@ public class Mailbox implements MailboxStore {
           null,
           null,
           null);
-      AddArchiveFolderUtil.createArchiveFolder(this, userRoot, system);
+      new AddArchiveFolderUtil().createArchiveFolder(this, userRoot, system);
       Folder.create(
           ID_FOLDER_SPAM,
           UUIDUtil.generateUUID(),

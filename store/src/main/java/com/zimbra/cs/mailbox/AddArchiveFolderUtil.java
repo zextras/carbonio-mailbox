@@ -17,12 +17,17 @@ public class AddArchiveFolderUtil {
 
   private static final byte ARCHIVE_SYSTEM_FOLDER_ATTRIBUTES = Folder.FOLDER_IS_IMMUTABLE;
   private static final String ARCHIVE_FOLDER_NAME = "Archive";
+  private final ArchiveFolderExistenceChecker archiveFolderExistenceChecker;
 
-  private AddArchiveFolderUtil() {
-    // utility class, do not instantiate
+  public AddArchiveFolderUtil() {
+    this(new DefaultArchiveFolderExistenceChecker());
   }
 
-  public static void addArchiveFolderToAccount(String accountId, Provisioning provisioning)
+  public AddArchiveFolderUtil(ArchiveFolderExistenceChecker archiveFolderExistenceChecker) {
+    this.archiveFolderExistenceChecker = archiveFolderExistenceChecker;
+  }
+
+  public  void addArchiveFolderToAccount(String accountId, Provisioning provisioning)
       throws ServiceException {
 
     Account account = provisioning.getAccountById(accountId);
@@ -37,7 +42,7 @@ public class AddArchiveFolderUtil {
       return;
     }
 
-    if (archiveSystemFolderExistsIn(mailbox)) {
+    if (archiveFolderExistenceChecker.archiveSystemFolderExistsIn(mailbox)) {
       ZimbraLog.mailbox.warn("Archive system folder already exists for account: %s", accountId);
       return;
     }
@@ -45,14 +50,7 @@ public class AddArchiveFolderUtil {
     createArchiveSystemFolder(mailbox, accountId);
   }
 
-  private static boolean archiveSystemFolderExistsIn(Mailbox mailbox) {
-    try {
-      mailbox.getFolderById(null, Mailbox.ID_FOLDER_ARCHIVE);
-      return true;
-    } catch (ServiceException e) {
-      return false;
-    }
-  }
+
 
   private static void createArchiveSystemFolder(Mailbox mailbox, String accountId)
       throws ServiceException {
@@ -101,5 +99,21 @@ public class AddArchiveFolderUtil {
         null,
         null,
         null);
+  }
+
+  public interface ArchiveFolderExistenceChecker {
+    boolean archiveSystemFolderExistsIn(Mailbox mailbox);
+  }
+
+  public static class DefaultArchiveFolderExistenceChecker implements ArchiveFolderExistenceChecker {
+    @Override
+    public boolean archiveSystemFolderExistsIn(Mailbox mailbox) {
+      try {
+        mailbox.getFolderById(null, Mailbox.ID_FOLDER_ARCHIVE);
+        return true;
+      } catch (ServiceException e) {
+        return false;
+      }
+    }
   }
 }
