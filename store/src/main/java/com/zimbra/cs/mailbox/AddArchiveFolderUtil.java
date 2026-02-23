@@ -27,18 +27,18 @@ public class AddArchiveFolderUtil {
 
     Account account = provisioning.getAccountById(accountId);
     if (account == null) {
-      ZimbraLog.mailbox.info("Account not found: %s", accountId);
+      ZimbraLog.mailbox.warn("Account not found: %s", accountId);
       return;
     }
 
     Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
     if (mailbox == null) {
-      ZimbraLog.mailbox.info("Mailbox not found for account: %s", accountId);
+      ZimbraLog.mailbox.warn("Mailbox not found for account: %s", accountId);
       return;
     }
 
     if (archiveSystemFolderExistsIn(mailbox)) {
-      ZimbraLog.mailbox.info("Archive system folder already exists for account: %s", accountId);
+      ZimbraLog.mailbox.warn("Archive system folder already exists for account: %s", accountId);
       return;
     }
 
@@ -64,6 +64,8 @@ public class AddArchiveFolderUtil {
       try {
         Folder userRoot = mailbox.getFolderById(null, Mailbox.ID_FOLDER_USER_ROOT);
         if (userRoot == null) {
+          ZimbraLog.mailbox.warn(
+              "USER_ROOT folder not found in mailbox for account: %s", accountId);
           throw ServiceException.FAILURE(
               "USER_ROOT folder not found in mailbox for account: " + accountId, null);
         }
@@ -71,7 +73,8 @@ public class AddArchiveFolderUtil {
         createArchiveFolder(mailbox, userRoot, ARCHIVE_SYSTEM_FOLDER_ATTRIBUTES);
 
         mailbox.endTransaction(true);
-        ZimbraLog.mailbox.info("Created Archive system folder for account %s", accountId);
+        ZimbraLog.mailbox.info(
+            "Successfully created Archive system folder for account: %s", accountId);
 
       } catch (ServiceException e) {
         mailbox.endTransaction(false);
