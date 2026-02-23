@@ -18,6 +18,7 @@ class AddArchiveFolderUtilTest extends MailboxTestSuite {
   private Account testAccount;
   private Mailbox testMailbox;
   private Provisioning provisioning;
+  private AddArchiveFolderUtil addArchiveFolderUtil;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -33,65 +34,93 @@ class AddArchiveFolderUtilTest extends MailboxTestSuite {
             .create();
 
     testMailbox = MailboxManager.getInstance().getMailboxByAccount(testAccount);
+
+    // clear the immutable attribute so we can delete the auto-created archive folder,
+    // then delete it so each test starts from a clean state where createArchiveSystemFolder runs
+    Folder archiveFolder = testMailbox.getFolderById(null, Mailbox.ID_FOLDER_ARCHIVE);
+    archiveFolder.attributes &= ~Folder.FOLDER_IS_IMMUTABLE;
+    testMailbox.delete(null, archiveFolder.getId(), MailItem.Type.FOLDER);
+
+    addArchiveFolderUtil = new AddArchiveFolderUtil(mailbox -> false);
   }
 
   @Test
-  void shouldCreateSystemArchiveFolderToNewAccount() throws Exception {
-    Account account =
-        createAccount()
-            .withUsername("archive-test-2")
-            .withDomain(DEFAULT_DOMAIN_NAME)
-            .withPassword("secret")
-            .create();
+  void createArchiveSystemFolderCreatesFolder() throws Exception {
+    addArchiveFolderUtil.addArchiveFolderToAccount(testAccount.getId(), provisioning);
 
-    Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
-
-    Folder archiveFolder = mailbox.getFolderById(null, Mailbox.ID_FOLDER_ARCHIVE);
-    assertNotNull(archiveFolder, "Archive folder should exist after account creation");
-    assertEquals("Archive", archiveFolder.getName(), "Archive folder should have correct name");
+    Folder archiveFolder = testMailbox.getFolderById(null, Mailbox.ID_FOLDER_ARCHIVE);
+    assertNotNull(archiveFolder);
+    assertEquals("Archive", archiveFolder.getName());
   }
 
   @Test
-  void archiveFolderIsImmutableAndCannotBeDeleted() throws Exception {
-    Account account = Provisioning.getInstance().getAccountByName(testAccount.getName());
+  void createArchiveSystemFolderCreatesMessageTypeFolder() throws Exception {
+    addArchiveFolderUtil.addArchiveFolderToAccount(testAccount.getId(), provisioning);
 
-    Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
-    Folder archiveFolder = mailbox.getFolderById(null, Mailbox.ID_FOLDER_ARCHIVE);
-
-    final ServiceException serviceException =
-        assertThrows(
-            ServiceException.class,
-            () -> mailbox.deleteFolder(null, String.valueOf(archiveFolder.getId())),
-            "Should not be able to delete the archive folder");
-
-    assertEquals("cannot modify immutable object: 20", serviceException.getMessage());
+    Folder archiveFolder = testMailbox.getFolderById(null, Mailbox.ID_FOLDER_ARCHIVE);
+    assertEquals(Type.MESSAGE, archiveFolder.getDefaultView());
   }
 
   @Test
-  void shouldNotDuplicateArchiveFolderWhenCalledMultipleTimes() throws Exception {
-    Account account = Provisioning.getInstance().getAccountByName(testAccount.getName());
+  void createArchiveSystemFolderCreatesUnderUserRoot() throws Exception {
+    Folder userRoot = testMailbox.getFolderById(null, Mailbox.ID_FOLDER_USER_ROOT);
 
-    final AddArchiveFolderUtil addArchiveFolderUtil = new AddArchiveFolderUtil();
+    addArchiveFolderUtil.addArchiveFolderToAccount(testAccount.getId(), provisioning);
 
-    addArchiveFolderUtil.addArchiveFolderToAccount(account.getId(), provisioning);
-    Folder firstArchive = testMailbox.getFolderById(null, Mailbox.ID_FOLDER_ARCHIVE);
-    assertNotNull(firstArchive, "Archive folder should exist after first call");
-
-    addArchiveFolderUtil.addArchiveFolderToAccount(account.getId(), provisioning);
-    Folder secondArchive = testMailbox.getFolderById(null, Mailbox.ID_FOLDER_ARCHIVE);
-    assertNotNull(secondArchive, "Archive folder should still exist");
-    assertEquals(
-        firstArchive.getId(), secondArchive.getId(), "Archive folder should not be duplicated");
+    Folder archiveFolder = testMailbox.getFolderById(null, Mailbox.ID_FOLDER_ARCHIVE);
+    assertEquals(userRoot.getId(), archiveFolder.getFolderId());
   }
 
   @Test
-  void shouldHandleNonExistentAccountIdGracefully() {
-    String nonExistentAccountId = "non-existent-account-id-12345";
+  void createArchiveSystemFolderSetsImmutableAttribute() throws Exception {
+    addArchiveFolderUtil.addArchiveFolderToAccount(testAccount.getId(), provisioning);
 
+    Folder archiveFolder = testMailbox.getFolderById(null, Mailbox.ID_FOLDER_ARCHIVE);
+    assertEquals(Folder.FOLDER_IS_IMMUTABLE, archiveFolder.getAttributes());
+  }
+
+  @Test
+  void createArchiveSystemFolderCommitsTransaction() throws Exception {
+    addArchiveFolderUtil.addArchiveFolderToAccount(testAccount.getId(), provisioning);
+
+    testMailbox.purge(Type.FOLDER);
+
+    Folder archiveFolder = testMailbox.getFolderById(null, Mailbox.ID_FOLDER_ARCHIVE);
+    assertNotNull(
+        archiveFolder, "Folder should survive a cache purge meaning the transaction was committed");
+  }
+
+  @Test
+  void createArchiveSystemFolderReleasesLockOnFailure() throws Exception {
+    addArchiveFolderUtil.addArchiveFolderToAccount(testAccount.getId(), provisioning);
+
+    AddArchiveFolderUtil failingAddArchiveFolderToAccount = new AddArchiveFolderUtil(mailbox -> false);
+    assertThrows(
+        ServiceException.class,
+        () -> failingAddArchiveFolderToAccount.addArchiveFolderToAccount(testAccount.getId(), provisioning),
+        "Second call should fail since the archive folder id is already taken");
+
+    assertDoesNotThrow(() -> testMailbox.lock(true), "Lock should be released even after failure");
+    testMailbox.unlock();
+  }
+
+  @Test
+  void shouldNotCreateArchiveFolderWhenCheckerReturnsTrue() throws Exception {
+    addArchiveFolderUtil.addArchiveFolderToAccount(testAccount.getId(), provisioning);
+    Folder existingArchive = testMailbox.getFolderById(null, Mailbox.ID_FOLDER_ARCHIVE);
+
+    AddArchiveFolderUtil skipSut = new AddArchiveFolderUtil(mailbox -> true);
+    skipSut.addArchiveFolderToAccount(testAccount.getId(), provisioning);
+
+    Folder archiveFolder = testMailbox.getFolderById(null, Mailbox.ID_FOLDER_ARCHIVE);
+    assertEquals(existingArchive.getId(), archiveFolder.getId(), "Folder should not be recreated");
+  }
+
+  @Test
+  void shouldSkipCreationWhenAccountNotFound() {
     assertDoesNotThrow(
         () ->
-            new AddArchiveFolderUtil()
-                .addArchiveFolderToAccount(nonExistentAccountId, provisioning),
-        "Should not throw exception for non-existent account");
+            addArchiveFolderUtil.addArchiveFolderToAccount(
+                "non-existent-account-id", provisioning));
   }
 }
