@@ -178,6 +178,33 @@ class NioImapServerIT extends MailboxTestSuite {
   }
 
   @Test
+  void shouldReturnSpecialUseCapability() throws IOException {
+    imapClient.login(account.getName(), account.getUserPassword());
+    imapClient.sendCommand("CAPABILITY");
+
+    var replyString = imapClient.getReplyString();
+
+    assertTrue(
+        replyString.contains("SPECIAL-USE"),
+        "CAPABILITY response does not contain SPECIAL-USE: " + replyString);
+  }
+
+  @Test
+  void shouldListSpecialUseFolders() throws IOException {
+    imapClient.login(account.getName(), account.getUserPassword());
+    imapClient.sendCommand("LIST \"\" \"*\" RETURN (SPECIAL-USE)");
+
+    var replyString = imapClient.getReplyString();
+
+    assertTrue(replyString.contains("* LIST (\\HasNoChildren \\Drafts) \"/\" \"Drafts\""));
+    assertTrue(replyString.contains("* LIST (\\HasNoChildren) \"/\" \"INBOX\""));
+    assertTrue(replyString.contains("* LIST (\\NoInferiors \\Junk) \"/\" \"Junk\""));
+    assertTrue(replyString.contains("* LIST (\\HasNoChildren \\Sent) \"/\" \"Sent\""));
+    assertTrue(replyString.contains("* LIST (\\HasNoChildren \\Trash) \"/\" \"Trash\""));
+    assertTrue(replyString.contains("* LIST (\\HasNoChildren \\Archive) \"/\" \"Archive\""));
+  }
+
+  @Test
   void shouldAppendMessage() throws IOException {
     imapClient.login(account.getName(), account.getUserPassword());
     imapClient.sendCommand("SELECT INBOX");
