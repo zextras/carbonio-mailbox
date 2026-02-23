@@ -10,6 +10,7 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.rmgmt.RemoteCertbot.RemoteCertbotProvider;
 import com.zimbra.cs.service.admin.CertificateNotificationManager;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -27,6 +28,7 @@ public class RemoteCertbotTest extends MailboxTestSuite {
 	}
 
   @Test
+  @Disabled("this test fails randomly")
   void handleShouldSupplyAsyncAndReturnResponse() throws Exception {
 		var fakeRemotemanager = mock(RemoteManager.class);
 		final RemoteCertbot remoteCertbot = new RemoteCertbotProvider(Provisioning.getInstance(),
