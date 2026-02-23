@@ -1547,6 +1547,7 @@ public class Folder extends MailItem implements FolderStore {
       case Mailbox.ID_FOLDER_SENT:
       case Mailbox.ID_FOLDER_DRAFTS:
       case Mailbox.ID_FOLDER_IM_LOGS:
+      case Mailbox.ID_FOLDER_ARCHIVE:
         view = Type.MESSAGE;
         break;
       case Mailbox.ID_FOLDER_CALENDAR:

@@ -33,5 +33,7 @@ public final class FolderConstants {
 
   public static final int ID_FOLDER_UNSUBSCRIBE = 19;
 
-  public static final int HIGHEST_SYSTEM_ID = 19;
+  public static final int ID_FOLDER_ARCHIVE = 20;
+
+  public static final int HIGHEST_SYSTEM_ID = 20;
 }

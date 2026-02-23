@@ -3508,6 +3508,9 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     return getFolderById(ZFolder.ID_CHATS);
   }
 
+  public ZFolder getArchive() throws ServiceException {
+    return getFolderById(ZFolder.ID_ARCHIVE);
+  }
   /**
    * find the folder with the specified id.
    *

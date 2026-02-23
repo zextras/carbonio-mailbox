@@ -127,7 +127,7 @@ public abstract class ImapHandler {
         "ACL", "BINARY", "CATENATE", "CHILDREN", "CONDSTORE", "ENABLE", "ESEARCH", "ESORT",
         "I18NLEVEL=1", "ID", "IDLE", "LIST-EXTENDED", "LIST-STATUS", "LITERAL+", "LOGIN-REFERRALS",
         "MULTIAPPEND", "NAMESPACE", "QRESYNC", "QUOTA", "RIGHTS=ektx", "SASL-IR", "SEARCHRES",
-        "SORT", "THREAD=ORDEREDSUBJECT", "UIDPLUS", "UNSELECT", "WITHIN", "XLIST"
+        "SORT", "SPECIAL-USE", "THREAD=ORDEREDSUBJECT", "UIDPLUS", "UNSELECT", "WITHIN", "XLIST"
     ));
 
     private static final long MAXIMUM_IDLE_PROCESSING_MILLIS = 15 * Constants.MILLIS_PER_SECOND;
@@ -182,6 +182,7 @@ public abstract class ImapHandler {
     private static final byte RETURN_SUBSCRIBED = 0x01;
     private static final byte RETURN_CHILDREN   = 0x02;
     private static final byte RETURN_XLIST      = 0x04;
+    private static final byte RETURN_SPECIAL_USE = 0x08;
 
     private final int SUGGESTED_BATCH_SIZE = 100;
     private final int SUGGESTED_COPY_BATCH_SIZE = 50;
@@ -720,6 +721,8 @@ public abstract class ImapHandler {
                                 req.skipSpace();
                                 StatusDataItemNames cmdInfo = new StatusDataItemNames(req);
                                 status = cmdInfo.cmdStatus;
+                            } else if (option.equals("SPECIAL-USE") && extensionEnabled("SPECIAL-USE")) {
+                                returnOptions |= RETURN_SPECIAL_USE;
                             } else {
                                 throw new ImapParseException(tag, "unknown LIST return option \"" + option + '"');
                             }
@@ -1260,6 +1263,7 @@ public abstract class ImapHandler {
         // [UIDPLUS]          RFC 4315: Internet Message Access Protocol (IMAP) - UIDPLUS extension
         // [UNSELECT]         RFC 3691: IMAP UNSELECT command
         // [WITHIN]           RFC 5032: WITHIN Search Extension to the IMAP Protocol
+        // [SPECIAL-USE]      RFC 6154: IMAP LIST Extension for Special-Use Mailboxes
 
         StringBuilder capability = new StringBuilder("CAPABILITY IMAP4rev1");
 
@@ -2535,40 +2539,47 @@ public abstract class ImapHandler {
         }
 
         // don't add folder mapping for mounted folders
-        //partial support for special use RFC 6154; return known folder attrs
-        //we also keep support for non-standard XLIST attributes for legacy clients that may still use them
-        if (!isMounted && (DebugConfig.imapForceSpecialUse || (returnOptions & RETURN_XLIST) != 0) && path.belongsTo(credentials)) {
-            //return deprecated XLIST attrs if requested
+        // RFC 6154 SPECIAL-USE: return known folder attributes for system folders
+        // we also keep support for non-standard XLIST attributes for legacy clients that may still use them
+        if (!isMounted && path.belongsTo(credentials)) {
+            // return XLIST attrs if requested (legacy), SPECIAL-USE attrs if requested or capability enabled
             boolean returnXList = (returnOptions & RETURN_XLIST) != 0;
-            switch (iid.getId()) {
-                case Mailbox.ID_FOLDER_INBOX:
-                    if (returnXList) {
-                        attrs.append(attrs.length() == 0 ? "" : " ").append("\\Inbox");
-                    }
-                    break;
-                case Mailbox.ID_FOLDER_DRAFTS:
-                    attrs.append(attrs.length() == 0 ? "" : " ").append("\\Drafts");
-                    break;
-                case Mailbox.ID_FOLDER_TRASH:
-                    attrs.append(attrs.length() == 0 ? "" : " ").append("\\Trash");
-                    break;
-                case Mailbox.ID_FOLDER_SENT:
-                    attrs.append(attrs.length() == 0 ? "" : " ").append("\\Sent");
-                    break;
-                case Mailbox.ID_FOLDER_SPAM:
-                    attrs.append(attrs.length() == 0 ? "" : " ").append(returnXList ? "\\Spam" : "\\Junk");
-                    break;
-                default:
-                    String query = path.getFolder() instanceof SearchFolderStore ?
-                            ((SearchFolderStore) path.getFolder()).getQuery() : null;
-                    if (query != null) {
-                        if (query.equalsIgnoreCase("is:flagged")) {
-                            attrs.append(attrs.length() == 0 ? "" : " ").append(returnXList ? "\\Starred" : "\\Flagged");
-                        } else if (query.equalsIgnoreCase("is:local")) {
-                            attrs.append(attrs.length() == 0 ? "" : " ").append(returnXList ? "\\AllMail" : "\\All");
+            boolean returnSpecialUse = (returnOptions & RETURN_SPECIAL_USE) != 0 || extensionEnabled("SPECIAL-USE");
+
+            if (returnXList || returnSpecialUse || DebugConfig.imapForceSpecialUse) {
+                switch (iid.getId()) {
+                    case Mailbox.ID_FOLDER_INBOX:
+                        if (returnXList) {
+                            attrs.append(attrs.length() == 0 ? "" : " ").append("\\Inbox");
                         }
-                    }
-                    break;
+                        break;
+                    case Mailbox.ID_FOLDER_DRAFTS:
+                        attrs.append(attrs.length() == 0 ? "" : " ").append("\\Drafts");
+                        break;
+                    case Mailbox.ID_FOLDER_TRASH:
+                        attrs.append(attrs.length() == 0 ? "" : " ").append("\\Trash");
+                        break;
+                    case Mailbox.ID_FOLDER_SENT:
+                        attrs.append(attrs.length() == 0 ? "" : " ").append("\\Sent");
+                        break;
+                    case Mailbox.ID_FOLDER_SPAM:
+                        attrs.append(attrs.length() == 0 ? "" : " ").append(returnXList ? "\\Spam" : "\\Junk");
+                        break;
+                    case Mailbox.ID_FOLDER_ARCHIVE:
+                        attrs.append(attrs.length() == 0 ? "" : " ").append("\\Archive");
+                        break;
+                    default:
+                        String query = path.getFolder() instanceof SearchFolderStore ?
+                                ((SearchFolderStore) path.getFolder()).getQuery() : null;
+                        if (query != null) {
+                            if (query.equalsIgnoreCase("is:flagged")) {
+                                attrs.append(attrs.length() == 0 ? "" : " ").append(returnXList ? "\\Starred" : "\\Flagged");
+                            } else if (query.equalsIgnoreCase("is:local")) {
+                                attrs.append(attrs.length() == 0 ? "" : " ").append(returnXList ? "\\AllMail" : "\\All");
+                            }
+                        }
+                        break;
+                }
             }
         }
         return attrs.toString();
