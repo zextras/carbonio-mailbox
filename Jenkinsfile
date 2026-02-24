@@ -78,15 +78,6 @@ pipeline {
                         }
                     }
                 }
-                stage('Build containers') {
-                    steps {
-                        container('dind') {
-                            withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                                sh 'docker buildx bake --no-cache'
-                            }
-                        }
-                    }
-                }
             }
         }
 
@@ -176,7 +167,7 @@ pipeline {
             }
         }
 
-        stage('Publish docker images') {
+        stage('Build and Publish Docker images') {
             steps {
                 dockerStage([
                         dockerfile: 'docker/mailbox/Dockerfile',
