@@ -81,10 +81,8 @@ pipeline {
                 stage('Build containers') {
                     steps {
                         container('dind') {
-                            withDockerRegistry(credentialsId: 'jenkins-dockerhub-carbonio', url: "https://docker.io") {   // Login to Docker Hub for base image pulls
-                                withDockerRegistry(credentialsId: 'private-registry', url: "https://registry.dev.zextras.com") {  // Login to private registry for pushing
-                                    sh 'docker buildx bake --no-cache'
-                                }
+                            withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                                sh 'docker buildx bake --no-cache'
                             }
                         }
                     }
