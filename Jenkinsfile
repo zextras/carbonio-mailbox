@@ -1,5 +1,5 @@
 library(
-        identifier: 'jenkins-lib-common@1.1.2',
+        identifier: 'jenkins-lib-common@1.3.2',
         retriever: modernSCM([
                 $class: 'GitSCMSource',
                 credentialsId: 'jenkins-integration-with-github-account',
@@ -75,15 +75,6 @@ pipeline {
                                 staging/
                     """
                             stash includes: 'staging/**', name: 'staging'
-                        }
-                    }
-                }
-                stage('Build containers') {
-                    steps {
-                        container('dind') {
-                            withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                                sh 'docker buildx bake --no-cache'
-                            }
                         }
                     }
                 }
@@ -176,7 +167,7 @@ pipeline {
             }
         }
 
-        stage('Publish docker images') {
+        stage('Build and Publish Docker images') {
             steps {
                 dockerStage([
                         dockerfile: 'docker/mailbox/Dockerfile',
