@@ -385,7 +385,7 @@
       <dependency>
         <groupId>com.zextras</groupId>
         <artifactId>mailbox-native</artifactId>
-        <version>4.24.0</version>
+        <version>4.24.1</version>
       </dependency>
       <dependency>
         <groupId>com.zextras</groupId>
