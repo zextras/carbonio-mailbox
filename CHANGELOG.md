@@ -1,5 +1,23 @@
 
 
+# [1.0.0](https://github.com/zextras/carbonio-mailbox/compare/4.23.5...null) (2026-02-24)
+
+
+### Bug Fixes
+
+* [CO-3061] Filter out name/color/flags notifications on shared folder changes ([#909](https://github.com/zextras/carbonio-mailbox/issues/909)) ([b3bc84d](https://github.com/zextras/carbonio-mailbox/commit/b3bc84de2ed2f468b0dd5f892cb715fb94c01ae4))
+* [CO-3178] missing schema5.xsd import in admin WSDL file ([#925](https://github.com/zextras/carbonio-mailbox/issues/925)) ([e61fd38](https://github.com/zextras/carbonio-mailbox/commit/e61fd383448748272c4cdeee8e6ebf3ff6065f99))
+* **appserver-service:** replace manual user creation with sysusers.d (CO-2524) ([#910](https://github.com/zextras/carbonio-mailbox/issues/910)) ([f8c7675](https://github.com/zextras/carbonio-mailbox/commit/f8c767524eb7dc3179052cd56a62eca4700d833b))
+
+
+### Features
+
+* [CO-3103] Search API - expose sort by change date ([#920](https://github.com/zextras/carbonio-mailbox/issues/920)) ([3a324fb](https://github.com/zextras/carbonio-mailbox/commit/3a324fb3c88497488ded766e45d94dfe39bc359f))
+* [CO-3181] Add Archive system folder to mailbox account ([#926](https://github.com/zextras/carbonio-mailbox/issues/926)) ([58d169e](https://github.com/zextras/carbonio-mailbox/commit/58d169e575a7ed51fd87a0a65f165f53a93822c0))
+* add carbonio-memcached to upstreams list ([#900](https://github.com/zextras/carbonio-mailbox/issues/900)) ([c58764e](https://github.com/zextras/carbonio-mailbox/commit/c58764ec194b9c4f29317bf8848f13c2940f2017))
+* **CF-1592:** reach memcached via service mesh  ([#915](https://github.com/zextras/carbonio-mailbox/issues/915)) ([7af8ba0](https://github.com/zextras/carbonio-mailbox/commit/7af8ba03b0fc8929f684ecc8a331edcde2379156))
+* remove legacy Chats references ([#928](https://github.com/zextras/carbonio-mailbox/issues/928)) ([3d2dc2e](https://github.com/zextras/carbonio-mailbox/commit/3d2dc2e6186118b9118313602223d72401c076bf))
+
 ## 4.23.5 (2025-12-09)
 
 
