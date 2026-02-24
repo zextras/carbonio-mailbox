@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.session;
 
-import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.localconfig.LC;
@@ -14,10 +13,12 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.ContainerException;
+import com.zimbra.common.soap.Element.Disposition;
+import com.zimbra.common.soap.Element.ElementFactory;
 import com.zimbra.common.soap.HeaderConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
-import com.zimbra.common.soap.SoapTransport;
+import com.zimbra.common.soap.SoapTransport.NotificationFormat;
 import com.zimbra.common.soap.ZimbraNamespace;
 import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.Pair;
@@ -65,6 +66,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -275,16 +277,28 @@ public class SoapSession extends Session {
               filtered.recordModified(
                   item, chg.why | MODIFIED_CONVERSATION_FLAGS, (MailItem) chg.preModifyObj);
             } else if (isVisible) {
-              filtered.recordModified(item, chg.why, (MailItem) chg.preModifyObj);
-              // if it's an unmoved visible message and it had a tag/flag/unread change,
-              // make sure the conv shows up in the modified or created list
-              if (item instanceof Message && (moved || (chg.why & BASIC_CONVERSATION_FLAGS) != 0)) {
-                forceConversationModification(
-                    (Message) item,
-                    chg,
-                    pms,
-                    filtered,
-                    moved ? MODIFIED_CONVERSATION_FLAGS : BASIC_CONVERSATION_FLAGS);
+              int why = chg.why;
+              // Filter out name/color/flags changes on shared folders to prevent notification spam
+              boolean isSharedFolder =
+                  item instanceof Folder folder
+                      && folder.isSharedWithUser(mAuthenticatedAccountId);
+              if (isSharedFolder) {
+                int restrictedChangesForSharedFolders = Change.NAME | Change.COLOR | Change.FLAGS;
+                why &= ~restrictedChangesForSharedFolders;
+              }
+              if (why != 0) {
+                filtered.recordModified(item, why, (MailItem) chg.preModifyObj);
+                // if it's an unmoved visible message, and it had a tag/flag/unread change,
+                // make sure the conv shows up in the modified or created list
+                if (item instanceof Message
+                    && (moved || (chg.why & BASIC_CONVERSATION_FLAGS) != 0)) {
+                  forceConversationModification(
+                      (Message) item,
+                      chg,
+                      pms,
+                      filtered,
+                      moved ? MODIFIED_CONVERSATION_FLAGS : BASIC_CONVERSATION_FLAGS);
+                }
               }
             } else if (moved) {
               filtered.recordDeleted((MailItem) chg.preModifyObj);
@@ -508,7 +522,7 @@ public class SoapSession extends Session {
    * @see Session#register()
    */
   public SoapSession(ZimbraSoapContext zsc) {
-    super(zsc.getAuthtokenAccountId(), zsc.getAuthtokenAccountId(), Session.Type.SOAP);
+    super(zsc.getAuthtokenAccountId(), zsc.getAuthtokenAccountId(), Type.SOAP);
     this.asAdmin = zsc.isUsingAdminPrivileges();
     responseProtocol = zsc.getResponseProtocol();
     curWaitSetID = zsc.getCurWaitSetID();
@@ -595,7 +609,7 @@ public class SoapSession extends Session {
     // delegate sessions are only for mailboxes on the local host
     try {
       if (!Provisioning.getInstance()
-          .onLocalServer(Provisioning.getInstance().get(Key.AccountBy.id, targetAccountId))) {
+          .onLocalServer(Provisioning.getInstance().get(AccountBy.id, targetAccountId))) {
         return null;
       }
     } catch (ServiceException e) {
@@ -819,8 +833,6 @@ public class SoapSession extends Session {
    * Record that a push channel has come online.
    *
    * @param sc The push channel.
-   * @param includeDelegates Whether notifications from delegate sessions trigger {@link
-   *     RegisterNotificationResult#DATA_READY}.
    * @return the state of the channel (@see RegisterNotificationResult}
    */
   public synchronized RegisterNotificationResult registerNotificationConnection(
@@ -904,7 +916,7 @@ public class SoapSession extends Session {
    *
    * <p>*All* changes are currently cached, regardless of the client's state/views.
    *
-   * @param pms A set of new change notifications from our Mailbox.
+   * @param pmsIn A set of new change notifications from our Mailbox.
    * @param changeId The change ID of the change.
    * @param source The (optional) Session which initiated these changes.
    */
@@ -1102,7 +1114,7 @@ public class SoapSession extends Session {
 
     Element eRefresh = ctxt.addUniqueElement(ZimbraNamespace.E_REFRESH);
     eRefresh.addAttribute(
-        AccountConstants.E_VERSION, BuildInfo.FULL_VERSION, Element.Disposition.CONTENT);
+        AccountConstants.E_VERSION, BuildInfo.FULL_VERSION, Disposition.CONTENT);
 
     OperationContext octxt = DocumentHandler.getOperationContext(zsc, this);
     ItemIdFormatter ifmt = new ItemIdFormatter(zsc);
@@ -1144,7 +1156,7 @@ public class SoapSession extends Session {
   private void expandLocalMountpoints(
       OperationContext octxt,
       FolderNode node,
-      Element.ElementFactory factory,
+      ElementFactory factory,
       Map<ItemId, Pair<Boolean, Element>> mountpoints) {
     if (node.mFolder != null && mountpoints != null) {
       if (node.mFolder instanceof Mountpoint) {
@@ -1161,7 +1173,7 @@ public class SoapSession extends Session {
   private void expandLocalMountpoint(
       OperationContext octxt,
       Mountpoint mpt,
-      Element.ElementFactory factory,
+      ElementFactory factory,
       Map<ItemId, Pair<Boolean, Element>> mountpoints) {
     // don't bother generating the subhierarchy more than once
     ItemId iidTarget = mpt.getTarget();
@@ -1170,7 +1182,7 @@ public class SoapSession extends Session {
     }
     try {
       Provisioning prov = Provisioning.getInstance();
-      Account owner = prov.get(Key.AccountBy.id, mpt.getOwnerId(), octxt.getAuthToken());
+      Account owner = prov.get(AccountBy.id, mpt.getOwnerId(), octxt.getAuthToken());
       if (owner == null || owner.getId().equals(mAuthenticatedAccountId)) {
         mountpoints.put(iidTarget, new Pair<>(true, null));
         return;
@@ -1219,14 +1231,14 @@ public class SoapSession extends Session {
       Map<ItemId, Pair<Boolean, Element>> mountpoints) {
     Map<String, Server> remoteServers = null;
     Provisioning prov = Provisioning.getInstance();
-    for (Map.Entry<ItemId, Pair<Boolean, Element>> mptinfo : mountpoints.entrySet()) {
+    for (Entry<ItemId, Pair<Boolean, Element>> mptinfo : mountpoints.entrySet()) {
       try {
         // local mountpoints already have their targets serialized
         if (mptinfo.getValue() != null) {
           continue;
         }
         Account owner =
-            prov.get(Key.AccountBy.id, mptinfo.getKey().getAccountId(), zsc.getAuthToken());
+            prov.get(AccountBy.id, mptinfo.getKey().getAccountId(), zsc.getAuthToken());
         if (owner == null) {
           continue;
         }
@@ -1244,7 +1256,7 @@ public class SoapSession extends Session {
 
     if (remoteServers != null && !remoteServers.isEmpty()) {
       Map<String, Element> remoteHierarchies = fetchRemoteHierarchies(octxt, zsc, remoteServers);
-      for (Map.Entry<ItemId, Pair<Boolean, Element>> mptinfo : mountpoints.entrySet()) {
+      for (Entry<ItemId, Pair<Boolean, Element>> mptinfo : mountpoints.entrySet()) {
         // local mountpoints already have their targets serialized
         if (mptinfo.getValue() != null) {
           continue;
@@ -1276,7 +1288,7 @@ public class SoapSession extends Session {
       return hierarchies;
     }
 
-    for (Map.Entry<String, Server> remote : remoteServers.entrySet()) {
+    for (Entry<String, Server> remote : remoteServers.entrySet()) {
       String accountId = remote.getKey();
       Server server = remote.getValue();
 
@@ -1551,8 +1563,8 @@ public class SoapSession extends Session {
     boolean hasRemoteCreates = rns != null && rns.created != null && !rns.created.isEmpty();
     boolean hasLocalModifies = pms != null && pms.modified != null && !pms.modified.isEmpty();
     boolean hasRemoteModifies = rns != null && rns.modified != null && !rns.modified.isEmpty();
-    if (SoapTransport.NotificationFormat.valueOf(zsc.getNotificationFormat())
-        == SoapTransport.NotificationFormat.IMAP) {
+    if (NotificationFormat.valueOf(zsc.getNotificationFormat())
+        == NotificationFormat.IMAP) {
       try {
         AccountWithModifications info =
             new AccountWithModifications(zsc.getAuthtokenAccountId(), mbox.getLastChangeID());
@@ -1619,7 +1631,7 @@ public class SoapSession extends Session {
             try {
               Element elt = ToXML.encodeItem(eModified, ifmt, octxt, item, chg.why);
               if (elt == null) {
-                ModificationKey mkey = new PendingLocalModifications.ModificationKey(item);
+                ModificationKey mkey = new ModificationKey(item);
                 addDeletedNotification(mkey, deletedIds);
                 if (debug) {
                   ZimbraLog.session.debug("marking nonserialized item as a delete: %s", mkey);

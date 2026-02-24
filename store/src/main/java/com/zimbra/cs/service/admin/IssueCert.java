@@ -8,17 +8,16 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.generated.AdminRights;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.rmgmt.RemoteCertbot;
 import com.zimbra.cs.rmgmt.RemoteCommands;
-import com.zimbra.cs.rmgmt.RemoteManager;
 import com.zimbra.soap.ZimbraSoapContext;
 import io.vavr.Function2;
+import io.vavr.control.Try;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Admin Handler class to issue a LetsEncrypt certificate for a domain using {@link com.zimbra.cs.rmgmt.RemoteManager},
@@ -29,13 +28,13 @@ import java.util.function.Function;
  */
 public class IssueCert extends AdminDocumentHandler {
 
-  private final Function<RemoteManager,RemoteCertbot> certBotProvider;
+  private final Supplier<Try<RemoteCertbot>> certBotProvider;
   private final Function2<Mailbox, Domain, CertificateNotificationManager> notificationManagerProvider;
   public static final String RESPONSE =
       "The System is processing your certificate generation request.\n"
           + "It will send the result to the Global and Domain notification recipients.";
 
-	public IssueCert(Function<RemoteManager, RemoteCertbot> certBotProvider,
+	public IssueCert(Supplier<Try<RemoteCertbot>> certBotProvider,
 			Function2<Mailbox, Domain, CertificateNotificationManager> notificationManagerProvider) {
 		this.certBotProvider = certBotProvider;
 		this.notificationManagerProvider = notificationManagerProvider;
@@ -80,9 +79,6 @@ public class IssueCert extends AdminDocumentHandler {
         checkDomainRight(zsc, domain, AdminRights.R_setDomainAdminDomainAttrs);
     final String adminMail = adminAccessControl.mAuthedAcct.getMail();
 
-    final String chainType =
-        request.getAttribute(AdminConstants.A_CHAIN_TYPE, AdminConstants.DEFAULT_CHAIN);
-
     final String domainName =
         Optional.ofNullable(domain.getDomainName())
             .orElseThrow(
@@ -103,25 +99,15 @@ public class IssueCert extends AdminDocumentHandler {
                     ServiceException.FAILURE(
                         "Domain " + domainName + " must have at least one VirtualHostName."));
 
-    final Server proxyServer =
-        prov.getAllServers().stream()
-            .filter(Server::hasProxyService)
-            .findFirst()
-            .orElseThrow(
-                () ->
-                    ServiceException.FAILURE(
-                        "Issuing LetsEncrypt certificate command requires carbonio-proxy. "
-                            + "Make sure carbonio-proxy is installed, up and running."));
-
     ZimbraLog.rmgmt.info("Issuing LetsEncrypt cert for domain " + domainName);
 
-    final RemoteManager remoteManager = RemoteManager.getRemoteManager(proxyServer);
-    final RemoteCertbot certbot = certBotProvider.apply(remoteManager);
+    final RemoteCertbot certbot = certBotProvider.get().getOrElseThrow(
+        throwable -> ServiceException.FAILURE("Failed to  instantiate certbot for server", throwable)
+    );
     final String command =
         certbot.createCommand(
             RemoteCommands.CERTBOT_CERTONLY,
             adminMail,
-            chainType,
             domainName,
             publicServiceHostname,
             virtualHostNames);

@@ -10,9 +10,8 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * @zm-api-command-auth-required true
  * @zm-api-command-admin-auth-required true
- * @zm-api-command-description Request class represents requests explicitly, will be proceed with
- * {@link com.zimbra.cs.service.admin.IssueCert} handler for issuing a LetsEncrypt certificate
- * for a requested domain.
+ * @zm-api-command-description Request class represents requests explicitly, will proceed with
+ * IssueCert handler for issuing a LetsEncrypt certificate for a requested domain.
  *
  * @author Yuliya Aheeva
  * @since 23.3.0
@@ -32,15 +31,7 @@ public class IssueCertRequest {
   /**
    * @zm-api-field-tag preferred certificate chain
    * @zm-api-field-description could be passed zero or one argument - "short".
-   *     By default the chain type is "long".
-   *     If a user pass "short" with this parameter {@link com.zimbra.cs.service.admin.IssueCert}
-   *     will handle the request with the sort chain type.
-   *
-   *     Long (Default) chain contains:
-   *     your leaf certificate
-   *     R3 signed by ISRG Root X1 122
-   *     ISRG Root X1 signed by DST Root CA X3 93
-   *
+   *     Default chain type is "short".
    *     Short chain contains:
    *     your leaf certificate
    *     R3 signed by ISRG Root X1 122

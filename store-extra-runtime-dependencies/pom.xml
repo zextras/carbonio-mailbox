@@ -10,7 +10,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>zm-mailbox</artifactId>
-    <groupId>zextras</groupId>
+    <groupId>com.zextras</groupId>
     <version>${revision}${changelist}</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -42,10 +42,6 @@
       <groupId>org.codehaus.woodstox</groupId>
     </dependency>
     <dependency>
-      <artifactId>javax.ws.rs-api</artifactId>
-      <groupId>javax.ws.rs</groupId>
-    </dependency>
-    <dependency>
       <artifactId>neethi</artifactId>
       <groupId>org.apache.neethi</groupId>
     </dependency>
@@ -56,42 +52,6 @@
     <dependency>
       <artifactId>wsdl4j</artifactId>
       <groupId>wsdl4j</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>objenesis</artifactId>
-      <groupId>org.objenesis</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>jersey-client</artifactId>
-      <groupId>com.sun.jersey</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>jersey-core</artifactId>
-      <groupId>com.sun.jersey</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>jersey-json</artifactId>
-      <groupId>com.sun.jersey</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>jersey-servlet</artifactId>
-      <groupId>com.sun.jersey</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>jersey-server</artifactId>
-      <groupId>com.sun.jersey</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>jersey-multipart</artifactId>
-      <groupId>com.sun.jersey.contribs</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>jsr181-api</artifactId>
-      <groupId>javax.jws</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>jsr311-api</artifactId>
-      <groupId>javax.ws.rs</groupId>
     </dependency>
     <dependency>
       <artifactId>jackson-dataformat-smile</artifactId>

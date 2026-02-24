@@ -7,8 +7,9 @@ package com.zextras.mailbox.util;
 import com.zextras.mailbox.soap.SoapUtils;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.soap.HeaderConstants;
 import com.zimbra.common.soap.SoapProtocol;
-import com.zimbra.common.soap.XmlParseException;
+import com.zimbra.common.soap.SoapUtil;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthTokenException;
@@ -96,10 +97,22 @@ public class SoapClient {
 			return this;
 		}
 
+		public Request setSessionId(String sessionId) {
+			this.sessionId = sessionId;
+			return this;
+		}
+
+		public Request enableSession() {
+			this.enableSession = true;
+			return this;
+		}
+
 		private Element soapBody;
 		private Account caller;
 		private Account requestedAccount;
 		private String url = "/";
+		private String sessionId;
+		private boolean enableSession = false;
 
 		private BasicCookieStore createCookieStore() {
 			return new BasicCookieStore();
@@ -123,6 +136,7 @@ public class SoapClient {
 		}
 
 		public SoapResponse execute() throws Exception {
+			// Cookie: ZM_AUTH_TOKEN
 			final BasicCookieStore cookieStore = createCookieStore();
 			if (!Objects.isNull(caller)) {
 				cookieStore.addCookie(createAuthCookie());
@@ -130,7 +144,7 @@ public class SoapClient {
 
 			final HttpPost httpPost = new HttpPost();
 			httpPost.setURI(URI.create(this.url));
-			httpPost.setEntity(createEnvelop());
+			httpPost.setEntity(createEnvelope());
 			try (var client = getClient(cookieStore)) {
 				final CloseableHttpResponse response = client.execute(httpPost);
 				return new SoapResponse(response.getStatusLine().getStatusCode(), SoapUtils.getResponse(response));
@@ -142,24 +156,35 @@ public class SoapClient {
 			return this.execute();
 		}
 
-		private StringEntity createEnvelop() throws XmlParseException, UnsupportedEncodingException {
+		private StringEntity createEnvelope()
+				throws ServiceException, UnsupportedEncodingException {
 			Element envelope;
-			if (Objects.isNull(requestedAccount)) {
+			Element header = SoapUtil.createEmptyContext(SoapProtocol.Soap12);
+			if (!Objects.isNull(caller)) {
+				var authToken = AuthProvider.getAuthToken(caller, isAdminAccount()).toZAuthToken();
+				header = SoapUtil.toCtxt(SoapProtocol.Soap12, authToken);
+			}
+			if (!Objects.isNull(requestedAccount)) {
+				SoapUtil.addTargetAccountToCtxt(header, requestedAccount.getId(), requestedAccount.getName());
+			}
+			// Add session support
+			if (enableSession || sessionId != null) {
+				Element sessionElement = header.addUniqueElement(HeaderConstants.E_SESSION);
+				if (sessionId != null) {
+					sessionElement.addAttribute(HeaderConstants.A_ID, sessionId);
+				}
+			}
+			if (Objects.isNull(header)) {
 				envelope = SoapProtocol.Soap12.soapEnvelope(soapBody);
 			} else {
-				final Element headerXml =
-						Element.parseXML(
-								String.format(
-										"<context xmlns=\"urn:zimbra\"><account by=\"id\">%s</account></context>",
-										requestedAccount.getId()));
-				envelope = SoapProtocol.Soap12.soapEnvelope(soapBody, headerXml);
+				envelope = SoapProtocol.Soap12.soapEnvelope(soapBody, header);
 			}
 			return new StringEntity(envelope.toString());
 		}
 
 		private BasicClientCookie createAuthCookie() throws AuthTokenException, ServiceException {
 			final var authToken = AuthProvider.getAuthToken(caller, isAdminAccount());
-			final var name = ZimbraCookie.authTokenCookieName(false);
+			final var name = ZimbraCookie.authTokenCookieName(isAdminAccount());
 			final var cookie = new BasicClientCookie(name, authToken.getEncoded());
 			cookie.setDomain(caller.getServerName());
 			cookie.setPath("/");
@@ -173,6 +198,25 @@ public class SoapClient {
 
 	public Request newRequest() {
 		return new Request().setBaseURL(this.endpoint);
+	}
+
+	/**
+	 * Creates a new request with session enabled.
+	 *
+	 * @return Request with session enabled
+	 */
+	public Request newSessionRequest() {
+		return new Request().setBaseURL(this.endpoint).enableSession();
+	}
+
+	/**
+	 * Creates a new request with specific session ID.
+	 *
+	 * @param sessionId the session ID to use
+	 * @return Request with session ID set
+	 */
+	public Request newSessionRequest(String sessionId) {
+		return new Request().setBaseURL(this.endpoint).setSessionId(sessionId);
 	}
 
 	/**

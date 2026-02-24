@@ -65,7 +65,6 @@ public class ProvUtilCommandHandlersFactory {
     map.put(Command.GET_ALL_DOMAINS, new GetAllDomainsCommandHandler(provUtil, dumper));
     map.put(Command.GET_ALL_EFFECTIVE_RIGHTS, new GetAllEffectiveRightsCommandHandler(provUtil));
     map.put(Command.GET_ALL_FREEBUSY_PROVIDERS, new GetAllFbpCommandHandler(provUtil));
-    map.put(Command.GET_ALL_MEMCACHED_SERVERS, new GetAllMemcachedServersCommandHandler(provUtil));
     map.put(Command.GET_ALL_MTA_AUTH_URLS, new GetAllMtaAuthURLsCommandHandler(provUtil));
     map.put(Command.GET_ALL_REVERSE_PROXY_BACKENDS, new GetAllReverseProxyBackendsCommandHandler(provUtil));
     map.put(Command.GET_ALL_REVERSE_PROXY_DOMAINS, new GetAllReverseProxyDomainsCommandHandler(provUtil));

@@ -368,53 +368,53 @@
         <version>3.1.0</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
+        <groupId>com.zextras</groupId>
         <artifactId>zm-common</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
+        <groupId>com.zextras</groupId>
         <artifactId>zm-client</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
+        <groupId>com.zextras</groupId>
         <artifactId>zm-soap</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>com.zextras</groupId>
         <artifactId>mailbox-native</artifactId>
-        <version>4.23.1</version>
+        <version>4.24.1</version>
       </dependency>
       <dependency>
         <groupId>com.zextras</groupId>
         <artifactId>mailbox-attribute-manager</artifactId>
-        <version>4.24.1</version>
+        <version>4.27.2</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
+        <groupId>com.zextras</groupId>
         <artifactId>right-manager</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
+        <groupId>com.zextras</groupId>
         <artifactId>mailbox-ldap-lib</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
+        <groupId>com.zextras</groupId>
         <artifactId>zm-store</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
+        <groupId>com.zextras</groupId>
         <artifactId>zm-store</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
+        <groupId>com.zextras</groupId>
         <artifactId>store-extra-runtime-dependencies</artifactId>
         <type>pom</type>
         <version>${project.version}</version>
@@ -447,11 +447,6 @@
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <version>${mockito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-inline</artifactId>
         <version>${mockito.version}</version>
       </dependency>
       <dependency>
@@ -779,7 +774,7 @@
     </dependencies>
   </dependencyManagement>
 
-  <groupId>zextras</groupId>
+  <groupId>com.zextras</groupId>
   <modelVersion>4.0.0</modelVersion>
   <modules>
     <module>common</module>
@@ -793,15 +788,16 @@
   <packaging>pom</packaging>
 
   <properties>
-    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.source>21</maven.compiler.source>
     <test.argLine>
       -Dserver.dir=${project.basedir}
       -Djunit.jupiter.execution.parallel.enabled=true
       -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
       -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
     </test.argLine>
-    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <sonar.version>5.5.0.6356</sonar.version>
     <jetty.version>9.4.57.v20241219</jetty.version>
     <lucene.version>3.5.0</lucene.version>
     <jackson.version>2.15.4</jackson.version>
@@ -813,7 +809,7 @@
     <log4j.version>2.20.0</log4j.version>
     <dom4j.version>2.1.4</dom4j.version>
     <hsqldb.version>2.7.1</hsqldb.version>
-    <mockito.version>5.2.0</mockito.version>
+    <mockito.version>5.21.0</mockito.version>
     <unboundid-ldapsdk.version>4.0.5</unboundid-ldapsdk.version>
     <jsr305.version>3.0.2</jsr305.version>
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
@@ -822,7 +818,7 @@
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
     <!-- Mailbox version -->
-    <revision>25.12.0</revision>
+    <revision>4.24.0</revision>
     <mockserver.version>5.13.0</mockserver.version>
     <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
   </properties>
@@ -890,6 +886,11 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>${sonar.version}</version>
+        </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <groupId>org.apache.maven.plugins</groupId>
@@ -971,7 +972,7 @@
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.8.8</version>
+          <version>0.8.14</version>
           <executions>
             <execution>
               <goals>
@@ -990,7 +991,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.6.1</version>
           <executions>
             <execution>
               <id>analyze</id>
@@ -1082,6 +1083,10 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

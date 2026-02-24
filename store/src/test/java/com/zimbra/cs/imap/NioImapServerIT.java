@@ -85,10 +85,11 @@ class NioImapServerIT extends MailboxTestSuite {
           "* LIST (\\HasNoChildren) \"/\" \"INBOX\"",
           "* LIST (\\NoInferiors \\Junk) \"/\" \"Junk\"",
           "* LIST (\\HasNoChildren \\Sent) \"/\" \"Sent\"",
-          "* LIST (\\HasNoChildren \\Trash) \"/\" \"Trash\""
+          "* LIST (\\HasNoChildren \\Trash) \"/\" \"Trash\"",
+          "* LIST (\\HasNoChildren \\Archive) \"/\" \"Archive\"",
         };
 
-    Arrays.stream(foldersOutput).forEach(folder -> assertTrue(replyString.contains(folder)));
+    Arrays.stream(foldersOutput).forEach(folder -> assertTrue(replyString.contains(folder), "Missing folder: " + folder + " in response: " + replyString));
 
     assertTrue(replyString.contains("OK LIST completed"));
   }
@@ -174,6 +175,33 @@ class NioImapServerIT extends MailboxTestSuite {
     var listReplyString = imapClient.getReplyString();
 
     assertFalse(listReplyString.contains("TestFolderToBeDeleted"));
+  }
+
+  @Test
+  void shouldReturnSpecialUseCapability() throws IOException {
+    imapClient.login(account.getName(), account.getUserPassword());
+    imapClient.sendCommand("CAPABILITY");
+
+    var replyString = imapClient.getReplyString();
+
+    assertTrue(
+        replyString.contains("SPECIAL-USE"),
+        "CAPABILITY response does not contain SPECIAL-USE: " + replyString);
+  }
+
+  @Test
+  void shouldListSpecialUseFolders() throws IOException {
+    imapClient.login(account.getName(), account.getUserPassword());
+    imapClient.sendCommand("LIST \"\" \"*\" RETURN (SPECIAL-USE)");
+
+    var replyString = imapClient.getReplyString();
+
+    assertTrue(replyString.contains("* LIST (\\HasNoChildren \\Drafts) \"/\" \"Drafts\""));
+    assertTrue(replyString.contains("* LIST (\\HasNoChildren) \"/\" \"INBOX\""));
+    assertTrue(replyString.contains("* LIST (\\NoInferiors \\Junk) \"/\" \"Junk\""));
+    assertTrue(replyString.contains("* LIST (\\HasNoChildren \\Sent) \"/\" \"Sent\""));
+    assertTrue(replyString.contains("* LIST (\\HasNoChildren \\Trash) \"/\" \"Trash\""));
+    assertTrue(replyString.contains("* LIST (\\HasNoChildren \\Archive) \"/\" \"Archive\""));
   }
 
   @Test

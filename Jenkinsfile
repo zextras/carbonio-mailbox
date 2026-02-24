@@ -1,11 +1,13 @@
 library(
-        identifier: 'jenkins-packages-build-library@1.0.4',
+        identifier: 'jenkins-lib-common@1.3.2',
         retriever: modernSCM([
-                $class       : 'GitSCMSource',
-                remote       : 'git@github.com:zextras/jenkins-packages-build-library.git',
-                credentialsId: 'jenkins-integration-with-github-account'
+                $class: 'GitSCMSource',
+                credentialsId: 'jenkins-integration-with-github-account',
+                remote: 'git@github.com:zextras/jenkins-lib-common.git',
         ])
 )
+
+properties(defaultPipelineProperties())
 
 boolean isBuildingTag() {
     return env.TAG_NAME ? true : false
@@ -37,9 +39,6 @@ pipeline {
 
     parameters {
         booleanParam defaultValue: false,
-                description: 'Upload packages in playground repositories.',
-                name: 'PLAYGROUND'
-        booleanParam defaultValue: false,
                 description: 'Skip test and sonar analysis.',
                 name: 'SKIP_TEST_WITH_COVERAGE'
         booleanParam defaultValue: false,
@@ -47,16 +46,12 @@ pipeline {
                 name: 'SKIP_SONARQUBE'
     }
 
-    tools {
-        jfrog 'jfrog-cli'
-    }
-
     triggers {
         cron(env.BRANCH_NAME == 'devel' ? 'H 5 * * *' : '')
     }
 
     stages {
-        stage('Checkout') {
+        stage('Setup') {
             steps {
                 checkout scm
                 script {
@@ -69,7 +64,7 @@ pipeline {
             parallel {
                 stage('Maven build') {
                     steps {
-                        container('jdk-17') {
+                        container('jdk-21') {
                             sh """
                         mvn ${MVN_OPTS} \
                             -DskipTests=true \
@@ -83,21 +78,12 @@ pipeline {
                         }
                     }
                 }
-                stage('Build containers') {
-                    steps {
-                        container('dind') {
-                            withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                                sh 'docker buildx bake --no-cache'
-                            }
-                        }
-                    }
-                }
             }
         }
 
         stage('UT, IT') {
             steps {
-                container('jdk-17') {
+                container('jdk-21') {
                     sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,flaky,e2e"
                 }
                 junit allowEmptyResults: true,
@@ -106,11 +92,27 @@ pipeline {
         }
         stage('Flaky, API, E2E tests') {
             steps {
-                container('jdk-17') {
+                container('jdk-21') {
                     sh "cd store && mvn ${MVN_OPTS} verify -Dgroups=flaky,api && mvn ${MVN_OPTS} verify -Dgroups=e2e"
                 }
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+            }
+        }
+
+        stage('Build and Package API Docs') {
+            steps {
+                container('jdk-21') {
+                    sh """
+                        cd soap
+                        mvn ${MVN_OPTS} antrun:run@generate-soap-docs
+                        cd ..
+                        VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+                        mkdir -p artifacts
+                        tar -czf artifacts/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
+                    """
+                }
+                archiveArtifacts artifacts: 'artifacts/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
             }
         }
 
@@ -122,7 +124,7 @@ pipeline {
                 }
             }
             steps {
-                container('jdk-17') {
+                container('jdk-21') {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         sh """
                             mvn ${MVN_OPTS} \
@@ -135,14 +137,12 @@ pipeline {
             }
         }
 
-        stage('Publish to maven') {
+        stage('Publish SNAPSHOT to maven') {
             when {
-                expression {
-                    return isBuildingTag() || env.BRANCH_NAME == 'devel'
-                }
+                not { buildingTag() }
             }
             steps {
-                container('jdk-17') {
+                container('jdk-21') {
                     withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
                         script {
                             sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -DskipTests=true"
@@ -152,45 +152,39 @@ pipeline {
             }
         }
 
-        stage('Publish containers') {
+        stage('Publish to maven') {
             when {
-                expression {
-                    return isBuildingTag() || env.BRANCH_NAME == 'devel'
-                }
+                buildingTag()
             }
             steps {
-                container('dind') {
-                    withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                container('jdk-21') {
+                    withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
                         script {
-                            Set<String> tagVersions = []
-                            if (isBuildingTag()) {
-                                tagVersions = [env.TAG_NAME, 'stable']
-                            } else {
-                                tagVersions = ['devel', 'latest']
-                            }
-                            dockerHelper.buildImage([
-                                    dockerfile: 'docker/mailbox/Dockerfile',
-                                    imageName : 'registry.dev.zextras.com/dev/carbonio-mailbox',
-                                    imageTags : tagVersions,
-                                    ocLabels  : [
-                                            title          : 'Carbonio Mailbox',
-                                            descriptionFile: 'docker/mailbox/description.md',
-                                            version        : tagVersions[0]
-                                    ]
-                            ])
-                            dockerHelper.buildImage([
-                                    dockerfile: 'docker/mariadb/Dockerfile',
-                                    imageName : 'registry.dev.zextras.com/dev/carbonio-mariadb',
-                                    imageTags : tagVersions,
-                                    ocLabels  : [
-                                            title          : 'Carbonio MariaDB',
-                                            descriptionFile: 'docker/mariadb/description.md',
-                                            version        : tagVersions[0]
-                                    ]
-                            ])
+                            sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -Dchangelist= -DskipTests=true"
                         }
                     }
                 }
+            }
+        }
+
+        stage('Build and Publish Docker images') {
+            steps {
+                dockerStage([
+                        dockerfile: 'docker/mailbox/Dockerfile',
+                        imageName : 'carbonio-mailbox',
+                        ocLabels  : [
+                            title          : 'Carbonio Mailbox',
+                            descriptionFile: 'docker/mailbox/description.md'
+                        ]
+                ])
+                dockerStage([
+                        dockerfile: 'docker/mariadb/Dockerfile',
+                        imageName : 'carbonio-mariadb',
+                        ocLabels  : [
+                                title          : 'Carbonio MariaDB',
+                                descriptionFile: 'docker/mariadb/description.md'
+                        ]
+                ])
             }
         }
 
@@ -213,12 +207,15 @@ pipeline {
         }
 
         stage('Upload artifacts')
-                {
-                    steps {
-                        uploadStage(
-                                packages: yapHelper.getPackageNames('staging/packages/yap.json')
-                        )
-                    }
-                }
+        {
+            tools {
+                jfrog 'jfrog-cli'
+            }
+            steps {
+                uploadStage(
+                        packages: yapHelper.getPackageNames('staging/packages/yap.json')
+                )
+            }
+        }
     }
 }

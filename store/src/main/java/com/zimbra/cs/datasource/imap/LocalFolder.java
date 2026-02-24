@@ -168,6 +168,7 @@ final class LocalFolder {
         case Mailbox.ID_FOLDER_SPAM:
         case Mailbox.ID_FOLDER_SENT:
         case Mailbox.ID_FOLDER_DRAFTS:
+        case Mailbox.ID_FOLDER_ARCHIVE:
             return true;
         default:
             return false;

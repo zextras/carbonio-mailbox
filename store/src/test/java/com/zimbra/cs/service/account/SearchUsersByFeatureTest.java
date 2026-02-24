@@ -207,7 +207,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
     try {
       SoapResponse httpResponse = buildRequest()
-          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS))
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.WSC))
           .call();
 
       assertEquals(1, getResponse(httpResponse).getAccounts().size());
@@ -226,7 +226,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
     try {
       SoapResponse httpResponse = buildRequest()
-          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS))
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.WSC))
           .call();
 
       assertEquals(1, getResponse(httpResponse).getAccounts().size());
@@ -250,7 +250,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
     try {
       SoapResponse httpResponse = buildRequest()
-          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS))
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.WSC))
           .call();
 
       assertEquals(1, getResponse(httpResponse).getAccounts().size());
@@ -275,7 +275,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
     try {
       SoapResponse httpResponse = buildRequest()
-          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS))
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.WSC))
           .call();
 
       assertEquals(1, getResponse(httpResponse).getAccounts().size());
@@ -297,7 +297,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
     try {
       SoapResponse httpResponse = buildRequest()
-          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS))
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.WSC))
           .call();
 
       assertEquals(2, getResponse(httpResponse).getAccounts().size());
@@ -318,7 +318,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
     try {
       SoapResponse httpResponse = buildRequest()
-          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS))
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.WSC))
           .call();
 
       assertEquals(0, getResponse(httpResponse).getAccounts().size());
@@ -337,7 +337,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
     try {
       SoapResponse httpResponse = buildRequest()
-          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS))
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.WSC))
           .call();
 
       assertSuccessWithSingleAccount(httpResponse, account);
@@ -387,7 +387,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
     try {
       SoapResponse httpResponse = buildRequest()
-          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS, 1, 0))
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.WSC, 1, 0))
           .call();
 
       var response = getResponse(httpResponse);
@@ -409,7 +409,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
     try {
       SoapResponse httpResponse = buildRequest()
-          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS, 10, 3))
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.WSC, 10, 3))
           .call();
 
       var response = getResponse(httpResponse);
@@ -540,7 +540,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
   private static CreateAccount withChatsFeature(boolean enabled,
                                                                  CreateAccount account) {
     return account
-        .withAttribute(SearchUsersByFeatureRequest.Features.CHATS.getFeature(), enabled ? "TRUE" : "FALSE");
+        .withAttribute(SearchUsersByFeatureRequest.Features.WSC.getFeature(), enabled ? "TRUE" : "FALSE");
   }
 
   private static CreateAccount withCos(Cos cos, CreateAccount account) {
@@ -589,7 +589,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
   private static Cos createCosWithChatsEnabled() throws ServiceException {
     var cosAttrs = new HashMap<String, Object>();
-    cosAttrs.put(SearchUsersByFeatureRequest.Features.CHATS.getFeature(), "TRUE");
+    cosAttrs.put(SearchUsersByFeatureRequest.Features.WSC.getFeature(), "TRUE");
     return provisioning.createCos(UUID.randomUUID().toString(), cosAttrs);
   }
 

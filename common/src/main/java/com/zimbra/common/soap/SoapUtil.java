@@ -36,6 +36,10 @@ public final class SoapUtil {
         return ctxt;
     }
 
+    public static Element createEmptyContext(SoapProtocol protocol) {
+        return protocol.getFactory().createElement(HeaderConstants.CONTEXT);
+    }
+
     /**
      * Creates a SOAP request {@code <context>} {@link com.zimbra.common.soap.Element}.
      * <p>
