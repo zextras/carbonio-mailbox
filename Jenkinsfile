@@ -1,5 +1,5 @@
 library(
-        identifier: 'jenkins-lib-common@1.3.2',
+        identifier: 'jenkins-lib-common@ci-semantic-release',
         retriever: modernSCM([
                 $class: 'GitSCMSource',
                 credentialsId: 'jenkins-integration-with-github-account',
@@ -75,6 +75,15 @@ pipeline {
                                 staging/
                     """
                             stash includes: 'staging/**', name: 'staging'
+                        }
+                    }
+                }
+                stage('Build containers') {
+                    steps {
+                        container('dind') {
+                            withDockerAuthentication {
+                                sh 'docker buildx bake --no-cache'
+                            }
                         }
                     }
                 }
