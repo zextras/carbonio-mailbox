@@ -143,6 +143,8 @@ public final class DbSearch {
             db.lpad("mi.id", 10, "0"));
       case UNREAD: // 0 or 1 or 2
         return "mi.unread";
+      case CHANGE_DATE:
+        return "mi.change_date";
       case DATE:
       default:
         return "mi.date";
@@ -991,6 +993,7 @@ public final class DbSearch {
         return (long) rs.getInt(SORT_COLUMN_ALIAS);
       case ID:
         return rs.getInt(SORT_COLUMN_ALIAS);
+      case CHANGE_DATE:
       case DATE:
       default:
         // Assuming this multiplication by 1000 is intended for DATE in order to convert from a
@@ -1554,6 +1557,7 @@ public final class DbSearch {
     public int compare(Result o1, Result o2) {
       switch (sort.getKey()) {
         case SIZE:
+        case CHANGE_DATE:
         case DATE:
           long date1 = (Long) o1.getSortValue();
           long date2 = (Long) o2.getSortValue();

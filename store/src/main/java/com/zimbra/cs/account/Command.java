@@ -540,7 +540,6 @@ public enum Command {
       "getAllReverseProxyBackends", "garpb", "", Category.REVERSEPROXY, 0, 0),
   GET_ALL_REVERSE_PROXY_DOMAINS(
       "getAllReverseProxyDomains", "garpd", "", Category.REVERSEPROXY, 0, 0, Via.ldap),
-  GET_ALL_MEMCACHED_SERVERS("getAllMemcachedServers", "gamcs", "", Category.SERVER, 0, 0),
   RELOAD_MEMCACHED_CLIENT_CONFIG(
       "reloadMemcachedClientConfig",
       "rmcc",

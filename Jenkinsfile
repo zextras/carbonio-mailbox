@@ -1,5 +1,5 @@
 library(
-        identifier: 'jenkins-lib-common@1.1.2',
+        identifier: 'jenkins-lib-common@1.3.2',
         retriever: modernSCM([
                 $class: 'GitSCMSource',
                 credentialsId: 'jenkins-integration-with-github-account',
@@ -71,7 +71,7 @@ pipeline {
             parallel {
                 stage('Maven build') {
                     steps {
-                        container('jdk-17') {
+                        container('jdk-21') {
                             sh """
                         mvn ${MVN_OPTS} \
                             -DskipTests=true \
@@ -85,21 +85,12 @@ pipeline {
                         }
                     }
                 }
-                stage('Build containers') {
-                    steps {
-                        container('dind') {
-                            withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                                sh 'docker buildx bake --no-cache'
-                            }
-                        }
-                    }
-                }
             }
         }
 
         stage('UT, IT') {
             steps {
-                container('jdk-17') {
+                container('jdk-21') {
                     sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,flaky,e2e"
                 }
                 junit allowEmptyResults: true,
@@ -108,11 +99,27 @@ pipeline {
         }
         stage('Flaky, API, E2E tests') {
             steps {
-                container('jdk-17') {
+                container('jdk-21') {
                     sh "cd store && mvn ${MVN_OPTS} verify -Dgroups=flaky,api && mvn ${MVN_OPTS} verify -Dgroups=e2e"
                 }
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+            }
+        }
+
+        stage('Build and Package API Docs') {
+            steps {
+                container('jdk-21') {
+                    sh """
+                        cd soap
+                        mvn ${MVN_OPTS} antrun:run@generate-soap-docs
+                        cd ..
+                        VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+                        mkdir -p artifacts
+                        tar -czf artifacts/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
+                    """
+                }
+                archiveArtifacts artifacts: 'artifacts/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
             }
         }
 
@@ -124,7 +131,7 @@ pipeline {
                 }
             }
             steps {
-                container('jdk-17') {
+                container('jdk-21') {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         sh """
                             mvn ${MVN_OPTS} \
@@ -139,12 +146,10 @@ pipeline {
 
         stage('Publish SNAPSHOT to maven') {
             when {
-                expression {
-                    return env.BRANCH_NAME == 'devel'
-                }
+                not { buildingTag() }
             }
             steps {
-                container('jdk-17') {
+                container('jdk-21') {
                     withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
                         script {
                             sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -DskipTests=true"
@@ -156,12 +161,10 @@ pipeline {
 
         stage('Publish to maven') {
             when {
-                expression {
-                    return isBuildingTag()
-                }
+                buildingTag()
             }
             steps {
-                container('jdk-17') {
+                container('jdk-21') {
                     withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
                         script {
                             sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -Dchangelist= -DskipTests=true"
@@ -171,7 +174,7 @@ pipeline {
             }
         }
 
-        stage('Publish docker images') {
+        stage('Build and Publish Docker images') {
             steps {
                 dockerStage([
                         dockerfile: 'docker/mailbox/Dockerfile',

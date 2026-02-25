@@ -48,6 +48,7 @@ public abstract class ZimbraHit implements ZimbraQueryHit {
                 sortValue = toInteger(sort);
                 break;
             case UNREAD:
+            case CHANGE_DATE:
             case DATE:
             case SIZE:
                 sortValue = toLong(sort);
@@ -159,6 +160,7 @@ public abstract class ZimbraHit implements ZimbraQueryHit {
             case UNREAD:
             case DATE:
             case SIZE:
+            case CHANGE_DATE:
             default:
                 return sortValue;
         }
@@ -193,12 +195,14 @@ public abstract class ZimbraHit implements ZimbraQueryHit {
             case DATE_ASC:
             case SIZE_ASC:
             case READ_ASC:
+            case CHANGE_DATE_ASC:
                 return Long.signum((Long) sortValue - (Long) other.sortValue);
             case ID_ASC:
                 return Integer.signum((Integer) sortValue - (Integer) other.sortValue);
             case DATE_DESC:
             case SIZE_DESC:
             case READ_DESC:
+            case CHANGE_DATE_DESC:
                 return Long.signum((Long) other.sortValue - (Long) sortValue);
             case ID_DESC:
                 return Integer.signum((Integer) other.sortValue - (Integer) sortValue);

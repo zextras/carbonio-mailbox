@@ -1,5 +1,5 @@
 [Unit]
-Description=Carbonio Mailbox Admin proxy sidecar
+Description=Carbonio Mailbox Admin Sidecar
 Documentation=https://docs.zextras.com/
 Requires=network-online.target
 After=network-online.target
@@ -12,10 +12,10 @@ ExecStart=/usr/bin/consul connect envoy \
     -admin-bind localhost:0 \
     -sidecar-for carbonio-mailbox-admin
 Restart=on-failure
-RestartSec=15
+RestartSec=15s
 ExecReload=/usr/bin/kill -HUP $MAINPID
 KillSignal=SIGINT
 LimitNOFILE=65536
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=carbonio-appserver.target

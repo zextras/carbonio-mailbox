@@ -14,7 +14,6 @@ import com.zimbra.common.util.memcached.ZimbraMemcachedClient;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.LdapServerType;
@@ -36,23 +35,33 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*
+IMPORTANT:
+ProxyPurgeUtil class is used in the following cases:
+- proxypurge.sh script:   When a SysAdmin explicitly wants to purge a Memcached instance.
+                          The script accepts a parameter representing the service endpoint <server:port> otherwise,
+                          we must assume we are running on a proxy machine and use, as the default value,
+                          the upstream Consul endpoint configured on carbonio-proxy.
+- promoteAccounts method: At the end of a "carbonio MailReplica promoteAccounts accounts <email>" operation,
+                          the method purgeAccounts is invoked via ZAL purgeMemcachedAccounts method.
+                          In this case, we read the carbonioMemcachedEndpoint attribute and use, as the default value,
+                          the upstream Consul endpoint configured on carbonio-mailbox.
+*/
+
 /**
  * @author mansoor peerbhoy
  */
 public class ProxyPurgeUtil {
 
-  static final String MEMCACHED_PORT = "11211";
   private static final Logger LOG = LoggerFactory.getLogger(ProxyPurgeUtil.class);
+  private static final String MEMCACHED_MESH_UPSTREAM_FOR_MAILBOX = "127.78.0.7:20006";
+  private static final String MEMCACHED_MESH_UPSTREAM_FOR_PROXY = "127.78.0.7:20014";
 
 
-  public static void run(String[] args) throws ServiceException, CommandExitException {
+public static void run(String[] args) throws ServiceException, CommandExitException {
     CommandLine commandLine;
-    ArrayList<String> servers;
-    ArrayList<String> accounts;
     String outputFormat;
     boolean purge;
-    Provisioning prov;
-    List<Server> memcachedServers;
     String logLevel = "INFO";
 
     /* Parse the command-line arguments, and display usage if necessary */
@@ -72,29 +81,16 @@ public class ProxyPurgeUtil {
     }
 
     /* Initialize the logging system and the zimbra environment */
-    prov = Provisioning.getInstance();
+    final var prov = Provisioning.getInstance();
 
-        /* Get the list of servers running the memcached service
-           this is equivalent to the $(zmprov gamcs) command
-         */
-    memcachedServers = prov.getAllServers(Provisioning.SERVICE_MEMCACHED);
-    servers = new ArrayList<>();
-
-    for (Server s : memcachedServers) {
-      String serverName = s.getAttr(ZAttrProvisioning.A_zimbraMemcachedBindAddress, "localhost");
-      String servicePort = s.getAttr(ZAttrProvisioning.A_zimbraMemcachedBindPort,
-          MEMCACHED_PORT);
-      servers.add(serverName + ":" + servicePort);
-    }
-
-    accounts = getAccounts(commandLine);
-    servers.addAll(getCacheServers(commandLine));
-
+  // First use case: code invoked by proxypurge.sh script.
+  // Get all servers form command line arguments then fallback on proxy's upstream
+    final var servers = getCacheServers(commandLine);
     if (servers.isEmpty()) {
-      LOG.error("No memcached servers found, and none specified (--help for help)");
-      throw new CommandExitException(1);
+      servers.add(MEMCACHED_MESH_UPSTREAM_FOR_PROXY);
     }
 
+    final var accounts = getAccounts(commandLine);
     if (accounts.isEmpty()) {
       LOG.error("No accounts specified (--help for help)");
       throw new CommandExitException(1);
@@ -115,6 +111,7 @@ public class ProxyPurgeUtil {
 
     purgeAccounts(servers, accounts, purge, outputFormat);
   }
+
   public static void main(String[] args) throws ServiceException {
 		try {
 			run(args);
@@ -133,10 +130,17 @@ public class ProxyPurgeUtil {
    * @param outputformat format of the output in case of printing
    * @throws ServiceException
    */
-  public static void purgeAccounts(List<String> servers, List<String> accounts, boolean purge,
-      String outputformat) throws ServiceException, CommandExitException {
+  public static void purgeAccounts(List<String> servers, final List<String> accounts, final boolean purge, final String outputformat)
+    throws ServiceException, CommandExitException {
 
     Provisioning prov = Provisioning.getInstance();
+
+    // Second use case: code invoked by Mailbox and ZAL.
+    // Get single endpoint from the attribute then fallback on mailbox's upstream
+    if (servers == null){
+      servers = new ArrayList<>();
+      servers.add(prov.getConfig().getAttr(ZAttrProvisioning.A_carbonioMemcachedEndpoint, MEMCACHED_MESH_UPSTREAM_FOR_MAILBOX));
+    }
 
     // Some sanity checks.
     if (accounts == null || accounts.isEmpty()) {
@@ -150,20 +154,6 @@ public class ProxyPurgeUtil {
         LOG.error("outputformat must be supplied for info");
         throw new CommandExitException(1);
       }
-    }
-
-    if (servers == null) {
-      List<Server> memcachedServers = prov.getAllServers(Provisioning.SERVICE_MEMCACHED);
-      servers = new ArrayList<>();
-
-      for (Server server : memcachedServers) {
-        String serverName = server.getAttr(ZAttrProvisioning.A_zimbraMemcachedBindAddress,
-            "localhost");
-        String servicePort = server.getAttr(ZAttrProvisioning.A_zimbraMemcachedBindPort,
-            MEMCACHED_PORT);
-        servers.add(serverName + ":" + servicePort);
-      }
-
     }
 
     // Connect to all memcached servers.
@@ -477,4 +467,3 @@ public class ProxyPurgeUtil {
   }
 
 }
-
