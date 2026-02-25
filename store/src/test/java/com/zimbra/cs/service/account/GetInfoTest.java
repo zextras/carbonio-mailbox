@@ -4,12 +4,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
-import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.account.ZAttrProvisioning.AccountStatus;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AttributeInfo;
 import com.zimbra.cs.account.AttributeManager;
+import com.zimbra.cs.account.DistributionList;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.account.message.DistributionListActionRequest;
 import com.zimbra.soap.account.message.GetInfoRequest;
@@ -110,7 +110,7 @@ class GetInfoTest extends SoapTestSuite {
 		return getSoapClient().executeSoap(account, request);
   }
 
-  private SoapResponse getResponseWithRights(Account account) throws Exception {
+  private SoapResponse getResponseIncludingRights(Account account) throws Exception {
     final var request = new GetInfoRequest().setRights("sendAs","sendAsDistList","viewFreeBusy","sendOnBehalfOf","sendOnBehalfOfDistList");
     return getSoapClient().executeSoap(account, request);
   }
@@ -145,29 +145,12 @@ class GetInfoTest extends SoapTestSuite {
 
   @Test
   void getInfo_shouldContainsRightsSection_sendAsDistList_singleAccount() throws Exception {
-    final AttributeInfo featureMailEnabled = AttributeManager.getInst()
-            .getAttributeInfo("zimbraFeatureMailEnabled");
-    Assertions.assertTrue(featureMailEnabled.isDeprecated());
-
-    final var admin =
-            createAccount()
-                    .asGlobalAdmin()
-                    .create();
+    final var admin = createAccount().asGlobalAdmin().create();
     final var grantee =  createAccount().create();
 
     var dl = getProvisioning().createDistributionList("dl@test.com", new HashMap<>());
-    assertNotNull( getProvisioning().get(Key.DistributionListBy.id, dl.getId()) );
-
-    DistributionListAction distributionListAction = new DistributionListAction(DistributionListAction.Operation.grantRights);
-    DistributionListRightSpec distributionListRightSpec = new DistributionListRightSpec("sendAsDistList");
-    distributionListRightSpec.addGrantee(new DistributionListGranteeSelector(
-            GranteeType.email, DistributionListGranteeBy.name, grantee.getName()
-    ));
-    distributionListAction.setRights(List.of(distributionListRightSpec));
-
-    getSoapClient().executeSoap(admin, new DistributionListActionRequest(new DistributionListSelector(DistributionListBy.id, dl.getId() ), distributionListAction) );
-
-    final var response = getResponseWithRights(grantee);
+    getSoapClient().executeSoap(admin, createGrantRightsDistributionListActionRequest("sendAsDistList", grantee.getName(), dl));
+    final var response = getResponseIncludingRights(grantee);
 
     assertEquals(HttpStatus.SC_OK, response.statusCode());
     final var body = response.body();
@@ -178,31 +161,16 @@ class GetInfoTest extends SoapTestSuite {
 
   @Test
   void getInfo_shouldContainsRightsSection_sendAsDistList_distributionList() throws Exception {
-    final AttributeInfo featureMailEnabled = AttributeManager.getInst()
-            .getAttributeInfo("zimbraFeatureMailEnabled");
-    Assertions.assertTrue(featureMailEnabled.isDeprecated());
-
-    final var admin =
-            createAccount()
-                    .asGlobalAdmin()
-                    .create();
+    final var admin = createAccount().asGlobalAdmin().create();
     final var member =  createAccount().create();
 
     var targetDl = getProvisioning().createDistributionList("target-dl@test.com", new HashMap<>());
     var granteeDl = getProvisioning().createDistributionList("grantee-dl@test.com", new HashMap<>());
 
     getProvisioning().addGroupMembers(granteeDl, new String[] { member.getName() });
-    assertNotNull( getProvisioning().get(Key.DistributionListBy.id, targetDl.getId()) );
+    getSoapClient().executeSoap(admin, createGrantRightsDistributionListActionRequest("sendAsDistList", granteeDl.getName(), targetDl));
 
-    DistributionListAction distributionListAction = new DistributionListAction(DistributionListAction.Operation.grantRights);
-    DistributionListRightSpec distributionListRightSpec = new DistributionListRightSpec("sendAsDistList");
-    distributionListRightSpec.addGrantee(new DistributionListGranteeSelector(
-            GranteeType.email, DistributionListGranteeBy.name, granteeDl.getName()
-    ));
-    distributionListAction.setRights(List.of(distributionListRightSpec));
-    getSoapClient().executeSoap(admin, new DistributionListActionRequest(new DistributionListSelector(DistributionListBy.id, targetDl.getId() ), distributionListAction) );
-
-    final var response = getResponseWithRights(member);
+    final var response = getResponseIncludingRights(member);
 
     assertEquals(HttpStatus.SC_OK, response.statusCode());
     final var body = response.body();
@@ -213,16 +181,8 @@ class GetInfoTest extends SoapTestSuite {
 
   @Test
   void getInfo_shouldContainsRightsSection_sendAsDistList_distributionLists() throws Exception {
-    final AttributeInfo featureMailEnabled = AttributeManager.getInst()
-            .getAttributeInfo("zimbraFeatureMailEnabled");
-    Assertions.assertTrue(featureMailEnabled.isDeprecated());
-
-    final var admin =
-            createAccount()
-                    .asGlobalAdmin()
-                    .create();
+    final var admin = createAccount().asGlobalAdmin().create();
     final var member =  createAccount().create();
-
 
     var targetDl = getProvisioning().createDistributionList("target-1-dl@test.com", new HashMap<>());
     var granteeDl = getProvisioning().createDistributionList("grantee-1-dl@test.com", new HashMap<>());
@@ -230,31 +190,26 @@ class GetInfoTest extends SoapTestSuite {
 
     getProvisioning().addGroupMembers(granteeDl, new String[] { member.getName() });
 
-    assertNotNull( getProvisioning().get(Key.DistributionListBy.id, targetDl.getId()) );
+    getSoapClient().executeSoap(admin, createGrantRightsDistributionListActionRequest("sendAsDistList", granteeDl.getName(), targetDl));
+    getSoapClient().executeSoap(admin, createGrantRightsDistributionListActionRequest("sendOnBehalfOfDistList", otherGranteeDl.getName(), targetDl));
 
-    DistributionListAction distributionListAction = new DistributionListAction(DistributionListAction.Operation.grantRights);
-    DistributionListRightSpec distributionListRightSpec = new DistributionListRightSpec("sendAsDistList");
-    distributionListRightSpec.addGrantee(new DistributionListGranteeSelector(
-            GranteeType.email, DistributionListGranteeBy.name, granteeDl.getName()
-    ));
-    distributionListAction.setRights(List.of(distributionListRightSpec));
-    getSoapClient().executeSoap(admin, new DistributionListActionRequest(new DistributionListSelector(DistributionListBy.id, targetDl.getId() ), distributionListAction) );
-
-    DistributionListAction otherDistributionListAction = new DistributionListAction(DistributionListAction.Operation.grantRights);
-    DistributionListRightSpec otherDistributionListRightSpec = new DistributionListRightSpec("sendOnBehalfOfDistList");
-    otherDistributionListRightSpec.addGrantee(new DistributionListGranteeSelector(
-            GranteeType.email, DistributionListGranteeBy.name, otherGranteeDl.getName()
-    ));
-    otherDistributionListAction.setRights(List.of(otherDistributionListRightSpec));
-    getSoapClient().executeSoap(admin, new DistributionListActionRequest(new DistributionListSelector(DistributionListBy.id, targetDl.getId() ), otherDistributionListAction) );
-
-    final var response = getResponseWithRights(member);
+    final var response = getResponseIncludingRights(member);
 
     assertEquals(HttpStatus.SC_OK, response.statusCode());
     final var body = response.body();
 
     assertTrue(body.contains("""
             <rights><targets right="sendAsDistList"><target type="dl"><email addr="target-1-dl@test.com"/></target></targets></rights>"""));
+  }
+
+  private static DistributionListActionRequest createGrantRightsDistributionListActionRequest(String right, String granteeName, DistributionList targetDl) {
+    DistributionListAction distributionListAction = new DistributionListAction(DistributionListAction.Operation.grantRights);
+    DistributionListRightSpec distributionListRightSpec = new DistributionListRightSpec(right);
+    distributionListRightSpec.addGrantee(new DistributionListGranteeSelector(
+            GranteeType.email, DistributionListGranteeBy.name, granteeName
+    ));
+    distributionListAction.setRights(List.of(distributionListRightSpec));
+    return new DistributionListActionRequest(new DistributionListSelector(DistributionListBy.id, targetDl.getId()), distributionListAction);
   }
 }
 
