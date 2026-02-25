@@ -144,7 +144,7 @@ class GetInfoTest extends SoapTestSuite {
   }
 
   @Test
-  void getInfo_shouldContainsRightsSection_sendAsDistList_singleAccount() throws Exception {
+  void getInfo_shouldContainRightsSection_sendAsDistList_singleAccount() throws Exception {
     final var admin = createAccount().asGlobalAdmin().create();
     final var grantee =  createAccount().create();
 
@@ -160,7 +160,7 @@ class GetInfoTest extends SoapTestSuite {
   }
 
   @Test
-  void getInfo_shouldContainsRightsSection_sendAsDistList_distributionList() throws Exception {
+  void getInfo_shouldContainRightsSection_sendAsDistList_distributionList() throws Exception {
     final var admin = createAccount().asGlobalAdmin().create();
     final var member =  createAccount().create();
 
@@ -180,7 +180,7 @@ class GetInfoTest extends SoapTestSuite {
   }
 
   @Test
-  void getInfo_shouldContainsRightsSection_sendAsDistList_distributionLists() throws Exception {
+  void getInfo_shouldContainRightsSection_sendAsDistList_distributionLists() throws Exception {
     final var admin = createAccount().asGlobalAdmin().create();
     final var member =  createAccount().create();
 
