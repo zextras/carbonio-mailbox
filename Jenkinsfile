@@ -1,5 +1,5 @@
 library(
-        identifier: 'jenkins-lib-common@1.3.2',
+        identifier: 'jenkins-lib-common@1.3.3',
         retriever: modernSCM([
                 $class: 'GitSCMSource',
                 credentialsId: 'jenkins-integration-with-github-account',
@@ -226,36 +226,9 @@ pipeline {
             }
         }
         stage('Bump version and tag') {
-            agent {
-                node {
-                    label 'nodejs-v1'
-                }
-            }
-            when {
-                allOf {
-                    branch 'devel'
-                    expression { !isCommitTagged() }
-                }
-            }
             steps {
                 script {
-                    checkout scm
-                    gitMetadata()
-                    container('nodejs-20') {
-                        withCredentials([usernamePassword(credentialsId: 'jenkins-integration-with-github-account', usernameVariable: 'GH_USERNAME', passwordVariable: 'GH_TOKEN')]) {
-                            sh 'apt-get update && apt-get install -y jq openssh-client'
-                            sh """
-                            npx \
-                            --package semantic-release \
-                            --package @semantic-release/commit-analyzer \
-                            --package @semantic-release/release-notes-generator \
-                            --package @semantic-release/exec \
-                            --package @semantic-release/git \
-                            --package conventional-changelog-conventionalcommits \
-                            semantic-release
-                        """
-                        }
-                    }
+                    dt2_semanticRelease()
                 }
             }
         }
