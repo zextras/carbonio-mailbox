@@ -9,15 +9,8 @@ library(
 
 properties(defaultPipelineProperties())
 
-// env.TAG_NAME is set by jenkins only in a tag build
-// It is not available in a branch build, even if the commit is tagged
 boolean isBuildingTag() {
     return env.TAG_NAME ? true : false
-}
-
-// env.GIT_TAG is set by jenkins-lib-common if head is tagged and only after calling gitMetadata()
-boolean isCommitTagged() {
-    return env.GIT_TAG ? true : false
 }
 
 String profile = isBuildingTag() ? '-Pprod' :
@@ -219,7 +212,6 @@ pipeline {
                 jfrog 'jfrog-cli'
             }
             steps {
-                // TODO: figure out where to upload when doing continuous delivery
                 uploadStage(
                         packages: yapHelper.getPackageNames('staging/packages/yap.json')
                 )
