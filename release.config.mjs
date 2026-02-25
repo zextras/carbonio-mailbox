@@ -8,7 +8,7 @@
  * @type {import('semantic-release').GlobalConfig}
  */
 export default {
-  branches: ['devel'],
+  branches: ['main'],
   tagFormat: "${version}",
   plugins: [
     [
