@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -66,11 +67,13 @@ public class DiscoverUserRights {
 
         Map<Right, Set<Entry>> result = Maps.newHashMap();
 
+        Set<String> accountDistributionLists = prov.getDistributionLists(acct);
         for (SearchGrants.GrantsOnTarget grants : searchResults) {
             Entry targetEntry = grants.getTargetEntry();
             ZimbraACL acl = grants.getAcl();
 
-            for (ZimbraACE ace : acl.getAllACEs()) {
+            List<ZimbraACE> aces = filterAccountACEs(acl.getAllACEs(), accountDistributionLists);
+            for (ZimbraACE ace : aces) {
                 Right right = ace.getRight();
 
                 if (rights.contains(right) && !isSameEntry(targetEntry, acct)) {
@@ -83,11 +86,11 @@ public class DiscoverUserRights {
                         }
                     }
                     TargetType targetTypeForRight = right.getTargetType();
-                    TargetType taregtTypeOfEntry = TargetTypeLookup.getTargetType(targetEntry);
-                    if (targetTypeForRight.equals(taregtTypeOfEntry) ||
-                        (targetTypeForRight==TargetType.account && taregtTypeOfEntry==TargetType.calresource) ||
-                        (targetTypeForRight==TargetType.dl && taregtTypeOfEntry==TargetType.group) ||
-                        (targetTypeForRight==TargetType.group && taregtTypeOfEntry==TargetType.dl)) {
+                    TargetType targetTypeOfEntry = TargetTypeLookup.getTargetType(targetEntry);
+                    if (targetTypeForRight.equals(targetTypeOfEntry) ||
+                        (targetTypeForRight==TargetType.account && targetTypeOfEntry==TargetType.calresource) ||
+                        (targetTypeForRight==TargetType.dl && targetTypeOfEntry==TargetType.group) ||
+                        (targetTypeForRight==TargetType.group && targetTypeOfEntry==TargetType.dl)) {
                         Set<Entry> entries = result.get(right);
                         if (entries == null) {
                             entries = Sets.newHashSet();
@@ -99,6 +102,13 @@ public class DiscoverUserRights {
             }
         }
         return result;
+    }
+
+    private static List<ZimbraACE> filterAccountACEs(List<ZimbraACE> aces, Set<String> accountDistributionLists) {
+        return aces.stream().filter(ace -> {
+            boolean isDistributionList = ace.getGranteeType().equals(GranteeType.GT_GROUP);
+            return !isDistributionList || (accountDistributionLists.contains(ace.getGrantee()));
+        }).toList();
     }
 
     private boolean isSameEntry(Entry entry1, Entry entry2) throws ServiceException {
