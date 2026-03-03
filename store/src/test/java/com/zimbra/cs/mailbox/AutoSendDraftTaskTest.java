@@ -1,73 +1,41 @@
-// SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+// SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
 //
 // SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.cs.mailbox;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.mailbox.Message.DraftInfo;
+import com.zimbra.cs.mime.ParsedMessage;
 import java.util.Collection;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.mail.Address;
 import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for {@link AutoSendDraftTask}.
- *
- * <p>Covers the bug where a scheduled "Send Later" draft with an invalid internal recipient caused
- * an infinite retry loop: the {@link com.zimbra.common.util.TaskScheduler} kept retrying the task
- * on every {@link ServiceException}, and the task was also re-loaded from the database on every
- * server restart, because the draft's {@code autoSendTime} was never cleared.
+ * Tests for {@link AutoSendDraftTask}.Z
  */
 class AutoSendDraftTaskTest extends MailboxTestSuite {
 
     private Mailbox mbox;
 
-    @BeforeEach
-    void setUp() throws Exception {
-        Account account = createAccount().create();
-        mbox = MailboxManager.getInstance().getMailboxByAccount(account);
-    }
-
-    // -------------------------------------------------------------------------
-    // Helpers
-    // -------------------------------------------------------------------------
-
     /**
-     * Creates a draft {@link Message} in the mailbox with a scheduled {@code autoSendTime}.
-     */
-    private Message createScheduledDraft(long autoSendTime) throws Exception {
-        MimeMessage mm = new MimeMessage(Session.getInstance(new Properties()));
-        mm.setSubject("Send Later test");
-        mm.setRecipient(MimeMessage.RecipientType.TO,
-                new InternetAddress("recipient@external.example.com"));
-        mm.setText("body");
-        mm.saveChanges();
-
-        DraftInfo draftInfo = new DraftInfo(null, null, null, null, autoSendTime);
-        DeliveryOptions opts = new DeliveryOptions()
-                .setFolderId(Mailbox.ID_FOLDER_DRAFTS)
-                .setFlags(Flag.BITMASK_DRAFT);
-        // DraftInfo must be passed as the explicit 5th argument; DeliveryOptions.setDraftInfo()
-        // is silently ignored by the addMessage() overload chain.
-        return mbox.addMessage(null,
-                new com.zimbra.cs.mime.ParsedMessage(mm, false), opts, null, draftInfo);
-    }
-
-    /**
-     * An {@link AutoSendDraftTask} subclass that injects a custom {@link MailSender} by
-     * overriding {@link AutoSendDraftTask#getMailSender(Mailbox)}.  This avoids the need to spy
-     * on {@link Mailbox} or stub {@link MailboxManager}.
+     * Builds an {@link AutoSendDraftTask} for the given mailbox+draft, injecting
+     * {@code customSender} via the {@link AutoSendDraftTask#getMailSender(Mailbox)} hook.
+     * The hook is used both for the draft send and (on failure) the NDR send.
      */
     private static AutoSendDraftTask taskWithSender(int mailboxId, int draftId,
             MailSender customSender) {
@@ -82,10 +50,17 @@ class AutoSendDraftTaskTest extends MailboxTestSuite {
         return task;
     }
 
+    // ── helpers ──────────────────────────────────────────────────────────────
+
     /**
-     * A {@link MailSender} subclass that overrides {@link MailSender#sendMessage} to throw a
-     * {@link SendFailedException} with one invalid address, simulating an invalid internal
-     * recipient being rejected by the MTA.
+     * Returns a {@link MailSender} whose {@link MailSender#sendMessage} always throws a
+     * {@link MailSender.SafeSendFailedException} with one invalid address, simulating a permanent
+     * MTA rejection.
+     *
+     * <p>Because {@link AutoSendDraftTask} always sets {@code sendPartial=true} before calling
+     * {@link MailSender#sendMimeMessage}, the exception will be wrapped as
+     * {@link MailServiceException#SEND_PARTIAL_ADDRESS_FAILURE} by
+     * {@link MailSender#sendMimeMessage}.
      */
     @SuppressWarnings("SameParameterValue")
     private static MailSender senderThatRejectsRecipient(String invalidAddress) {
@@ -93,39 +68,61 @@ class AutoSendDraftTaskTest extends MailboxTestSuite {
             @Override
             protected Collection<Address> sendMessage(Mailbox mbox, MimeMessage mm,
                     Collection<RollbackData> rollbacks)
-                    throws MailSender.SafeMessagingException {
-                Address invalid = new InternetAddress() {
-                    { try { setAddress(invalidAddress); } catch (Exception ignored) {} }
-                };
-                throw new MailSender.SafeSendFailedException(
+                    throws SafeMessagingException {
+                Address invalid = new InternetAddress() {{
+                    try { setAddress(invalidAddress); } catch (Exception ignored) {}
+                }};
+                throw new SafeSendFailedException(
                         new SendFailedException("MESSAGE_NOT_DELIVERED",
                                 new Exception("RCPT failed: Invalid recipient"),
-                                new Address[0],   // valid sent
-                                new Address[0],   // valid unsent
-                                new Address[]{invalid})); // invalid
+                                new Address[0],         // valid sent
+                                new Address[0],         // valid unsent
+                                new Address[]{invalid}  // invalid
+                        ));
             }
         };
     }
 
-    // -------------------------------------------------------------------------
-    // Tests
-    // -------------------------------------------------------------------------
+    @BeforeEach
+    void setUp() throws Exception {
+        Account account = createAccount().create();
+        mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+    }
 
     /**
-     * When {@link MailSender#sendMimeMessage} throws {@link MailServiceException} with code
-     * {@link MailServiceException#SEND_ABORTED_ADDRESS_FAILURE} (permanent, sender's fault),
-     * the task must:
+     * Creates a draft {@link Message} in the mailbox with a scheduled {@code autoSendTime} using
+     * the correct {@link Mailbox#saveDraft} overload that persists the auto-send metadata.
+     */
+    private Message createScheduledDraft(long autoSendTime) throws Exception {
+        MimeMessage mm = new MimeMessage(Session.getInstance(new Properties()));
+        mm.setSubject("Send Later test");
+        mm.setRecipient(MimeMessage.RecipientType.TO,
+                new InternetAddress("recipient@external.example.com"));
+        mm.setText("body");
+        mm.saveChanges();
+
+        ParsedMessage pm = new ParsedMessage(mm, false);
+        return mbox.saveDraft(null, pm, Mailbox.ID_AUTO_INCREMENT,
+                null, null, null, null, autoSendTime);
+    }
+
+    // ── tests ─────────────────────────────────────────────────────────────────
+
+    /**
+     * When {@link MailSender#sendMimeMessage} throws
+     * {@link MailServiceException#SEND_PARTIAL_ADDRESS_FAILURE} (which is what happens when
+     * {@code sendPartial=true} and at least one RCPT is rejected), the task must:
      * <ol>
-     *   <li>NOT propagate the exception (which would cause TaskScheduler to retry).</li>
+     *   <li>NOT propagate the exception (which would cause the task scheduler to retry).</li>
      *   <li>Clear the draft's {@code autoSendTime} to 0 so the task is not re-scheduled on
-     *       restart.</li>
-     *   <li>Leave the draft message intact in the mailbox so the user can correct it.</li>
+     *       server restart.</li>
+     *   <li>Leave the draft message intact so the user can correct the recipient.</li>
      * </ol>
      */
     @Test
+    @DisplayName("call() should clear autoSendTime and not retry when send fails due to invalid recipient")
     void call_shouldClearAutoSendTimeAndNotRetry_whenSendAbortedDueToInvalidRecipient()
             throws Exception {
-        // Arrange
         long futureAutoSendTime = System.currentTimeMillis() + 60_000L;
         Message draft = createScheduledDraft(futureAutoSendTime);
         int draftId = draft.getId();
@@ -133,47 +130,185 @@ class AutoSendDraftTaskTest extends MailboxTestSuite {
         assertEquals(futureAutoSendTime, draft.getDraftAutoSendTime(),
                 "Pre-condition: draft should have autoSendTime set");
 
-        // sendPartial=false → SEND_ABORTED_ADDRESS_FAILURE
         MailSender failingSender = senderThatRejectsRecipient("bad-user@internal.domain");
         AutoSendDraftTask task = taskWithSender(mbox.getId(), draftId, failingSender);
 
-        // Act — must NOT throw
-        task.call();
+        // Must NOT throw — permanent failures must be handled, not propagated.
+        assertDoesNotThrow(task::call);
 
-        // Assert
+        // autoSendTime must be cleared to prevent the task from being rescheduled.
         Message draftAfter = (Message) mbox.getItemById(null, draftId, MailItem.Type.MESSAGE);
         assertNotNull(draftAfter, "Draft should still exist in the mailbox");
         assertEquals(0L, draftAfter.getDraftAutoSendTime(),
-                "autoSendTime must be cleared to 0 to prevent restart-loop re-scheduling");
+                "autoSendTime must be cleared to 0 to stop the retry loop");
     }
 
     /**
-     * Same behavior for {@link MailServiceException#SEND_PARTIAL_ADDRESS_FAILURE}:
-     * when {@code sendPartial=true} the {@link MailSender} throws
-     * {@code SEND_PARTIAL_ADDRESS_FAILURE} instead of {@code SEND_ABORTED_ADDRESS_FAILURE},
-     * but the task must still stop retrying and clear the autoSendTime.
+     * Same behavior for {@link MailServiceException#SEND_ABORTED_ADDRESS_FAILURE}: even though
+     * the task sets {@code sendPartial=true}, if all recipients are invalid the MTA may still
+     * produce an aborted failure. The task must handle both codes the same way.
      */
     @Test
+    @DisplayName("call() should clear autoSendTime and not retry when all recipients are invalid (aborted)")
     void call_shouldClearAutoSendTimeAndNotRetry_whenSendPartialDueToInvalidRecipient()
             throws Exception {
-        // Arrange
         long futureAutoSendTime = System.currentTimeMillis() + 60_000L;
         Message draft = createScheduledDraft(futureAutoSendTime);
         int draftId = draft.getId();
 
-        // sendPartial=true → SEND_PARTIAL_ADDRESS_FAILURE
-        MailSender failingSender = senderThatRejectsRecipient("bad-user@internal.domain");
-        failingSender.setSendPartial(true);
-        AutoSendDraftTask task = taskWithSender(mbox.getId(), draftId, failingSender);
+        // Inject a sender that throws SEND_ABORTED_ADDRESS_FAILURE directly, bypassing sendMessage,
+        // to cover the code path where all RCPT commands fail before DATA is sent.
+        Address[] invalid = new Address[]{new InternetAddress("bad@internal.domain")};
+        MailServiceException abortedEx = MailServiceException.SEND_ABORTED_ADDRESS_FAILURE(
+                "Invalid address: bad@internal.domain", null, invalid, new Address[0]);
 
-        // Act
-        task.call();
+        MailSender abortingSender = new MailSender() {
+            @Override
+            protected Collection<Address> sendMessage(Mailbox mbox, MimeMessage mm,
+                    Collection<RollbackData> rollbacks) {
+                // Never reached because sendMimeMessage will throw before calling sendMessage
+                // in some code paths, but we override the whole sender for safety.
+                return java.util.Collections.emptyList();
+            }
 
-        // Assert
+            @Override
+            public com.zimbra.cs.service.util.ItemId sendMimeMessage(
+                    OperationContext octxt, Mailbox mbox,
+                    javax.mail.internet.MimeMessage mm) throws com.zimbra.common.service.ServiceException {
+                throw abortedEx;
+            }
+        };
+
+        AutoSendDraftTask task = taskWithSender(mbox.getId(), draftId, abortingSender);
+
+        assertDoesNotThrow(task::call);
+
         Message draftAfter = (Message) mbox.getItemById(null, draftId, MailItem.Type.MESSAGE);
         assertNotNull(draftAfter, "Draft should still exist in the mailbox");
         assertEquals(0L, draftAfter.getDraftAutoSendTime(),
-                "autoSendTime must be cleared to 0 to prevent restart-loop re-scheduling");
+                "autoSendTime must be cleared to 0 to stop the retry loop");
+    }
+
+    /**
+     * When a scheduled send fails permanently due to invalid recipients, the task must attempt
+     * to send an NDR to the sender. We verify this by injecting a sender that:
+     * <ul>
+     *   <li>On the first call (the draft send): throws a permanent address failure.</li>
+     *   <li>On the second call (the NDR send): records that it was invoked.</li>
+     * </ul>
+     */
+    @Test
+    @DisplayName("call() should attempt to send an NDR to the sender on permanent address failure")
+    void call_shouldSendNDRToSender_whenSendAbortedDueToInvalidRecipient()
+            throws Exception {
+        long futureAutoSendTime = System.currentTimeMillis() + 60_000L;
+        Message draft = createScheduledDraft(futureAutoSendTime);
+        int draftId = draft.getId();
+
+        AtomicBoolean ndrSent = new AtomicBoolean(false);
+
+        // First call → reject recipient (draft send).
+        // Second call → record that NDR was attempted.
+        MailSender trackingSender = new MailSender() {
+            private int callCount = 0;
+
+            @Override
+            protected Collection<Address> sendMessage(Mailbox mbox, MimeMessage mm,
+                    Collection<RollbackData> rollbacks)
+                    throws SafeMessagingException {
+                callCount++;
+                if (callCount == 1) {
+                    // Simulate draft send failure with an invalid recipient.
+                    Address invalid = new InternetAddress() {{
+                        try { setAddress("bad@internal.domain"); } catch (Exception ignored) {}
+                    }};
+                    throw new SafeSendFailedException(
+                            new SendFailedException("MESSAGE_NOT_DELIVERED",
+                                    new Exception("RCPT failed"),
+                                    new Address[0], new Address[0], new Address[]{invalid}));
+                }
+                // Second call is the NDR send — record it and succeed.
+                ndrSent.set(true);
+                return java.util.Collections.emptyList();
+            }
+        };
+
+        AutoSendDraftTask task = taskWithSender(mbox.getId(), draftId, trackingSender);
+
+        assertDoesNotThrow(task::call);
+
+        assertTrue(ndrSent.get(), "An NDR should have been sent to notify the sender of the delivery failure");
+    }
+
+    /**
+     * A non-address-related {@link MailServiceException} (e.g. a transient connectivity failure)
+     * must be re-thrown so the task scheduler can decide to retry the task.
+     */
+    @Test
+    @DisplayName("call() should re-throw non-address ServiceExceptions so the scheduler can retry")
+    void call_shouldRethrow_whenTransientServiceExceptionOccurs() throws Exception {
+        long futureAutoSendTime = System.currentTimeMillis() + 60_000L;
+        Message draft = createScheduledDraft(futureAutoSendTime);
+        int draftId = draft.getId();
+
+        MailServiceException transientEx = MailServiceException.TRY_AGAIN("MTA unreachable");
+
+        MailSender transientSender = new MailSender() {
+            @Override
+            protected Collection<Address> sendMessage(Mailbox mbox, MimeMessage mm,
+                    Collection<RollbackData> rollbacks) {
+                return java.util.Collections.emptyList();
+            }
+
+            @Override
+            public com.zimbra.cs.service.util.ItemId sendMimeMessage(
+                    OperationContext octxt, Mailbox mbox,
+                    javax.mail.internet.MimeMessage mm) throws com.zimbra.common.service.ServiceException {
+                throw transientEx;
+            }
+        };
+
+        AutoSendDraftTask task = taskWithSender(mbox.getId(), draftId, transientSender);
+
+        // Transient failures must propagate so the scheduler can retry.
+        assertThrows(MailServiceException.class, task::call);
+
+        // autoSendTime must NOT have been cleared — the draft should still be scheduled.
+        Message draftAfter = (Message) mbox.getItemById(null, draftId, MailItem.Type.MESSAGE);
+        assertEquals(futureAutoSendTime, draftAfter.getDraftAutoSendTime(),
+                "autoSendTime must be preserved when a transient (retryable) failure occurs");
+    }
+
+    /**
+     * After a successful send the draft must be deleted from the mailbox.
+     */
+    @Test
+    @DisplayName("call() should delete the draft after a successful send")
+    void call_shouldDeleteDraft_whenSendSucceeds() throws Exception {
+        long futureAutoSendTime = System.currentTimeMillis() + 60_000L;
+        Message draft = createScheduledDraft(futureAutoSendTime);
+        int draftId = draft.getId();
+
+        MailSender successSender = new MailSender() {
+            @Override
+            protected Collection<Address> sendMessage(Mailbox mbox, MimeMessage mm,
+                    Collection<RollbackData> rollbacks) {
+                try {
+                    return java.util.List.of(new InternetAddress("recipient@external.example.com"));
+                } catch (Exception e) {
+                    return java.util.Collections.emptyList();
+                }
+            }
+        };
+
+        AutoSendDraftTask task = taskWithSender(mbox.getId(), draftId, successSender);
+
+        task.call();
+
+        // Draft must be gone after a successful send.
+        assertThrows(MailServiceException.NoSuchItemException.class,
+                () -> mbox.getItemById(null, draftId, MailItem.Type.MESSAGE),
+                "Draft should be deleted after successful send");
     }
 }
 
