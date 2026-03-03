@@ -1,5 +1,5 @@
 library(
-        identifier: 'jenkins-lib-common@1.3.2',
+        identifier: 'jenkins-lib-common@1.3.3',
         retriever: modernSCM([
                 $class: 'GitSCMSource',
                 credentialsId: 'jenkins-integration-with-github-account',
@@ -215,6 +215,13 @@ pipeline {
                 uploadStage(
                         packages: yapHelper.getPackageNames('staging/packages/yap.json')
                 )
+            }
+        }
+        stage('Bump version and tag') {
+            steps {
+                script {
+                    dt2_semanticRelease()
+                }
             }
         }
     }
