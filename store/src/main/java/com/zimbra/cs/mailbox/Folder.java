@@ -19,6 +19,7 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbMailItem;
 import com.zimbra.cs.db.DbTag;
 import com.zimbra.cs.imap.ImapSession;
@@ -1790,15 +1791,18 @@ public class Folder extends MailItem implements FolderStore {
   /**
    * Checks if this folder is directly shared with a specific user via ACL grants.
    *
-   * <p>This method determines whether this folder has been directly shared with the specified
-   * user by checking if an ACL grant exists for that user. The check uses
-   * {@link ACL.Grant#isGrantee(String)} to match the user against all grants on the folder.
+   * <p>This method determines whether this folder has been shared with the specified user, either
+   * directly (via a {@link ACL#GRANTEE_USER} grant whose ID matches the user) or indirectly
+   * through group/distribution-list membership (via a {@link ACL#GRANTEE_GROUP} grant whose group
+   * the user belongs to). The check uses {@link ACL.Grant#isGrantee(String)} for direct matches
+   * and {@link Provisioning#inACLGroup(Account, String)} for group grants.
    *
    * <p>If the folder's ACL is not loaded (null), this method will attempt to load the effective ACL
    * from the database before performing the check.
    *
    * @param authenticatedUserId the Zimbra account ID of the user to check
-   * @return {@code true} if the folder has an ACL grant for the specified user, {@code false} otherwise
+   * @return {@code true} if the folder has an ACL grant for the specified user (directly or via a
+   *     group), {@code false} otherwise
    */
   public boolean isSharedWithUser(String authenticatedUserId) {
     try {
@@ -1807,7 +1811,9 @@ public class Folder extends MailItem implements FolderStore {
         return false;
       }
 
-      return hasGrantForUser(folderAcl, authenticatedUserId);
+      Provisioning prov = Provisioning.getInstance();
+      Account account = prov.getAccountById(authenticatedUserId);
+      return hasGrantForUser(folderAcl, authenticatedUserId, account, prov);
     } catch (Exception e) {
       // Suppress exceptions and default to not shared
       return false;
@@ -1829,16 +1835,34 @@ public class Folder extends MailItem implements FolderStore {
   }
 
   /**
-   * Checks if the ACL contains a grant for the specified user.
+   * Checks if the ACL contains a grant that covers the specified user, either by direct user grant
+   * or by group/distribution-list membership.
    *
    * @param acl the ACL to check
-   * @param userId the user ID to look for
-   * @return {@code true} if a grant exists for the user, {@code false} otherwise
+   * @param userId the account ID of the user to look for
+   * @param account the resolved {@link Account} for the user (maybe {@code null})
+   * @param prov the {@link Provisioning} instance used for group-membership lookups
+   * @return {@code true} if a matching grant exists, {@code false} otherwise
    */
-  private boolean hasGrantForUser(ACL acl, String userId) {
+  private boolean hasGrantForUser(ACL acl, String userId, Account account, Provisioning prov) {
     for (ACL.Grant grant : acl.getGrants()) {
+      // Direct user/public/authuser/guest/key match
       if (grant.isGrantee(userId)) {
         return true;
+      }
+      // Group / distribution-list grant: check whether the user is a member
+      if (grant.getGranteeType() == ACL.GRANTEE_GROUP
+          && account != null
+          && grant.getGranteeId() != null) {
+        try {
+          if (prov.inACLGroup(account, grant.getGranteeId())) {
+            return true;
+          }
+        } catch (Exception e) {
+          ZimbraLog.mailbox.warn(
+              "Failed to check group membership for account %s in group %s",
+              userId, grant.getGranteeId(), e);
+        }
       }
     }
     return false;
