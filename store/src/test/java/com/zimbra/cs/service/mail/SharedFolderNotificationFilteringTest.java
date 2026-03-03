@@ -7,6 +7,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Group;
 import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem.Type;
@@ -16,6 +17,8 @@ import com.zimbra.soap.mail.message.FolderActionRequest;
 import com.zimbra.soap.mail.type.ActionGrantSelector;
 import com.zimbra.soap.mail.type.FolderActionSelector;
 import com.zimbra.soap.mail.type.NewMountpointSpec;
+import java.util.HashMap;
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -32,7 +35,7 @@ class SharedFolderNotificationFilteringTest extends SoapTestSuite {
   private static Folder getFirstCalendar(Account user) throws ServiceException {
     var mailbox = mailboxManager.getMailboxByAccount(user);
     var calendarFolders = mailbox.getCalendarFolders(null, SortBy.DATE_DESC);
-    return calendarFolders.get(0);
+    return calendarFolders.getFirst();
   }
 
   @BeforeEach
@@ -198,6 +201,64 @@ class SharedFolderNotificationFilteringTest extends SoapTestSuite {
         "Multiple restricted changes (color, name) on shared folders should be filtered out");
   }
 
+  /**
+   * Tests that name changes on a calendar folder shared with a distribution list (group) are
+   * filtered out from notifications for a member of that group.
+   */
+  @Test
+  void nameChangeOnGroupSharedCalendarFolderIsFilteredOut() throws Exception {
+    Group group = createDistributionListWithMember(granteeAccount);
+
+    var userACalendar = getFirstCalendar(ownerAccount);
+    shareFolderWithGroup(ownerAccount, group, userACalendar.getId());
+    createMountpoint(granteeAccount, userACalendar, "group shared calendar", "appointment");
+
+    String sessionId = createSessionForGrantee();
+    acknowledgeRefresh(sessionId);
+
+    // Owner renames the folder
+    var renameAction = new FolderActionSelector(userACalendar.getFolderIdAsString(), "rename");
+    renameAction.setName("Renamed Group Calendar");
+    getSoapClient().executeSoap(ownerAccount, new FolderActionRequest(renameAction));
+
+    SoapResponse response = checkForNotifications(sessionId);
+
+    Assertions.assertFalse(
+        response.body().contains("<notify"),
+        "Name changes on group-shared calendar folders should be filtered out from notifications");
+  }
+
+  /**
+   * Tests that color changes on a mail folder shared with a distribution list (group) are filtered
+   * out from notifications for a member of that group.
+   */
+  @Test
+  void colorChangeOnGroupSharedMailFolderIsFilteredOut() throws Exception {
+    Group group = createDistributionListWithMember(granteeAccount);
+
+    var mailbox = mailboxManager.getMailboxByAccount(ownerAccount);
+    var mailFolder =
+        mailbox.createFolder(
+            null, "GroupSharedMail", new Folder.FolderOptions().setDefaultView(Type.MESSAGE));
+
+    shareFolderWithGroup(ownerAccount, group, mailFolder.getId());
+    createMountpoint(granteeAccount, mailFolder, "Group Shared Mail", Type.MESSAGE.toString());
+
+    String sessionId = createSessionForGrantee();
+    acknowledgeRefresh(sessionId);
+
+    // Owner changes folder color
+    var colorAction = new FolderActionSelector(String.valueOf(mailFolder.getId()), "color");
+    colorAction.setColor((byte) 4);
+    getSoapClient().executeSoap(ownerAccount, new FolderActionRequest(colorAction));
+
+    SoapResponse response = checkForNotifications(sessionId);
+
+    Assertions.assertFalse(
+        response.body().contains("<notify"),
+        "Color changes on group-shared mail folders should be filtered out from notifications");
+  }
+
   // Helper methods
 
   private String createSessionForGrantee() throws Exception {
@@ -249,5 +310,121 @@ class SharedFolderNotificationFilteringTest extends SoapTestSuite {
     newMountpointSpec.setOwnerId(sharedFolder.getAccountId());
     newMountpointSpec.setFolderId("1");
     getSoapClient().executeSoap(onAccount, new CreateMountpointRequest(newMountpointSpec));
+  }
+
+  /**
+   * Tests that name changes on a calendar folder shared with an outer distribution list are
+   * filtered out from notifications for a user who is a member of a nested (inner) distribution
+   * list.
+   *
+   * <p>Topology: outerDL → innerDL → granteeAccount
+   */
+  @Test
+  void nameChangeOnCalendarFolderSharedWithNestedDLIsFilteredOut() throws Exception {
+    Group outerGroup = createNestedDistributionListWithMember(granteeAccount);
+
+    var userACalendar = getFirstCalendar(ownerAccount);
+    shareFolderWithGroup(ownerAccount, outerGroup, userACalendar.getId());
+    createMountpoint(granteeAccount, userACalendar, "nested dl shared calendar", "appointment");
+
+    String sessionId = createSessionForGrantee();
+    acknowledgeRefresh(sessionId);
+
+    // Owner renames the folder
+    var renameAction = new FolderActionSelector(userACalendar.getFolderIdAsString(), "rename");
+    renameAction.setName("Renamed Nested DL Calendar");
+    getSoapClient().executeSoap(ownerAccount, new FolderActionRequest(renameAction));
+
+    SoapResponse response = checkForNotifications(sessionId);
+
+    Assertions.assertFalse(
+        response.body().contains("<notify"),
+        "Name changes on calendar folders shared with an outer DL should be filtered out "
+            + "for members of a nested inner DL");
+  }
+
+  /**
+   * Tests that color changes on a mail folder shared with an outer distribution list are filtered
+   * out from notifications for a user who is a member of a nested (inner) distribution list.
+   *
+   * <p>Topology: outerDL → innerDL → granteeAccount
+   */
+  @Test
+  void colorChangeOnMailFolderSharedWithNestedDLIsFilteredOut() throws Exception {
+    Group outerGroup = createNestedDistributionListWithMember(granteeAccount);
+
+    var mailbox = mailboxManager.getMailboxByAccount(ownerAccount);
+    var mailFolder =
+        mailbox.createFolder(
+            null,
+            "NestedDLSharedMail",
+            new Folder.FolderOptions().setDefaultView(Type.MESSAGE));
+
+    shareFolderWithGroup(ownerAccount, outerGroup, mailFolder.getId());
+    createMountpoint(granteeAccount, mailFolder, "Nested DL Shared Mail", Type.MESSAGE.toString());
+
+    String sessionId = createSessionForGrantee();
+    acknowledgeRefresh(sessionId);
+
+    // Owner changes folder color
+    var colorAction = new FolderActionSelector(String.valueOf(mailFolder.getId()), "color");
+    colorAction.setColor((byte) 6);
+    getSoapClient().executeSoap(ownerAccount, new FolderActionRequest(colorAction));
+
+    SoapResponse response = checkForNotifications(sessionId);
+
+    Assertions.assertFalse(
+        response.body().contains("<notify"),
+        "Color changes on mail folders shared with an outer DL should be filtered out "
+            + "for members of a nested inner DL");
+  }
+
+  /**
+   * Creates a static distribution list on the default domain and adds {@code member} to it.
+   *
+   * @return the created {@link Group}
+   */
+  private Group createDistributionListWithMember(Account member) throws Exception {
+    String listAddress = "dl-" + UUID.randomUUID() + "@" + getDefaultDomainName();
+    Group group = getProvisioning().createGroup(listAddress, new HashMap<>(), false);
+    getProvisioning().addGroupMembers(group, new String[] {member.getName()});
+    return group;
+  }
+
+  /**
+   * Creates two static distribution lists and returns the outer one.
+   *
+   * <p>Topology: outerDL → innerDL → {@code member}
+   *
+   * <p>The inner DL contains {@code member} directly. The outer DL contains the inner DL as a
+   * member. The folder is shared with the outer DL, so membership resolution must traverse the
+   * nesting to reach {@code member}.
+   *
+   * @return the outer {@link Group}
+   */
+  private Group createNestedDistributionListWithMember(Account member) throws Exception {
+    String domain = getDefaultDomainName();
+
+    // Inner DL: direct member is the grantee account
+    String innerAddress = "dl-inner-" + UUID.randomUUID() + "@" + domain;
+    Group innerGroup = getProvisioning().createGroup(innerAddress, new HashMap<>(), false);
+    getProvisioning().addGroupMembers(innerGroup, new String[] {member.getName()});
+
+    // Outer DL: contains the inner DL as a member
+    String outerAddress = "dl-outer-" + UUID.randomUUID() + "@" + domain;
+    Group outerGroup = getProvisioning().createGroup(outerAddress, new HashMap<>(), false);
+    getProvisioning().addGroupMembers(outerGroup, new String[] {innerGroup.getName()});
+
+    return outerGroup;
+  }
+
+  private void shareFolderWithGroup(Account owner, Group group, int folderId) throws Exception {
+    var grantRequest = new FolderActionSelector(String.valueOf(folderId), "grant");
+    var grant = new ActionGrantSelector("rwidx", "grp");
+    grant.setZimbraId(group.getId());
+    grant.setDisplayName(group.getName());
+    grant.setPassword("");
+    grantRequest.setGrant(grant);
+    getSoapClient().executeSoap(owner, new FolderActionRequest(grantRequest));
   }
 }
