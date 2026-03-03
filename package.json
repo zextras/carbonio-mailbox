@@ -1,6 +1,6 @@
 {
   "name": "mailbox-rc",
-  "version": "1.0.0",
+  "version": "4.25.0",
   "scripts": {
     "release": "release-it"
   },

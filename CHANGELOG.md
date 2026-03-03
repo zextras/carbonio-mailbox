@@ -1,6 +1,6 @@
 
 
-# [1.0.0](https://github.com/zextras/carbonio-mailbox/compare/4.24.0...null) (2026-03-03)
+# [4.25.0](https://github.com/zextras/carbonio-mailbox/compare/4.24.0...4.25.0) (2026-03-03)
 
 
 ### Bug Fixes
@@ -12,7 +12,7 @@
 
 * [CO-3256] evaluate group/DL grants in isSharedWithUser for shared folder notifications ([#936](https://github.com/zextras/carbonio-mailbox/issues/936)) ([e4f8c08](https://github.com/zextras/carbonio-mailbox/commit/e4f8c085bd5d904b3b8819af91e919367c96e010))
 
-# [1.0.0](https://github.com/zextras/carbonio-mailbox/compare/4.23.5...null) (2026-02-24)
+# [4.24.0](https://github.com/zextras/carbonio-mailbox/compare/4.23.5...4.24.0) (2026-02-24)
 
 
 ### Bug Fixes
