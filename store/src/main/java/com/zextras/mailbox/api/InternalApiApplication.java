@@ -6,10 +6,12 @@
 
 package com.zextras.mailbox.api;
 
+import com.zextras.mailbox.api.rest.PingResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
-import org.glassfish.jersey.server.ResourceConfig;
+import java.util.Set;
+import javax.ws.rs.core.Application;
 
 @OpenAPIDefinition(
 		info = @Info(
@@ -18,10 +20,10 @@ import org.glassfish.jersey.server.ResourceConfig;
 				description = "Service-to-service REST API for carbonio-mailbox"
 		)
 )
-public class InternalApiApplication extends ResourceConfig {
+public class InternalApiApplication extends Application {
 
-	public InternalApiApplication() {
-		packages("com.zextras.mailbox.api.rest");
-		register(OpenApiResource.class);
+	@Override
+	public Set<Class<?>> getClasses() {
+		return Set.of(PingResource.class, OpenApiResource.class);
 	}
 }

@@ -6,9 +6,9 @@
 
 package com.zextras.mailbox.api;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.zextras.mailbox.api.rest.PingResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import org.junit.jupiter.api.Test;
 
@@ -16,17 +16,11 @@ class InternalApiApplicationTest {
 
 	@Test
 	void shouldRegisterOpenApiResource() {
-		final InternalApiApplication app = new InternalApiApplication();
-
-		assertTrue(app.isRegistered(OpenApiResource.class),
-				"OpenApiResource should be registered");
+		assertTrue(new InternalApiApplication().getClasses().contains(OpenApiResource.class));
 	}
 
 	@Test
-	void shouldHaveRegisteredClasses() {
-		final InternalApiApplication app = new InternalApiApplication();
-
-		assertFalse(app.getClasses().isEmpty() && app.getSingletons().isEmpty(),
-				"Application should have registered classes or singletons");
+	void shouldRegisterPingResource() {
+		assertTrue(new InternalApiApplication().getClasses().contains(PingResource.class));
 	}
 }

@@ -8,7 +8,7 @@ package com.zextras.mailbox.api;
 
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.glassfish.jersey.servlet.ServletContainer;
+import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 
 public class InternalApiContextHandler {
 
@@ -29,9 +29,10 @@ public class InternalApiContextHandler {
 		// See also: https://www.javadoc.io/static/org.eclipse.jetty/jetty-server/9.4.57.v20241219/org/eclipse/jetty/server/handler/ContextHandler.html
 		context.setVirtualHosts(new String[]{"@" + CONNECTOR_NAME});
 
-		final ServletHolder jerseyServlet = new ServletHolder(
-				new ServletContainer(new InternalApiApplication()));
-		context.addServlet(jerseyServlet, "/*");
+		final ServletHolder servlet = new ServletHolder(new HttpServletDispatcher());
+		servlet.setInitParameter("javax.ws.rs.Application",
+				InternalApiApplication.class.getName());
+		context.addServlet(servlet, "/*");
 
 		return context;
 	}
