@@ -6,10 +6,16 @@
 
 package com.zextras.mailbox.api;
 
+import com.zextras.mailbox.api.rest.MailboxResource;
+import com.zextras.mailbox.api.rest.MailboxService;
 import com.zextras.mailbox.api.rest.PingResource;
+import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.soap.SoapProvisioning;
+import com.zimbra.cs.mailbox.MailboxManager;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
+import com.zimbra.common.service.ServiceException;
 import java.util.Set;
 import javax.ws.rs.core.Application;
 
@@ -25,5 +31,26 @@ public class InternalApiApplication extends Application {
 	@Override
 	public Set<Class<?>> getClasses() {
 		return Set.of(PingResource.class, OpenApiResource.class);
+	}
+
+	@Override
+	public Set<Object> getSingletons() {
+		final MailboxService mailboxService = new MailboxService(
+				() -> {
+					try {
+						return MailboxManager.getInstance();
+					} catch (ServiceException e) {
+						throw new RuntimeException(e);
+					}
+				},
+				() -> {
+					try {
+						return SoapProvisioning.getAdminInstance();
+					} catch (ServiceException e) {
+						throw new RuntimeException(e);
+					}
+				},
+				Provisioning::getInstance);
+		return Set.of(new MailboxResource(mailboxService));
 	}
 }

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import javax.net.ssl.SSLContext;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -49,6 +50,10 @@ public class TestHttpClient implements AutoCloseable {
 					response.getStatusLine().getStatusCode(),
 					EntityUtils.toString(response.getEntity()));
 		}
+	}
+
+	public Response get(String url) throws IOException {
+		return execute(new HttpGet(url));
 	}
 
 	@Override

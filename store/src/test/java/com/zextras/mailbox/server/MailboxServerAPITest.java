@@ -6,82 +6,36 @@
 
 package com.zextras.mailbox.server;
 
-import com.zextras.mailbox.MailboxEnvironmentSetupHelper;
 import com.zextras.mailbox.api.InternalApiContextHandler;
-import com.zextras.mailbox.util.PortUtil;
+import com.zextras.mailbox.util.MailboxServerExtension;
 import com.zextras.mailbox.util.SoapClient;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zextras.mailbox.util.TestHttpClient;
 import com.zextras.mailbox.util.TestHttpClient.Response;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.soap.account.message.AuthRequest;
 import com.zimbra.soap.type.AccountSelector;
-import java.io.File;
-import java.nio.file.Files;
 import org.apache.http.client.methods.HttpGet;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 @Tag("e2e")
 class MailboxServerAPITest {
 
-	private static MailboxServer mailboxServer;
-	private static final int USER_HTTP_PORT = PortUtil.findFreePort();
-	private static final int USER_HTTPS_PORT = PortUtil.findFreePort();
-	private static final int ADMIN_PORT = PortUtil.findFreePort();
-	private static final int INTERNAL_API_PORT = PortUtil.findFreePort();
-	@TempDir
-	private static File tmpDir;
-
-	@BeforeAll
-	static void setUp() throws Exception {
-		final String mailboxHome = MailboxServerAPITest.class.getResource("/").getFile();
-		final String timezoneFile = MailboxServerAPITest.class.getResource("/timezones-test.ics")
-				.getFile();
-
-		var localConfigFilePath = MailboxServerAPITest.class.getResource("/localconfig-test.xml")
-				.getPath();
-
-		var localConfigFile = new File(localConfigFilePath);
-		var tmpLocalConfigFile = new File(tmpDir, "localconfig-test.xml");
-		Files.copy(localConfigFile.toPath(), tmpLocalConfigFile.toPath());
-
-		System.setProperty("zimbra.config", tmpLocalConfigFile.getAbsolutePath());
-		System.setProperty("org.eclipse.jetty.util.log.announce", "false");
-		// For some reason these localconfig values are used by SoapProvisioning/ZClient
-		LC.zimbra_admin_service_scheme.setDefault("https://");
-		LC.zimbra_zmprov_default_soap_server.setDefault("localhost");
-		LC.zimbra_admin_service_port.setDefault(ADMIN_PORT);
-		LC.mailbox_internal_api_port.setDefault(INTERNAL_API_PORT);
-		LC.mailbox_internal_api_bind_address.setDefault("localhost");
-		mailboxServer = new MailboxEnvironmentSetupHelper(mailboxHome, timezoneFile)
-				.withAdminPort(ADMIN_PORT)
-				.withUserPort(USER_HTTP_PORT)
-				.withUserHttpsPort(USER_HTTPS_PORT)
-				.create();
-		mailboxServer.start();
-	}
-
-	@AfterAll
-	static void tearDown() throws Exception {
-		mailboxServer.stop();
-		LC.reload();
-	}
+	@RegisterExtension
+	static final MailboxServerExtension server = new MailboxServerExtension();
 
 	private String getUserEndpoint() {
-		return "http://localhost:" + USER_HTTP_PORT + "/service/soap";
+		return "http://localhost:" + server.getUserHttpPort() + "/service/soap";
 	}
 
 	private String getUserHttpsEndpoint() {
-		return "https://localhost:" + USER_HTTPS_PORT + "/service/soap";
+		return "https://localhost:" + server.getUserHttpsPort() + "/service/soap";
 	}
 
 	private String getAdminEndpoint() {
-		return "https://localhost:" + ADMIN_PORT + "/service/admin/soap";
+		return "https://localhost:" + server.getAdminPort() + "/service/admin/soap";
 	}
 
 	@Test
@@ -118,7 +72,7 @@ class MailboxServerAPITest {
 	void internalApiPingShouldNotBeReachableOnUserHttpPort() throws Exception {
 		try (TestHttpClient client = new TestHttpClient()) {
 			final Response response = client.execute(
-					new HttpGet("http://localhost:" + USER_HTTP_PORT + "/api/v1/ping"));
+					new HttpGet("http://localhost:" + server.getUserHttpPort() + "/api/v1/ping"));
 
 			Assertions.assertEquals(404, response.statusCode());
 		}
@@ -127,7 +81,7 @@ class MailboxServerAPITest {
 	void internalApiPingShouldNotBeReachableOnUserHttpsPort() throws Exception {
 		try (TestHttpClient client = new TestHttpClient()) {
 			final Response response = client.execute(
-					new HttpGet("https://localhost:" + USER_HTTPS_PORT + "/api/v1/ping"));
+					new HttpGet("https://localhost:" + server.getUserHttpsPort() + "/api/v1/ping"));
 
 			Assertions.assertEquals(404, response.statusCode());
 		}
@@ -137,7 +91,7 @@ class MailboxServerAPITest {
 	void internalApiPingShouldNotBeReachableOnAdminPort() throws Exception {
 		try (TestHttpClient client = new TestHttpClient()) {
 			final Response response = client.execute(
-					new HttpGet("https://localhost:" + ADMIN_PORT + "/api/v1/ping"));
+					new HttpGet("https://localhost:" + server.getAdminPort() + "/api/v1/ping"));
 
 			Assertions.assertEquals(404, response.statusCode());
 		}
@@ -145,7 +99,7 @@ class MailboxServerAPITest {
 
 	@Test
 	void shouldNotExposeInternalEndpointWhenMatchingHost() throws Exception {
-		var request = new HttpGet("http://localhost:" + USER_HTTP_PORT + "/api/v1/ping");
+		var request = new HttpGet("http://localhost:" + server.getUserHttpPort() + "/api/v1/ping");
 		request.setHeader("Host", InternalApiContextHandler.CONNECTOR_NAME);
 		try (TestHttpClient client = new TestHttpClient()) {
 			final Response response = client.execute(request);
@@ -158,7 +112,7 @@ class MailboxServerAPITest {
 	void internalApiReachableOnInternalPort() throws Exception {
 		try (TestHttpClient client = new TestHttpClient()) {
 			final Response response = client.execute(
-					new HttpGet("http://localhost:" + INTERNAL_API_PORT + "/api/v1/ping"));
+					new HttpGet("http://localhost:" + server.getInternalApiPort() + "/api/v1/ping"));
 
 			Assertions.assertEquals(200, response.statusCode());
 		}

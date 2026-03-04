@@ -11,40 +11,35 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zextras.mailbox.util.MailboxServerExtension;
 import com.zextras.mailbox.util.TestHttpClient.Response;
+import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 @Tag("e2e")
-class InternalApiServerIT {
+class MailboxResourceIT {
 
 	@RegisterExtension
 	static final MailboxServerExtension server = new MailboxServerExtension();
 
 	@Test
-	void pingShouldReturn200() throws Exception {
+	void getMailUsageShouldReturnUsageForExistingAccount() throws Exception {
+		final Account account = Provisioning.getInstance().getAccountByName("test@test.com");
+
 		final Response response = server.getHttpClient().get(
-				server.getInternalApiEndpoint() + "/ping");
+				server.getInternalApiEndpoint() + "/accounts/mail/usage/" + account.getId());
 
 		assertEquals(200, response.statusCode());
-		assertEquals("{\"status\":\"pong\"}", response.body());
+		assertTrue(response.body().contains("{\"used\":0}"),
+				"Response should contain 'used' field. Was: \n" + response.body());
 	}
 
 	@Test
-	void foo() throws Exception {
+	void getMailUsageShouldReturn500ForNonExistentAccount() throws Exception {
 		final Response response = server.getHttpClient().get(
-				"http://localhost:" + server.getInternalApiPort() + "/api/v1/ping");
+				server.getInternalApiEndpoint() + "/accounts/mail/usage/non-existent-id");
 
-		assertEquals(200, response.statusCode());
-		assertEquals("{\"status\":\"pong\"}", response.body());
-	}
-
-	@Test
-	void openApiJsonShouldBeServed() throws Exception {
-		final Response response = server.getHttpClient().get(
-				"http://localhost:" + server.getInternalApiPort() + "/api/v1/openapi.json");
-
-		assertEquals(200, response.statusCode());
-		assertTrue(response.body().contains("\"openapi\""), "Response should contain OpenAPI spec");
+		assertEquals(500, response.statusCode());
 	}
 }
