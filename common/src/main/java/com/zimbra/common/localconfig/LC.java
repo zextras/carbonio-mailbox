@@ -1355,6 +1355,9 @@ public final class LC {
 	public static final KnownKey preview_service_url = KnownKey.newKey("http://127.78.0.7:20001");
 	public static final KnownKey files_service_url = KnownKey.newKey("http://127.78.0.7:20002");
 
+	public static final KnownKey mailbox_internal_api_port = KnownKey.newKey(10000);
+	public static final KnownKey mailbox_internal_api_bind_address = KnownKey.newKey("127.78.0.7");
+
 	static {
     // Automatically set the key name with the variable name.
     for (Field field : LC.class.getFields()) {
