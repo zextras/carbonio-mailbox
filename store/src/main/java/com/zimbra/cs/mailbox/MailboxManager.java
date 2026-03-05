@@ -505,7 +505,7 @@ public class MailboxManager {
         new AddArchiveFolderUtil().addArchiveFolderToAccount(
             mbox.getAccountId(), Provisioning.getInstance());
       } catch (ServiceException e) {
-        ZimbraLog.mailbox.warn(
+        ZimbraLog.mailbox.debug(
             "Failed to create Archive folder for mailbox %d: %s", mbox.getId(), e.getMessage());
       }
     }
