@@ -39,8 +39,9 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
  */
 public class MailboxEnvironmentSetupHelper {
 
-	private static final int LDAP_PORT = PortUtil.findFreePort();
 	private static final String APP_SERVER_NAME = "localhost";
+	private static final int LDAP_PORT = PortUtil.findFreePort();
+	private static InMemoryLdapServer sharedLdapServer;
 	private int userHttpPort = 8080;
 	private int userHttpsPort = 8443;
 	private int adminPort = 7071;
@@ -82,11 +83,15 @@ public class MailboxEnvironmentSetupHelper {
 		LC.timezone_file.setDefault(timeZoneFile);
 		HSQLDB.createDatabase(LC.zimbra_home.value() + "/build/test");
 
-		final InMemoryLdapServer inMemoryLdapServer = new Builder().
-				withLdapPort(LDAP_PORT)
-				.build();
-		inMemoryLdapServer.start();
-		inMemoryLdapServer.initializeBasicData();
+		if (sharedLdapServer == null) {
+			sharedLdapServer = new Builder()
+					.withLdapPort(LDAP_PORT)
+					.build();
+			sharedLdapServer.start();
+		} else {
+			sharedLdapServer.clear();
+		}
+		sharedLdapServer.initializeBasicData();
 
 		setUpDomainAndUsers();
 
@@ -106,6 +111,10 @@ public class MailboxEnvironmentSetupHelper {
 		return new MailboxServerBuilder(provisioning.getConfig(), provisioning.getLocalServer())
 				.withDump(false)
 				.create();
+	}
+
+	public static InMemoryLdapServer getLdapServer() {
+		return sharedLdapServer;
 	}
 
 	private static void setupTestKeyStore() throws Exception {

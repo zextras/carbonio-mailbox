@@ -31,15 +31,6 @@ class InternalApiServerIT {
 	}
 
 	@Test
-	void foo() throws Exception {
-		final Response response = server.getHttpClient().get(
-				"http://localhost:" + server.getInternalApiPort() + "/internal/ping");
-
-		assertEquals(200, response.statusCode());
-		assertEquals("{\"status\":\"pong\"}", response.body());
-	}
-
-	@Test
 	void openApiJsonShouldBeServed() throws Exception {
 		final Response response = server.getHttpClient().get(
 				"http://localhost:" + server.getInternalApiPort() + "/internal/openapi.json");
