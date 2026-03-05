@@ -375,7 +375,7 @@
       <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
-        <version>${jersey.version}</version>
+        <version>1.13</version>
       </dependency>
       <dependency>
         <groupId>net.sourceforge.nekohtml</groupId>
@@ -616,36 +616,6 @@
         <version>2.1</version>
       </dependency>
       <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-client</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-core</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-json</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-servlet</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-server</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.sun.jersey.contribs</groupId>
-        <artifactId>jersey-multipart</artifactId>
-        <version>1.12</version>
-      </dependency>
-      <dependency>
         <groupId>javax.jws</groupId>
         <artifactId>jsr181-api</artifactId>
         <version>1.0-MR1</version>
@@ -868,7 +838,6 @@
     <unboundid-ldapsdk.version>4.0.5</unboundid-ldapsdk.version>
     <jsr305.version>3.0.2</jsr305.version>
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
-    <jersey.version>1.13</jersey.version>
     <resteasy.version>4.7.9.Final</resteasy.version>
     <swagger.version>2.2.28</swagger.version>
     <javassist.version>3.30.2-GA</javassist.version>
