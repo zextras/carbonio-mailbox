@@ -19,8 +19,7 @@ public class AccountResourceIT {
 
 	@Test
 	void returnsAccountInfo() throws Exception {
-		final Factory factory = new Factory(Provisioning.getInstance(), "test.com");
-		final Account account = factory.get()
+		final Account account = server.getAccountFactory().get()
 				.create();
 
 		final Response response = server.getHttpClient().get(
@@ -35,8 +34,7 @@ public class AccountResourceIT {
 
 	@Test
 	void accountInfoIsGlobalAdmin() throws Exception {
-		final Factory factory = new Factory(Provisioning.getInstance(), "test.com");
-		final Account account = factory.get()
+		final Account account = server.getAccountFactory().get()
 				.asGlobalAdmin()
 				.create();
 
@@ -48,8 +46,7 @@ public class AccountResourceIT {
 
 	@Test
 	void accountInfoDelegatedAdmin() throws Exception {
-		final Factory factory = new Factory(Provisioning.getInstance(), "test.com");
-		final Account account = factory.get()
+		final Account account = server.getAccountFactory().get()
 				.withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
 				.create();
 
@@ -61,8 +58,7 @@ public class AccountResourceIT {
 
 	@Test
 	void accountInfoDomainAdmin() throws Exception {
-		final Factory factory = new Factory(Provisioning.getInstance(), "test.com");
-		final Account account = factory.get()
+		final Account account = server.getAccountFactory().get()
 				.withAttribute(ZAttrProvisioning.A_zimbraIsDomainAdminAccount, "TRUE")
 				.create();
 

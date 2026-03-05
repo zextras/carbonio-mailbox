@@ -11,6 +11,7 @@ import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.db.HSQLDB;
 import java.io.FileOutputStream;
 import java.math.BigInteger;
@@ -92,6 +93,9 @@ public class MailboxEnvironmentSetupHelper {
 			sharedLdapServer.clear();
 		}
 		sharedLdapServer.initializeBasicData();
+		// Clear ldap provisioning cache, else when creating domain and users throws exception on next
+		// test class
+		((LdapProvisioning) Provisioning.getInstance()).clearCache();
 
 		setUpDomainAndUsers();
 

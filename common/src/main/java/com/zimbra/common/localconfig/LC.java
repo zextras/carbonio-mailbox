@@ -1357,6 +1357,7 @@ public final class LC {
 
 	public static final KnownKey mailbox_internal_api_port = KnownKey.newKey(10000);
 	public static final KnownKey mailbox_internal_api_bind_address = KnownKey.newKey("127.78.0.7");
+	public static final KnownKey support_timer = KnownKey.newKey(true);
 
 	static {
     // Automatically set the key name with the variable name.

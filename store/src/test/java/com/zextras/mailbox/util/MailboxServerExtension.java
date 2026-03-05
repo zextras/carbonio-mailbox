@@ -8,7 +8,9 @@ package com.zextras.mailbox.util;
 
 import com.zextras.mailbox.MailboxEnvironmentSetupHelper;
 import com.zextras.mailbox.server.MailboxServer;
+import com.zextras.mailbox.util.CreateAccount.Factory;
 import com.zimbra.common.localconfig.LC;
+import com.zimbra.cs.account.Provisioning;
 import java.io.File;
 import java.nio.file.Files;
 import org.junit.jupiter.api.extension.AfterAllCallback;
@@ -65,6 +67,7 @@ public class MailboxServerExtension implements BeforeAllCallback, AfterAllCallba
 		LC.zimbra_admin_service_port.setDefault(adminPort);
 		LC.mailbox_internal_api_port.setDefault(internalApiPort);
 		LC.mailbox_internal_api_bind_address.setDefault("localhost");
+		LC.support_timer.setDefault(false);
 
 		mailboxServer = new MailboxEnvironmentSetupHelper(mailboxHome, timezoneFile)
 				.withAdminPort(adminPort)
@@ -108,5 +111,9 @@ public class MailboxServerExtension implements BeforeAllCallback, AfterAllCallba
 
 	public TestHttpClient getHttpClient() {
 		return httpClient;
+	}
+
+	public CreateAccount.Factory getAccountFactory() {
+		return new Factory(Provisioning.getInstance(), "test.com");
 	}
 }

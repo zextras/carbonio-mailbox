@@ -7,11 +7,14 @@
 package com.zextras.mailbox.server;
 
 import com.zextras.mailbox.api.InternalApiContextHandler;
+import com.zextras.mailbox.util.CreateAccount.Factory;
 import com.zextras.mailbox.util.MailboxServerExtension;
 import com.zextras.mailbox.util.SoapClient;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zextras.mailbox.util.TestHttpClient;
 import com.zextras.mailbox.util.TestHttpClient.Response;
+import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.account.message.AuthRequest;
 import com.zimbra.soap.type.AccountSelector;
 import org.apache.http.client.methods.HttpGet;
@@ -40,9 +43,10 @@ class MailboxServerAPITest {
 
 	@Test
 	void shouldAuthenticateStandardUser() throws Exception {
+		final Account account = server.getAccountFactory().get().create();
 		SoapClient soapClient = new SoapClient(getUserEndpoint());
 		final SoapResponse soapResponse = soapClient.newRequest()
-				.setSoapBody(new AuthRequest(AccountSelector.fromName("test@test.com"), "password"))
+				.setSoapBody(new AuthRequest(AccountSelector.fromName(account.getName()), "password"))
 				.call();
 
 		Assertions.assertEquals(200, soapResponse.statusCode());
@@ -50,9 +54,10 @@ class MailboxServerAPITest {
 
 	@Test
 	void shouldAuthenticateStandardUser_OnHttpsPort() throws Exception {
+		final Account account = server.getAccountFactory().get().create();
 		SoapClient soapClient = new SoapClient(getUserHttpsEndpoint());
 		final SoapResponse soapResponse = soapClient.newRequest()
-				.setSoapBody(new AuthRequest(AccountSelector.fromName("test@test.com"), "password"))
+				.setSoapBody(new AuthRequest(AccountSelector.fromName(account.getName()), "password"))
 				.call();
 
 		Assertions.assertEquals(200, soapResponse.statusCode());
@@ -60,9 +65,10 @@ class MailboxServerAPITest {
 
 	@Test
 	void shouldAuthenticateAdminUser() throws Exception {
+		final Account account = server.getAccountFactory().get().asGlobalAdmin().create();
 		SoapClient soapClient = new SoapClient(getAdminEndpoint());
 		final SoapResponse soapResponse = soapClient.newRequest()
-				.setSoapBody(new AuthRequest(AccountSelector.fromName("admin@test.com"), "password"))
+				.setSoapBody(new AuthRequest(AccountSelector.fromName(account.getName()), "password"))
 				.call();
 
 		Assertions.assertEquals(200, soapResponse.statusCode());
