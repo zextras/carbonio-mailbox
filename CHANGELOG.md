@@ -1,5 +1,7 @@
 
 
+* chore: [CO-3282] reduce log level for checks in AddArchiveFolderUtil #945 (7c8333772b)
+
 # [4.25.0](https://github.com/zextras/carbonio-mailbox/compare/4.24.0...4.25.0) (2026-03-03)
 
 
