@@ -103,7 +103,7 @@ public class MailboxServerExtension implements BeforeAllCallback, AfterAllCallba
 	}
 
 	public String getInternalApiEndpoint() {
-		return "http://localhost:" + internalApiPort + "/api/v1";
+		return "http://localhost:" + internalApiPort + "/internal";
 	}
 
 	public TestHttpClient getHttpClient() {

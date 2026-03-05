@@ -57,7 +57,7 @@ class InternalApiContextHandlerTest {
 	@Test
 	void pingShouldReturn200WithPong() throws Exception {
 		final Response response = httpClient.execute(
-				new HttpGet("http://localhost:" + port + "/api/v1/ping"));
+				new HttpGet("http://localhost:" + port + "/internal/ping"));
 
 		assertEquals(200, response.statusCode());
 		assertEquals("{\"status\":\"pong\"}", response.body());
@@ -66,7 +66,7 @@ class InternalApiContextHandlerTest {
 	@Test
 	void openApiJsonShouldBeServed() throws Exception {
 		final Response response = httpClient.execute(
-				new HttpGet("http://localhost:" + port + "/api/v1/openapi.json"));
+				new HttpGet("http://localhost:" + port + "/internal/openapi.json"));
 
 		assertEquals(200, response.statusCode());
 		assertTrue(response.body().contains("\"openapi\""), "Response should contain OpenAPI spec");

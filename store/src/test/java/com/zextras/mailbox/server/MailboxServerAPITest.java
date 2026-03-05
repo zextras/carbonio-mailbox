@@ -72,7 +72,7 @@ class MailboxServerAPITest {
 	void internalApiPingShouldNotBeReachableOnUserHttpPort() throws Exception {
 		try (TestHttpClient client = new TestHttpClient()) {
 			final Response response = client.execute(
-					new HttpGet("http://localhost:" + server.getUserHttpPort() + "/api/v1/ping"));
+					new HttpGet("http://localhost:" + server.getUserHttpPort() + "/internal/ping"));
 
 			Assertions.assertEquals(404, response.statusCode());
 		}
@@ -81,7 +81,7 @@ class MailboxServerAPITest {
 	void internalApiPingShouldNotBeReachableOnUserHttpsPort() throws Exception {
 		try (TestHttpClient client = new TestHttpClient()) {
 			final Response response = client.execute(
-					new HttpGet("https://localhost:" + server.getUserHttpsPort() + "/api/v1/ping"));
+					new HttpGet("https://localhost:" + server.getUserHttpsPort() + "/internal/ping"));
 
 			Assertions.assertEquals(404, response.statusCode());
 		}
@@ -91,7 +91,7 @@ class MailboxServerAPITest {
 	void internalApiPingShouldNotBeReachableOnAdminPort() throws Exception {
 		try (TestHttpClient client = new TestHttpClient()) {
 			final Response response = client.execute(
-					new HttpGet("https://localhost:" + server.getAdminPort() + "/api/v1/ping"));
+					new HttpGet("https://localhost:" + server.getAdminPort() + "/internal/ping"));
 
 			Assertions.assertEquals(404, response.statusCode());
 		}
@@ -99,7 +99,7 @@ class MailboxServerAPITest {
 
 	@Test
 	void shouldNotExposeInternalEndpointWhenMatchingHost() throws Exception {
-		var request = new HttpGet("http://localhost:" + server.getUserHttpPort() + "/api/v1/ping");
+		var request = new HttpGet("http://localhost:" + server.getUserHttpPort() + "/internal/ping");
 		request.setHeader("Host", InternalApiContextHandler.CONNECTOR_NAME);
 		try (TestHttpClient client = new TestHttpClient()) {
 			final Response response = client.execute(request);
@@ -112,7 +112,7 @@ class MailboxServerAPITest {
 	void internalApiReachableOnInternalPort() throws Exception {
 		try (TestHttpClient client = new TestHttpClient()) {
 			final Response response = client.execute(
-					new HttpGet("http://localhost:" + server.getInternalApiPort() + "/api/v1/ping"));
+					new HttpGet("http://localhost:" + server.getInternalApiPort() + "/internal/ping"));
 
 			Assertions.assertEquals(200, response.statusCode());
 		}
