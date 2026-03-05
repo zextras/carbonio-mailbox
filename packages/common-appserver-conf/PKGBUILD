@@ -199,12 +199,20 @@ _package() {
   install -D "store/conf/msgs/ZsMsg_zh_TW.properties" \
     "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_zh_TW.properties"
 
+  # systemd tmpfiles.d
+  install -Dm644 packages/common-appserver-conf/systemd-tmpfile.conf \
+    "${pkgdir}/usr/lib/tmpfiles.d/${pkgname}.conf"
 }
 
 _package_systemd() {
   # systemd unit
   install -Dm644 packages/common-appserver-conf/carbonio-milter.service \
     "${pkgdir}/usr/lib/systemd/system/carbonio-milter.service"
+}
+
+_postinst() {
+  # Set ownership via tmpfiles.d
+  systemd-tmpfiles --create /usr/lib/tmpfiles.d/carbonio-common-appserver-conf.conf >/dev/null 2>&1 || :
 }
 
 _postinst_upgrade_java_options() {
@@ -270,6 +278,8 @@ package__ubuntu_noble() {
 }
 
 postinst__ubuntu_jammy() {
+  _postinst
+
   # Update LC mailboxd_java_options for JDK17 on post-upgrade
   if [ "$1" = "configure" ] && [ ! -z "$2" ]; then
     _postinst_upgrade_java_options
@@ -277,15 +287,18 @@ postinst__ubuntu_jammy() {
 }
 
 postinst__ubuntu_noble() {
+  _postinst
+  _postinst_systemd
+
   # Update LC mailboxd_java_options for JDK17 on post-upgrade
   if [ "$1" = "configure" ] && [ ! -z "$2" ]; then
     _postinst_upgrade_java_options
   fi
-
-  _postinst_systemd
 }
 
 postinst__rocky_8() {
+  _postinst
+
   # Update LC mailboxd_java_options for JDK17 on post-upgrade
   if [ "$1" -eq 2 ]; then
     _postinst_upgrade_java_options
@@ -293,12 +306,13 @@ postinst__rocky_8() {
 }
 
 postinst__rocky_9() {
+  _postinst
+  _postinst_systemd
+
   # Update LC mailboxd_java_options for JDK17 on post-upgrade
   if [ "$1" -eq 2 ]; then
     _postinst_upgrade_java_options
   fi
-
-  _postinst_systemd
 }
 
 prerm__ubuntu_noble() {
