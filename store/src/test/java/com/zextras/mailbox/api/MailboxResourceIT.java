@@ -9,11 +9,9 @@ package com.zextras.mailbox.api;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.zextras.mailbox.util.CreateAccount.Factory;
 import com.zextras.mailbox.util.MailboxServerExtension;
 import com.zextras.mailbox.util.TestHttpClient.Response;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -26,7 +24,7 @@ class MailboxResourceIT {
 
 	@Test
 	void getMailUsageShouldReturnUsageForExistingAccount() throws Exception {
-		final Account account = server.getAccountFactory().get().create();
+		final Account account = server.getAccountFactory().create();
 
 		final Response response = server.getHttpClient().get(
 				server.getInternalApiEndpoint() + "/accounts/mail/usage/" + account.getId());

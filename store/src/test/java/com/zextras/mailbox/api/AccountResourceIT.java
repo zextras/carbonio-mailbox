@@ -2,12 +2,10 @@ package com.zextras.mailbox.api;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zextras.mailbox.util.CreateAccount.Factory;
 import com.zextras.mailbox.util.MailboxServerExtension;
 import com.zextras.mailbox.util.TestHttpClient.Response;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -19,7 +17,7 @@ public class AccountResourceIT {
 
 	@Test
 	void returnsAccountInfo() throws Exception {
-		final Account account = server.getAccountFactory().get()
+		final Account account = server.getAccountFactory()
 				.create();
 
 		final Response response = server.getHttpClient().get(
@@ -34,7 +32,7 @@ public class AccountResourceIT {
 
 	@Test
 	void accountInfoIsGlobalAdmin() throws Exception {
-		final Account account = server.getAccountFactory().get()
+		final Account account = server.getAccountFactory()
 				.asGlobalAdmin()
 				.create();
 
@@ -46,7 +44,7 @@ public class AccountResourceIT {
 
 	@Test
 	void accountInfoDelegatedAdmin() throws Exception {
-		final Account account = server.getAccountFactory().get()
+		final Account account = server.getAccountFactory()
 				.withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
 				.create();
 
@@ -58,7 +56,7 @@ public class AccountResourceIT {
 
 	@Test
 	void accountInfoDomainAdmin() throws Exception {
-		final Account account = server.getAccountFactory().get()
+		final Account account = server.getAccountFactory()
 				.withAttribute(ZAttrProvisioning.A_zimbraIsDomainAdminAccount, "TRUE")
 				.create();
 

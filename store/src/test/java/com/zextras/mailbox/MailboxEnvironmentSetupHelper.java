@@ -45,6 +45,7 @@ public class MailboxEnvironmentSetupHelper {
 	private static InMemoryLdapServer sharedLdapServer;
 	private int userHttpPort = 8080;
 	private int userHttpsPort = 8443;
+	private String domain = "test.com";
 	private int adminPort = 7071;
 	private final String mailboxHome;
 	private final String timeZoneFile;
@@ -56,6 +57,11 @@ public class MailboxEnvironmentSetupHelper {
 
 	public MailboxEnvironmentSetupHelper withUserPort(int userPort) {
 		this.userHttpPort = userPort;
+		return this;
+	}
+
+	public MailboxEnvironmentSetupHelper withDomain(String domain) {
+		this.domain = domain;
 		return this;
 	}
 
@@ -90,6 +96,7 @@ public class MailboxEnvironmentSetupHelper {
 					.build();
 			sharedLdapServer.start();
 		} else {
+			// clear data between test runs
 			sharedLdapServer.clear();
 		}
 		sharedLdapServer.initializeBasicData();
@@ -166,14 +173,14 @@ public class MailboxEnvironmentSetupHelper {
 		LC.mailboxd_keystore_password.setDefault(keyStorePassword);
 	}
 
-	private static void setUpDomainAndUsers() throws ServiceException {
+	private void setUpDomainAndUsers() throws ServiceException {
 		final Provisioning provisioning = Provisioning.getInstance();
 		provisioning.createServer(
 				APP_SERVER_NAME,
 				new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
-		provisioning.createDomain("test.com", new HashMap<>());
-		provisioning.createAccount("test@test.com", "password", new HashMap<>());
-		provisioning.createAccount("admin@test.com", "password", new HashMap<>() {{
+		provisioning.createDomain(domain, new HashMap<>());
+		provisioning.createAccount("test@" + domain, "password", new HashMap<>());
+		provisioning.createAccount("admin@" + domain, "password", new HashMap<>() {{
 			put(ZAttrProvisioning.A_zimbraIsAdminAccount, "TRUE");
 		}});
 	}

@@ -34,6 +34,7 @@ public class MailboxServerExtension implements BeforeAllCallback, AfterAllCallba
 	private final int userHttpsPort;
 	private final int adminPort;
 	private final int internalApiPort;
+	private static final String DOMAIN = "test.com";
 
 	private MailboxServer mailboxServer;
 	private TestHttpClient httpClient;
@@ -71,6 +72,7 @@ public class MailboxServerExtension implements BeforeAllCallback, AfterAllCallba
 
 		mailboxServer = new MailboxEnvironmentSetupHelper(mailboxHome, timezoneFile)
 				.withAdminPort(adminPort)
+				.withDomain(DOMAIN)
 				.withUserPort(userHttpPort)
 				.withUserHttpsPort(userHttpsPort)
 				.create();
@@ -113,7 +115,7 @@ public class MailboxServerExtension implements BeforeAllCallback, AfterAllCallba
 		return httpClient;
 	}
 
-	public CreateAccount.Factory getAccountFactory() {
-		return new Factory(Provisioning.getInstance(), "test.com");
+	public CreateAccount getAccountFactory() {
+		return new Factory(Provisioning.getInstance(), DOMAIN).get();
 	}
 }
