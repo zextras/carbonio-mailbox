@@ -6,6 +6,8 @@
 
 package com.zextras.mailbox.api;
 
+import com.zextras.mailbox.api.rest.AccountResource;
+import com.zextras.mailbox.api.rest.AccountService;
 import com.zextras.mailbox.api.rest.MailboxResource;
 import com.zextras.mailbox.api.rest.MailboxService;
 import com.zextras.mailbox.api.rest.PingResource;
@@ -51,6 +53,7 @@ public class InternalApiApplication extends Application {
 					}
 				},
 				Provisioning::getInstance);
-		return Set.of(new MailboxResource(mailboxService));
+		final AccountService accountService = new AccountService(Provisioning::getInstance);
+		return Set.of(new MailboxResource(mailboxService), new AccountResource(accountService));
 	}
 }

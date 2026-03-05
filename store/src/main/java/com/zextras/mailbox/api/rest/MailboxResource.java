@@ -6,6 +6,7 @@
 
 package com.zextras.mailbox.api.rest;
 
+import com.zextras.mailbox.api.rest.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -41,5 +42,4 @@ public class MailboxResource {
 
 	public record MailUsageResponse(long used) {}
 
-	public record ErrorResponse(String error) {}
 }
