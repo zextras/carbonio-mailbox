@@ -900,7 +900,7 @@ EOF
         <configuration>
           <forkCount>${surefire.forkCount}</forkCount>
           <reuseForks>${surefire.reuseForks}</reuseForks>
-          <argLine>@{argLine} -Dserver.dir=${project.basedir}
+          <argLine>@{argLine} -Xmx1g -Dserver.dir=${project.basedir}
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
             -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
@@ -913,7 +913,7 @@ EOF
         <configuration>
           <forkCount>${surefire.forkCount}</forkCount>
           <reuseForks>${surefire.reuseForks}</reuseForks>
-          <argLine>@{argLine} -Dserver.dir=${project.basedir}
+          <argLine>@{argLine} -Xmx1g -Dserver.dir=${project.basedir}
             -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI

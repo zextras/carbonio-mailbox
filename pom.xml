@@ -815,6 +815,7 @@
   <properties>
     <maven.compiler.source>21</maven.compiler.source>
     <test.argLine>
+      -Xmx512m
       -Dserver.dir=${project.basedir}
       -Djunit.jupiter.execution.parallel.enabled=true
       -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
@@ -960,9 +961,7 @@
           <version>3.5.3</version>
           <configuration>
             <forkCount>4</forkCount>
-            <threadCount>4</threadCount>
             <reuseForks>false</reuseForks>
-            <parallel>both</parallel>
             <argLine>@{argLine} ${test.argLine}</argLine>
             <reportFormat>plain</reportFormat>
             <consoleOutputReporter>
@@ -976,8 +975,6 @@
           <version>3.5.5</version>
           <configuration>
             <forkCount>4</forkCount>
-            <threadCount>4</threadCount>
-            <parallel>both</parallel>
             <reuseForks>false</reuseForks>
             <!-- argline preserves other plugin args, like JaCoCo -->
             <argLine>@{argLine} ${test.argLine}</argLine>
