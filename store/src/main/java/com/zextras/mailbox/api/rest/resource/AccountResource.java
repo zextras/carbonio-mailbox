@@ -4,8 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-package com.zextras.mailbox.api.rest;
+package com.zextras.mailbox.api.rest.resource;
 
+import com.zextras.mailbox.api.rest.service.AccountService;
 import com.zextras.mailbox.api.rest.response.ErrorResponse;
 import com.zimbra.cs.account.Account;
 import io.swagger.v3.oas.annotations.Operation;

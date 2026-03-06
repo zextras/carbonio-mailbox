@@ -1,4 +1,4 @@
-package com.zextras.mailbox.api;
+package com.zextras.mailbox.api.resource;
 
 import static org.junit.jupiter.api.Assertions.*;
 

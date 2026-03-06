@@ -1,4 +1,4 @@
-package com.zextras.mailbox.api.rest;
+package com.zextras.mailbox.api.rest.service;
 
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;

@@ -6,11 +6,11 @@
 
 package com.zextras.mailbox.api;
 
-import com.zextras.mailbox.api.rest.AccountResource;
-import com.zextras.mailbox.api.rest.AccountService;
-import com.zextras.mailbox.api.rest.MailboxResource;
-import com.zextras.mailbox.api.rest.MailboxService;
-import com.zextras.mailbox.api.rest.PingResource;
+import com.zextras.mailbox.api.rest.resource.AccountResource;
+import com.zextras.mailbox.api.rest.service.AccountService;
+import com.zextras.mailbox.api.rest.resource.MailboxResource;
+import com.zextras.mailbox.api.rest.service.MailboxService;
+import com.zextras.mailbox.api.rest.resource.PingResource;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.mailbox.MailboxManager;
