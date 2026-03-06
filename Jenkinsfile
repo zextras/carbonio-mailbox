@@ -37,15 +37,6 @@ pipeline {
         timeout(time: 2, unit: 'HOURS')
     }
 
-    parameters {
-        booleanParam defaultValue: false,
-                description: 'Skip test and sonar analysis.',
-                name: 'SKIP_TEST_WITH_COVERAGE'
-        booleanParam defaultValue: false,
-                description: 'Skip sonar analysis.',
-                name: 'SKIP_SONARQUBE'
-    }
-
     triggers {
         cron(env.BRANCH_NAME == 'devel' ? 'H 5 * * *' : '')
     }
@@ -117,12 +108,6 @@ pipeline {
         }
 
         stage('Sonarqube Analysis') {
-            when {
-                allOf {
-                    expression { params.SKIP_SONARQUBE == false }
-                    expression { params.SKIP_TEST_WITH_COVERAGE == false }
-                }
-            }
             steps {
                 container('jdk-21') {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
