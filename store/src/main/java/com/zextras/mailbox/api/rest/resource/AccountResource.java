@@ -42,9 +42,9 @@ public class AccountResource {
 				.get();
 	}
 
-	public record AccountInfoResponse(String id, String name, String cosId, boolean isGlobalAdmin) {
+	public record AccountInfoResponse(String id, String name, String cosId, String domainId, boolean isGlobalAdmin) {
 		public static AccountInfoResponse from(Account account) {
-			return new AccountInfoResponse(account.getId(), account.getName(), account.getCOSId(), account.isIsAdminAccount());
+			return new AccountInfoResponse(account.getId(), account.getName(), account.getCOSId(), account.getDomainId(), account.isIsAdminAccount());
 		}
 	}
 }

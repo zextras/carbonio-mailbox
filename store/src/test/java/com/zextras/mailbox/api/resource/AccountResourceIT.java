@@ -27,6 +27,7 @@ public class AccountResourceIT {
 		assertTrue(response.body().contains("\"id\":\"" + account.getId() + "\""));
 		assertTrue(response.body().contains("\"name\":\"" + account.getName() + "\""));
 		assertTrue(response.body().contains("\"cosId\":\"" + account.getCOSId() + "\""));
+		assertTrue(response.body().contains("\"domainId\":\"" + account.getDomainId() + "\""));
 		assertTrue(response.body().contains("\"isGlobalAdmin\":false"));
 	}
 
