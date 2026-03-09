@@ -15,6 +15,7 @@ import com.zextras.mailbox.util.TestHttpClient.Response;
 import com.zimbra.cs.account.Account;
 import com.zimbra.soap.account.message.AuthRequest;
 import com.zimbra.soap.type.AccountSelector;
+import java.util.Map;
 import org.apache.http.client.methods.HttpGet;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
@@ -82,53 +83,50 @@ class MailboxServerAPITest {
 	}
 
 	@Test
-	void internalApiPingShouldNotBeReachableOnUserHttpPort() throws Exception {
-		try (TestHttpClient client = new TestHttpClient()) {
-			final Response response = client.execute(
-					new HttpGet("http://localhost:" + server.getUserHttpPort() + "/internal/ping"));
-
-			Assertions.assertEquals(404, response.statusCode());
-		}
-	}
-	@Test
-	void internalApiPingShouldNotBeReachableOnUserHttpsPort() throws Exception {
-		try (TestHttpClient client = new TestHttpClient()) {
-			final Response response = client.execute(
-					new HttpGet("https://localhost:" + server.getUserHttpsPort() + "/internal/ping"));
-
-			Assertions.assertEquals(404, response.statusCode());
-		}
+	void internalApiShouldNotBeReachableOnUserHttpPort() throws Exception {
+		final Account account = server.getAccountFactory().create();
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getUserHttpPort() + "/internal/accounts/" + account.getId() + "/info");
+		Assertions.assertEquals(404, response.statusCode());
 	}
 
 	@Test
-	void internalApiPingShouldNotBeReachableOnAdminPort() throws Exception {
-		try (TestHttpClient client = new TestHttpClient()) {
-			final Response response = client.execute(
-					new HttpGet("https://localhost:" + server.getAdminPort() + "/internal/ping"));
+	void internalApiShouldNotBeReachableOnUserHttpsPort() throws Exception {
+		final Account account = server.getAccountFactory().create();
+		var response = server.getHttpClient().get(
+				"https://localhost:" + server.getUserHttpsPort() + "/internal/accounts/" + account.getId() + "/info");
+		Assertions.assertEquals(404, response.statusCode());
+	}
 
-			Assertions.assertEquals(404, response.statusCode());
-		}
+	@Test
+	void internalApiShouldNotBeReachableOnAdminPort() throws Exception {
+		final Account account = server.getAccountFactory().create();
+		var response = server.getHttpClient().get(
+				"https://localhost:" + server.getAdminPort() + "/internal/accounts/" + account.getId() + "/info");
+		Assertions.assertEquals(404, response.statusCode());
 	}
 
 	@Test
 	void shouldNotExposeInternalEndpointWhenMatchingHost() throws Exception {
-		var request = new HttpGet("http://localhost:" + server.getUserHttpPort() + "/internal/ping");
-		request.setHeader("Host", InternalApiContextHandler.CONNECTOR_NAME);
-		try (TestHttpClient client = new TestHttpClient()) {
-			final Response response = client.execute(request);
-
-			Assertions.assertEquals(404, response.statusCode());
-		}
+		final Account account = server.getAccountFactory().create();
+		var headers = Map.of("Host", InternalApiContextHandler.CONNECTOR_NAME);
+		var response = server.getHttpClient().get("http://localhost:" + server.getUserHttpPort() + "/internal/accounts/" + account.getId() + "/info", headers);
+		Assertions.assertEquals(404, response.statusCode());
 	}
 
 	@Test
 	void internalApiReachableOnInternalPort() throws Exception {
-		try (TestHttpClient client = new TestHttpClient()) {
-			final Response response = client.execute(
-					new HttpGet("http://localhost:" + server.getInternalApiPort() + "/internal/ping"));
+		final Account account = server.getAccountFactory().create();
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getInternalApiPort() + "/internal/accounts/" + account.getId() + "/info");
+		Assertions.assertEquals(200, response.statusCode());
+	}
 
-			Assertions.assertEquals(200, response.statusCode());
-		}
+	@Test
+	void healthAnswersAtInternalPort() throws Exception {
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getInternalApiPort() + "/service/health/ready");
+		Assertions.assertEquals(200, response.statusCode());
 	}
 
 }

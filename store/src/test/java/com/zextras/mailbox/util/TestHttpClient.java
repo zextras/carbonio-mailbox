@@ -8,6 +8,7 @@ package com.zextras.mailbox.util;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Map;
 import javax.net.ssl.SSLContext;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -44,7 +45,7 @@ public class TestHttpClient implements AutoCloseable {
 		}
 	}
 
-	public Response execute(HttpUriRequest request) throws IOException {
+	private Response execute(HttpUriRequest request) throws IOException {
 		try (CloseableHttpResponse response = delegate.execute(request)) {
 			return new Response(
 					response.getStatusLine().getStatusCode(),
@@ -54,6 +55,12 @@ public class TestHttpClient implements AutoCloseable {
 
 	public Response get(String url) throws IOException {
 		return execute(new HttpGet(url));
+	}
+
+	public Response get(String url, Map<String, String> headers) throws IOException {
+		final HttpGet request = new HttpGet(url);
+		headers.forEach(request::setHeader);
+		return execute(request);
 	}
 
 	@Override
