@@ -82,11 +82,11 @@ _package() {
   install -Dm644 packages/appserver-service/carbonio-mailbox-internal-api.hcl \
     "${pkgdir}/etc/zextras/service-discover/carbonio-mailbox-internal-api.hcl"
   install -Dm644 packages/appserver-service/carbonio-mailbox-internal-api-intentions.json \
-    "${pkgdir}/etc/carbonio/mailbox-nslookup/service-discover/intentions.json"
+    "${pkgdir}/etc/carbonio/mailbox-internal-api/service-discover/intentions.json"
   install -Dm644 packages/appserver-service/carbonio-mailbox-internal-api-policies.json \
-    "${pkgdir}/etc/carbonio/mailbox-nslookup/service-discover/policies.json"
+    "${pkgdir}/etc/carbonio/mailbox-internal-api/service-discover/policies.json"
   install -Dm644 packages/appserver-service/carbonio-mailbox-internal-api-service-protocol.json \
-    "${pkgdir}/etc/carbonio/mailbox-nslookup/service-discover/service-protocol.json"
+    "${pkgdir}/etc/carbonio/mailbox-internal-api/service-discover/service-protocol.json"
 
   # systemd sysusers.d
   install -Dm644 packages/appserver-service/systemd-sysuser.conf \
