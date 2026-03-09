@@ -35,7 +35,7 @@ class MailboxResourceIT {
 	}
 
 	@Test
-	void getMailUsageNotFoundForNonExistentAccount() throws Exception {
+	void notFound() throws Exception {
 		final Response response = server.getHttpClient().get(
 				server.getInternalApiEndpoint() + "/accounts/mail/usage/non-existent-id");
 

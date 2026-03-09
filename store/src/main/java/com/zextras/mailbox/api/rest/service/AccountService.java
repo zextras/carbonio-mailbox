@@ -1,8 +1,10 @@
 package com.zextras.mailbox.api.rest.service;
 
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import io.vavr.control.Try;
+
 import java.util.function.Supplier;
 
 public class AccountService {
@@ -17,7 +19,11 @@ public class AccountService {
 	public Try<Account> getAccount(String accountId) {
 		return Try.of(() -> {
 			final Provisioning provisioning = provisioningSupplier.get();
-			return provisioning.getAccountById(accountId);
+			Account accountById = provisioning.getAccountById(accountId);
+			if (accountById == null) {
+				throw ServiceException.NOT_FOUND("No such account with ID: " + accountId);
+			}
+			return accountById;
 		});
 	}
 }

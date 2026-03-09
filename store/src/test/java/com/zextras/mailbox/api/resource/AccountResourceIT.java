@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 @Tag("e2e")
-public class AccountResourceIT {
+class AccountResourceIT {
 	@RegisterExtension
 	static final MailboxServerExtension server = new MailboxServerExtension();
 
@@ -65,6 +65,14 @@ public class AccountResourceIT {
 				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
 
 		assertTrue(response.body().contains("\"isGlobalAdmin\":false"));
+	}
+
+	@Test
+	void notFound() throws Exception {
+		final Response response = server.getHttpClient().get(
+						server.getInternalApiEndpoint() + "/accounts/not-existent-id/info");
+
+		assertEquals(404, response.statusCode());
 	}
 
 }

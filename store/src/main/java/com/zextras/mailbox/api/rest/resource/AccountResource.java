@@ -6,12 +6,14 @@
 
 package com.zextras.mailbox.api.rest.resource;
 
-import com.zextras.mailbox.api.rest.service.AccountService;
 import com.zextras.mailbox.api.rest.response.ErrorResponse;
+import com.zextras.mailbox.api.rest.service.AccountService;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -37,9 +39,15 @@ public class AccountResource {
 	@Path("/{accountId}/info")
 	public Response getAccountInfo(@Parameter(description = "The account ID") @PathParam("accountId") String accountId) {
 		return accountService.getAccount(accountId)
-				.map(account -> Response.ok(AccountInfoResponse.from(account)).build())
-				.recover(e -> Response.serverError().entity(new ErrorResponse(e.getMessage())).build())
-				.get();
+						.map(account -> Response.ok(AccountInfoResponse.from(account)).build())
+						.recover(e -> switch (e) {
+							case ServiceException se when se.getCode().equals(ServiceException.NOT_FOUND) ->
+											Response.status(Response.Status.NOT_FOUND)
+															.entity(new ErrorResponse(e.getMessage()))
+															.build();
+							default -> Response.serverError().entity(new ErrorResponse(e.getMessage())).build();
+						})
+						.get();
 	}
 
 	public record AccountInfoResponse(String id, String name, String cosId, String domainId, boolean isGlobalAdmin) {
