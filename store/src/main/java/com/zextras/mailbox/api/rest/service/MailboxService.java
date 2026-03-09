@@ -28,7 +28,7 @@ public class MailboxService {
 	}
 
 
-	public Try<Long> getMailUsage(Account account) {
+	private Try<Long> getMailUsage(Account account) {
 		return Try.of(() -> {
 			if (account.isOnLocalServer()) {
 				final Mailbox mbox = mailboxManagerSupplier.get().getMailboxByAccount(account);
