@@ -324,12 +324,12 @@ public final class Zimbra {
         smtpServer.setRecipientValidator(new SmtpRecipientValidator());
       }
 
-      if (app.supports(AclPushTask.class)) {
+      if (LC.support_timer.booleanValue() && app.supports(AclPushTask.class)) {
         long pushInterval = server.getSharingUpdatePublishInterval();
         sTimer.schedule(new AclPushTask(), pushInterval, pushInterval);
       }
 
-      if (app.supports(ExternalAccountManagerTask.class)) {
+      if (LC.support_timer.booleanValue() && app.supports(ExternalAccountManagerTask.class)) {
         long interval = server.getExternalAccountStatusCheckInterval();
         sTimer.schedule(new ExternalAccountManagerTask(), interval, interval);
       }
