@@ -35,10 +35,10 @@ class MailboxResourceIT {
 	}
 
 	@Test
-	void getMailUsageShouldReturn500ForNonExistentAccount() throws Exception {
+	void getMailUsageNotFoundForNonExistentAccount() throws Exception {
 		final Response response = server.getHttpClient().get(
 				server.getInternalApiEndpoint() + "/accounts/mail/usage/non-existent-id");
 
-		assertEquals(500, response.statusCode());
+		assertEquals(404, response.statusCode());
 	}
 }

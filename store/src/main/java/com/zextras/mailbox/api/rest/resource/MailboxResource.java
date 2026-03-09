@@ -6,11 +6,13 @@
 
 package com.zextras.mailbox.api.rest.resource;
 
-import com.zextras.mailbox.api.rest.service.MailboxService;
 import com.zextras.mailbox.api.rest.response.ErrorResponse;
+import com.zextras.mailbox.api.rest.service.MailboxService;
+import com.zimbra.common.service.ServiceException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -37,7 +39,12 @@ public class MailboxResource {
 	public Response getMailUsage(@Parameter(description = "The account ID") @PathParam("accountId") String accountId) {
 		return mailboxService.getMailUsage(accountId)
 				.map(used -> Response.ok(new MailUsageResponse(used)).build())
-				.recover(e -> Response.serverError().entity(new ErrorResponse(e.getMessage())).build())
+				.recover(e -> switch (e) {
+                    case ServiceException se when se.getCode().equals(ServiceException.NOT_FOUND) -> Response.status(Response.Status.NOT_FOUND)
+                            .entity(new ErrorResponse(e.getMessage()))
+                            .build();
+                    default -> Response.serverError().entity(new ErrorResponse(e.getMessage())).build();
+                })
 				.get();
 	}
 

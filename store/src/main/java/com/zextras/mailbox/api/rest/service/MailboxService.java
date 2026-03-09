@@ -1,5 +1,6 @@
 package com.zextras.mailbox.api.rest.service;
 
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.soap.SoapProvisioning;
@@ -26,6 +27,9 @@ public class MailboxService {
 		return Try.of(() -> {
 			final Provisioning provisioning = provisioningSupplier.get();
 			final Account account = provisioning.getAccountById(accountId);
+			if (account == null) {
+				throw ServiceException.NOT_FOUND("No such account with ID: " + accountId);
+			}
 			if (provisioning.onLocalServer(account)) {
 				final Mailbox mbox = mailboxManagerSupplier.get().getMailboxByAccount(account);
 				return mbox.getSize();
