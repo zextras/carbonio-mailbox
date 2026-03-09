@@ -1,42 +1,37 @@
 package com.zextras.mailbox.api.rest.service;
 
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import io.vavr.control.Try;
 
 import java.util.function.Supplier;
 
 public class MailboxService {
 
-	private final Supplier<MailboxManager> mailboxManagerSupplier;
-	private final Supplier<SoapProvisioning> soapProvisioningSupplier;
-  private final AccountService accountService;
+  private final Supplier<MailboxManager> mailboxManagerSupplier;
+  private final Supplier<SoapProvisioning> soapProvisioningSupplier;
 
-	public MailboxService(Supplier<MailboxManager> mailboxManagerSupplier,
-                          Supplier<SoapProvisioning> soapProvisioningSupplier,
-						  AccountService accountService) {
-		this.mailboxManagerSupplier = mailboxManagerSupplier;
-		this.soapProvisioningSupplier = soapProvisioningSupplier;
-      this.accountService = accountService;
+  public MailboxService(Supplier<MailboxManager> mailboxManagerSupplier,
+                        Supplier<SoapProvisioning> soapProvisioningSupplier) {
+    this.mailboxManagerSupplier = mailboxManagerSupplier;
+    this.soapProvisioningSupplier = soapProvisioningSupplier;
+  }
+
+  public long getMailboxUsage(Account account) throws ServiceException {
+    if (account.isOnLocalServer()) {
+      return getLocalMailbox(account).getSize();
+    } else {
+      return getRemoteMailbox(account).getUsed();
     }
+  }
 
-	public Try<Long> getMailUsage(String accountId) {
-		return accountService.getAccount(accountId)
-						.flatMap(this::getMailUsage);
-	}
+  private Mailbox getLocalMailbox(Account account) throws ServiceException {
+    return mailboxManagerSupplier.get().getMailboxByAccount(account);
+  }
 
-
-	public Try<Long> getMailUsage(Account account) {
-		return Try.of(() -> {
-			if (account.isOnLocalServer()) {
-				final Mailbox mbox = mailboxManagerSupplier.get().getMailboxByAccount(account);
-				return mbox.getSize();
-			} else {
-				final SoapProvisioning.MailboxInfo info = soapProvisioningSupplier.get().getMailbox(account);
-				return info.getUsed();
-			}
-		});
-	}
+  private SoapProvisioning.MailboxInfo getRemoteMailbox(Account account) throws ServiceException {
+    return soapProvisioningSupplier.get().getMailbox(account);
+  }
 }

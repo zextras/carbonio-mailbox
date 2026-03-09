@@ -46,7 +46,7 @@ public class InternalApiApplication extends Application {
 					} catch (ServiceException e) {
 						throw new RuntimeException(e);
 					}
-				}, accountService);
-		return Set.of(new MailboxResource(mailboxService), new AccountResource(accountService));
+				});
+		return Set.of(new MailboxResource(mailboxService, accountService), new AccountResource(accountService));
 	}
 }
