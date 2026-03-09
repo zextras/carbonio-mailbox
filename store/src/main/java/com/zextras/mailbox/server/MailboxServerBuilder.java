@@ -81,14 +81,14 @@ public class MailboxServerBuilder {
 			server.addConnector(userHttpConnector);
 
 			final ServerConnector userHttpsConnector = createUserHttpsConnector(server);
-			userHttpsConnector.setName("userHttpsConnector"); // 8080
+			userHttpsConnector.setName("userHttpsConnector");
 			server.addConnector(userHttpsConnector);
 
 			final ServerConnector adminHttpsConnector = createAdminHttpsConnector(server);
 			server.addConnector(adminHttpsConnector);
 
-			server.addConnector(createMtaAdminHttpsConnector(server)); // 7071
-			server.addConnector(createExtensionsHttpsConnector(server)); // 8742
+			server.addConnector(createMtaAdminHttpsConnector(server));
+			server.addConnector(createExtensionsHttpsConnector(server));
 			server.addConnector(createInternalApiConnector(server, httpConfig));
 
 			final ContextHandlerCollection contexts = new ContextHandlerCollection();
