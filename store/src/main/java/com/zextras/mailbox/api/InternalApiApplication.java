@@ -7,19 +7,19 @@
 package com.zextras.mailbox.api;
 
 import com.zextras.mailbox.api.rest.resource.AccountResource;
-import com.zextras.mailbox.api.rest.service.AccountService;
 import com.zextras.mailbox.api.rest.resource.MailboxResource;
+import com.zextras.mailbox.api.rest.service.AccountService;
 import com.zextras.mailbox.api.rest.service.MailboxService;
-import com.zextras.mailbox.api.rest.resource.PingResource;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.mailbox.MailboxManager;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
-import com.zimbra.common.service.ServiceException;
-import java.util.Set;
+
 import javax.ws.rs.core.Application;
+import java.util.Set;
 
 @OpenAPIDefinition(
 		info = @Info(
@@ -32,7 +32,7 @@ public class InternalApiApplication extends Application {
 
 	@Override
 	public Set<Class<?>> getClasses() {
-		return Set.of(PingResource.class, OpenApiResource.class);
+		return Set.of(OpenApiResource.class);
 	}
 
 	@Override

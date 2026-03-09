@@ -22,15 +22,6 @@ class InternalApiServerIT {
 	static final MailboxServerExtension server = new MailboxServerExtension();
 
 	@Test
-	void pingShouldReturn200() throws Exception {
-		final Response response = server.getHttpClient().get(
-				server.getInternalApiEndpoint() + "/ping");
-
-		assertEquals(200, response.statusCode());
-		assertEquals("{\"status\":\"pong\"}", response.body());
-	}
-
-	@Test
 	void openApiJsonShouldBeServed() throws Exception {
 		final Response response = server.getHttpClient().get(
 				"http://localhost:" + server.getInternalApiPort() + "/internal/openapi.json");
