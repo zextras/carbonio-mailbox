@@ -30,8 +30,9 @@ class MailboxResourceIT {
 				server.getInternalApiEndpoint() + "/accounts/mail/usage/" + account.getId());
 
 		assertEquals(200, response.statusCode());
-		assertTrue(response.body().contains("{\"used\":0}"),
-				"Response should contain 'used' field. Was: \n" + response.body());
+		assertTrue(response.body().contains("\"id\":\"" + account.getId() + "\""));
+		assertTrue(response.body().contains("\"name\":\"" + account.getName() + "\""));
+		assertTrue(response.body().contains("\"used\":0"));
 	}
 
 	@Test

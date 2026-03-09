@@ -42,8 +42,8 @@ public class MailboxResource {
   @Path("/usage/{accountId}")
   public Response getMailUsage(@Parameter(description = "The account ID") @PathParam("accountId") String accountId) {
     return accountService.getAccount(accountId)
-            .mapTry(mailboxService::getMailboxUsage)
-            .map(used -> Response.ok(new MailUsageResponse(used)).build())
+            .mapTry(account -> new MailUsageResponse(account.getId(), account.getName(), mailboxService.getMailboxUsage(account)))
+            .map(usage -> Response.ok(usage).build())
             .recover(e -> switch (e) {
               case ServiceException se when se.getCode().equals(ServiceException.NOT_FOUND) ->
                       Response.status(Response.Status.NOT_FOUND)
@@ -54,7 +54,7 @@ public class MailboxResource {
             .get();
   }
 
-  public record MailUsageResponse(long used) {
+  public record MailUsageResponse(String id, String name, long used) {
   }
 
 }
