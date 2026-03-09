@@ -46,8 +46,7 @@ public class InternalApiApplication extends Application {
 					} catch (ServiceException e) {
 						throw new RuntimeException(e);
 					}
-				},
-				Provisioning::getInstance, accountService);
+				}, accountService);
 		return Set.of(new MailboxResource(mailboxService), new AccountResource(accountService));
 	}
 }

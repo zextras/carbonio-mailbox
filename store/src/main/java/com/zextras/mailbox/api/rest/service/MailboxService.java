@@ -1,7 +1,6 @@
 package com.zextras.mailbox.api.rest.service;
 
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -13,15 +12,13 @@ public class MailboxService {
 
 	private final Supplier<MailboxManager> mailboxManagerSupplier;
 	private final Supplier<SoapProvisioning> soapProvisioningSupplier;
-	private final Supplier<Provisioning> provisioningSupplier;
-	private final AccountService accountService;
+  private final AccountService accountService;
 
 	public MailboxService(Supplier<MailboxManager> mailboxManagerSupplier,
                           Supplier<SoapProvisioning> soapProvisioningSupplier,
-                          Supplier<Provisioning> provisioningSupplier, AccountService accountService) {
+						  AccountService accountService) {
 		this.mailboxManagerSupplier = mailboxManagerSupplier;
 		this.soapProvisioningSupplier = soapProvisioningSupplier;
-		this.provisioningSupplier = provisioningSupplier;
       this.accountService = accountService;
     }
 
@@ -33,8 +30,7 @@ public class MailboxService {
 
 	public Try<Long> getMailUsage(Account account) {
 		return Try.of(() -> {
-			final Provisioning provisioning = provisioningSupplier.get();
-			if (provisioning.onLocalServer(account)) {
+			if (account.isOnLocalServer()) {
 				final Mailbox mbox = mailboxManagerSupplier.get().getMailboxByAccount(account);
 				return mbox.getSize();
 			} else {
