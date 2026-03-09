@@ -1,10 +1,10 @@
 package com.zextras.mailbox.api.rest.service;
 
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import io.vavr.control.Try;
 
 import java.util.function.Supplier;
 
@@ -19,16 +19,19 @@ public class MailboxService {
     this.soapProvisioningSupplier = soapProvisioningSupplier;
   }
 
+  public long getMailboxUsage(Account account) throws ServiceException {
+    if (account.isOnLocalServer()) {
+      return getLocalMailbox(account).getSize();
+    } else {
+      return getRemoteMailbox(account).getUsed();
+    }
+  }
 
-  public Try<Long> getMailUsage(Account account) {
-    return Try.of(() -> {
-      if (account.isOnLocalServer()) {
-        final Mailbox mbox = mailboxManagerSupplier.get().getMailboxByAccount(account);
-        return mbox.getSize();
-      } else {
-        final SoapProvisioning.MailboxInfo info = soapProvisioningSupplier.get().getMailbox(account);
-        return info.getUsed();
-      }
-    });
+  private Mailbox getLocalMailbox(Account account) throws ServiceException {
+    return mailboxManagerSupplier.get().getMailboxByAccount(account);
+  }
+
+  private SoapProvisioning.MailboxInfo getRemoteMailbox(Account account) throws ServiceException {
+    return soapProvisioningSupplier.get().getMailbox(account);
   }
 }

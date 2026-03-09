@@ -13,6 +13,7 @@ import com.zimbra.common.service.ServiceException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.vavr.control.Try;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -41,7 +42,7 @@ public class MailboxResource {
   @Path("/usage/{accountId}")
   public Response getMailUsage(@Parameter(description = "The account ID") @PathParam("accountId") String accountId) {
     return accountService.getAccount(accountId)
-            .flatMap(mailboxService::getMailUsage)
+            .mapTry(mailboxService::getMailboxUsage)
             .map(used -> Response.ok(new MailUsageResponse(used)).build())
             .recover(e -> switch (e) {
               case ServiceException se when se.getCode().equals(ServiceException.NOT_FOUND) ->
