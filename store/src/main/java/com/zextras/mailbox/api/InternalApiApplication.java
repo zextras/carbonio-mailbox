@@ -14,7 +14,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.mailbox.MailboxManager;
-import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 
@@ -29,11 +28,6 @@ import java.util.Set;
 		)
 )
 public class InternalApiApplication extends Application {
-
-	@Override
-	public Set<Class<?>> getClasses() {
-		return Set.of(OpenApiResource.class);
-	}
 
 	@Override
 	public Set<Object> getSingletons() {
