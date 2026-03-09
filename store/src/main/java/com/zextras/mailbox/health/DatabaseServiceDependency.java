@@ -4,6 +4,7 @@
 
 package com.zextras.mailbox.health;
 
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
@@ -44,8 +45,9 @@ public class DatabaseServiceDependency extends ServiceDependency {
   }
 
   private boolean doCheckStatus() {
+    var selectStatement = "com.zimbra.cs.db.HSQLDB".equals(LC.zimbra_class_database.value()) ? "SELECT 1 FROM (VALUES(0)) AS t" : "SELECT 1";
     try (DbConnection connection = dbPool.getDatabaseConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT 1 FROM (VALUES(0)) AS t");
+        PreparedStatement preparedStatement = connection.prepareStatement(selectStatement);
         ResultSet resultSet = preparedStatement.executeQuery()) {
       resultSet.next();
       return true;

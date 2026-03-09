@@ -4,6 +4,8 @@
 
 package com.zextras.mailbox.health;
 
+import static org.mockito.ArgumentMatchers.anyString;
+
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
@@ -84,7 +86,7 @@ class DatabaseServiceDependencyTest {
     final DbPool dbPool = Mockito.mock(DbPool.class);
     final DbConnection dbConnection = Mockito.mock(DbConnection.class);
     Mockito.when(dbPool.getDatabaseConnection()).thenReturn(dbConnection);
-    Mockito.when(dbConnection.prepareStatement("SELECT 1 FROM (VALUES(0)) AS t")).thenThrow(new SQLException());
+    Mockito.when(dbConnection.prepareStatement(anyString())).thenThrow(new SQLException());
 
     final DatabaseServiceDependency databaseService =
         new DatabaseServiceDependency(dbPool, System::currentTimeMillis);
@@ -108,7 +110,7 @@ class DatabaseServiceDependencyTest {
     final PreparedStatement preparedStatement = Mockito.mock(PreparedStatement.class);
     final ResultSet resultSet = Mockito.mock(ResultSet.class);
     Mockito.when(dbPool.getDatabaseConnection()).thenReturn(dbConnection);
-    Mockito.when(dbConnection.prepareStatement("SELECT 1 FROM (VALUES(0)) AS t")).thenReturn(preparedStatement);
+    Mockito.when(dbConnection.prepareStatement(anyString())).thenReturn(preparedStatement);
     Mockito.when(preparedStatement.executeQuery()).thenReturn(resultSet);
     Mockito.when(resultSet.next()).thenReturn(true);
     return dbPool;
