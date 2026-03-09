@@ -10,17 +10,15 @@ import com.zextras.mailbox.api.InternalApiContextHandler;
 import com.zextras.mailbox.util.MailboxServerExtension;
 import com.zextras.mailbox.util.SoapClient;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
-import com.zextras.mailbox.util.TestHttpClient;
-import com.zextras.mailbox.util.TestHttpClient.Response;
 import com.zimbra.cs.account.Account;
 import com.zimbra.soap.account.message.AuthRequest;
 import com.zimbra.soap.type.AccountSelector;
-import java.util.Map;
-import org.apache.http.client.methods.HttpGet;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+
+import java.util.Map;
 
 @Tag("e2e")
 class MailboxServerAPITest {
