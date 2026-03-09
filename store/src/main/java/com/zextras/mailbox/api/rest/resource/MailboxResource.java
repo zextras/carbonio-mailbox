@@ -7,6 +7,7 @@
 package com.zextras.mailbox.api.rest.resource;
 
 import com.zextras.mailbox.api.rest.response.ErrorResponse;
+import com.zextras.mailbox.api.rest.service.AccountService;
 import com.zextras.mailbox.api.rest.service.MailboxService;
 import com.zimbra.common.service.ServiceException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,9 +25,11 @@ import javax.ws.rs.core.Response;
 public class MailboxResource {
 
   private final MailboxService mailboxService;
+  private final AccountService accountService;
 
-  public MailboxResource(MailboxService mailboxService) {
+  public MailboxResource(MailboxService mailboxService, AccountService accountService) {
     this.mailboxService = mailboxService;
+    this.accountService = accountService;
   }
 
   @GET
@@ -37,7 +40,8 @@ public class MailboxResource {
   @ApiResponse(responseCode = "500", description = "Internal server error")
   @Path("/usage/{accountId}")
   public Response getMailUsage(@Parameter(description = "The account ID") @PathParam("accountId") String accountId) {
-    return mailboxService.getMailUsage(accountId)
+    return accountService.getAccount(accountId)
+            .flatMap(mailboxService::getMailUsage)
             .map(used -> Response.ok(new MailUsageResponse(used)).build())
             .recover(e -> switch (e) {
               case ServiceException se when se.getCode().equals(ServiceException.NOT_FOUND) ->

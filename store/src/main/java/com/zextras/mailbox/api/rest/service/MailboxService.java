@@ -10,33 +10,25 @@ import java.util.function.Supplier;
 
 public class MailboxService {
 
-	private final Supplier<MailboxManager> mailboxManagerSupplier;
-	private final Supplier<SoapProvisioning> soapProvisioningSupplier;
-  private final AccountService accountService;
+  private final Supplier<MailboxManager> mailboxManagerSupplier;
+  private final Supplier<SoapProvisioning> soapProvisioningSupplier;
 
-	public MailboxService(Supplier<MailboxManager> mailboxManagerSupplier,
-                          Supplier<SoapProvisioning> soapProvisioningSupplier,
-						  AccountService accountService) {
-		this.mailboxManagerSupplier = mailboxManagerSupplier;
-		this.soapProvisioningSupplier = soapProvisioningSupplier;
-      this.accountService = accountService;
-    }
-
-	public Try<Long> getMailUsage(String accountId) {
-		return accountService.getAccount(accountId)
-						.flatMap(this::getMailUsage);
-	}
+  public MailboxService(Supplier<MailboxManager> mailboxManagerSupplier,
+                        Supplier<SoapProvisioning> soapProvisioningSupplier) {
+    this.mailboxManagerSupplier = mailboxManagerSupplier;
+    this.soapProvisioningSupplier = soapProvisioningSupplier;
+  }
 
 
-	private Try<Long> getMailUsage(Account account) {
-		return Try.of(() -> {
-			if (account.isOnLocalServer()) {
-				final Mailbox mbox = mailboxManagerSupplier.get().getMailboxByAccount(account);
-				return mbox.getSize();
-			} else {
-				final SoapProvisioning.MailboxInfo info = soapProvisioningSupplier.get().getMailbox(account);
-				return info.getUsed();
-			}
-		});
-	}
+  public Try<Long> getMailUsage(Account account) {
+    return Try.of(() -> {
+      if (account.isOnLocalServer()) {
+        final Mailbox mbox = mailboxManagerSupplier.get().getMailboxByAccount(account);
+        return mbox.getSize();
+      } else {
+        final SoapProvisioning.MailboxInfo info = soapProvisioningSupplier.get().getMailbox(account);
+        return info.getUsed();
+      }
+    });
+  }
 }
