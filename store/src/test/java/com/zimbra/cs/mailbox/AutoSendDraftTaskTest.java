@@ -24,7 +24,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for {@link AutoSendDraftTask}.Z
+ * Tests for {@link AutoSendDraftTask}
  */
 class AutoSendDraftTaskTest extends MailboxTestSuite {
 
