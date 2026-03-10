@@ -157,19 +157,19 @@ pipeline {
             steps {
                 dockerStage([
                         dockerfile: 'docker/mailbox/Dockerfile',
-                        imageName : 'carbonio-mailbox',
-                        ocLabels  : [
-                            title          : 'Carbonio Mailbox',
-                            descriptionFile: 'docker/mailbox/description.md'
-                        ]
+                    imageName : 'carbonio-mailbox',
+                    ocLabels  : [
+                        title          : 'Carbonio Mailbox',
+                        descriptionFile: 'docker/mailbox/description.md'
+                    ]
                 ])
                 dockerStage([
-                        dockerfile: 'docker/mariadb/Dockerfile',
-                        imageName : 'carbonio-mariadb',
-                        ocLabels  : [
-                                title          : 'Carbonio MariaDB',
-                                descriptionFile: 'docker/mariadb/description.md'
-                        ]
+                    dockerfile: 'docker/mariadb/Dockerfile',
+                    imageName : 'carbonio-mariadb',
+                    ocLabels  : [
+                            title          : 'Carbonio MariaDB',
+                            descriptionFile: 'docker/mariadb/description.md'
+                    ]
                 ])
             }
         }
@@ -178,16 +178,16 @@ pipeline {
             steps {
                 echo 'Building deb/rpm packages'
                 buildStage([
-                        skipStash: true,
-                        buildDirs: ['staging/packages'],
-                        overrides: [
-                                ubuntu: [
-                                        preBuildScript: '''
+                    skipStash: true,
+                    buildDirs: ['staging/packages'],
+                    overrides: [
+                        ubuntu: [
+                            preBuildScript: '''
                                 apt-get update
                                 apt-get install -y --no-install-recommends rsync
                             '''
-                                ]
                         ]
+                    ]
                 ])
             }
         }
@@ -199,7 +199,7 @@ pipeline {
             }
             steps {
                 uploadStage(
-                        packages: yapHelper.getPackageNames('staging/packages/yap.json')
+                    packages: yapHelper.getPackageNames('staging/packages/yap.json')
                 )
             }
         }
