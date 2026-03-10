@@ -14,6 +14,7 @@ import com.zimbra.cs.account.Provisioning.GroupMembership;
 import com.zimbra.cs.account.Provisioning.SetPasswordResult;
 import com.zimbra.cs.account.auth.AuthContext;
 import com.zimbra.soap.admin.type.DataSourceType;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -517,5 +518,9 @@ public class Account extends ZAttrAccount implements GroupedEntry, AliasedEntry 
    */
   public void refreshUserCredentials() throws ServiceException {
     getProvisioning().refreshUserCredentials(this);
+  }
+
+  public boolean isOnLocalServer() throws ServiceException {
+    return getProvisioning().onLocalServer(this);
   }
 }

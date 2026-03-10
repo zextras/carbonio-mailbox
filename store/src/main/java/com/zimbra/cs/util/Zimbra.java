@@ -15,7 +15,6 @@ import com.zimbra.common.soap.SoapTransport;
 import com.zimbra.common.util.FileUtil;
 import com.zimbra.common.util.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.AttributeManager;
 import com.zimbra.cs.account.AuthTokenRegistry;
 import com.zimbra.cs.account.AutoProvisionThread;
 import com.zimbra.cs.account.ExternalAccountManagerTask;
@@ -301,7 +300,9 @@ public final class Zimbra {
       }
 
       if (app.supports(WaitSetMgr.class.getName())) {
-        WaitSetMgr.startup();
+        if (LC.support_timer.booleanValue()) {
+          WaitSetMgr.startup();
+        }
       }
 
       if (app.supports(ScheduledTaskManager.class.getName())) {
@@ -323,12 +324,12 @@ public final class Zimbra {
         smtpServer.setRecipientValidator(new SmtpRecipientValidator());
       }
 
-      if (app.supports(AclPushTask.class)) {
+      if (LC.support_timer.booleanValue() && app.supports(AclPushTask.class)) {
         long pushInterval = server.getSharingUpdatePublishInterval();
         sTimer.schedule(new AclPushTask(), pushInterval, pushInterval);
       }
 
-      if (app.supports(ExternalAccountManagerTask.class)) {
+      if (LC.support_timer.booleanValue() && app.supports(ExternalAccountManagerTask.class)) {
         long interval = server.getExternalAccountStatusCheckInterval();
         sTimer.schedule(new ExternalAccountManagerTask(), interval, interval);
       }
@@ -417,7 +418,9 @@ public final class Zimbra {
 
     ZimbraHttpConnectionManager.shutdownReaperThread();
 
-    sTimer.cancel();
+    if (LC.support_timer.booleanValue()) {
+      sTimer.cancel();
+    }
 
     try {
       DbPool.shutdown();

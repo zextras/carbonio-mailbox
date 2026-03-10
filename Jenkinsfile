@@ -28,22 +28,13 @@ pipeline {
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
         JAVA_OPTS = '-Dfile.encoding=UTF8'
         LC_ALL = 'C.UTF-8'
-        MAVEN_OPTS = '-Xmx4g'
+        MAVEN_OPTS = '-Xmx2g'
     }
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
         skipDefaultCheckout()
         timeout(time: 2, unit: 'HOURS')
-    }
-
-    parameters {
-        booleanParam defaultValue: false,
-                description: 'Skip test and sonar analysis.',
-                name: 'SKIP_TEST_WITH_COVERAGE'
-        booleanParam defaultValue: false,
-                description: 'Skip sonar analysis.',
-                name: 'SKIP_SONARQUBE'
     }
 
     triggers {
@@ -84,7 +75,7 @@ pipeline {
         stage('UT, IT') {
             steps {
                 container('jdk-21') {
-                    sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,flaky,e2e"
+                    sh "mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -DexcludedGroups=api,flaky,e2e"
                 }
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
@@ -93,7 +84,7 @@ pipeline {
         stage('Flaky, API, E2E tests') {
             steps {
                 container('jdk-21') {
-                    sh "cd store && mvn ${MVN_OPTS} verify -Dgroups=flaky,api && mvn ${MVN_OPTS} verify -Dgroups=e2e"
+                    sh "cd store && mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=flaky,api && mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=e2e"
                 }
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
@@ -117,12 +108,6 @@ pipeline {
         }
 
         stage('Sonarqube Analysis') {
-            when {
-                allOf {
-                    expression { params.SKIP_SONARQUBE == false }
-                    expression { params.SKIP_TEST_WITH_COVERAGE == false }
-                }
-            }
             steps {
                 container('jdk-21') {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
