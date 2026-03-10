@@ -1,0 +1,21 @@
+[Unit]
+Description=Carbonio Mailbox Internal Api Sidecar
+Documentation=https://docs.zextras.com/
+Requires=network-online.target
+After=network-online.target
+PartOf=carbonio-appserver.target
+
+[Service]
+User=carbonio-mailbox
+ExecStart=/usr/bin/consul connect envoy \
+    -token-file /etc/carbonio/mailbox-internal-api/service-discover/token \
+    -admin-bind localhost:0 \
+    -sidecar-for carbonio-mailbox-internal-api
+Restart=on-failure
+RestartSec=15s
+ExecReload=/usr/bin/kill -HUP $MAINPID
+KillSignal=SIGINT
+LimitNOFILE=65536
+
+[Install]
+WantedBy=carbonio-appserver.target
