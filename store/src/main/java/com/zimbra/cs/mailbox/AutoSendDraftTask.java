@@ -20,12 +20,13 @@ import java.util.Set;
  * <ol>
  *   <li>Attempts to send the draft using <em>partial-send</em> mode so that valid recipients
  *       still receive the message even when one or more recipients are rejected by the MTA.</li>
- *   <li>On a <strong>permanent</strong> address failure ({@code SEND_ABORTED_ADDRESS_FAILURE} or
- *       {@code SEND_PARTIAL_ADDRESS_FAILURE}):
+ *   <li>On a <strong>permanent</strong> failure ({@code SEND_ABORTED_ADDRESS_FAILURE},
+ *       {@code SEND_PARTIAL_ADDRESS_FAILURE}, or {@code MESSAGE_TOO_BIG}):
  *       <ul>
  *         <li>Clears the {@code autoSendTime} metadata on the draft so the task is not
  *             rescheduled and the retry loop stops.</li>
- *         <li>Logs a warning with the failed addresses so the issue is visible in the logs.</li>
+ *         <li>Logs a warning with the failure code and detail so the issue is visible in the
+ *             logs.</li>
  *       </ul>
  *   </li>
  *   <li>Transient / connectivity failures are still propagated so the task scheduler can
@@ -38,13 +39,24 @@ public class AutoSendDraftTask extends ScheduledTask<Object> {
     private static final String DRAFT_ID_PROP_NAME = "draftId";
 
     /**
-     * MailServiceException error codes that represent permanent, non-retriable send failures
-     * caused by invalid recipient addresses. Retrying these would only produce the same result
-     * and — in the case of the SendLater feature — cause an infinite retry loop.
+     * {@link MailServiceException} error codes that represent permanent, non-retriable send
+     * failures. Retrying these would always produce the same result and — in the case of the
+     * SendLater feature — cause an infinite retry loop.
+     *
+     * <ul>
+     *   <li>{@code SEND_ABORTED_ADDRESS_FAILURE} — one or more RCPT commands were rejected by the
+     *       MTA with a 5xx permanent error and {@code sendPartial=false}: nothing was delivered.
+     *   <li>{@code SEND_PARTIAL_ADDRESS_FAILURE} — same rejection but {@code sendPartial=true}:
+     *       valid recipients were delivered, invalid ones were not.
+     *   <li>{@code MESSAGE_TOO_BIG} — the message exceeds the server's
+     *       {@code zimbraMtaMaxMessageSize} limit. The message content cannot change between
+     *       retries, so retrying is pointless.
+     * </ul>
      */
-    private static final Set<String> PERMANENT_ADDRESS_FAILURE_CODES = Set.of(
+    private static final Set<String> PERMANENT_SEND_FAILURE_CODES = Set.of(
         MailServiceException.SEND_ABORTED_ADDRESS_FAILURE,
-        MailServiceException.SEND_PARTIAL_ADDRESS_FAILURE
+        MailServiceException.SEND_PARTIAL_ADDRESS_FAILURE,
+        MailServiceException.MESSAGE_TOO_BIG
     );
 
     /**
@@ -101,12 +113,12 @@ public class AutoSendDraftTask extends ScheduledTask<Object> {
         try {
             mailSender.sendMimeMessage(new OperationContext(mbox), mbox, msg.getMimeMessage());
         } catch (MailServiceException e) {
-            if (PERMANENT_ADDRESS_FAILURE_CODES.contains(e.getCode())) {
-                // Permanent recipient failure – stop retrying.
-                ZimbraLog.scheduler.warn(
-                        "Permanent address failure while auto-sending draft id=%s; "
-                                + "clearing autoSendTime to prevent infinite retry loop. Error: %s",
-                        draftId, e.getMessage());
+            if (PERMANENT_SEND_FAILURE_CODES.contains(e.getCode())) {
+                // Permanent failure – stop retrying.
+                ZimbraLog.scheduler.info(
+                        "Permanent send failure [{}] while auto-sending draft id={}; "
+                                + "clearing autoSendTime. Error: {}",
+                        e.getCode(), draftId, e.getMessage());
                 // Clear the scheduled-send time so the task is never rescheduled.
                 boolean success = false;
                 try {
