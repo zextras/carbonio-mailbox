@@ -6,21 +6,12 @@
 package com.zimbra.cs.mailbox;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.service.ServiceException.Argument;
-import com.zimbra.common.util.MailUtil;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.Account;
 import com.zimbra.cs.service.util.ItemId;
-import com.zimbra.cs.util.AccountUtil;
-import com.zimbra.cs.util.JMSession;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 /**
  * Auto-send-draft scheduled task.
@@ -34,8 +25,7 @@ import javax.mail.internet.MimeMessage;
  *       <ul>
  *         <li>Clears the {@code autoSendTime} metadata on the draft so the task is not
  *             rescheduled and the retry loop stops.</li>
- *         <li>Sends an NDR (Non-Delivery Report) back to the sender listing the addresses
- *             that could not be reached.</li>
+ *         <li>Logs a warning with the failed addresses so the issue is visible in the logs.</li>
  *       </ul>
  *   </li>
  *   <li>Transient / connectivity failures are still propagated so the task scheduler can
@@ -112,10 +102,10 @@ public class AutoSendDraftTask extends ScheduledTask<Object> {
             mailSender.sendMimeMessage(new OperationContext(mbox), mbox, msg.getMimeMessage());
         } catch (MailServiceException e) {
             if (PERMANENT_ADDRESS_FAILURE_CODES.contains(e.getCode())) {
-                // Permanent recipient failure – stop retrying and notify the sender.
+                // Permanent recipient failure – stop retrying.
                 ZimbraLog.scheduler.warn(
                         "Permanent address failure while auto-sending draft id=%s; "
-                                + "clearing autoSendTime and sending NDR to sender. Error: %s",
+                                + "clearing autoSendTime to prevent infinite retry loop. Error: %s",
                         draftId, e.getMessage());
                 // Clear the scheduled-send time so the task is never rescheduled.
                 boolean success = false;
@@ -126,8 +116,6 @@ public class AutoSendDraftTask extends ScheduledTask<Object> {
                 } finally {
                     mbox.endTransaction(success);
                 }
-                // Attempt to send an NDR so the user knows what happened.
-                sendNdr(mbox, msg, e.getArgs());
                 return null;
             }
             // All other exceptions (transient failures, etc.) are re-thrown so the
@@ -149,39 +137,6 @@ public class AutoSendDraftTask extends ScheduledTask<Object> {
         return mbox.getMailSender();
     }
 
-    /**
-     * Sends a Non-Delivery Report to the mailbox owner (the original sender of the draft)
-     * listing every address that could not be delivered.
-     *
-     * @param mbox      owner mailbox
-     * @param draft     the draft message that failed to send
-     * @param addrArgs  the {@link Argument} list carried by the {@link MailServiceException}
-     *                  (contains "invalid" and/or "unsent" address entries)
-     */
-    private void sendNdr(Mailbox mbox, Message draft, List<Argument> addrArgs) {
-        try {
-            Account account = mbox.getAccount();
-            InternetAddress senderAddr = AccountUtil.getFriendlyEmailAddress(account);
-            String senderEmail = account.getName();
-
-            MimeMessage ndr = new MimeMessage(JMSession.getSmtpSession(account));
-            String subject;
-            try {
-                subject = draft.getMimeMessage().getSubject();
-            } catch (MessagingException ex) {
-                subject = "(no subject)";
-            }
-            MailUtil.populateFailureDeliveryMessageFields(ndr, subject, senderEmail, addrArgs, senderAddr);
-
-            MailSender ndrSender = getMailSender(mbox);
-            ndrSender.setSaveToSent(false);
-            ndrSender.setEnvelopeFrom("<>");
-            ndrSender.sendMimeMessage(new OperationContext(mbox), mbox, ndr);
-        } catch (Exception ex) {
-            ZimbraLog.scheduler.warn(
-                    "Failed to send NDR for auto-send draft id=%s: %s", draft.getId(), ex.getMessage(), ex);
-        }
-    }
 
     /**
      * Cancels any existing scheduled auto-send task for the given draft.

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+// SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
 //
 // SPDX-License-Identifier: GPL-2.0-only
 
@@ -8,14 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mime.ParsedMessage;
 import java.util.Collection;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
 import javax.mail.Address;
 import javax.mail.SendFailedException;
 import javax.mail.Session;
@@ -189,56 +187,6 @@ class AutoSendDraftTaskTest extends MailboxTestSuite {
                 "autoSendTime must be cleared to 0 to stop the retry loop");
     }
 
-    /**
-     * When a scheduled send fails permanently due to invalid recipients, the task must attempt
-     * to send an NDR to the sender. We verify this by injecting a sender that:
-     * <ul>
-     *   <li>On the first call (the draft send): throws a permanent address failure.</li>
-     *   <li>On the second call (the NDR send): records that it was invoked.</li>
-     * </ul>
-     */
-    @Test
-    @DisplayName("call() should attempt to send an NDR to the sender on permanent address failure")
-    void call_shouldSendNDRToSender_whenSendAbortedDueToInvalidRecipient()
-            throws Exception {
-        long futureAutoSendTime = System.currentTimeMillis() + 60_000L;
-        Message draft = createScheduledDraft(futureAutoSendTime);
-        int draftId = draft.getId();
-
-        AtomicBoolean ndrSent = new AtomicBoolean(false);
-
-        // First call → reject recipient (draft send).
-        // Second call → record that NDR was attempted.
-        MailSender trackingSender = new MailSender() {
-            private int callCount = 0;
-
-            @Override
-            protected Collection<Address> sendMessage(Mailbox mbox, MimeMessage mm,
-                    Collection<RollbackData> rollbacks)
-                    throws SafeMessagingException {
-                callCount++;
-                if (callCount == 1) {
-                    // Simulate draft send failure with an invalid recipient.
-                    Address invalid = new InternetAddress() {{
-                        try { setAddress("bad@internal.domain"); } catch (Exception ignored) {}
-                    }};
-                    throw new SafeSendFailedException(
-                            new SendFailedException("MESSAGE_NOT_DELIVERED",
-                                    new Exception("RCPT failed"),
-                                    new Address[0], new Address[0], new Address[]{invalid}));
-                }
-                // Second call is the NDR send — record it and succeed.
-                ndrSent.set(true);
-                return java.util.Collections.emptyList();
-            }
-        };
-
-        AutoSendDraftTask task = taskWithSender(mbox.getId(), draftId, trackingSender);
-
-        assertDoesNotThrow(task::call);
-
-        assertTrue(ndrSent.get(), "An NDR should have been sent to notify the sender of the delivery failure");
-    }
 
     /**
      * A non-address-related {@link MailServiceException} (e.g. a transient connectivity failure)
