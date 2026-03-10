@@ -95,15 +95,16 @@ pipeline {
             steps {
                 container('jdk-21') {
                     sh """
-                        cd soap
-                        mvn ${MVN_OPTS} antrun:run@generate-soap-docs
-                        cd ..
+                        (
+                            cd soap || echo "Directory soap does not exist"
+                            mvn ${MVN_OPTS} antrun:run@generate-soap-docs
+                        )
                         VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-                        mkdir -p artifacts
-                        tar -czf artifacts/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
+                        mkdir -p docs
+                        tar -czf docs/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
                     """
                 }
-                archiveArtifacts artifacts: 'artifacts/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'docs/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
             }
         }
 
