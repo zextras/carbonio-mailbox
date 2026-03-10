@@ -96,7 +96,7 @@ pipeline {
                 container('jdk-21') {
                     sh """
                         (
-                            cd soap || echo "Directory soap does not exist"
+                            cd soap || { echo "Directory soap does not exist"; exit 1; }
                             mvn ${MVN_OPTS} antrun:run@generate-soap-docs
                         )
                         VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
@@ -156,7 +156,7 @@ pipeline {
         stage('Build and Publish Docker images') {
             steps {
                 dockerStage([
-                        dockerfile: 'docker/mailbox/Dockerfile',
+                    dockerfile: 'docker/mailbox/Dockerfile',
                     imageName : 'carbonio-mailbox',
                     ocLabels  : [
                         title          : 'Carbonio Mailbox',
@@ -167,8 +167,8 @@ pipeline {
                     dockerfile: 'docker/mariadb/Dockerfile',
                     imageName : 'carbonio-mariadb',
                     ocLabels  : [
-                            title          : 'Carbonio MariaDB',
-                            descriptionFile: 'docker/mariadb/description.md'
+                        title          : 'Carbonio MariaDB',
+                        descriptionFile: 'docker/mariadb/description.md'
                     ]
                 ])
             }
