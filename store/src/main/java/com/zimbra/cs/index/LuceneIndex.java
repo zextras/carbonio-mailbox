@@ -691,14 +691,7 @@ public final class LuceneIndex extends IndexStore {
     SearchParams params = zq.getParams();
     ZimbraLog.search.debug("query: %s", params.getQueryString());
 
-    // handle special-case Task-only sorts: convert them to a "normal sort"
-    //     and then re-sort them at the end
-    // FIXME - this hack (converting the sort) should be able to go away w/ the new SortBy
-    //         implementation, if the lower-level code was modified to use the SortBy.Criterion
-    //         and SortBy.Direction data (instead of switching on the SortBy itself)
-    //         We still will need this switch so that we can wrap the
-    //         results in the ReSortingQueryResults
-    boolean isTaskSort = false;
+    // handle special-case localized sorts: re-sort results at the end
     boolean isLocalizedSort = false;
     SortBy originalSort = params.getSortBy();
     switch (originalSort) {
@@ -709,9 +702,6 @@ public final class LuceneIndex extends IndexStore {
     }
 
     ZimbraQueryResults results = zq.execute();
-    if (isTaskSort) {
-      results = new ReSortingQueryResults(results, originalSort, null);
-    }
     if (isLocalizedSort) {
       results = new ReSortingQueryResults(results, originalSort, params);
     }
