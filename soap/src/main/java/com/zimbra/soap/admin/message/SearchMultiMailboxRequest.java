@@ -144,10 +144,7 @@ public class SearchMultiMailboxRequest implements SearchParameters {
    *     |attachAsc|attachDesc|flagAsc|flagDesc|priorityAsc|priorityDesc|idAsc|idDesc|readAsc|readDesc</b>
    *     If <b>{sort-by}</b> is "none" then cursors MUST NOT be used, and some searches are
    *     impossible (searches that require intersection of complex sub-ops). Server will throw an
-   *     IllegalArgumentException if the search is invalid. <br>
-   *     ADDITIONAL SORT MODES FOR TASKS: valid only if <b>types="task"</b> (and task alone): <br>
-   *     <b>taskDueAsc|taskDueDesc|taskStatusAsc|taskStatusDesc|taskPercCompletedAsc|
-   *     taskPercCompletedDesc</b>
+   *     IllegalArgumentException if the search is invalid.
    */
   @XmlAttribute(name = MailConstants.A_SORTBY /* sortBy */, required = false)
   private String sortBy;
