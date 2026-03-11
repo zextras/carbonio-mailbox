@@ -41,7 +41,6 @@ public final class ResultsPager {
         // request and used something else...
         params.setSortBy(results.getSortBy());
 
-        // bug: 23427 -- TASK sorts are incompatible with cursors here so don't use the cursor at all
         boolean dontUseCursor = false;
         boolean skipOffsetHack = false;
         switch (params.getSortBy()) {

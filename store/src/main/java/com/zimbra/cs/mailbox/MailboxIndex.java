@@ -214,14 +214,8 @@ public final class MailboxIndex {
     ZimbraLog.search.debug("query: %s", params.getQueryString());
     ZimbraLog.searchstat.debug("query: %s", zq.toSanitizedtring());
 
-    // handle special-case Task-only sorts: convert them to a "normal sort" and then re-sort them at
-    // the end
-    // TODO: this hack (converting the sort) should be able to go away w/ the new SortBy
-    // implementation, if the
-    // lower-level code was modified to use the SortBy.Criterion and SortBy.Direction data (instead
-    // of switching on
-    // the SortBy itself). We still will need this switch so that we can wrap the results in
-    // ReSortingQueryResults.
+    // Handle special-case sorts that require post-processing: wrap results in
+    // ReSortingQueryResults for localized and read-flag sorts.
     boolean isLocalizedSort = false;
     boolean isReadSort = false;
     SortBy originalSort = params.getSortBy();
