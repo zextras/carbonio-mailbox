@@ -41,18 +41,9 @@ public final class ResultsPager {
         // request and used something else...
         params.setSortBy(results.getSortBy());
 
-        // bug: 23427 -- TASK sorts are incompatible with cursors here so don't use the cursor at all
         boolean dontUseCursor = false;
         boolean skipOffsetHack = false;
         switch (params.getSortBy()) {
-            case TASK_DUE_ASC:
-            case TASK_DUE_DESC:
-            case TASK_PERCENT_COMPLETE_ASC:
-            case TASK_PERCENT_COMPLETE_DESC:
-            case TASK_STATUS_ASC:
-            case TASK_STATUS_DESC:
-                dontUseCursor = true;
-                break;
             case NAME_LOCALIZED_ASC:
             case NAME_LOCALIZED_DESC:
                 dontUseCursor = !DebugConfig.enableContactLocalizedSort;
