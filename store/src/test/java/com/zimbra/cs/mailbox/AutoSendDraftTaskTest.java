@@ -128,17 +128,16 @@ class AutoSendDraftTaskTest extends MailboxTestSuite {
    *
    * <ol>
    *   <li>NOT propagate the exception (which would cause the task scheduler to retry).
-   *   <li>Clear the draft's {@code autoSendTime} to 0 so the task is not re-scheduled on server
-   *       restart.
-   *   <li>Leave the draft message intact so the user can correct the recipient.
+   *   <li>Delete the draft, because valid recipients already received the message and keeping the
+   *       draft would risk an accidental duplicate send.
    * </ol>
    *
    * <p>This covers the primary SendLater infinite-retry-loop scenario: an internal domain recipient
    * that does not exist is rejected with 550 5.1.1 by the MTA.
    */
   @Test
-  @DisplayName("call() should clear autoSendTime and not retry on SEND_PARTIAL_ADDRESS_FAILURE")
-  void call_shouldClearAutoSendTimeAndNotRetry_whenSendPartialAddressFailure()
+  @DisplayName("call() should delete draft and not retry on SEND_PARTIAL_ADDRESS_FAILURE")
+  void call_shouldDeleteDraftAndNotRetry_whenSendPartialAddressFailure()
       throws Exception {
     long futureAutoSendTime = System.currentTimeMillis() + 60_000L;
     Message draft = createScheduledDraft(futureAutoSendTime);
@@ -155,13 +154,12 @@ class AutoSendDraftTaskTest extends MailboxTestSuite {
     // Must NOT throw — permanent failures must be handled, not propagated.
     assertDoesNotThrow(task::call);
 
-    // autoSendTime must be cleared to prevent the task from being rescheduled.
-    Message draftAfter = (Message) mbox.getItemById(null, draftId, MailItem.Type.MESSAGE);
-    assertNotNull(draftAfter, "Draft should still exist in the mailbox");
-    assertEquals(
-        0L,
-        draftAfter.getDraftAutoSendTime(),
-        "autoSendTime must be cleared to 0 to stop the retry loop");
+    // Draft must be deleted: valid recipients already received the message, keeping the draft
+    // would risk an accidental duplicate send.
+    assertThrows(
+        MailServiceException.NoSuchItemException.class,
+        () -> mbox.getItemById(null, draftId, MailItem.Type.MESSAGE),
+        "Draft should be deleted after partial send (valid recipients already received it)");
   }
 
   /**

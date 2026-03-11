@@ -20,13 +20,15 @@ import java.util.Set;
  * <ol>
  *   <li>Attempts to send the draft using <em>partial-send</em> mode so that valid recipients
  *       still receive the message even when one or more recipients are rejected by the MTA.</li>
- *   <li>On a <strong>permanent</strong> failure ({@code SEND_ABORTED_ADDRESS_FAILURE},
- *       {@code SEND_PARTIAL_ADDRESS_FAILURE}, or {@code MESSAGE_TOO_BIG}):
+ *   <li>On a <strong>permanent</strong> failure:
  *       <ul>
- *         <li>Clears the {@code autoSendTime} metadata on the draft so the task is not
- *             rescheduled and the retry loop stops.</li>
- *         <li>Logs a warning with the failure code and detail so the issue is visible in the
- *             logs.</li>
+ *         <li>{@code SEND_PARTIAL_ADDRESS_FAILURE} — some valid recipients already received the
+ *             message; the draft is <strong>deleted</strong> to avoid confusion and prevent
+ *             accidental duplicate sends.</li>
+ *         <li>{@code SEND_ABORTED_ADDRESS_FAILURE} or {@code MESSAGE_TOO_BIG} — nothing was
+ *             delivered; the draft is <strong>kept</strong> so the user can correct it, but
+ *             {@code autoSendTime} is cleared to {@code 0} so the task is never rescheduled and
+ *             the retry loop stops.</li>
  *       </ul>
  *   </li>
  *   <li>Transient / connectivity failures are still propagated so the task scheduler can
@@ -116,17 +118,31 @@ public class AutoSendDraftTask extends ScheduledTask<Object> {
             if (PERMANENT_SEND_FAILURE_CODES.contains(e.getCode())) {
                 // Permanent failure – stop retrying.
                 ZimbraLog.scheduler.info(
-                        "Permanent send failure [{}] while auto-sending draft id={}; "
-                                + "clearing autoSendTime. Error: {}",
+                        "Permanent send failure [%s] while auto-sending draft id=%s; Error: %s",
                         e.getCode(), draftId, e.getMessage());
-                // Clear the scheduled-send time so the task is never rescheduled.
-                boolean success = false;
-                try {
-                    mbox.beginTransaction("clearDraftAutoSendTime", null);
-                    msg.setDraftAutoSendTime(0);
-                    success = true;
-                } finally {
-                    mbox.endTransaction(success);
+
+                if (MailServiceException.SEND_PARTIAL_ADDRESS_FAILURE.equals(e.getCode())) {
+                    // Valid recipients already received the message; delete the draft to prevent
+                    // the user from accidentally re-sending and creating duplicates.
+                    ZimbraLog.scheduler.info(
+                            "Deleting draft id=%s after partial send (valid recipients already received it).",
+                            draftId);
+                    mbox.delete(null, draftId, MailItem.Type.MESSAGE);
+                } else {
+                    // Nothing was delivered (SEND_ABORTED_ADDRESS_FAILURE / MESSAGE_TOO_BIG);
+                    // keep the draft so the user can correct it, but clear autoSendTime so it
+                    // is not rescheduled and the retry loop does not continue.
+                    ZimbraLog.scheduler.info(
+                            "Clearing autoSendTime on draft id=%s after undelivered permanent failure.",
+                            draftId);
+                    boolean success = false;
+                    try {
+                        mbox.beginTransaction("clearDraftAutoSendTime", null);
+                        msg.setDraftAutoSendTime(0);
+                        success = true;
+                    } finally {
+                        mbox.endTransaction(success);
+                    }
                 }
                 return null;
             }
