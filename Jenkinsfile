@@ -95,15 +95,16 @@ pipeline {
             steps {
                 container('jdk-21') {
                     sh """
-                        cd soap
-                        mvn ${MVN_OPTS} antrun:run@generate-soap-docs
-                        cd ..
+                        (
+                            cd soap || { echo "Directory soap does not exist"; exit 1; }
+                            mvn ${MVN_OPTS} antrun:run@generate-soap-docs
+                        )
                         VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-                        mkdir -p artifacts
-                        tar -czf artifacts/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
+                        mkdir -p docs
+                        tar -czf docs/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
                     """
                 }
-                archiveArtifacts artifacts: 'artifacts/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'docs/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
             }
         }
 
@@ -155,20 +156,20 @@ pipeline {
         stage('Build and Publish Docker images') {
             steps {
                 dockerStage([
-                        dockerfile: 'docker/mailbox/Dockerfile',
-                        imageName : 'carbonio-mailbox',
-                        ocLabels  : [
-                            title          : 'Carbonio Mailbox',
-                            descriptionFile: 'docker/mailbox/description.md'
-                        ]
+                    dockerfile: 'docker/mailbox/Dockerfile',
+                    imageName : 'carbonio-mailbox',
+                    ocLabels  : [
+                        title          : 'Carbonio Mailbox',
+                        descriptionFile: 'docker/mailbox/description.md'
+                    ]
                 ])
                 dockerStage([
-                        dockerfile: 'docker/mariadb/Dockerfile',
-                        imageName : 'carbonio-mariadb',
-                        ocLabels  : [
-                                title          : 'Carbonio MariaDB',
-                                descriptionFile: 'docker/mariadb/description.md'
-                        ]
+                    dockerfile: 'docker/mariadb/Dockerfile',
+                    imageName : 'carbonio-mariadb',
+                    ocLabels  : [
+                        title          : 'Carbonio MariaDB',
+                        descriptionFile: 'docker/mariadb/description.md'
+                    ]
                 ])
             }
         }
@@ -177,16 +178,16 @@ pipeline {
             steps {
                 echo 'Building deb/rpm packages'
                 buildStage([
-                        skipStash: true,
-                        buildDirs: ['staging/packages'],
-                        overrides: [
-                                ubuntu: [
-                                        preBuildScript: '''
+                    skipStash: true,
+                    buildDirs: ['staging/packages'],
+                    overrides: [
+                        ubuntu: [
+                            preBuildScript: '''
                                 apt-get update
                                 apt-get install -y --no-install-recommends rsync
                             '''
-                                ]
                         ]
+                    ]
                 ])
             }
         }
@@ -198,7 +199,7 @@ pipeline {
             }
             steps {
                 uploadStage(
-                        packages: yapHelper.getPackageNames('staging/packages/yap.json')
+                    packages: yapHelper.getPackageNames('staging/packages/yap.json')
                 )
             }
         }
