@@ -766,6 +766,11 @@
         <version>${mockserver.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>3.26.3</version>
+      </dependency>
+      <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit-assertj</artifactId>
         <version>${json-unit.version}</version>

@@ -117,6 +117,12 @@ components:
           type: boolean
         isExternal:
           type: boolean
+        locale:
+          type: string
+        features:
+          type: object
+          additionalProperties:
+            type: boolean
     ErrorResponse:
       type: object
       properties:
