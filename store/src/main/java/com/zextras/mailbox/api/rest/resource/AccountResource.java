@@ -8,6 +8,7 @@ package com.zextras.mailbox.api.rest.resource;
 
 import com.zextras.mailbox.api.rest.response.ErrorResponse;
 import com.zextras.mailbox.api.rest.service.AccountService;
+import com.zimbra.common.account.ZAttrProvisioning.AccountStatus;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthTokenException;
@@ -94,9 +95,14 @@ public class AccountResource {
             .get();
   }
 
-  public record AccountInfoResponse(String id, String name, String cosId, String domainId, boolean isGlobalAdmin) {
+  public record AccountInfoResponse(String id, String name, String displayName, String cosId, String domainId, AccountStatus status, boolean isGlobalAdmin, boolean isExternal) {
     public static AccountInfoResponse from(Account account) {
-      return new AccountInfoResponse(account.getId(), account.getName(), account.getCOSId(), account.getDomainId(), account.isIsAdminAccount());
-    }
+			try {
+				return new AccountInfoResponse(account.getId(), account.getName(), account.getDisplayName(), account.getCOSId(), account.getDomainId(), account.getAccountStatus(), account.isIsAdminAccount(), account.isAccountExternal());
+			} catch (ServiceException e) {
+        // TODO: isAccountExternal throws exception, how to handle?
+				throw new RuntimeException(e);
+			}
+		}
   }
 }

@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.zextras.mailbox.util.MailboxServerExtension;
 import com.zextras.mailbox.util.TestHttpClient.Response;
 import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.ZimbraAuthToken;
 import java.util.Map;
@@ -33,12 +34,35 @@ class AccountResourceIT {
 				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
 
 		assertEquals(200, response.statusCode());
+		assertInfo(response, account);
+	}
+
+	@Test
+	void externalUserAccountInfo() throws Exception {
+		final Account account = server.getAccountFactory()
+				.create();
+		account.setMailTransport("smtp://external.example.com");
+
+		final Response response = server.getHttpClient().get(
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
+
+		assertEquals(200, response.statusCode());
+		assertThatJson(response.body()).isObject()
+				.containsEntry("isExternal", true);
+		assertInfo(response, account);
+	}
+
+	private static void assertInfo(Response response, Account account) throws ServiceException {
 		assertThatJson(response.body()).isObject()
 				.containsEntry("id", account.getId())
 				.containsEntry("name", account.getName())
+				.containsEntry("displayName", account.getDisplayName())
 				.containsEntry("cosId", account.getCOSId())
 				.containsEntry("domainId", account.getDomainId())
-				.containsEntry("isGlobalAdmin", false);
+				.containsEntry("status", account.getAccountStatus().toString())
+				.containsEntry("isGlobalAdmin", account.isIsAdminAccount())
+				.containsEntry("isExternal", account.isAccountExternal()
+				);
 	}
 
 	@Test
@@ -95,10 +119,7 @@ class AccountResourceIT {
 						Map.of("Cookie", "ZM_AUTH_TOKEN=" + token));
 
 		assertEquals(200, response.statusCode());
-		assertThatJson(response.body()).isObject()
-				.containsEntry("id", account.getId())
-				.containsEntry("name", account.getName())
-				.containsEntry("isGlobalAdmin", false);
+		assertInfo(response, account);
 	}
 
 	@Test
@@ -111,10 +132,7 @@ class AccountResourceIT {
 						Map.of("Cookie", "ZM_ADMIN_AUTH_TOKEN=" + token));
 
 		assertEquals(200, response.statusCode());
-		assertThatJson(response.body()).isObject()
-				.containsEntry("id", account.getId())
-				.containsEntry("name", account.getName())
-				.containsEntry("isGlobalAdmin", true);
+		assertInfo(response, account);
 	}
 
 	@Test

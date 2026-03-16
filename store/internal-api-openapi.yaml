@@ -98,11 +98,24 @@ components:
           type: string
         name:
           type: string
+        displayName:
+          type: string
         cosId:
           type: string
         domainId:
           type: string
+        status:
+          type: string
+          enum:
+          - active
+          - maintenance
+          - locked
+          - closed
+          - lockout
+          - pending
         isGlobalAdmin:
+          type: boolean
+        isExternal:
           type: boolean
     ErrorResponse:
       type: object
