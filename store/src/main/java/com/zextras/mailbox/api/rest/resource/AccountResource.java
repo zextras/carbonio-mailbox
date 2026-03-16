@@ -10,10 +10,12 @@ import com.zextras.mailbox.api.rest.response.ErrorResponse;
 import com.zextras.mailbox.api.rest.service.AccountService;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.AuthTokenException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -41,6 +43,40 @@ public class AccountResource {
     return accountService.getAccount(accountId)
             .map(account -> Response.ok(AccountInfoResponse.from(account)).build())
             .recover(e -> switch (e) {
+              case ServiceException se when se.getCode().equals(ServiceException.NOT_FOUND) ->
+                      Response.status(Response.Status.NOT_FOUND)
+                              .entity(new ErrorResponse(e.getMessage()))
+                              .build();
+              default -> Response.serverError().entity(new ErrorResponse(e.getMessage())).build();
+            })
+            .get();
+  }
+
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Operation(summary = "Get Authenticated Account Info", description = "Returns account info for the authenticated user")
+  @ApiResponse(responseCode = "200", description = "Account Info")
+  @ApiResponse(responseCode = "401", description = "Invalid or missing auth token")
+  @ApiResponse(responseCode = "404", description = "Account not found")
+  @ApiResponse(responseCode = "500", description = "Internal server error")
+  @Path("/myself/info")
+  public Response getMyAccountInfo(@CookieParam("ZM_AUTH_TOKEN") String authTokenCookie) {
+    if (authTokenCookie == null || authTokenCookie.isEmpty()) {
+      return Response.status(Response.Status.UNAUTHORIZED)
+              .entity(new ErrorResponse("Missing auth token"))
+              .build();
+    }
+    return accountService.getAccountByAuthToken(authTokenCookie)
+            .map(account -> Response.ok(AccountInfoResponse.from(account)).build())
+            .recover(e -> switch (e) {
+              case AuthTokenException ignored ->
+                      Response.status(Response.Status.UNAUTHORIZED)
+                              .entity(new ErrorResponse("Invalid auth token"))
+                              .build();
+              case ServiceException se when se.getCode().equals(ServiceException.AUTH_EXPIRED) ->
+                      Response.status(Response.Status.UNAUTHORIZED)
+                              .entity(new ErrorResponse(e.getMessage()))
+                              .build();
               case ServiceException se when se.getCode().equals(ServiceException.NOT_FOUND) ->
                       Response.status(Response.Status.NOT_FOUND)
                               .entity(new ErrorResponse(e.getMessage()))
