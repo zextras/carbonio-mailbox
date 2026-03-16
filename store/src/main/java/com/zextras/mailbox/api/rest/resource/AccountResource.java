@@ -8,6 +8,7 @@ package com.zextras.mailbox.api.rest.resource;
 
 import com.zextras.mailbox.api.rest.response.ErrorResponse;
 import com.zextras.mailbox.api.rest.service.AccountService;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.account.ZAttrProvisioning.AccountStatus;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
@@ -17,6 +18,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -94,16 +99,24 @@ public class AccountResource {
 				.get();
 	}
 
+	public record CarbonioFeature(String name, Object value) {
+		public static CarbonioFeature map(Entry<String, Object> entry) {
+			return new CarbonioFeature(entry.getKey(), entry.getValue());
+		}
+	}
+
 	public record AccountInfoResponse(String id, String name, String displayName, String cosId,
 																		String domainId, AccountStatus status, boolean isGlobalAdmin,
-																		boolean isExternal, String locale) {
+																		boolean isExternal, String locale, Map<String, Boolean> features) {
 
 		public static AccountInfoResponse from(Account account) {
 			try {
 				return new AccountInfoResponse(account.getId(), account.getName(), account.getDisplayName(),
 						account.getCOSId(), account.getDomainId(), account.getAccountStatus(),
 						account.isIsAdminAccount(), account.isAccountExternal(),
-						account.getLocaleAsString()
+						account.getLocaleAsString(), account.getAttrs().entrySet().stream()
+						.filter(entry -> entry.getKey().startsWith("carbonioFeature"))
+						.collect(Collectors.toMap(Entry::getKey, entry -> Boolean.parseBoolean(entry.getValue().toString())))
 				);
 			} catch (ServiceException e) {
 				// TODO: isAccountExternal throws exception, how to handle?

@@ -38,6 +38,25 @@ class AccountResourceIT {
 	}
 
 	@Test
+	void returnsCarbonioFeatures() throws Exception {
+		final Account account = server.getAccountFactory()
+				.withAttribute(ZAttrProvisioning.A_carbonioFeatureFilesEnabled, false)
+				.withAttribute(ZAttrProvisioning.A_carbonioFeatureMailsAppEnabled, true)
+				.create();
+
+		final Response response = server.getHttpClient().get(
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
+
+
+		assertThatJson(response.body())
+				.node("features").isObject()
+				.containsEntry(ZAttrProvisioning.A_carbonioFeatureFilesEnabled, false)
+				.containsEntry(ZAttrProvisioning.A_carbonioFeatureMailsAppEnabled, true)
+				.containsKey(ZAttrProvisioning.A_carbonioFeatureTasksEnabled)
+		;
+	}
+
+	@Test
 	void externalUserAccountInfo() throws Exception {
 		final Account account = server.getAccountFactory()
 				.create();
