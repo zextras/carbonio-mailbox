@@ -26,6 +26,52 @@ import org.junit.jupiter.api.Test;
 @Disabled
 public class GetFolderTest extends MailboxTestSuite {
 
+	/**
+	 * Verifies that a folder subscribed to an external iCal/ICS URL:
+	 * <ul>
+	 *   <li>returns {@code perm="r"} to signal it is effectively read-only (content is
+	 *       synced one-way from the external source and cannot be written back)</li>
+	 *   <li>includes the {@code 'y'} (SYNCFOLDER) flag in its {@code f} attribute to
+	 *       indicate it is a sync folder backed by an external data source</li>
+	 * </ul>
+	 */
+	@Test
+	void externalIcalUrlFolderReturnsReadOnlyPermAndSyncFolderFlag() throws Exception {
+		var acct = createAccount().create();
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+
+		// Create a calendar folder with an external iCal URL.
+		// updateRssDataSource may log a warning in test but does not fail folder creation.
+		Folder.FolderOptions fopt = new Folder.FolderOptions()
+				.setDefaultView(Type.APPOINTMENT)
+				.setUrl("https://calendar.example.com/calendar.ics");
+		Folder calFolder = mbox.createFolder(null, "ExternalCal", Mailbox.ID_FOLDER_USER_ROOT, fopt);
+
+		// Fetch the folder via GetFolder
+		Element request = new Element.XMLElement(MailConstants.GET_FOLDER_REQUEST);
+		request.addElement(MailConstants.E_FOLDER)
+				.addAttribute(MailConstants.A_FOLDER, String.valueOf(calFolder.getId()));
+
+		Element response = new GetFolder().handle(request, ServiceTestUtil.getRequestContext(acct));
+
+		Element folderElem = response.getOptionalElement(MailConstants.E_FOLDER);
+		assertNotNull(folderElem, "folder element should be present in response");
+
+		// perm="r" — clients should not allow creating/editing items in this folder
+		assertEquals(
+				String.valueOf(ACL.ABBR_READ),
+				folderElem.getAttribute(MailConstants.A_RIGHTS, null),
+				"external iCal URL folder should report perm='r' (read-only)");
+
+		// flags should contain 'y' (SYNCFOLDER) — folder has an external data source
+		String flags = folderElem.getAttribute(MailConstants.A_FLAGS, "");
+		String syncFolderFlagChar = com.zimbra.cs.mailbox.Flag.toString(
+				com.zimbra.cs.mailbox.Flag.BITMASK_SYNCFOLDER);
+		assertTrue(
+				flags.contains(syncFolderFlagChar),
+				"external iCal URL folder should have SYNCFOLDER flag 'y', got flags='" + flags + "'");
+	}
+
 	@Test
 	void depth() throws Exception {
 		var acct = createAccount().create();
