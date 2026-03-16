@@ -49,7 +49,20 @@ class AccountResourceIT {
 		assertEquals(200, response.statusCode());
 		assertThatJson(response.body()).isObject()
 				.containsEntry("isExternal", true);
-		assertInfo(response, account);
+	}
+
+	@Test
+	void localeAccountInfo() throws Exception {
+		final String frFr = "fr_FR";
+		final Account account = server.getAccountFactory()
+				.withAttribute(ZAttrProvisioning.A_zimbraLocale, frFr)
+				.create();
+
+		final Response response = server.getHttpClient().get(
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
+
+		assertThatJson(response.body()).isObject()
+				.containsEntry("locale", frFr);
 	}
 
 	private static void assertInfo(Response response, Account account) throws ServiceException {
@@ -61,8 +74,10 @@ class AccountResourceIT {
 				.containsEntry("domainId", account.getDomainId())
 				.containsEntry("status", account.getAccountStatus().toString())
 				.containsEntry("isGlobalAdmin", account.isIsAdminAccount())
-				.containsEntry("isExternal", account.isAccountExternal()
-				);
+				.containsEntry("isExternal", account.isAccountExternal())
+				.containsEntry("locale", account.getLocaleAsString())
+		;
+
 	}
 
 	@Test
