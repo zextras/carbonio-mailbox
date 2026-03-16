@@ -40,8 +40,8 @@ class AccountResourceIT {
 	@Test
 	void returnsCarbonioFeatures() throws Exception {
 		final Account account = server.getAccountFactory()
-				.withAttribute(ZAttrProvisioning.A_carbonioFeatureFilesEnabled, false)
-				.withAttribute(ZAttrProvisioning.A_carbonioFeatureMailsAppEnabled, true)
+				.withAttribute(ZAttrProvisioning.A_carbonioFeatureFilesEnabled, "FALSE")
+				.withAttribute(ZAttrProvisioning.A_carbonioFeatureMailsAppEnabled, "TRUE")
 				.create();
 
 		final Response response = server.getHttpClient().get(
