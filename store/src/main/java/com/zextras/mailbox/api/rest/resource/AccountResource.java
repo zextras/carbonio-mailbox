@@ -13,6 +13,8 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthTokenException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 import javax.ws.rs.CookieParam;
@@ -35,9 +37,12 @@ public class AccountResource {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Operation(summary = "Get Account Info", description = "Returns account info")
-  @ApiResponse(responseCode = "200", description = "Account Info")
-  @ApiResponse(responseCode = "404", description = "Account not found")
-  @ApiResponse(responseCode = "500", description = "Internal server error")
+  @ApiResponse(responseCode = "200", description = "Account Info",
+          content = @Content(schema = @Schema(implementation = AccountInfoResponse.class)))
+  @ApiResponse(responseCode = "404", description = "Account not found",
+          content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+  @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
   @Path("/{accountId}/info")
   public Response getAccountInfo(@Parameter(description = "The account ID") @PathParam("accountId") String accountId) {
     return accountService.getAccount(accountId)

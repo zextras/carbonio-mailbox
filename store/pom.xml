@@ -928,6 +928,28 @@ EOF
       </plugin>
 
       <plugin>
+        <groupId>io.swagger.core.v3</groupId>
+        <artifactId>swagger-maven-plugin</artifactId>
+        <version>${swagger.version}</version>
+        <configuration>
+          <outputFileName>internal-api-openapi</outputFileName>
+          <outputPath>${project.basedir}</outputPath>
+          <outputFormat>YAML</outputFormat>
+          <resourcePackages>
+            <resourcePackage>com.zextras.mailbox.api.rest.resource</resourcePackage>
+          </resourcePackages>
+          <configurationFilePath>${project.basedir}/src/main/resources/openapi-configuration.json</configurationFilePath>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>resolve</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
       </plugin>

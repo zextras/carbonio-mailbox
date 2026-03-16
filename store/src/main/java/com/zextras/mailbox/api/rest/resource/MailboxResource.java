@@ -12,6 +12,8 @@ import com.zextras.mailbox.api.rest.service.MailboxService;
 import com.zimbra.common.service.ServiceException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.vavr.control.Try;
 
@@ -36,9 +38,12 @@ public class MailboxResource {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Operation(summary = "Get Mailbox usage", description = "Returns mail usage for the account mailbox")
-  @ApiResponse(responseCode = "200", description = "Mailbox usage in bytes")
-  @ApiResponse(responseCode = "404", description = "Account not found")
-  @ApiResponse(responseCode = "500", description = "Internal server error")
+  @ApiResponse(responseCode = "200", description = "Mailbox usage in bytes",
+          content = @Content(schema = @Schema(implementation = MailUsageResponse.class)))
+  @ApiResponse(responseCode = "404", description = "Account not found",
+          content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+  @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
   @Path("/usage/{accountId}")
   public Response getMailUsage(@Parameter(description = "The account ID") @PathParam("accountId") String accountId) {
     return accountService.getAccount(accountId)

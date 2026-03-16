@@ -1,0 +1,98 @@
+openapi: 3.0.1
+info:
+  title: Carbonio Mailbox Internal API
+  description: Service-to-service REST API for carbonio-mailbox
+  version: "1.0"
+paths:
+  /accounts/{accountId}/info:
+    get:
+      summary: Get Account Info
+      description: Returns account info
+      operationId: getAccountInfo
+      parameters:
+      - name: accountId
+        in: path
+        description: The account ID
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Account Info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountInfoResponse"
+        "404":
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /accounts/mail/usage/{accountId}:
+    get:
+      summary: Get Mailbox usage
+      description: Returns mail usage for the account mailbox
+      operationId: getMailUsage
+      parameters:
+      - name: accountId
+        in: path
+        description: The account ID
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Mailbox usage in bytes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MailUsageResponse"
+        "404":
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    AccountInfoResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        cosId:
+          type: string
+        domainId:
+          type: string
+        isGlobalAdmin:
+          type: boolean
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+    MailUsageResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        used:
+          type: integer
+          format: int64
