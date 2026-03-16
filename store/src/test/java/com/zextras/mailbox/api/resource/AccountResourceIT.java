@@ -33,12 +33,12 @@ class AccountResourceIT {
 				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
 
 		assertEquals(200, response.statusCode());
-		assertThatJson(response.body())
-				.node("id").isEqualTo(account.getId())
-				.node("name").isEqualTo(account.getName())
-				.node("cosId").isEqualTo(account.getCOSId())
-				.node("domainId").isEqualTo(account.getDomainId())
-				.node("isGlobalAdmin").isEqualTo(false);
+		assertThatJson(response.body()).isObject()
+				.containsEntry("id", account.getId())
+				.containsEntry("name", account.getName())
+				.containsEntry("cosId", account.getCOSId())
+				.containsEntry("domainId", account.getDomainId())
+				.containsEntry("isGlobalAdmin", false);
 	}
 
 	@Test
@@ -50,7 +50,7 @@ class AccountResourceIT {
 		final Response response = server.getHttpClient().get(
 				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
 
-		assertThatJson(response.body()).node("isGlobalAdmin").isEqualTo(true);
+		assertThatJson(response.body()).isObject().containsEntry("isGlobalAdmin", true);
 	}
 
 	@Test
@@ -62,7 +62,7 @@ class AccountResourceIT {
 		final Response response = server.getHttpClient().get(
 				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
 
-		assertThatJson(response.body()).node("isGlobalAdmin").isEqualTo(false);
+		assertThatJson(response.body()).isObject().containsEntry("isGlobalAdmin", false);
 	}
 
 	@Test
@@ -74,7 +74,7 @@ class AccountResourceIT {
 		final Response response = server.getHttpClient().get(
 				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
 
-		assertThatJson(response.body()).node("isGlobalAdmin").isEqualTo(false);
+		assertThatJson(response.body()).isObject().containsEntry("isGlobalAdmin", false);
 	}
 
 	@Test
@@ -95,10 +95,26 @@ class AccountResourceIT {
 						Map.of("Cookie", "ZM_AUTH_TOKEN=" + token));
 
 		assertEquals(200, response.statusCode());
-		assertThatJson(response.body())
-				.node("id").isEqualTo(account.getId())
-				.node("name").isEqualTo(account.getName())
-				.node("isGlobalAdmin").isEqualTo(false);
+		assertThatJson(response.body()).isObject()
+				.containsEntry("id", account.getId())
+				.containsEntry("name", account.getName())
+				.containsEntry("isGlobalAdmin", false);
+	}
+
+	@Test
+	void myselfInfoAdmin() throws Exception {
+		final Account account = server.getAccountFactory().asGlobalAdmin().create();
+		final String token = new ZimbraAuthToken(account).getEncoded();
+
+		final Response response = server.getHttpClient()
+				.get(server.getInternalApiEndpoint() + "/accounts/myself/info",
+						Map.of("Cookie", "ZM_ADMIN_AUTH_TOKEN=" + token));
+
+		assertEquals(200, response.statusCode());
+		assertThatJson(response.body()).isObject()
+				.containsEntry("id", account.getId())
+				.containsEntry("name", account.getName())
+				.containsEntry("isGlobalAdmin", true);
 	}
 
 	@Test

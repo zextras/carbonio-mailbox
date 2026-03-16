@@ -65,13 +65,16 @@ public class AccountResource {
   @ApiResponse(responseCode = "404", description = "Account not found")
   @ApiResponse(responseCode = "500", description = "Internal server error")
   @Path("/myself/info")
-  public Response getMyAccountInfo(@CookieParam("ZM_AUTH_TOKEN") String authTokenCookie) {
-    if (authTokenCookie == null || authTokenCookie.isEmpty()) {
+  public Response getMyAccountInfo(
+          @CookieParam("ZM_AUTH_TOKEN") String authTokenCookie,
+          @CookieParam("ZM_ADMIN_AUTH_TOKEN") String adminAuthTokenCookie) {
+    final String token = adminAuthTokenCookie != null ? adminAuthTokenCookie : authTokenCookie;
+    if (token == null || token.isEmpty()) {
       return Response.status(Response.Status.UNAUTHORIZED)
               .entity(new ErrorResponse("Missing auth token"))
               .build();
     }
-    return accountService.getAccountByAuthToken(authTokenCookie)
+    return accountService.getAccountByAuthToken(token)
             .map(account -> Response.ok(AccountInfoResponse.from(account)).build())
             .recover(e -> switch (e) {
               case AuthTokenException ignored ->
