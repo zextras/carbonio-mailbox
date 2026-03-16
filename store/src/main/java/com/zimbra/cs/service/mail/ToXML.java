@@ -318,6 +318,11 @@ public final class ToXML {
       // Need to know retention policy if grantees can delete from a folder so clients can warn
       // them when they try to delete something within the retention period
       canDelete = canAdminister || (perms != null && perms.indexOf(ACL.ABBR_DELETE) != -1);
+    } else if (!folder.getUrl().isEmpty()) {
+      // External URL-based (iCal/ICS/RSS) folders are effectively read-only: the folder content
+      // is synced one-way FROM the external URL and cannot be written back. Signal this to clients
+      // so they do not allow creating or editing items in these folders.
+      elem.addAttribute(MailConstants.A_RIGHTS, String.valueOf(ACL.ABBR_READ));
     }
     if (canAdminister) {
       // return full ACLs for folders we have admin rights on
