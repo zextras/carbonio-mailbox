@@ -82,27 +82,27 @@ pipeline {
             }
         }
         stage('Flaky, API, E2E tests') {
-            steps {
-                container('jdk-21') {
-                    sh "cd store && mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=flaky,api && mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=e2e"
+                    steps {
+                        container('jdk-21') {
+                            sh "cd store && mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=flaky,api && mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=e2e"
+                        }
+                        junit allowEmptyResults: true,
+                                testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+                    }
                 }
-                junit allowEmptyResults: true,
-                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
-            }
-        }
 
         stage('Build and Package API Docs') {
             steps {
                 container('jdk-21') {
                     sh """
-                        (
-                            cd soap || { echo "Directory soap does not exist"; exit 1; }
-                            mvn ${MVN_OPTS} antrun:run@generate-soap-docs
-                        )
-                        VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-                        mkdir -p docs
-                        tar -czf docs/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
-                    """
+                (
+                    cd soap || { echo "Directory soap does not exist"; exit 1; }
+                    mvn ${MVN_OPTS} antrun:run@generate-soap-docs
+                )
+                VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+                mkdir -p docs
+                tar -czf docs/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
+            """
                 }
                 archiveArtifacts artifacts: 'docs/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
             }
@@ -123,54 +123,59 @@ pipeline {
             }
         }
 
-        stage('Publish SNAPSHOT to maven') {
-            when {
-                not { buildingTag() }
-            }
-            steps {
-                container('jdk-21') {
-                    withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                        script {
-                            sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -DskipTests=true"
+
+        stage('Publish artifacts and container') {
+            parallel {
+                stage('Publish SNAPSHOT to maven') {
+                    when {
+                        not { buildingTag() }
+                    }
+                    steps {
+                        container('jdk-21') {
+                            withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
+                                script {
+                                    sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -DskipTests=true"
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }
 
-        stage('Publish to maven') {
-            when {
-                buildingTag()
-            }
-            steps {
-                container('jdk-21') {
-                    withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                        script {
-                            sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -Dchangelist= -DskipTests=true"
+                stage('Publish to maven') {
+                    when {
+                        buildingTag()
+                    }
+                    steps {
+                        container('jdk-21') {
+                            withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
+                                script {
+                                    sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -Dchangelist= -DskipTests=true"
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }
 
-        stage('Build and Publish Docker images') {
-            steps {
-                dockerStage([
-                    dockerfile: 'docker/mailbox/Dockerfile',
-                    imageName : 'carbonio-mailbox',
-                    ocLabels  : [
-                        title          : 'Carbonio Mailbox',
-                        descriptionFile: 'docker/mailbox/description.md'
-                    ]
-                ])
-                dockerStage([
-                    dockerfile: 'docker/mariadb/Dockerfile',
-                    imageName : 'carbonio-mariadb',
-                    ocLabels  : [
-                        title          : 'Carbonio MariaDB',
-                        descriptionFile: 'docker/mariadb/description.md'
-                    ]
-                ])
+                stage('Build and Publish Docker images') {
+                    steps {
+                        dockerStage([
+                                dockerfile: 'docker/mailbox/Dockerfile',
+                                imageName : 'carbonio-mailbox',
+                                ocLabels  : [
+                                        title          : 'Carbonio Mailbox',
+                                        descriptionFile: 'docker/mailbox/description.md'
+                                ]
+                        ])
+                        dockerStage([
+                                dockerfile: 'docker/mariadb/Dockerfile',
+                                imageName : 'carbonio-mariadb',
+                                ocLabels  : [
+                                        title          : 'Carbonio MariaDB',
+                                        descriptionFile: 'docker/mariadb/description.md'
+                                ]
+                        ])
+                    }
+                }
             }
         }
 
