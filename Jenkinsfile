@@ -204,12 +204,6 @@ pipeline {
             }
         }
         stage('Bump version and tag') {
-            when {
-                anyOf {
-                    branch 'main'
-                    branch 'devel'
-                }
-            }
             steps {
                 script {
                     dt2_semanticRelease()
