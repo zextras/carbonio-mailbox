@@ -3,6 +3,18 @@ VERSION := $(shell cat version.txt)
 build:
 	mvn clean install -DskipTests
 
+tests:
+	mvn verify -DexcludedGroups=api,flaky,e2e
+
+api-tests:
+	mvn verify -Droups=api
+
+flaky-tests:
+	mvn verify -Droups=flaky
+
+e2e-tests:
+	mvn verify -Droups=e2e
+
 build-packages: build
 	./build_packages.sh	
 
