@@ -72,29 +72,34 @@ pipeline {
             }
         }
 
-        stage('UT, IT') {
-            steps {
-                container('jdk-21') {
-                    sh "mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -DexcludedGroups=api,flaky,e2e"
-                }
-                junit allowEmptyResults: true,
-                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
-            }
-        }
-        stage('Flaky, API, E2E tests') {
-                    steps {
-                        container('jdk-21') {
-                            sh "cd store && mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=flaky,api && mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=e2e"
+        stage('Tests and deb/rpm') {
+            parallel {
+                stage('Tests') {
+                    stages {
+                        stage('UT, IT') {
+                            steps {
+                                container('jdk-21') {
+                                    sh "mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -DexcludedGroups=api,flaky,e2e"
+                                }
+                                junit allowEmptyResults: true,
+                                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+                            }
                         }
-                        junit allowEmptyResults: true,
-                                testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+                        stage('Flaky, API, E2E tests') {
+                            steps {
+                                container('jdk-21') {
+                                    sh "cd store && mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=flaky,api && mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=e2e"
+                                }
+                                junit allowEmptyResults: true,
+                                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+                            }
+                        }
                     }
                 }
-
-        stage('Build and Package API Docs') {
-            steps {
-                container('jdk-21') {
-                    sh """
+                stage('Generate API Docs') {
+                    steps {
+                        container('jdk-21') {
+                            sh """
                 (
                     cd soap || { echo "Directory soap does not exist"; exit 1; }
                     mvn ${MVN_OPTS} antrun:run@generate-soap-docs
@@ -103,8 +108,27 @@ pipeline {
                 mkdir -p docs
                 tar -czf docs/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
             """
+                        }
+                        archiveArtifacts artifacts: 'docs/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
+                    }
                 }
-                archiveArtifacts artifacts: 'docs/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
+                stage('Build deb/rpm') {
+                    steps {
+                        echo 'Building deb/rpm packages'
+                        buildStage([
+                                skipStash: true,
+                                buildDirs: ['staging/packages'],
+                                overrides: [
+                                        ubuntu: [
+                                                preBuildScript: '''
+                                apt-get update
+                                apt-get install -y --no-install-recommends rsync
+                            '''
+                                        ]
+                                ]
+                        ])
+                    }
+                }
             }
         }
 
@@ -120,24 +144,6 @@ pipeline {
                         """
                     }
                 }
-            }
-        }
-
-        stage('Build deb/rpm') {
-            steps {
-                echo 'Building deb/rpm packages'
-                buildStage([
-                    skipStash: true,
-                    buildDirs: ['staging/packages'],
-                    overrides: [
-                        ubuntu: [
-                            preBuildScript: '''
-                                apt-get update
-                                apt-get install -y --no-install-recommends rsync
-                            '''
-                        ]
-                    ]
-                ])
             }
         }
 
