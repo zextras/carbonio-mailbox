@@ -41,7 +41,6 @@ public class GetFolderTest extends MailboxTestSuite {
 		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
 
 		// Create a calendar folder with an external iCal URL.
-		// updateRssDataSource may log a warning in test but does not fail folder creation.
 		Folder.FolderOptions fopt = new Folder.FolderOptions()
 				.setDefaultView(Type.APPOINTMENT)
 				.setUrl("https://calendar.example.com/calendar.ics");
@@ -49,7 +48,7 @@ public class GetFolderTest extends MailboxTestSuite {
 
 		// Fetch the folder via GetFolder
 		Element request = new Element.XMLElement(MailConstants.GET_FOLDER_REQUEST);
-		request.addElement(MailConstants.E_FOLDER)
+		request.addUniqueElement(MailConstants.E_FOLDER)
 				.addAttribute(MailConstants.A_FOLDER, String.valueOf(calFolder.getId()));
 
 		Element response = new GetFolder().handle(request, ServiceTestUtil.getRequestContext(acct));
@@ -188,7 +187,7 @@ public class GetFolderTest extends MailboxTestSuite {
 
 		// fetch the mountpoint directly
 		Element request = new Element.XMLElement(MailConstants.GET_FOLDER_REQUEST);
-		request.addElement(MailConstants.E_FOLDER).addAttribute(MailConstants.A_FOLDER, mpt.getId());
+		request.addUniqueElement(MailConstants.E_FOLDER).addAttribute(MailConstants.A_FOLDER, mpt.getId());
 		Element response = new GetFolder().handle(request, ServiceTestUtil.getRequestContext(acct));
 
 		Element root = response.getOptionalElement(MailConstants.E_MOUNT);
