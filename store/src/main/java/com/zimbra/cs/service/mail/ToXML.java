@@ -313,11 +313,22 @@ public final class ToXML {
     if (remote) {
       // return effective permissions only for remote folders
       String perms = encodeEffectivePermissions(folder, octxt);
-      elem.addAttribute(MailConstants.A_RIGHTS, perms);
-      canAdminister = perms != null && perms.indexOf(ACL.ABBR_ADMIN) != -1;
-      // Need to know retention policy if grantees can delete from a folder so clients can warn
-      // them when they try to delete something within the retention period
-      canDelete = canAdminister || (perms != null && perms.indexOf(ACL.ABBR_DELETE) != -1);
+      if (!folder.getUrl().isEmpty()) {
+        // External URL-based (iCal/ICS/RSS) folders are effectively read-only: the folder content
+        // is synced one-way FROM the external URL and cannot be written back. Signal this to clients
+        // so they do not allow creating or editing items in these folders, even on delegated access.
+        perms = String.valueOf(ACL.ABBR_READ);
+        canAdminister = false;
+        canDelete = false;
+      } else {
+        canAdminister = perms != null && perms.indexOf(ACL.ABBR_ADMIN) != -1;
+        // Need to know retention policy if grantees can delete from a folder so clients can warn
+        // them when they try to delete something within the retention period
+        canDelete = canAdminister || (perms != null && perms.indexOf(ACL.ABBR_DELETE) != -1);
+      }
+      if (perms != null) {
+        elem.addAttribute(MailConstants.A_RIGHTS, perms);
+      }
     } else if (!folder.getUrl().isEmpty()) {
       // External URL-based (iCal/ICS/RSS) folders are effectively read-only: the folder content
       // is synced one-way FROM the external URL and cannot be written back. Signal this to clients
