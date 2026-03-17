@@ -7,13 +7,13 @@ tests:
 	mvn verify -DexcludedGroups=api,flaky,e2e
 
 api-tests:
-	mvn verify -Droups=api
+	cd store && mvn verify -Dgroups=api
 
 flaky-tests:
-	mvn verify -Droups=flaky
+	cd store &&mvn verify -Dgroups=flaky
 
 e2e-tests:
-	mvn verify -Droups=e2e
+	cd store && mvn verify -Dgroups=e2e
 
 build-packages: build
 	./build_packages.sh	
