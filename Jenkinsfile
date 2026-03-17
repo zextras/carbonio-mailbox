@@ -72,22 +72,6 @@ pipeline {
             }
         }
 
-        stage('Build and Package API Docs') {
-            steps {
-                container('jdk-21') {
-                    sh """
-                (
-                    cd soap || { echo "Directory soap does not exist"; exit 1; }
-                    mvn ${MVN_OPTS} antrun:run@generate-soap-docs
-                )
-                VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-                mkdir -p docs
-                tar -czf docs/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
-            """
-                }
-                archiveArtifacts artifacts: 'docs/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
-            }
-        }
         stage('UT, IT') {
             steps {
                 container('jdk-21') {
@@ -107,6 +91,23 @@ pipeline {
                     }
                 }
 
+        stage('Build and Package API Docs') {
+            steps {
+                container('jdk-21') {
+                    sh """
+                (
+                    cd soap || { echo "Directory soap does not exist"; exit 1; }
+                    mvn ${MVN_OPTS} antrun:run@generate-soap-docs
+                )
+                VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+                mkdir -p docs
+                tar -czf docs/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
+            """
+                }
+                archiveArtifacts artifacts: 'docs/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
+            }
+        }
+
         stage('Sonarqube Analysis') {
             steps {
                 container('jdk-21') {
@@ -121,6 +122,7 @@ pipeline {
                 }
             }
         }
+
 
         stage('Publish artifacts and container') {
             parallel {
