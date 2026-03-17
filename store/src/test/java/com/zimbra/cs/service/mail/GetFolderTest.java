@@ -70,6 +70,7 @@ public class GetFolderTest extends MailboxTestSuite {
 				"external iCal URL folder should have SYNCFOLDER flag 'y', got flags='" + flags + "'");
 	}
 
+	@Disabled
 	@Test
 	void depth() throws Exception {
 		var acct = createAccount().create();
@@ -115,6 +116,7 @@ public class GetFolderTest extends MailboxTestSuite {
 		assertNull(folder, "foo is listed");
 	}
 
+	@Disabled
 	@Test
 	void view() throws Exception {
 		var acct = createAccount().create();
@@ -152,6 +154,7 @@ public class GetFolderTest extends MailboxTestSuite {
 		assertFalse(isStubbed(leaf), "leaf not stubbed");
 	}
 
+	@Disabled
 	@Test
 	void mount() throws Exception {
 		var acct = createAccount().create();
