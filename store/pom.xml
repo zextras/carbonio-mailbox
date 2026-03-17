@@ -894,7 +894,7 @@ EOF
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <forkCount>2</forkCount>
+          <forkCount>3</forkCount>
           <reuseForks>true</reuseForks>
           <argLine>@{argLine} -Xmx2g -Dserver.dir=${project.basedir}
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
