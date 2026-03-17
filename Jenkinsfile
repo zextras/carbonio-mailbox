@@ -72,34 +72,32 @@ pipeline {
             }
         }
 
-        stage('Tests') {
-            parallel {
-                stage('Build and Package API Docs') {
-                    steps {
-                        container('jdk-21') {
-                            sh """
-                        (
-                            cd soap || { echo "Directory soap does not exist"; exit 1; }
-                            mvn ${MVN_OPTS} antrun:run@generate-soap-docs
-                        )
-                        VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-                        mkdir -p docs
-                        tar -czf docs/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
-                    """
-                        }
-                        archiveArtifacts artifacts: 'docs/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
-                    }
+        stage('Build and Package API Docs') {
+            steps {
+                container('jdk-21') {
+                    sh """
+                (
+                    cd soap || { echo "Directory soap does not exist"; exit 1; }
+                    mvn ${MVN_OPTS} antrun:run@generate-soap-docs
+                )
+                VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+                mkdir -p docs
+                tar -czf docs/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
+            """
                 }
-                stage('UT, IT') {
-                    steps {
-                        container('jdk-21') {
-                            sh "mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -DexcludedGroups=api,flaky,e2e"
-                        }
-                        junit allowEmptyResults: true,
-                                testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
-                    }
+                archiveArtifacts artifacts: 'docs/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
+            }
+        }
+        stage('UT, IT') {
+            steps {
+                container('jdk-21') {
+                    sh "mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -DexcludedGroups=api,flaky,e2e"
                 }
-                stage('Flaky, API, E2E tests') {
+                junit allowEmptyResults: true,
+                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+            }
+        }
+        stage('Flaky, API, E2E tests') {
                     steps {
                         container('jdk-21') {
                             sh "cd store && mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=flaky,api && mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=e2e"
@@ -108,8 +106,6 @@ pipeline {
                                 testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
                     }
                 }
-            }
-        }
 
         stage('Sonarqube Analysis') {
             steps {
