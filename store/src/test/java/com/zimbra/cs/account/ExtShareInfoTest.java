@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.util.Locale;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMultipart;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 
@@ -27,17 +27,20 @@ import org.junit.jupiter.api.Test;
  * @author zimbra
  */
 
-@Tag("flaky")
 class ExtShareInfoTest extends MailboxTestSuite {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
+	private MailboxManager originalManager;
+
 	@BeforeEach
 	public void setUp() throws Exception {
-
+		originalManager = MailboxManager.getInstance();
 		// this MailboxManager does everything except use SMTP to deliver mail
 		MailboxManager.setInstance(new DirectInsertionMailboxManager());
+	}
+
+	@AfterEach
+	public void tearDown() {
+		MailboxManager.setInstance(originalManager);
 	}
 
 	@Test
