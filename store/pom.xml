@@ -906,14 +906,14 @@ EOF
           <execution>
             <id>default-test</id>
             <configuration>
-              <excludedGroups>api,e2e</excludedGroups>
+              <excludedGroups>flaky,api,e2e</excludedGroups>
             </configuration>
           </execution>
           <execution>
             <id>api-e2e-tests</id>
             <goals><goal>test</goal></goals>
             <configuration>
-              <groups>api,e2e</groups>
+              <groups>flaky,api,e2e</groups>
             </configuration>
           </execution>
         </executions>
@@ -934,7 +934,7 @@ EOF
           <execution>
             <id>default-integration-test</id>
             <configuration>
-              <excludedGroups>api,e2e</excludedGroups>
+              <excludedGroups>flaky,api,e2e</excludedGroups>
             </configuration>
           </execution>
           <execution>
@@ -944,7 +944,7 @@ EOF
               <goal>verify</goal>
             </goals>
             <configuration>
-              <groups>api,e2e</groups>
+              <groups>flaky,api,e2e</groups>
             </configuration>
           </execution>
         </executions>
