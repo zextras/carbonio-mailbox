@@ -303,6 +303,12 @@ public final class ToXML {
         // that is either RSS or a remote calendar object
         elem.addAttribute(MailConstants.A_URL, HttpUtil.sanitizeURL(url));
       }
+      if (!url.isEmpty()) {
+        long lastSyncDate = folder.getLastSyncDate();
+        if (lastSyncDate > 0 || fields != NOTIFY_FIELDS) {
+          elem.addAttribute(MailConstants.A_LAST_SYNC_DATE, lastSyncDate / 1000);
+        }
+      }
     }
 
     Mailbox mbox = folder.getMailbox();
@@ -659,6 +665,10 @@ public final class ToXML {
     // construct rest url based on owner name and folder name.
     elem.addAttribute(MailConstants.A_REST_URL, getRestUrl(ownerName, ownerFolderPath));
     elem.addAttribute(MailConstants.A_URL, mptTarget.getAttribute(MailConstants.A_URL, null));
+    String lastSyncDate = mptTarget.getAttribute(MailConstants.A_LAST_SYNC_DATE, null);
+    if (lastSyncDate != null) {
+      elem.addAttribute(MailConstants.A_LAST_SYNC_DATE, lastSyncDate);
+    }
     elem.addAttribute(MailConstants.A_RIGHTS, mptTarget.getAttribute(MailConstants.A_RIGHTS, null));
     if (mptTarget.getAttribute(MailConstants.A_FLAGS, "").contains("u")) {
       elem.addAttribute(

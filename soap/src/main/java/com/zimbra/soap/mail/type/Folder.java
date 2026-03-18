@@ -242,6 +242,13 @@ public class Folder {
   @XmlAttribute(name = MailConstants.A_URL /* url */, required = false)
   private String url;
 
+  /**
+   * @zm-api-field-tag last-sync-date
+   * @zm-api-field-description Last successful sync date from external URL in epoch seconds
+   */
+  @XmlAttribute(name = MailConstants.A_LAST_SYNC_DATE /* lsd */, required = false)
+  private Long lastSyncDate;
+
   @XmlAttribute(
       name = MailConstants.A_ACTIVESYNC_DISABLED /* activesyncdisabled */,
       required = false)
@@ -385,6 +392,10 @@ public class Folder {
     return url;
   }
 
+  public Long getLastSyncDate() {
+    return lastSyncDate;
+  }
+
   public Boolean isActiveSyncDisabled() {
     return ZmBoolean.toBool(activeSyncDisabled);
   }
@@ -499,6 +510,10 @@ public class Folder {
 
   public void setUrl(String url) {
     this.url = url;
+  }
+
+  public void setLastSyncDate(Long lastSyncDate) {
+    this.lastSyncDate = lastSyncDate;
   }
 
   public void setDisableActiveSync(Boolean disableActiveSync) {
