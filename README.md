@@ -26,6 +26,10 @@ Build the Code by running:
 ## Generating SOAP DOCS
 > mvn antrun:run@generate-soap-docs
 
+## Running tests
+
+See test commands defined in [Makefile](Makefile)
+
 ## Local Mailbox (Development)
 
 Run the main class [SampleLocalMailbox](store/src/test/java/com/zextras/mailbox).  
