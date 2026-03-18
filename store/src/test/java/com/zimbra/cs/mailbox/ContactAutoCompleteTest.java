@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.UUID;
 import javax.mail.internet.InternetAddress;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 
@@ -32,7 +31,6 @@ import org.junit.jupiter.api.Test;
  * @author ysasaki
  */
 
-@Tag("flaky")
 class ContactAutoCompleteTest extends MailboxTestSuite {
 
   @Test
@@ -100,8 +98,8 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
     fields.put(ContactConstants.A_lastName, "subject: from:");
     fields.put(ContactConstants.A_email, getRandomMail());
     mbox.createContact(null, new ParsedContact(fields), Mailbox.ID_FOLDER_CONTACTS, null);
+    MailboxTestUtil.index(mbox);
 
-    Thread.sleep(500);
     ContactAutoComplete autocomplete = new ContactAutoComplete(mbox.getAccount(),
         new OperationContext(mbox));
     assertEquals(1, autocomplete.query("not", null, 100).entries.size());
@@ -120,8 +118,8 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
     fields.put(ContactConstants.A_lastName, "test.server-vmware - dash");
     fields.put(ContactConstants.A_email, getRandomMail());
     mbox.createContact(null, new ParsedContact(fields), Mailbox.ID_FOLDER_CONTACTS, null);
+    MailboxTestUtil.index(mbox);
 
-    Thread.sleep(500);
     ContactAutoComplete autocomplete = new ContactAutoComplete(mbox.getAccount(),
         new OperationContext(mbox));
     assertEquals(1, autocomplete.query("conf -", null, 100).entries.size());
