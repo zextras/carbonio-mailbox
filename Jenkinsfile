@@ -123,9 +123,37 @@ pipeline {
             }
         }
 
+        stage('Build deb/rpm') {
+            steps {
+                echo 'Building deb/rpm packages'
+                buildStage([
+                    skipStash: true,
+                    buildDirs: ['staging/packages'],
+                    overrides: [
+                        ubuntu: [
+                            preBuildScript: '''
+                                apt-get update
+                                apt-get install -y --no-install-recommends rsync
+                            '''
+                        ]
+                    ]
+                ])
+            }
+        }
 
-        stage('Publish artifacts and container') {
+        stage('Upload artifacts')
+        {
             parallel {
+                stage ('Publish packages') {
+                    tools {
+                        jfrog 'jfrog-cli'
+                    }
+                    steps {
+                        uploadStage(
+                                packages: yapHelper.getPackageNames('staging/packages/yap.json')
+                        )
+                    }
+                }
                 stage('Publish SNAPSHOT to maven') {
                     when {
                         not { buildingTag() }
@@ -177,38 +205,15 @@ pipeline {
                     }
                 }
             }
-        }
 
-        stage('Build deb/rpm') {
-            steps {
-                echo 'Building deb/rpm packages'
-                buildStage([
-                    skipStash: true,
-                    buildDirs: ['staging/packages'],
-                    overrides: [
-                        ubuntu: [
-                            preBuildScript: '''
-                                apt-get update
-                                apt-get install -y --no-install-recommends rsync
-                            '''
-                        ]
-                    ]
-                ])
-            }
-        }
-
-        stage('Upload artifacts')
-        {
-            tools {
-                jfrog 'jfrog-cli'
-            }
-            steps {
-                uploadStage(
-                    packages: yapHelper.getPackageNames('staging/packages/yap.json')
-                )
-            }
         }
         stage('Bump version and tag') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'devel'
+                }
+            }
             steps {
                 script {
                     dt2_semanticRelease()
