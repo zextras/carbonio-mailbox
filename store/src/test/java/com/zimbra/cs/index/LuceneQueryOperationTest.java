@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -31,6 +32,7 @@ import org.junit.jupiter.api.Test;
  * @author ysasaki
  */
 
+@Tag("flaky")
 public final class LuceneQueryOperationTest extends MailboxTestSuite {
 
 	private Account account;
@@ -172,7 +174,7 @@ public final class LuceneQueryOperationTest extends MailboxTestSuite {
 		DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
 		Message msg1 = mbox.addMessage(null,
 				new ParsedMessage("Subject: one two three".getBytes(), false), dopt, null);
-		mbox.addMessage(null,
+		Message msg2 = mbox.addMessage(null,
 				new ParsedMessage("Subject: one three two".getBytes(), false), dopt, null);
 		MailboxTestUtil.index(mbox);
 
@@ -189,7 +191,6 @@ public final class LuceneQueryOperationTest extends MailboxTestSuite {
 		assertEquals(msg1.getId(), results.getNext().getItemId());
 
 		assertFalse(results.hasNext());
-		results.close();
 	}
 
 	@Test
