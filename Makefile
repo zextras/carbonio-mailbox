@@ -10,7 +10,7 @@ api-tests:
 	cd store && mvn verify -Dgroups=api
 
 flaky-tests:
-	cd store &&mvn verify -Dgroups=flaky
+	cd store && mvn verify -Dgroups=flaky
 
 e2e-tests:
 	cd store && mvn verify -Dgroups=e2e
