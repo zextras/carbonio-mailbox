@@ -191,6 +191,7 @@ public final class LuceneQueryOperationTest extends MailboxTestSuite {
 		assertEquals(msg1.getId(), results.getNext().getItemId());
 
 		assertFalse(results.hasNext());
+		results.close();
 	}
 
 	@Test
