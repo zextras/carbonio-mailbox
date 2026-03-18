@@ -27,10 +27,6 @@ public final class MailboxTestUtil {
 
   public static void index(Mailbox mbox) throws ServiceException {
     mbox.index.indexDeferredItems();
-    // Evict the cached IndexSearcher so the next query opens a fresh reader
-    // that sees the newly indexed documents. Without this, stale cached readers
-    // (keyed by mailbox ID, which is reused across test classes) may be returned.
-    mbox.index.evict();
   }
 
   public static ParsedMessage generateMessage(String subject) throws Exception {
