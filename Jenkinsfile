@@ -72,24 +72,15 @@ pipeline {
             }
         }
 
-        stage('UT, IT') {
+        stage('Tests') {
             steps {
                 container('jdk-21') {
-                    sh "mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -DexcludedGroups=api,flaky,e2e"
+                    sh "mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify"
                 }
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
             }
         }
-        stage('Flaky, API, E2E tests') {
-                    steps {
-                        container('jdk-21') {
-                            sh "cd store && mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=flaky,api && mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=e2e"
-                        }
-                        junit allowEmptyResults: true,
-                                testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
-                    }
-                }
 
         stage('Build and Package API Docs') {
             steps {

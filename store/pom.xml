@@ -902,6 +902,21 @@ EOF
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
           </argLine>
         </configuration>
+        <executions>
+          <execution>
+            <id>default-test</id>
+            <configuration>
+              <excludedGroups>api,e2e</excludedGroups>
+            </configuration>
+          </execution>
+          <execution>
+            <id>api-e2e-tests</id>
+            <goals><goal>test</goal></goals>
+            <configuration>
+              <groups>api,e2e</groups>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -915,6 +930,24 @@ EOF
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
           </argLine>
         </configuration>
+        <executions>
+          <execution>
+            <id>default-integration-test</id>
+            <configuration>
+              <excludedGroups>api,e2e</excludedGroups>
+            </configuration>
+          </execution>
+          <execution>
+            <id>api-e2e-integration-tests</id>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <groups>api,e2e</groups>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
