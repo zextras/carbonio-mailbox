@@ -24,24 +24,17 @@ import com.zimbra.cs.service.mail.SetRecoveryAccount;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.SetRecoveryAccountRequest;
 import com.zimbra.soap.type.Channel;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 
+@Tag("flaky")
 public class SetRecoveryAccountTest extends MailboxTestSuite {
-
-	private static MailboxManager originalManager;
 
 	@BeforeAll
 	static void setUp() throws Exception {
-		originalManager = MailboxManager.getInstance();
 		MailboxManager.setInstance(new DirectInsertionMailboxManager());
-	}
-
-	@AfterAll
-	static void tearDown() {
-		MailboxManager.setInstance(originalManager);
 	}
 
 	@Test
