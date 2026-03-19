@@ -35,15 +35,15 @@ public class GetFolderTest extends MailboxTestSuite {
 	 * </ul>
 	 */
 	@Test
-	void externalIcalUrlFolderReturnsReadOnlyPermAndSyncFolderFlag() throws Exception {
+	void externalICalUrlFolderReturnsReadOnlyPermAndSyncFolderFlag() throws Exception {
 		var acct = createAccount().create();
 		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
 
 		// Create a calendar folder with an external iCal URL.
-		Folder.FolderOptions fopt = new Folder.FolderOptions()
+		Folder.FolderOptions folderOptions = new Folder.FolderOptions()
 				.setDefaultView(Type.APPOINTMENT)
 				.setUrl("https://calendar.example.com/calendar.ics");
-		Folder calFolder = mbox.createFolder(null, "ExternalCal", Mailbox.ID_FOLDER_USER_ROOT, fopt);
+		Folder calFolder = mbox.createFolder(null, "ExternalCal", Mailbox.ID_FOLDER_USER_ROOT, folderOptions);
 
 		// Fetch the folder via GetFolder
 		Element request = new Element.XMLElement(MailConstants.GET_FOLDER_REQUEST);
@@ -68,6 +68,37 @@ public class GetFolderTest extends MailboxTestSuite {
 		assertTrue(
 				flags.contains(syncFolderFlagChar),
 				"external iCal URL folder should have SYNCFOLDER flag 'y', got flags='" + flags + "'");
+	}
+
+	@Test
+	void externalICalUrlFolderReturnsLastSyncDate() throws Exception {
+		var acct = createAccount().create();
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+
+		Folder.FolderOptions folderOptions =
+				new Folder.FolderOptions()
+						.setDefaultView(Type.APPOINTMENT)
+						.setUrl("https://calendar.example.com/calendar.ics");
+		Folder calFolder =
+				mbox.createFolder(null, "ExternalCalWithSyncDate", Mailbox.ID_FOLDER_USER_ROOT, folderOptions);
+
+		long expectedSyncEpochMillis = 1735744115000L;
+		mbox.setSubscriptionData(null, calFolder.getId(), expectedSyncEpochMillis, "test-guid");
+
+		Element request = new Element.XMLElement(MailConstants.GET_FOLDER_REQUEST);
+		request
+				.addUniqueElement(MailConstants.E_FOLDER)
+				.addAttribute(MailConstants.A_FOLDER, String.valueOf(calFolder.getId()));
+
+		Element response = new GetFolder().handle(request, ServiceTestUtil.getRequestContext(acct));
+		Element folderElem = response.getOptionalElement(MailConstants.E_FOLDER);
+		assertNotNull(folderElem, "folder element should be present in response");
+
+		long expectedSyncEpochSeconds = expectedSyncEpochMillis / 1000;
+		assertEquals(
+				expectedSyncEpochSeconds,
+				folderElem.getAttributeLong(MailConstants.A_LAST_SYNC_DATE, 0),
+				"external iCal URL folder should return last successful sync date in epoch seconds");
 	}
 
 	@Disabled
