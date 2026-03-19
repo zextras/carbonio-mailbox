@@ -17,6 +17,8 @@ import com.zimbra.cs.db.HSQLDB;
 import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapClient;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapPoolConfig;
+import com.zimbra.cs.redolog.DefaultRedoLogProvider;
+import com.zimbra.cs.redolog.RedoLogProvider;
 import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.nio.file.Files;
@@ -109,6 +111,11 @@ public class MailboxEnvironmentSetupHelper {
 		final UBIDLdapPoolConfig poolConfig = UBIDLdapPoolConfig.createNewPool(true);
 		final UBIDLdapClient ldapClient = UBIDLdapClient.createNew(poolConfig);
 		LdapClient.setInstance(ldapClient);
+
+		if (RedoLogProvider.getInstance() == null) {
+			RedoLogProvider.setInstance(new DefaultRedoLogProvider());
+		}
+
 		// Clear ldap provisioning cache, else when creating domain and users throws exception on next
 		// test class
 		((LdapProvisioning) Provisioning.getInstance()).clearCache();
