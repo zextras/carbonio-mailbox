@@ -23,7 +23,6 @@ DELETE FROM ZIMBRA.current_volumes;
 DELETE FROM ZIMBRA.deleted_account;
 DELETE FROM ZIMBRA.mailbox_metadata;
 DELETE FROM ZIMBRA.out_of_office;
-DELETE FROM ZIMBRA.config;
 DELETE FROM ZIMBRA.table_maintenance;
 DELETE FROM ZIMBRA.service_status;
 DELETE FROM ZIMBRA.scheduled_task;
