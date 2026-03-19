@@ -913,7 +913,7 @@ EOF
             <id>api-e2e-tests</id>
             <goals><goal>test</goal></goals>
             <configuration>
-              <groups>flaky,api,e2e</groups>
+              <groups>api,e2e</groups>
             </configuration>
           </execution>
         </executions>
@@ -944,7 +944,7 @@ EOF
               <goal>verify</goal>
             </goals>
             <configuration>
-              <groups>flaky,api,e2e</groups>
+              <groups>api,e2e</groups>
             </configuration>
           </execution>
         </executions>
