@@ -12,7 +12,11 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
+import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
+import com.zimbra.cs.ldap.LdapClient;
+import com.zimbra.cs.ldap.unboundid.UBIDLdapClient;
+import com.zimbra.cs.ldap.unboundid.UBIDLdapPoolConfig;
 import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.nio.file.Files;
@@ -89,6 +93,7 @@ public class MailboxEnvironmentSetupHelper {
 		LC.zimbra_server_hostname.setDefault(APP_SERVER_NAME);
 		LC.timezone_file.setDefault(timeZoneFile);
 		HSQLDB.createDatabase(LC.zimbra_home.value() + "/build/test");
+		DbPool.startup();
 
 		if (sharedLdapServer == null) {
 			sharedLdapServer = new Builder()
@@ -100,6 +105,10 @@ public class MailboxEnvironmentSetupHelper {
 			sharedLdapServer.clear();
 		}
 		sharedLdapServer.initializeBasicData();
+
+		final UBIDLdapPoolConfig poolConfig = UBIDLdapPoolConfig.createNewPool(true);
+		final UBIDLdapClient ldapClient = UBIDLdapClient.createNew(poolConfig);
+		LdapClient.setInstance(ldapClient);
 		// Clear ldap provisioning cache, else when creating domain and users throws exception on next
 		// test class
 		((LdapProvisioning) Provisioning.getInstance()).clearCache();
