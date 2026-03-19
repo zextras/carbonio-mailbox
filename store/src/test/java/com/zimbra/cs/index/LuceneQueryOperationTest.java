@@ -22,6 +22,7 @@ import com.zimbra.cs.mime.ParsedMessage;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -36,26 +37,32 @@ import org.junit.jupiter.api.Test;
 public final class LuceneQueryOperationTest extends MailboxTestSuite {
 
 	private Account account;
+	private String uniqueId;
 
 	@BeforeEach
 	public void init() throws Exception {
 		account = createAccount().create();
+		uniqueId = UUID.randomUUID().toString();
 	}
 
 	@Test
 	void notClause() throws Exception {
+		String domain = uniqueId + ".com";
+		String addr1 = "user1@" + domain;
+		String addr2 = "user2@" + domain;
+		String addr3 = "user3@" + domain;
 		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 		DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
-		mbox.addMessage(null, new ParsedMessage("From: test1@zimbra.com".getBytes(), false), dopt,
+		mbox.addMessage(null, new ParsedMessage(("From: " + addr1).getBytes(), false), dopt,
 				null);
 		Message msg2 = mbox.addMessage(null,
-				new ParsedMessage("From: test2@zimbra.com".getBytes(), false), dopt, null);
+				new ParsedMessage(("From: " + addr2).getBytes(), false), dopt, null);
 		Message msg3 = mbox.addMessage(null,
-				new ParsedMessage("From: test3@zimbra.com".getBytes(), false), dopt, null);
+				new ParsedMessage(("From: " + addr3).getBytes(), false), dopt, null);
 		MailboxTestUtil.index(mbox);
 
 		SearchParams params = new SearchParams();
-		params.setQueryString("-from:test1@zimbra.com");
+		params.setQueryString("-from:" + addr1);
 		params.setTypes(EnumSet.of(MailItem.Type.MESSAGE));
 		params.setSortBy(SortBy.NONE);
 		ZimbraQuery query = new ZimbraQuery(new OperationContext(mbox), SoapProtocol.Soap12, mbox,
@@ -79,18 +86,22 @@ public final class LuceneQueryOperationTest extends MailboxTestSuite {
 
 	@Test
 	void notClauses() throws Exception {
+		String domain = uniqueId + ".com";
+		String addr1 = "user1@" + domain;
+		String addr2 = "user2@" + domain;
+		String addr3 = "user3@" + domain;
 		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 		DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
-		mbox.addMessage(null, new ParsedMessage("From: test1@zimbra.com".getBytes(), false), dopt,
+		mbox.addMessage(null, new ParsedMessage(("From: " + addr1).getBytes(), false), dopt,
 				null);
 		Message msg2 = mbox.addMessage(null,
-				new ParsedMessage("From: test2@zimbra.com".getBytes(), false), dopt, null);
+				new ParsedMessage(("From: " + addr2).getBytes(), false), dopt, null);
 		Message msg3 = mbox.addMessage(null,
-				new ParsedMessage("From: test3@zimbra.com".getBytes(), false), dopt, null);
+				new ParsedMessage(("From: " + addr3).getBytes(), false), dopt, null);
 		MailboxTestUtil.index(mbox);
 
 		SearchParams params = new SearchParams();
-		params.setQueryString("-from:(test1 zimbra.com)");
+		params.setQueryString("-from:(user1 " + domain + ")");
 		params.setTypes(EnumSet.of(MailItem.Type.MESSAGE));
 		params.setSortBy(SortBy.NONE);
 		ZimbraQuery query = new ZimbraQuery(new OperationContext(mbox), SoapProtocol.Soap12, mbox,
@@ -114,18 +125,22 @@ public final class LuceneQueryOperationTest extends MailboxTestSuite {
 
 	@Test
 	void andClauses() throws Exception {
+		String domain = uniqueId + ".com";
+		String addr1 = "user1@" + domain;
+		String addr2 = "user2@" + domain;
+		String addr3 = "user3@" + domain;
 		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 		DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
 		Message msg1 = mbox.addMessage(null,
-				new ParsedMessage("From: test1@zimbra.com".getBytes(), false), dopt, null);
-		mbox.addMessage(null, new ParsedMessage("From: test2@zimbra.com".getBytes(), false), dopt,
+				new ParsedMessage(("From: " + addr1).getBytes(), false), dopt, null);
+		mbox.addMessage(null, new ParsedMessage(("From: " + addr2).getBytes(), false), dopt,
 				null);
-		mbox.addMessage(null, new ParsedMessage("From: test3@zimbra.com".getBytes(), false), dopt,
+		mbox.addMessage(null, new ParsedMessage(("From: " + addr3).getBytes(), false), dopt,
 				null);
 		MailboxTestUtil.index(mbox);
 
 		SearchParams params = new SearchParams();
-		params.setQueryString("from:test1 from:zimbra.com -from:vmware.com");
+		params.setQueryString("from:user1 from:" + domain + " -from:vmware.com");
 		params.setTypes(EnumSet.of(MailItem.Type.MESSAGE));
 		params.setSortBy(SortBy.NONE);
 		ZimbraQuery query = new ZimbraQuery(new OperationContext(mbox), SoapProtocol.Soap12, mbox,
