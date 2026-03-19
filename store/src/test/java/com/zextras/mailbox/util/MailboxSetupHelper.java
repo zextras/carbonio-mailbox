@@ -86,8 +86,10 @@ public class MailboxSetupHelper {
 										"/localconfig-api-test.xml"))
 						.getFile());
 
-		if (!Files.exists(mailboxHome)) {
-			Files.createDirectory(mailboxHome); // deleted in teardown
+		if (Files.exists(mailboxHome)) {
+			FileUtils.cleanDirectory(mailboxHome.toFile());
+		} else {
+			Files.createDirectory(mailboxHome);
 		}
 		if (!Files.exists(mailboxTmpDirectory)) {
 			Files.createDirectory(mailboxTmpDirectory); // deleted in teardown
