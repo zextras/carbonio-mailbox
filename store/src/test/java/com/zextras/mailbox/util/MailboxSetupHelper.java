@@ -151,7 +151,10 @@ public class MailboxSetupHelper {
 	public void clearData() throws Exception {
 		inMemoryLdapServer.clear();
 		HSQLDB.clearDatabase();
-		FileUtils.cleanDirectory(new File(getVolumeDirectory()));
+		File volumeDir = new File(getVolumeDirectory());
+		if (volumeDir.exists()) {
+			FileUtils.cleanDirectory(volumeDir);
+		}
 	}
 
 	public void tearDown() throws Exception {
