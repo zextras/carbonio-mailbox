@@ -12,6 +12,7 @@ import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.calendar.WellKnownTimeZones;
 import com.zimbra.common.localconfig.LC;
+import com.zimbra.common.util.L10nUtil;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.auth.ZimbraCustomAuth;
@@ -125,6 +126,7 @@ public class MailboxSetupHelper {
 		ScheduledTaskManager.startup();
 		System.setProperty("broker.disabled", "true");
 		ZimbraAnalyzer.setInstance(new ZimbraAnalyzer());
+		L10nUtil.setMsgClassLoader("conf/msgs");
 		ZimbraCustomAuth.clear();
 	}
 
