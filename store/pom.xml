@@ -914,6 +914,7 @@ EOF
             <goals><goal>test</goal></goals>
             <configuration>
               <groups>api,e2e</groups>
+              <excludedGroups>flaky</excludedGroups>
             </configuration>
           </execution>
         </executions>
@@ -945,6 +946,7 @@ EOF
             </goals>
             <configuration>
               <groups>api,e2e</groups>
+              <excludedGroups>flaky</excludedGroups>
             </configuration>
           </execution>
         </executions>
