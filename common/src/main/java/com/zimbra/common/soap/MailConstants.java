@@ -897,6 +897,7 @@ public final class MailConstants {
   public static final String A_VISIBLE = "visible";
   public static final String A_DELETABLE = "deletable";
   public static final String A_URL = "url";
+  public static final String A_LAST_SYNC_DATE = "lsd";
   public static final String A_NUM = "n";
   public static final String A_IMAP_UID = "i4uid";
   public static final String A_IMAP_NUM = "i4n";
