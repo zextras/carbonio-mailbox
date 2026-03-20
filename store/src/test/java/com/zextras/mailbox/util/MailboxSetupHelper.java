@@ -164,7 +164,7 @@ public class MailboxSetupHelper {
 	public void tearDown() throws Exception {
 		inMemoryLdapServer.clear();
 		RedoLogProvider.getInstance().shutdown();
-		RedoLogProvider.setInstance(null);
+		RedoLogProvider.setInstance(new DefaultRedoLogProvider());
 		DbPool.shutDownAndClear();
 		inMemoryLdapServer.shutDown(true);
 		// TODO: avoid shutting down with explicit static method calls
