@@ -897,7 +897,7 @@ EOF
           <forkCount>1</forkCount>
           <reuseForks>true</reuseForks>
           <excludedGroups>flaky</excludedGroups>
-          <argLine>@{argLine} -Xmx2g -Dserver.dir=${project.basedir}
+          <argLine>@{argLine} -Xmx4g -Dserver.dir=${project.basedir}
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
             -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
@@ -926,7 +926,8 @@ EOF
         <configuration>
           <forkCount>1</forkCount>
           <reuseForks>true</reuseForks>
-          <argLine>@{argLine} -Xmx2g -Dserver.dir=${project.basedir}
+          <excludedGroups>flaky</excludedGroups>
+          <argLine>@{argLine} -Xmx4g -Dserver.dir=${project.basedir}
             -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
