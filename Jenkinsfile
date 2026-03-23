@@ -81,113 +81,6 @@ pipeline {
             }
         }
 
-        stage('UT, IT') {
-            steps {
-                container('jdk-21') {
-                    sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,flaky,e2e"
-                }
-                junit allowEmptyResults: true,
-                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
-            }
-        }
-        stage('Flaky, API, E2E tests') {
-            steps {
-                container('jdk-21') {
-                    sh "cd store && mvn ${MVN_OPTS} verify -Dgroups=flaky,api && mvn ${MVN_OPTS} verify -Dgroups=e2e"
-                }
-                junit allowEmptyResults: true,
-                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
-            }
-        }
-
-        stage('Build and Package API Docs') {
-            steps {
-                container('jdk-21') {
-                    sh """
-                        cd soap
-                        mvn ${MVN_OPTS} antrun:run@generate-soap-docs
-                        cd ..
-                        VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-                        mkdir -p artifacts
-                        tar -czf artifacts/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
-                    """
-                }
-                archiveArtifacts artifacts: 'artifacts/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
-            }
-        }
-
-        stage('Sonarqube Analysis') {
-            when {
-                allOf {
-                    expression { params.SKIP_SONARQUBE == false }
-                    expression { params.SKIP_TEST_WITH_COVERAGE == false }
-                }
-            }
-            steps {
-                container('jdk-21') {
-                    withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                        sh """
-                            mvn ${MVN_OPTS} \
-                                sonar:sonar \
-                                -Dsonar.junit.reportPaths=target/surefire-reports,target/failsafe-reports \
-                                -Dsonar.exclusions=**/com/zimbra/soap/mail/type/*.java,**/com/zimbra/soap/mail/message/*.java,**/com/zimbra/cs/account/ZAttr*.java,**/com/zimbra/common/account/ZAttr*.java
-                        """
-                    }
-                }
-            }
-        }
-
-        stage('Publish SNAPSHOT to maven') {
-            when {
-                not { buildingTag() }
-            }
-            steps {
-                container('jdk-21') {
-                    withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                        script {
-                            sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -DskipTests=true"
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('Publish to maven') {
-            when {
-                buildingTag()
-            }
-            steps {
-                container('jdk-21') {
-                    withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                        script {
-                            sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -Dchangelist= -DskipTests=true"
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('Build and Publish Docker images') {
-            steps {
-                dockerStage([
-                        dockerfile: 'docker/mailbox/Dockerfile',
-                        imageName : 'carbonio-mailbox',
-                        ocLabels  : [
-                            title          : 'Carbonio Mailbox',
-                            descriptionFile: 'docker/mailbox/description.md'
-                        ]
-                ])
-                dockerStage([
-                        dockerfile: 'docker/mariadb/Dockerfile',
-                        imageName : 'carbonio-mariadb',
-                        ocLabels  : [
-                                title          : 'Carbonio MariaDB',
-                                descriptionFile: 'docker/mariadb/description.md'
-                        ]
-                ])
-            }
-        }
-
         stage('Build deb/rpm') {
             steps {
                 echo 'Building deb/rpm packages'
@@ -203,18 +96,6 @@ pipeline {
                                 ]
                         ]
                 ])
-            }
-        }
-
-        stage('Upload artifacts')
-        {
-            tools {
-                jfrog 'jfrog-cli'
-            }
-            steps {
-                uploadStage(
-                        packages: yapHelper.getPackageNames('staging/packages/yap.json')
-                )
             }
         }
     }
