@@ -709,7 +709,7 @@ public abstract class ImapHandler {
                         req.skipSpace();  req.skipAtom("RETURN");
                         req.skipSpace();  req.skipChar('(');
                         while (req.peekChar() != ')') {
-                            if (returnOptions != 0) {
+                            if (returnOptions != 0 || status != 0) {
                                 req.skipSpace();
                             }
                             String option = req.readATOM();
