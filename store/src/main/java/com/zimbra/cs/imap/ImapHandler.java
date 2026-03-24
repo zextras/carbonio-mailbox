@@ -708,11 +708,13 @@ public abstract class ImapHandler {
                     if (req.peekChar() == ' ' && extensionEnabled("LIST-EXTENDED")) {
                         req.skipSpace();  req.skipAtom("RETURN");
                         req.skipSpace();  req.skipChar('(');
+                        boolean hasReturnOption = false;
                         while (req.peekChar() != ')') {
-                            if (returnOptions != 0) {
+                            if (hasReturnOption) {
                                 req.skipSpace();
                             }
                             String option = req.readATOM();
+                            hasReturnOption = true;
                             if (option.equals("SUBSCRIBED")) {
                                 returnOptions |= RETURN_SUBSCRIBED;
                             } else if (option.equals("CHILDREN")) {
