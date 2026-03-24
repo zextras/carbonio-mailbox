@@ -199,6 +199,34 @@ pipeline {
                                 ]
                         ])
                         dockerStage([
+                                dockerfile: 'docker/mailbox-sidecar/Dockerfile',
+                                imageName : 'carbonio-mailbox-sidecar',
+                                ocLabels  : [
+                                        title : 'Carbonio Mailbox Sidecar',
+                                ]
+                        ])
+                        dockerStage([
+                                dockerfile: 'docker/mailbox-admin-sidecar/Dockerfile',
+                                imageName : 'carbonio-mailbox-admin-sidecar',
+                                ocLabels  : [
+                                        title : 'Carbonio Mailbox Admin Sidecar',
+                                ]
+                        ])
+                        dockerStage([
+                                dockerfile: 'docker/mailbox-nslookup-sidecar/Dockerfile',
+                                imageName : 'carbonio-mailbox-nslookup-sidecar',
+                                ocLabels  : [
+                                        title : 'Carbonio Mailbox NSLookup Sidecar',
+                                ]
+                        ])
+                        dockerStage([
+                                dockerfile: 'docker/mailbox-internal-api-sidecar/Dockerfile',
+                                imageName : 'carbonio-mailbox-internal-api-sidecar',
+                                ocLabels  : [
+                                        title : 'Carbonio Mailbox Internal API Sidecar',
+                                ]
+                        ])
+                        dockerStage([
                                 dockerfile: 'docker/mariadb/Dockerfile',
                                 imageName : 'carbonio-mariadb',
                                 ocLabels  : [
