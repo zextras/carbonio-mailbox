@@ -4,9 +4,9 @@ FROM registry.dev.zextras.com/dev/carbonio-sidecar:latest
 COPY packages/appserver-service/carbonio-mailbox-admin.hcl /consul/config/
 
 # Setup files
-COPY packages/appserver-service/carbonio-mailbox-admin-service-protocol.json /etc/carbonio/mailbox-admin/service-discover/
-COPY packages/appserver-service/carbonio-mailbox-admin-intentions.json       /etc/carbonio/mailbox-admin/service-discover/
-COPY packages/appserver-service/carbonio-mailbox-admin-policies.json         /etc/carbonio/mailbox-admin/service-discover/
+COPY packages/appserver-service/carbonio-mailbox-admin-service-protocol.json /etc/carbonio/mailbox-admin/service-discover/service-protocol.json
+COPY packages/appserver-service/carbonio-mailbox-admin-intentions.json       /etc/carbonio/mailbox-admin/service-discover/intentions.json
+COPY packages/appserver-service/carbonio-mailbox-admin-policies.json         /etc/carbonio/mailbox-admin/service-discover/policies.json
 
 # Setup script
 COPY packages/appserver-service/carbonio-mailbox-admin /usr/local/bin/carbonio-mailbox-admin
