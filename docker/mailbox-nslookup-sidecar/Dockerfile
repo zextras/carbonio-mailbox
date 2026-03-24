@@ -1,33 +1,16 @@
-FROM docker.io/envoyproxy/envoy:v1.27-latest
-COPY --from=docker.io/hashicorp/consul:1.17 /bin/consul /usr/local/bin/consul
-RUN apt-get update && apt-get install -y jq && rm -rf /var/lib/apt/lists/*
+FROM localhost/carbonio-sidecar-base:latest
 
-# Fake service-discover binary — returns a predefined bootstrap token
-RUN printf '#!/bin/sh\necho "00000000-0000-0000-0000-000000000000"\n' > /usr/local/bin/service-discover \
-    && chmod +x /usr/local/bin/service-discover
-
-# Service registration (registered via consul services register)
+# Service registration
 COPY packages/appserver-service/carbonio-mailbox-nslookup.hcl /consul/config/
 
-# Setup files at the path the setup script expects
+# Setup files
 COPY packages/appserver-service/carbonio-mailbox-nslookup-service-protocol.json /etc/carbonio/mailbox-nslookup/service-discover/
 COPY packages/appserver-service/carbonio-mailbox-nslookup-intentions.json       /etc/carbonio/mailbox-nslookup/service-discover/
 COPY packages/appserver-service/carbonio-mailbox-nslookup-policies.json         /etc/carbonio/mailbox-nslookup/service-discover/
 
-# Setup script (runs as-is from the package)
+# Setup script
 COPY packages/appserver-service/carbonio-mailbox-nslookup /usr/local/bin/carbonio-mailbox-nslookup
 RUN chmod +x /usr/local/bin/carbonio-mailbox-nslookup
 
 ENV SERVICE_NAME=carbonio-mailbox-nslookup
-
-ENTRYPOINT ["/bin/sh", "-c", "\
-  echo '[sidecar] Waiting for consul agent...' && \
-  until consul members >/dev/null 2>&1; do sleep 1; done && \
-  echo '[sidecar] Consul agent ready.' && \
-  consul services register /consul/config/*.hcl && \
-  (carbonio-mailbox-nslookup setup || true) && \
-  echo '[sidecar] Starting envoy for $SERVICE_NAME' && \
-  exec consul connect envoy \
-    -sidecar-for=$SERVICE_NAME \
-    -admin-bind=localhost:0 \
-"]
+ENV SETUP_SCRIPT="carbonio-mailbox-nslookup setup"
