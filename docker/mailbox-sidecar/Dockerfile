@@ -14,3 +14,4 @@ RUN chmod +x /usr/local/bin/carbonio-mailbox
 
 ENV SERVICE_NAME=carbonio-mailbox
 ENV SETUP_SCRIPT="carbonio-mailbox setup"
+ENV TOKEN_FILE=/etc/carbonio/mailbox/service-discover/token

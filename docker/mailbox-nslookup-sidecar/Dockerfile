@@ -14,3 +14,4 @@ RUN chmod +x /usr/local/bin/carbonio-mailbox-nslookup
 
 ENV SERVICE_NAME=carbonio-mailbox-nslookup
 ENV SETUP_SCRIPT="carbonio-mailbox-nslookup setup"
+ENV TOKEN_FILE=/etc/carbonio/mailbox-nslookup/service-discover/token
