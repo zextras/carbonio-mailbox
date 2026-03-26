@@ -1317,18 +1317,27 @@ public class Mailbox implements MailboxStore {
     }
 
     long size = getEffectiveSize(delta);
-    if (delta > 0 && checkQuota) {
-      checkSizeChange(size);
+    final boolean addingMessage = delta > 0;
+    if (addingMessage && checkQuota) {
+      // delta > 0 -> add
+      checkSizeChangeAddOperation(size);
     }
+
+    //if (!addingMessage)
+    // storagesClient.updateUsage({usage: newSize, op: "delete"}) -> always allow
 
     currentChange().dirty.recordModified(this, Change.SIZE);
     currentChange().size = size;
   }
 
-  public void checkSizeChange(long newSize) throws ServiceException {
+  // TODO: check against storages
+  public void checkSizeChangeAddOperation(long newSize) throws ServiceException {
     Account acct = getAccount();
     long acctQuota = AccountUtil.getEffectiveQuota(acct);
+    // storagesClient.updateUsage({usage: newSize, op: "add"}) -> storages checks if already over quota.
+    // if overquota === true -> throw exception
     if (acctQuota != 0 && newSize > acctQuota) {
+
       throw MailServiceException.QUOTA_EXCEEDED(acctQuota);
     }
     Domain domain = Provisioning.getInstance().getDomain(acct);
@@ -6992,7 +7001,7 @@ public class Mailbox implements MailboxStore {
 
       // step 0: preemptively check for quota issues (actual update is done in Message.create)
       if (!getAccount().isMailAllowReceiveButNotSendWhenOverQuota()) {
-        checkSizeChange(getSize() + staged.getSize());
+        checkSizeChangeAddOperation(getSize() + staged.getSize());
       }
 
       // step 1: get an ID assigned for the new message
@@ -7874,13 +7883,13 @@ public class Mailbox implements MailboxStore {
       // check if mailbox has enough quota available to copy all the item.
       if (requiredQuota > 0) {
         ZimbraLog.mailbox.info("total space required to copy items = %d", requiredQuota);
-        checkSizeChange(getEffectiveSize(requiredQuota));
+        checkSizeChangeAddOperation(getEffectiveSize(requiredQuota));
       }
 
       for (MailItem item : items) {
         MailItem copy;
         if (item.isQuotaCheckRequired()) {
-          checkSizeChange(getEffectiveSize(item.getSize()));
+          checkSizeChangeAddOperation(getEffectiveSize(item.getSize()));
         }
         if (item instanceof Conversation) {
           // this should be done in Conversation.copy(), but redolog issues make that impossible
@@ -7995,7 +8004,7 @@ public class Mailbox implements MailboxStore {
       // check if mailbox has enough quota available to copy all the item.
       if (requiredQuota > 0) {
         ZimbraLog.mailbox.info("total space required to copy items = %d", requiredQuota);
-        checkSizeChange(getEffectiveSize(requiredQuota));
+        checkSizeChangeAddOperation(getEffectiveSize(requiredQuota));
       }
 
       List<MailItem> result = new ArrayList<>();
