@@ -1323,8 +1323,10 @@ public class Mailbox implements MailboxStore {
       checkSizeChangeAddOperation(size);
     }
 
-    //if (!addingMessage)
-    // storagesClient.updateUsage({usage: newSize, op: "delete"}) -> always allow
+    if (!addingMessage) {
+      var acct = getAccount();
+      QuotaHookSingleton.getInstance().deleteMessage(acct, size);
+    }
 
     currentChange().dirty.recordModified(this, Change.SIZE);
     currentChange().size = size;
@@ -1334,8 +1336,7 @@ public class Mailbox implements MailboxStore {
   public void checkSizeChangeAddOperation(long newTotalMailboxUsage) throws ServiceException {
     Account acct = getAccount();
     long acctQuota = AccountUtil.getEffectiveQuota(acct);
-    boolean isOverQuota = QuotaHookSingleton.getInstance().isOverQuota(acct);
-    // storagesClient.updateUsage({usage: newSize, op: "add"}) -> storages checks if already over quota.
+    boolean isOverQuota = QuotaHookSingleton.getInstance().addMessage(acct, newTotalMailboxUsage).isOverQuota();
 
     if (isOverQuota) {
       throw MailServiceException.QUOTA_EXCEEDED(acctQuota);

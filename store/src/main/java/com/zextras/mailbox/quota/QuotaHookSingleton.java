@@ -7,8 +7,17 @@ public class QuotaHookSingleton {
 
     public static class DefaultQuotaHook implements QuotaHook {
         @Override
-        public boolean isOverQuota(Account acct) {
-            return false;
+        public IsOverQuota getQuota(Account acct) {
+            return new IsOverQuota(false);
+        }
+
+        @Override
+        public IsOverQuota addMessage(Account acct, long newTotalMailboxUsage) {
+            return new IsOverQuota(false);
+        }
+
+        @Override
+        public void deleteMessage(Account acct, long size) {
         }
     }
 

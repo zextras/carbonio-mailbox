@@ -4,5 +4,9 @@ import com.zimbra.cs.account.Account;
 
 public interface QuotaHook {
 
-    boolean isOverQuota(Account acct);
+    IsOverQuota getQuota(Account acct);
+
+    IsOverQuota addMessage(Account acct, long newTotalMailboxUsage);
+
+    void deleteMessage(Account acct, long size);
 }

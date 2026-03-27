@@ -121,7 +121,7 @@ public class AccountUtil {
   public static void checkQuotaWhenSendMail(Mailbox mbox) throws ServiceException {
     Account account = mbox.getAccount();
     long acctQuota = AccountUtil.getEffectiveQuota(account);
-    boolean isOverQuota = QuotaHookSingleton.getInstance().isOverQuota(account);
+    boolean isOverQuota = QuotaHookSingleton.getInstance().getQuota(account).isOverQuota();
     if (account.isMailAllowReceiveButNotSendWhenOverQuota()
         && isOverQuota) {
       throw MailServiceException.QUOTA_EXCEEDED(acctQuota);
