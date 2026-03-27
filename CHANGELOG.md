@@ -1,5 +1,12 @@
 
 
+# [4.25.0](https://github.com/zextras/carbonio-mailbox/compare/4.25.1...null) (2026-03-27)
+
+
+### Bug Fixes
+
+* [CO-3380] handle multiple RETURN options in LIST command and add test for … ([#963](https://github.com/zextras/carbonio-mailbox/issues/963)) ([f50df64](https://github.com/zextras/carbonio-mailbox/commit/f50df64545d33b93859237fca5747a647141fde0))
+
 * chore: [CO-3282] reduce log level for checks in AddArchiveFolderUtil #945 (7c8333772b)
 
 # [4.25.0](https://github.com/zextras/carbonio-mailbox/compare/4.24.0...4.25.0) (2026-03-03)
