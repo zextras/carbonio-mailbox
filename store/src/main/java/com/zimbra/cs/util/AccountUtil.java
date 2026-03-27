@@ -6,6 +6,7 @@
 package com.zimbra.cs.util;
 
 import com.sun.mail.smtp.SMTPMessage;
+import com.zextras.mailbox.quota.QuotaHookSingleton;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.Key.DomainBy;
@@ -106,38 +107,27 @@ public class AccountUtil {
   public static boolean isSendAllowedOverAggregateQuota(Domain domain) {
     return domain.getDomainAggregateQuotaPolicy().isALLOWSENDRECEIVE();
   }
-  public static boolean isSendAllowedOverQuota(Account account) throws ServiceException {
-    Provisioning prov = Provisioning.getInstance();
-    final Domain domain = prov.getDomain(account);
-    return domain.getDomainAggregateQuotaPolicy().isALLOWSENDRECEIVE();
-  }
 
   public static boolean isReceiveAllowedOverAggregateQuota(Domain domain) {
     return !domain.getDomainAggregateQuotaPolicy().isBLOCKSENDRECEIVE();
   }
 
-  public static boolean isReceiveAllowedOverQuota(Account account) throws ServiceException {
-    Provisioning prov = Provisioning.getInstance();
-    final Domain domain = prov.getDomain(account);
-    return !domain.getDomainAggregateQuotaPolicy().isBLOCKSENDRECEIVE();
-  }
   /**
    * Check mailbox/domain quota
    *
    * @param mbox mailbox to check
    * @throws ServiceException when exceeds quota
    */
-  // TODO: check against storages
   public static void checkQuotaWhenSendMail(Mailbox mbox) throws ServiceException {
     Account account = mbox.getAccount();
     long acctQuota = AccountUtil.getEffectiveQuota(account);
+    boolean isOverQuota = QuotaHookSingleton.getInstance().isOverQuota(account);
     if (account.isMailAllowReceiveButNotSendWhenOverQuota()
-        && acctQuota != 0
-        && mbox.getSize() > acctQuota) {
-      // storagesClient.getAccountQuota(account.getId()) -> isOverQuota
-      // No need to increase usage on storages
+        && isOverQuota) {
       throw MailServiceException.QUOTA_EXCEEDED(acctQuota);
     }
+
+    // TODO check if it is still needed
     Domain domain = Provisioning.getInstance().getDomain(account);
     if (domain != null
         && AccountUtil.isOverAggregateQuota(domain)

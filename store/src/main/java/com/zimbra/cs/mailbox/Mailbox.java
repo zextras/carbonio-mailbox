@@ -15,6 +15,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Closeables;
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
+import com.zextras.mailbox.quota.QuotaHookSingleton;
 import com.zimbra.client.ZFolder;
 import com.zimbra.client.ZMailbox;
 import com.zimbra.client.ZMailbox.Options;
@@ -1319,7 +1320,6 @@ public class Mailbox implements MailboxStore {
     long size = getEffectiveSize(delta);
     final boolean addingMessage = delta > 0;
     if (addingMessage && checkQuota) {
-      // delta > 0 -> add
       checkSizeChangeAddOperation(size);
     }
 
@@ -1331,15 +1331,16 @@ public class Mailbox implements MailboxStore {
   }
 
   // TODO: check against storages
-  public void checkSizeChangeAddOperation(long newSize) throws ServiceException {
+  public void checkSizeChangeAddOperation(long newTotalMailboxUsage) throws ServiceException {
     Account acct = getAccount();
     long acctQuota = AccountUtil.getEffectiveQuota(acct);
+    boolean isOverQuota = QuotaHookSingleton.getInstance().isOverQuota(acct);
     // storagesClient.updateUsage({usage: newSize, op: "add"}) -> storages checks if already over quota.
-    // if overquota === true -> throw exception
-    if (acctQuota != 0 && newSize > acctQuota) {
 
+    if (isOverQuota) {
       throw MailServiceException.QUOTA_EXCEEDED(acctQuota);
     }
+    // TODO check if it is still needed
     Domain domain = Provisioning.getInstance().getDomain(acct);
     if (domain != null
         && AccountUtil.isOverAggregateQuota(domain)
