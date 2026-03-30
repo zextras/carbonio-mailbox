@@ -1,5 +1,5 @@
 library(
-        identifier: 'jenkins-lib-common@1.3.3',
+        identifier: 'jenkins-lib-common@1.4.0',
         retriever: modernSCM([
                 $class: 'GitSCMSource',
                 credentialsId: 'jenkins-integration-with-github-account',
@@ -196,6 +196,34 @@ pipeline {
                                 ocLabels  : [
                                         title          : 'Carbonio Mailbox',
                                         descriptionFile: 'docker/mailbox/description.md'
+                                ]
+                        ])
+                        dockerStage([
+                                dockerfile: 'docker/mailbox-sidecar/Dockerfile',
+                                imageName : 'carbonio-mailbox-sidecar',
+                                ocLabels  : [
+                                        title : 'Carbonio Mailbox Sidecar',
+                                ]
+                        ])
+                        dockerStage([
+                                dockerfile: 'docker/mailbox-admin-sidecar/Dockerfile',
+                                imageName : 'carbonio-mailbox-admin-sidecar',
+                                ocLabels  : [
+                                        title : 'Carbonio Mailbox Admin Sidecar',
+                                ]
+                        ])
+                        dockerStage([
+                                dockerfile: 'docker/mailbox-nslookup-sidecar/Dockerfile',
+                                imageName : 'carbonio-mailbox-nslookup-sidecar',
+                                ocLabels  : [
+                                        title : 'Carbonio Mailbox NSLookup Sidecar',
+                                ]
+                        ])
+                        dockerStage([
+                                dockerfile: 'docker/mailbox-internal-api-sidecar/Dockerfile',
+                                imageName : 'carbonio-mailbox-internal-api-sidecar',
+                                ocLabels  : [
+                                        title : 'Carbonio Mailbox Internal API Sidecar',
                                 ]
                         ])
                         dockerStage([
