@@ -1332,22 +1332,9 @@ public class Mailbox implements MailboxStore {
     currentChange().size = size;
   }
 
-  // TODO: check against storages
   public void checkSizeChangeOnAddOperation(long newTotalMailboxUsage) throws ServiceException {
     Account acct = getAccount();
-    long acctQuota = AccountUtil.getEffectiveQuota(acct);
-    boolean isOverQuota = QuotaHookSingleton.getInstance().addMessage(acct, newTotalMailboxUsage).isOverQuota();
-
-    if (isOverQuota) {
-      throw MailServiceException.QUOTA_EXCEEDED(acctQuota);
-    }
-    // TODO check if it is still needed
-    Domain domain = Provisioning.getInstance().getDomain(acct);
-    if (domain != null
-        && AccountUtil.isOverAggregateQuota(domain)
-        && !AccountUtil.isReceiveAllowedOverAggregateQuota(domain)) {
-      throw MailServiceException.DOMAIN_QUOTA_EXCEEDED(domain.getDomainAggregateQuota());
-    }
+    QuotaHookSingleton.getInstance().addMessage(acct, newTotalMailboxUsage);
   }
 
   long getEffectiveSize(long delta) {

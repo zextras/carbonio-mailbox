@@ -1,34 +1,50 @@
 package com.zextras.mailbox.quota;
 
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Domain;
+import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.mailbox.MailServiceException;
+import com.zimbra.cs.util.AccountUtil;
 
 public class QuotaHookSingleton {
-    private static QuotaHook instance;
 
-    public static class DefaultQuotaHook implements QuotaHook {
-        @Override
-        public IsOverQuota getQuota(Account acct) {
-            return new IsOverQuota(false);
-        }
+	private static QuotaHook instance;
 
-        @Override
-        public IsOverQuota addMessage(Account acct, long newTotalMailboxUsage) {
-            return new IsOverQuota(false);
-        }
+	public static class DefaultQuotaHook implements QuotaHook {
 
-        @Override
-        public void deleteMessage(Account acct, long size) {
-        }
-    }
+		@Override
+		public IsOverQuota getQuota(Account acct) {
+			return new IsOverQuota(false);
+		}
 
-    public synchronized static QuotaHook getInstance() {
-        if (instance == null) {
-            instance = new DefaultQuotaHook();
-        }
-        return instance;
-    }
+		@Override
+		public void addMessage(Account acct, long newTotalMailboxUsage) throws ServiceException {
+			long acctQuota = AccountUtil.getEffectiveQuota(acct);
+			if (acctQuota != 0 && newTotalMailboxUsage > acctQuota) {
+				throw MailServiceException.QUOTA_EXCEEDED(acctQuota);
+			}
+			Domain domain = Provisioning.getInstance().getDomain(acct);
+			if (domain != null
+					&& AccountUtil.isOverAggregateQuota(domain)
+					&& !AccountUtil.isReceiveAllowedOverAggregateQuota(domain)) {
+				throw MailServiceException.DOMAIN_QUOTA_EXCEEDED(domain.getDomainAggregateQuota());
+			}
+		}
 
-    public synchronized static void setInstance(QuotaHook hook) {
-        instance = hook;
-    }
+		@Override
+		public void deleteMessage(Account acct, long size) {
+		}
+	}
+
+	public synchronized static QuotaHook getInstance() {
+		if (instance == null) {
+			instance = new QuotaHookSingleton.DefaultQuotaHook();
+		}
+		return instance;
+	}
+
+	public synchronized static void setInstance(QuotaHook hook) {
+		instance = hook;
+	}
 }
