@@ -856,8 +856,6 @@ public class Conversation extends MailItem {
     @Override
     protected boolean isQuotaCheckRequired() throws ServiceException {
         Account account = getMailbox().getAccount();
-        // TRUE: allow receiving mails but not sending
-        // FALSE: do NOT allow receiving mails when overquota
         return !account.isMailAllowReceiveButNotSendWhenOverQuota();
     }
 
