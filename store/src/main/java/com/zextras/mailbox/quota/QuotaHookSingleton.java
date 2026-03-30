@@ -5,6 +5,8 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailServiceException;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.util.AccountUtil;
 
 public class QuotaHookSingleton {
@@ -14,8 +16,21 @@ public class QuotaHookSingleton {
 	public static class DefaultQuotaHook implements QuotaHook {
 
 		@Override
-		public IsOverQuota getQuota(Account acct) {
-			return new IsOverQuota(false);
+		public void checkQuota(Account account) throws ServiceException {
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+			long acctQuota = AccountUtil.getEffectiveQuota(account);
+
+			if (account.isMailAllowReceiveButNotSendWhenOverQuota()
+					&& acctQuota != 0 && mbox.getSize() > acctQuota) {
+				throw MailServiceException.QUOTA_EXCEEDED(acctQuota);
+			}
+
+			Domain domain = Provisioning.getInstance().getDomain(account);
+			if (domain != null
+					&& AccountUtil.isOverAggregateQuota(domain)
+					&& !AccountUtil.isSendAllowedOverAggregateQuota(domain)) {
+				throw MailServiceException.DOMAIN_QUOTA_EXCEEDED(domain.getDomainAggregateQuota());
+			}
 		}
 
 		@Override

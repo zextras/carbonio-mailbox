@@ -5,7 +5,7 @@ import com.zimbra.cs.account.Account;
 
 public interface QuotaHook {
 
-    IsOverQuota getQuota(Account acct);
+    void checkQuota(Account acct) throws ServiceException;
 
     void addMessage(Account acct, long newTotalMailboxUsage) throws ServiceException;
 

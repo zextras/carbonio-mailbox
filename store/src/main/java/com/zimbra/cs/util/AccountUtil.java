@@ -120,20 +120,7 @@ public class AccountUtil {
    */
   public static void checkQuotaWhenSendMail(Mailbox mbox) throws ServiceException {
     Account account = mbox.getAccount();
-    long acctQuota = AccountUtil.getEffectiveQuota(account);
-    boolean isOverQuota = QuotaHookSingleton.getInstance().getQuota(account).isOverQuota();
-    if (account.isMailAllowReceiveButNotSendWhenOverQuota()
-        && isOverQuota) {
-      throw MailServiceException.QUOTA_EXCEEDED(acctQuota);
-    }
-
-    // TODO check if it is still needed
-    Domain domain = Provisioning.getInstance().getDomain(account);
-    if (domain != null
-        && AccountUtil.isOverAggregateQuota(domain)
-        && !AccountUtil.isSendAllowedOverAggregateQuota(domain)) {
-      throw MailServiceException.DOMAIN_QUOTA_EXCEEDED(domain.getDomainAggregateQuota());
-    }
+    QuotaHookSingleton.getInstance().checkQuota(account);
   }
 
   public static InternetAddress getFriendlyEmailAddress(Account acct) {
