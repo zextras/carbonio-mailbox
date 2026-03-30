@@ -38,7 +38,6 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.TokenUtil;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailItem.Type;
-import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Metadata;
 import com.zimbra.cs.mailbox.MetadataList;
@@ -120,7 +119,7 @@ public class AccountUtil {
    */
   public static void checkQuotaWhenSendMail(Mailbox mbox) throws ServiceException {
     Account account = mbox.getAccount();
-    QuotaHookSingleton.getInstance().checkQuota(account);
+    QuotaHookSingleton.getInstance().onSendMessage(account);
   }
 
   public static InternetAddress getFriendlyEmailAddress(Account acct) {

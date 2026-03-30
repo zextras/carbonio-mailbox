@@ -16,7 +16,7 @@ public class QuotaHookSingleton {
 	public static class DefaultQuotaHook implements QuotaHook {
 
 		@Override
-		public void checkQuota(Account account) throws ServiceException {
+		public void onSendMessage(Account account) throws ServiceException {
 			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 			long acctQuota = AccountUtil.getEffectiveQuota(account);
 
@@ -34,7 +34,7 @@ public class QuotaHookSingleton {
 		}
 
 		@Override
-		public void addMessage(Account acct, long newTotalMailboxUsage) throws ServiceException {
+		public void onAddMessage(Account acct, long newTotalMailboxUsage) throws ServiceException {
 			long acctQuota = AccountUtil.getEffectiveQuota(acct);
 			if (acctQuota != 0 && newTotalMailboxUsage > acctQuota) {
 				throw MailServiceException.QUOTA_EXCEEDED(acctQuota);
@@ -48,7 +48,7 @@ public class QuotaHookSingleton {
 		}
 
 		@Override
-		public void deleteMessage(Account acct, long size) {
+		public void onDeleteMessage(Account acct, long size) {
 		}
 	}
 

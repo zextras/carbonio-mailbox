@@ -1325,7 +1325,7 @@ public class Mailbox implements MailboxStore {
 
     if (!addingMessage) {
       var acct = getAccount();
-      QuotaHookSingleton.getInstance().deleteMessage(acct, size);
+      QuotaHookSingleton.getInstance().onDeleteMessage(acct, size);
     }
 
     currentChange().dirty.recordModified(this, Change.SIZE);
@@ -1334,7 +1334,7 @@ public class Mailbox implements MailboxStore {
 
   public void checkSizeChangeOnAddOperation(long newTotalMailboxUsage) throws ServiceException {
     Account acct = getAccount();
-    QuotaHookSingleton.getInstance().addMessage(acct, newTotalMailboxUsage);
+    QuotaHookSingleton.getInstance().onAddMessage(acct, newTotalMailboxUsage);
   }
 
   long getEffectiveSize(long delta) {
