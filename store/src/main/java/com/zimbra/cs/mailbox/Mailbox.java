@@ -15,7 +15,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Closeables;
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
-import com.zextras.mailbox.quota.QuotaHookSingleton;
+import com.zextras.mailbox.quota.QuotaCheckSingleton;
 import com.zimbra.client.ZFolder;
 import com.zimbra.client.ZMailbox;
 import com.zimbra.client.ZMailbox.Options;
@@ -1325,7 +1325,7 @@ public class Mailbox implements MailboxStore {
 
     if (!addingMessage) {
       var acct = getAccount();
-      QuotaHookSingleton.getInstance().onDeleteMessage(acct, size);
+      QuotaCheckSingleton.getInstance().onDeleteMessage(acct, size);
     }
 
     currentChange().dirty.recordModified(this, Change.SIZE);
@@ -1334,7 +1334,7 @@ public class Mailbox implements MailboxStore {
 
   public void checkSizeChangeOnAddOperation(long newTotalMailboxUsage) throws ServiceException {
     Account acct = getAccount();
-    QuotaHookSingleton.getInstance().onAddMessage(acct, newTotalMailboxUsage);
+    QuotaCheckSingleton.getInstance().onAddMessage(acct, newTotalMailboxUsage);
   }
 
   long getEffectiveSize(long delta) {

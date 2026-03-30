@@ -6,7 +6,7 @@
 package com.zimbra.cs.util;
 
 import com.sun.mail.smtp.SMTPMessage;
-import com.zextras.mailbox.quota.QuotaHookSingleton;
+import com.zextras.mailbox.quota.QuotaCheckSingleton;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.Key.DomainBy;
@@ -119,7 +119,7 @@ public class AccountUtil {
    */
   public static void checkQuotaWhenSendMail(Mailbox mbox) throws ServiceException {
     Account account = mbox.getAccount();
-    QuotaHookSingleton.getInstance().onSendMessage(account);
+    QuotaCheckSingleton.getInstance().onSendMessage(account);
   }
 
   public static InternetAddress getFriendlyEmailAddress(Account acct) {

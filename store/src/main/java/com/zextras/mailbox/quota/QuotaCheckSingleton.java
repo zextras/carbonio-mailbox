@@ -9,11 +9,11 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.util.AccountUtil;
 
-public class QuotaHookSingleton {
+public class QuotaCheckSingleton {
 
-	private static QuotaHook instance;
+	private static QuotaCheck instance;
 
-	public static class DefaultQuotaHook implements QuotaHook {
+	public static class DefaultQuotaCheck implements QuotaCheck {
 
 		@Override
 		public void onSendMessage(Account account) throws ServiceException {
@@ -52,14 +52,14 @@ public class QuotaHookSingleton {
 		}
 	}
 
-	public synchronized static QuotaHook getInstance() {
+	public synchronized static QuotaCheck getInstance() {
 		if (instance == null) {
-			instance = new QuotaHookSingleton.DefaultQuotaHook();
+			instance = new DefaultQuotaCheck();
 		}
 		return instance;
 	}
 
-	public synchronized static void setInstance(QuotaHook hook) {
+	public synchronized static void setInstance(QuotaCheck hook) {
 		instance = hook;
 	}
 }
