@@ -202,9 +202,7 @@ public class SaveDraftTest extends MailboxTestSuite {
 	@Test
 	void cannotSaveDraftWhenOverQuota() throws Exception {
 		final Account account = createAccount().create();
-		account.modify(new HashMap<>(
-				Map.of(ZAttrProvisioning.A_zimbraMailQuota, 1)
-		));
+		account.setMailQuota(1);
 
 		final Element request = saveDraftSoapRequest();
 		assertQuotaExceeded(() -> new SaveDraft().handle(request, ServiceTestUtil.getRequestContext(account)));

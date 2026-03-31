@@ -163,13 +163,8 @@ class SendMsgIT extends MailboxTestSuite {
 	void denySendInOverQuota_WhenSavingToSent(Boolean allowMailReceiveButNotSend) throws Exception {
 		final Account account = createAccount().create();
 		final Message draft = saveDraftOnMailbox(account);
-
-		account.modify(
-				new HashMap<String, Object>(Map.of(
-						ZAttrProvisioning.A_zimbraMailAllowReceiveButNotSendWhenOverQuota, allowMailReceiveButNotSend,
-						ZAttrProvisioning.A_zimbraMailQuota, 1
-				))
-		);
+		account.setMailQuota(1);
+		account.setMailAllowReceiveButNotSendWhenOverQuota(allowMailReceiveButNotSend);
 
 		var saveToSent = sendDraftRequest(draft, account.getName(), recipient.getName(), false);
 		assertQuotaExceeded(() -> new SendMsg().handle(saveToSent, as(account)));
@@ -179,13 +174,8 @@ class SendMsgIT extends MailboxTestSuite {
 	void allowSendInOverQuota_WhenNotSavingToSent() throws Exception {
 		final Account account = createAccount().create();
 		final Message draft = saveDraftOnMailbox(account);
-
-		account.modify(
-				new HashMap<String, Object>(Map.of(
-						ZAttrProvisioning.A_zimbraMailAllowReceiveButNotSendWhenOverQuota, false,
-						ZAttrProvisioning.A_zimbraMailQuota, 1
-				))
-		);
+		account.setMailQuota(1);
+		account.setMailAllowReceiveButNotSendWhenOverQuota(false);
 
 		var noSaveToSent = sendDraftRequest(draft, account.getName(), recipient.getName(), true);
 		new SendMsg().handle(noSaveToSent, as(account));
@@ -202,16 +192,6 @@ class SendMsgIT extends MailboxTestSuite {
 
 	private static Element sendDraftRequest(Message draft, String sender, String recipient) throws SoapParseException {
 		return sendDraftRequest(draft, sender, recipient, false);
-//		final String requestBody =
-//				"""
-//				{"m":{"did":"%d","id":"%d","su":{"_content":"AAA"},
-//				"e":[{"t":"f","a":"%s","d":"Test Shared"},{"t":"t","a":"%s"}],
-//				"mp":[{"ct":"multipart/alternative",
-//				"mp":[{"ct":"text/html","body":true,
-//				"content":{"_content":"<html><body><div><p>Test</p></div></body></html>"}},
-//				{"ct":"text/plain","content":{"_content":"Test"}}]}]}}}
-//				""".formatted(draft.getId(), draft.getId(), sender, recipient);
-//		return Element.parseJSON(requestBody);
 	}
 	private static Element sendDraftRequest(Message draft, String sender, String recipient, Boolean noSave) throws SoapParseException {
 		final String requestBody =
