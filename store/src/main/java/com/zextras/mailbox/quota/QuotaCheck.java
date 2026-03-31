@@ -9,5 +9,6 @@ public interface QuotaCheck {
 
     void onAddMessage(Account acct, long newTotalMailboxUsage) throws ServiceException;
 
-    void onDeleteMessage(Account acct, long size);
+    void onDeleteMessage(Account acct, long size) throws ServiceException;
 }
+
