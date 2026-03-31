@@ -5,13 +5,14 @@
 
 package com.zimbra.cs.service.mail;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static com.zimbra.cs.mailbox.MailServiceException.QUOTA_EXCEEDED;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Maps;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.AccountAction;
 import com.zextras.mailbox.util.MailMessageBuilder;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -19,6 +20,7 @@ import com.zimbra.common.soap.SoapParseException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailItem;
+import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
@@ -33,6 +35,9 @@ import com.zimbra.soap.mail.type.AttachmentsInfo;
 import com.zimbra.soap.mail.type.MimePartAttachSpec;
 import com.zimbra.soap.mail.type.PartInfo;
 import com.zimbra.soap.mail.type.SaveDraftMsg;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
 import javax.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -66,14 +71,7 @@ public class SaveDraftTest extends MailboxTestSuite {
 		Account acct = Provisioning.getInstance().getAccountByName("test@zimbra.com");
 
 		// create a draft via SOAP
-		Element request = new Element.JSONElement(MailConstants.SAVE_DRAFT_REQUEST);
-		Element m =
-				request
-						.addNonUniqueElement(MailConstants.E_MSG)
-						.addAttribute(MailConstants.E_SUBJECT, "dinner appt");
-		m.addUniqueElement(MailConstants.E_MIMEPART)
-				.addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
-				.addAttribute(MailConstants.E_CONTENT, ORIGINAL_CONTENT);
+		final Element request = saveDraftSoapRequest();
 
 		Element response =
 				new SaveDraft() {
@@ -105,14 +103,7 @@ public class SaveDraftTest extends MailboxTestSuite {
 		Account acct = Provisioning.getInstance().getAccountByName("test@zimbra.com");
 
 		// create a draft via SOAP
-		Element request = new Element.JSONElement(MailConstants.SAVE_DRAFT_REQUEST);
-		Element m =
-				request
-						.addNonUniqueElement(MailConstants.E_MSG)
-						.addAttribute(MailConstants.E_SUBJECT, "dinner appt");
-		m.addUniqueElement(MailConstants.E_MIMEPART)
-				.addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
-				.addAttribute(MailConstants.E_CONTENT, ORIGINAL_CONTENT);
+		final Element request = saveDraftSoapRequest();
 
 		Element response =
 				new SaveDraft() {
@@ -206,5 +197,34 @@ public class SaveDraftTest extends MailboxTestSuite {
 	@Test
 	void getMissingId() throws SoapParseException, ServiceException {
 		assertEquals(-1, SaveDraft.getId(Element.JSONElement.parseJSON("{  }")));
+	}
+
+	@Test
+	void cannotSaveDraftWhenOverQuota() throws Exception {
+		final Account account = createAccount().create();
+		account.modify(new HashMap<>(
+				Map.of(ZAttrProvisioning.A_zimbraMailQuota, 1)
+		));
+
+		final Element request = saveDraftSoapRequest();
+		assertQuotaExceeded(() -> new SaveDraft().handle(request, ServiceTestUtil.getRequestContext(account)));
+	}
+
+	private static Element saveDraftSoapRequest() {
+		Element request = new Element.JSONElement(MailConstants.SAVE_DRAFT_REQUEST);
+		Element m =
+				request
+						.addNonUniqueElement(MailConstants.E_MSG)
+						.addAttribute(MailConstants.E_SUBJECT, "dinner appt");
+		m.addUniqueElement(MailConstants.E_MIMEPART)
+				.addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
+				.addAttribute(MailConstants.E_CONTENT, ORIGINAL_CONTENT);
+		return request;
+	}
+
+	private static void assertQuotaExceeded(Callable<Element> apiCall) {
+		final MailServiceException mailServiceException = assertThrows(MailServiceException.class,
+				apiCall::call);
+		assertEquals(QUOTA_EXCEEDED, mailServiceException.getCode());
 	}
 }
