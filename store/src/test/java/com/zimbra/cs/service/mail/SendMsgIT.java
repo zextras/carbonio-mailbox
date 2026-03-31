@@ -11,8 +11,9 @@ import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.AccountAction;
 import com.zextras.mailbox.util.MailMessageBuilder;
-import com.zimbra.common.account.Key;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.soap.SoapParseException;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -46,8 +47,9 @@ class SendMsgIT extends MailboxTestSuite {
   private static GreenMail greenMail;
   private static Account sharedAcct;
   private static Account delegatedAcct;
+	private static final String TEST_RECIPIENT = "test@outside.com";
 
-  @BeforeAll
+	@BeforeAll
   public static void setUp() throws Exception {
 
     // Setup SMTP
@@ -93,11 +95,10 @@ class SendMsgIT extends MailboxTestSuite {
     greenMail.stop();
   }
 
-  private Message createDraft(String sender) throws Exception {
-    Account account = Provisioning.getInstance().get(Key.AccountBy.name, sender);
+  private Message saveDraftOnMailbox(Account account) throws Exception {
     final ParsedMessage message = new MailMessageBuilder()
-        .from(sender)
-        .addRecipient(sender)
+        .from(account.getName())
+        .addRecipient(TEST_RECIPIENT)
         .build();
     return AccountAction.Factory.getDefault().forAccount(account).saveDraft(message);
   }
@@ -109,42 +110,23 @@ class SendMsgIT extends MailboxTestSuite {
    * @throws Exception
    */
   @Test
-  void shouldDeleteDraftFromAuthAcctMailboxWhenSendingMailAsSharedAccount() throws Exception {
+  void shouldDeleteDraftFromAuthenticatedAccountMailboxWhenSendingMailAsSharedAccount() throws Exception {
+    final Message draftOnDelegatedAccount = saveDraftOnMailbox(delegatedAcct);
+		final Element jsonElement = sendDraftRequest(draftOnDelegatedAccount, sharedAcct.getName(), TEST_RECIPIENT);
 
-    final Message draft = createDraft(delegatedAcct.getName());
-    // easiest way to create a message, sorry
-    final String requestBody =
-        String.format(
-            "{\"m\":{\"did\":\"%d\",\"id\":\"%d\",\"su\":{\"_content\":\"AAA\"},\"e\":[{\"t\":\"f\",\"a\":\"shared@test.com\",\"d\":\"Test"
-                + " Shared\"},{\"t\":\"t\",\"a\":\"recipient@test.com\"}],"
-                + "\"mp\":[{\"ct\":\"multipart/alternative\","
-                + "\"mp\":[{\"ct\":\"text/html\",\"body\":true,\"content\":{\"_content\":\"<html><body><div"
-                + " style=\\\"font-family: arial, helvetica, sans-serif; font-size: 12pt; color:"
-                + " #000000\\\"><p>Test</p></div></body></html>\"}},"
-                + "{\"ct\":\"text/plain\",\"content\":{\"_content\":\"Test\"}}]}]}}}",
-            draft.getId(), draft.getId());
-    final Element jsonElement = Element.parseJSON(requestBody);
+		final Map<String, Object> context = delegatedRequest(delegatedAcct, sharedAcct);
+		new SendMsg().handle(jsonElement, context);
 
-    Map<String, Object> context = new HashMap<String, Object>();
-    ZimbraSoapContext zsc =
-        new ZimbraSoapContext(
-            AuthProvider.getAuthToken(delegatedAcct),
-            sharedAcct.getId(),
-            SoapProtocol.Soap12,
-            SoapProtocol.Soap12);
-    context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
-    new SendMsg().handle(jsonElement, context);
     final Mailbox delegatedMbox = MailboxManager.getInstance().getMailboxByAccount(delegatedAcct);
     final MailServiceException receivedException =
         assertThrows(
-            MailServiceException.class, () -> delegatedMbox.getMessageById(null, draft.getId()));
-
+            MailServiceException.class, () -> delegatedMbox.getMessageById(null, draftOnDelegatedAccount.getId()));
     // check draft is deleted after successful send
     assertEquals(MailServiceException.NO_SUCH_MSG, receivedException.getCode());
-    assertEquals("no such message: " + draft.getId(), receivedException.getMessage());
+    assertEquals("no such message: " + draftOnDelegatedAccount.getId(), receivedException.getMessage());
   }
 
-  /**
+	/**
    * CO-782: Tests if a draft is created in a shared mailbox, when msg sent as shared account, then
    * the Draft is not deleted from shared mailbox.
    *
@@ -152,32 +134,41 @@ class SendMsgIT extends MailboxTestSuite {
    */
   @Test
   void shouldNotDeleteDraftFromSharedMailboxWhenSendingMailAsSharedAccount() throws Exception {
+    final Message draftOnSharedAccount = saveDraftOnMailbox(sharedAcct);
+		final Element jsonElement = sendDraftRequest(draftOnSharedAccount, sharedAcct.getName(), TEST_RECIPIENT);
 
-    final Message draft = createDraft(sharedAcct.getName());
-    // easiest way to create a message, sorry
-    final String requestBody =
-        String.format(
-            "{\"m\":{\"did\":\"%d\",\"id\":\"%d\",\"su\":{\"_content\":\"AAA\"},\"e\":[{\"t\":\"f\",\"a\":\"shared@test.com\",\"d\":\"Test"
-                + " Shared\"},{\"t\":\"t\",\"a\":\"recipient@test.com\"}],"
-                + "\"mp\":[{\"ct\":\"multipart/alternative\","
-                + "\"mp\":[{\"ct\":\"text/html\",\"body\":true,\"content\":{\"_content\":\"<html><body><div"
-                + " style=\\\"font-family: arial, helvetica, sans-serif; font-size: 12pt; color:"
-                + " #000000\\\"><p>Test</p></div></body></html>\"}},"
-                + "{\"ct\":\"text/plain\",\"content\":{\"_content\":\"Test\"}}]}]}}}",
-            draft.getId(), draft.getId());
-    final Element jsonElement = Element.parseJSON(requestBody);
+		final Map<String, Object> context = delegatedRequest(delegatedAcct, sharedAcct);
+		new SendMsg().handle(jsonElement, context);
 
-    Map<String, Object> context = new HashMap<String, Object>();
-    ZimbraSoapContext zsc =
-        new ZimbraSoapContext(
-            AuthProvider.getAuthToken(delegatedAcct),
-            sharedAcct.getId(),
-            SoapProtocol.Soap12,
-            SoapProtocol.Soap12);
-    context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
-    new SendMsg().handle(jsonElement, context);
     final Mailbox sharedMbox = MailboxManager.getInstance().getMailboxByAccount(sharedAcct);
-    final Message draftStillThere = sharedMbox.getMessageById(null, draft.getId());
-    assertEquals(draft, draftStillThere);
+    final Message draftStillThere = sharedMbox.getMessageById(null, draftOnSharedAccount.getId());
+    assertEquals(draftOnSharedAccount, draftStillThere);
   }
+
+
+	private static Element sendDraftRequest(Message draft, String sender, String recipient) throws SoapParseException {
+		final String requestBody =
+				"""
+				{"m":{"did":"%d","id":"%d","su":{"_content":"AAA"},
+				"e":[{"t":"f","a":"%s","d":"Test Shared"},{"t":"t","a":"%s"}],
+				"mp":[{"ct":"multipart/alternative",
+				"mp":[{"ct":"text/html","body":true,
+				"content":{"_content":"<html><body><div><p>Test</p></div></body></html>"}},
+				{"ct":"text/plain","content":{"_content":"Test"}}]}]}}}
+				""".formatted(draft.getId(), draft.getId(), sender, recipient);
+		final Element jsonElement = Element.parseJSON(requestBody);
+		return jsonElement;
+	}
+
+	private static Map<String, Object> delegatedRequest(Account authenticated, Account requested) throws ServiceException {
+		Map<String, Object> context = new HashMap<String, Object>();
+		ZimbraSoapContext zsc =
+				new ZimbraSoapContext(
+						AuthProvider.getAuthToken(authenticated),
+						requested.getId(),
+						SoapProtocol.Soap12,
+						SoapProtocol.Soap12);
+		context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+		return context;
+	}
 }
