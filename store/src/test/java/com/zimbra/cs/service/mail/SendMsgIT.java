@@ -4,6 +4,7 @@
 
 package com.zimbra.cs.service.mail;
 
+import static com.zimbra.cs.mailbox.MailServiceException.QUOTA_EXCEEDED;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.icegreen.greenmail.util.GreenMail;
@@ -11,6 +12,7 @@ import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.AccountAction;
 import com.zextras.mailbox.util.MailMessageBuilder;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapParseException;
@@ -38,20 +40,26 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class SendMsgIT extends MailboxTestSuite {
 
   private static GreenMail greenMail;
+  private static Account recipient;
   private static Account sharedAcct;
   private static Account delegatedAcct;
 	private static final String TEST_RECIPIENT = "test@outside.com";
 
 	@BeforeAll
   public static void setUp() throws Exception {
-
+		recipient = createAccount().create();
     // Setup SMTP
     greenMail =
         new GreenMail(
@@ -94,6 +102,11 @@ class SendMsgIT extends MailboxTestSuite {
   public static void tearDown() {
     greenMail.stop();
   }
+
+	@BeforeEach
+	public void setup() throws Exception {
+		greenMail.reset();
+	}
 
   private Message saveDraftOnMailbox(Account account) throws Exception {
     final ParsedMessage message = new MailMessageBuilder()
@@ -145,20 +158,74 @@ class SendMsgIT extends MailboxTestSuite {
     assertEquals(draftOnSharedAccount, draftStillThere);
   }
 
+	@ParameterizedTest
+	@ValueSource(booleans = {true, false})
+	void denySendWhenOverQuotaWhenSaveToSent(Boolean allowMailReceiveButNotSend) throws Exception {
+		final Account account = createAccount().create();
+		final Message draft = saveDraftOnMailbox(account);
+
+		account.modify(
+				new HashMap<String, Object>(Map.of(
+						ZAttrProvisioning.A_zimbraMailAllowReceiveButNotSendWhenOverQuota, allowMailReceiveButNotSend,
+						ZAttrProvisioning.A_zimbraMailQuota, 1
+				))
+		);
+
+		var saveToSent = sendDraftRequest(draft, account.getName(), recipient.getName(), false);
+		assertQuotaExceeded(() -> new SendMsg().handle(saveToSent, as(account)));
+	}
+
+	@Test
+	void allowSendWhenOverQuotaWhenNoSaveToSent() throws Exception {
+		final Account account = createAccount().create();
+		final Message draft = saveDraftOnMailbox(account);
+
+		account.modify(
+				new HashMap<String, Object>(Map.of(
+						ZAttrProvisioning.A_zimbraMailAllowReceiveButNotSendWhenOverQuota, false,
+						ZAttrProvisioning.A_zimbraMailQuota, 1
+				))
+		);
+
+		var noSaveToSent = sendDraftRequest(draft, account.getName(), recipient.getName(), true);
+		new SendMsg().handle(noSaveToSent, as(account));
+
+		assertEquals(1, greenMail.getReceivedMessages().length);
+	}
+
+	private void assertQuotaExceeded(Callable<Element> soapCall) {
+		final MailServiceException mailServiceException = assertThrows(MailServiceException.class,
+				soapCall::call);
+		assertEquals(QUOTA_EXCEEDED, mailServiceException.getCode());
+	}
+
 
 	private static Element sendDraftRequest(Message draft, String sender, String recipient) throws SoapParseException {
+		return sendDraftRequest(draft, sender, recipient, false);
+//		final String requestBody =
+//				"""
+//				{"m":{"did":"%d","id":"%d","su":{"_content":"AAA"},
+//				"e":[{"t":"f","a":"%s","d":"Test Shared"},{"t":"t","a":"%s"}],
+//				"mp":[{"ct":"multipart/alternative",
+//				"mp":[{"ct":"text/html","body":true,
+//				"content":{"_content":"<html><body><div><p>Test</p></div></body></html>"}},
+//				{"ct":"text/plain","content":{"_content":"Test"}}]}]}}}
+//				""".formatted(draft.getId(), draft.getId(), sender, recipient);
+//		return Element.parseJSON(requestBody);
+	}
+	private static Element sendDraftRequest(Message draft, String sender, String recipient, Boolean noSave) throws SoapParseException {
 		final String requestBody =
 				"""
-				{"m":{"did":"%d","id":"%d","su":{"_content":"AAA"},
+				{"noSave": %b, "m":{"did":"%d","id":"%d","su":{"_content":"AAA"},
 				"e":[{"t":"f","a":"%s","d":"Test Shared"},{"t":"t","a":"%s"}],
 				"mp":[{"ct":"multipart/alternative",
 				"mp":[{"ct":"text/html","body":true,
 				"content":{"_content":"<html><body><div><p>Test</p></div></body></html>"}},
 				{"ct":"text/plain","content":{"_content":"Test"}}]}]}}}
-				""".formatted(draft.getId(), draft.getId(), sender, recipient);
-		final Element jsonElement = Element.parseJSON(requestBody);
-		return jsonElement;
+				""".formatted(noSave, draft.getId(), draft.getId(), sender, recipient);
+		return Element.parseJSON(requestBody);
 	}
+
 
 	private static Map<String, Object> delegatedRequest(Account authenticated, Account requested) throws ServiceException {
 		Map<String, Object> context = new HashMap<String, Object>();
@@ -170,5 +237,9 @@ class SendMsgIT extends MailboxTestSuite {
 						SoapProtocol.Soap12);
 		context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
 		return context;
+	}
+
+	private static Map<String, Object> as(Account authenticated) throws ServiceException {
+		return delegatedRequest(authenticated, authenticated);
 	}
 }
