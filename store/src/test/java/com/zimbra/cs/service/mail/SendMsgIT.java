@@ -160,7 +160,7 @@ class SendMsgIT extends MailboxTestSuite {
 
 	@ParameterizedTest
 	@ValueSource(booleans = {true, false})
-	void denySendWhenOverQuotaWhenSaveToSent(Boolean allowMailReceiveButNotSend) throws Exception {
+	void denySendInOverQuota_WhenSavingToSent(Boolean allowMailReceiveButNotSend) throws Exception {
 		final Account account = createAccount().create();
 		final Message draft = saveDraftOnMailbox(account);
 
@@ -176,7 +176,7 @@ class SendMsgIT extends MailboxTestSuite {
 	}
 
 	@Test
-	void allowSendWhenOverQuotaWhenNoSaveToSent() throws Exception {
+	void allowSendInOverQuota_WhenNotSavingToSent() throws Exception {
 		final Account account = createAccount().create();
 		final Message draft = saveDraftOnMailbox(account);
 
