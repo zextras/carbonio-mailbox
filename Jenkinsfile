@@ -160,7 +160,11 @@ pipeline {
 
                 stage('Publish SNAPSHOT to maven') {
                     when {
-                        not { buildingTag() }
+                        allOf {
+                            not { buildingTag() }
+                            branch 'devel'
+                        }
+
                     }
                     steps {
                         container('jdk-21') {
