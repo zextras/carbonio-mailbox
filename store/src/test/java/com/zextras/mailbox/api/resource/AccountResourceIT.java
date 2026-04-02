@@ -63,6 +63,20 @@ class AccountResourceIT {
 	}
 
 	@Test
+	void returnsCarbonioCapabilities() throws Exception {
+		final Account account = server.getAccountFactory()
+				.withAttribute("carbonioFilesMaxFileUploadSize", "209715200")
+				.create();
+
+		final Response response = server.getHttpClient().get(
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId());
+
+		assertThatJson(response.body())
+				.node("capabilities").isObject()
+				.containsEntry("carbonioFilesMaxFileUploadSize", "209715200");
+	}
+
+	@Test
 	void externalUserAccountInfo() throws Exception {
 		final Account account = server.getAccountFactory()
 				.create();

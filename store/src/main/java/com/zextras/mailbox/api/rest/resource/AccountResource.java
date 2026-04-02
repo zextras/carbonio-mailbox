@@ -175,17 +175,26 @@ public class AccountResource {
 
 	public record AccountInfoResponse(String id, String name, String displayName, String cosId,
 																		String domainId, AccountStatus status, boolean isGlobalAdmin,
-																		boolean isExternal, String locale, Map<String, Boolean> features) {
+																		boolean isExternal, String locale, Map<String, Boolean> features,
+																		Map<String, String> capabilities) {
 
 		public static AccountInfoResponse from(Account account) {
 			try {
+				var features = account.getAttrs().entrySet().stream()
+						.filter(entry -> entry.getKey().startsWith("carbonioFeature"))
+						.collect(Collectors.toMap(Entry::getKey, entry -> Boolean.parseBoolean(entry.getValue().toString())));
+				var capabilities = account.getAttrs().entrySet().stream()
+						.filter(entry -> {
+							String key = entry.getKey();
+							return key.startsWith("carbonioWsc") || key.startsWith("carbonioFiles")
+									|| key.startsWith("carbonioTasks") || key.startsWith("carbonioDocs")
+									|| key.startsWith("carbonioPreview");
+						})
+						.collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().toString()));
 				return new AccountInfoResponse(account.getId(), account.getName(), account.getDisplayName(),
 						account.getCOSId(), account.getDomainId(), account.getAccountStatus(),
 						account.isIsAdminAccount(), account.isAccountExternal(),
-						account.getLocaleAsString(), account.getAttrs().entrySet().stream()
-						.filter(entry -> entry.getKey().startsWith("carbonioFeature"))
-						.collect(Collectors.toMap(Entry::getKey, entry -> Boolean.parseBoolean(entry.getValue().toString())))
-				);
+						account.getLocaleAsString(), features, capabilities);
 			} catch (ServiceException e) {
 				// TODO: isAccountExternal throws exception, how to handle?
 				throw new RuntimeException(e);
