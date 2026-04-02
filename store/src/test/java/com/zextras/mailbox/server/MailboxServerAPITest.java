@@ -84,7 +84,7 @@ class MailboxServerAPITest {
 	void internalApiShouldNotBeReachableOnUserHttpPort() throws Exception {
 		final Account account = server.getAccountFactory().create();
 		var response = server.getHttpClient().get(
-				"http://localhost:" + server.getUserHttpPort() + "/internal/accounts/" + account.getId() + "/info");
+				"http://localhost:" + server.getUserHttpPort() + "/internal/accounts/" + account.getId());
 		Assertions.assertEquals(404, response.statusCode());
 	}
 
@@ -92,7 +92,7 @@ class MailboxServerAPITest {
 	void internalApiShouldNotBeReachableOnUserHttpsPort() throws Exception {
 		final Account account = server.getAccountFactory().create();
 		var response = server.getHttpClient().get(
-				"https://localhost:" + server.getUserHttpsPort() + "/internal/accounts/" + account.getId() + "/info");
+				"https://localhost:" + server.getUserHttpsPort() + "/internal/accounts/" + account.getId());
 		Assertions.assertEquals(404, response.statusCode());
 	}
 
@@ -100,7 +100,7 @@ class MailboxServerAPITest {
 	void internalApiShouldNotBeReachableOnAdminPort() throws Exception {
 		final Account account = server.getAccountFactory().create();
 		var response = server.getHttpClient().get(
-				"https://localhost:" + server.getAdminPort() + "/internal/accounts/" + account.getId() + "/info");
+				"https://localhost:" + server.getAdminPort() + "/internal/accounts/" + account.getId());
 		Assertions.assertEquals(404, response.statusCode());
 	}
 
@@ -108,7 +108,7 @@ class MailboxServerAPITest {
 	void shouldNotExposeInternalEndpointWhenMatchingHost() throws Exception {
 		final Account account = server.getAccountFactory().create();
 		var headers = Map.of("Host", InternalApiContextHandler.CONNECTOR_NAME);
-		var response = server.getHttpClient().get("http://localhost:" + server.getUserHttpPort() + "/internal/accounts/" + account.getId() + "/info", headers);
+		var response = server.getHttpClient().get("http://localhost:" + server.getUserHttpPort() + "/internal/accounts/" + account.getId(), headers);
 		Assertions.assertEquals(404, response.statusCode());
 	}
 
@@ -116,7 +116,7 @@ class MailboxServerAPITest {
 	void internalApiReachableOnInternalPort() throws Exception {
 		final Account account = server.getAccountFactory().create();
 		var response = server.getHttpClient().get(
-				"http://localhost:" + server.getInternalApiPort() + "/internal/accounts/" + account.getId() + "/info");
+				"http://localhost:" + server.getInternalApiPort() + "/internal/accounts/" + account.getId());
 		Assertions.assertEquals(200, response.statusCode());
 	}
 
