@@ -12,6 +12,7 @@ import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.account.ZAttrProvisioning.AccountStatus;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -113,8 +114,8 @@ public class AccountResource {
 					.entity(new ErrorResponse("Missing auth token"))
 					.build();
 		}
-		return accountService.getAccountByAuthToken(token)
-				.map(account -> Response.ok(AccountInfoResponse.from(account)).build())
+		return accountService.getAccountAndAuthToken(token)
+				.map(tuple -> Response.ok(AccountInfoResponse.from(tuple._1(), tuple._2())).build())
 				.recover(e -> switch (e) {
 					case AuthTokenException ignored -> Response.status(Response.Status.UNAUTHORIZED)
 							.entity(new ErrorResponse("Invalid auth token"))
@@ -174,9 +175,9 @@ public class AccountResource {
 	}
 
 	public record AccountInfoResponse(String id, String name, String displayName, String cosId,
-																		String domainId, AccountStatus status, boolean isGlobalAdmin,
+																		String domainId, String domain, AccountStatus status, boolean isGlobalAdmin,
 																		boolean isExternal, String locale, Map<String, Boolean> features,
-																		Map<String, String> capabilities) {
+																		Map<String, String> capabilities, Long sessionLifetimeMs) {
 
 		public static AccountInfoResponse from(Account account) {
 			try {
@@ -192,9 +193,33 @@ public class AccountResource {
 						})
 						.collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().toString()));
 				return new AccountInfoResponse(account.getId(), account.getName(), account.getDisplayName(),
-						account.getCOSId(), account.getDomainId(), account.getAccountStatus(),
-						account.isIsAdminAccount(), account.isAccountExternal(),
-						account.getLocaleAsString(), features, capabilities);
+						account.getCOSId(), account.getDomainId(), account.getDomainName(),
+						account.getAccountStatus(), account.isIsAdminAccount(), account.isAccountExternal(),
+						account.getLocaleAsString(), features, capabilities, null);
+			} catch (ServiceException e) {
+				// TODO: isAccountExternal throws exception, how to handle?
+				throw new RuntimeException(e);
+			}
+		}
+
+		public static AccountInfoResponse from(Account account, AuthToken authToken) {
+			try {
+				var features = account.getAttrs().entrySet().stream()
+						.filter(entry -> entry.getKey().startsWith("carbonioFeature"))
+						.collect(Collectors.toMap(Entry::getKey, entry -> Boolean.parseBoolean(entry.getValue().toString())));
+				var capabilities = account.getAttrs().entrySet().stream()
+						.filter(entry -> {
+							String key = entry.getKey();
+							return key.startsWith("carbonioWsc") || key.startsWith("carbonioFiles")
+									|| key.startsWith("carbonioTasks") || key.startsWith("carbonioDocs")
+									|| key.startsWith("carbonioPreview");
+						})
+						.collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().toString()));
+				long sessionLifetimeMs = authToken.getExpires() - System.currentTimeMillis();
+				return new AccountInfoResponse(account.getId(), account.getName(), account.getDisplayName(),
+						account.getCOSId(), account.getDomainId(), account.getDomainName(),
+						account.getAccountStatus(), account.isIsAdminAccount(), account.isAccountExternal(),
+						account.getLocaleAsString(), features, capabilities, sessionLifetimeMs);
 			} catch (ServiceException e) {
 				// TODO: isAccountExternal throws exception, how to handle?
 				throw new RuntimeException(e);

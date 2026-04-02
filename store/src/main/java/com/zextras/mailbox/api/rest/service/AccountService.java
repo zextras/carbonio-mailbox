@@ -12,6 +12,8 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ZimbraAuthToken;
+import io.vavr.Tuple;
+import io.vavr.Tuple2;
 import io.vavr.control.Try;
 
 import java.util.ArrayList;
@@ -44,6 +46,16 @@ public class AccountService {
         throw ServiceException.AUTH_EXPIRED("Auth token expired");
       }
       return authToken.getAccount();
+    });
+  }
+
+  public Try<Tuple2<Account, AuthToken>> getAccountAndAuthToken(String encodedAuthToken) {
+    return Try.of(() -> {
+      final AuthToken authToken = ZimbraAuthToken.getAuthToken(encodedAuthToken);
+      if (authToken.isExpired()) {
+        throw ServiceException.AUTH_EXPIRED("Auth token expired");
+      }
+      return Tuple.of(authToken.getAccount(), authToken);
     });
   }
 
