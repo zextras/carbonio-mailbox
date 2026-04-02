@@ -22,11 +22,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -41,17 +44,47 @@ public class AccountResource {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Operation(summary = "Get Account Info", description = "Returns account info")
+	@Operation(summary = "Get Account by Email", description = "Returns account info by email address")
+	@ApiResponse(responseCode = "200", description = "Account Info",
+			content = @Content(schema = @Schema(implementation = AccountInfoResponse.class)))
+	@ApiResponse(responseCode = "400", description = "Missing email query parameter",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	@ApiResponse(responseCode = "404", description = "Account not found",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	@ApiResponse(responseCode = "500", description = "Internal server error",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	public Response getAccountByEmail(
+			@Parameter(description = "The account email address") @QueryParam("email") String email) {
+		if (email == null || email.isEmpty()) {
+			return Response.status(Response.Status.BAD_REQUEST)
+					.entity(new ErrorResponse("Missing required query parameter: email"))
+					.build();
+		}
+		return accountService.getAccountByEmail(email)
+				.map(account -> Response.ok(AccountInfoResponse.from(account)).build())
+				.recover(e -> switch (e) {
+					case ServiceException se when se.getCode().equals(ServiceException.NOT_FOUND) ->
+							Response.status(Response.Status.NOT_FOUND)
+									.entity(new ErrorResponse(e.getMessage()))
+									.build();
+					default -> Response.serverError().entity(new ErrorResponse(e.getMessage())).build();
+				})
+				.get();
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Operation(summary = "Get Account Info", description = "Returns account info by ID")
 	@ApiResponse(responseCode = "200", description = "Account Info",
 			content = @Content(schema = @Schema(implementation = AccountInfoResponse.class)))
 	@ApiResponse(responseCode = "404", description = "Account not found",
 			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 	@ApiResponse(responseCode = "500", description = "Internal server error",
 			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-	@Path("/{accountId}/info")
+	@Path("/{id}")
 	public Response getAccountInfo(
-			@Parameter(description = "The account ID") @PathParam("accountId") String accountId) {
-		return accountService.getAccount(accountId)
+			@Parameter(description = "The account ID") @PathParam("id") String id) {
+		return accountService.getAccount(id)
 				.map(account -> Response.ok(AccountInfoResponse.from(account)).build())
 				.recover(e -> switch (e) {
 					case ServiceException se when se.getCode().equals(ServiceException.NOT_FOUND) ->
@@ -70,7 +103,7 @@ public class AccountResource {
 	@ApiResponse(responseCode = "401", description = "Invalid or missing auth token")
 	@ApiResponse(responseCode = "404", description = "Account not found")
 	@ApiResponse(responseCode = "500", description = "Internal server error")
-	@Path("/myself/info")
+	@Path("/myself")
 	public Response getMyAccountInfo(
 			@CookieParam("ZM_AUTH_TOKEN") String authTokenCookie,
 			@CookieParam("ZM_ADMIN_AUTH_TOKEN") String adminAuthTokenCookie) {
@@ -98,6 +131,41 @@ public class AccountResource {
 				})
 				.get();
 	}
+
+	@POST
+	@Path("/batch")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Operation(summary = "Batch Get Accounts", description = "Returns account info for a list of IDs. Unknown IDs are silently skipped.")
+	@ApiResponse(responseCode = "200", description = "List of Account Info",
+			content = @Content(schema = @Schema(implementation = AccountInfoResponse.class)))
+	@ApiResponse(responseCode = "400", description = "Too many IDs (max 100)",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	@ApiResponse(responseCode = "500", description = "Internal server error",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	public Response batchGetAccounts(BatchRequest batchRequest) {
+		if (batchRequest == null || batchRequest.ids() == null) {
+			return Response.status(Response.Status.BAD_REQUEST)
+					.entity(new ErrorResponse("Missing required field: ids"))
+					.build();
+		}
+		if (batchRequest.ids().size() > 100) {
+			return Response.status(Response.Status.BAD_REQUEST)
+					.entity(new ErrorResponse("Too many IDs: max 100 allowed"))
+					.build();
+		}
+		return accountService.getAccounts(batchRequest.ids())
+				.map(accounts -> {
+					final List<AccountInfoResponse> result = accounts.stream()
+							.map(AccountInfoResponse::from)
+							.collect(Collectors.toList());
+					return Response.ok(result).build();
+				})
+				.recover(e -> Response.serverError().entity(new ErrorResponse(e.getMessage())).build())
+				.get();
+	}
+
+	public record BatchRequest(List<String> ids) {}
 
 	public record CarbonioFeature(String name, Object value) {
 		public static CarbonioFeature map(Entry<String, Object> entry) {

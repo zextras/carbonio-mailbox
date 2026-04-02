@@ -9,10 +9,13 @@ package com.zextras.mailbox.api.rest.service;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
+import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ZimbraAuthToken;
 import io.vavr.control.Try;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class AccountService {
@@ -41,6 +44,31 @@ public class AccountService {
         throw ServiceException.AUTH_EXPIRED("Auth token expired");
       }
       return authToken.getAccount();
+    });
+  }
+
+  public Try<Account> getAccountByEmail(String email) {
+    return Try.of(() -> {
+      final Provisioning provisioning = provisioningSupplier.get();
+      final Account account = provisioning.get(AccountBy.name, email);
+      if (account == null) {
+        throw ServiceException.NOT_FOUND("No such account with email: " + email);
+      }
+      return account;
+    });
+  }
+
+  public Try<List<Account>> getAccounts(List<String> ids) {
+    return Try.of(() -> {
+      final Provisioning provisioning = provisioningSupplier.get();
+      final List<Account> result = new ArrayList<>();
+      for (final String id : ids) {
+        final Account account = provisioning.get(AccountBy.id, id);
+        if (account != null) {
+          result.add(account);
+        }
+      }
+      return result;
     });
   }
 }

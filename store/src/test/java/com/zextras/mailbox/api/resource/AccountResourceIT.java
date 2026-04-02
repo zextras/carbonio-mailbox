@@ -9,13 +9,17 @@ package com.zextras.mailbox.api.resource;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.mailbox.util.MailboxServerExtension;
 import com.zextras.mailbox.util.TestHttpClient.Response;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.ZimbraAuthToken;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -25,13 +29,15 @@ class AccountResourceIT {
 	@RegisterExtension
 	static final MailboxServerExtension server = new MailboxServerExtension();
 
+	private static final ObjectMapper objectMapper = new ObjectMapper();
+
 	@Test
 	void returnsAccountInfo() throws Exception {
 		final Account account = server.getAccountFactory()
 				.create();
 
 		final Response response = server.getHttpClient().get(
-				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId());
 
 		assertEquals(200, response.statusCode());
 		assertInfo(response, account);
@@ -45,7 +51,7 @@ class AccountResourceIT {
 				.create();
 
 		final Response response = server.getHttpClient().get(
-				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId());
 
 
 		assertThatJson(response.body())
@@ -63,7 +69,7 @@ class AccountResourceIT {
 		account.setMailTransport("smtp://external.example.com");
 
 		final Response response = server.getHttpClient().get(
-				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId());
 
 		assertEquals(200, response.statusCode());
 		assertThatJson(response.body()).isObject()
@@ -78,7 +84,7 @@ class AccountResourceIT {
 				.create();
 
 		final Response response = server.getHttpClient().get(
-				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId());
 
 		assertThatJson(response.body()).isObject()
 				.containsEntry("locale", frFr);
@@ -106,7 +112,7 @@ class AccountResourceIT {
 				.create();
 
 		final Response response = server.getHttpClient().get(
-				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId());
 
 		assertThatJson(response.body()).isObject().containsEntry("isGlobalAdmin", true);
 	}
@@ -118,7 +124,7 @@ class AccountResourceIT {
 				.create();
 
 		final Response response = server.getHttpClient().get(
-				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId());
 
 		assertThatJson(response.body()).isObject().containsEntry("isGlobalAdmin", false);
 	}
@@ -130,7 +136,7 @@ class AccountResourceIT {
 				.create();
 
 		final Response response = server.getHttpClient().get(
-				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId());
 
 		assertThatJson(response.body()).isObject().containsEntry("isGlobalAdmin", false);
 	}
@@ -138,7 +144,7 @@ class AccountResourceIT {
 	@Test
 	void notFound() throws Exception {
 		final Response response = server.getHttpClient().get(
-						server.getInternalApiEndpoint() + "/accounts/not-existent-id/info");
+						server.getInternalApiEndpoint() + "/accounts/not-existent-id");
 
 		assertEquals(404, response.statusCode());
 	}
@@ -149,7 +155,7 @@ class AccountResourceIT {
 		final String token = new ZimbraAuthToken(account).getEncoded();
 
 		final Response response = server.getHttpClient()
-				.get(server.getInternalApiEndpoint() + "/accounts/myself/info",
+				.get(server.getInternalApiEndpoint() + "/accounts/myself",
 						Map.of("Cookie", "ZM_AUTH_TOKEN=" + token));
 
 		assertEquals(200, response.statusCode());
@@ -162,7 +168,7 @@ class AccountResourceIT {
 		final String token = new ZimbraAuthToken(account).getEncoded();
 
 		final Response response = server.getHttpClient()
-				.get(server.getInternalApiEndpoint() + "/accounts/myself/info",
+				.get(server.getInternalApiEndpoint() + "/accounts/myself",
 						Map.of("Cookie", "ZM_ADMIN_AUTH_TOKEN=" + token));
 
 		assertEquals(200, response.statusCode());
@@ -172,7 +178,7 @@ class AccountResourceIT {
 	@Test
 	void myselfInfoWithoutToken() throws Exception {
 		final Response response = server.getHttpClient()
-				.get(server.getInternalApiEndpoint() + "/accounts/myself/info");
+				.get(server.getInternalApiEndpoint() + "/accounts/myself");
 
 		assertEquals(401, response.statusCode());
 	}
@@ -180,10 +186,95 @@ class AccountResourceIT {
 	@Test
 	void myselfInfoWithInvalidToken() throws Exception {
 		final Response response = server.getHttpClient()
-				.get(server.getInternalApiEndpoint() + "/accounts/myself/info",
+				.get(server.getInternalApiEndpoint() + "/accounts/myself",
 						Map.of("Cookie", "ZM_AUTH_TOKEN=invalid-token"));
 
 		assertEquals(401, response.statusCode());
 	}
 
+	// --- GET /accounts?email= tests ---
+
+	@Test
+	void getAccountByEmailReturnsAccountInfo() throws Exception {
+		final Account account = server.getAccountFactory().create();
+
+		final Response response = server.getHttpClient().get(
+				server.getInternalApiEndpoint() + "/accounts?email=" + account.getName());
+
+		assertEquals(200, response.statusCode());
+		assertInfo(response, account);
+	}
+
+	@Test
+	void getAccountByEmailNotFound() throws Exception {
+		final Response response = server.getHttpClient().get(
+				server.getInternalApiEndpoint() + "/accounts?email=nonexistent@test.com");
+
+		assertEquals(404, response.statusCode());
+	}
+
+	@Test
+	void getAccountByEmailMissingParam() throws Exception {
+		final Response response = server.getHttpClient().get(
+				server.getInternalApiEndpoint() + "/accounts");
+
+		assertEquals(400, response.statusCode());
+	}
+
+	// --- POST /accounts/batch tests ---
+
+	@Test
+	void batchGetAccountsReturnsAccounts() throws Exception {
+		final Account account1 = server.getAccountFactory().create();
+		final Account account2 = server.getAccountFactory().create();
+
+		final String body = objectMapper.writeValueAsString(
+				Map.of("ids", List.of(account1.getId(), account2.getId())));
+
+		final Response response = server.getHttpClient().post(
+				server.getInternalApiEndpoint() + "/accounts/batch", body);
+
+		assertEquals(200, response.statusCode());
+		assertThatJson(response.body()).isArray().hasSize(2);
+	}
+
+	@Test
+	void batchGetAccountsSkipsUnknownIds() throws Exception {
+		final Account account = server.getAccountFactory().create();
+
+		final String body = objectMapper.writeValueAsString(
+				Map.of("ids", List.of(account.getId(), "unknown-id-that-does-not-exist")));
+
+		final Response response = server.getHttpClient().post(
+				server.getInternalApiEndpoint() + "/accounts/batch", body);
+
+		assertEquals(200, response.statusCode());
+		assertThatJson(response.body()).isArray().hasSize(1);
+	}
+
+	@Test
+	void batchGetAccountsReturnsBadRequestWhenExceeding100Ids() throws Exception {
+		final List<String> ids = IntStream.range(0, 101)
+				.mapToObj(i -> "fake-id-" + i)
+				.collect(Collectors.toList());
+
+		final String body = objectMapper.writeValueAsString(Map.of("ids", ids));
+
+		final Response response = server.getHttpClient().post(
+				server.getInternalApiEndpoint() + "/accounts/batch", body);
+
+		assertEquals(400, response.statusCode());
+	}
+
+	@Test
+	void batchGetAccountsReturnsEmptyListForAllUnknownIds() throws Exception {
+		final String body = objectMapper.writeValueAsString(
+				Map.of("ids", List.of("unknown-id-1", "unknown-id-2")));
+
+		final Response response = server.getHttpClient().post(
+				server.getInternalApiEndpoint() + "/accounts/batch", body);
+
+		assertEquals(200, response.statusCode());
+		assertThatJson(response.body()).isArray().isEmpty();
+	}
 }
