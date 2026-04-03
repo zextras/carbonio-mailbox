@@ -57,6 +57,7 @@ import java.util.Objects;
 import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -80,7 +81,11 @@ class ModifyAppointmentTest extends SoapTestSuite {
     var provisioning = Provisioning.getInstance();
     provisioning.getLocalServer().setSmtpPort(smtpPort);
     mailboxManager = MailboxManager.getInstance();
-    
+  }
+
+  @AfterAll
+  static void tearDown() {
+    greenMail.stop();
   }
 
   private static CalendarItem getCalendarItemById(Account account, String id) throws ServiceException {

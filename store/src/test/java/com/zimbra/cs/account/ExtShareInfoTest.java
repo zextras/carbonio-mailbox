@@ -19,6 +19,7 @@ import java.util.Locale;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMultipart;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 
@@ -26,6 +27,7 @@ import org.junit.jupiter.api.Test;
  * @author zimbra
  */
 
+@Tag("flaky")
 class ExtShareInfoTest extends MailboxTestSuite {
 
 	/**
