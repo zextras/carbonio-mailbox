@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
@@ -33,6 +34,7 @@ import com.zimbra.soap.mail.type.MsgToSend;
  *
  * @author ysasaki
  */
+@Tag("slow")
 public final class SendMsgRequestTest {
      public String testName;
 

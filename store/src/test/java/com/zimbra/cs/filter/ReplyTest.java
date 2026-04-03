@@ -14,21 +14,26 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.DeliveryContext;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.mail.DirectInsertionMailboxManager;
 import com.zimbra.cs.service.util.ItemId;
 import java.util.List;
-import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author zimbra
  */
 
-@Tag("flaky")
 public class ReplyTest extends MailboxTestSuite {
+
+	@BeforeAll
+	static void setUpMailboxManager() throws Exception {
+		MailboxManager.setInstance(new DirectInsertionMailboxManager());
+	}
 
 	private Account getAccount1() throws Exception {
 		return createAccount()

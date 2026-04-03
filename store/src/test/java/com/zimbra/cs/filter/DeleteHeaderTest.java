@@ -29,8 +29,10 @@ import javax.mail.Header;
 import javax.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("slow")
 public class DeleteHeaderTest extends MailboxTestSuite {
 
 	private static String sampleBaseMsg = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"

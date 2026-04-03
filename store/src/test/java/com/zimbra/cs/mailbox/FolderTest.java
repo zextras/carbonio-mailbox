@@ -28,11 +28,13 @@ import com.zimbra.cs.mime.ParsedMessage;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link Folder}.
  */
+@Tag("slow")
 class FolderTest extends MailboxTestSuite {
 
     private Account testAccount;

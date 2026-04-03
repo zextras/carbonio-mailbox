@@ -15,6 +15,7 @@ import javax.mail.Header;
 
 import org.apache.jsieve.exception.SyntaxException;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import com.google.common.collect.Maps;
 
@@ -34,6 +35,7 @@ import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.mail.DirectInsertionMailboxManager;
 import com.zimbra.cs.service.util.ItemId;
 
+@Tag("slow")
 public class ReplaceHeaderTest extends MailboxTestSuite {
 
 	private static String sampleBaseMsg = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"

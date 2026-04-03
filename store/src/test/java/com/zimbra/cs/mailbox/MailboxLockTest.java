@@ -25,8 +25,10 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("slow")
 public class MailboxLockTest  extends MailboxTestSuite {
 
 	private Account account;

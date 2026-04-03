@@ -3,10 +3,12 @@ package com.zimbra.common.util;
 import io.prometheus.client.GaugeMetricFamily;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 
+@Tag("slow")
 class HttpConnectionManagerMetricsExportTest {
 
     private HttpConnectionManagerMetricsExport export;

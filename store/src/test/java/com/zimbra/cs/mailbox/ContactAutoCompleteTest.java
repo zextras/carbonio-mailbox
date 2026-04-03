@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.UUID;
 import javax.mail.internet.InternetAddress;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 
@@ -32,7 +31,6 @@ import org.junit.jupiter.api.Test;
  * @author ysasaki
  */
 
-@Tag("flaky")
 class ContactAutoCompleteTest extends MailboxTestSuite {
 
   @Test

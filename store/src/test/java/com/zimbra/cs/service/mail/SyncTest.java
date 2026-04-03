@@ -49,9 +49,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import qa.unittest.TestUtil;
 
+@Tag("slow")
 public class SyncTest extends MailboxTestSuite {
   @BeforeAll
   public static void init() throws Exception {

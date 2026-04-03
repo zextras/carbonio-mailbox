@@ -34,8 +34,10 @@ import javax.mail.Header;
 import org.apache.jsieve.exception.SyntaxException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("slow")
 public class SetVariableTest extends MailboxTestSuite {
   private static Account account;
   private String filterScript = "";

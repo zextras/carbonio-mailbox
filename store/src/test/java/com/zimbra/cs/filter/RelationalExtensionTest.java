@@ -20,8 +20,10 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
 import java.util.List;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("slow")
 public class RelationalExtensionTest extends MailboxTestSuite {
   private static String sampleMsg =
       "Received: from edge01e.zimbra.com ([127.0.0.1])\n"

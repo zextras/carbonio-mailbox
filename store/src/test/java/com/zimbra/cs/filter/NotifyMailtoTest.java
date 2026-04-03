@@ -33,8 +33,10 @@ import java.util.Set;
 import javax.mail.Header;
 import javax.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("slow")
 public class NotifyMailtoTest extends MailboxTestSuite {
 
 	@BeforeEach
