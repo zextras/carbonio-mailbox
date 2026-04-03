@@ -17,6 +17,7 @@ import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.auth.ZimbraCustomAuth;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
+import com.zimbra.cs.index.IndexStore;
 import com.zimbra.cs.index.ZimbraAnalyzer;
 import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapClient;
@@ -155,6 +156,11 @@ public class MailboxSetupHelper {
 
 	public void tearDown() throws Exception {
 		inMemoryLdapServer.clear();
+		// Clear cached Lucene index searchers before shutting down the DB and deleting directories.
+		// The static SEARCHER_CACHE in LuceneIndex is keyed by mailbox ID. Without clearing it,
+		// a subsequent test class that recreates the DB (resetting next_mailbox_id to 1) would get
+		// stale searchers from this class's indexes when creating mailboxes with the same IDs.
+		IndexStore.getFactory().destroy();
 		RedoLogProvider.getInstance().shutdown();
 		RedoLogProvider.setInstance(null);
 		DbPool.shutDownAndClear();
