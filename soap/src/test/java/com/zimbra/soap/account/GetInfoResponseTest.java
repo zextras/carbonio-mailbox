@@ -19,7 +19,6 @@ import java.util.Objects;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -27,7 +26,6 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-@Tag("slow")
 public class GetInfoResponseTest {
 
   private static Unmarshaller unmarshaller;

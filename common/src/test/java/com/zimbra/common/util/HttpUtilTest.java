@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.common.util.HttpUtil.Browser;
 import javax.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -18,7 +17,6 @@ import org.mockito.Mockito;
  *
  * @author ysasaki
  */
-@Tag("slow")
 public final class HttpUtilTest {
 
   @Test
