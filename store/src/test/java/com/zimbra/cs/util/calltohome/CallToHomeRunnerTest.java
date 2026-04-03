@@ -3,7 +3,6 @@ package com.zimbra.cs.util.calltohome;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.MailboxTestSuite;
-import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,8 +33,8 @@ class CallToHomeRunnerTest extends MailboxTestSuite {
   void testInitAndStop() throws InterruptedException {
     assertFalse(callToHomeRunner.isStarted(), "Initially should not be started");
 
-    callToHomeRunner.init(TimeUnit.SECONDS.toMillis(1));
-    TimeUnit.SECONDS.sleep(2);
+    callToHomeRunner.init(50);
+    Thread.sleep(200);
 
     assertTrue(callToHomeRunner.isStarted(), "After init, should be started");
 
@@ -47,12 +46,12 @@ class CallToHomeRunnerTest extends MailboxTestSuite {
   void testInitTwice() throws InterruptedException {
     assertFalse(callToHomeRunner.isStarted(), "Initially should not be started");
 
-    callToHomeRunner.init(TimeUnit.SECONDS.toMillis(1));
-    TimeUnit.SECONDS.sleep(2);
+    callToHomeRunner.init(50);
+    Thread.sleep(200);
 
     assertTrue(callToHomeRunner.isStarted(), "After first init, should be started");
 
-    callToHomeRunner.init(TimeUnit.SECONDS.toMillis(1));
+    callToHomeRunner.init(50);
     assertTrue(callToHomeRunner.isStarted(), "After second init, should still be started");
   }
 
@@ -68,8 +67,8 @@ class CallToHomeRunnerTest extends MailboxTestSuite {
   void testInitAndStopDelay() throws InterruptedException {
     assertFalse(callToHomeRunner.isStarted(), "Initially should not be started");
 
-    callToHomeRunner.init(TimeUnit.SECONDS.toMillis(1));
-    TimeUnit.SECONDS.sleep(2);
+    callToHomeRunner.init(50);
+    Thread.sleep(200);
 
     assertTrue(callToHomeRunner.isStarted(), "After init, should be started");
 
