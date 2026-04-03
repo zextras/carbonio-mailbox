@@ -6,7 +6,6 @@
 
 package com.zextras.mailbox.util;
 
-import com.zimbra.cs.mailbox.MailboxManager;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -25,26 +24,21 @@ public class MailboxTestExtension implements BeforeAllCallback, AfterAllCallback
 	}
 
 	@Override
-	public void afterAll(ExtensionContext extensionContext) throws Exception {
-		// Don't tear down — infrastructure is shared across test classes.
-		// Data cleanup happens in beforeAll of the next class.
-		// Full teardown runs via JVM shutdown hook.
+	public void afterAll(ExtensionContext extensionContext) {
+		// Infrastructure is shared — tearDown runs once via JVM shutdown hook.
 	}
 
 	/**
 	 * Infrastructure (LDAP, HSQLDB, StoreManager, etc.) is expensive to start and stop.
-	 * Instead of doing a full setUp/tearDown cycle for every test class, we:
+	 * Instead of a full setUp/tearDown cycle for every test class, we:
 	 *
 	 * <ul>
 	 *   <li>First class: full {@code setUp()} — starts LDAP, creates DB, initializes all services.
 	 *       A JVM shutdown hook is registered to run {@code tearDown()} once when the fork exits.</li>
-	 *   <li>Subsequent classes: lightweight reset — clears LDAP entries and DB rows via
-	 *       {@code clearData()}, then re-creates the base server/domain/config via
-	 *       {@code initData()}. The MailboxManager is reset to discard cached mailbox instances
-	 *       from the previous class.</li>
+	 *   <li>Subsequent classes: lightweight reset — clears LDAP entries and DB rows, clears
+	 *       index cache, then re-creates the base server/domain/config. The MailboxManager is
+	 *       reset to discard cached mailbox instances from the previous class.</li>
 	 * </ul>
-	 *
-	 * This avoids ~2s of LDAP/DB start-stop overhead per test class.
 	 */
 	@Override
 	public void beforeAll(ExtensionContext extensionContext) throws Exception {
@@ -65,9 +59,8 @@ public class MailboxTestExtension implements BeforeAllCallback, AfterAllCallback
 				}
 			}
 		}
-		sharedSetup.clearData();
-		sharedSetup.initData(mailboxTestData);
-		MailboxManager.setInstance(new MailboxManager());
+		// Tear down and reinitialize everything except the LDAP server
+		sharedSetup.resetAndSetUp(mailboxTestData);
 	}
 
 	public void initData() throws Exception {

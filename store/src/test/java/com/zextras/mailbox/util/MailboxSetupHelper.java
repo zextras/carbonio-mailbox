@@ -170,4 +170,48 @@ public class MailboxSetupHelper {
 		FileUtils.deleteDirectory(mailboxHome.toFile());
 		FileUtils.deleteDirectory(mailboxTmpDirectory.toFile());
 	}
+	/**
+	 * Tears down everything except the LDAP server, then reinitializes.
+	 * The LDAP server stays running across test classes to avoid the ~1s start/stop cost.
+	 * Everything else (DB pool, redo log, LDAP client pool, caches, directories) is
+	 * fully torn down and recreated, just like {@link #setUp} would do.
+	 */
+	public void resetAndSetUp(MailboxTestData mailboxTestData) throws Exception {
+		// Tear down services (but not the LDAP server)
+		IndexStore.getFactory().destroy();
+		RedoLogProvider.getInstance().shutdown();
+		RedoLogProvider.setInstance(null);
+		DbPool.shutDownAndClear();
+		UBIDLdapClient.shutdown();
+		FileUtils.deleteDirectory(mailboxHome.toFile());
+		FileUtils.deleteDirectory(mailboxTmpDirectory.toFile());
+
+		// Reinitialize — same as setUp() but LDAP server is already running
+		if (!Files.exists(mailboxHome)) {
+			Files.createDirectory(mailboxHome);
+		}
+		if (!Files.exists(mailboxTmpDirectory)) {
+			Files.createDirectory(mailboxTmpDirectory);
+		}
+		LC.zimbra_home.setDefault(mailboxHome.toAbsolutePath().toString());
+		LC.zimbra_tmp_directory.setDefault(mailboxTmpDirectory.toAbsolutePath().toString());
+
+		inMemoryLdapServer.initializeBasicData();
+
+		final UBIDLdapPoolConfig poolConfig = UBIDLdapPoolConfig.createNewPool(true);
+		final UBIDLdapClient client = UBIDLdapClient.createNew(poolConfig);
+		LdapClient.setInstance(client);
+		Provisioning.setInstance(new LdapProvisioningWithMockMime(client));
+		this.initData(mailboxTestData);
+		HSQLDB.createDatabase(getVolumeDirectory());
+		DbPool.startup();
+		MailboxManager.setInstance(new MailboxManager());
+		RedoLogProvider.setInstance(new DefaultRedoLogProvider());
+		RedoLogProvider.getInstance().startup();
+		StoreManager.getInstance().startup();
+		RightManager.getInstance();
+		ScheduledTaskManager.startup();
+		ZimbraAnalyzer.setInstance(new ZimbraAnalyzer());
+		ZimbraCustomAuth.clear();
+	}
 }
