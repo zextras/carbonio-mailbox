@@ -426,7 +426,35 @@ public class ItemActionTest extends MailboxTestSuite {
     assertEquals(0, tag.getSize(), tag1 + " (tag messages)");
   }
 
-  private static void setFlag(Mailbox mbox, int msgId) throws ServiceException {
+	@Test
+	void canDeleteMessageWhenInOverQuota() throws Exception {
+		var account = createAccount().create();
+		final Message message = addMessage(account, Mailbox.ID_FOLDER_INBOX);
+
+		account.setMailQuota(1);
+
+		deleteMessage(message, account);
+	}
+
+	private static Message addMessage(Account account, int folderId) throws Exception {
+		ParsedMessage pm = MailboxTestUtil.generateMessage("test subject");
+		DeliveryOptions dopt = new DeliveryOptions().setFolderId(folderId);
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+		final Message message = mbox.addMessage(null, pm, dopt, null);
+		return message;
+	}
+
+	private static void deleteMessage(Message message, Account account) {
+		Element request = new Element.XMLElement(MailConstants.ITEM_ACTION_REQUEST);
+		Element action = request.addElement(MailConstants.E_ACTION);
+		action.addAttribute(MailConstants.A_OPERATION, ItemAction.OP_HARD_DELETE);
+		action.addAttribute(MailConstants.A_ITEM_TYPE, "");
+		action.addAttribute(MailConstants.A_ID, message.getId());
+		assertDoesNotThrow(() -> new ItemAction().handle(request, ServiceTestUtil.getRequestContext(
+				account)));
+	}
+
+	private static void setFlag(Mailbox mbox, int msgId) throws ServiceException {
     MailItem item = mbox.getItemById(null, msgId, MailItem.Type.UNKNOWN);
     int flags = item.getFlagBitmask() | Flag.FlagInfo.UNREAD.toBitmask();
     mbox.setTags(null, msgId, item.getType(), flags, null, null);

@@ -916,6 +916,9 @@ EOF
             -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
           </argLine>
+          <environmentVariables>
+            <LC_ALL>C.UTF-8</LC_ALL>
+          </environmentVariables>
         </configuration>
       </plugin>
       <plugin>
@@ -929,6 +932,9 @@ EOF
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
           </argLine>
+          <environmentVariables>
+            <LC_ALL>C.UTF-8</LC_ALL>
+          </environmentVariables>
         </configuration>
       </plugin>
       <plugin>

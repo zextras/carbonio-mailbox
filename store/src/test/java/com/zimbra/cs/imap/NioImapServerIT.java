@@ -61,7 +61,7 @@ class NioImapServerIT extends MailboxTestSuite {
   }
 
   @AfterAll
-  static void tearDown() throws Exception {
+  static void tearDown() {
     imapServer.stop();
   }
 
@@ -202,6 +202,18 @@ class NioImapServerIT extends MailboxTestSuite {
     assertTrue(replyString.contains("* LIST (\\HasNoChildren \\Sent) \"/\" \"Sent\""));
     assertTrue(replyString.contains("* LIST (\\HasNoChildren \\Trash) \"/\" \"Trash\""));
     assertTrue(replyString.contains("* LIST (\\HasNoChildren \\Archive) \"/\" \"Archive\""));
+  }
+
+  @Test
+  void shouldListWithStatusAndSpecialUseReturnOptions() throws IOException {
+    imapClient.login(account.getName(), account.getUserPassword());
+    imapClient.sendCommand(
+        "LIST \"\" \"*\" RETURN (STATUS (MESSAGES UIDNEXT UIDVALIDITY UNSEEN HIGHESTMODSEQ) SPECIAL-USE)");
+
+    var replyString = imapClient.getReplyString();
+
+    assertTrue(replyString.contains("OK LIST completed"), "LIST failed: " + replyString);
+    assertFalse(replyString.contains("BAD parse error"), "LIST parse error: " + replyString);
   }
 
   @Test

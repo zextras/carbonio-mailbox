@@ -175,6 +175,15 @@ public class ZModifyFolderEvent implements ZModifyItemEvent, ToZJSONObject {
     public String getRemoteURL(String defaultValue) {
         return mFolderEl.getAttribute(MailConstants.A_URL, defaultValue);
     }
+
+    /**
+     * @param defaultValue value to return if unchanged
+     * @return last successful sync date in epoch seconds, or defaultValue if unchanged
+     * @throws ServiceException
+     */
+    public long getLastSyncDate(long defaultValue) throws ServiceException {
+        return mFolderEl.getAttributeLong(MailConstants.A_LAST_SYNC_DATE, defaultValue);
+    }
     
     public boolean isActiveSyncDisabled(boolean defaultValue) throws ServiceException {
         return mFolderEl.getAttributeBool(MailConstants.A_ACTIVESYNC_DISABLED, defaultValue);

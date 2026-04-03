@@ -3,7 +3,7 @@
   "name": "carbonio-mailbox-internal-api",
   "sources": [
     {
-      "name": "carbonio-storages-service",
+      "name": "carbonio-storages",
       "action": "allow"
     }
   ]
