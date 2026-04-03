@@ -573,6 +573,14 @@ public class MailServiceException extends ServiceException {
         new Argument(LIMIT, limit, Argument.Type.NUM));
   }
 
+	public static MailServiceException QUOTA_EXCEEDED(long limit, String message, String code) {
+		return new MailServiceException(
+				message,
+				code,
+				SENDERS_FAULT,
+				new Argument(LIMIT, limit, Argument.Type.NUM));
+	}
+
   public static MailServiceException DOMAIN_QUOTA_EXCEEDED(long limit) {
     return new MailServiceException(
         "domain exceeded aggregate quota of " + limit + " bytes",

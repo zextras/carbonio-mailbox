@@ -79,6 +79,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
   private int mImapMODSEQ;
   private String mAbsolutePath;
   private String mRemoteURL;
+  private long mLastSyncDate;
   private String mEffectivePerms;
   private List<ZGrant> mGrants;
   private List<ZFolder> mSubFolders;
@@ -284,6 +285,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     mImapUIDNEXT = (int) e.getAttributeLong(MailConstants.A_IMAP_UIDNEXT, -1);
     mImapMODSEQ = (int) e.getAttributeLong(MailConstants.A_IMAP_MODSEQ, -1);
     mRemoteURL = e.getAttribute(MailConstants.A_URL, null);
+    mLastSyncDate = e.getAttributeLong(MailConstants.A_LAST_SYNC_DATE, 0);
     mEffectivePerms = e.getAttribute(MailConstants.A_RIGHTS, null);
     mSize = e.getAttributeLong(MailConstants.A_SIZE, 0);
     mActiveSyncDisabled = e.getAttributeBool(MailConstants.A_ACTIVESYNC_DISABLED, false);
@@ -352,6 +354,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     mImapUIDNEXT = SystemUtil.coalesce(f.getImapUidNext(), -1);
     mImapMODSEQ = SystemUtil.coalesce(f.getImapModifiedSequence(), -1);
     mRemoteURL = f.getUrl();
+    mLastSyncDate = SystemUtil.coalesce(f.getLastSyncDate(), 0L);
     mEffectivePerms = f.getPerm();
     mSize = SystemUtil.coalesce(f.getTotalSize(), 0L);
     if (f.isActiveSyncDisabled() != null) mActiveSyncDisabled = f.isActiveSyncDisabled();
@@ -428,6 +431,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
       mImapUIDNEXT = fevent.getImapUIDNEXT(mImapUIDNEXT);
       mImapMODSEQ = fevent.getImapMODSEQ(mImapMODSEQ);
       mRemoteURL = fevent.getRemoteURL(mRemoteURL);
+      mLastSyncDate = fevent.getLastSyncDate(mLastSyncDate);
       mActiveSyncDisabled = fevent.isActiveSyncDisabled(mActiveSyncDisabled);
       mEffectivePerms = fevent.getEffectivePerm(mEffectivePerms);
       mGrants = fevent.getGrants(mGrants);
@@ -849,6 +853,11 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
    */
   public String getRemoteURL() {
     return mRemoteURL;
+  }
+
+  /** Last successful sync date from external URL in epoch seconds. */
+  public long getLastSyncDate() {
+    return mLastSyncDate;
   }
 
   public boolean isActiveSyncDisabled() {
