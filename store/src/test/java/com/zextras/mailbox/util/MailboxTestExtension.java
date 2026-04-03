@@ -65,16 +65,20 @@ public class MailboxTestExtension implements BeforeAllCallback, AfterAllCallback
 				}
 			}
 		}
-		setup.clearData();
-		setup.initData(mailboxTestData);
+		sharedSetup.clearData();
+		sharedSetup.initData(mailboxTestData);
 		MailboxManager.setInstance(new MailboxManager());
 	}
 
 	public void initData() throws Exception {
-		setup.initData(mailboxTestData);
+		getActiveSetup().initData(mailboxTestData);
 	}
 
 	public void clearData() throws Exception {
-		setup.clearData();
+		getActiveSetup().clearData();
+	}
+
+	private MailboxSetupHelper getActiveSetup() {
+		return sharedSetup != null ? sharedSetup : setup;
 	}
 }
