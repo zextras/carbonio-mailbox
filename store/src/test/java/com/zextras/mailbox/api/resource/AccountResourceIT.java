@@ -291,4 +291,39 @@ class AccountResourceIT {
 		assertEquals(200, response.statusCode());
 		assertThatJson(response.body()).isArray().isEmpty();
 	}
+
+	@Test
+	void batchByEmailsReturnsMatchingAccounts() throws Exception {
+		final Account account = server.getAccountFactory().create();
+
+		final String body = objectMapper.writeValueAsString(
+				Map.of("emails", List.of(account.getName())));
+
+		final Response response = server.getHttpClient().post(
+				server.getInternalApiEndpoint() + "/accounts/batch", body);
+
+		assertEquals(200, response.statusCode());
+		assertThatJson(response.body()).isArray().hasSize(1);
+	}
+
+	@Test
+	void batchWithBothIdsAndEmailsReturns400() throws Exception {
+		final String body = objectMapper.writeValueAsString(
+				Map.of("ids", List.of("some-id"), "emails", List.of("a@b.com")));
+
+		final Response response = server.getHttpClient().post(
+				server.getInternalApiEndpoint() + "/accounts/batch", body);
+
+		assertEquals(400, response.statusCode());
+	}
+
+	@Test
+	void batchWithNeitherIdsNorEmailsReturns400() throws Exception {
+		final String body = "{}";
+
+		final Response response = server.getHttpClient().post(
+				server.getInternalApiEndpoint() + "/accounts/batch", body);
+
+		assertEquals(400, response.statusCode());
+	}
 }

@@ -83,4 +83,18 @@ public class AccountService {
       return result;
     });
   }
+
+  public Try<List<Account>> getAccountsByEmails(List<String> emails) {
+    return Try.of(() -> {
+      final Provisioning provisioning = provisioningSupplier.get();
+      final List<Account> result = new ArrayList<>();
+      for (final String email : emails) {
+        final Account account = provisioning.get(AccountBy.name, email);
+        if (account != null) {
+          result.add(account);
+        }
+      }
+      return result;
+    });
+  }
 }

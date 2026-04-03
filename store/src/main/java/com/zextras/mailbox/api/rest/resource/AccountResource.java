@@ -137,36 +137,41 @@ public class AccountResource {
 	@Path("/batch")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@Operation(summary = "Batch Get Accounts", description = "Returns account info for a list of IDs. Unknown IDs are silently skipped.")
+	@Operation(summary = "Batch Get Accounts", description = "Returns account info for a list of IDs or emails. Exactly one of 'ids' or 'emails' must be provided. Unknown entries are silently skipped.")
 	@ApiResponse(responseCode = "200", description = "List of Account Info",
 			content = @Content(schema = @Schema(implementation = AccountInfoResponse.class)))
-	@ApiResponse(responseCode = "400", description = "Too many IDs (max 100)",
+	@ApiResponse(responseCode = "400", description = "Invalid request: exactly one of 'ids' or 'emails' required, max 100 entries",
 			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 	@ApiResponse(responseCode = "500", description = "Internal server error",
 			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 	public Response batchGetAccounts(BatchRequest batchRequest) {
-		if (batchRequest == null || batchRequest.ids() == null) {
+		if (batchRequest == null) {
 			return Response.status(Response.Status.BAD_REQUEST)
-					.entity(new ErrorResponse("Missing required field: ids"))
+					.entity(new ErrorResponse("Missing request body"))
 					.build();
 		}
-		if (batchRequest.ids().size() > 100) {
+		boolean hasIds = batchRequest.ids() != null && !batchRequest.ids().isEmpty();
+		boolean hasEmails = batchRequest.emails() != null && !batchRequest.emails().isEmpty();
+		if (hasIds == hasEmails) {
 			return Response.status(Response.Status.BAD_REQUEST)
-					.entity(new ErrorResponse("Too many IDs: max 100 allowed"))
+					.entity(new ErrorResponse("Provide exactly one of 'ids' or 'emails'"))
 					.build();
 		}
-		return accountService.getAccounts(batchRequest.ids())
-				.map(accounts -> {
-					final List<AccountInfoResponse> result = accounts.stream()
-							.map(AccountInfoResponse::from)
-							.collect(Collectors.toList());
-					return Response.ok(result).build();
-				})
+		List<String> inputList = hasIds ? batchRequest.ids() : batchRequest.emails();
+		if (inputList.size() > 100) {
+			return Response.status(Response.Status.BAD_REQUEST)
+					.entity(new ErrorResponse("Too many entries: max 100 allowed"))
+					.build();
+		}
+		return (hasIds
+				? accountService.getAccounts(batchRequest.ids())
+				: accountService.getAccountsByEmails(batchRequest.emails()))
+				.map(accounts -> Response.ok(accounts.stream().map(AccountInfoResponse::from).collect(Collectors.toList())).build())
 				.recover(e -> Response.serverError().entity(new ErrorResponse(e.getMessage())).build())
 				.get();
 	}
 
-	public record BatchRequest(List<String> ids) {}
+	public record BatchRequest(List<String> ids, List<String> emails) {}
 
 	public record CarbonioFeature(String name, Object value) {
 		public static CarbonioFeature map(Entry<String, Object> entry) {
