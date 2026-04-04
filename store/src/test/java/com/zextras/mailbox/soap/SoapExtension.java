@@ -103,23 +103,36 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
   public void beforeAll(ExtensionContext context) throws Exception {
     if (!server.isRunning()) {
       mailboxSetupHelper.setUp(testData);
-      Provisioning.getInstance()
-          .getServerByName(testData.serverName())
-          .modify(
-              new HashMap<>(
-                  Map.of(
-                      Provisioning.A_zimbraMailPort, String.valueOf(port),
-                      ZAttrProvisioning.A_zimbraMailMode, "http",
-                      ZAttrProvisioning.A_zimbraPop3SSLServerEnabled, "FALSE",
-                      ZAttrProvisioning.A_zimbraImapSSLServerEnabled, "FALSE")));
-
+      configureServer();
       server.start();
+      Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+        try {
+          server.stop();
+          mailboxSetupHelper.tearDown();
+        } catch (Exception e) {
+          // best-effort cleanup on JVM exit
+        }
+      }));
+    } else {
+      mailboxSetupHelper.resetAndSetUp(testData);
+      configureServer();
     }
   }
 
+  private void configureServer() throws Exception {
+    Provisioning.getInstance()
+        .getServerByName(testData.serverName())
+        .modify(
+            new HashMap<>(
+                Map.of(
+                    Provisioning.A_zimbraMailPort, String.valueOf(port),
+                    ZAttrProvisioning.A_zimbraMailMode, "http",
+                    ZAttrProvisioning.A_zimbraPop3SSLServerEnabled, "FALSE",
+                    ZAttrProvisioning.A_zimbraImapSSLServerEnabled, "FALSE")));
+  }
+
   @Override
-  public void afterAll(ExtensionContext context) throws Exception {
-    server.stop();
-    mailboxSetupHelper.tearDown();
+  public void afterAll(ExtensionContext context) {
+    // Infrastructure is shared — tearDown runs once via JVM shutdown hook.
   }
 }

@@ -87,33 +87,47 @@ public class MailboxSetupHelper {
 										"/localconfig-api-test.xml"))
 						.getFile());
 
+		LC.ldap_port.setDefault(ldapPort);
+		inMemoryLdapServer.start();
+
+		setUpWithoutLdapStart(mailboxTestData);
+	}
+
+	/**
+	 * Tears down everything except the LDAP server, then reinitializes.
+	 * The LDAP server stays running across test classes to avoid the start/stop cost.
+	 */
+	public void resetAndSetUp(MailboxTestData mailboxTestData) throws Exception {
+		tearDownWithoutLdapStop();
+		setUpWithoutLdapStart(mailboxTestData);
+	}
+
+	private void setUpWithoutLdapStart(MailboxTestData mailboxTestData) throws Exception {
 		if (!Files.exists(mailboxHome)) {
-			Files.createDirectory(mailboxHome); // deleted in teardown
+			Files.createDirectory(mailboxHome);
 		}
 		if (!Files.exists(mailboxTmpDirectory)) {
-			Files.createDirectory(mailboxTmpDirectory); // deleted in teardown
+			Files.createDirectory(mailboxTmpDirectory);
 		}
 		LC.zimbra_home.setDefault(mailboxHome.toAbsolutePath().toString());
 		LC.zimbra_tmp_directory.setDefault(mailboxTmpDirectory.toAbsolutePath().toString());
 
-		// substitute test TZ file
 		LC.timezone_file.setDefault(timezoneFilePath);
 		WellKnownTimeZones.loadFromFile(new File(timezoneFilePath));
 
-		// substitute test DS config file
 		LC.data_source_config.setDefault(datasourceFilePath);
 
-		LC.ldap_port.setDefault(ldapPort);
+		LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
 
-		inMemoryLdapServer.start();
+		// Initialize base LDAP entries (bind user, config, COS) before creating Provisioning,
+		// which needs the bind user to connect.
 		inMemoryLdapServer.initializeBasicData();
 
-		LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
 		final UBIDLdapPoolConfig poolConfig = UBIDLdapPoolConfig.createNewPool(true);
 		final UBIDLdapClient client = UBIDLdapClient.createNew(poolConfig);
 		LdapClient.setInstance(client);
 		Provisioning.setInstance(new LdapProvisioningWithMockMime(client));
-		this.initData(mailboxTestData);
+		this.createBaseData(mailboxTestData);
 		HSQLDB.createDatabase(getVolumeDirectory());
 		DbPool.startup();
 		MailboxManager.setInstance(new MailboxManager());
@@ -127,8 +141,16 @@ public class MailboxSetupHelper {
 		ZimbraCustomAuth.clear();
 	}
 
+  /**
+   * Reinitializes LDAP base entries and creates server/domain/config.
+   * Safe to call after {@link #clearData()} — restores the full base state.
+   */
   public void initData(MailboxTestData mailboxTestData) throws Exception {
     inMemoryLdapServer.initializeBasicData();
+    createBaseData(mailboxTestData);
+  }
+
+  private void createBaseData(MailboxTestData mailboxTestData) throws Exception {
 		var provisioning = Provisioning.getInstance();
     var lmtpPort = PortUtil.findFreePort();
 
@@ -155,63 +177,20 @@ public class MailboxSetupHelper {
 	}
 
 	public void tearDown() throws Exception {
-		inMemoryLdapServer.clear();
-		// Clear cached Lucene index searchers before shutting down the DB and deleting directories.
-		// The static SEARCHER_CACHE in LuceneIndex is keyed by mailbox ID. Without clearing it,
-		// a subsequent test class that recreates the DB (resetting next_mailbox_id to 1) would get
-		// stale searchers from this class's indexes when creating mailboxes with the same IDs.
-		IndexStore.getFactory().destroy();
-		RedoLogProvider.getInstance().shutdown();
-		RedoLogProvider.setInstance(null);
-		DbPool.shutDownAndClear();
+		tearDownWithoutLdapStop();
 		inMemoryLdapServer.shutDown(true);
-		// TODO: avoid shutting down with explicit static method calls
-		UBIDLdapClient.shutdown();
-		FileUtils.deleteDirectory(mailboxHome.toFile());
-		FileUtils.deleteDirectory(mailboxTmpDirectory.toFile());
 	}
-	/**
-	 * Tears down everything except the LDAP server, then reinitializes.
-	 * The LDAP server stays running across test classes to avoid the ~1s start/stop cost.
-	 * Everything else (DB pool, redo log, LDAP client pool, caches, directories) is
-	 * fully torn down and recreated, just like {@link #setUp} would do.
-	 */
-	public void resetAndSetUp(MailboxTestData mailboxTestData) throws Exception {
-		// Tear down services (but not the LDAP server)
+
+	private void tearDownWithoutLdapStop() throws Exception {
+		inMemoryLdapServer.clear();
 		IndexStore.getFactory().destroy();
-		RedoLogProvider.getInstance().shutdown();
-		RedoLogProvider.setInstance(null);
+		if (RedoLogProvider.getInstance() != null) {
+			RedoLogProvider.getInstance().shutdown();
+			RedoLogProvider.setInstance(null);
+		}
 		DbPool.shutDownAndClear();
 		UBIDLdapClient.shutdown();
 		FileUtils.deleteDirectory(mailboxHome.toFile());
 		FileUtils.deleteDirectory(mailboxTmpDirectory.toFile());
-
-		// Reinitialize — same as setUp() but LDAP server is already running
-		if (!Files.exists(mailboxHome)) {
-			Files.createDirectory(mailboxHome);
-		}
-		if (!Files.exists(mailboxTmpDirectory)) {
-			Files.createDirectory(mailboxTmpDirectory);
-		}
-		LC.zimbra_home.setDefault(mailboxHome.toAbsolutePath().toString());
-		LC.zimbra_tmp_directory.setDefault(mailboxTmpDirectory.toAbsolutePath().toString());
-
-		inMemoryLdapServer.initializeBasicData();
-
-		final UBIDLdapPoolConfig poolConfig = UBIDLdapPoolConfig.createNewPool(true);
-		final UBIDLdapClient client = UBIDLdapClient.createNew(poolConfig);
-		LdapClient.setInstance(client);
-		Provisioning.setInstance(new LdapProvisioningWithMockMime(client));
-		this.initData(mailboxTestData);
-		HSQLDB.createDatabase(getVolumeDirectory());
-		DbPool.startup();
-		MailboxManager.setInstance(new MailboxManager());
-		RedoLogProvider.setInstance(new DefaultRedoLogProvider());
-		RedoLogProvider.getInstance().startup();
-		StoreManager.getInstance().startup();
-		RightManager.getInstance();
-		ScheduledTaskManager.startup();
-		ZimbraAnalyzer.setInstance(new ZimbraAnalyzer());
-		ZimbraCustomAuth.clear();
 	}
 }
