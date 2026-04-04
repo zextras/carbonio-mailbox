@@ -12,7 +12,7 @@ COPY common                           common
 COPY right-manager                    right-manager
 COPY client                           client
 
-RUN --mount=type=cache,target=/root/.m2 mvn clean install -DskipTests
+RUN --mount=type=cache,target=/root/.m2 mvn clean install -Dmaven.test.skip=true
 
 # Prepare directory structure and scripts in build stage
 RUN mkdir -p /staging/opt/zextras/mailbox/jars/ && \
