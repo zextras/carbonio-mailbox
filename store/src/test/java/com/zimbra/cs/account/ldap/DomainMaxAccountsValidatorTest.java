@@ -20,14 +20,10 @@ import org.mockito.Mockito;
 
 class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
 
-  @BeforeEach
-  void init() throws Exception {
-    this.initData();
-  }
-
   @AfterEach
   void clear() throws Exception {
     this.clearData();
+    this.initData();
   }
 
   @Test
