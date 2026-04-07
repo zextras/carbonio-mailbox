@@ -14,6 +14,8 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
+import com.zimbra.cs.account.Domain;
+import com.zimbra.cs.account.Provisioning;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -184,6 +186,28 @@ public class AccountResource {
 																		boolean isExternal, String locale, Map<String, Boolean> features,
 																		Map<String, String> capabilities, Long sessionLifetimeMs) {
 
+		/**
+		 * Returns the public service URL for the account's domain in the same format as the
+		 * legacy SOAP {@code GetAccountInfoResponse.getPublicURL()} field:
+		 * {@code {zimbraPublicServiceProtocol}://{zimbraPublicServiceHostname}}.
+		 * Falls back to the plain domain name if the public service hostname is not configured.
+		 */
+		private static String getPublicServiceUrl(Account account) {
+			try {
+				Domain domain = Provisioning.getInstance().getDomain(account);
+				if (domain != null) {
+					String hostname = domain.getAttr(Provisioning.A_zimbraPublicServiceHostname, null);
+					if (hostname != null && !hostname.isBlank()) {
+						String proto = domain.getAttr(Provisioning.A_zimbraPublicServiceProtocol, "http");
+						return proto + "://" + hostname;
+					}
+				}
+			} catch (ServiceException ignored) {
+				// fall through to domain name fallback
+			}
+			return account.getDomainName();
+		}
+
 		public static AccountInfoResponse from(Account account) {
 			var features = account.getAttrs().entrySet().stream()
 					.filter(entry -> entry.getKey().startsWith("carbonioFeature"))
@@ -206,7 +230,7 @@ public class AccountResource {
 				isExternal = true;
 			}
 			return new AccountInfoResponse(account.getId(), account.getName(), account.getDisplayName(),
-					account.getCOSId(), account.getDomainId(), account.getDomainName(),
+					account.getCOSId(), account.getDomainId(), getPublicServiceUrl(account),
 					account.getAccountStatus(), account.isIsAdminAccount(), isExternal,
 					account.getLocaleAsString(), features, capabilities, null);
 		}
@@ -231,7 +255,7 @@ public class AccountResource {
 			}
 			long sessionLifetimeMs = authToken.getExpires() - System.currentTimeMillis();
 			return new AccountInfoResponse(account.getId(), account.getName(), account.getDisplayName(),
-					account.getCOSId(), account.getDomainId(), account.getDomainName(),
+					account.getCOSId(), account.getDomainId(), getPublicServiceUrl(account),
 					account.getAccountStatus(), account.isIsAdminAccount(), isExternal,
 					account.getLocaleAsString(), features, capabilities, sessionLifetimeMs);
 		}
