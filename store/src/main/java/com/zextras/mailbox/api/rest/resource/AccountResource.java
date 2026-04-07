@@ -184,56 +184,64 @@ public class AccountResource {
 																		boolean isExternal, String locale, Map<String, Boolean> features,
 																		Map<String, String> capabilities, Long sessionLifetimeMs) {
 
-		public static AccountInfoResponse from(Account account) throws ServiceException {
-			var features = account.getAttrs().entrySet().stream()
-					.filter(entry -> entry.getKey().startsWith("carbonioFeature"))
-					.collect(Collectors.toMap(Entry::getKey, entry -> Boolean.parseBoolean(entry.getValue().toString())));
-			var capabilities = account.getAttrs().entrySet().stream()
-					.filter(entry -> {
-						String key = entry.getKey();
-						return key.startsWith("carbonioWsc") || key.startsWith("carbonioFiles")
-								|| key.startsWith("carbonioTasks") || key.startsWith("carbonioDocs")
-								|| key.startsWith("carbonioPreview");
-					})
-					.collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().toString()));
-			boolean isExternal;
+		public static AccountInfoResponse from(Account account) {
 			try {
-				isExternal = account.isAccountExternal();
+				var features = account.getAttrs().entrySet().stream()
+						.filter(entry -> entry.getKey().startsWith("carbonioFeature"))
+						.collect(Collectors.toMap(Entry::getKey, entry -> Boolean.parseBoolean(entry.getValue().toString())));
+				var capabilities = account.getAttrs().entrySet().stream()
+						.filter(entry -> {
+							String key = entry.getKey();
+							return key.startsWith("carbonioWsc") || key.startsWith("carbonioFiles")
+									|| key.startsWith("carbonioTasks") || key.startsWith("carbonioDocs")
+									|| key.startsWith("carbonioPreview");
+						})
+						.collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().toString()));
+				boolean isExternal;
+				try {
+					isExternal = account.isAccountExternal();
+				} catch (ServiceException e) {
+					// If we cannot determine whether the account is external, default to true.
+					// An internal account failing this check implies a non-standard transport
+					// configuration, which is more consistent with an external account.
+					isExternal = true;
+				}
+				return new AccountInfoResponse(account.getId(), account.getName(), account.getDisplayName(),
+						account.getCOSId(), account.getDomainId(), account.getDomainName(),
+						account.getAccountStatus(), account.isIsAdminAccount(), isExternal,
+						account.getLocaleAsString(), features, capabilities, null);
 			} catch (ServiceException e) {
-				// If we cannot determine whether the account is external, default to true.
-				// An internal account failing this check implies a non-standard transport
-				// configuration, which is more consistent with an external account.
-				isExternal = true;
+				throw new RuntimeException(e);
 			}
-			return new AccountInfoResponse(account.getId(), account.getName(), account.getDisplayName(),
-					account.getCOSId(), account.getDomainId(), account.getDomainName(),
-					account.getAccountStatus(), account.isIsAdminAccount(), isExternal,
-					account.getLocaleAsString(), features, capabilities, null);
 		}
 
-		public static AccountInfoResponse from(Account account, AuthToken authToken) throws ServiceException {
-			var features = account.getAttrs().entrySet().stream()
-					.filter(entry -> entry.getKey().startsWith("carbonioFeature"))
-					.collect(Collectors.toMap(Entry::getKey, entry -> Boolean.parseBoolean(entry.getValue().toString())));
-			var capabilities = account.getAttrs().entrySet().stream()
-					.filter(entry -> {
-						String key = entry.getKey();
-						return key.startsWith("carbonioWsc") || key.startsWith("carbonioFiles")
-								|| key.startsWith("carbonioTasks") || key.startsWith("carbonioDocs")
-								|| key.startsWith("carbonioPreview");
-					})
-					.collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().toString()));
-			boolean isExternal;
+		public static AccountInfoResponse from(Account account, AuthToken authToken) {
 			try {
-				isExternal = account.isAccountExternal();
+				var features = account.getAttrs().entrySet().stream()
+						.filter(entry -> entry.getKey().startsWith("carbonioFeature"))
+						.collect(Collectors.toMap(Entry::getKey, entry -> Boolean.parseBoolean(entry.getValue().toString())));
+				var capabilities = account.getAttrs().entrySet().stream()
+						.filter(entry -> {
+							String key = entry.getKey();
+							return key.startsWith("carbonioWsc") || key.startsWith("carbonioFiles")
+									|| key.startsWith("carbonioTasks") || key.startsWith("carbonioDocs")
+									|| key.startsWith("carbonioPreview");
+						})
+						.collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().toString()));
+				boolean isExternal;
+				try {
+					isExternal = account.isAccountExternal();
+				} catch (ServiceException e) {
+					isExternal = true;
+				}
+				long sessionLifetimeMs = authToken.getExpires() - System.currentTimeMillis();
+				return new AccountInfoResponse(account.getId(), account.getName(), account.getDisplayName(),
+						account.getCOSId(), account.getDomainId(), account.getDomainName(),
+						account.getAccountStatus(), account.isIsAdminAccount(), isExternal,
+						account.getLocaleAsString(), features, capabilities, sessionLifetimeMs);
 			} catch (ServiceException e) {
-				isExternal = true;
+				throw new RuntimeException(e);
 			}
-			long sessionLifetimeMs = authToken.getExpires() - System.currentTimeMillis();
-			return new AccountInfoResponse(account.getId(), account.getName(), account.getDisplayName(),
-					account.getCOSId(), account.getDomainId(), account.getDomainName(),
-					account.getAccountStatus(), account.isIsAdminAccount(), isExternal,
-					account.getLocaleAsString(), features, capabilities, sessionLifetimeMs);
 		}
 	}
 }
