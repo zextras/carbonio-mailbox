@@ -11,7 +11,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Provisioning.ProvisioningValidator;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.jupiter.api.AfterEach;
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,15 +19,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
-
+  
+  private Domain domainInstance;
+  
   @BeforeEach
-  void init() throws Exception {
-    this.initData();
-  }
-
-  @AfterEach
-  void clear() throws Exception {
-    this.clearData();
+  void setUp() throws Exception {
+    domainInstance = Provisioning.getInstance().createDomain(UUID.randomUUID() + ".com", new HashMap<>());
   }
 
   @Test
@@ -153,9 +150,10 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
     final Account account =
         createAccount()
             .withUsername("user")
+            .withDomain(domainInstance.getName())
             .create();
     final Object[] conditionArguments =
-        new Object[]{String.format("user@%s", DEFAULT_DOMAIN_NAME), Map.of(), account};
+        new Object[]{String.format("user@%s", domainInstance.getName()), Map.of(), account};
 
     Assertions.assertDoesNotThrow(() -> validator.validate(
         Provisioning.getInstance(),
@@ -168,13 +166,15 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
       throws ServiceException {
     final Validators.DomainMaxAccountsValidator validator =
         new Validators.DomainMaxAccountsValidator();
-
+    final String username = UUID.randomUUID().toString();
     final Account account =
         createAccount()
-            .withUsername("user")
+            .withUsername(username)
+            .withDomain(domainInstance.getName())
             .create();
+
     final Object[] conditionArguments =
-        new Object[]{String.format("user@%s", DEFAULT_DOMAIN_NAME), Map.of(), account};
+        new Object[]{String.format(username + "@%s", domainInstance.getName()), Map.of(), account};
 
     Assertions.assertDoesNotThrow(() -> validator.validate(
         Provisioning.getInstance(),
@@ -189,11 +189,11 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
         new Validators.DomainMaxAccountsValidator();
 
     final Domain domain =
-        Provisioning.getInstance().getDomain(DomainBy.name, DEFAULT_DOMAIN_NAME, false);
+        Provisioning.getInstance().getDomain(DomainBy.name, domainInstance.getName(), false);
     domain.setDomainFeatureMaxAccounts(new String[]{"zimbraFeatureChatEnabled:0"});
 
     final Object[] conditionArguments =
-        new Object[]{String.format("user@%s", DEFAULT_DOMAIN_NAME),
+        new Object[]{String.format("user@%s", domainInstance.getName()),
             Map.of("zimbraFeatureChatEnabled", Boolean.TRUE)};
 
     final AccountServiceException accountServiceException = Assertions.assertThrows(
@@ -204,7 +204,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
                 ProvisioningValidator.CREATE_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE,
                 conditionArguments));
     Assertions.assertEquals(
-        "number of accounts reached the limit: domain=test.com[zimbraFeatureChatEnabled,count=0,limit=0]",
+        String.format("number of accounts reached the limit: domain=%s[zimbraFeatureChatEnabled,count=0,limit=0]",domainInstance.getName()),
         accountServiceException.getMessage());
   }
 
@@ -217,12 +217,12 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
         .getId();
 
     final Domain domain =
-        Provisioning.getInstance().getDomain(DomainBy.name, DEFAULT_DOMAIN_NAME, false);
+        Provisioning.getInstance().getDomain(DomainBy.name, domainInstance.getName(), false);
     domain.setDomainDefaultCOSId(cosId);
     domain.setDomainCOSMaxAccounts(new String[]{cosId + ":0"});
 
     final Object[] conditionArguments =
-        new Object[]{String.format("user@%s", DEFAULT_DOMAIN_NAME),
+        new Object[]{String.format("user@%s", domainInstance.getName()),
             Map.of("zimbraCOSId", cosId)};
 
     final AccountServiceException accountServiceException = Assertions.assertThrows(
@@ -233,7 +233,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
                 ProvisioningValidator.CREATE_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE,
                 conditionArguments));
     Assertions.assertEquals(
-        "number of accounts reached the limit: domain=test.com[cos=e00428a1-0c00-11d9-836a-000d93afea2a,count=0,limit=0]",
+        String.format("number of accounts reached the limit: domain=%s[cos=e00428a1-0c00-11d9-836a-000d93afea2a,count=0,limit=0]", domainInstance.getName()),
         accountServiceException.getMessage());
   }
 
@@ -244,11 +244,11 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
         new Validators.DomainMaxAccountsValidator();
 
     final Domain domain =
-        Provisioning.getInstance().getDomain(DomainBy.name, DEFAULT_DOMAIN_NAME, false);
+        Provisioning.getInstance().getDomain(DomainBy.name, domainInstance.getName(), false);
     domain.setDomainFeatureMaxAccounts(new String[]{"zimbraFeatureChatEnabled:1"});
 
     final Object[] conditionArguments =
-        new Object[]{String.format("user@%s", DEFAULT_DOMAIN_NAME),
+        new Object[]{String.format("user@%s", domainInstance.getName()),
             Map.of("zimbraFeatureChatEnabled", Boolean.TRUE)};
 
     Assertions.assertDoesNotThrow(() ->
@@ -268,12 +268,12 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
         .getId();
 
     final Domain domain =
-        Provisioning.getInstance().getDomain(DomainBy.name, DEFAULT_DOMAIN_NAME, false);
+        Provisioning.getInstance().getDomain(DomainBy.name, domainInstance.getName(), false);
     domain.setDomainDefaultCOSId(cosId);
     domain.setDomainCOSMaxAccounts(new String[]{cosId + ":1"});
 
     final Object[] conditionArguments =
-        new Object[]{String.format("user@%s", DEFAULT_DOMAIN_NAME),
+        new Object[]{String.format("user@%s", domainInstance.getName()),
             Map.of("zimbraCOSId", cosId)};
 
     Assertions.assertDoesNotThrow(() ->
@@ -290,11 +290,11 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
         new Validators.DomainMaxAccountsValidator();
 
     final Domain domain =
-        Provisioning.getInstance().getDomain(DomainBy.name, DEFAULT_DOMAIN_NAME, false);
+        Provisioning.getInstance().getDomain(DomainBy.name, domainInstance.getName(), false);
     domain.setDomainFeatureMaxAccounts(new String[]{"zimbraFeatureChatEnabled:0"});
 
     final Object[] conditionArguments =
-        new Object[]{String.format("user@%s", DEFAULT_DOMAIN_NAME),
+        new Object[]{String.format("user@%s", domainInstance.getName()),
             Map.of("zimbraFeatureChatEnabled", Boolean.TRUE)};
 
     final AccountServiceException accountServiceException = Assertions.assertThrows(
@@ -305,7 +305,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
                 ProvisioningValidator.RENAME_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE,
                 conditionArguments));
     Assertions.assertEquals(
-        "number of accounts reached the limit: domain=test.com[zimbraFeatureChatEnabled,count=0,limit=0]",
+        String.format("number of accounts reached the limit: domain=%s[zimbraFeatureChatEnabled,count=0,limit=0]", domainInstance.getName()),
         accountServiceException.getMessage());
   }
 
@@ -318,12 +318,12 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
         .getId();
 
     final Domain domain =
-        Provisioning.getInstance().getDomain(DomainBy.name, DEFAULT_DOMAIN_NAME, false);
+        Provisioning.getInstance().getDomain(DomainBy.name, domainInstance.getName(), false);
     domain.setDomainDefaultCOSId(cosId);
     domain.setDomainCOSMaxAccounts(new String[]{cosId + ":0"});
 
     final Object[] conditionArguments =
-        new Object[]{String.format("user@%s", DEFAULT_DOMAIN_NAME),
+        new Object[]{String.format("user@%s", domainInstance.getName()),
             Map.of("zimbraCOSId", cosId)};
 
     final AccountServiceException accountServiceException = Assertions.assertThrows(
@@ -334,7 +334,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
                 ProvisioningValidator.RENAME_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE,
                 conditionArguments));
     Assertions.assertEquals(
-        "number of accounts reached the limit: domain=test.com[cos=e00428a1-0c00-11d9-836a-000d93afea2a,count=0,limit=0]",
+        String.format("number of accounts reached the limit: domain=%s[cos=e00428a1-0c00-11d9-836a-000d93afea2a,count=0,limit=0]",domainInstance.getName()),
         accountServiceException.getMessage());
   }
 
@@ -345,11 +345,11 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
         new Validators.DomainMaxAccountsValidator();
 
     final Domain domain =
-        Provisioning.getInstance().getDomain(DomainBy.name, DEFAULT_DOMAIN_NAME, false);
+        Provisioning.getInstance().getDomain(DomainBy.name, domainInstance.getName(), false);
     domain.setDomainFeatureMaxAccounts(new String[]{"zimbraFeatureChatEnabled:1"});
 
     final Object[] conditionArguments =
-        new Object[]{String.format("user@%s", DEFAULT_DOMAIN_NAME),
+        new Object[]{String.format("user@%s", domainInstance.getName()),
             Map.of("zimbraFeatureChatEnabled", Boolean.TRUE)};
 
     Assertions.assertDoesNotThrow(() ->
@@ -369,12 +369,12 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
         .getId();
 
     final Domain domain =
-        Provisioning.getInstance().getDomain(DomainBy.name, DEFAULT_DOMAIN_NAME, false);
+        Provisioning.getInstance().getDomain(DomainBy.name, domainInstance.getName(), false);
     domain.setDomainDefaultCOSId(cosId);
     domain.setDomainCOSMaxAccounts(new String[]{cosId + ":1"});
 
     final Object[] conditionArguments =
-        new Object[]{String.format("user@%s", DEFAULT_DOMAIN_NAME),
+        new Object[]{String.format("user@%s", domainInstance.getName()),
             Map.of("zimbraCOSId", cosId)};
 
     Assertions.assertDoesNotThrow(() ->
@@ -394,12 +394,12 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
         .getId();
 
     final Domain domain =
-        Provisioning.getInstance().getDomain(DomainBy.name, DEFAULT_DOMAIN_NAME, false);
+        Provisioning.getInstance().getDomain(DomainBy.name, domainInstance.getName(), false);
     domain.setDomainDefaultCOSId(cosId);
     domain.setDomainCOSMaxAccounts(new String[]{cosId + ":1"});
 
     final Object[] conditionArguments =
-        new Object[]{String.format("user@%s", DEFAULT_DOMAIN_NAME), Map.of()};
+        new Object[]{String.format("user@%s", domainInstance.getName()), Map.of()};
 
     Assertions.assertDoesNotThrow(() ->
         validator.validate(
@@ -415,16 +415,19 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
         new Validators.DomainMaxAccountsValidator();
 
     final Domain domain =
-        Provisioning.getInstance().getDomain(DomainBy.name, DEFAULT_DOMAIN_NAME, false);
+        Provisioning.getInstance().getDomain(DomainBy.name, domainInstance.getName(), false);
     domain.setDomainFeatureMaxAccounts(new String[]{"zimbraFeatureChatEnabled:0"});
 
+    final String username = UUID.randomUUID().toString();
     final Account account =
         createAccount()
-            .withUsername("user")
+            .withUsername(username)
+            .withDomain(domainInstance.getName())
             .create();
 
+
     final Object[] conditionArguments =
-        new Object[]{String.format("user@%s", DEFAULT_DOMAIN_NAME),
+        new Object[]{String.format(username + "@%s", domainInstance.getName()),
             Map.of("zimbraFeatureChatEnabled", Boolean.TRUE), account};
 
     final AccountServiceException accountServiceException = Assertions.assertThrows(
@@ -435,7 +438,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
                 ProvisioningValidator.MODIFY_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE,
                 conditionArguments));
     Assertions.assertEquals(
-        "number of accounts reached the limit: domain=test.com[zimbraFeatureChatEnabled,count=0,limit=0]",
+        String.format("number of accounts reached the limit: domain=%s[zimbraFeatureChatEnabled,count=0,limit=0]", domainInstance.getName()),
         accountServiceException.getMessage());
   }
 
@@ -449,20 +452,20 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
     final String oldCosId = provisioning.createCos("oldCos", new HashMap<>()).getId();
     final String newCosId = provisioning.getCosByName(Provisioning.DEFAULT_COS_NAME)
         .getId();
-
-
     final Domain domain =
-        Provisioning.getInstance().getDomain(DomainBy.name, DEFAULT_DOMAIN_NAME, false);
+        Provisioning.getInstance().getDomain(DomainBy.name, domainInstance.getName(), false);
     domain.setDomainDefaultCOSId(oldCosId);
     domain.setDomainCOSMaxAccounts(new String[]{oldCosId + ":1"});
     domain.setDomainCOSMaxAccounts(new String[]{newCosId + ":0"});
+    final String username = UUID.randomUUID().toString();
     final Account account =
         createAccount()
-            .withUsername("user")
+            .withUsername(username)
+            .withDomain(domainInstance.getName())
             .create();
 
     final Object[] conditionArguments =
-        new Object[]{String.format("user@%s", DEFAULT_DOMAIN_NAME),
+        new Object[]{String.format(username + "@%s", domainInstance.getName()),
             Map.of("zimbraCOSId", newCosId), account};
 
     final AccountServiceException accountServiceException = Assertions.assertThrows(
@@ -473,7 +476,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
                 ProvisioningValidator.MODIFY_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE,
                 conditionArguments));
     Assertions.assertEquals(
-        "number of accounts reached the limit: domain=test.com[cos=e00428a1-0c00-11d9-836a-000d93afea2a,count=0,limit=0]",
+        String.format("number of accounts reached the limit: domain=%s[cos=e00428a1-0c00-11d9-836a-000d93afea2a,count=0,limit=0]", domainInstance.getName()),
         accountServiceException.getMessage());
   }
 
@@ -484,16 +487,18 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
         new Validators.DomainMaxAccountsValidator();
 
     final Domain domain =
-        Provisioning.getInstance().getDomain(DomainBy.name, DEFAULT_DOMAIN_NAME, false);
+        Provisioning.getInstance().getDomain(DomainBy.name, domainInstance.getName(), false);
     domain.setDomainFeatureMaxAccounts(new String[]{"zimbraFeatureChatEnabled:1"});
-
+    final String username = UUID.randomUUID().toString();
     final Account account =
         createAccount()
-            .withUsername("user")
+            .withUsername(username)
+            .withDomain(domainInstance.getName())
             .create();
 
+
     final Object[] conditionArguments =
-        new Object[]{String.format("user@%s", DEFAULT_DOMAIN_NAME),
+        new Object[]{String.format(username + "@%s", domainInstance.getName()),
             Map.of("zimbraFeatureChatEnabled", Boolean.TRUE), account};
 
     Assertions.assertDoesNotThrow(() ->
@@ -513,17 +518,19 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
         .getId();
 
     final Domain domain =
-        Provisioning.getInstance().getDomain(DomainBy.name, DEFAULT_DOMAIN_NAME, false);
+        Provisioning.getInstance().getDomain(DomainBy.name, domainInstance.getName(), false);
     domain.setDomainDefaultCOSId(cosId);
     domain.setDomainCOSMaxAccounts(new String[]{cosId + ":1"});
-
+    final String username = UUID.randomUUID().toString();
     final Account account =
         createAccount()
-            .withUsername("user")
+            .withUsername(username)
+            .withDomain(domainInstance.getName())
             .create();
 
+
     final Object[] conditionArguments =
-        new Object[]{String.format("user@%s", DEFAULT_DOMAIN_NAME),
+        new Object[]{String.format(username + "@%s", domainInstance.getName()),
             Map.of("zimbraCOSId", cosId), account};
 
     Assertions.assertDoesNotThrow(() ->
