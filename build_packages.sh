@@ -12,5 +12,5 @@ docker run -it --rm \
     --entrypoint=yap \
     -v "$(pwd)/artifacts/${OS}":/artifacts \
     -v "$(pwd)":/tmp/build \
-    "docker.io/m0rf30/yap-${OS}:1.49" \
+    "docker.io/m0rf30/yap-${OS}:1.53" \
     build "${OS}" /tmp/build/packages
