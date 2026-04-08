@@ -791,6 +791,14 @@
          <artifactId>commons-net</artifactId>
          <version>3.10.0</version>
       </dependency>
+      <!-- Source: https://mvnrepository.com/artifact/org.testcontainers/testcontainers-bom -->
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>2.0.4</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
