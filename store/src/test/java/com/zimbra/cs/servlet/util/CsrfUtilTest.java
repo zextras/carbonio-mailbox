@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -204,10 +205,7 @@ public class CsrfUtilTest extends MailboxTestSuite {
 	@Test
 	final void testIsCsrfRequestForRefererInMatchHost() {
 
-		String[] allowedRefHost = new String[3];
-		allowedRefHost[0] = "www.newexample.com";
-		allowedRefHost[1] = "www.zextras.com:8080";
-		allowedRefHost[2] = "www.abc.com";
+		final String[] allowedRefHost = getAllowedRefHosts();
 		HttpServletRequest request = Mockito
 				.mock(HttpServletRequest.class);
 		Mockito.when(request.getHeader(HttpHeaders.HOST)).thenReturn(
@@ -227,6 +225,14 @@ public class CsrfUtilTest extends MailboxTestSuite {
 			e.printStackTrace();
 			fail("Should not throw exception. ");
 		}
+	}
+
+	private static String[] getAllowedRefHosts() {
+		String[] allowedRefHost = new String[3];
+		allowedRefHost[0] = "www.newexample.com";
+		allowedRefHost[1] = "www.zextras.com:8080";
+		allowedRefHost[2] = "www.abc.com";
+		return allowedRefHost;
 	}
 
 	@Test
@@ -257,8 +263,7 @@ public class CsrfUtilTest extends MailboxTestSuite {
 
 	@Test
 	final void testIsCsrfRequestForRefererNotInMatchHost() {
-
-		String[] allowedRefHost = new String[3];
+		String[] allowedRefHost = getAllowedRefHost();
 		HttpServletRequest request = Mockito
 				.mock(HttpServletRequest.class);
 		Mockito.when(request.getHeader("X-Forwarded-Host")).thenReturn(null);

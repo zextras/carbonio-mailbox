@@ -2,8 +2,7 @@
 package com.zimbra.cs.service;
 
 import static com.zimbra.common.util.ZimbraCookie.COOKIE_ZM_AUTH_TOKEN;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.spy;
@@ -119,20 +118,20 @@ class UserServletTest extends MailboxTestSuite {
 	 */
 	@Test
 	void testDoGet() throws Exception {
-		HttpServletRequest request = mock(HttpServletRequest.class);
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		UserServlet userServlet = new UserServlet();
-		spy(ZimbraServlet.class);
-		spy(UserServlet.class);
-
+		// TODO: refactor to API tests, avoid mocking http layer and requests
 		try(var mockedStatic = mockStatic(L10nUtil.class)) {
-
+			HttpServletRequest request = mock(HttpServletRequest.class);
+			MockHttpServletResponse response = new MockHttpServletResponse();
+			UserServlet userServlet = new UserServlet();
+			spy(ZimbraServlet.class);
+			spy(UserServlet.class);
 			when(request.getPathInfo()).thenReturn("/testbug3948@zimbra.com");
 			when(request.getRequestURI()).thenReturn("service/home/");
 			when(request.getParameter("auth")).thenReturn("basic");
 			when(request.getParameter("loc")).thenReturn("en_US");
 			when(request.getHeader("Authorization")).thenReturn("Basic dGVzdDM0ODg6dGVzdDEyMw==");
 			when(request.getQueryString()).thenReturn("auth=basic&view=text&id=261");
+			when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost/service/home/"));
 
 			userServlet.doGet(request, response);
 			assertEquals(401, response.getStatus());
