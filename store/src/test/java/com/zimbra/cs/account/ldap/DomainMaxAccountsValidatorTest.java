@@ -150,6 +150,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
     final Account account =
         createAccount()
             .withUsername("user")
+            .withDomain(domainInstance.getName())
             .create();
     final Object[] conditionArguments =
         new Object[]{String.format("user@%s", domainInstance.getName()), Map.of(), account};
