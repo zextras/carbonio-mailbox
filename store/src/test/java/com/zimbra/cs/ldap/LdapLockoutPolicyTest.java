@@ -9,10 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.LdapLockoutPolicy;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-@Tag("flaky")
 public class LdapLockoutPolicyTest extends MailboxTestSuite {
 
 
@@ -33,7 +31,9 @@ public class LdapLockoutPolicyTest extends MailboxTestSuite {
 		// failure time is updated
 		assertEquals(1, acct.getPasswordLockoutFailureTimeAsString().length);
 
-		// second Failure
+		// second Failure (sleep to ensure a distinct LDAP generalized time timestamp)
+		// - when tests are too fast, this test fails, because LDAP precision is at millisecond
+		Thread.sleep(2);
 		lockoutPolicy = new LdapLockoutPolicy(provisioning, acct);
 		lockoutPolicy.failedLogin();
 		String[] failureTime = acct.getPasswordLockoutFailureTimeAsString();
