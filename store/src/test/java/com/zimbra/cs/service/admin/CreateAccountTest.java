@@ -119,16 +119,6 @@ class CreateAccountTest extends MailboxTestSuite {
         return domain2;
     }
 
-    private String provisionDomainWithMaxAccounts(String domainMaxAccounts) throws ServiceException {
-        final Map<String, Object> extraAttr = new HashMap<>();
-        if (domainMaxAccounts != null) {
-            extraAttr.put(Provisioning.A_zimbraDomainMaxAccounts, domainMaxAccounts);
-        }
-        var domain = UUID.randomUUID().toString() + ".com";
-        provisioning.createDomain(domain, extraAttr);
-        return domain;
-    }
-
     private Map<String, Object> provisionAdminContext() throws Exception {
         final Map<String, Object> adminExtraAttr = new HashMap<>();
         adminExtraAttr.put(Provisioning.A_zimbraIsAdminAccount, "TRUE");
