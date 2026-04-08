@@ -11,16 +11,11 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.LdapLockoutPolicy;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("flaky")
 public class LdapLockoutPolicyTest extends MailboxTestSuite {
-
-	private static Account acct;
-
-	@BeforeAll
-	public static void init() throws Exception {
-		acct = createAccount().create();
-	}
 
 
 	/**
@@ -28,6 +23,7 @@ public class LdapLockoutPolicyTest extends MailboxTestSuite {
 	 */
 	@Test
 	void testFailedLogin() throws Exception {
+		var acct = createAccount().create();
 		acct.setPasswordLockoutEnabled(true);
 		acct.setPasswordLockoutMaxFailures(2);
 		acct.setPasswordLockoutFailureLifetime("120s");
