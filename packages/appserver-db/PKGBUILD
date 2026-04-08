@@ -17,10 +17,6 @@ priority="optional"
 conflicts=('carbonio-common-appserver-db')
 replaces=('carbonio-common-appserver-db')
 
-makedepends=(
-  "rsync"
-)
-
 _package() {
   cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
 
@@ -32,7 +28,7 @@ _package() {
     "${pkgdir}/opt/zextras/db/create_database.sql"
 
   mkdir -p "${pkgdir}/opt/zextras/libexec/scripts/migrations"
-  rsync -a "store/db/migration/" \
+  cp -a store/db/migration/* \
     "${pkgdir}/opt/zextras/libexec/scripts/migrations"
 }
 
