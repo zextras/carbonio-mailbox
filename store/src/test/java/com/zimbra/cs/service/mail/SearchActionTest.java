@@ -119,17 +119,18 @@ public class SearchActionTest extends MailboxTestSuite {
     ConvActionRequest req = SearchAction.getConvActionRequest(searchHits, "read");
     ConvAction convAction = new ConvAction();
     SoapHttpTransport mockSoapHttpTransport = mock(SoapHttpTransport.class);
-    MockedStatic<SearchAction> searchActionMockedStatic = mockStatic(SearchAction.class);
-    searchActionMockedStatic
-        .when(() -> SearchAction.getSoapHttpTransportInstance(anyString()))
-        .thenReturn(mockSoapHttpTransport);
+    try (MockedStatic<SearchAction> searchActionMockedStatic = mockStatic(SearchAction.class)) {
+      searchActionMockedStatic
+          .when(() -> SearchAction.getSoapHttpTransportInstance(anyString()))
+          .thenReturn(mockSoapHttpTransport);
 
-    when(mockSoapHttpTransport.invokeWithoutSession(any()))
-        .thenReturn(
-            convAction.handle(zsc.jaxbToElement(req), ServiceTestUtil.getRequestContext(acct)));
-    SearchAction.performAction(bAction, sRequest, searchHits, mbox, null);
-    // check search result message is marked read
-    assertEquals(false, message1.isUnread());
-    assertEquals(true, message2.isUnread());
+      when(mockSoapHttpTransport.invokeWithoutSession(any()))
+          .thenReturn(
+              convAction.handle(zsc.jaxbToElement(req), ServiceTestUtil.getRequestContext(acct)));
+      SearchAction.performAction(bAction, sRequest, searchHits, mbox, null);
+      // check search result message is marked read
+      assertEquals(false, message1.isUnread());
+      assertEquals(true, message2.isUnread());
+    }
   }
 }

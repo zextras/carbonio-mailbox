@@ -118,16 +118,14 @@ class UserServletTest extends MailboxTestSuite {
 	 * javax.servlet.http.HttpServletResponse)}.
 	 */
 	@Test
-	void testDoGet() {
+	void testDoGet() throws Exception {
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		UserServlet userServlet = new UserServlet();
-		try {
+		spy(ZimbraServlet.class);
+		spy(UserServlet.class);
 
-			spy(ZimbraServlet.class);
-			spy(UserServlet.class);
-
-			mockStatic(L10nUtil.class);
+		try(var mockedStatic = mockStatic(L10nUtil.class)) {
 
 			when(request.getPathInfo()).thenReturn("/testbug3948@zimbra.com");
 			when(request.getRequestURI()).thenReturn("service/home/");
@@ -138,12 +136,8 @@ class UserServletTest extends MailboxTestSuite {
 
 			userServlet.doGet(request, response);
 			assertEquals(401, response.getStatus());
-			//            Commenting until we can figure out why this fails in CI env.
-			//            Assert.assertEquals("must authenticate", response.getMsg());
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail("No exception should be thrown.");
 		}
+
 	}
 
 	/**
