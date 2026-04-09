@@ -76,8 +76,6 @@ public class MailboxEnvironmentSetupHelper {
 	}
 
 	public MailboxServer create() throws Exception {
-		System.setProperty("zimbra.native.required", "false");
-
 		setupTestKeyStore();
 
 		LC.zimbra_class_database.setDefault(HSQLDB.class.getName());

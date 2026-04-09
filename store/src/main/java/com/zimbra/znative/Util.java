@@ -8,23 +8,9 @@ package com.zimbra.znative;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-/**
- * Utility class formerly used to load the JNI native library. The native library has been replaced
- * by Java FFM and stdlib equivalents in {@link IO}, so this class now always reports native code as
- * available (the FFM implementation works on any Linux without a {@code .so}).
- */
 public final class Util {
 
   private Util() {}
-
-  /** Always returns {@code true} — FFM-based IO works without a native {@code .so}. */
-  public static boolean haveNativeCode() {
-    return true;
-  }
-
-  public static boolean loadLibrary() {
-    return true;
-  }
 
   public static void halt(String message) {
     try {
