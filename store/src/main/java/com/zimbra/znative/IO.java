@@ -65,7 +65,7 @@ public class IO {
   public static final int S_ISGID = 02000;
   public static final int S_ISVTX = 01000;
 
-  // Direct provider avoids Files.readAttributes() indirection — 1.38x vs 1.62x overhead
+  // Direct provider bypasses Files.readAttributes() indirection
   private static final FileSystemProvider FS_PROVIDER = FileSystems.getDefault().provider();
 
   // FFM handles for open(), dup2(), close() — used only by setStdoutStderrTo()
@@ -108,9 +108,7 @@ public class IO {
   }
 
   /**
-   * Returns inode number, size, and hard link count for the given path. Uses a single batched
-   * {@code readAttributes} call via the direct {@link FileSystemProvider} (avoids the {@link Files}
-   * indirection layer — benchmarked at 1.38x vs raw syscall, down from 1.62x).
+   * Returns inode number, size, and hard link count for the given path.
    */
   public static FileInfo fileInfo(String path) throws IOException {
     try {
