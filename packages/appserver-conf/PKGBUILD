@@ -16,8 +16,8 @@ section="mail"
 priority="optional"
 
 package() {
-  cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
-  gunzip -dc store/conf/common/common-passwords.gz > common-passwords.txt
+  cd "$(dirname "$(find /project -name "yap.json" -print -quit)")/.."
+  gunzip -dc store/conf/common/common-passwords.gz >common-passwords.txt
 
   install -D "store/conf/globs2" \
     "${pkgdir}/opt/zextras/conf/globs2"

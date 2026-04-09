@@ -13,6 +13,7 @@ license=(
 )
 url="https://github.com/zextras"
 depends=(
+  "carbonio-core"
   "service-discover"
   "pending-setups"
 )
@@ -29,7 +30,7 @@ sha256sums=(
 )
 
 _package() {
-  cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
+  cd "$(dirname "$(find /project -name "yap.json" -print -quit)")/.."
 
   # Mailbox
   install -Dm755 packages/appserver-service/carbonio-mailbox \
@@ -72,7 +73,6 @@ _package() {
     "${pkgdir}/etc/carbonio/mailbox-nslookup/service-discover/policies.json"
   install -Dm644 packages/appserver-service/carbonio-mailbox-nslookup-service-protocol.json \
     "${pkgdir}/etc/carbonio/mailbox-nslookup/service-discover/service-protocol.json"
-
 
   # Mailbox Internal API
   install -Dm755 packages/appserver-service/carbonio-mailbox-internal-api \
