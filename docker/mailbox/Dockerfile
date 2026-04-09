@@ -46,6 +46,7 @@ ARG BASE_JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
     -XX:+UseG1GC -XX:SoftRefLRUPolicyMSPerMB=1 -XX:+UnlockExperimentalVMOptions \
     -XX:G1NewSizePercent=15 -XX:G1MaxNewSizePercent=45 -XX:-OmitStackTraceInFastThrow \
     -Djava.security.egd=file:/dev/./urandom \
+    --enable-preview --enable-native-access=ALL-UNNAMED \
     --add-opens java.base/java.lang=ALL-UNNAMED \
     -Xss256k \
     -Xms1996m -Xmx1996m -Djava.io.tmpdir=/opt/zextras/mailboxd/work \

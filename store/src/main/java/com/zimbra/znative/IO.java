@@ -185,6 +185,8 @@ public class IO {
         } catch (Throwable closeFailure) {
           if (primaryFailure != null) {
             primaryFailure.addSuppressed(closeFailure);
+          } else {
+            throw new IOException("close(" + fd + ") failed for " + path, closeFailure);
           }
         }
       }
