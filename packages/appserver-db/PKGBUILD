@@ -18,7 +18,7 @@ conflicts=('carbonio-common-appserver-db')
 replaces=('carbonio-common-appserver-db')
 
 _package() {
-  cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
+  cd "$(dirname "$(find /project -name "yap.json" -print -quit)")/.."
 
   install -D "store/db/versions-init.sql" \
     "${pkgdir}/opt/zextras/db/versions-init.sql"

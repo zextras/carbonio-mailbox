@@ -6,8 +6,12 @@ PartOf=carbonio-mta.target
 
 [Service]
 User=zextras
+Type=notify
+NotifyAccess=main
 EnvironmentFile=-/opt/zextras/data/systemd.env
 ExecStart=/opt/zextras/common/lib/jvm/java/bin/java \
+  --enable-preview \
+  --enable-native-access=ALL-UNNAMED \
   -XX:ErrorFile=/opt/zextras/log \
   -client \
   $java_options \
@@ -19,7 +23,27 @@ ExecStart=/opt/zextras/common/lib/jvm/java/bin/java \
   com.zimbra.cs.milter.MilterServer
 LimitNOFILE=524288
 Restart=on-failure
+RestartSec=3s
 SuccessExitStatus=143
+
+# Hardening
+PrivateTmp=yes
+ProtectSystem=strict
+ReadWritePaths=/opt/zextras/log /opt/zextras/data /run/carbonio
+NoNewPrivileges=yes
+PrivateDevices=yes
+ProtectHome=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+ProtectHostname=yes
+ProtectClock=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
 
 [Install]
 WantedBy=carbonio-mta.target
