@@ -36,9 +36,7 @@ JAVA_OPTS="-Dfile.encoding=UTF-8 -server \
                          -Djava.security.egd=file:/dev/./urandom \
                          --add-opens java.base/java.lang=ALL-UNNAMED \
                          ${MAILBOXD_JAVA_OPTS} -Djava.io.tmpdir=/opt/zextras/mailboxd/work \
-                         -Djava.library.path=/opt/zextras/lib \
                          -Dzimbra.config=/localconfig/localconfig.xml \
-                         -Dzimbra.native.required=false \
                          -Dlog4j.configurationFile=/opt/zextras/conf/log4j.properties \
                          -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/*"
 

@@ -108,8 +108,8 @@ public class IO {
   public static FileInfo fileInfo(String path) throws IOException {
     Path p = Path.of(path);
     try {
-      long ino = (long) Files.getAttribute(p, "unix:ino");
-      int nlink = (int) Files.getAttribute(p, "unix:nlink");
+      long ino = ((Number) Files.getAttribute(p, "unix:ino")).longValue();
+      int nlink = ((Number) Files.getAttribute(p, "unix:nlink")).intValue();
       long size = Files.size(p);
       return new FileInfo(ino, size, nlink);
     } catch (NoSuchFileException e) {
@@ -121,8 +121,7 @@ public class IO {
    * Returns the hard link count for the given path.
    */
   public static int linkCount(String path) throws IOException {
-    FileInfo info = fileInfo(path);
-    return info != null ? info.getLinkCount() : -1;
+    return fileInfo(path).getLinkCount();
   }
 
   /**

@@ -49,9 +49,7 @@ ARG BASE_JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
     --add-opens java.base/java.lang=ALL-UNNAMED \
     -Xss256k \
     -Xms1996m -Xmx1996m -Djava.io.tmpdir=/opt/zextras/mailboxd/work \
-    -Djava.library.path=/opt/zextras/lib \
     -Dzimbra.config=/localconfig/localconfig.xml \
-    -Dzimbra.native.required=false \
     -Dlog4j.configurationFile=/opt/zextras/conf/log4j.properties \
     -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/*"
 
