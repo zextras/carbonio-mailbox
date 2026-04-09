@@ -10,27 +10,24 @@ import java.io.IOException;
 import java.lang.foreign.Arena;
 import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.Linker;
-import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.SymbolLookup;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.util.EnumSet;
 import java.util.Set;
 
 /**
  * POSIX I/O operations for the mailbox store, replacing the JNI-based native library.
  *
- * <p>Uses {@code java.nio.file} where possible ({@link #link}, {@link #chmod}) and Java FFM
- * downcalls for operations without stdlib equivalents ({@link #fileInfo} via {@code stat(2)},
- * {@link #setStdoutStderrTo} via {@code dup2(2)}).
+ * <p>Uses {@code java.nio.file} for {@link #link}, {@link #chmod}, and {@link #fileInfo}. Uses
+ * Java FFM downcalls for {@link #setStdoutStderrTo} (via {@code open(2)} + {@code dup2(2)}) which
+ * has no stdlib equivalent.
  */
 public class IO {
 
@@ -65,30 +62,19 @@ public class IO {
   public static final int S_ISGID = 02000;
   public static final int S_ISVTX = 01000;
 
-  // FFM handles for stat() and dup2()
-  private static final MethodHandle STAT;
+  // FFM handles for open(), dup2(), close() — used only by setStdoutStderrTo()
   private static final MethodHandle OPEN;
   private static final MethodHandle DUP2;
   private static final MethodHandle CLOSE;
 
-  // struct stat layout for x86_64 Linux (glibc)
-  // Offsets: st_dev=0, st_ino=8, st_nlink=16, st_mode=24, ... st_size=48
-  private static final long STAT_ST_INO_OFFSET = 8;
-  private static final long STAT_ST_NLINK_OFFSET = 16;
-  private static final long STAT_ST_SIZE_OFFSET = 48;
-  private static final long STAT_STRUCT_SIZE = 144; // sizeof(struct stat) on x86_64 glibc
-
   static {
     Linker linker = Linker.nativeLinker();
-    SymbolLookup libc = Linker.nativeLinker().defaultLookup();
-
-    STAT = linker.downcallHandle(
-        libc.find("stat").orElseThrow(),
-        FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS, ValueLayout.ADDRESS));
+    SymbolLookup libc = linker.defaultLookup();
 
     OPEN = linker.downcallHandle(
         libc.find("open").orElseThrow(),
-        FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS, ValueLayout.JAVA_INT),
+        FunctionDescriptor.of(
+            ValueLayout.JAVA_INT, ValueLayout.ADDRESS, ValueLayout.JAVA_INT, ValueLayout.JAVA_INT),
         Linker.Option.firstVariadicArg(2));
 
     DUP2 = linker.downcallHandle(
@@ -101,7 +87,7 @@ public class IO {
   }
 
   /**
-   * Creates a hard link from {@code oldpath} to {@code newpath}. Uses {@link Files#createLink}.
+   * Creates a hard link from {@code oldpath} to {@code newpath}.
    */
   public static void link(String oldpath, String newpath) throws IOException {
     try {
@@ -116,24 +102,18 @@ public class IO {
   }
 
   /**
-   * Returns inode number, size, and hard link count for the given path via {@code stat(2)}.
+   * Returns inode number, size, and hard link count for the given path via {@code unix:} file
+   * attribute view.
    */
   public static FileInfo fileInfo(String path) throws IOException {
-    try (Arena arena = Arena.ofConfined()) {
-      MemorySegment pathSeg = arena.allocateUtf8String(path);
-      MemorySegment statBuf = arena.allocate(STAT_STRUCT_SIZE);
-      int rc = (int) STAT.invoke(pathSeg, statBuf);
-      if (rc != 0) {
-        throw new IOException(String.format("stat(%s) failed", path));
-      }
-      long ino = statBuf.get(ValueLayout.JAVA_LONG, STAT_ST_INO_OFFSET);
-      long nlink = statBuf.get(ValueLayout.JAVA_LONG, STAT_ST_NLINK_OFFSET);
-      long size = statBuf.get(ValueLayout.JAVA_LONG, STAT_ST_SIZE_OFFSET);
-      return new FileInfo(ino, size, (int) nlink);
-    } catch (IOException e) {
-      throw e;
-    } catch (Throwable e) {
-      throw new IOException("stat() FFM call failed: " + e.getMessage(), e);
+    Path p = Path.of(path);
+    try {
+      long ino = (long) Files.getAttribute(p, "unix:ino");
+      int nlink = (int) Files.getAttribute(p, "unix:nlink");
+      long size = Files.size(p);
+      return new FileInfo(ino, size, nlink);
+    } catch (NoSuchFileException e) {
+      throw new FileNotFoundException(String.format("stat(%s): %s", path, e.getMessage()));
     }
   }
 
@@ -176,20 +156,31 @@ public class IO {
     int O_WRONLY = 1;
     int O_CREAT = 64;
     int O_APPEND = 1024;
+    int mode = 0644;
     try (Arena arena = Arena.ofConfined()) {
       MemorySegment pathSeg = arena.allocateUtf8String(path);
-      int fd = (int) OPEN.invoke(pathSeg, O_WRONLY | O_CREAT | O_APPEND);
+      int fd = (int) OPEN.invoke(pathSeg, O_WRONLY | O_CREAT | O_APPEND, mode);
       if (fd < 0) {
         throw new IOException("open(" + path + ") failed");
       }
+      Throwable primaryFailure = null;
       try {
         int rc1 = (int) DUP2.invoke(fd, 1); // stdout
         int rc2 = (int) DUP2.invoke(fd, 2); // stderr
         if (rc1 < 0 || rc2 < 0) {
           throw new IOException("dup2 failed for " + path);
         }
+      } catch (Throwable t) {
+        primaryFailure = t;
+        throw t;
       } finally {
-        CLOSE.invoke(fd);
+        try {
+          CLOSE.invoke(fd);
+        } catch (Throwable closeFailure) {
+          if (primaryFailure != null) {
+            primaryFailure.addSuppressed(closeFailure);
+          }
+        }
       }
     } catch (IOException e) {
       throw e;
