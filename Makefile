@@ -1,19 +1,19 @@
 VERSION := $(shell cat version.txt)
 
 build:
-	mvn clean install -DskipTests
+	mvn clean install -DskipTests -Dfile.encoding=UTF-8
 
 tests:
-	mvn verify -DexcludedGroups=api,flaky,e2e
+	mvn verify -DexcludedGroups=api,flaky,e2e -Dfile.encoding=UTF-8
 
 api-tests:
-	cd store && mvn verify -Dgroups=api
+	cd store && mvn verify -Dgroups=api -Dfile.encoding=UTF-8
 
 flaky-tests:
-	cd store && mvn verify -Dgroups=flaky
+	cd store && mvn verify -Dgroups=flaky -Dfile.encoding=UTF-8
 
 e2e-tests:
-	cd store && mvn verify -Dgroups=e2e
+	cd store && mvn verify -Dgroups=e2e -Dfile.encoding=UTF-8
 
 build-packages: build
 	./build_packages.sh	

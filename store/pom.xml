@@ -128,7 +128,6 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
-      <version>1.17.6</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -138,14 +137,12 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>mariadb</artifactId>
-      <version>1.17.6</version>
+      <artifactId>testcontainers-mariadb</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>rabbitmq</artifactId>
-      <version>1.19.8</version>
+      <artifactId>testcontainers-rabbitmq</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -160,12 +157,6 @@
       <version>5.2.0</version>
     </dependency>
 
-    <dependency>
-      <groupId>com.github.docker-java</groupId>
-      <artifactId>docker-java-api</artifactId>
-      <version>3.2.13</version>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-library</artifactId>
@@ -593,8 +584,7 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>1.19.0</version>
+      <artifactId>testcontainers-junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -3,6 +3,7 @@ package com.zimbra.cs.service.account;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.MailboxTestSuite;
+import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -26,7 +27,7 @@ class GetAccountInfoTest extends MailboxTestSuite {
     request.setAccount(AccountSelector.fromId(account.getId()));
     Element requestElement = JaxbUtil.jaxbToElement(request);
 
-    Element handle = new GetAccountInfo()
+    Element handle = newRequest()
         .handle(requestElement, ServiceTestUtil.getRequestContext(account));
     GetAccountInfoResponse response = JaxbUtil.elementToJaxb(handle);
 
@@ -44,7 +45,7 @@ class GetAccountInfoTest extends MailboxTestSuite {
     request.setAccount(AccountSelector.fromId(account.getId()));
     Element requestElement = JaxbUtil.jaxbToElement(request);
 
-    Element handle = new GetAccountInfo()
+    Element handle = newRequest()
         .handle(requestElement, ServiceTestUtil.getRequestContext(account));
     GetAccountInfoResponse response = JaxbUtil.elementToJaxb(handle);
 
@@ -55,4 +56,12 @@ class GetAccountInfoTest extends MailboxTestSuite {
     assertEquals(1, attributes.size());
     assertEquals("FALSE", attributes.get(0).getValue());
   }
+
+  private GetAccountInfo newRequest() {
+    final GetAccountInfo getAccountInfo = new GetAccountInfo();
+    getAccountInfo.setResponseQName(AccountConstants.GET_ACCOUNT_INFO_RESPONSE);
+    return getAccountInfo;
+
+  }
+
 }

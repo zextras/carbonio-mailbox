@@ -226,7 +226,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
-        <version>1.1</version>
+        <version>1.12.0</version>
       </dependency>
       <dependency>
         <groupId>com.kohlschutter.junixsocket</groupId>
@@ -622,11 +622,6 @@
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>3.7</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
         <artifactId>commons-rng-core</artifactId>
         <version>1.0</version>
       </dependency>
@@ -790,6 +785,14 @@
          <groupId>commons-net</groupId>
          <artifactId>commons-net</artifactId>
          <version>3.10.0</version>
+      </dependency>
+      <!-- Source: https://mvnrepository.com/artifact/org.testcontainers/testcontainers-bom -->
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>2.0.4</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
