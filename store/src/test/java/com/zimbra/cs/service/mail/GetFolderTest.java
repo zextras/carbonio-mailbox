@@ -11,6 +11,8 @@ import com.google.common.collect.ImmutableSet;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.cs.account.DataSource;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
@@ -18,7 +20,10 @@ import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Mountpoint;
+import com.zimbra.soap.admin.type.DataSourceType;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -99,6 +104,134 @@ public class GetFolderTest extends MailboxTestSuite {
 				expectedSyncEpochSeconds,
 				folderElem.getAttributeLong(MailConstants.A_LAST_SYNC_DATE, 0),
 				"external iCal URL folder should return last successful sync date in epoch seconds");
+	}
+
+	/**
+	 * Verifies that GetFolder response includes dsId and dsType attributes on the folder
+	 * when it is the root folder of a CalDAV DataSource, allowing clients to identify
+	 * datasource-synced folders without needing to cross-reference GetDataSources.
+	 */
+	@Test
+	void caldavDataSourceRootFolderIncludesDsIdAndDsType() throws Exception {
+		var acct = createAccount().create();
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+
+		// Create a calendar folder that will be the root of the CalDAV datasource
+		Folder.FolderOptions folderOptions = new Folder.FolderOptions()
+				.setDefaultView(Type.APPOINTMENT);
+		Folder calFolder = mbox.createFolder(null, "CalDAV Root", Mailbox.ID_FOLDER_USER_ROOT, folderOptions);
+
+		// Create a CalDAV datasource pointing to this folder
+		Map<String, Object> dsAttrs = new HashMap<>();
+		dsAttrs.put(Provisioning.A_zimbraDataSourceFolderId, String.valueOf(calFolder.getId()));
+		dsAttrs.put(Provisioning.A_zimbraDataSourceHost, "caldav.example.com");
+		dsAttrs.put(Provisioning.A_zimbraDataSourcePort, "443");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceUsername, "user@example.com");
+		dsAttrs.put(Provisioning.A_zimbraDataSourcePassword, "password");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceConnectionType, "ssl");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceEnabled, "TRUE");
+
+		DataSource caldavDs = Provisioning.getInstance().createDataSource(
+				acct, DataSourceType.caldav, "My CalDAV", dsAttrs);
+
+		// Fetch the folder via GetFolder
+		Element request = new Element.XMLElement(MailConstants.GET_FOLDER_REQUEST);
+		request.addUniqueElement(MailConstants.E_FOLDER)
+				.addAttribute(MailConstants.A_FOLDER, String.valueOf(calFolder.getId()));
+
+		Element response = new GetFolder().handle(request, ServiceTestUtil.getRequestContext(acct));
+
+		Element folderElem = response.getOptionalElement(MailConstants.E_FOLDER);
+		assertNotNull(folderElem, "folder element should be present in response");
+
+		// Verify dsId is present and matches the datasource ID
+		String dsId = folderElem.getAttribute(MailConstants.A_DATASOURCE_ID, null);
+		assertNotNull(dsId, "datasource root folder should have dsId attribute");
+		assertEquals(caldavDs.getId(), dsId, "dsId should match the datasource ID");
+
+		// Verify dsType is present and set to 'caldav'
+		String dsType = folderElem.getAttribute(MailConstants.A_DATASOURCE_TYPE, null);
+		assertNotNull(dsType, "datasource root folder should have dsType attribute");
+		assertEquals(DataSourceType.caldav.toString(), dsType, "dsType should be 'caldav'");
+	}
+
+	/**
+	 * Verifies that non-datasource folders do NOT include dsId and dsType attributes.
+	 */
+	@Test
+	void regularFolderDoesNotIncludeDsIdAndDsType() throws Exception {
+		var acct = createAccount().create();
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+
+		// Create a regular calendar folder (not a datasource root)
+		Folder.FolderOptions folderOptions = new Folder.FolderOptions()
+				.setDefaultView(Type.APPOINTMENT);
+		Folder calFolder = mbox.createFolder(null, "Regular Calendar", Mailbox.ID_FOLDER_USER_ROOT, folderOptions);
+
+		// Fetch the folder via GetFolder
+		Element request = new Element.XMLElement(MailConstants.GET_FOLDER_REQUEST);
+		request.addUniqueElement(MailConstants.E_FOLDER)
+				.addAttribute(MailConstants.A_FOLDER, String.valueOf(calFolder.getId()));
+
+		Element response = new GetFolder().handle(request, ServiceTestUtil.getRequestContext(acct));
+
+		Element folderElem = response.getOptionalElement(MailConstants.E_FOLDER);
+		assertNotNull(folderElem, "folder element should be present in response");
+
+		// Verify dsId and dsType are NOT present
+		String dsId = folderElem.getAttribute(MailConstants.A_DATASOURCE_ID, null);
+		assertNull(dsId, "regular folder should not have dsId attribute");
+
+		String dsType = folderElem.getAttribute(MailConstants.A_DATASOURCE_TYPE, null);
+		assertNull(dsType, "regular folder should not have dsType attribute");
+	}
+
+	/**
+	 * Verifies that sub-folders created by CalDAV sync under a datasource root folder
+	 * do NOT include dsId/dsType attributes (only the root folder should have them).
+	 */
+	@Test
+	void caldavSubFolderDoesNotIncludeDsIdAndDsType() throws Exception {
+		var acct = createAccount().create();
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+
+		// Create a CalDAV datasource root folder
+		Folder.FolderOptions folderOptions = new Folder.FolderOptions()
+				.setDefaultView(Type.APPOINTMENT);
+		Folder rootFolder = mbox.createFolder(null, "CalDAV Root", Mailbox.ID_FOLDER_USER_ROOT, folderOptions);
+
+		// Create a CalDAV datasource
+		Map<String, Object> dsAttrs = new HashMap<>();
+		dsAttrs.put(Provisioning.A_zimbraDataSourceFolderId, String.valueOf(rootFolder.getId()));
+		dsAttrs.put(Provisioning.A_zimbraDataSourceHost, "caldav.example.com");
+		dsAttrs.put(Provisioning.A_zimbraDataSourcePort, "443");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceUsername, "user@example.com");
+		dsAttrs.put(Provisioning.A_zimbraDataSourcePassword, "password");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceConnectionType, "ssl");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceEnabled, "TRUE");
+
+		Provisioning.getInstance().createDataSource(
+				acct, DataSourceType.caldav, "My CalDAV", dsAttrs);
+
+		// Create a sub-folder (simulating what CalDAV import would create)
+		Folder subFolder = mbox.createFolder(null, "Work Calendar", rootFolder.getId(), folderOptions);
+
+		// Fetch the sub-folder via GetFolder
+		Element request = new Element.XMLElement(MailConstants.GET_FOLDER_REQUEST);
+		request.addUniqueElement(MailConstants.E_FOLDER)
+				.addAttribute(MailConstants.A_FOLDER, String.valueOf(subFolder.getId()));
+
+		Element response = new GetFolder().handle(request, ServiceTestUtil.getRequestContext(acct));
+
+		Element folderElem = response.getOptionalElement(MailConstants.E_FOLDER);
+		assertNotNull(folderElem, "subfolder element should be present in response");
+
+		// Verify dsId and dsType are NOT on the sub-folder
+		String dsId = folderElem.getAttribute(MailConstants.A_DATASOURCE_ID, null);
+		assertNull(dsId, "datasource sub-folder should not have dsId attribute (only root should)");
+
+		String dsType = folderElem.getAttribute(MailConstants.A_DATASOURCE_TYPE, null);
+		assertNull(dsType, "datasource sub-folder should not have dsType attribute (only root should)");
 	}
 
 	@Disabled
