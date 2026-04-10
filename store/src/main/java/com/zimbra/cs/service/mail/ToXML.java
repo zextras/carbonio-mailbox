@@ -368,13 +368,15 @@ public final class ToXML {
     // separately correlating against a GetDataSources response.
     if (folder.getId() > Mailbox.HIGHEST_SYSTEM_ID) {
       try {
-        List<DataSource> allDataSources =
-            Provisioning.getInstance().getAllDataSources(folder.getMailbox().getAccount());
-        for (DataSource ds : allDataSources) {
-          if (!ds.isInternal() && ds.getFolderId() == folder.getId()) {
-            elem.addAttribute(MailConstants.A_DATASOURCE_ID, ds.getId());
-            elem.addAttribute(MailConstants.A_DATASOURCE_TYPE, ds.getType().toString());
-            break;
+        if (hasFullAccess(mbox, octxt)) {
+          List<DataSource> allDataSources =
+              Provisioning.getInstance().getAllDataSources(folder.getMailbox().getAccount());
+          for (DataSource ds : allDataSources) {
+            if (!ds.isInternal() && ds.getFolderId() == folder.getId()) {
+              elem.addAttribute(MailConstants.A_DATASOURCE_ID, ds.getId());
+              elem.addAttribute(MailConstants.A_DATASOURCE_TYPE, ds.getType().toString());
+              break;
+            }
           }
         }
       } catch (ServiceException e) {
