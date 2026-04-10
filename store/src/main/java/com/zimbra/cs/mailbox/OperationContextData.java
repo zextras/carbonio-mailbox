@@ -5,13 +5,16 @@
 
 package com.zimbra.cs.mailbox;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.SetUtil;
 import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.DataSource;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Mailbox.FolderNode;
 
@@ -289,6 +292,93 @@ public abstract class OperationContextData {
                 return null;
         }
 
+    }
+
+    /**
+     * Per-request cache of the folderId-to-DataSource mapping for an account.
+     *
+     * <p>Avoids calling {@link Provisioning#getAllDataSources} once per folder when
+     * {@code ToXML.encodeFolder()} annotates each folder with its datasource metadata
+     * (e.g. during GetFolder or Sync, which can encode many folders in one request).
+     *
+     * <p>The outer map is keyed by {@code accountId} so that the cache is correct even
+     * when the same {@link OperationContext} is reused across accounts (e.g. admin proxy).
+     * The inner map is keyed by the datasource root {@code folderId}.
+     */
+    public static class DataSourceIndex extends OperationContextData {
+
+        private static final String KEY = "DataSourceIndex";
+
+        /** accountId → (folderId → DataSource) */
+        private final Map<String, Map<Integer, DataSource>> mIndex = new HashMap<>();
+
+        DataSourceIndex(OperationContext octxt) {
+            super(octxt);
+        }
+
+        /**
+         * Returns the non-internal {@link DataSource} whose root folder is {@code folderId}
+         * for the given account, or {@code null} if none exists.
+         *
+         * <p>The datasource list for the account is fetched from {@link Provisioning} exactly
+         * once and cached for the lifetime of this object (i.e. the current request).
+         */
+        public DataSource getByFolderId(com.zimbra.cs.account.Account account, int folderId)
+                throws ServiceException {
+            String accountId = account.getId();
+            Map<Integer, DataSource> folderMap = mIndex.get(accountId);
+            if (folderMap == null) {
+                folderMap = new HashMap<>();
+                List<DataSource> sources = Provisioning.getInstance().getAllDataSources(account);
+                for (DataSource ds : sources) {
+                    if (!ds.isInternal()) {
+                        // folderId is the datasource root; one datasource → one folder
+                        folderMap.put(ds.getFolderId(), ds);
+                    }
+                }
+                mIndex.put(accountId, folderMap);
+            }
+            return folderMap.get(folderId);
+        }
+
+        // ------------------------------------------------------------------ //
+        // Static helpers — mirrors the GranteeNames static API style          //
+        // ------------------------------------------------------------------ //
+
+        private static DataSourceIndex getOrInit(OperationContext octxt) {
+            DataSourceIndex idx = (DataSourceIndex) octxt.getCtxtData(KEY);
+            if (idx == null) {
+                idx = new DataSourceIndex(octxt);
+                octxt.setCtxtData(KEY, idx);
+            }
+            return idx;
+        }
+
+        /**
+         * Looks up the datasource for {@code folderId} in {@code account}.
+         *
+         * <p>If {@code octxt} is non-null the per-account datasource list is loaded once and
+         * cached for the remainder of the request. If {@code octxt} is {@code null} (e.g.
+         * internal / redo-log calls) a direct uncached scan is performed so callers never
+         * need to special-case a null context.
+         *
+         * @return the matching {@link DataSource}, or {@code null} if none
+         */
+        public static DataSource lookup(
+                OperationContext octxt,
+                com.zimbra.cs.account.Account account,
+                int folderId) throws ServiceException {
+            if (octxt == null) {
+                // No request context available — fall back to a direct (uncached) scan.
+                for (DataSource ds : Provisioning.getInstance().getAllDataSources(account)) {
+                    if (!ds.isInternal() && ds.getFolderId() == folderId) {
+                        return ds;
+                    }
+                }
+                return null;
+            }
+            return getOrInit(octxt).getByFolderId(account, folderId);
+        }
     }
 
 }
