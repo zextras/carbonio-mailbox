@@ -362,6 +362,26 @@ public final class ToXML {
         }
       }
     }
+
+    // Annotate the folder with the ID and type of the DataSource it is the root of, if any.
+    // This allows clients to identify CalDAV / IMAP / etc. sync root folders without
+    // separately correlating against a GetDataSources response.
+    if (folder.getId() > Mailbox.HIGHEST_SYSTEM_ID) {
+      try {
+        List<DataSource> allDataSources =
+            Provisioning.getInstance().getAllDataSources(folder.getMailbox().getAccount());
+        for (DataSource ds : allDataSources) {
+          if (!ds.isInternal() && ds.getFolderId() == folder.getId()) {
+            elem.addAttribute(MailConstants.A_DATASOURCE_ID, ds.getId());
+            elem.addAttribute(MailConstants.A_DATASOURCE_TYPE, ds.getType().toString());
+            break;
+          }
+        }
+      } catch (ServiceException e) {
+        ZimbraLog.soap.warn("Unable to encode datasource info for folder %d", folder.getId(), e);
+      }
+    }
+
     return elem;
   }
 
