@@ -41,7 +41,7 @@ StandardError=append:/opt/zextras/log/zmmailboxd.out
 # Hardening
 PrivateTmp=yes
 ProtectSystem=strict
-ReadWritePaths=/opt/zextras/log /opt/zextras/data /opt/zextras/mailboxd /opt/zextras/conf /run/carbonio
+ReadWritePaths=/opt/zextras/conf /opt/zextras/data /opt/zextras/log /opt/zextras/mailboxd /opt/zextras/redolog /run/carbonio
 NoNewPrivileges=yes
 PrivateDevices=yes
 ProtectHome=yes
