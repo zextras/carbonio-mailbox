@@ -4,8 +4,6 @@ import com.zimbra.common.account.ZAttrProvisioning.AccountStatus;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
-import com.zimbra.cs.account.Domain;
-import com.zimbra.cs.account.Provisioning;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
