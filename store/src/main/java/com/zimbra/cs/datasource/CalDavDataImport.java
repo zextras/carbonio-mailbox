@@ -662,7 +662,7 @@ public class CalDavDataImport extends MailItemImport {
     while (!allDone) {
       allDone = true;
 
-      if (lastSync > 0) { // Don't push local changes during initial sync.
+      if (lastSync > 0 && !getDataSource().isImportOnly()) { // Don't push local changes during initial sync or in import-only mode.
         // push local deletion
         List<Integer> deleted = new ArrayList<>();
         for (int itemId : mbox.getTombstones(lastSync).getAllIds()) {
