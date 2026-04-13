@@ -151,12 +151,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-        "502":
-          description: Account mailbox is on another server
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Internal server error
           content:

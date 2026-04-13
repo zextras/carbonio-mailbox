@@ -181,8 +181,6 @@ public class AccountResource {
 			content = @Content(schema = @Schema(implementation = SharedAccountResponse.class)))
 	@ApiResponse(responseCode = "404", description = "Account not found",
 			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-	@ApiResponse(responseCode = "502", description = "Account mailbox is on another server",
-			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 	@ApiResponse(responseCode = "500", description = "Internal server error",
 			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 	public Response getSharedAccounts(
@@ -193,10 +191,6 @@ public class AccountResource {
 				.recover(e -> switch (e) {
 					case ServiceException se when se.getCode().equals(ServiceException.NOT_FOUND) ->
 							Response.status(Response.Status.NOT_FOUND)
-									.entity(new ErrorResponse(e.getMessage()))
-									.build();
-					case ServiceException se when se.getCode().equals(ServiceException.WRONG_HOST) ->
-							Response.status(Response.Status.BAD_GATEWAY)
 									.entity(new ErrorResponse(e.getMessage()))
 									.build();
 					default -> Response.serverError().entity(new ErrorResponse(e.getMessage())).build();

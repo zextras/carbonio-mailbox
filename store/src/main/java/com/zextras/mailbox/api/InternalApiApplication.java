@@ -31,13 +31,6 @@ public class InternalApiApplication extends Application {
 
 	@Override
 	public Set<Object> getSingletons() {
-		final AccountService accountService = new AccountService(Provisioning::getInstance, () -> {
-			try {
-				return MailboxManager.getInstance();
-			} catch (ServiceException e) {
-				throw new RuntimeException(e);
-			}
-		});
 		final MailboxService mailboxService = new MailboxService(
 				() -> {
 					try {
@@ -53,6 +46,7 @@ public class InternalApiApplication extends Application {
 						throw new RuntimeException(e);
 					}
 				});
+		final AccountService accountService = new AccountService(Provisioning::getInstance, mailboxService);
 		return Set.of(new MailboxResource(mailboxService, accountService), new AccountResource(accountService));
 	}
 }

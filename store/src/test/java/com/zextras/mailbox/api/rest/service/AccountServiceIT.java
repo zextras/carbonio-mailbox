@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -26,6 +27,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+@Tag("e2e")
 class AccountServiceIT {
 
 	@RegisterExtension
@@ -35,15 +37,22 @@ class AccountServiceIT {
 
 	@BeforeAll
 	static void setUp() throws Exception {
-		accountService = new AccountService(
-				Provisioning::getInstance,
+		final MailboxService mailboxService = new MailboxService(
 				() -> {
 					try {
 						return MailboxManager.getInstance();
 					} catch (ServiceException e) {
 						throw new RuntimeException(e);
 					}
+				},
+				() -> {
+					try {
+						return SoapProvisioning.getAdminInstance();
+					} catch (ServiceException e) {
+						throw new RuntimeException(e);
+					}
 				});
+		accountService = new AccountService(Provisioning::getInstance, mailboxService);
 	}
 
 	@Test
