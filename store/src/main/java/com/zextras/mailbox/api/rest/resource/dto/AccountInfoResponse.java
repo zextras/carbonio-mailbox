@@ -16,7 +16,7 @@ public record AccountInfoResponse(String id, String name, String displayName, St
 																	boolean isExternal, String locale, Map<String, Boolean> features,
 																	Map<String, String> capabilities, Long sessionLifetimeMs) {
 
-	public static AccountInfoResponse from(Account account) {
+	public static AccountInfoResponse from(Account account) throws ServiceException {
 		return AccountInfoResponse.withLifetime(account, null);
 	}
 
@@ -27,7 +27,8 @@ public record AccountInfoResponse(String id, String name, String displayName, St
 	}
 
 
-	private static AccountInfoResponse withLifetime(Account account, Long sessionLifetimeMs) {
+	private static AccountInfoResponse withLifetime(Account account, Long sessionLifetimeMs)
+			throws ServiceException {
 		var features = account.getAttrs().entrySet().stream()
 				.filter(entry -> entry.getKey().startsWith("carbonioFeature"))
 				.collect(Collectors.toMap(Entry::getKey,
@@ -40,15 +41,7 @@ public record AccountInfoResponse(String id, String name, String displayName, St
 							|| key.startsWith("carbonioPreview");
 				})
 				.collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().toString()));
-		boolean isExternal;
-		try {
-			isExternal = account.isAccountExternal();
-		} catch (ServiceException e) {
-			// If we cannot determine whether the account is external, default to true.
-			// An internal account failing this check implies a non-standard transport
-			// configuration, which is more consistent with an external account.
-			isExternal = true;
-		}
+		final boolean isExternal = account.isAccountExternal();
 		return new AccountInfoResponse(account.getId(), account.getName(), account.getDisplayName(),
 				account.getCOSId(), account.getDomainId(), account.getPublicServiceUrl(),
 				account.getAccountStatus(), account.isIsAdminAccount(), isExternal,

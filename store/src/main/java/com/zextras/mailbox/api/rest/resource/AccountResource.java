@@ -17,6 +17,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.vavr.control.Try;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -59,14 +61,8 @@ public class AccountResource {
 					.build();
 		}
 		return accountService.getAccountByEmail(email)
-				.map(account -> Response.ok(AccountInfoResponse.from(account)).build())
-				.recover(e -> switch (e) {
-					case ServiceException se when se.getCode().equals(ServiceException.NOT_FOUND) ->
-							Response.status(Response.Status.NOT_FOUND)
-									.entity(new ErrorResponse(e.getMessage()))
-									.build();
-					default -> Response.serverError().entity(new ErrorResponse(e.getMessage())).build();
-				})
+				.mapTry(account -> Response.ok(AccountInfoResponse.from(account)).build())
+				.recover(AccountResource::toErrorResponse)
 				.get();
 	}
 
@@ -83,14 +79,8 @@ public class AccountResource {
 	public Response getAccountInfo(
 			@Parameter(description = "The account ID") @PathParam("id") String id) {
 		return accountService.getAccount(id)
-				.map(account -> Response.ok(AccountInfoResponse.from(account)).build())
-				.recover(e -> switch (e) {
-					case ServiceException se when se.getCode().equals(ServiceException.NOT_FOUND) ->
-							Response.status(Response.Status.NOT_FOUND)
-									.entity(new ErrorResponse(e.getMessage()))
-									.build();
-					default -> Response.serverError().entity(new ErrorResponse(e.getMessage())).build();
-				})
+				.mapTry(account -> Response.ok(AccountInfoResponse.from(account)).build())
+				.recover(AccountResource::toErrorResponse)
 				.get();
 	}
 
@@ -113,20 +103,7 @@ public class AccountResource {
 		}
 		return accountService.getAuthToken(token)
 				.mapTry(authToken -> Response.ok(AccountInfoResponse.from(authToken)).build())
-				.recover(e -> switch (e) {
-					case AuthTokenException ignored -> Response.status(Response.Status.UNAUTHORIZED)
-							.entity(new ErrorResponse("Invalid auth token"))
-							.build();
-					case ServiceException se when se.getCode().equals(ServiceException.AUTH_EXPIRED) ->
-							Response.status(Response.Status.UNAUTHORIZED)
-									.entity(new ErrorResponse(e.getMessage()))
-									.build();
-					case ServiceException se when se.getCode().equals(ServiceException.NOT_FOUND) ->
-							Response.status(Response.Status.NOT_FOUND)
-									.entity(new ErrorResponse(e.getMessage()))
-									.build();
-					default -> Response.serverError().entity(new ErrorResponse(e.getMessage())).build();
-				})
+				.recover(AccountResource::toErrorResponse)
 				.get();
 	}
 
@@ -160,12 +137,21 @@ public class AccountResource {
 					.entity(new ErrorResponse("Too many entries: max 100 allowed"))
 					.build();
 		}
-		return (hasIds
+		final Try<List<Account>> accountsList = hasIds
 				? accountService.getAccounts(batchRequest.ids())
-				: accountService.getAccountsByEmails(batchRequest.emails()))
-				.map(accounts -> Response.ok(accounts.stream().map(AccountInfoResponse::from).collect(Collectors.toList())).build())
-				.recover(e -> Response.serverError().entity(new ErrorResponse(e.getMessage())).build())
+				: accountService.getAccountsByEmails(batchRequest.emails());
+		return accountsList
+				.mapTry(AccountResource::batchResponse)
+				.recover(AccountResource::toErrorResponse)
 				.get();
+	}
+
+	private static Response batchResponse(List<Account> accounts) throws ServiceException {
+		final List<AccountInfoResponse> response = new ArrayList<>();
+		for (Account account : accounts) {
+			response.add(AccountInfoResponse.from(account));
+		}
+		return Response.ok(response).build();
 	}
 
 	@GET
@@ -183,14 +169,25 @@ public class AccountResource {
 		return accountService.getSharedAccounts(id)
 				.map(accounts -> Response.ok(
 						accounts.stream().map(SharedAccountResponse::from).collect(Collectors.toList())).build())
-				.recover(e -> switch (e) {
-					case ServiceException se when se.getCode().equals(ServiceException.NOT_FOUND) ->
-							Response.status(Response.Status.NOT_FOUND)
-									.entity(new ErrorResponse(e.getMessage()))
-									.build();
-					default -> Response.serverError().entity(new ErrorResponse(e.getMessage())).build();
-				})
+				.recover(AccountResource::toErrorResponse)
 				.get();
+	}
+
+	private static Response toErrorResponse(Throwable e) {
+		return switch (e) {
+			case AuthTokenException ignored -> Response.status(Response.Status.UNAUTHORIZED)
+					.entity(new ErrorResponse("Invalid auth token"))
+					.build();
+			case ServiceException se when se.getCode().equals(ServiceException.AUTH_EXPIRED) ->
+					Response.status(Response.Status.UNAUTHORIZED)
+							.entity(new ErrorResponse(e.getMessage()))
+							.build();
+			case ServiceException se when se.getCode().equals(ServiceException.NOT_FOUND) ->
+					Response.status(Response.Status.NOT_FOUND)
+							.entity(new ErrorResponse(e.getMessage()))
+							.build();
+			default -> Response.serverError().entity(new ErrorResponse(e.getMessage())).build();
+		};
 	}
 
 	public record SharedAccountResponse(String id, String email, String domain, String cosId) {
