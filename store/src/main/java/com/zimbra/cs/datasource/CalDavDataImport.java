@@ -70,6 +70,14 @@ public class CalDavDataImport extends MailItemImport {
     super(ds);
   }
 
+  CalDavDataImport(DataSource ds, boolean test) throws ServiceException {
+    super(ds, test);
+  }
+
+  protected boolean shouldPushLocalChanges(int lastSync) {
+    return lastSync > 0 && !getDataSource().isImportOnly();
+  }
+
   @Override
   public void importData(List<Integer> folderIds, boolean fullSync) throws ServiceException {
     ArrayList<CalendarFolder> folders = new ArrayList<>();
@@ -662,7 +670,7 @@ public class CalDavDataImport extends MailItemImport {
     while (!allDone) {
       allDone = true;
 
-      if (lastSync > 0 && !getDataSource().isImportOnly()) { // Don't push local changes during initial sync or in import-only mode.
+      if (shouldPushLocalChanges(lastSync)) { // Don't push local changes during initial sync or in import-only mode.
         // push local deletion
         List<Integer> deleted = new ArrayList<>();
         for (int itemId : mbox.getTombstones(lastSync).getAllIds()) {
