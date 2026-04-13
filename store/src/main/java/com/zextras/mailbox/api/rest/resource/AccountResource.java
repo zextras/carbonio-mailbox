@@ -7,6 +7,8 @@
 package com.zextras.mailbox.api.rest.resource;
 
 import com.zextras.mailbox.api.rest.resource.dto.AccountInfoResponse;
+import com.zextras.mailbox.api.rest.resource.dto.BatchRequest;
+import com.zextras.mailbox.api.rest.resource.dto.SharedAccountResponse;
 import com.zextras.mailbox.api.rest.response.ErrorResponse;
 import com.zextras.mailbox.api.rest.service.AccountService;
 import com.zimbra.common.service.ServiceException;
@@ -20,7 +22,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.vavr.control.Try;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
@@ -189,14 +190,4 @@ public class AccountResource {
 			default -> Response.serverError().entity(new ErrorResponse(e.getMessage())).build();
 		};
 	}
-
-	public record SharedAccountResponse(String id, String email, String domain, String cosId) {
-		public static SharedAccountResponse from(Account account) {
-			return new SharedAccountResponse(account.getId(), account.getName(),
-					account.getDomainName(), account.getCOSId());
-		}
-	}
-
-	public record BatchRequest(List<String> ids, List<String> emails) {}
-
 }
