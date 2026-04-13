@@ -16,28 +16,6 @@ public record AccountInfoResponse(String id, String name, String displayName, St
 																	boolean isExternal, String locale, Map<String, Boolean> features,
 																	Map<String, String> capabilities, Long sessionLifetimeMs) {
 
-	/**
-	 * Returns the public service URL for the account's domain in the same format as the legacy SOAP
-	 * {@code GetAccountInfoResponse.getPublicURL()} field:
-	 * {@code {zimbraPublicServiceProtocol}://{zimbraPublicServiceHostname}}. Falls back to the plain
-	 * domain name if the public service hostname is not configured.
-	 */
-	private static String getPublicServiceUrl(Account account) {
-		try {
-			Domain domain = Provisioning.getInstance().getDomain(account);
-			if (domain != null) {
-				String hostname = domain.getAttr(Provisioning.A_zimbraPublicServiceHostname, null);
-				if (hostname != null && !hostname.isBlank()) {
-					String proto = domain.getAttr(Provisioning.A_zimbraPublicServiceProtocol, "http");
-					return proto + "://" + hostname;
-				}
-			}
-		} catch (ServiceException ignored) {
-			// fall through to domain name fallback
-		}
-		return account.getDomainName();
-	}
-
 	public static AccountInfoResponse from(Account account) {
 		return AccountInfoResponse.withLifetime(account, null);
 	}
@@ -72,7 +50,7 @@ public record AccountInfoResponse(String id, String name, String displayName, St
 			isExternal = true;
 		}
 		return new AccountInfoResponse(account.getId(), account.getName(), account.getDisplayName(),
-				account.getCOSId(), account.getDomainId(), getPublicServiceUrl(account),
+				account.getCOSId(), account.getDomainId(), account.getPublicServiceUrl(),
 				account.getAccountStatus(), account.isIsAdminAccount(), isExternal,
 				account.getLocaleAsString(), features, capabilities, sessionLifetimeMs);
 	}
