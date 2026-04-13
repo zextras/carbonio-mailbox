@@ -13,12 +13,11 @@ import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.cs.account.Account;
 import com.zimbra.soap.account.message.AuthRequest;
 import com.zimbra.soap.type.AccountSelector;
+import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-
-import java.util.Map;
 
 @Tag("e2e")
 class MailboxServerAPITest {
@@ -84,7 +83,7 @@ class MailboxServerAPITest {
 	void internalApiShouldNotBeReachableOnUserHttpPort() throws Exception {
 		final Account account = server.getAccountFactory().create();
 		var response = server.getHttpClient().get(
-				"http://localhost:" + server.getUserHttpPort() + "/internal/accounts/" + account.getId());
+				"http://localhost:" + server.getUserHttpPort() + "/internal/accounts/" + account.getId() + "/info");
 		Assertions.assertEquals(404, response.statusCode());
 	}
 
@@ -92,7 +91,7 @@ class MailboxServerAPITest {
 	void internalApiShouldNotBeReachableOnUserHttpsPort() throws Exception {
 		final Account account = server.getAccountFactory().create();
 		var response = server.getHttpClient().get(
-				"https://localhost:" + server.getUserHttpsPort() + "/internal/accounts/" + account.getId());
+				"https://localhost:" + server.getUserHttpsPort() + "/internal/accounts/" + account.getId() + "/info");
 		Assertions.assertEquals(404, response.statusCode());
 	}
 
@@ -100,7 +99,7 @@ class MailboxServerAPITest {
 	void internalApiShouldNotBeReachableOnAdminPort() throws Exception {
 		final Account account = server.getAccountFactory().create();
 		var response = server.getHttpClient().get(
-				"https://localhost:" + server.getAdminPort() + "/internal/accounts/" + account.getId());
+				"https://localhost:" + server.getAdminPort() + "/internal/accounts/" + account.getId() + "/info");
 		Assertions.assertEquals(404, response.statusCode());
 	}
 
@@ -108,7 +107,7 @@ class MailboxServerAPITest {
 	void shouldNotExposeInternalEndpointWhenMatchingHost() throws Exception {
 		final Account account = server.getAccountFactory().create();
 		var headers = Map.of("Host", InternalApiContextHandler.CONNECTOR_NAME);
-		var response = server.getHttpClient().get("http://localhost:" + server.getUserHttpPort() + "/internal/accounts/" + account.getId(), headers);
+		var response = server.getHttpClient().get("http://localhost:" + server.getUserHttpPort() + "/internal/accounts/" + account.getId() + "/info", headers);
 		Assertions.assertEquals(404, response.statusCode());
 	}
 
@@ -116,7 +115,7 @@ class MailboxServerAPITest {
 	void internalApiReachableOnInternalPort() throws Exception {
 		final Account account = server.getAccountFactory().create();
 		var response = server.getHttpClient().get(
-				"http://localhost:" + server.getInternalApiPort() + "/internal/accounts/" + account.getId());
+				"http://localhost:" + server.getInternalApiPort() + "/internal/accounts/" + account.getId() + "/info");
 		Assertions.assertEquals(200, response.statusCode());
 	}
 
