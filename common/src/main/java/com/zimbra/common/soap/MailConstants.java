@@ -998,6 +998,7 @@ public final class MailConstants {
   public static final String A_REPLY_TYPE = "rt";
   public static final String A_IDENTITY_ID = "idnt";
   public static final String A_DATASOURCE_ID = "dsId";
+  public static final String A_DATASOURCE_TYPE = "dsType";
   public static final String A_NO_SAVE_TO_SENT = "noSave";
   public static final String A_FETCH_SAVED_MSG = "fetchSavedMsg";
   public static final String A_SEND_UID = "suid";
