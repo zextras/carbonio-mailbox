@@ -125,6 +125,44 @@ paths:
           description: Account not found
         "500":
           description: Internal server error
+  /accounts/{id}/shared-accounts:
+    get:
+      summary: Get Shared Accounts
+      description: Returns accounts that share folders with the given account (via
+        mountpoints)
+      operationId: getSharedAccounts
+      parameters:
+      - name: id
+        in: path
+        description: The account ID
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: List of shared accounts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SharedAccountResponse"
+        "404":
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
+          description: Account mailbox is on another server
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /accounts/mail/usage/{accountId}:
     get:
       summary: Get Mailbox usage
@@ -215,6 +253,17 @@ components:
           type: array
           items:
             type: string
+    SharedAccountResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        domain:
+          type: string
+        cosId:
+          type: string
     MailUsageResponse:
       type: object
       properties:

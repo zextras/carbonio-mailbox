@@ -173,6 +173,44 @@ public class AccountResource {
 				.get();
 	}
 
+	@GET
+	@Path("/{id}/shared-accounts")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Operation(summary = "Get Shared Accounts", description = "Returns accounts that share folders with the given account (via mountpoints)")
+	@ApiResponse(responseCode = "200", description = "List of shared accounts",
+			content = @Content(schema = @Schema(implementation = SharedAccountResponse.class)))
+	@ApiResponse(responseCode = "404", description = "Account not found",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	@ApiResponse(responseCode = "502", description = "Account mailbox is on another server",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	@ApiResponse(responseCode = "500", description = "Internal server error",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	public Response getSharedAccounts(
+			@Parameter(description = "The account ID") @PathParam("id") String id) {
+		return accountService.getSharedAccounts(id)
+				.map(accounts -> Response.ok(
+						accounts.stream().map(SharedAccountResponse::from).collect(Collectors.toList())).build())
+				.recover(e -> switch (e) {
+					case ServiceException se when se.getCode().equals(ServiceException.NOT_FOUND) ->
+							Response.status(Response.Status.NOT_FOUND)
+									.entity(new ErrorResponse(e.getMessage()))
+									.build();
+					case ServiceException se when se.getCode().equals(ServiceException.WRONG_HOST) ->
+							Response.status(Response.Status.BAD_GATEWAY)
+									.entity(new ErrorResponse(e.getMessage()))
+									.build();
+					default -> Response.serverError().entity(new ErrorResponse(e.getMessage())).build();
+				})
+				.get();
+	}
+
+	public record SharedAccountResponse(String id, String email, String domain, String cosId) {
+		public static SharedAccountResponse from(Account account) {
+			return new SharedAccountResponse(account.getId(), account.getName(),
+					account.getDomainName(), account.getCOSId());
+		}
+	}
+
 	public record BatchRequest(List<String> ids, List<String> emails) {}
 
 	public record CarbonioFeature(String name, Object value) {

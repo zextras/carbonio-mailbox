@@ -12,20 +12,30 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ZimbraAuthToken;
+import com.zimbra.cs.mailbox.MailItem;
+import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.mailbox.Mountpoint;
+import com.zimbra.cs.mailbox.OperationContext;
+import com.zimbra.cs.index.SortBy;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import io.vavr.control.Try;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class AccountService {
 
   private final Supplier<Provisioning> provisioningSupplier;
+  private final Supplier<MailboxManager> mailboxManagerSupplier;
 
-  public AccountService(Supplier<Provisioning> provisioningSupplier) {
+  public AccountService(Supplier<Provisioning> provisioningSupplier,
+                        Supplier<MailboxManager> mailboxManagerSupplier) {
     this.provisioningSupplier = provisioningSupplier;
+    this.mailboxManagerSupplier = mailboxManagerSupplier;
   }
 
   public Try<Account> getAccount(String accountId) {
@@ -92,6 +102,35 @@ public class AccountService {
         final Account account = provisioning.get(AccountBy.name, email);
         if (account != null) {
           result.add(account);
+        }
+      }
+      return result;
+    });
+  }
+
+  public Try<List<Account>> getSharedAccounts(String accountId) {
+    return Try.of(() -> {
+      final Provisioning provisioning = provisioningSupplier.get();
+      final Account account = provisioning.getAccountById(accountId);
+      if (account == null) {
+        throw ServiceException.NOT_FOUND("No such account with ID: " + accountId);
+      }
+      if (!account.isOnLocalServer()) {
+        throw ServiceException.WRONG_HOST(account.getMailHost(), null);
+      }
+      final var mailbox = mailboxManagerSupplier.get().getMailboxByAccount(account);
+      final var octxt = new OperationContext(account);
+      final Set<String> ownerIds = mailbox
+          .getItemList(octxt, MailItem.Type.MOUNTPOINT, -1, SortBy.NONE)
+          .stream()
+          .map(item -> ((Mountpoint) item).getOwnerId())
+          .filter(ownerId -> !ownerId.equals(account.getId()))
+          .collect(Collectors.toSet());
+      final List<Account> result = new ArrayList<>();
+      for (final String ownerId : ownerIds) {
+        final Account owner = provisioning.getAccountById(ownerId);
+        if (owner != null) {
+          result.add(owner);
         }
       }
       return result;

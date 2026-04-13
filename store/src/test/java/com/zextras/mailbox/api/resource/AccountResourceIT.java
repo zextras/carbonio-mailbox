@@ -16,6 +16,11 @@ import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.ZimbraAuthToken;
+import com.zimbra.cs.mailbox.Folder;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.mailbox.MailItem;
+import com.zimbra.cs.mailbox.OperationContext;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -325,5 +330,46 @@ class AccountResourceIT {
 				server.getInternalApiEndpoint() + "/accounts/batch", body);
 
 		assertEquals(400, response.statusCode());
+	}
+
+	@Test
+	void getSharedAccounts() throws Exception {
+		final Account owner = server.getAccountFactory().create();
+		final Account user = server.getAccountFactory().create();
+		final Folder ownerFolder = createFolder(owner, "shared-folder");
+		createMountpoint(user, owner, ownerFolder, "mounted-folder");
+
+		final Response response = server.getHttpClient().get(
+				server.getInternalApiEndpoint() + "/accounts/" + user.getId() + "/shared-accounts");
+
+		assertEquals(200, response.statusCode());
+		assertThatJson(response.body()).isArray().hasSize(1);
+		assertThatJson(response.body()).inPath("[0]").isObject()
+				.containsEntry("id", owner.getId())
+				.containsEntry("email", owner.getName())
+				.containsEntry("domain", owner.getDomainName())
+				.containsEntry("cosId", owner.getCOSId());
+	}
+
+	@Test
+	void sharedAccountsReturns404ForNonExistentAccount() throws Exception {
+		final Response response = server.getHttpClient().get(
+				server.getInternalApiEndpoint() + "/accounts/non-existent-id/shared-accounts");
+
+		assertEquals(404, response.statusCode());
+	}
+
+	private static Folder createFolder(Account owner, String name) throws Exception {
+		return MailboxManager.getInstance().getMailboxByAccount(owner).createFolder(
+				new OperationContext(owner), name, Mailbox.ID_FOLDER_USER_ROOT,
+				new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
+	}
+
+	private static void createMountpoint(Account user, Account owner, Folder remoteFolder,
+			String name) throws Exception {
+		MailboxManager.getInstance().getMailboxByAccount(user).createMountpoint(
+				new OperationContext(user), Mailbox.ID_FOLDER_USER_ROOT, name,
+				owner.getId(), remoteFolder.getId(), remoteFolder.getUuid(),
+				MailItem.Type.MESSAGE, 0, (byte) 0, false);
 	}
 }
