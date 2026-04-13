@@ -25,4 +25,5 @@ Service-to-service API under `store/.../com/zextras/mailbox/api/`. Wired in `Int
 
 ## Conventions
 
+- [Coding rules](coding_feedback.md)
 - [Testing rules](test_feedback.md)

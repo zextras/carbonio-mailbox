@@ -11,7 +11,9 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.ShareInfoData;
 import com.zimbra.cs.account.ZimbraAuthToken;
+import com.zimbra.cs.mailbox.Mailbox;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import io.vavr.control.Try;
@@ -105,24 +107,16 @@ public class AccountService {
   }
 
   public Try<List<Account>> getSharedAccounts(String accountId) {
-    return Try.of(() -> {
-      final Provisioning provisioning = provisioningSupplier.get();
-      final Account account = provisioning.getAccountById(accountId);
-      if (account == null) {
-        throw ServiceException.NOT_FOUND("No such account with ID: " + accountId);
-      }
-      final Set<String> ownerIds = mailboxService.getShareInfo(account).stream()
-          .map(sid -> sid.getOwnerAcctId())
-          .filter(ownerId -> !ownerId.equals(account.getId()))
-          .collect(Collectors.toSet());
-      final List<Account> result = new ArrayList<>();
-      for (final String ownerId : ownerIds) {
-        final Account owner = provisioning.getAccountById(ownerId);
-        if (owner != null) {
-          result.add(owner);
-        }
-      }
-      return result;
-    });
+    return getAccount(accountId)
+        .mapTry(this::getSharedAccountIds)
+        .flatMap(this::getAccounts);
+  }
+
+  private List<String> getSharedAccountIds(Account account) throws ServiceException {
+		return mailboxService.getShareInfo(account).stream()
+				.filter(sid -> sid.getItemId() == Mailbox.ID_FOLDER_USER_ROOT)
+				.map(ShareInfoData::getOwnerAcctId)
+				.filter(ownerId -> !ownerId.equals(account.getId()))
+        .toList();
   }
 }

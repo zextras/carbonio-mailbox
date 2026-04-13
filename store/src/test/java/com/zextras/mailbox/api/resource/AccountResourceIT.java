@@ -16,11 +16,12 @@ import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.ZimbraAuthToken;
+import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.OperationContext;
+import com.zimbra.cs.mailbox.acl.AclPushSerializer;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -336,8 +337,7 @@ class AccountResourceIT {
 	void getSharedAccounts() throws Exception {
 		final Account owner = server.getAccountFactory().create();
 		final Account user = server.getAccountFactory().create();
-		final Folder ownerFolder = createFolder(owner, "shared-folder");
-		createMountpoint(user, owner, ownerFolder, "mounted-folder");
+		shareRootFolder(owner, user);
 
 		final Response response = server.getHttpClient().get(
 				server.getInternalApiEndpoint() + "/accounts/" + user.getId() + "/shared-accounts");
@@ -359,17 +359,13 @@ class AccountResourceIT {
 		assertEquals(404, response.statusCode());
 	}
 
-	private static Folder createFolder(Account owner, String name) throws Exception {
-		return MailboxManager.getInstance().getMailboxByAccount(owner).createFolder(
-				new OperationContext(owner), name, Mailbox.ID_FOLDER_USER_ROOT,
-				new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
-	}
-
-	private static void createMountpoint(Account user, Account owner, Folder remoteFolder,
-			String name) throws Exception {
-		MailboxManager.getInstance().getMailboxByAccount(user).createMountpoint(
-				new OperationContext(user), Mailbox.ID_FOLDER_USER_ROOT, name,
-				owner.getId(), remoteFolder.getId(), remoteFolder.getUuid(),
-				MailItem.Type.MESSAGE, 0, (byte) 0, false);
+	private static void shareRootFolder(Account owner, Account grantee) throws Exception {
+		Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(owner);
+		Folder rootFolder = mailbox.getFolderById(new OperationContext(owner), Mailbox.ID_FOLDER_USER_ROOT);
+		ACL.Grant grant = mailbox.grantAccess(
+				new OperationContext(owner), Mailbox.ID_FOLDER_USER_ROOT,
+				grantee.getId(), ACL.GRANTEE_USER, ACL.RIGHT_READ, null);
+		String serialized = AclPushSerializer.serialize(rootFolder, grant);
+		owner.addSharedItem(serialized);
 	}
 }

@@ -14,11 +14,12 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.soap.SoapProvisioning;
+import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Folder;
-import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.OperationContext;
+import com.zimbra.cs.mailbox.acl.AclPushSerializer;
 import com.zextras.mailbox.util.MailboxServerExtension;
 import io.vavr.control.Try;
 import java.util.List;
@@ -38,6 +39,7 @@ class AccountServiceIT {
 	@BeforeAll
 	static void setUp() throws Exception {
 		final MailboxService mailboxService = new MailboxService(
+				Provisioning::getInstance,
 				() -> {
 					try {
 						return MailboxManager.getInstance();
@@ -56,9 +58,8 @@ class AccountServiceIT {
 	}
 
 	@Test
-	void returnsEmptyWhenNoMountpoints() throws Exception {
+	void returnsEmptyWhenNoShares() throws Exception {
 		final Account user = server.getAccountFactory().create();
-		mailboxOf(user);
 
 		Try<List<Account>> result = accountService.getSharedAccounts(user.getId());
 
@@ -67,13 +68,10 @@ class AccountServiceIT {
 	}
 
 	@Test
-	void deduplicatesMultipleMountpointsToSameOwner() throws Exception {
+	void returnsSharedAccountWhenRootFolderIsShared() throws Exception {
 		final Account owner = server.getAccountFactory().create();
 		final Account user = server.getAccountFactory().create();
-		final Folder folder1 = createFolder(owner, "shared-1");
-		final Folder folder2 = createFolder(owner, "shared-2");
-		createMountpoint(user, owner, folder1, "mount-1");
-		createMountpoint(user, owner, folder2, "mount-2");
+		shareRootFolder(owner, user);
 
 		Try<List<Account>> result = accountService.getSharedAccounts(user.getId());
 
@@ -83,10 +81,10 @@ class AccountServiceIT {
 	}
 
 	@Test
-	void excludesSelfMountpoints() throws Exception {
+	void ignoresNonRootFolderShares() throws Exception {
+		final Account owner = server.getAccountFactory().create();
 		final Account user = server.getAccountFactory().create();
-		final Folder folder = createFolder(user, "my-folder");
-		createMountpoint(user, user, folder, "self-mount");
+		shareSubFolder(owner, user, "a-subfolder");
 
 		Try<List<Account>> result = accountService.getSharedAccounts(user.getId());
 
@@ -95,11 +93,24 @@ class AccountServiceIT {
 	}
 
 	@Test
+	void deduplicatesMultipleSharesFromSameOwner() throws Exception {
+		final Account owner = server.getAccountFactory().create();
+		final Account user1 = server.getAccountFactory().create();
+		final Account user2 = server.getAccountFactory().create();
+		shareRootFolder(owner, user1);
+		shareRootFolder(owner, user2);
+
+		Try<List<Account>> result = accountService.getSharedAccounts(user1.getId());
+
+		assertTrue(result.isSuccess());
+		assertEquals(1, result.get().size());
+	}
+
+	@Test
 	void skipsDeletedOwners() throws Exception {
 		final Account owner = server.getAccountFactory().create();
 		final Account user = server.getAccountFactory().create();
-		final Folder folder = createFolder(owner, "shared-folder");
-		createMountpoint(user, owner, folder, "mount");
+		shareRootFolder(owner, user);
 		Provisioning.getInstance().deleteAccount(owner.getId());
 
 		Try<List<Account>> result = accountService.getSharedAccounts(user.getId());
@@ -116,21 +127,26 @@ class AccountServiceIT {
 		assertInstanceOf(ServiceException.class, result.getCause());
 	}
 
-	private static Mailbox mailboxOf(Account account) throws ServiceException {
-		return MailboxManager.getInstance().getMailboxByAccount(account);
+	private static void shareRootFolder(Account owner, Account grantee) throws ServiceException {
+		Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(owner);
+		Folder rootFolder = mailbox.getFolderById(new OperationContext(owner), Mailbox.ID_FOLDER_USER_ROOT);
+		ACL.Grant grant = mailbox.grantAccess(
+				new OperationContext(owner), Mailbox.ID_FOLDER_USER_ROOT,
+				grantee.getId(), ACL.GRANTEE_USER, ACL.RIGHT_READ, null);
+		String serialized = AclPushSerializer.serialize(rootFolder, grant);
+		owner.addSharedItem(serialized);
 	}
 
-	private static Folder createFolder(Account owner, String name) throws ServiceException {
-		return mailboxOf(owner).createFolder(
-				new OperationContext(owner), name, Mailbox.ID_FOLDER_USER_ROOT,
-				new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
-	}
-
-	private static void createMountpoint(Account user, Account owner, Folder remoteFolder,
-			String name) throws ServiceException {
-		mailboxOf(user).createMountpoint(
-				new OperationContext(user), Mailbox.ID_FOLDER_USER_ROOT, name,
-				owner.getId(), remoteFolder.getId(), remoteFolder.getUuid(),
-				MailItem.Type.MESSAGE, 0, (byte) 0, false);
+	private static void shareSubFolder(Account owner, Account grantee, String folderName)
+			throws ServiceException {
+		Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(owner);
+		Folder folder = mailbox.createFolder(
+				new OperationContext(owner), folderName, Mailbox.ID_FOLDER_USER_ROOT,
+				new Folder.FolderOptions());
+		ACL.Grant grant = mailbox.grantAccess(
+				new OperationContext(owner), folder.getId(),
+				grantee.getId(), ACL.GRANTEE_USER, ACL.RIGHT_READ, null);
+		String serialized = AclPushSerializer.serialize(folder, grant);
+		owner.addSharedItem(serialized);
 	}
 }

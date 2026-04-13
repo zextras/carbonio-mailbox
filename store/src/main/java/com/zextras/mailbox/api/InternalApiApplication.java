@@ -32,6 +32,7 @@ public class InternalApiApplication extends Application {
 	@Override
 	public Set<Object> getSingletons() {
 		final MailboxService mailboxService = new MailboxService(
+				Provisioning::getInstance,
 				() -> {
 					try {
 						return MailboxManager.getInstance();
