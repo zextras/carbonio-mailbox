@@ -58,6 +58,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.GranteeType;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE;
+import com.zimbra.cs.datasource.CalDavDataImport;
 import com.zimbra.cs.fb.FreeBusy;
 import com.zimbra.cs.gal.GalGroup;
 import com.zimbra.cs.gal.GalGroup.GroupInfo;
@@ -371,9 +372,10 @@ public final class ToXML {
     // The datasource list is fetched once per account per request via DataSourceIndex and
     // reused across all folder encodes (avoids N×getAllDataSources during GetFolder / Sync).
     if (folder.getId() > Mailbox.HIGHEST_SYSTEM_ID) {
+      DataSource ds = null;
       try {
         if (hasFullAccess(mbox, octxt)) {
-          DataSource ds =
+          ds =
               OperationContextData.DataSourceIndex.lookup(
                   octxt, folder.getMailbox().getAccount(), folder.getId());
           if (ds != null) {
@@ -383,6 +385,38 @@ public final class ToXML {
         }
       } catch (ServiceException e) {
         ZimbraLog.soap.warn("Unable to encode datasource info for folder %d", folder.getId(), e);
+      }
+
+      // CalDAV roots do not use folder URL; expose lsd consistently with URL-backed sync folders.
+      if (needToOutput(fields, Change.URL)
+          && folder.getUrl().isEmpty()
+          && ds != null
+          && ds.getType() == DataSourceType.caldav) {
+        long lastSyncDate = 0;
+        try {
+          CustomMetadata custom = folder.getCustomData(CalDavDataImport.CUSTOM_METADATA_SECTION);
+          if (custom != null) {
+            String rawTs = custom.get(CalDavDataImport.CUSTOM_METADATA_KEY_LAST_SUCCESSFUL_SYNC_MS);
+            if (!Strings.isNullOrEmpty(rawTs)) {
+              lastSyncDate = Long.parseLong(rawTs);
+            }
+          }
+        } catch (Exception e) {
+          ZimbraLog.soap.debug(
+              "Unable to read CalDAV last successful sync metadata for folder %d", folder.getId(), e);
+        }
+
+        if (lastSyncDate <= 0) {
+          // Legacy fallback for old data where sync date might have been persisted as epoch millis.
+          long legacyValue = folder.getLastSyncDate();
+          if (legacyValue >= 1_000_000_000_000L) {
+            lastSyncDate = legacyValue;
+          }
+        }
+
+        if (lastSyncDate > 0 || fields != NOTIFY_FIELDS) {
+          elem.addAttribute(MailConstants.A_LAST_SYNC_DATE, lastSyncDate / 1000);
+        }
       }
     }
 

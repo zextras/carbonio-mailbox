@@ -13,9 +13,11 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.DataSource;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.datasource.CalDavDataImport;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
+import com.zimbra.cs.mailbox.MailItem.CustomMetadata;
 import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -153,6 +155,87 @@ public class GetFolderTest extends MailboxTestSuite {
 		String dsType = folderElem.getAttribute(MailConstants.A_DATASOURCE_TYPE, null);
 		assertNotNull(dsType, "datasource root folder should have dsType attribute");
 		assertEquals(DataSourceType.caldav.toString(), dsType, "dsType should be 'caldav'");
+	}
+
+	@Test
+	void caldavDataSourceRootFolderReturnsLastSyncDate() throws Exception {
+		var acct = createAccount().create();
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+
+		Folder.FolderOptions folderOptions = new Folder.FolderOptions()
+				.setDefaultView(Type.APPOINTMENT);
+		Folder calFolder = mbox.createFolder(null, "CalDAV Root With Sync Date", Mailbox.ID_FOLDER_USER_ROOT, folderOptions);
+
+		Map<String, Object> dsAttrs = new HashMap<>();
+		dsAttrs.put(Provisioning.A_zimbraDataSourceFolderId, String.valueOf(calFolder.getId()));
+		dsAttrs.put(Provisioning.A_zimbraDataSourceHost, "caldav.example.com");
+		dsAttrs.put(Provisioning.A_zimbraDataSourcePort, "443");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceUsername, "user@example.com");
+		dsAttrs.put(Provisioning.A_zimbraDataSourcePassword, "password");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceConnectionType, "ssl");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceEnabled, "TRUE");
+
+		Provisioning.getInstance().createDataSource(acct, DataSourceType.caldav, "My CalDAV", dsAttrs);
+
+		long expectedSyncEpochMillis = 1735744115000L;
+		mbox.setSyncDate(null, calFolder.getId(), expectedSyncEpochMillis);
+
+		Element request = new Element.XMLElement(MailConstants.GET_FOLDER_REQUEST);
+		request
+				.addUniqueElement(MailConstants.E_FOLDER)
+				.addAttribute(MailConstants.A_FOLDER, String.valueOf(calFolder.getId()));
+
+		Element response = new GetFolder().handle(request, ServiceTestUtil.getRequestContext(acct));
+		Element folderElem = response.getOptionalElement(MailConstants.E_FOLDER);
+		assertNotNull(folderElem, "folder element should be present in response");
+
+		long expectedSyncEpochSeconds = expectedSyncEpochMillis / 1000;
+		assertEquals(
+				expectedSyncEpochSeconds,
+				folderElem.getAttributeLong(MailConstants.A_LAST_SYNC_DATE, 0),
+				"caldav datasource root folder should return last successful sync date in epoch seconds");
+	}
+
+	@Test
+	void caldavDataSourceRootFolderUsesCustomLastSuccessfulSyncDateInsteadOfSyncToken() throws Exception {
+		var acct = createAccount().create();
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+
+		Folder.FolderOptions folderOptions = new Folder.FolderOptions().setDefaultView(Type.APPOINTMENT);
+		Folder calFolder = mbox.createFolder(null, "CalDAV Root Sync Token", Mailbox.ID_FOLDER_USER_ROOT, folderOptions);
+
+		Map<String, Object> dsAttrs = new HashMap<>();
+		dsAttrs.put(Provisioning.A_zimbraDataSourceFolderId, String.valueOf(calFolder.getId()));
+		dsAttrs.put(Provisioning.A_zimbraDataSourceHost, "caldav.example.com");
+		dsAttrs.put(Provisioning.A_zimbraDataSourcePort, "443");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceUsername, "user@example.com");
+		dsAttrs.put(Provisioning.A_zimbraDataSourcePassword, "password");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceConnectionType, "ssl");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceEnabled, "TRUE");
+		Provisioning.getInstance().createDataSource(acct, DataSourceType.caldav, "My CalDAV", dsAttrs);
+
+		mbox.setSyncDate(null, calFolder.getId(), 19000L);
+
+		long expectedSyncEpochMillis = 1735744115000L;
+		CustomMetadata custom = new CustomMetadata(CalDavDataImport.CUSTOM_METADATA_SECTION);
+		custom.put(
+				CalDavDataImport.CUSTOM_METADATA_KEY_LAST_SUCCESSFUL_SYNC_MS,
+				String.valueOf(expectedSyncEpochMillis));
+		mbox.setCustomData(null, calFolder.getId(), MailItem.Type.FOLDER, custom);
+
+		Element request = new Element.XMLElement(MailConstants.GET_FOLDER_REQUEST);
+		request
+				.addUniqueElement(MailConstants.E_FOLDER)
+				.addAttribute(MailConstants.A_FOLDER, String.valueOf(calFolder.getId()));
+
+		Element response = new GetFolder().handle(request, ServiceTestUtil.getRequestContext(acct));
+		Element folderElem = response.getOptionalElement(MailConstants.E_FOLDER);
+		assertNotNull(folderElem, "folder element should be present in response");
+
+		assertEquals(
+				expectedSyncEpochMillis / 1000,
+				folderElem.getAttributeLong(MailConstants.A_LAST_SYNC_DATE, 0),
+				"caldav datasource root folder should expose real last successful sync timestamp, not sync token");
 	}
 
 	/**
