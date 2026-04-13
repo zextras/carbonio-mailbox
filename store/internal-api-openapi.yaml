@@ -71,7 +71,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /accounts/{id}:
+  /accounts/{id}/info:
     get:
       summary: Get Account Info
       description: Returns account info by ID

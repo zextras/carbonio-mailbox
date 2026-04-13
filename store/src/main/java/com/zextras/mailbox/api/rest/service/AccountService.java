@@ -6,23 +6,18 @@
 
 package com.zextras.mailbox.api.rest.service;
 
+import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
-import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ShareInfoData;
 import com.zimbra.cs.account.ZimbraAuthToken;
 import com.zimbra.cs.mailbox.Mailbox;
-import io.vavr.Tuple;
-import io.vavr.Tuple2;
 import io.vavr.control.Try;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 
 
@@ -47,23 +42,13 @@ public class AccountService {
     });
   }
 
-  public Try<Account> getAccountByAuthToken(String encodedAuthToken) {
+  public Try<AuthToken> getAuthToken(String encodedAuthToken) {
     return Try.of(() -> {
       final AuthToken authToken = ZimbraAuthToken.getAuthToken(encodedAuthToken);
       if (authToken.isExpired()) {
         throw ServiceException.AUTH_EXPIRED("Auth token expired");
       }
-      return authToken.getAccount();
-    });
-  }
-
-  public Try<Tuple2<Account, AuthToken>> getAccountAndAuthToken(String encodedAuthToken) {
-    return Try.of(() -> {
-      final AuthToken authToken = ZimbraAuthToken.getAuthToken(encodedAuthToken);
-      if (authToken.isExpired()) {
-        throw ServiceException.AUTH_EXPIRED("Auth token expired");
-      }
-      return Tuple.of(authToken.getAccount(), authToken);
+      return authToken;
     });
   }
 

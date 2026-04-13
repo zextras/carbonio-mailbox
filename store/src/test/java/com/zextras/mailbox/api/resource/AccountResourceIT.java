@@ -43,7 +43,7 @@ class AccountResourceIT {
 				.create();
 
 		final Response response = server.getHttpClient().get(
-				server.getInternalApiEndpoint() + "/accounts/" + account.getId());
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
 
 		assertEquals(200, response.statusCode());
 		assertInfo(response, account);
@@ -57,7 +57,7 @@ class AccountResourceIT {
 				.create();
 
 		final Response response = server.getHttpClient().get(
-				server.getInternalApiEndpoint() + "/accounts/" + account.getId());
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
 
 
 		assertThatJson(response.body())
@@ -75,7 +75,7 @@ class AccountResourceIT {
 				.create();
 
 		final Response response = server.getHttpClient().get(
-				server.getInternalApiEndpoint() + "/accounts/" + account.getId());
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
 
 		assertThatJson(response.body())
 				.node("capabilities").isObject()
@@ -89,7 +89,7 @@ class AccountResourceIT {
 		account.setMailTransport("smtp://external.example.com");
 
 		final Response response = server.getHttpClient().get(
-				server.getInternalApiEndpoint() + "/accounts/" + account.getId());
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
 
 		assertEquals(200, response.statusCode());
 		assertThatJson(response.body()).isObject()
@@ -104,7 +104,7 @@ class AccountResourceIT {
 				.create();
 
 		final Response response = server.getHttpClient().get(
-				server.getInternalApiEndpoint() + "/accounts/" + account.getId());
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
 
 		assertThatJson(response.body()).isObject()
 				.containsEntry("locale", frFr);
@@ -132,7 +132,7 @@ class AccountResourceIT {
 				.create();
 
 		final Response response = server.getHttpClient().get(
-				server.getInternalApiEndpoint() + "/accounts/" + account.getId());
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
 
 		assertThatJson(response.body()).isObject().containsEntry("isGlobalAdmin", true);
 	}
@@ -144,7 +144,7 @@ class AccountResourceIT {
 				.create();
 
 		final Response response = server.getHttpClient().get(
-				server.getInternalApiEndpoint() + "/accounts/" + account.getId());
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
 
 		assertThatJson(response.body()).isObject().containsEntry("isGlobalAdmin", false);
 	}
@@ -156,7 +156,7 @@ class AccountResourceIT {
 				.create();
 
 		final Response response = server.getHttpClient().get(
-				server.getInternalApiEndpoint() + "/accounts/" + account.getId());
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
 
 		assertThatJson(response.body()).isObject().containsEntry("isGlobalAdmin", false);
 	}
@@ -164,7 +164,7 @@ class AccountResourceIT {
 	@Test
 	void notFound() throws Exception {
 		final Response response = server.getHttpClient().get(
-						server.getInternalApiEndpoint() + "/accounts/not-existent-id");
+						server.getInternalApiEndpoint() + "/accounts/not-existent-id/info");
 
 		assertEquals(404, response.statusCode());
 	}
