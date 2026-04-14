@@ -4,13 +4,80 @@ info:
   description: Service-to-service REST API for carbonio-mailbox
   version: "1.0"
 paths:
-  /accounts/{accountId}/info:
+  /accounts/batch:
+    post:
+      summary: Batch Get Accounts
+      description: Returns account info for a list of IDs or emails. Exactly one of
+        'ids' or 'emails' must be provided. Unknown entries are silently skipped.
+      operationId: batchGetAccounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BatchRequest"
+      responses:
+        "200":
+          description: List of Account Info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountInfoResponse"
+        "400":
+          description: "Invalid request: exactly one of 'ids' or 'emails' required,\
+            \ max 100 entries"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /accounts:
+    get:
+      summary: Get Account by Email
+      description: Returns account info by email address
+      operationId: getAccountByEmail
+      parameters:
+      - name: email
+        in: query
+        description: The account email address
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Account Info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountInfoResponse"
+        "400":
+          description: Missing email query parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /accounts/{id}/info:
     get:
       summary: Get Account Info
-      description: Returns account info
+      description: Returns account info by ID
       operationId: getAccountInfo
       parameters:
-      - name: accountId
+      - name: id
         in: path
         description: The account ID
         required: true
@@ -23,6 +90,61 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AccountInfoResponse"
+        "404":
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /accounts/myself:
+    get:
+      summary: Get Authenticated Account Info
+      description: Returns account info for the authenticated user
+      operationId: getMyAccountInfo
+      parameters:
+      - name: ZM_AUTH_TOKEN
+        in: cookie
+        schema:
+          type: string
+      - name: ZM_ADMIN_AUTH_TOKEN
+        in: cookie
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Account Info
+        "401":
+          description: Invalid or missing auth token
+        "404":
+          description: Account not found
+        "500":
+          description: Internal server error
+  /accounts/{id}/shared-accounts:
+    get:
+      summary: Get Shared Accounts
+      description: Returns accounts that share folders with the given account (via
+        mountpoints)
+      operationId: getSharedAccounts
+      parameters:
+      - name: id
+        in: path
+        description: The account ID
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: List of shared accounts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SharedAccountResponse"
         "404":
           description: Account not found
           content:
@@ -75,16 +197,66 @@ components:
           type: string
         name:
           type: string
+        displayName:
+          type: string
         cosId:
           type: string
         domainId:
           type: string
+        domain:
+          type: string
+        status:
+          type: string
+          enum:
+          - active
+          - maintenance
+          - locked
+          - closed
+          - lockout
+          - pending
         isGlobalAdmin:
           type: boolean
+        isExternal:
+          type: boolean
+        locale:
+          type: string
+        features:
+          type: object
+          additionalProperties:
+            type: boolean
+        capabilities:
+          type: object
+          additionalProperties:
+            type: string
+        sessionLifetimeMs:
+          type: integer
+          format: int64
     ErrorResponse:
       type: object
       properties:
         error:
+          type: string
+    BatchRequest:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+        emails:
+          type: array
+          items:
+            type: string
+    SharedAccountResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        domainId:
+          type: string
+        cosId:
           type: string
     MailUsageResponse:
       type: object

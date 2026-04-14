@@ -379,6 +379,16 @@ public class ShareInfo {
    */
   public static class Published extends ShareInfo {
 
+    public static List<ShareInfoData> getAllShares(
+        Provisioning prov,
+        Account acct)
+        throws ServiceException {
+          final List<ShareInfoData> shares = new ArrayList<>();
+          final Account grantedByAnyone = null;
+          final byte anyGrantee = (byte) 0;
+          get(prov,acct, anyGrantee, grantedByAnyone, shares::add);
+          return shares;
+      }
     /**
      * @param prov
      * @param acct
