@@ -347,7 +347,7 @@ class AccountResourceIT {
 		assertThatJson(response.body()).inPath("[0]").isObject()
 				.containsEntry("id", owner.getId())
 				.containsEntry("email", owner.getName())
-				.containsEntry("domain", owner.getDomainName())
+				.containsEntry("domainId", owner.getDomainId())
 				.containsEntry("cosId", owner.getCOSId());
 	}
 
