@@ -5,6 +5,10 @@
     {
       "name": "carbonio-storages",
       "action": "allow"
+    },
+    {
+      "name": "carbonio-user-management",
+      "action": "allow"
     }
   ]
 }

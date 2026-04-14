@@ -7,15 +7,18 @@
 package com.zextras.mailbox.util;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.Map;
 import javax.net.ssl.SSLContext;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.ssl.SSLContextBuilder;
@@ -60,6 +63,21 @@ public class TestHttpClient implements AutoCloseable {
 	public Response get(String url, Map<String, String> headers) throws IOException {
 		final HttpGet request = new HttpGet(url);
 		headers.forEach(request::setHeader);
+		return execute(request);
+	}
+
+	public Response post(String url, String jsonBody) throws IOException {
+		final HttpPost request = new HttpPost(url);
+		request.setHeader("Content-Type", "application/json");
+		request.setEntity(new StringEntity(jsonBody, StandardCharsets.UTF_8));
+		return execute(request);
+	}
+
+	public Response post(String url, String jsonBody, Map<String, String> headers) throws IOException {
+		final HttpPost request = new HttpPost(url);
+		request.setHeader("Content-Type", "application/json");
+		headers.forEach(request::setHeader);
+		request.setEntity(new StringEntity(jsonBody, StandardCharsets.UTF_8));
 		return execute(request);
 	}
 
