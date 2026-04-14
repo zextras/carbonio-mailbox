@@ -158,6 +158,42 @@ public class GetFolderTest extends MailboxTestSuite {
 	}
 
 	@Test
+	void caldavDataSourceRootFolderWithImportOnlyIsMarkedReadOnly() throws Exception {
+		var acct = createAccount().create();
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+
+		Folder.FolderOptions folderOptions = new Folder.FolderOptions().setDefaultView(Type.APPOINTMENT);
+		Folder calFolder = mbox.createFolder(null, "CalDAV Root Import-Only", Mailbox.ID_FOLDER_USER_ROOT, folderOptions);
+
+		Map<String, Object> dsAttrs = new HashMap<>();
+		dsAttrs.put(Provisioning.A_zimbraDataSourceFolderId, String.valueOf(calFolder.getId()));
+		dsAttrs.put(Provisioning.A_zimbraDataSourceHost, "caldav.example.com");
+		dsAttrs.put(Provisioning.A_zimbraDataSourcePort, "443");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceUsername, "user@example.com");
+		dsAttrs.put(Provisioning.A_zimbraDataSourcePassword, "password");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceConnectionType, "ssl");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceEnabled, "TRUE");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceImportOnly, "TRUE");
+
+		Provisioning.getInstance().createDataSource(acct, DataSourceType.caldav, "My CalDAV Import-Only", dsAttrs);
+
+		Element request = new Element.XMLElement(MailConstants.GET_FOLDER_REQUEST);
+		request.addUniqueElement(MailConstants.E_FOLDER)
+				.addAttribute(MailConstants.A_FOLDER, String.valueOf(calFolder.getId()));
+
+		Element response = new GetFolder().handle(request, ServiceTestUtil.getRequestContext(acct));
+
+		Element folderElem = response.getOptionalElement(MailConstants.E_FOLDER);
+		assertNotNull(folderElem, "folder element should be present in response");
+
+		String rights = folderElem.getAttribute(MailConstants.A_RIGHTS, null);
+		assertEquals(
+				String.valueOf(ACL.ABBR_READ),
+				rights,
+				"import-only caldav datasource root folder should have read-only permissions");
+	}
+
+	@Test
 	void caldavDataSourceRootFolderReturnsLastSyncDate() throws Exception {
 		var acct = createAccount().create();
 		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
@@ -315,6 +351,49 @@ public class GetFolderTest extends MailboxTestSuite {
 
 		String dsType = folderElem.getAttribute(MailConstants.A_DATASOURCE_TYPE, null);
 		assertNull(dsType, "datasource sub-folder should not have dsType attribute (only root should)");
+	}
+
+	@Test
+	void caldavSubFolderUnderImportOnlyIsMarkedReadOnly() throws Exception {
+		var acct = createAccount().create();
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+
+		// Create a CalDAV datasource root folder with importOnly=true
+		Folder.FolderOptions folderOptions = new Folder.FolderOptions()
+				.setDefaultView(Type.APPOINTMENT);
+		Folder rootFolder = mbox.createFolder(null, "CalDAV Import-Only Root", Mailbox.ID_FOLDER_USER_ROOT, folderOptions);
+
+		Map<String, Object> dsAttrs = new HashMap<>();
+		dsAttrs.put(Provisioning.A_zimbraDataSourceFolderId, String.valueOf(rootFolder.getId()));
+		dsAttrs.put(Provisioning.A_zimbraDataSourceHost, "caldav.example.com");
+		dsAttrs.put(Provisioning.A_zimbraDataSourcePort, "443");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceUsername, "user@example.com");
+		dsAttrs.put(Provisioning.A_zimbraDataSourcePassword, "password");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceConnectionType, "ssl");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceEnabled, "TRUE");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceImportOnly, "TRUE");
+
+		Provisioning.getInstance().createDataSource(
+				acct, DataSourceType.caldav, "My CalDAV Import-Only", dsAttrs);
+
+		// Create a sub-folder under the import-only datasource root
+		Folder subFolder = mbox.createFolder(null, "Work Calendar", rootFolder.getId(), folderOptions);
+
+		// Fetch the sub-folder via GetFolder
+		Element request = new Element.XMLElement(MailConstants.GET_FOLDER_REQUEST);
+		request.addUniqueElement(MailConstants.E_FOLDER)
+				.addAttribute(MailConstants.A_FOLDER, String.valueOf(subFolder.getId()));
+
+		Element response = new GetFolder().handle(request, ServiceTestUtil.getRequestContext(acct));
+
+		Element folderElem = response.getOptionalElement(MailConstants.E_FOLDER);
+		assertNotNull(folderElem, "subfolder element should be present in response");
+
+		String rights = folderElem.getAttribute(MailConstants.A_RIGHTS, null);
+		assertEquals(
+				String.valueOf(ACL.ABBR_READ),
+				rights,
+				"child folder under import-only caldav datasource should have read-only permissions");
 	}
 
 	@Disabled

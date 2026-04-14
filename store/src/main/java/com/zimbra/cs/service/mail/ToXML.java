@@ -342,6 +342,62 @@ public final class ToXML {
       // so they do not allow creating or editing items in these folders.
       elem.addAttribute(MailConstants.A_RIGHTS, String.valueOf(ACL.ABBR_READ));
     }
+
+    // Handle CalDAV datasource root folders with importOnly=true: mark as read-only
+     // since content is synced one-way FROM the remote CalDAV server and cannot be written back.
+     // Also mark child folders as read-only to prevent local modifications.
+     if (folder.getId() > Mailbox.HIGHEST_SYSTEM_ID && folder.getUrl().isEmpty()) {
+       try {
+         if (hasFullAccess(mbox, octxt)) {
+           DataSource ds = OperationContextData.DataSourceIndex.lookup(
+               octxt, folder.getMailbox().getAccount(), folder.getId());
+           if (ds != null && ds.getType() == DataSourceType.caldav && ds.isImportOnly()) {
+             elem.addAttribute(MailConstants.A_RIGHTS, String.valueOf(ACL.ABBR_READ));
+           }
+         }
+       } catch (ServiceException e) {
+         // Log and continue; failure here should not block folder encoding
+         ZimbraLog.soap.debug("Unable to determine if CalDAV datasource is import-only for folder %d", folder.getId(), e);
+       }
+
+       // Check if this folder is a child of a CalDAV datasource importOnly root
+       try {
+         if (hasFullAccess(mbox, octxt)) {
+           MailItem parentItem = null;
+           try {
+             parentItem = folder.getParent();
+           } catch (ServiceException ignored) {
+             // Parent might not exist
+           }
+
+           while (parentItem instanceof Folder) {
+             Folder parentFolder = (Folder) parentItem;
+             // Root/system folders terminate ancestry walk; root points to itself.
+             if (parentFolder.getId() <= Mailbox.HIGHEST_SYSTEM_ID) {
+               break;
+             }
+             DataSource dsParent = OperationContextData.DataSourceIndex.lookup(
+                 octxt, folder.getMailbox().getAccount(), parentFolder.getId());
+             if (dsParent != null && dsParent.getType() == DataSourceType.caldav && dsParent.isImportOnly()) {
+               elem.addAttribute(MailConstants.A_RIGHTS, String.valueOf(ACL.ABBR_READ));
+               break;
+             }
+             try {
+               MailItem nextParent = parentFolder.getParent();
+               if (nextParent == parentFolder) {
+                 break;
+               }
+               parentItem = nextParent;
+             } catch (ServiceException ignored) {
+               break;
+             }
+           }
+         }
+       } catch (ServiceException e) {
+         // Log and continue; failure here should not block folder encoding
+         ZimbraLog.soap.debug("Unable to check if folder %d is child of CalDAV importOnly datasource", folder.getId(), e);
+       }
+     }
     if (canAdminister) {
       // return full ACLs for folders we have admin rights on
       if (needToOutput(fields, Change.ACL)) {
