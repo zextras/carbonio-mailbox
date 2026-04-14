@@ -254,7 +254,7 @@ components:
           type: string
         email:
           type: string
-        domain:
+        domainId:
           type: string
         cosId:
           type: string
