@@ -91,6 +91,7 @@ public class MailboxServerBuilder {
 			server.addConnector(createExtensionsHttpsConnector(server));
 			server.addConnector(createInternalApiConnector(server, httpConfig));
 
+			// NOTE: separate handler for internal APIs, not affected by DoS filter and other filters
 			final ContextHandlerCollection contexts = new ContextHandlerCollection();
 			contexts.addHandler(InternalApiContextHandler.create());
 

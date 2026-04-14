@@ -35,6 +35,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /accounts/myself/info:
+    get:
+      summary: Get Authenticated Account Info
+      description: Returns account info for the authenticated user
+      operationId: getMyAccountInfo
+      parameters:
+      - name: ZM_AUTH_TOKEN
+        in: cookie
+        schema:
+          type: string
+      - name: ZM_ADMIN_AUTH_TOKEN
+        in: cookie
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Account Info
+        "401":
+          description: Invalid or missing auth token
+        "404":
+          description: Account not found
+        "500":
+          description: Internal server error
   /accounts/mail/usage/{accountId}:
     get:
       summary: Get Mailbox usage
@@ -75,12 +98,31 @@ components:
           type: string
         name:
           type: string
+        displayName:
+          type: string
         cosId:
           type: string
         domainId:
           type: string
+        status:
+          type: string
+          enum:
+          - active
+          - maintenance
+          - locked
+          - closed
+          - lockout
+          - pending
         isGlobalAdmin:
           type: boolean
+        isExternal:
+          type: boolean
+        locale:
+          type: string
+        features:
+          type: object
+          additionalProperties:
+            type: boolean
     ErrorResponse:
       type: object
       properties:
