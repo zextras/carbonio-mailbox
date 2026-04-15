@@ -839,7 +839,7 @@
     <sonar.version>5.5.0.6356</sonar.version>
     <jetty.version>9.4.57.v20241219</jetty.version>
     <lucene.version>3.5.0</lucene.version>
-    <jackson.version>2.15.4</jackson.version>
+    <jackson.version>2.18.6</jackson.version>
     <bouncycastle.version>1.79</bouncycastle.version>
     <asm.version>8.0.1</asm.version>
     <guava.version>33.3.1-jre</guava.version>
