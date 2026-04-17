@@ -443,8 +443,8 @@ public final class ToXML {
         ZimbraLog.soap.warn("Unable to encode datasource info for folder %d", folder.getId(), e);
       }
 
-      // CalDAV roots do not use folder URL; expose lsd consistently with URL-backed sync folders.
-      if (needToOutput(fields, Change.URL)
+      // CalDAV roots do not use folder URL; expose lsd for URL updates and metadata-only sync ticks.
+      if ((needToOutput(fields, Change.URL) || needToOutput(fields, Change.METADATA))
           && folder.getUrl().isEmpty()
           && ds != null
           && ds.getType() == DataSourceType.caldav) {
