@@ -75,7 +75,7 @@ export default {
     [
       '@semantic-release/git',
       {
-        assets: ['pom.xml', 'package/PKGBUILD', 'packages/**/otel.properties'],
+        assets: ['pom.xml', 'packages/**/PKGBUILD', 'packages/**/otel.properties'],
         message: 'chore(release): ${nextRelease.version} [skip ci]'
       }
     ],
