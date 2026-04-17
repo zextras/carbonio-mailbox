@@ -5,8 +5,7 @@
 
 package com.zimbra.znative;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import com.zimbra.common.util.ZimbraLog;
 
 public final class Util {
 
@@ -14,7 +13,7 @@ public final class Util {
 
   public static void halt(String message) {
     try {
-      System.err.println("Fatal error: terminating: " + message);
+      ZimbraLog.system.fatal("terminating: " + message);
     } finally {
       Runtime.getRuntime().halt(1);
     }
@@ -22,11 +21,7 @@ public final class Util {
 
   public static void halt(String message, Throwable t) {
     try {
-      StringWriter sw = new StringWriter();
-      PrintWriter pw = new PrintWriter(sw);
-      pw.println(message);
-      t.printStackTrace(pw);
-      System.err.println("Fatal error: terminating: " + sw);
+      ZimbraLog.system.fatal("terminating: " + message, t);
     } finally {
       Runtime.getRuntime().halt(1);
     }

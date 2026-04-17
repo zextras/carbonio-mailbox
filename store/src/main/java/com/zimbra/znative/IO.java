@@ -19,12 +19,10 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.VarHandle;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.spi.FileSystemProvider;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -35,7 +33,9 @@ import java.util.Set;
  * {@code readAttributes} map allocation) and to {@code open(2)} + {@code dup2(2)} for
  * {@link #setStdoutStderrTo}. Uses {@code java.nio.file} for {@link #link} and {@link #chmod}.
  */
-public class IO {
+public final class IO {
+
+  private IO() {}
 
   /** File metadata returned by {@link #fileInfo}: inode number, size, and hard link count. */
   public static class FileInfo {
@@ -67,8 +67,6 @@ public class IO {
   public static final int S_ISUID = 04000;
   public static final int S_ISGID = 02000;
   public static final int S_ISVTX = 01000;
-
-  private static final FileSystemProvider FS_PROVIDER = FileSystems.getDefault().provider();
 
   // Precomputed immutable permission sets keyed by low 9 mode bits (0..0777).
   // Avoids per-call EnumSet.noneOf() allocation + 9 branch chain in chmod().
@@ -102,6 +100,12 @@ public class IO {
   private static final int OFF_STX_INO = 32;
   private static final int OFF_STX_SIZE = 40;
   private static final int ENOENT = 2;
+
+  // open(2) flags for setStdoutStderrTo — POSIX constants, stable Linux ABI.
+  private static final int O_WRONLY = 1;
+  private static final int O_CREAT = 64;
+  private static final int O_APPEND = 1024;
+  private static final int STDOUT_STDERR_MODE = 0644;
 
   private static final MethodHandle STATX;
   private static final StructLayout CAPTURE_LAYOUT;
@@ -146,6 +150,10 @@ public class IO {
     }
   }
 
+  // Scratch native memory is owned by Arena.ofAuto(); it is released when the thread
+  // terminates and the Scratch becomes unreachable. Calling remove() would defeat the
+  // per-thread amortization this field exists to provide.
+  @SuppressWarnings("java:S5164")
   private static final ThreadLocal<Scratch> SCRATCH = ThreadLocal.withInitial(Scratch::new);
 
   static {
@@ -278,41 +286,54 @@ public class IO {
    * Redirects stdout and stderr to the given file path via {@code open(2)} + {@code dup2(2)}.
    */
   public static void setStdoutStderrTo(String path) throws IOException {
-    int O_WRONLY = 1;
-    int O_CREAT = 64;
-    int O_APPEND = 1024;
-    int mode = 0644;
+    int fd = openForRedirect(path);
+    IOException dupErr = dupToStdoutStderr(fd, path);
+    IOException closeErr = closeFd(fd, path);
+    if (dupErr != null) {
+      if (closeErr != null) {
+        dupErr.addSuppressed(closeErr);
+      }
+      throw dupErr;
+    }
+    if (closeErr != null) {
+      throw closeErr;
+    }
+  }
+
+  private static int openForRedirect(String path) throws IOException {
     try (Arena arena = Arena.ofConfined()) {
       MemorySegment pathSeg = arena.allocateUtf8String(path);
-      int fd = (int) OPEN.invoke(pathSeg, O_WRONLY | O_CREAT | O_APPEND, mode);
+      int fd = (int) OPEN.invoke(pathSeg, O_WRONLY | O_CREAT | O_APPEND, STDOUT_STDERR_MODE);
       if (fd < 0) {
         throw new IOException("open(" + path + ") failed");
       }
-      Throwable primaryFailure = null;
-      try {
-        int rc1 = (int) DUP2.invoke(fd, 1); // stdout
-        int rc2 = (int) DUP2.invoke(fd, 2); // stderr
-        if (rc1 < 0 || rc2 < 0) {
-          throw new IOException("dup2 failed for " + path);
-        }
-      } catch (Throwable t) {
-        primaryFailure = t;
-        throw t;
-      } finally {
-        try {
-          CLOSE.invoke(fd);
-        } catch (Throwable closeFailure) {
-          if (primaryFailure != null) {
-            primaryFailure.addSuppressed(closeFailure);
-          } else {
-            throw new IOException("close(" + fd + ") failed for " + path, closeFailure);
-          }
-        }
-      }
+      return fd;
     } catch (IOException e) {
       throw e;
-    } catch (Throwable e) {
-      throw new IOException("setStdoutStderrTo FFM call failed: " + e.getMessage(), e);
+    } catch (Throwable t) {
+      throw new IOException("open(" + path + ") FFM call failed: " + t.getMessage(), t);
+    }
+  }
+
+  private static IOException dupToStdoutStderr(int fd, String path) {
+    try {
+      int rc1 = (int) DUP2.invoke(fd, 1); // stdout
+      int rc2 = (int) DUP2.invoke(fd, 2); // stderr
+      if (rc1 < 0 || rc2 < 0) {
+        return new IOException("dup2 failed for " + path);
+      }
+      return null;
+    } catch (Throwable t) {
+      return new IOException("setStdoutStderrTo FFM call failed: " + t.getMessage(), t);
+    }
+  }
+
+  private static IOException closeFd(int fd, String path) {
+    try {
+      CLOSE.invoke(fd);
+      return null;
+    } catch (Throwable t) {
+      return new IOException("close(" + fd + ") failed for " + path, t);
     }
   }
 }

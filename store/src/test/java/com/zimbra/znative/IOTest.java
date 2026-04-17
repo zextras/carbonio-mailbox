@@ -171,6 +171,15 @@ class IOTest {
     assertTrue(contents.contains("STDOUT_MARK"));
   }
 
+  @Test
+  void setStdoutStderrTo_throwsIOExceptionWhenOpenFails() {
+    String unopenable = tempDir.resolve("no-such-dir").resolve("file.log").toString();
+    IOException ex =
+        assertThrows(IOException.class, () -> IO.setStdoutStderrTo(unopenable));
+    assertTrue(ex.getMessage().contains(unopenable), "message missing path: " + ex.getMessage());
+    assertTrue(ex.getMessage().contains("open("), "message missing open(: " + ex.getMessage());
+  }
+
   /** Helper main used by the subprocess tests above. */
   public static class RedirectMain {
     public static void main(String[] args) throws Exception {
