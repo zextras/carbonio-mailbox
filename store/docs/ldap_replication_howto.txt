@@ -64,8 +64,8 @@ NOTE: replication setup will stop and start the services on the
 
   - To point other ZCS hosts at your replica servers, modify the ldap_url
     config key (as the zextras user):
-    zmcontrol stop
-    zmlocalconfig -e ldap_url="new url"
+    configd control stop
+    configd localconfig -e ldap_url="new url"
 
     The value of the new url will be a space separated list of ldap urls.
     The ldap master url should be the last in the list:

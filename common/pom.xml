@@ -166,12 +166,6 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <!-- TODO: this is also defined in zm-zcs-lib -->
-      <artifactId>jython-standalone</artifactId>
-      <groupId>org.python</groupId>
-      <scope>test</scope>
-    </dependency>
 
   </dependencies>
   <modelVersion>4.0.0</modelVersion>
