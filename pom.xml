@@ -827,7 +827,7 @@
       -Dserver.dir=${project.basedir}
       -Djunit.jupiter.execution.parallel.enabled=true
       -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
-      -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
+      -Dfile.encoding=UTF-8 -Djava.locale.providers=CLDR,SPI
     </test.argLine>
     <maven.compiler.target>25</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

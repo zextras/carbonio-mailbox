@@ -7,6 +7,7 @@ package com.zimbra.cs.index.query;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -431,14 +432,45 @@ public final class DateQuery extends Query {
     }
 
     private Date parse(String src, TimeZone tz, Locale locale) throws ParseException {
-        // use Locale information to parse date correctly
-        DateFormat df = locale != null ? DateFormat.getDateInstance(DateFormat.SHORT, locale) :
-            DateFormat.getDateInstance(DateFormat.SHORT);
+        // Under CLDR (the default since the COMPAT locale provider was removed in
+        // JDK 23), language-only locales like Locale.FRENCH fall back to the root
+        // short-date pattern ('M/d/yy'), which flips day/month order and breaks
+        // user-typed dates such as '23/1/2010'. Promote to a representative country
+        // locale so the pattern reflects the user's expectation.
+        Locale effectiveLocale = withDefaultRegion(locale);
+        DateFormat df = effectiveLocale != null
+            ? DateFormat.getDateInstance(DateFormat.SHORT, effectiveLocale)
+            : DateFormat.getDateInstance(DateFormat.SHORT);
+        // Relax day/month to single-digit and expand year to four digits, so inputs
+        // like '23/1/2010' keep parsing as they did under COMPAT.
+        if (df instanceof SimpleDateFormat sdf) {
+            String pattern = sdf.toPattern()
+                .replaceAll("d+", "d")
+                .replaceAll("M+", "M")
+                .replaceAll("y+", "yyyy");
+            sdf.applyPattern(pattern);
+        }
         df.setLenient(false);
         if (tz != null) {
             df.setTimeZone(tz);
         }
         return df.parse(src);
+    }
+
+    private static Locale withDefaultRegion(Locale locale) {
+        if (locale == null || !locale.getCountry().isEmpty()) {
+            return locale;
+        }
+        return switch (locale.getLanguage()) {
+            case "en" -> Locale.US;
+            case "fr" -> Locale.FRANCE;
+            case "it" -> Locale.ITALY;
+            case "de" -> Locale.GERMANY;
+            case "ja" -> Locale.JAPAN;
+            case "ko" -> Locale.KOREA;
+            case "zh" -> Locale.CHINA;
+            default -> locale;
+        };
     }
 
     @Override
