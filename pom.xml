@@ -821,15 +821,15 @@
   <packaging>pom</packaging>
 
   <properties>
-    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.source>25</maven.compiler.source>
     <test.argLine>
       -Xmx512m
       -Dserver.dir=${project.basedir}
       -Djunit.jupiter.execution.parallel.enabled=true
       -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
-      -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
+      -Dfile.encoding=UTF-8 -Djava.locale.providers=CLDR,SPI
     </test.argLine>
-    <maven.compiler.target>21</maven.compiler.target>
+    <maven.compiler.target>25</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <sonar.version>5.5.0.6356</sonar.version>
     <jetty.version>9.4.57.v20241219</jetty.version>
@@ -1024,7 +1024,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.6.1</version>
+          <version>3.10.0</version>
           <executions>
             <execution>
               <id>analyze</id>
@@ -1039,6 +1039,10 @@
                 <ignoreUnusedRuntime>true</ignoreUnusedRuntime>
                 <!-- e.g.: runtime test dependencies such as mockito-inline -->
                 <ignoreNonCompile>true</ignoreNonCompile>
+                <ignoredUnusedDeclaredDependencies>
+                  <!-- Provided by the JDK's java.xml module; kept declared for classpath stability -->
+                  <ignoredUnusedDeclaredDependency>xml-apis:xml-apis</ignoredUnusedDeclaredDependency>
+                </ignoredUnusedDeclaredDependencies>
               </configuration>
             </execution>
             <execution>

@@ -117,7 +117,7 @@ class EmailChannelTest extends MailboxTestSuite {
 				Arguments.of(("Europe/Paris"), "Thu, 1 Jan 1970 (.*) CET"),
 				Arguments.of(("Europe/Rome"), "Thu, 1 Jan 1970 (.*) CET"),
 				Arguments.of(("America/Los_Angeles"), "Wed, 31 Dec 1969 (.*) PST"),
-				Arguments.of(("Asia/Singapore"), "Thu, 1 Jan 1970 (.*) SGT"),
+				Arguments.of(("Asia/Singapore"), "Thu, 1 Jan 1970 (.*) GMT\\+08:00"),
 				Arguments.of(("Africa/Nairobi"), "Thu, 1 Jan 1970 (.*) EAT"),
 				Arguments.of(("Pacific/Auckland"), "Thu, 1 Jan 1970 (.*) NZST")
 		);
