@@ -29,6 +29,7 @@ import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.MailItem.CustomMetadata;
 import com.zimbra.cs.mailbox.Mailbox.SetCalendarItemData;
 import com.zimbra.cs.mailbox.Metadata;
 import com.zimbra.cs.mailbox.OperationContext;
@@ -52,6 +53,8 @@ public class CalDavDataImport extends MailItemImport {
   private static final String METADATA_TYPE_APPOINTMENT = "a";
   private static final String METADATA_KEY_ETAG = "e";
   private static final String METADATA_KEY_CTAG = "c";
+  public static final String CUSTOM_METADATA_SECTION = "caldav";
+  public static final String CUSTOM_METADATA_KEY_LAST_SUCCESSFUL_SYNC_MS = "lastSuccessfulSyncMs";
   private static final int DEFAULT_FOLDER_FLAGS = Flag.BITMASK_CHECKED;
 
   protected CalDavClient mClient;
@@ -70,6 +73,25 @@ public class CalDavDataImport extends MailItemImport {
     super(ds);
   }
 
+  CalDavDataImport(DataSource ds, boolean test) throws ServiceException {
+    super(ds, test);
+  }
+
+  protected boolean shouldPushLocalChanges(int lastSync) {
+    return lastSync > 0 && !getDataSource().isImportOnly();
+  }
+
+  private void setLastSuccessfulSyncTimestamp(OperationContext octxt, int folderId) {
+    try {
+      CustomMetadata custom = new CustomMetadata(CUSTOM_METADATA_SECTION);
+      custom.put(CUSTOM_METADATA_KEY_LAST_SUCCESSFUL_SYNC_MS, String.valueOf(System.currentTimeMillis()));
+      mbox.setCustomData(octxt, folderId, MailItem.Type.FOLDER, custom);
+    } catch (ServiceException e) {
+      ZimbraLog.datasource.warn(
+          "Unable to persist CalDAV last successful sync timestamp for folder %d", folderId, e);
+    }
+  }
+
   @Override
   public void importData(List<Integer> folderIds, boolean fullSync) throws ServiceException {
     ArrayList<CalendarFolder> folders = new ArrayList<>();
@@ -84,6 +106,7 @@ public class CalDavDataImport extends MailItemImport {
           sync(octxt, f);
         }
       }
+      setLastSuccessfulSyncTimestamp(octxt, getRootFolderId(getDataSource()));
     } catch (DavException | HttpException | IOException e) {
       throw ServiceException.FAILURE("error importing CalDAV data", e);
     }
@@ -662,7 +685,7 @@ public class CalDavDataImport extends MailItemImport {
     while (!allDone) {
       allDone = true;
 
-      if (lastSync > 0) { // Don't push local changes during initial sync.
+      if (shouldPushLocalChanges(lastSync)) { // Don't push local changes during initial sync or in import-only mode.
         // push local deletion
         List<Integer> deleted = new ArrayList<>();
         for (int itemId : mbox.getTombstones(lastSync).getAllIds()) {
