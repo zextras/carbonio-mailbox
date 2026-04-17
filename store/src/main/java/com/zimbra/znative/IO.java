@@ -113,9 +113,9 @@ public class IO {
   private static final MethodHandle CLOSE;
 
   /**
-   * Per-thread scratch segments for {@link #fileInfo} — avoids per-call Arena + allocation
-   * overhead (~200 ns/call). Uses {@link Arena#ofAuto} so the native memory is released when
-   * the thread dies and the Scratch becomes unreachable.
+   * Per-thread scratch segments for {@link #fileInfo} — avoids per-call Arena and allocation
+   * overhead. Uses {@link Arena#ofAuto} so the native memory is released when the thread dies
+   * and the Scratch becomes unreachable.
    */
   private static final class Scratch {
     static final int INITIAL_PATH_CAPACITY = 4096;
