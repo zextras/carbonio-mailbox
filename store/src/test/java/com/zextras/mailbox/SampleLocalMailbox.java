@@ -11,9 +11,6 @@ import com.zimbra.cs.db.HSQLDB;
 /**
  * A Mailbox that can be used for testing. You can spin it up and interact with APIs, except it uses
  * an in memory db {@link HSQLDB} and an in memory LDAP {@link InMemoryLdapServer}.
- * <p>
- * Please run this class with java.library.path pointing to native module target (native/target) so
- * native library is loaded
  */
 public class SampleLocalMailbox {
 

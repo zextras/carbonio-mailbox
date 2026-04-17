@@ -473,11 +473,6 @@
       <artifactId>zm-soap</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.zextras</groupId>
-      <artifactId>mailbox-native</artifactId>
-    </dependency>
-
-    <dependency>
       <artifactId>mailbox-attribute-manager</artifactId>
       <groupId>com.zextras</groupId>
     </dependency>
