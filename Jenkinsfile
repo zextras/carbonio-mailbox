@@ -55,7 +55,7 @@ pipeline {
             parallel {
                 stage('Maven build') {
                     steps {
-                        container('jdk-21') {
+                        container('jdk-25') {
                             sh """
                         mvn ${MVN_OPTS} \
                             -DskipTests=true \
@@ -74,7 +74,7 @@ pipeline {
 
         stage('UT, IT') {
             steps {
-                container('jdk-21') {
+                container('jdk-25') {
                     sh "mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -DexcludedGroups=api,flaky,e2e"
                 }
                 junit allowEmptyResults: true,
@@ -83,7 +83,7 @@ pipeline {
         }
         stage('Flaky, API, E2E tests') {
                     steps {
-                        container('jdk-21') {
+                        container('jdk-25') {
                             sh "cd store && mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=flaky,api && mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=e2e"
                         }
                         junit allowEmptyResults: true,
@@ -93,7 +93,7 @@ pipeline {
 
         stage('Build and Package API Docs') {
             steps {
-                container('jdk-21') {
+                container('jdk-25') {
                     sh """
                 (
                     cd soap || { echo "Directory soap does not exist"; exit 1; }
@@ -161,7 +161,7 @@ pipeline {
 
                     }
                     steps {
-                        container('jdk-21') {
+                        container('jdk-25') {
                             withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
                                 script {
                                     sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -DskipTests=true"
@@ -176,7 +176,7 @@ pipeline {
                         buildingTag()
                     }
                     steps {
-                        container('jdk-21') {
+                        container('jdk-25') {
                             withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
                                 script {
                                     sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -Dchangelist= -DskipTests=true"
