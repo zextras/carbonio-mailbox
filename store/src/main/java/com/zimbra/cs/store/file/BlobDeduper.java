@@ -80,17 +80,21 @@ public class BlobDeduper {
         long sizeSaved = 0;
         long srcInodeNum = 0;
         String srcPath = null;
+        // Cache blob path once per blob to avoid repeated FileBlobStore.getBlobPath() string concat.
+        String[] paths = new String[blobs.size()];
         // check if there is any processed blob
-        for (BlobReference blob : blobs) {
+        for (int i = 0; i < blobs.size(); i++) {
+            BlobReference blob = blobs.get(i);
+            paths[i] = FileBlobStore.getBlobPath(blob.getMailboxId(),
+                    blob.getItemId(), blob.getRevision(),
+                    blob.getVolumeId());
             if (blob.isProcessed()) {
-                String path = FileBlobStore.getBlobPath(blob.getMailboxId(),
-                        blob.getItemId(), blob.getRevision(),
-                        blob.getVolumeId());
                 try {
-                    IO.FileInfo fileInfo = IO.fileInfo(path);
+                    IO.FileInfo fileInfo = IO.fileInfo(paths[i]);
                     if (fileInfo != null) {
+                        blob.setFileInfo(fileInfo);
                         srcInodeNum = fileInfo.getInodeNum();
-                        srcPath = path;
+                        srcPath = paths[i];
                         break;
                     }
                 } catch (IOException e) {
@@ -102,10 +106,9 @@ public class BlobDeduper {
             // check the path with maximum links
             // organize the paths based on inode
             MultiMap inodeMap = new MultiValueMap();
-            for (BlobReference blob : blobs) {
-                String path = FileBlobStore.getBlobPath(blob.getMailboxId(),
-                        blob.getItemId(), blob.getRevision(),
-                        blob.getVolumeId());
+            for (int i = 0; i < blobs.size(); i++) {
+                BlobReference blob = blobs.get(i);
+                String path = paths[i];
                 try {
                     IO.FileInfo fileInfo = IO.fileInfo(path);
                     if (fileInfo != null) {
@@ -139,13 +142,12 @@ public class BlobDeduper {
         try {
             IO.link(srcPath, holdPath);
             // Now link the other paths to source path
-            for (BlobReference blob : blobs) {
+            for (int i = 0; i < blobs.size(); i++) {
+                BlobReference blob = blobs.get(i);
                 if (blob.isProcessed()) {
                     continue;
                 }
-                String path = FileBlobStore.getBlobPath(blob.getMailboxId(),
-                        blob.getItemId(), blob.getRevision(),
-                        blob.getVolumeId());
+                String path = paths[i];
                 try {
                     if (blob.getFileInfo() == null) {
                         blob.setFileInfo(IO.fileInfo(path));
