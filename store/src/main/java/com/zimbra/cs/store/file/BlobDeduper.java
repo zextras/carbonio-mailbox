@@ -7,6 +7,8 @@ package com.zimbra.cs.store.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -159,11 +161,17 @@ public class BlobDeduper {
         } catch (IOException e) {
             ZimbraLog.misc.warn("Ignoring the error while creating a link for " + src.path(), e);
         } finally {
-            if (holdFile.exists()) {
-                holdFile.delete();
-            }
+            deleteQuietly(holdFile);
         }
         return new Pair<>((int) acc[0], acc[1]);
+    }
+
+    private static void deleteQuietly(File file) {
+        try {
+            Files.deleteIfExists(file.toPath());
+        } catch (IOException e) {
+            ZimbraLog.misc.warn("Failed to delete " + file, e);
+        }
     }
 
     private void tryLinkOne(
@@ -196,17 +204,15 @@ public class BlobDeduper {
         File tempFile = new File(tempPath);
         try {
             IO.link(holdPath, tempPath);
-            File destFile = new File(path);
-            tempFile.renameTo(destFile);
+            Files.move(tempFile.toPath(), new File(path).toPath(),
+                    StandardCopyOption.REPLACE_EXISTING);
             markBlobAsProcessed(blob);
             acc[0]++;
             acc[1] += blob.getFileInfo().getSize();
         } catch (IOException e) {
             ZimbraLog.misc.warn("Ignoring the error while deduping " + path, e);
         } finally {
-            if (tempFile.exists()) {
-                tempFile.delete();
-            }
+            deleteQuietly(tempFile);
         }
     }
 
