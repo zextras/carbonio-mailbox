@@ -22,6 +22,9 @@ import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Mountpoint;
+import com.zimbra.cs.mailbox.OperationContext;
+import com.zimbra.cs.service.util.ItemIdFormatter;
+import com.zimbra.cs.session.PendingModifications.Change;
 import com.zimbra.soap.admin.type.DataSourceType;
 import java.util.HashMap;
 import java.util.List;
@@ -272,6 +275,72 @@ public class GetFolderTest extends MailboxTestSuite {
 				expectedSyncEpochMillis / 1000,
 				folderElem.getAttributeLong(MailConstants.A_LAST_SYNC_DATE, 0),
 				"caldav datasource root folder should expose real last successful sync timestamp, not sync token");
+	}
+
+	@Test
+	void caldavDataSourceRootFolderMetadataNotificationIncludesLastSyncDate() throws Exception {
+		var acct = createAccount().create();
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+
+		Folder calFolder = mbox.createFolder(
+				null,
+				"CalDAV Root Notify Metadata",
+				Mailbox.ID_FOLDER_USER_ROOT,
+				new Folder.FolderOptions().setDefaultView(Type.APPOINTMENT));
+
+		Map<String, Object> dsAttrs = new HashMap<>();
+		dsAttrs.put(Provisioning.A_zimbraDataSourceFolderId, String.valueOf(calFolder.getId()));
+		dsAttrs.put(Provisioning.A_zimbraDataSourceHost, "caldav.example.com");
+		dsAttrs.put(Provisioning.A_zimbraDataSourcePort, "443");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceUsername, "user@example.com");
+		dsAttrs.put(Provisioning.A_zimbraDataSourcePassword, "password");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceConnectionType, "ssl");
+		dsAttrs.put(Provisioning.A_zimbraDataSourceEnabled, "TRUE");
+		Provisioning.getInstance().createDataSource(acct, DataSourceType.caldav, "My CalDAV", dsAttrs);
+
+		long expectedSyncEpochMillis = 1735744115000L;
+		CustomMetadata custom = new CustomMetadata(CalDavDataImport.CUSTOM_METADATA_SECTION);
+		custom.put(
+				CalDavDataImport.CUSTOM_METADATA_KEY_LAST_SUCCESSFUL_SYNC_MS,
+				String.valueOf(expectedSyncEpochMillis));
+		mbox.setCustomData(null, calFolder.getId(), MailItem.Type.FOLDER, custom);
+
+		Element notify = new Element.XMLElement("notify");
+		Element folderElem = ToXML.encodeFolder(
+				notify,
+				new ItemIdFormatter(),
+				new OperationContext(mbox),
+				calFolder,
+				Change.METADATA);
+
+		assertEquals(
+				expectedSyncEpochMillis / 1000,
+				folderElem.getAttributeLong(MailConstants.A_LAST_SYNC_DATE, 0),
+				"metadata-only CalDAV folder notifications should include lsd");
+	}
+
+	@Test
+	void regularFolderMetadataNotificationDoesNotIncludeLastSyncDate() throws Exception {
+		var acct = createAccount().create();
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+
+		Folder regularFolder = mbox.createFolder(
+				null,
+				"Regular Calendar Notify Metadata",
+				Mailbox.ID_FOLDER_USER_ROOT,
+				new Folder.FolderOptions().setDefaultView(Type.APPOINTMENT));
+
+		Element notify = new Element.XMLElement("notify");
+		Element folderElem = ToXML.encodeFolder(
+				notify,
+				new ItemIdFormatter(),
+				new OperationContext(mbox),
+				regularFolder,
+				Change.METADATA);
+
+		assertNull(
+				folderElem.getAttribute(MailConstants.A_LAST_SYNC_DATE, null),
+				"metadata-only notifications on non-CalDAV folders should not include lsd");
 	}
 
 	/**
