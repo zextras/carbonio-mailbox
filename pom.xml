@@ -1039,6 +1039,10 @@
                 <ignoreUnusedRuntime>true</ignoreUnusedRuntime>
                 <!-- e.g.: runtime test dependencies such as mockito-inline -->
                 <ignoreNonCompile>true</ignoreNonCompile>
+                <ignoredUnusedDeclaredDependencies>
+                  <!-- Provided by the JDK's java.xml module; kept declared for classpath stability -->
+                  <ignoredUnusedDeclaredDependency>xml-apis:xml-apis</ignoredUnusedDeclaredDependency>
+                </ignoredUnusedDeclaredDependencies>
               </configuration>
             </execution>
             <execution>
