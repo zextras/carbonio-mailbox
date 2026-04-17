@@ -86,6 +86,7 @@ ADD https://github.com/open-telemetry/opentelemetry-java-instrumentation/release
 # Copy additional config files
 COPY docker/mailbox/log4j.properties /opt/zextras/conf/log4j.properties
 COPY docker/mailbox/localconfig/localconfig.xml /localconfig/localconfig.xml
+COPY packages/appserver-service/otel.properties /etc/carbonio/mailbox/otel.properties
 
 ENV LDAP_URL="ldap://openldap:1389" \
     LDAP_ROOT_PASSWORD=qh6hWZvc \
