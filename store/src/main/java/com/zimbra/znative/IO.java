@@ -224,7 +224,7 @@ public final class IO {
       throw new IOException("statx(" + path + ") failed: " + t.getMessage(), t);
     }
     if (rc != 0) {
-      int errno = (int) ERRNO_HANDLE.get(s.capture);
+      int errno = (int) ERRNO_HANDLE.get(s.capture, 0L);
       if (errno == ENOENT) {
         throw new FileNotFoundException("stat(" + path + "): No such file or directory");
       }
