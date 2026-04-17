@@ -302,7 +302,7 @@ public final class IO {
 
   private static int openForRedirect(String path) throws IOException {
     try (Arena arena = Arena.ofConfined()) {
-      MemorySegment pathSeg = arena.allocateUtf8String(path);
+      MemorySegment pathSeg = arena.allocateFrom(path);
       int fd = (int) OPEN.invoke(pathSeg, O_WRONLY | O_CREAT | O_APPEND, STDOUT_STDERR_MODE);
       if (fd < 0) {
         throw new IOException("open(" + path + ") failed");
