@@ -99,7 +99,7 @@ public class LdapClient {
     }
 
     /**
-     * For zmconfigd only.
+     * For configd only.
      */
     public static ZLdapContext getContext(GenericLdapConfig ldapConfig,
             LdapUsage usage)
