@@ -8,6 +8,7 @@ PartOf=carbonio-appserver.target
 User=zextras
 Type=notify
 NotifyAccess=main
+Environment=OTEL_JAVAAGENT_CONFIGURATION_FILE=/etc/carbonio/mailbox/otel.properties
 EnvironmentFile=-/opt/zextras/data/systemd.env
 ExecStartPre=echo REWRITE \
   sasl \

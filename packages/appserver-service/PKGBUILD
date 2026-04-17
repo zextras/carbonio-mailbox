@@ -45,6 +45,8 @@ _package() {
     "${pkgdir}/etc/carbonio/mailbox/service-discover/policies.json"
   install -Dm644 packages/appserver-service/carbonio-mailbox-service-protocol.json \
     "${pkgdir}/etc/carbonio/mailbox/service-discover/service-protocol.json"
+  install -Dm644 packages/appserver-service/otel.properties \
+    "${pkgdir}/etc/carbonio/mailbox/otel.properties"
 
   # Mailbox Admin
   install -Dm755 packages/appserver-service/carbonio-mailbox-admin \

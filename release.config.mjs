@@ -69,13 +69,13 @@ export default {
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "sed -i 's|<revision>.*</revision>|<revision>${nextRelease.version}</revision>|' pom.xml && sed -i 's/^pkgver=.*/pkgver=\"${nextRelease.version}\"/' packages/**/PKGBUILD"
+        "prepareCmd": "sed -i 's|<revision>.*</revision>|<revision>${nextRelease.version}</revision>|' pom.xml && sed -i 's/^pkgver=.*/pkgver=\"${nextRelease.version}\"/' packages/**/PKGBUILD && sed -i 's|^otel.service.version=.*|otel.service.version=${nextRelease.version}|' packages/**/otel.properties"
       }
     ],
     [
       '@semantic-release/git',
       {
-        assets: ['pom.xml', 'package/PKGBUILD'],
+        assets: ['pom.xml', 'packages/**/PKGBUILD', 'packages/**/otel.properties'],
         message: 'chore(release): ${nextRelease.version} [skip ci]'
       }
     ],

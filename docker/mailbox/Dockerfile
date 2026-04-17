@@ -86,6 +86,7 @@ ADD https://github.com/open-telemetry/opentelemetry-java-instrumentation/release
 # Copy additional config files
 COPY docker/mailbox/log4j.properties /opt/zextras/conf/log4j.properties
 COPY docker/mailbox/localconfig/localconfig.xml /localconfig/localconfig.xml
+COPY packages/appserver-service/otel.properties /etc/carbonio/mailbox/otel.properties
 
 ENV LDAP_URL="ldap://openldap:1389" \
     LDAP_ROOT_PASSWORD=qh6hWZvc \
@@ -97,7 +98,8 @@ ENV LDAP_URL="ldap://openldap:1389" \
     CARBONIO_PREVIEW_SERVICE_URL="http://carbonio-preview:10000" \
     CARBONIO_MAILBOX_INTERNAL_API_HOST="0.0.0.0" \
     CARBONIO_MAILBOX_INTERNAL_API_PORT="10000" \
-    MAILBOXD_JAVA_OPTS="-Xss256k -Xms1996m -Xmx1996m"
+    MAILBOXD_JAVA_OPTS="-Xss256k -Xms1996m -Xmx1996m" \
+    OTEL_JAVAAGENT_CONFIGURATION_FILE="/etc/carbonio/mailbox/otel.properties"
 
 COPY docker/mailbox/entrypoint.sh .
 
