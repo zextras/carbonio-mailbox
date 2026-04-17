@@ -120,11 +120,67 @@ class IOTest {
     assertThrows(FileNotFoundException.class, () -> IO.chmod(missing, IO.S_IRUSR));
   }
 
-  // setStdoutStderrTo() tests are intentionally excluded:
-  // dup2() redirects stdout/stderr for the entire JVM process, which breaks
-  // surefire's communication pipe and causes "forked VM terminated" errors.
-  // This function is only used by MailboxServer output rotation and is tested
-  // in production via systemd service startup.
+  // setStdoutStderrTo() redirects stdout/stderr for the whole JVM via dup2(),
+  // which breaks surefire's pipe. Exercise it in a forked child JVM.
+  @Test
+  void setStdoutStderrTo_redirectsStdoutAndStderr() throws Exception {
+    Path out = tempDir.resolve("redirect.log");
+
+    String javaBin = System.getProperty("java.home") + "/bin/java";
+    Process p = new ProcessBuilder(
+            javaBin,
+            "--enable-preview",
+            "--enable-native-access=ALL-UNNAMED",
+            "-cp", System.getProperty("java.class.path"),
+            RedirectMain.class.getName(),
+            out.toString())
+        .redirectErrorStream(true)
+        .start();
+    byte[] parentStream = p.getInputStream().readAllBytes();
+    int rc = p.waitFor();
+
+    assertEquals(0, rc, "child failed: " + new String(parentStream));
+    String contents = Files.readString(out);
+    assertTrue(contents.contains("STDOUT_MARK"), "stdout missing: " + contents);
+    assertTrue(contents.contains("STDERR_MARK"), "stderr missing: " + contents);
+    // After dup2, parent's inherited pipe should receive nothing past the redirect.
+    assertFalse(new String(parentStream).contains("STDOUT_MARK"),
+        "stdout leaked to parent pipe");
+  }
+
+  @Test
+  void setStdoutStderrTo_appendsRatherThanTruncates() throws Exception {
+    Path out = tempDir.resolve("append.log");
+    Files.writeString(out, "PRE\n");
+
+    String javaBin = System.getProperty("java.home") + "/bin/java";
+    Process p = new ProcessBuilder(
+            javaBin,
+            "--enable-preview",
+            "--enable-native-access=ALL-UNNAMED",
+            "-cp", System.getProperty("java.class.path"),
+            RedirectMain.class.getName(),
+            out.toString())
+        .redirectErrorStream(true)
+        .start();
+    p.getInputStream().readAllBytes();
+    assertEquals(0, p.waitFor());
+
+    String contents = Files.readString(out);
+    assertTrue(contents.startsWith("PRE\n"), "pre-existing content truncated: " + contents);
+    assertTrue(contents.contains("STDOUT_MARK"));
+  }
+
+  /** Helper main used by the subprocess tests above. */
+  public static class RedirectMain {
+    public static void main(String[] args) throws Exception {
+      IO.setStdoutStderrTo(args[0]);
+      System.out.println("STDOUT_MARK");
+      System.err.println("STDERR_MARK");
+      System.out.flush();
+      System.err.flush();
+    }
+  }
 
   @Test
   void permissionConstants_haveCorrectValues() {
