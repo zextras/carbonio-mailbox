@@ -401,6 +401,10 @@ class SmimeHandlerImplTest {
         method.setAccessible(true);
         LocalConfig localConfig = (LocalConfig) method.invoke(null);
         Files.copy(Path.of(System.getProperty("java.home") + "/lib/security/cacerts"), Path.of("cacerts_trusted"), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        // The JDK cacerts file is read-only; since JDK 22 Files.copy preserves the
+        // source mode, so the test copy inherits r--r--r-- and subsequent writes fail.
+        // Restore owner write permission so the test can re-save the keystore.
+        Path.of("cacerts_trusted").toFile().setWritable(true);
         localConfig.set(LC.mailboxd_truststore.key(), "cacerts_trusted");
         localConfig.save();
         Method load = LocalConfig.class.getDeclaredMethod("load", String.class);
@@ -439,6 +443,10 @@ class SmimeHandlerImplTest {
         method.setAccessible(true);
         LocalConfig localConfig = (LocalConfig) method.invoke(null);
         Files.copy(Path.of(System.getProperty("java.home") + "/lib/security/cacerts"), Path.of("cacerts_trusted"), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        // The JDK cacerts file is read-only; since JDK 22 Files.copy preserves the
+        // source mode, so the test copy inherits r--r--r-- and subsequent writes fail.
+        // Restore owner write permission so the test can re-save the keystore.
+        Path.of("cacerts_trusted").toFile().setWritable(true);
         localConfig.set(LC.mailboxd_truststore.key(), "cacerts_trusted");
         localConfig.save();
         Method load = LocalConfig.class.getDeclaredMethod("load", String.class);
@@ -481,6 +489,10 @@ class SmimeHandlerImplTest {
         method.setAccessible(true);
         LocalConfig localConfig = (LocalConfig) method.invoke(null);
         Files.copy(Path.of(System.getProperty("java.home") + "/lib/security/cacerts"), Path.of("cacerts_trusted"), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        // The JDK cacerts file is read-only; since JDK 22 Files.copy preserves the
+        // source mode, so the test copy inherits r--r--r-- and subsequent writes fail.
+        // Restore owner write permission so the test can re-save the keystore.
+        Path.of("cacerts_trusted").toFile().setWritable(true);
         localConfig.set(LC.mailboxd_truststore.key(), "cacerts_trusted");
         localConfig.save();
         Method load = LocalConfig.class.getDeclaredMethod("load", String.class);
