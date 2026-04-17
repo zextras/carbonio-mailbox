@@ -62,7 +62,7 @@ pipeline {
                             clean install
                         mkdir staging
                         cp -a store* right-manager \
-                                client common packages soap jython-libs \
+                                client common packages soap \
                                 staging/
                     """
                             stash includes: 'staging/**', name: 'staging'
