@@ -463,12 +463,6 @@
     <dependency>
       <artifactId>zm-common</artifactId>
       <groupId>com.zextras</groupId>
-      <exclusions>
-        <exclusion>
-          <groupId>com.zextras</groupId>
-          <artifactId>mailbox-native</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <artifactId>zm-client</artifactId>
