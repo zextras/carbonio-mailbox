@@ -7,6 +7,7 @@ services {
   connect {
     sidecar_service {
       proxy {
+        local_service_address = "127.78.0.7"
         upstreams = [
           {
             destination_name   = "carbonio-memcached"
