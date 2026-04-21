@@ -22,7 +22,7 @@ my $DB_PASSWORD = "zextras";
 my $LOGGER_DB_PASSWORD = "zimbra";
 my $DATABASE = "zimbra";
 my $LOGGER_DATABASE = "zimbra_logger";
-my $ZMLOCALCONFIG = "/opt/zextras/bin/zmlocalconfig";
+my $ZMLOCALCONFIG = "/opt/zextras/bin/configd localconfig";
 my $ZMSOAP = "/opt/zextras/bin/zmsoap";
 my $SQLLOGFH;
 my $DB_SOCKET;

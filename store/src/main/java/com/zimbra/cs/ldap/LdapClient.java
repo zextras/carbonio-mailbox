@@ -146,16 +146,16 @@ public abstract class LdapClient {
     }
 
     /**
-     * For zmconfigd only.
+     * For configd only.
      *
-     * zmconfigd uses ldapi connection with root LDAP bind DN/password to bind to
+     * configd uses ldapi connection with root LDAP bind DN/password to bind to
      * Zimbra OpenLdap, whereas LdapClient.getContext() methods use LC keys for
      * the URL/bind DN/password.
      *
-     * Changing LC keys in  zmconfigd is not an option, because it also uses
+     * Changing LC keys in  configd is not an option, because it also uses
      * LdapProvisioing, which uses the LC settings.
      *
-     * We could have zmconfigd call getExternalContext with a ExternalLdapConfig, which
+     * We could have configd call getExternalContext with a ExternalLdapConfig, which
      * takes URL/bind DN/password from parameters.  But the name "external" is misleading.
      *
      * This method id just a wrapper around LdapClient.getExternalContext, the sole

@@ -7,7 +7,6 @@ COPY pom.xml                          pom.xml
 COPY store                            store
 COPY soap                             soap
 COPY store-extra-runtime-dependencies store-extra-runtime-dependencies
-COPY jython-libs                      jython-libs
 COPY common                           common
 COPY right-manager                    right-manager
 COPY client                           client
