@@ -586,30 +586,55 @@ public class ZimbraServlet extends HttpServlet {
     remoteIp.addToLoggingContext();
   }
 
-  public static RemoteIP.TrustedIPs getTrustedIPs() {
-    try {
-      final Provisioning prov = Provisioning.getInstance();
-      final Server server = prov.getLocalServer();
-      List<String> trustedIps =
-          new ArrayList<>(Arrays.asList(server.getMultiAttr(Provisioning.A_zimbraMailTrustedIP)));
+  private static volatile RemoteIP.TrustedIPs trustedIPsCache = null;
+  private static volatile long trustedIPsCacheTimestamp = 0L;
+  static final long TRUSTED_IPS_CACHE_TTL_MS = 5L * 60L * 1000L;
 
-      prov.getAllServers(Provisioning.SERVICE_PROXY)
-          .forEach(
-              proxyServer ->
-                  Try.of(proxyServer::getIPAddress)
-                      .andThen(
-                          serverIp -> {
-                            if (!Objects.isNull(serverIp) && !Objects.equals(serverIp, "")) {
-                              trustedIps.add(serverIp);
-                            }
-                          })
-                      .onFailure(
-                          ex -> ZimbraLog.misc.warn("failed to get proxy IPs, skipping.", ex)));
-      return new RemoteIP.TrustedIPs(trustedIps.toArray(new String[0]));
-    } catch (ServiceException e) {
-      ZimbraLog.misc.warn("failed to get trusted IPs, only localhost will be trusted", e);
+  /** Clears the trusted IPs cache, forcing a refresh on the next call to {@link #getTrustedIPs()}. */
+  static void clearTrustedIPsCache() {
+    synchronized (ZimbraServlet.class) {
+      trustedIPsCache = null;
+      trustedIPsCacheTimestamp = 0L;
     }
-    return new RemoteIP.TrustedIPs(null);
+  }
+
+  public static RemoteIP.TrustedIPs getTrustedIPs() {
+    final long now = System.currentTimeMillis();
+    if (trustedIPsCache != null && (now - trustedIPsCacheTimestamp) < TRUSTED_IPS_CACHE_TTL_MS) {
+      return trustedIPsCache;
+    }
+    synchronized (ZimbraServlet.class) {
+      final long nowInner = System.currentTimeMillis();
+      if (trustedIPsCache != null
+          && (nowInner - trustedIPsCacheTimestamp) < TRUSTED_IPS_CACHE_TTL_MS) {
+        return trustedIPsCache;
+      }
+      try {
+        final Provisioning prov = Provisioning.getInstance();
+        final Server server = prov.getLocalServer();
+        List<String> trustedIps =
+            new ArrayList<>(Arrays.asList(server.getMultiAttr(Provisioning.A_zimbraMailTrustedIP)));
+
+        prov.getAllServers(Provisioning.SERVICE_PROXY)
+            .forEach(
+                proxyServer ->
+                    Try.of(proxyServer::getIPAddress)
+                        .andThen(
+                            serverIp -> {
+                              if (!Objects.isNull(serverIp) && !Objects.equals(serverIp, "")) {
+                                trustedIps.add(serverIp);
+                              }
+                            })
+                        .onFailure(
+                            ex -> ZimbraLog.misc.warn("failed to get proxy IPs, skipping.", ex)));
+        trustedIPsCacheTimestamp = nowInner;
+        trustedIPsCache = new RemoteIP.TrustedIPs(trustedIps.toArray(new String[0]));
+        return trustedIPsCache;
+      } catch (ServiceException e) {
+        ZimbraLog.misc.warn("failed to get trusted IPs, only localhost will be trusted", e);
+      }
+      return new RemoteIP.TrustedIPs(null);
+    }
   }
 
   public static void addUAToLoggingContext(HttpServletRequest req) {

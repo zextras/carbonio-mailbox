@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,11 @@ public class ZimbraServletTest {
 	@BeforeAll
 	public static void init() throws Exception {
 		Provisioning.setInstance(Mockito.mock(Provisioning.class));
+	}
+
+	@AfterEach
+	void resetCache() {
+		ZimbraServlet.clearTrustedIPsCache();
 	}
 
 	@Disabled("until bug 60345 is fixed")
@@ -67,5 +73,46 @@ public class ZimbraServletTest {
 				.thenReturn(proxyServers);
 		TrustedIPs trustedIPs = ZimbraServlet.getTrustedIPs();
 		Arrays.stream(proxyIps).forEach(ip -> assertTrue(trustedIPs.isIpTrusted(ip)));
+	}
+
+	@Test
+	void shouldReturnCachedTrustedIPsOnSubsequentCalls() throws Exception {
+		String[] trustedIpsByAttr = new String[]{"10.0.0.1"};
+		Server localServer = Mockito.mock(Server.class);
+		Mockito.when(localServer.getMultiAttr(Provisioning.A_zimbraMailTrustedIP))
+				.thenReturn(trustedIpsByAttr);
+		List<Server> proxyServers = new ArrayList<>();
+		Provisioning mockProvisioning = Provisioning.getInstance();
+		Mockito.when(mockProvisioning.getLocalServer()).thenReturn(localServer);
+		Mockito.when(mockProvisioning.getAllServers(Provisioning.SERVICE_PROXY))
+				.thenReturn(proxyServers);
+
+		TrustedIPs first = ZimbraServlet.getTrustedIPs();
+		TrustedIPs second = ZimbraServlet.getTrustedIPs();
+
+		assertSame(first, second, "subsequent calls within TTL should return the same cached instance");
+		Mockito.verify(mockProvisioning, Mockito.times(1))
+				.getAllServers(Provisioning.SERVICE_PROXY);
+	}
+
+	@Test
+	void shouldRefreshTrustedIPsAfterCacheIsCleared() throws Exception {
+		String[] trustedIpsByAttr = new String[]{"10.0.0.1"};
+		Server localServer = Mockito.mock(Server.class);
+		Mockito.when(localServer.getMultiAttr(Provisioning.A_zimbraMailTrustedIP))
+				.thenReturn(trustedIpsByAttr);
+		List<Server> proxyServers = new ArrayList<>();
+		Provisioning mockProvisioning = Provisioning.getInstance();
+		Mockito.when(mockProvisioning.getLocalServer()).thenReturn(localServer);
+		Mockito.when(mockProvisioning.getAllServers(Provisioning.SERVICE_PROXY))
+				.thenReturn(proxyServers);
+
+		TrustedIPs first = ZimbraServlet.getTrustedIPs();
+		ZimbraServlet.clearTrustedIPsCache();
+		TrustedIPs second = ZimbraServlet.getTrustedIPs();
+
+		assertNotSame(first, second, "clearing the cache should cause a fresh fetch on the next call");
+		Mockito.verify(mockProvisioning, Mockito.times(2))
+				.getAllServers(Provisioning.SERVICE_PROXY);
 	}
 }
