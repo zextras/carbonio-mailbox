@@ -50,7 +50,6 @@ import com.zimbra.soap.ZimbraSoapContext.SessionInfo;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import io.opentelemetry.api.trace.Span;
-import io.opentelemetry.context.Scope;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
