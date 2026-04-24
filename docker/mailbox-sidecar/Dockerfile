@@ -1,4 +1,4 @@
-FROM registry.dev.zextras.com/dev/carbonio-sidecar:latest
+FROM registry.dev.zextras.com/dev/carbonio-sidecar:devel
 
 # Service registration
 COPY packages/appserver-service/carbonio-mailbox.hcl /consul/config/
