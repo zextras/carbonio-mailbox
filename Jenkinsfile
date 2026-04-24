@@ -65,7 +65,6 @@ pipeline {
                                 client common packages soap jython-libs \
                                 staging/
                     """
-                            stash includes: 'staging/**', name: 'staging'
                         }
                     }
                 }
