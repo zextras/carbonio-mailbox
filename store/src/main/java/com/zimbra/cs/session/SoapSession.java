@@ -283,7 +283,7 @@ public class SoapSession extends Session {
                   item instanceof Folder folder
                       && folder.isSharedWithUser(mAuthenticatedAccountId);
               if (isSharedFolder) {
-                int restrictedChangesForSharedFolders = Change.NAME | Change.COLOR | Change.FLAGS;
+                int restrictedChangesForSharedFolders = Change.NAME;
                 why &= ~restrictedChangesForSharedFolders;
               }
               if (why != 0) {
