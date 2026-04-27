@@ -6,18 +6,27 @@
 
 package com.zextras.mailbox.api.rest.service;
 
+import com.unboundid.ldap.sdk.Filter;
 import com.zimbra.common.account.Key.AccountBy;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
+import com.zimbra.cs.account.Domain;
+import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.SearchDirectoryOptions;
 import com.zimbra.cs.account.ShareInfoData;
 import com.zimbra.cs.account.ZimbraAuthToken;
+import com.zimbra.cs.ldap.ZLdapFilterFactory;
 import com.zimbra.cs.mailbox.Mailbox;
+import com.zextras.mailbox.api.rest.resource.dto.AccountSearchEntry;
+import com.zextras.mailbox.api.rest.resource.dto.AccountSearchResponse;
 import io.vavr.control.Try;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+import static com.zimbra.cs.ldap.LdapConstants.LDAP_TRUE;
 
 
 
@@ -103,5 +112,50 @@ public class AccountService {
 				.map(ShareInfoData::getOwnerAcctId)
 				.filter(ownerId -> !ownerId.equals(account.getId()))
         .toList();
+  }
+
+  public Try<AccountSearchResponse> searchAccounts(String query, String callerAccountId, int limit, int offset) {
+    return Try.of(() -> {
+      final Provisioning provisioning = provisioningSupplier.get();
+
+      Account caller = provisioning.getAccountById(callerAccountId);
+      if (caller == null) {
+        throw ServiceException.NOT_FOUND("No such account: " + callerAccountId);
+      }
+      Domain domain = provisioning.getDomainById(caller.getDomainId());
+
+      var options = new SearchDirectoryOptions();
+      options.setTypes(SearchDirectoryOptions.ObjectType.accounts);
+      options.setDomain(domain);
+      options.setSortAttr(ZAttrProvisioning.A_displayName);
+      options.setSortOpt(SearchDirectoryOptions.SortOpt.SORT_ASCENDING);
+
+      Filter searchFilter = buildSearchFilter(query);
+      options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, searchFilter.toString());
+
+      List<NamedEntry> searchResult = provisioning.searchDirectory(options);
+      boolean more = searchResult.size() > offset + limit;
+      List<AccountSearchEntry> entries = searchResult.stream()
+              .skip(offset)
+              .limit(limit)
+              .map(entry -> (Account) entry)
+              .map(a -> new AccountSearchEntry(a.getId(), a.getName(), a.getDisplayName()))
+              .toList();
+
+      return new AccountSearchResponse(entries, searchResult.size(), more);
+    });
+  }
+
+  private static Filter buildSearchFilter(String query) {
+    String term = (query == null || query.isEmpty()) ? "." : query;
+    var autoCompleteFilter = Filter.createORFilter(
+            Filter.createSubstringFilter(ZAttrProvisioning.A_uid, null, new String[]{term}, null),
+            Filter.createSubstringFilter(ZAttrProvisioning.A_displayName, null, new String[]{term}, null),
+            Filter.createSubstringFilter(ZAttrProvisioning.A_mail, null, new String[]{term}, null)
+    );
+    var notHiddenFilter = Filter.createNOTFilter(
+            Filter.createEqualityFilter(ZAttrProvisioning.A_zimbraHideInGal, LDAP_TRUE)
+    );
+    return Filter.createANDFilter(autoCompleteFilter, notHiddenFilter);
   }
 }
