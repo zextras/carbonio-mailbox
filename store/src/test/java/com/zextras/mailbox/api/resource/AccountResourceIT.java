@@ -389,6 +389,52 @@ class AccountResourceIT {
 		assertEquals(404, response.statusCode());
 	}
 
+	// --- GET /accounts/search tests ---
+
+	@Test
+	void searchAccountsReturnsResults() throws Exception {
+		final Account caller = server.getAccountFactory().create();
+		final Account target = server.getAccountFactory().create();
+
+		final Response response = server.getHttpClient().get(
+				server.getInternalApiEndpoint() + "/accounts/search?query=" + target.getName(),
+				Map.of("X-Carbonio-User-Id", caller.getId()));
+
+		assertEquals(200, response.statusCode());
+		assertThatJson(response.body()).isObject()
+				.containsKey("accounts")
+				.containsKey("total");
+	}
+
+	@Test
+	void searchAccountsReturnsEmptyForNoMatch() throws Exception {
+		final Account caller = server.getAccountFactory().create();
+
+		final Response response = server.getHttpClient().get(
+				server.getInternalApiEndpoint() + "/accounts/search?query=nonexistent-xyz-query-12345",
+				Map.of("X-Carbonio-User-Id", caller.getId()));
+
+		assertEquals(200, response.statusCode());
+		assertThatJson(response.body()).node("accounts").isArray().isEmpty();
+	}
+
+	@Test
+	void searchAccountsReturns400WithoutUserHeader() throws Exception {
+		final Response response = server.getHttpClient().get(
+				server.getInternalApiEndpoint() + "/accounts/search?query=test");
+
+		assertEquals(400, response.statusCode());
+	}
+
+	@Test
+	void searchAccountsReturns404ForUnknownCaller() throws Exception {
+		final Response response = server.getHttpClient().get(
+				server.getInternalApiEndpoint() + "/accounts/search?query=test",
+				Map.of("X-Carbonio-User-Id", "non-existent-account-id-xyz"));
+
+		assertEquals(404, response.statusCode());
+	}
+
 	private static void shareRootFolder(Account owner, Account grantee) throws Exception {
 		Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(owner);
 		Folder rootFolder = mailbox.getFolderById(new OperationContext(owner), Mailbox.ID_FOLDER_USER_ROOT);

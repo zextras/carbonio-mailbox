@@ -7,6 +7,7 @@
 package com.zextras.mailbox.api.rest.resource;
 
 import com.zextras.mailbox.api.rest.resource.dto.AccountInfoResponse;
+import com.zextras.mailbox.api.rest.resource.dto.AccountSearchResponse;
 import com.zextras.mailbox.api.rest.resource.dto.BatchRequest;
 import com.zextras.mailbox.api.rest.resource.dto.SharedAccountResponse;
 import com.zextras.mailbox.api.rest.response.ErrorResponse;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -170,6 +172,39 @@ public class AccountResource {
 		return accountService.getSharedAccounts(id)
 				.map(accounts -> Response.ok(
 						accounts.stream().map(SharedAccountResponse::from).collect(Collectors.toList())).build())
+				.recover(AccountResource::toErrorResponse)
+				.get();
+	}
+
+	@GET
+	@Path("/search")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Operation(summary = "Search Accounts",
+			description = "Searches accounts by name, email or uid. Domain is derived from the calling user (X-Carbonio-User-Id header).")
+	@ApiResponse(responseCode = "200", description = "Search results",
+			content = @Content(schema = @Schema(implementation = AccountSearchResponse.class)))
+	@ApiResponse(responseCode = "400", description = "Missing X-Carbonio-User-Id header",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	@ApiResponse(responseCode = "404", description = "Caller account not found",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	@ApiResponse(responseCode = "500", description = "Internal server error",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	public Response searchAccounts(
+			@Parameter(description = "Search query (matched against uid, displayName, mail)") @QueryParam("query") String query,
+			@Parameter(description = "Max results to return (default 10)") @QueryParam("limit") Integer limit,
+			@Parameter(description = "Results to skip for pagination") @QueryParam("offset") Integer offset,
+			@HeaderParam("X-Carbonio-User-Id") String callerAccountId) {
+		if (callerAccountId == null || callerAccountId.isEmpty()) {
+			return Response.status(Response.Status.BAD_REQUEST)
+					.entity(new ErrorResponse("Missing required header: X-Carbonio-User-Id"))
+					.build();
+		}
+		return accountService.searchAccounts(
+						query != null ? query : "",
+						callerAccountId,
+						limit != null ? limit : 10,
+						offset != null ? offset : 0)
+				.map(result -> Response.ok(result).build())
 				.recover(AccountResource::toErrorResponse)
 				.get();
 	}

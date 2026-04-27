@@ -157,6 +157,59 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /accounts/search:
+    get:
+      summary: Search Accounts
+      description: "Searches accounts by name, email or uid. Domain is derived from\
+        \ the calling user (X-Carbonio-User-Id header)."
+      operationId: searchAccounts
+      parameters:
+      - name: query
+        in: query
+        description: "Search query (matched against uid, displayName, mail)"
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Max results to return (default 10)
+        schema:
+          type: integer
+          format: int32
+      - name: offset
+        in: query
+        description: Results to skip for pagination
+        schema:
+          type: integer
+          format: int32
+      - name: X-Carbonio-User-Id
+        in: header
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountSearchResponse"
+        "400":
+          description: Missing X-Carbonio-User-Id header
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Caller account not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /accounts/mail/usage/{accountId}:
     get:
       summary: Get Mailbox usage
@@ -258,6 +311,27 @@ components:
           type: string
         cosId:
           type: string
+    AccountSearchEntry:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        displayName:
+          type: string
+    AccountSearchResponse:
+      type: object
+      properties:
+        accounts:
+          type: array
+          items:
+            $ref: "#/components/schemas/AccountSearchEntry"
+        total:
+          type: integer
+          format: int32
+        more:
+          type: boolean
     MailUsageResponse:
       type: object
       properties:
