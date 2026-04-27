@@ -9,6 +9,10 @@
     {
       "name": "carbonio-user-management",
       "action": "allow"
+    },
+    {
+      "name": "carbonio-mcp",
+      "action": "allow"
     }
   ]
 }
