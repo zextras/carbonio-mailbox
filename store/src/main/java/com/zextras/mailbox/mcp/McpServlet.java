@@ -35,6 +35,15 @@ public class McpServlet extends HttpServlet {
         String method = (String) request.get("method");
         Object id = request.get("id");
 
+        if (method == null) {
+            resp.getWriter().write(mapper.writeValueAsString(Map.of(
+                    "jsonrpc", "2.0",
+                    "id", id != null ? id : 0,
+                    "error", Map.of("code", -32600, "message", "Invalid Request: missing method")
+            )));
+            return;
+        }
+
         Object result = switch (method) {
             case "initialize" -> handleInitialize();
             case "tools/list" -> handleToolsList();
@@ -87,6 +96,10 @@ public class McpServlet extends HttpServlet {
         }
 
         String callerUserId = httpReq.getHeader("X-Carbonio-User-Id");
+        if (callerUserId == null || callerUserId.isBlank()) {
+            return Map.of("content", List.of(
+                    Map.of("type", "text", "text", "Error: missing X-Carbonio-User-Id header")));
+        }
         try {
             Object result = tool.handler().apply(arguments, callerUserId);
             String json = mapper.writeValueAsString(result);

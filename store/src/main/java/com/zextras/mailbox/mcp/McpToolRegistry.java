@@ -32,14 +32,15 @@ public class McpToolRegistry {
         return tools.get(name);
     }
 
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+
     public List<Map<String, Object>> listTools() {
-        ObjectMapper mapper = new ObjectMapper();
         return tools.values().stream()
                 .map(t -> {
                     Map<String, Object> m = new LinkedHashMap<>();
                     m.put("name", t.name());
                     m.put("description", t.description());
-                    m.put("inputSchema", mapper.convertValue(t.inputSchema(), Map.class));
+                    m.put("inputSchema", MAPPER.convertValue(t.inputSchema(), Map.class));
                     return m;
                 })
                 .toList();
