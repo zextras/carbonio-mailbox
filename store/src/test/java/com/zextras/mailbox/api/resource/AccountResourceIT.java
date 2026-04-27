@@ -110,6 +110,36 @@ class AccountResourceIT {
 				.containsEntry("locale", frFr);
 	}
 
+	@Test
+	void localeIsResolvedFromZimbraPrefLocale() throws Exception {
+		final String itIt = "it_IT";
+		final Account account = server.getAccountFactory()
+				.withAttribute(ZAttrProvisioning.A_zimbraPrefLocale, itIt)
+				.create();
+
+		final Response response = server.getHttpClient().get(
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
+
+		assertThatJson(response.body()).isObject()
+				.containsEntry("locale", itIt);
+	}
+
+	@Test
+	void zimbraPrefLocaleWinsOverZimbraLocale() throws Exception {
+		final String prefLocale = "de_DE";
+		final String adminLocale = "en_US";
+		final Account account = server.getAccountFactory()
+				.withAttribute(ZAttrProvisioning.A_zimbraPrefLocale, prefLocale)
+				.withAttribute(ZAttrProvisioning.A_zimbraLocale, adminLocale)
+				.create();
+
+		final Response response = server.getHttpClient().get(
+				server.getInternalApiEndpoint() + "/accounts/" + account.getId() + "/info");
+
+		assertThatJson(response.body()).isObject()
+				.containsEntry("locale", prefLocale);
+	}
+
 	private static void assertInfo(Response response, Account account) throws ServiceException {
 		assertThatJson(response.body()).isObject()
 				.containsEntry("id", account.getId())
@@ -120,7 +150,7 @@ class AccountResourceIT {
 				.containsEntry("status", account.getAccountStatus().toString())
 				.containsEntry("isGlobalAdmin", account.isIsAdminAccount())
 				.containsEntry("isExternal", account.isAccountExternal())
-				.containsEntry("locale", account.getLocaleAsString())
+				.containsEntry("locale", account.getLocale().toString())
 		;
 
 	}

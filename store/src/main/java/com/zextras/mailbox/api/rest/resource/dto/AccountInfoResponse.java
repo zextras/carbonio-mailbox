@@ -43,6 +43,6 @@ public record AccountInfoResponse(String id, String name, String displayName, St
 		return new AccountInfoResponse(account.getId(), account.getName(), account.getDisplayName(),
 				account.getCOSId(), account.getDomainId(), account.getPublicServiceUrl(),
 				account.getAccountStatus(), account.isIsAdminAccount(), isExternal,
-				account.getLocaleAsString(), features, capabilities, sessionLifetimeMs);
+				account.getLocale().toString(), features, capabilities, sessionLifetimeMs);
 	}
 }
