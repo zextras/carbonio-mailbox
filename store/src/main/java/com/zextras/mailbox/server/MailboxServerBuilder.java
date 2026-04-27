@@ -2,6 +2,7 @@ package com.zextras.mailbox.server;
 
 import com.zextras.mailbox.MailboxAPIs;
 import com.zextras.mailbox.api.InternalApiContextHandler;
+import com.zextras.mailbox.mcp.McpContextHandler;
 import com.zextras.mailbox.server.MailboxServer.InstantiationException;
 import com.zimbra.common.jetty.JettyMonitor;
 import com.zimbra.common.localconfig.LC;
@@ -94,6 +95,7 @@ public class MailboxServerBuilder {
 			// NOTE: separate handler for internal APIs, not affected by DoS filter and other filters
 			final ContextHandlerCollection contexts = new ContextHandlerCollection();
 			contexts.addHandler(InternalApiContextHandler.create());
+			contexts.addHandler(McpContextHandler.create());
 
 			Handler webAppHandler = new MailboxAPIs(localServer).createServletContextHandler();
 
