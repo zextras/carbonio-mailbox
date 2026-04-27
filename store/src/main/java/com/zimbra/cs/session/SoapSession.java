@@ -128,9 +128,10 @@ public class SoapSession extends Session {
     public void notifyPendingChanges(PendingModifications pmsIn, int changeId, Session source) {
       PendingLocalModifications pms = (PendingLocalModifications) pmsIn;
       try {
-        if (calculateVisibleFolders(false)) pms = filterNotifications(pms);
+        boolean selfInitiated = source == this || source == SoapSession.this;
+        if (calculateVisibleFolders(false)) pms = filterNotifications(pms, selfInitiated);
         if (pms != null && pms.hasNotifications())
-          handleNotifications(pms, source == this || source == SoapSession.this);
+          handleNotifications(pms, selfInitiated);
       } catch (ServiceException e) {
         ZimbraLog.session.warn("exception during delegated notifyPendingChanges", e);
       }
@@ -231,8 +232,8 @@ public class SoapSession extends Session {
     private static final int MODIFIED_CONVERSATION_FLAGS =
         BASIC_CONVERSATION_FLAGS | Change.SIZE | Change.SENDERS;
 
-    private PendingLocalModifications filterNotifications(PendingLocalModifications pms)
-        throws ServiceException {
+    private PendingLocalModifications filterNotifications(
+        PendingLocalModifications pms, boolean selfInitiated) throws ServiceException {
       // first, recalc visible folders if any folders got created or moved or had their ACL changed
       if (folderRecalcRequired(pms) && !calculateVisibleFolders(true)) {
         return pms;
@@ -278,12 +279,16 @@ public class SoapSession extends Session {
                   item, chg.why | MODIFIED_CONVERSATION_FLAGS, (MailItem) chg.preModifyObj);
             } else if (isVisible) {
               int why = chg.why;
-              // Filter out name/color/flags changes on shared folders to prevent notification spam
+              // Filter out name/color/flags changes on shared folders to prevent notification spam.
+              // Skip the filter when the change was initiated by the authenticated user themselves
+              // (e.g. grantee toggling a shared folder via delegated access) so they still receive
+              // feedback about their own modifications.
               boolean isSharedFolder =
-                  item instanceof Folder folder
+                  !selfInitiated
+                      && item instanceof Folder folder
                       && folder.isSharedWithUser(mAuthenticatedAccountId);
               if (isSharedFolder) {
-                int restrictedChangesForSharedFolders = Change.NAME;
+                int restrictedChangesForSharedFolders = Change.NAME | Change.COLOR | Change.FLAGS;
                 why &= ~restrictedChangesForSharedFolders;
               }
               if (why != 0) {

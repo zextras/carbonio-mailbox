@@ -427,4 +427,89 @@ class SharedFolderNotificationFilteringTest extends SoapTestSuite {
     grantRequest.setGrant(grant);
     getSoapClient().executeSoap(owner, new FolderActionRequest(grantRequest));
   }
+
+  /**
+   * Tests that a color change made by the grantee on the owner's shared folder (via delegated
+   * access) IS delivered back to the grantee as a notification.
+   *
+   * <p>When the grantee toggles a property on a shared/delegated folder themselves, the change
+   * notification must <em>not</em> be filtered out — the grantee needs the feedback to update its
+   * local state.
+   */
+  @Test
+  void colorChangeByGranteeOnSharedFolderIsNotFilteredOut() throws Exception {
+    // Create a mail folder in the owner's mailbox and share it with the grantee
+    var mailbox = mailboxManager.getMailboxByAccount(ownerAccount);
+    var mailFolder =
+        mailbox.createFolder(
+            null, "DelegatedMail", new Folder.FolderOptions().setDefaultView(Type.MESSAGE));
+    shareFolder(ownerAccount, granteeAccount, mailFolder.getId());
+    createMountpoint(granteeAccount, mailFolder, "Delegated Mail", Type.MESSAGE.toString());
+
+    // Grantee creates a session and clears the initial refresh
+    String sessionId = createSessionForGrantee();
+    acknowledgeRefresh(sessionId);
+
+    // Grantee changes the color of the owner's folder via delegated access.
+    // The grantee's existing session ID must be included so that the DelegateSession on the
+    // owner's mailbox is associated with the grantee's SoapSession and the OperationContext
+    // carries the grantee's session as `source`, which prevents filterNotifications from
+    // treating this as an owner-initiated change that must be suppressed.
+    final FolderActionSelector colorAction =
+        new FolderActionSelector(String.valueOf(mailFolder.getId()), "color");
+    colorAction.setColor((byte) 4);
+    // The notification is included in the same SOAP response that carries the FolderAction
+    // result — Zimbra piggy-backs pending notifications on every response when a session is
+    // active.  We therefore assert directly on this response.
+    final SoapResponse folderActionResponse =
+        getSoapClient()
+            .newSessionRequest(sessionId)
+            .setCaller(granteeAccount)
+            .setRequestedAccount(ownerAccount)
+            .setSoapBody(new FolderActionRequest(colorAction))
+            .execute();
+
+    Assertions.assertTrue(
+        folderActionResponse.body().contains("<notify"),
+        "Color changes made by the grantee on a shared folder via delegated access "
+            + "must NOT be filtered out from the grantee's notifications");
+  }
+
+  /**
+   * Tests that a flag change made by the grantee on the owner's shared folder (via delegated
+   * access) IS delivered back to the grantee as a notification.
+   */
+  @Test
+  void flagChangeByGranteeOnSharedFolderIsNotFilteredOut() throws Exception {
+    // Share owner's default calendar with the grantee
+    var userACalendar = getFirstCalendar(ownerAccount);
+    shareFolder(ownerAccount, granteeAccount, userACalendar.getId());
+    createMountpoint(granteeAccount, userACalendar, "Delegated Calendar", "appointment");
+
+    // Grantee creates a session and clears the initial refresh
+    String sessionId = createSessionForGrantee();
+    acknowledgeRefresh(sessionId);
+
+    // Grantee toggles the folder's checked flag on the owner's calendar via delegated access.
+    // Use "!check" (uncheck) to guarantee an actual FLAGS change — the default calendar is
+    // already CHECKED, so "check" would be a no-op that fires no notification.
+    // As with the color-change test, the grantee's session ID must be included so the
+    // DelegateSession's source check correctly identifies this as a self-initiated change.
+    // The notification is piggy-backed on the FolderAction response itself.
+    final FolderActionSelector uncheckAction =
+        new FolderActionSelector(userACalendar.getFolderIdAsString(), "!check");
+    final SoapResponse uncheckActionResponse =
+        getSoapClient()
+            .newSessionRequest(sessionId)
+            .setCaller(granteeAccount)
+            .setRequestedAccount(ownerAccount)
+            .setSoapBody(new FolderActionRequest(uncheckAction))
+            .execute();
+
+    // Grantee checks for notifications — the flags-change notification must be present
+    Assertions.assertTrue(
+        uncheckActionResponse.body().contains("<notify"),
+        "Flag (!check) changes made by the grantee on a shared folder via delegated access "
+            + "must NOT be filtered out from the grantee's notifications");
+  }
 }
