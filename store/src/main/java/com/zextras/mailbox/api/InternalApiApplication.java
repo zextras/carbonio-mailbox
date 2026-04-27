@@ -10,6 +10,8 @@ import com.zextras.mailbox.api.rest.resource.AccountResource;
 import com.zextras.mailbox.api.rest.resource.MailboxResource;
 import com.zextras.mailbox.api.rest.service.AccountService;
 import com.zextras.mailbox.api.rest.service.MailboxService;
+import com.zextras.mailbox.mcp.McpResource;
+import com.zextras.mailbox.mcp.McpToolRegistry;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.soap.SoapProvisioning;
@@ -48,6 +50,10 @@ public class InternalApiApplication extends Application {
 					}
 				});
 		final AccountService accountService = new AccountService(Provisioning::getInstance, mailboxService);
-		return Set.of(new MailboxResource(mailboxService, accountService), new AccountResource(accountService));
+		final McpToolRegistry mcpToolRegistry = McpToolRegistry.withAccountSearch(accountService);
+		return Set.of(
+				new MailboxResource(mailboxService, accountService),
+				new AccountResource(accountService),
+				new McpResource(mcpToolRegistry));
 	}
 }
