@@ -174,7 +174,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/SendNotificationResponse"
         "400":
-          description: Missing or empty subject or body
+          description: "Missing request body, or missing/empty subject or body"
           content:
             application/json:
               schema:
