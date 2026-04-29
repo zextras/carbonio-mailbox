@@ -66,6 +66,6 @@ public class MailNotificationResource {
     return value == null || value.isEmpty();
   }
 
-  public record SendNotificationResponse(long accepted) {
+  public record SendNotificationResponse(int accepted) {
   }
 }

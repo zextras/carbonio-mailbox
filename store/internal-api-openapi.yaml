@@ -291,7 +291,7 @@ components:
       properties:
         accepted:
           type: integer
-          format: int64
+          format: int32
     SendNotificationRequest:
       type: object
       properties:
