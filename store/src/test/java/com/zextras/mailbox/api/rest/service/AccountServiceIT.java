@@ -19,7 +19,7 @@ import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.OperationContext;
-import com.zimbra.cs.mailbox.acl.AclPushSerializer;
+import com.zimbra.cs.mailbox.acl.AclPushTask;
 import com.zextras.mailbox.util.MailboxServerExtension;
 import io.vavr.control.Try;
 import java.util.List;
@@ -129,12 +129,10 @@ class AccountServiceIT {
 
 	private static void shareRootFolder(Account owner, Account grantee) throws ServiceException {
 		Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(owner);
-		Folder rootFolder = mailbox.getFolderById(new OperationContext(owner), Mailbox.ID_FOLDER_USER_ROOT);
-		ACL.Grant grant = mailbox.grantAccess(
+		mailbox.grantAccess(
 				new OperationContext(owner), Mailbox.ID_FOLDER_USER_ROOT,
 				grantee.getId(), ACL.GRANTEE_USER, ACL.RIGHT_READ, null);
-		String serialized = AclPushSerializer.serialize(rootFolder, grant);
-		owner.addSharedItem(serialized);
+		AclPushTask.doWork();
 	}
 
 	private static void shareSubFolder(Account owner, Account grantee, String folderName)
@@ -143,10 +141,9 @@ class AccountServiceIT {
 		Folder folder = mailbox.createFolder(
 				new OperationContext(owner), folderName, Mailbox.ID_FOLDER_USER_ROOT,
 				new Folder.FolderOptions());
-		ACL.Grant grant = mailbox.grantAccess(
+		mailbox.grantAccess(
 				new OperationContext(owner), folder.getId(),
 				grantee.getId(), ACL.GRANTEE_USER, ACL.RIGHT_READ, null);
-		String serialized = AclPushSerializer.serialize(folder, grant);
-		owner.addSharedItem(serialized);
+		AclPushTask.doWork();
 	}
 }
