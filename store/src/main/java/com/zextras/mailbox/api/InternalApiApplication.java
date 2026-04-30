@@ -58,13 +58,6 @@ public class InternalApiApplication extends Application {
 					} catch (ServiceException e) {
 						throw new RuntimeException(e);
 					}
-				},
-				() -> {
-					try {
-						return SoapProvisioning.getAdminInstance();
-					} catch (ServiceException e) {
-						throw new RuntimeException(e);
-					}
 				});
 		return Set.of(
 				new MailboxResource(mailboxService, accountService),

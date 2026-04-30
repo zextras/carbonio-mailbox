@@ -29,7 +29,7 @@ class MailNotificationResourceIT {
 	private static final String ENDPOINT_PATH = "/accounts/mail/notifications";
 
 	@Test
-	void emptyRecipientsListReturns200WithZeroAccepted() throws Exception {
+	void emptyRecipients() throws Exception {
 		final String body = json(Map.of(
 				"subject", "Your storage is almost full",
 				"body", "<html><body>Quota warning</body></html>",
@@ -42,7 +42,7 @@ class MailNotificationResourceIT {
 	}
 
 	@Test
-	void missingRecipientsFieldReturns200WithZeroAccepted() throws Exception {
+	void missingRecipients() throws Exception {
 		final Map<String, Object> payload = new HashMap<>();
 		payload.put("subject", "Your storage is almost full");
 		payload.put("body", "<html><body>Quota warning</body></html>");
@@ -55,7 +55,7 @@ class MailNotificationResourceIT {
 	}
 
 	@Test
-	void missingSubjectReturns400() throws Exception {
+	void errorOnMissingSubject() throws Exception {
 		final Map<String, Object> payload = new HashMap<>();
 		payload.put("body", "<html><body>Quota warning</body></html>");
 		payload.put("recipients", List.of());
@@ -67,7 +67,7 @@ class MailNotificationResourceIT {
 	}
 
 	@Test
-	void emptySubjectReturns400() throws Exception {
+	void errorOnEmptySubject() throws Exception {
 		final String body = json(Map.of(
 				"subject", "",
 				"body", "<html><body>Quota warning</body></html>",
@@ -79,7 +79,7 @@ class MailNotificationResourceIT {
 	}
 
 	@Test
-	void missingBodyReturns400() throws Exception {
+	void errorOnMissingBody() throws Exception {
 		final Map<String, Object> payload = new HashMap<>();
 		payload.put("subject", "Your storage is almost full");
 		payload.put("recipients", List.of());
@@ -91,7 +91,7 @@ class MailNotificationResourceIT {
 	}
 
 	@Test
-	void emptyBodyReturns400() throws Exception {
+	void errorOnEmptyBody() throws Exception {
 		final String body = json(Map.of(
 				"subject", "Your storage is almost full",
 				"body", "",
@@ -103,7 +103,7 @@ class MailNotificationResourceIT {
 	}
 
 	@Test
-	void emptyJsonReturns400() throws Exception {
+	void errorOnEmptyJson() throws Exception {
 		final Response response = post("{}");
 
 		assertEquals(400, response.statusCode());

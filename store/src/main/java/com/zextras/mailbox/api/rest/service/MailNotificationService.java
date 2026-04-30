@@ -7,22 +7,26 @@
 package com.zextras.mailbox.api.rest.service;
 
 import com.zextras.mailbox.api.rest.resource.dto.SendNotificationRequest;
+import com.zimbra.client.ZMailbox;
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.zmime.ZMimeMessage;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.mailbox.DeliveryOptions;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mime.ParsedMessage;
+import com.zimbra.cs.service.AuthProvider;
+import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.cs.util.JMSession;
 import io.vavr.control.Try;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
@@ -34,17 +38,17 @@ public class MailNotificationService {
 
   private static final String CONTENT_TYPE_HTML_UTF8 = "text/html; charset=UTF-8";
   private static final String CHARSET_UTF8 = "UTF-8";
+  // Char codes match Flag.FlagInfo.UNREAD ('u') and Flag.FlagInfo.HIGH_PRIORITY ('!').
+  private static final String REMOTE_FLAGS = "u!";
+  private static final int REMOTE_TIMEOUT_MS = 5000;
 
   private final Supplier<Provisioning> provisioningSupplier;
   private final Supplier<MailboxManager> mailboxManagerSupplier;
-  private final Supplier<SoapProvisioning> soapProvisioningSupplier;
 
   public MailNotificationService(Supplier<Provisioning> provisioningSupplier,
-                                 Supplier<MailboxManager> mailboxManagerSupplier,
-                                 Supplier<SoapProvisioning> soapProvisioningSupplier) {
+                                 Supplier<MailboxManager> mailboxManagerSupplier) {
     this.provisioningSupplier = provisioningSupplier;
     this.mailboxManagerSupplier = mailboxManagerSupplier;
-    this.soapProvisioningSupplier = soapProvisioningSupplier;
   }
 
   public Try<Integer> send(SendNotificationRequest request) {
@@ -84,9 +88,23 @@ public class MailNotificationService {
     mailboxManagerSupplier.get().getMailboxByAccount(account).addMessage(null, parsed, options, null);
   }
 
-  private void deliverRemotely(Account account, String subject, String body) {
-    ZimbraLog.mailbox.warn("Notification skipped: remote delivery not yet implemented for accountId=%s",
-        account.getId());
+  private void deliverRemotely(Account account, String subject, String body)
+      throws ServiceException, MessagingException, IOException {
+    final MimeMessage message = buildMessage(account, subject, body);
+    final String content = serializeRfc822(message);
+    final ZMailbox.Options options = new ZMailbox.Options();
+    options.setNoSession(true);
+    options.setAuthToken(AuthProvider.getAuthToken(account).toZAuthToken());
+    options.setUri(AccountUtil.getSoapUri(account));
+    options.setTimeout(REMOTE_TIMEOUT_MS);
+    final ZMailbox zMbox = new ZMailbox(options);
+    zMbox.addMessage(
+        Integer.toString(Mailbox.ID_FOLDER_INBOX),
+        REMOTE_FLAGS,
+        null,
+        0,
+        content,
+        false);
   }
 
   private static MimeMessage buildMessage(Account account, String subject, String body)
@@ -98,6 +116,12 @@ public class MailNotificationService {
     message.setSentDate(new Date());
     message.setContent(body, CONTENT_TYPE_HTML_UTF8);
     return message;
+  }
+
+  private static String serializeRfc822(MimeMessage message) throws MessagingException, IOException {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    message.writeTo(out);
+    return out.toString(StandardCharsets.UTF_8);
   }
 
   private static List<String> recipientsOf(SendNotificationRequest request) {
