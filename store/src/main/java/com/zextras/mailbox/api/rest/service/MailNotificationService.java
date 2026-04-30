@@ -38,7 +38,9 @@ public class MailNotificationService {
 
   private static final String CONTENT_TYPE_HTML_UTF8 = "text/html; charset=UTF-8";
   private static final String CHARSET_UTF8 = "UTF-8";
-  private static final int NOTIFICATION_FLAGS = Flag.BITMASK_UNREAD | Flag.BITMASK_HIGH_PRIORITY;
+  // Mailbox.addMessage strips HIGH_PRIORITY from caller flags and recomputes priority
+  // from the message's Importance / X-Priority headers; see buildMessage.
+  private static final int NOTIFICATION_FLAGS = Flag.BITMASK_UNREAD;
   private static final String NOTIFICATION_FLAGS_STRING = Flag.toString(NOTIFICATION_FLAGS);
   private static final int REMOTE_TIMEOUT_MS = 5000;
 
@@ -114,6 +116,7 @@ public class MailNotificationService {
     message.setRecipient(RecipientType.TO, new JavaMailInternetAddress(account.getName()));
     message.setSubject(subject, CHARSET_UTF8);
     message.setSentDate(new Date());
+    message.setHeader("Importance", "high");
     message.setContent(body, CONTENT_TYPE_HTML_UTF8);
     return message;
   }
