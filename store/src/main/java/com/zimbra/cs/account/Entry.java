@@ -213,7 +213,88 @@ public abstract class Entry implements ToZJSONObject, AttributeEntry {
       v = getValueByRealAttrName(name, mSecondaryDefaults);
       if (v != null) return v;
     }
-    return null;
+
+    // [CO-3098] Final fallback: schema-declared default for carbonio*/zimbra* attrs
+    // when neither the entry nor its inheritance chain holds a value. Scoped by
+    // prefix so attributes from unrelated namespaces are unaffected.
+    return getSchemaDefault(name);
+  }
+
+  private static final String[] SCHEMA_DEFAULT_PREFIXES = {"carbonio", "zimbra"};
+
+  private static boolean hasSchemaDefaultPrefix(String name) {
+    if (name == null) return false;
+    String lowered = name.toLowerCase();
+    for (String prefix : SCHEMA_DEFAULT_PREFIXES) {
+      if (lowered.startsWith(prefix)) return true;
+    }
+    return false;
+  }
+
+  private Object getSchemaDefault(String name) {
+    if (!hasSchemaDefaultPrefix(name)) return null;
+    AttributeManager attrMgr = getAttributeManager();
+    if (attrMgr == null) return null;
+    AttributeInfo info = attrMgr.getAttributeInfo(name);
+    if (info == null) return null;
+    if (!hasSchemaDefaultPrefix(info.getName())) return null;
+    return buildSchemaDefault(info);
+  }
+
+  private List<String> pickSchemaDefaultValues(AttributeInfo info) {
+    switch (getEntryType()) {
+      case ACCOUNT:
+      case CALRESOURCE:
+      case COS:
+        return info.getDefaultCosValues();
+      case DOMAIN:
+        return info.hasFlag(AttributeFlag.domainInherited)
+            ? info.getGlobalConfigValues()
+            : null;
+      case SERVER:
+        return info.hasFlag(AttributeFlag.serverInherited)
+            ? info.getGlobalConfigValues()
+            : null;
+      case GLOBALCONFIG:
+        return info.getGlobalConfigValues();
+      default:
+        return null;
+    }
+  }
+
+  // [CO-3098] Overlay schema-declared defaults for carbonio*/zimbra* attributes that
+  // the entry doesn't already carry. Mirrors the fallback in getAttrDefault so that
+  // map-style consumers (zmprov gc, SOAP responses, ...) see the same default value
+  // getAttr would return for the same attribute.
+  private void addSchemaDefaults(Map<String, Object> attrs) {
+    AttributeManager attrMgr = getAttributeManager();
+    if (attrMgr == null) return;
+    Map<String, AttributeInfo> all = attrMgr.getmAttrs();
+    if (all == null || all.isEmpty()) return;
+
+    Set<String> existing = new HashSet<>();
+    for (String key : attrs.keySet()) {
+      existing.add(key.toLowerCase());
+    }
+
+    for (AttributeInfo info : all.values()) {
+      String name = info.getName();
+      if (!hasSchemaDefaultPrefix(name)) continue;
+      if (existing.contains(name.toLowerCase())) continue;
+      Object value = buildSchemaDefault(info);
+      if (value != null) {
+        attrs.put(name, value);
+      }
+    }
+  }
+
+  private Object buildSchemaDefault(AttributeInfo info) {
+    List<String> values = pickSchemaDefaultValues(info);
+    if (values == null || values.isEmpty()) return null;
+    if (info.getCardinality() == AttributeCardinality.single) {
+      return values.get(0);
+    }
+    return values.toArray(new String[0]);
   }
 
   private Object getValueByRealAttrName(String attrName, Map<String, Object> map) {
@@ -332,10 +413,18 @@ public abstract class Entry implements ToZJSONObject, AttributeEntry {
       if (includeEphemeral) {
         attrs.putAll(getEphemeralAttrs());
       }
+      addSchemaDefaults(attrs);
       return attrs;
     } else if (includeEphemeral) {
       Map<String, Object> attrs = getEphemeralAttrs();
       attrs.putAll(mAttrs);
+      if (applyDefaults) {
+        addSchemaDefaults(attrs);
+      }
+      return attrs;
+    } else if (applyDefaults) {
+      Map<String, Object> attrs = new HashMap<>(mAttrs);
+      addSchemaDefaults(attrs);
       return attrs;
     } else {
       return mAttrs;
