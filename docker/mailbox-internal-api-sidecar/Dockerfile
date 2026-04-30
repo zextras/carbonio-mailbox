@@ -10,7 +10,6 @@ COPY packages/appserver-service/carbonio-mailbox-internal-api-policies.json     
 
 # Setup script
 COPY packages/appserver-service/carbonio-mailbox-internal-api /usr/local/bin/carbonio-mailbox-internal-api
-RUN chmod +x /usr/local/bin/carbonio-mailbox-internal-api
 
 ENV SERVICE_NAME=carbonio-mailbox-internal-api
 ENV SETUP_SCRIPT="carbonio-mailbox-internal-api setup"

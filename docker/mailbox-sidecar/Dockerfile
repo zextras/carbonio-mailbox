@@ -10,7 +10,6 @@ COPY packages/appserver-service/carbonio-mailbox-policies.json         /etc/carb
 
 # Setup script
 COPY packages/appserver-service/carbonio-mailbox /usr/local/bin/carbonio-mailbox
-RUN chmod +x /usr/local/bin/carbonio-mailbox
 
 ENV SERVICE_NAME=carbonio-mailbox
 ENV SETUP_SCRIPT="carbonio-mailbox setup"
