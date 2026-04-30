@@ -1,4 +1,4 @@
-FROM registry.dev.zextras.com/dev/carbonio-sidecar:latest
+FROM registry.dev.zextras.com/dev/carbonio-sidecar:devel
 
 # Service registration
 COPY packages/appserver-service/carbonio-mailbox-admin.hcl /consul/config/
@@ -10,7 +10,6 @@ COPY packages/appserver-service/carbonio-mailbox-admin-policies.json         /et
 
 # Setup script
 COPY packages/appserver-service/carbonio-mailbox-admin /usr/local/bin/carbonio-mailbox-admin
-RUN chmod +x /usr/local/bin/carbonio-mailbox-admin
 
 ENV SERVICE_NAME=carbonio-mailbox-admin
 ENV SETUP_SCRIPT="carbonio-mailbox-admin setup"
