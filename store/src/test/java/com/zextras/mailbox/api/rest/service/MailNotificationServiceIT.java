@@ -13,6 +13,7 @@ import com.zextras.mailbox.api.rest.resource.dto.SendNotificationRequest;
 import com.zextras.mailbox.util.MailboxServerExtension;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.MailItem;
@@ -20,7 +21,9 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Message;
 import io.vavr.control.Try;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import javax.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
@@ -49,7 +52,7 @@ class MailNotificationServiceIT {
 	}
 
 	@Test
-	void deliversNotificationToInboxWithExpectedHeadersBodyAndFlags() throws Exception {
+	void notificationLandsInInboxAsHighPriorityMessage() throws Exception {
 		final Account recipient = server.getAccountFactory().create();
 		final String subject = "Your storage is almost full";
 		final String body = "<html><body>Quota warning</body></html>";
@@ -57,45 +60,59 @@ class MailNotificationServiceIT {
 		final Try<Integer> result = service.send(
 				new SendNotificationRequest(subject, body, List.of(recipient.getId())));
 
+		final List<Message> inbox = inboxMessagesOf(recipient);
+		final Message delivered = inbox.get(0);
+		final MimeMessage mime = delivered.getMimeMessage();
 		assertTrue(result.isSuccess());
 		assertEquals(1, result.get());
-
-		final List<Message> inbox = inboxMessagesOf(recipient);
 		assertEquals(1, inbox.size());
-
-		final Message delivered = inbox.get(0);
 		assertEquals(subject, delivered.getSubject());
-		assertEquals("postmaster@test.com", delivered.getSender());
+		assertEquals("postmaster@" + recipient.getDomainName(), delivered.getSender());
 		assertTrue(delivered.isUnread());
 		assertTrue(delivered.isTagged(Flag.FlagInfo.HIGH_PRIORITY));
-
-		final MimeMessage mime = delivered.getMimeMessage();
-		assertTrue(mime.getContentType().toLowerCase().startsWith("text/html"));
+		assertEquals("text/html; charset=UTF-8", mime.getContentType());
 		assertEquals(recipient.getName(), mime.getRecipients(MimeMessage.RecipientType.TO)[0].toString());
 		assertEquals(body, ((String) mime.getContent()).trim());
 	}
 
 	@Test
-	void deliversToEachRecipientWhenMultiple() throws Exception {
+	void eachRecipientReceivesNotification() throws Exception {
 		final Account first = server.getAccountFactory().create();
 		final Account second = server.getAccountFactory().create();
+		final String subject = "shared subject";
 
 		final Try<Integer> result = service.send(new SendNotificationRequest(
-				"subj", "<p>body</p>", List.of(first.getId(), second.getId())));
+				subject, "<p>body</p>", List.of(first.getId(), second.getId())));
 
 		assertTrue(result.isSuccess());
 		assertEquals(2, result.get());
-		assertEquals(1, inboxMessagesOf(first).size());
-		assertEquals(1, inboxMessagesOf(second).size());
+		assertEquals(subject, onlyInboxMessageOf(first).getSubject());
+		assertEquals(subject, onlyInboxMessageOf(second).getSubject());
 	}
 
 	@Test
-	void skipsUnknownRecipientButStillDeliversToOthers() throws Exception {
-		final Account recipient = server.getAccountFactory().create();
+	void senderDomainMatchesRecipientDomain() throws Exception {
+		final Account first = createAccountOnNewDomain();
+		final Account second = createAccountOnNewDomain();
+		final Account third = createAccountOnNewDomain();
 
 		final Try<Integer> result = service.send(new SendNotificationRequest(
+				"subj", "<p>body</p>", List.of(first.getId(), second.getId(), third.getId())));
+
+		assertTrue(result.isSuccess());
+		assertEquals("postmaster@" + first.getDomainName(), onlyInboxMessageOf(first).getSender());
+		assertEquals("postmaster@" + second.getDomainName(), onlyInboxMessageOf(second).getSender());
+		assertEquals("postmaster@" + third.getDomainName(), onlyInboxMessageOf(third).getSender());
+	}
+
+	@Test
+	void unknownRecipientDoesNotBlockOthers() throws Exception {
+		final Account recipient = server.getAccountFactory().create();
+
+		String unknownAccountId = "00000000-0000-0000-0000-000000000000";
+		final Try<Integer> result = service.send(new SendNotificationRequest(
 				"subj", "<p>body</p>",
-				List.of("00000000-0000-0000-0000-000000000000", recipient.getId())));
+				List.of(unknownAccountId, recipient.getId())));
 
 		assertTrue(result.isSuccess());
 		assertEquals(1, inboxMessagesOf(recipient).size());
@@ -107,5 +124,17 @@ class MailNotificationServiceIT {
 				.stream()
 				.map(Message.class::cast)
 				.toList();
+	}
+
+	private static Message onlyInboxMessageOf(Account account) throws ServiceException {
+		final List<Message> inbox = inboxMessagesOf(account);
+		assertEquals(1, inbox.size());
+		return inbox.getFirst();
+	}
+
+	private static Account createAccountOnNewDomain() throws ServiceException {
+		final Domain domain = Provisioning.getInstance()
+				.createDomain(UUID.randomUUID() + ".com", new HashMap<>());
+		return server.getAccountFactory().withDomain(domain.getName()).create();
 	}
 }
