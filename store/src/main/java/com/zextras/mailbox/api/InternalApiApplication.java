@@ -7,8 +7,10 @@
 package com.zextras.mailbox.api;
 
 import com.zextras.mailbox.api.rest.resource.AccountResource;
+import com.zextras.mailbox.api.rest.resource.MailNotificationResource;
 import com.zextras.mailbox.api.rest.resource.MailboxResource;
 import com.zextras.mailbox.api.rest.service.AccountService;
+import com.zextras.mailbox.api.rest.service.MailNotificationService;
 import com.zextras.mailbox.api.rest.service.MailboxService;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
@@ -48,6 +50,18 @@ public class InternalApiApplication extends Application {
 					}
 				});
 		final AccountService accountService = new AccountService(Provisioning::getInstance, mailboxService);
-		return Set.of(new MailboxResource(mailboxService, accountService), new AccountResource(accountService));
+		final MailNotificationService mailNotificationService = new MailNotificationService(
+				Provisioning::getInstance,
+				() -> {
+					try {
+						return MailboxManager.getInstance();
+					} catch (ServiceException e) {
+						throw new RuntimeException(e);
+					}
+				});
+		return Set.of(
+				new MailboxResource(mailboxService, accountService),
+				new AccountResource(accountService),
+				new MailNotificationResource(mailNotificationService));
 	}
 }

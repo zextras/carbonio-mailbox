@@ -157,6 +157,34 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /accounts/mail/notifications:
+    post:
+      summary: Send notification email to multiple accounts
+      operationId: sendNotifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendNotificationRequest"
+      responses:
+        "200":
+          description: Request processed; per-recipient outcomes are server-side only
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SendNotificationResponse"
+        "400":
+          description: "Missing request body, or missing/empty subject or body"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /accounts/mail/usage/{accountId}:
     get:
       summary: Get Mailbox usage
@@ -258,6 +286,23 @@ components:
           type: string
         cosId:
           type: string
+    SendNotificationResponse:
+      type: object
+      properties:
+        accepted:
+          type: integer
+          format: int32
+    SendNotificationRequest:
+      type: object
+      properties:
+        subject:
+          type: string
+        body:
+          type: string
+        recipients:
+          type: array
+          items:
+            type: string
     MailUsageResponse:
       type: object
       properties:
