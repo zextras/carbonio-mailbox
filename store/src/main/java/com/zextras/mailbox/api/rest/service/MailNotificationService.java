@@ -38,8 +38,8 @@ public class MailNotificationService {
 
   private static final String CONTENT_TYPE_HTML_UTF8 = "text/html; charset=UTF-8";
   private static final String CHARSET_UTF8 = "UTF-8";
-  // Char codes match Flag.FlagInfo.UNREAD ('u') and Flag.FlagInfo.HIGH_PRIORITY ('!').
-  private static final String REMOTE_FLAGS = "u!";
+  private static final int NOTIFICATION_FLAGS = Flag.BITMASK_UNREAD | Flag.BITMASK_HIGH_PRIORITY;
+  private static final String NOTIFICATION_FLAGS_STRING = Flag.toString(NOTIFICATION_FLAGS);
   private static final int REMOTE_TIMEOUT_MS = 5000;
 
   private final Supplier<Provisioning> provisioningSupplier;
@@ -84,7 +84,7 @@ public class MailNotificationService {
     final ParsedMessage parsed = new ParsedMessage(message, System.currentTimeMillis(), false);
     final DeliveryOptions options = new DeliveryOptions()
         .setFolderId(Mailbox.ID_FOLDER_INBOX)
-        .setFlags(Flag.BITMASK_UNREAD | Flag.BITMASK_HIGH_PRIORITY);
+        .setFlags(NOTIFICATION_FLAGS);
     mailboxManagerSupplier.get().getMailboxByAccount(account).addMessage(null, parsed, options, null);
   }
 
@@ -100,7 +100,7 @@ public class MailNotificationService {
     final ZMailbox zMbox = new ZMailbox(options);
     zMbox.addMessage(
         Integer.toString(Mailbox.ID_FOLDER_INBOX),
-        REMOTE_FLAGS,
+        NOTIFICATION_FLAGS_STRING,
         null,
         0,
         content,
