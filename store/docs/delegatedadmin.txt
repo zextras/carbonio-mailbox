@@ -1152,7 +1152,7 @@ TODO: document the list of all admin console UI components.
     granted to the account or any admin groups it belongs.
 
     To use the new pure ACL based access manager, do:
-        zmlocalconfig -e zimbra_class_accessmanager=com.zimbra.cs.account.accesscontrol.ACLAccessManager
+        configd localconfig -e zimbra_class_accessmanager=com.zimbra.cs.account.accesscontrol.ACLAccessManager
 
     then restart the server.
 
