@@ -15,12 +15,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
@@ -31,7 +31,8 @@ import com.zimbra.cs.account.Provisioning;
  */
 public abstract class TcpServer implements Runnable, Server {
     private Log log;
-    private ThreadPoolExecutor pooledExecutor;
+    private ExecutorService pooledExecutor;
+    private final AtomicInteger activeThreadCount = new AtomicInteger(0);
     private ServerSocket serverSocket;
     private List<ProtocolHandler> activeHandlers;
     private boolean sslEnabled;
@@ -58,11 +59,12 @@ public abstract class TcpServer implements Runnable, Server {
             maxThreads = 10;
         }
 
-        // Core pool size is 1, to limit the number of idle threads in thread dumps.
-        // Idle threads are aged out of the pool after X minutes.
-        int keepAlive = config != null ? config.getThreadKeepAliveTime() : 2 * 60;
-        pooledExecutor = new ThreadPoolExecutor(1, maxThreads, keepAlive, TimeUnit.SECONDS,
-            new SynchronousQueue<>(), new TcpThreadFactory(getName(), false, Thread.NORM_PRIORITY));
+        // Virtual threads: one cheap virtual thread per connection; no pool ceiling needed.
+        // Each connection blocks on I/O and is exactly the pattern Loom was designed for.
+        ThreadFactory vtf = Thread.ofVirtual()
+            .name(getName() + "-vt-", 0)
+            .factory();
+        pooledExecutor = Executors.newThreadPerTaskExecutor(vtf);
 
         // TODO a linked list is probably the wrong datastructure here
         // TODO write tests with multiple concurrent client
@@ -112,7 +114,7 @@ public abstract class TcpServer implements Runnable, Server {
     }
 
     public int numThreads() {
-        return pooledExecutor.getPoolSize();
+        return activeThreadCount.get();
     }
 
     private void shutdownActiveHandlers(boolean graceful) {
@@ -182,41 +184,21 @@ public abstract class TcpServer implements Runnable, Server {
     public void run() {
         Thread.currentThread().setName(getName());
 
-        log.info("Starting accept loop: %d core threads, %d max threads.",
-            pooledExecutor.getCorePoolSize(), pooledExecutor.getMaximumPoolSize());
+        log.info("Starting accept loop with virtual threads.");
 
         while (!shutdownRequested) {
             try {
                 Socket connection = serverSocket.accept();
-                warnIfNecessary();
                 ProtocolHandler handler = newProtocolHandler();
                 handler.setConnection(connection);
-                try {
-                    pooledExecutor.execute(handler);
-                } catch (RejectedExecutionException e) {
-                    log.error("cannot handle connection; thread pool exhausted", e);
-                    // send a "server busy" message to the client before dropping connection
-                    //   (but skip if client expects an SSL handshake, which we can't do here)
-                    if (config != null && !isSslEnabled()) {
-                        String message = config.getConnectionRejected();
-                        if (message != null) {
-                            try {
-                                OutputStream os = connection.getOutputStream();
-                                if (os != null) {
-                                    os.write((message + "\r\n").getBytes());
-                                    os.flush();
-                                }
-                            } catch (Throwable t) {
-                                // ignore any errors while notifying unhandled connection
-                            }
-                        }
-                    }
+                pooledExecutor.execute(() -> {
+                    activeThreadCount.incrementAndGet();
                     try {
-                        connection.close();
-                    } catch (Throwable t) {
-                        // ignore any errors while dropping unhandled connection
+                        handler.run();
+                    } finally {
+                        activeThreadCount.decrementAndGet();
                     }
-                }
+                });
             } catch (Throwable e) {
                 if (e instanceof SocketException && shutdownRequested) {
                     break; // ignore SocketException: Socket closed
@@ -232,19 +214,9 @@ public abstract class TcpServer implements Runnable, Server {
         log.info("finished accept loop");
     }
 
-    private void warnIfNecessary() {
-        if (log.isWarnEnabled()) {
-            int warnPercent = LC.thread_pool_warn_percent.intValue();
-            // Add 1 because the thread for this connection is not active yet.
-            int active = pooledExecutor.getActiveCount() + 1;
-            int max = pooledExecutor.getMaximumPoolSize();
-            int utilization = active * 100 / max;
-            if (utilization >= warnPercent) {
-                log.warn("Thread pool is %d%% utilized.  %d out of %d threads in use.",
-                    utilization, active, max);
-            }
-        }
-    }
+    // warnIfNecessary removed: virtual threads have no fixed pool ceiling,
+    // so utilization percentage is not meaningful. Active connection count
+    // is tracked via activeThreadCount and exposed through numThreads().
 
     protected abstract ProtocolHandler newProtocolHandler();
 
