@@ -12,8 +12,9 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.mailbox.lock.DebugZLock;
 import com.zimbra.cs.mailbox.lock.ZLock;
-import java.util.EmptyStackException;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 import org.apache.curator.framework.recipes.locks.InterProcessSemaphoreMutex;
 
@@ -29,7 +30,7 @@ import org.apache.curator.framework.recipes.locks.InterProcessSemaphoreMutex;
 public final class MailboxLock {
   private final ZLock zLock = DebugConfig.debugMailboxLock ? new DebugZLock() : new ZLock();
   private InterProcessSemaphoreMutex dLock = null;
-  private final Stack<Boolean> lockStack = new Stack<>();
+  private final Deque<Boolean> lockStack = new ArrayDeque<>();
   private Mailbox mbox;
 
   public MailboxLock(String id, Mailbox mbox) {
@@ -203,7 +204,7 @@ public final class MailboxLock {
     Boolean write = false;
     try {
       write = lockStack.pop();
-    } catch (EmptyStackException ese) {
+    } catch (NoSuchElementException ese) {
       // should only occur if locked failed; i.e. tryLock() returned error
       // or if call site has unbalanced lock/release
       ZimbraLog.mailbox.trace("release when not locked?");

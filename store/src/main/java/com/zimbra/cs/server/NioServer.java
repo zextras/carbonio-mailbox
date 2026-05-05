@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -69,10 +70,17 @@ public abstract class NioServer implements Server {
     private static SSLContext sslContext;
     private static String[] mSslEnabledCipherSuites;
 
-    // There is one IoProcessor pool shared by all protocol handlers
+    // There is one IoProcessor pool shared by all protocol handlers.
+    // Bounded to prevent unbounded thread growth under connection storms.
+    private static final int NIO_PROCESSOR_THREADS =
+        Math.max(2, Runtime.getRuntime().availableProcessors() * 2);
     private static final IoProcessor<NioSession> IO_PROCESSOR_POOL =
-        new SimpleIoProcessorPool<>(NioProcessor.class, Executors.newCachedThreadPool(
-            new ThreadFactoryBuilder().setNameFormat("NioProcessor-%d").build()));
+        new SimpleIoProcessorPool<>(NioProcessor.class, new ThreadPoolExecutor(
+            NIO_PROCESSOR_THREADS, NIO_PROCESSOR_THREADS * 2,
+            60L, TimeUnit.SECONDS,
+            new LinkedBlockingQueue<>(10_000),
+            new ThreadFactoryBuilder().setNameFormat("NioProcessor-%d").setDaemon(true).build(),
+            new ThreadPoolExecutor.CallerRunsPolicy()));
 
     /**
      * Extensions may add a custom {@link IoFilter} to the filter chain. Must call before the server starts.
