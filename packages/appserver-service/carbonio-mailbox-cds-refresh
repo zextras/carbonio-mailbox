@@ -1,0 +1,52 @@
+#!/bin/bash
+# carbonio-mailbox-cds-refresh
+# Regenerates the AppCDS archive when the mailbox jar has changed.
+# Called as ExecStartPre by carbonio-appserver.service.
+# Exits 0 always so a CDS failure never blocks startup.
+
+set -euo pipefail
+
+JAVA=/opt/zextras/common/bin/java
+CP="/opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/*"
+ARCHIVE=/opt/zextras/mailbox/mailbox-cds.jsa
+CLASSLIST=/opt/zextras/mailbox/mailbox-cds.classlist
+STAMP=/opt/zextras/mailbox/mailbox-cds.stamp
+JAR=/opt/zextras/mailbox/jars/mailbox.jar
+
+# Rebuild if archive is missing or jar is newer than the stamp
+if [[ -f "$ARCHIVE" && -f "$STAMP" && "$JAR" -ot "$STAMP" ]]; then
+  exit 0
+fi
+
+echo "carbonio-mailbox-cds-refresh: rebuilding AppCDS archive..."
+
+# Step 1: dump class list
+"$JAVA" \
+  --enable-preview \
+  --enable-native-access=ALL-UNNAMED \
+  -Dfile.encoding=UTF-8 \
+  -XX:DumpLoadedClassList="$CLASSLIST" \
+  -cp "$CP" \
+  com.zextras.mailbox.Mailbox --dry-run 2>/dev/null || true
+
+if [[ ! -s "$CLASSLIST" ]]; then
+  echo "carbonio-mailbox-cds-refresh: class list empty, skipping archive creation"
+  exit 0
+fi
+
+# Step 2: create archive
+"$JAVA" \
+  --enable-preview \
+  --enable-native-access=ALL-UNNAMED \
+  -Dfile.encoding=UTF-8 \
+  -Xshare:dump \
+  -XX:SharedClassListFile="$CLASSLIST" \
+  -XX:SharedArchiveFile="$ARCHIVE" \
+  -cp "$CP" 2>/dev/null || {
+    echo "carbonio-mailbox-cds-refresh: archive creation failed, continuing without CDS"
+    rm -f "$ARCHIVE"
+    exit 0
+  }
+
+touch "$STAMP"
+echo "carbonio-mailbox-cds-refresh: archive created at $ARCHIVE"

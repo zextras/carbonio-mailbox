@@ -90,6 +90,10 @@ _package() {
   install -Dm644 packages/appserver-service/carbonio-mailbox-internal-api-service-protocol.json \
     "${pkgdir}/etc/carbonio/mailbox-internal-api/service-discover/service-protocol.json"
 
+  # AppCDS refresh helper
+  install -Dm755 packages/appserver-service/carbonio-mailbox-cds-refresh \
+    "${pkgdir}/opt/zextras/libexec/carbonio-mailbox-cds-refresh"
+
   # systemd sysusers.d
   install -Dm644 packages/appserver-service/systemd-sysuser.conf \
     "${pkgdir}/usr/lib/sysusers.d/carbonio-appserver-service.conf"
@@ -160,6 +164,9 @@ postinst() {
     systemctl enable carbonio-mailbox-nslookup-sidecar.service &>/dev/null || :
     systemctl enable carbonio-mailbox-internal-api-sidecar.service &>/dev/null || :
   fi
+
+  # Pre-build AppCDS archive for faster startup (best-effort, non-blocking)
+  /opt/zextras/libexec/carbonio-mailbox-cds-refresh &>/dev/null || :
 
   echo "======================================================"
   echo "Carbonio Mailbox Service installed successfully!"
