@@ -12,11 +12,19 @@ import java.net.URL;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.Clob;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.NClob;
+import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
 import java.sql.Ref;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLWarning;
+import java.sql.SQLXML;
+import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -26,10 +34,7 @@ import java.util.List;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.util.Zimbra;
 
-import org.apache.commons.dbcp.DelegatingPreparedStatement;
-import org.apache.commons.dbcp.DelegatingConnection;
-
-class DebugPreparedStatement extends DelegatingPreparedStatement {
+class DebugPreparedStatement implements PreparedStatement {
 
     private static final int MAX_STRING_LENGTH = 1024;
     private static long sSlowSqlThreshold = Long.MAX_VALUE;
@@ -55,8 +60,7 @@ class DebugPreparedStatement extends DelegatingPreparedStatement {
     }
     private List<Object> mParams = new AutoSizeList<>();
     
-    DebugPreparedStatement(DelegatingConnection conn, PreparedStatement stmt, String sql) {
-        super(conn, stmt);
+    DebugPreparedStatement(DebugConnection conn, PreparedStatement stmt, String sql) {
         mStmt = stmt;
         mSql = sql;
     }
@@ -496,5 +500,286 @@ class DebugPreparedStatement extends DelegatingPreparedStatement {
         }
         log();
         return result;
+    }
+
+    // Delegate all other PreparedStatement interface methods to mStmt
+    
+    @Override
+    public ResultSetMetaData getMetaData() throws SQLException {
+        return mStmt.getMetaData();
+    }
+
+    @Override
+    public ParameterMetaData getParameterMetaData() throws SQLException {
+        return mStmt.getParameterMetaData();
+    }
+
+    @Override
+    public void addBatch() throws SQLException {
+        mStmt.addBatch();
+    }
+
+    @Override
+    public void setRowId(int parameterIndex, RowId x) throws SQLException {
+        mStmt.setRowId(parameterIndex, x);
+    }
+
+    @Override
+    public void setNString(int parameterIndex, String value) throws SQLException {
+        mStmt.setNString(parameterIndex, value);
+    }
+
+    @Override
+    public void setNCharacterStream(int parameterIndex, Reader value, long length) throws SQLException {
+        mStmt.setNCharacterStream(parameterIndex, value, length);
+    }
+
+    @Override
+    public void setNClob(int parameterIndex, NClob value) throws SQLException {
+        mStmt.setNClob(parameterIndex, value);
+    }
+
+    @Override
+    public void setClob(int parameterIndex, Reader reader, long length) throws SQLException {
+        mStmt.setClob(parameterIndex, reader, length);
+    }
+
+    @Override
+    public void setBlob(int parameterIndex, InputStream inputStream, long length) throws SQLException {
+        mStmt.setBlob(parameterIndex, inputStream, length);
+    }
+
+    @Override
+    public void setNClob(int parameterIndex, Reader reader, long length) throws SQLException {
+        mStmt.setNClob(parameterIndex, reader, length);
+    }
+
+    @Override
+    public void setSQLXML(int parameterIndex, SQLXML xmlObject) throws SQLException {
+        mStmt.setSQLXML(parameterIndex, xmlObject);
+    }
+
+
+
+    @Override
+    public void setAsciiStream(int parameterIndex, InputStream x, long length) throws SQLException {
+        mStmt.setAsciiStream(parameterIndex, x, length);
+    }
+
+    @Override
+    public void setBinaryStream(int parameterIndex, InputStream x, long length) throws SQLException {
+        mStmt.setBinaryStream(parameterIndex, x, length);
+    }
+
+    @Override
+    public void setCharacterStream(int parameterIndex, Reader reader, long length) throws SQLException {
+        mStmt.setCharacterStream(parameterIndex, reader, length);
+    }
+
+    @Override
+    public void setAsciiStream(int parameterIndex, InputStream x) throws SQLException {
+        mStmt.setAsciiStream(parameterIndex, x);
+    }
+
+    @Override
+    public void setBinaryStream(int parameterIndex, InputStream x) throws SQLException {
+        mStmt.setBinaryStream(parameterIndex, x);
+    }
+
+    @Override
+    public void setCharacterStream(int parameterIndex, Reader reader) throws SQLException {
+        mStmt.setCharacterStream(parameterIndex, reader);
+    }
+
+    @Override
+    public void setNCharacterStream(int parameterIndex, Reader value) throws SQLException {
+        mStmt.setNCharacterStream(parameterIndex, value);
+    }
+
+    @Override
+    public void setClob(int parameterIndex, Reader reader) throws SQLException {
+        mStmt.setClob(parameterIndex, reader);
+    }
+
+    @Override
+    public void setBlob(int parameterIndex, InputStream inputStream) throws SQLException {
+        mStmt.setBlob(parameterIndex, inputStream);
+    }
+
+    @Override
+    public void setNClob(int parameterIndex, Reader reader) throws SQLException {
+        mStmt.setNClob(parameterIndex, reader);
+    }
+
+    // Statement interface methods
+    
+    @Override
+    public int getMaxFieldSize() throws SQLException {
+        return mStmt.getMaxFieldSize();
+    }
+
+    @Override
+    public void setMaxFieldSize(int max) throws SQLException {
+        mStmt.setMaxFieldSize(max);
+    }
+
+    @Override
+    public int getMaxRows() throws SQLException {
+        return mStmt.getMaxRows();
+    }
+
+    @Override
+    public void setMaxRows(int max) throws SQLException {
+        mStmt.setMaxRows(max);
+    }
+
+    @Override
+    public void setEscapeProcessing(boolean enable) throws SQLException {
+        mStmt.setEscapeProcessing(enable);
+    }
+
+    @Override
+    public int getQueryTimeout() throws SQLException {
+        return mStmt.getQueryTimeout();
+    }
+
+    @Override
+    public void setQueryTimeout(int seconds) throws SQLException {
+        mStmt.setQueryTimeout(seconds);
+    }
+
+    @Override
+    public void cancel() throws SQLException {
+        mStmt.cancel();
+    }
+
+    @Override
+    public SQLWarning getWarnings() throws SQLException {
+        return mStmt.getWarnings();
+    }
+
+    @Override
+    public void clearWarnings() throws SQLException {
+        mStmt.clearWarnings();
+    }
+
+    @Override
+    public void setCursorName(String name) throws SQLException {
+        mStmt.setCursorName(name);
+    }
+
+    @Override
+    public ResultSet getResultSet() throws SQLException {
+        return mStmt.getResultSet();
+    }
+
+    @Override
+    public int getUpdateCount() throws SQLException {
+        return mStmt.getUpdateCount();
+    }
+
+    @Override
+    public boolean getMoreResults() throws SQLException {
+        return mStmt.getMoreResults();
+    }
+
+    @Override
+    public void setFetchDirection(int direction) throws SQLException {
+        mStmt.setFetchDirection(direction);
+    }
+
+    @Override
+    public int getFetchDirection() throws SQLException {
+        return mStmt.getFetchDirection();
+    }
+
+    @Override
+    public void setFetchSize(int rows) throws SQLException {
+        mStmt.setFetchSize(rows);
+    }
+
+    @Override
+    public int getFetchSize() throws SQLException {
+        return mStmt.getFetchSize();
+    }
+
+    @Override
+    public int getResultSetConcurrency() throws SQLException {
+        return mStmt.getResultSetConcurrency();
+    }
+
+    @Override
+    public int getResultSetType() throws SQLException {
+        return mStmt.getResultSetType();
+    }
+
+    @Override
+    public void addBatch(String sql) throws SQLException {
+        mStmt.addBatch(sql);
+    }
+
+    @Override
+    public void clearBatch() throws SQLException {
+        mStmt.clearBatch();
+    }
+
+    @Override
+    public Connection getConnection() throws SQLException {
+        return mStmt.getConnection();
+    }
+
+    @Override
+    public boolean getMoreResults(int current) throws SQLException {
+        return mStmt.getMoreResults(current);
+    }
+
+    @Override
+    public ResultSet getGeneratedKeys() throws SQLException {
+        return mStmt.getGeneratedKeys();
+    }
+
+    @Override
+    public int getResultSetHoldability() throws SQLException {
+        return mStmt.getResultSetHoldability();
+    }
+
+    @Override
+    public boolean isClosed() throws SQLException {
+        return mStmt.isClosed();
+    }
+
+    @Override
+    public void setPoolable(boolean poolable) throws SQLException {
+        mStmt.setPoolable(poolable);
+    }
+
+    @Override
+    public boolean isPoolable() throws SQLException {
+        return mStmt.isPoolable();
+    }
+
+    @Override
+    public void closeOnCompletion() throws SQLException {
+        mStmt.closeOnCompletion();
+    }
+
+    @Override
+    public boolean isCloseOnCompletion() throws SQLException {
+        return mStmt.isCloseOnCompletion();
+    }
+
+    @Override
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        return mStmt.unwrap(iface);
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return mStmt.isWrapperFor(iface);
+    }
+
+    @Override
+    public void close() throws SQLException {
+        mStmt.close();
     }
 }

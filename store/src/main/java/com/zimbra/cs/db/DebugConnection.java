@@ -5,18 +5,30 @@
 
 package com.zimbra.cs.db;
 
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.CallableStatement;
+import java.sql.Clob;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.NClob;
 import java.sql.PreparedStatement;
+import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
+import java.sql.SQLWarning;
+import java.sql.Savepoint;
+import java.sql.Statement;
+import java.sql.Struct;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.Executor;
 
 import com.zimbra.common.util.ZimbraLog;
-import org.apache.commons.dbcp.DelegatingConnection;
 
-class DebugConnection extends DelegatingConnection {
+class DebugConnection implements Connection {
     protected final Connection mConn;
 
     DebugConnection(Connection conn) {
-        super(conn);
         mConn = conn;
     }
 
@@ -70,5 +82,241 @@ class DebugConnection extends DelegatingConnection {
         throws SQLException {
         return new DebugPreparedStatement(
             this, mConn.prepareStatement(sql, columnNames), sql);
+    }
+
+    // Delegate all other Connection interface methods to mConn
+    
+    @Override
+    public Statement createStatement() throws SQLException {
+        return mConn.createStatement();
+    }
+
+    @Override
+    public CallableStatement prepareCall(String sql) throws SQLException {
+        return mConn.prepareCall(sql);
+    }
+
+    @Override
+    public String nativeSQL(String sql) throws SQLException {
+        return mConn.nativeSQL(sql);
+    }
+
+    @Override
+    public void setAutoCommit(boolean autoCommit) throws SQLException {
+        mConn.setAutoCommit(autoCommit);
+    }
+
+    @Override
+    public boolean getAutoCommit() throws SQLException {
+        return mConn.getAutoCommit();
+    }
+
+    @Override
+    public void close() throws SQLException {
+        mConn.close();
+    }
+
+    @Override
+    public boolean isClosed() throws SQLException {
+        return mConn.isClosed();
+    }
+
+    @Override
+    public DatabaseMetaData getMetaData() throws SQLException {
+        return mConn.getMetaData();
+    }
+
+    @Override
+    public void setReadOnly(boolean readOnly) throws SQLException {
+        mConn.setReadOnly(readOnly);
+    }
+
+    @Override
+    public boolean isReadOnly() throws SQLException {
+        return mConn.isReadOnly();
+    }
+
+    @Override
+    public void setCatalog(String catalog) throws SQLException {
+        mConn.setCatalog(catalog);
+    }
+
+    @Override
+    public String getCatalog() throws SQLException {
+        return mConn.getCatalog();
+    }
+
+    @Override
+    public void setTransactionIsolation(int level) throws SQLException {
+        mConn.setTransactionIsolation(level);
+    }
+
+    @Override
+    public int getTransactionIsolation() throws SQLException {
+        return mConn.getTransactionIsolation();
+    }
+
+    @Override
+    public SQLWarning getWarnings() throws SQLException {
+        return mConn.getWarnings();
+    }
+
+    @Override
+    public void clearWarnings() throws SQLException {
+        mConn.clearWarnings();
+    }
+
+    @Override
+    public Statement createStatement(int resultSetType, int resultSetConcurrency)
+            throws SQLException {
+        return mConn.createStatement(resultSetType, resultSetConcurrency);
+    }
+
+    @Override
+    public CallableStatement prepareCall(String sql, int resultSetType,
+            int resultSetConcurrency) throws SQLException {
+        return mConn.prepareCall(sql, resultSetType, resultSetConcurrency);
+    }
+
+    @Override
+    public Map<String, Class<?>> getTypeMap() throws SQLException {
+        return mConn.getTypeMap();
+    }
+
+    @Override
+    public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
+        mConn.setTypeMap(map);
+    }
+
+    @Override
+    public void setHoldability(int holdability) throws SQLException {
+        mConn.setHoldability(holdability);
+    }
+
+    @Override
+    public int getHoldability() throws SQLException {
+        return mConn.getHoldability();
+    }
+
+    @Override
+    public Savepoint setSavepoint() throws SQLException {
+        return mConn.setSavepoint();
+    }
+
+    @Override
+    public Savepoint setSavepoint(String name) throws SQLException {
+        return mConn.setSavepoint(name);
+    }
+
+    @Override
+    public void rollback(Savepoint savepoint) throws SQLException {
+        mConn.rollback(savepoint);
+    }
+
+    @Override
+    public void releaseSavepoint(Savepoint savepoint) throws SQLException {
+        mConn.releaseSavepoint(savepoint);
+    }
+
+    @Override
+    public Statement createStatement(int resultSetType, int resultSetConcurrency,
+            int resultSetHoldability) throws SQLException {
+        return mConn.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
+    }
+
+    @Override
+    public CallableStatement prepareCall(String sql, int resultSetType,
+            int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+        return mConn.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
+    }
+
+    @Override
+    public boolean isValid(int timeout) throws SQLException {
+        return mConn.isValid(timeout);
+    }
+
+    @Override
+    public void setClientInfo(String name, String value) throws SQLClientInfoException {
+        mConn.setClientInfo(name, value);
+    }
+
+    @Override
+    public void setClientInfo(Properties properties) throws SQLClientInfoException {
+        mConn.setClientInfo(properties);
+    }
+
+    @Override
+    public String getClientInfo(String name) throws SQLException {
+        return mConn.getClientInfo(name);
+    }
+
+    @Override
+    public Properties getClientInfo() throws SQLException {
+        return mConn.getClientInfo();
+    }
+
+    @Override
+    public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
+        return mConn.createArrayOf(typeName, elements);
+    }
+
+    @Override
+    public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
+        return mConn.createStruct(typeName, attributes);
+    }
+
+    @Override
+    public void setSchema(String schema) throws SQLException {
+        mConn.setSchema(schema);
+    }
+
+    @Override
+    public String getSchema() throws SQLException {
+        return mConn.getSchema();
+    }
+
+    @Override
+    public void abort(Executor executor) throws SQLException {
+        mConn.abort(executor);
+    }
+
+    @Override
+    public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
+        mConn.setNetworkTimeout(executor, milliseconds);
+    }
+
+    @Override
+    public int getNetworkTimeout() throws SQLException {
+        return mConn.getNetworkTimeout();
+    }
+
+    @Override
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        return mConn.unwrap(iface);
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return mConn.isWrapperFor(iface);
+    }
+
+    @Override
+    public java.sql.SQLXML createSQLXML() throws SQLException {
+        return mConn.createSQLXML();
+    }
+
+    @Override
+    public java.sql.NClob createNClob() throws SQLException {
+        return mConn.createNClob();
+    }
+
+    @Override
+    public java.sql.Blob createBlob() throws SQLException {
+        return mConn.createBlob();
+    }
+
+    @Override
+    public java.sql.Clob createClob() throws SQLException {
+        return mConn.createClob();
     }
 }

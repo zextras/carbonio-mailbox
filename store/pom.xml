@@ -49,8 +49,12 @@
     </dependency>
 
     <dependency>
-      <artifactId>commons-dbcp</artifactId>
-      <groupId>commons-dbcp</groupId>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
     </dependency>
 
     <dependency>
@@ -334,10 +338,7 @@
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
     </dependency>
-    <dependency>
-      <groupId>commons-pool</groupId>
-      <artifactId>commons-pool</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>org.apache.james</groupId>
       <artifactId>apache-jsieve-core</artifactId>

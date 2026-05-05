@@ -14,6 +14,8 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.stats.ZimbraPerf;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -22,20 +24,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 import java.util.Properties;
-import org.apache.commons.dbcp.ConnectionFactory;
-import org.apache.commons.dbcp.PoolableConnectionFactory;
-import org.apache.commons.dbcp.PoolingDataSource;
-import org.apache.commons.pool.impl.GenericObjectPool;
+import javax.sql.DataSource;
 
 /**
  * @since Apr 7, 2004
  */
 public class DbPool {
 
-    private static PoolingDataSource sPoolingDataSource;
+    private static HikariDataSource sPoolingDataSource;
     private static String sRootUrl;
     private static String sLoggerRootUrl;
-    private static GenericObjectPool sConnectionPool;
     private static boolean sIsInitialized;
 
     private static boolean isShutdown;
@@ -191,7 +189,6 @@ public class DbPool {
         String mLoggerUrl;
         boolean mSupportsStatsCallback;
         Properties mDatabaseProperties;
-        byte whenExhaustedAction = GenericObjectPool.WHEN_EXHAUSTED_BLOCK;
     }
 
     /**
@@ -252,7 +249,7 @@ public class DbPool {
     }
 
     /** Initializes the connection pool. */
-    private static synchronized PoolingDataSource getPool() {
+    private static synchronized HikariDataSource getPool() {
         if (isShutdown)
             throw new RuntimeException("DbPool permanently shutdown");
 
@@ -260,16 +257,42 @@ public class DbPool {
             return sPoolingDataSource;
 
         PoolConfig pconfig = Db.getInstance().getPoolConfig();
-        sConnectionPool = new GenericObjectPool(null, pconfig.mPoolSize, pconfig.whenExhaustedAction, -1, pconfig.mPoolSize);
-        ConnectionFactory cfac = ZimbraConnectionFactory.getConnectionFactory(pconfig);
 
-        boolean defAutoCommit = false, defReadOnly = false;
-        new PoolableConnectionFactory(cfac, sConnectionPool, null, null, defReadOnly, defAutoCommit);
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(pconfig.mConnectionUrl);
+        // Credentials come from mDatabaseProperties (set by MySQLConfig.getDBProperties)
+        if (pconfig.mDatabaseProperties != null) {
+            String user = pconfig.mDatabaseProperties.getProperty("user");
+            String password = pconfig.mDatabaseProperties.getProperty("password");
+            if (user != null) config.setUsername(user);
+            if (password != null) config.setPassword(password);
+            // Forward remaining driver properties
+            pconfig.mDatabaseProperties.forEach((k, v) -> {
+                String key = (String) k;
+                if (!key.equals("user") && !key.equals("password")) {
+                    config.addDataSourceProperty(key, v);
+                }
+            });
+        }
 
-        PoolingDataSource pds = new PoolingDataSource(sConnectionPool);
-        pds.setAccessToUnderlyingConnectionAllowed(true);
+        // Pool sizing: (cpu_cores * 2) + 1 as a sensible default; overridable via localconfig
+        int poolSize = Math.max(pconfig.mPoolSize, Runtime.getRuntime().availableProcessors() * 2 + 1);
+        config.setMaximumPoolSize(poolSize);
+        config.setMinimumIdle(Math.max(2, poolSize / 4));
+        config.setConnectionTimeout(30_000);       // fail fast instead of blocking forever
+        config.setIdleTimeout(600_000);
+        config.setMaxLifetime(1_800_000);          // recycle to avoid stale state
+        config.setKeepaliveTime(60_000);
+        config.setAutoCommit(false);               // match previous DBCP behaviour
+        config.setPoolName("ZimbraDB");
 
-        sPoolingDataSource = pds;
+        // Prepared statement cache — eliminates repeated parse/plan for DbMailItem queries
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "512");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        config.addDataSourceProperty("useServerPrepStmts", "true");
+
+        sPoolingDataSource = new HikariDataSource(config);
 
         if (pconfig.mSupportsStatsCallback)
             ZimbraPerf.addStatsCallback(new DbStats());
@@ -310,8 +333,8 @@ public class DbPool {
             long start = ZimbraPerf.STOPWATCH_DB_CONN.start();
 
             // If the connection pool is overutilized, warn about potential leaks
-            PoolingDataSource pool = getPool();
-            checkPoolUsage();
+            HikariDataSource pool = getPool();
+            checkPoolUsage(pool);
 
             Connection dbconn = null;
             DbConnection conn = null;
@@ -356,9 +379,9 @@ public class DbPool {
         }
     }
 
-    private static void checkPoolUsage() {
-        int numActive = sConnectionPool.getNumActive();
-        int maxActive = sConnectionPool.getMaxActive();
+    private static void checkPoolUsage(HikariDataSource pool) {
+        int numActive = pool.getHikariPoolMXBean().getActiveConnections();
+        int maxActive = pool.getMaximumPoolSize();
 
         if (numActive <= maxActive * 0.75)
             return;
@@ -495,7 +518,8 @@ public class DbPool {
      * Returns the number of connections currently in use.
      */
     public static int getSize() {
-        return sConnectionPool.getNumActive();
+        if (sPoolingDataSource == null) return 0;
+        return sPoolingDataSource.getHikariPoolMXBean().getActiveConnections();
     }
 
     /**
@@ -505,11 +529,10 @@ public class DbPool {
      * @throws Exception
      */
     static synchronized void close() throws Exception {
-        if (sConnectionPool != null) {
-            sConnectionPool.close();
-            sConnectionPool = null;
+        if (sPoolingDataSource != null) {
+            sPoolingDataSource.close();
+            sPoolingDataSource = null;
         }
-        sPoolingDataSource = null;
     }
 
     public static synchronized void shutdown() throws Exception {

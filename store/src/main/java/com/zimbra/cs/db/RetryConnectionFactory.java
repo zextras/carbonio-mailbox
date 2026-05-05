@@ -6,27 +6,29 @@
 package com.zimbra.cs.db;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-
-import org.apache.commons.dbcp.DriverManagerConnectionFactory;
 
 /**
  * ConnectionFactory implementation which allows for retry on exception
  *
  */
-public class RetryConnectionFactory extends DriverManagerConnectionFactory {
+public class RetryConnectionFactory {
+
+    private final String connectUri;
+    private final Properties props;
 
     public RetryConnectionFactory(String connectUri, Properties props) {
-        super(connectUri, props);
+        this.connectUri = connectUri;
+        this.props = props;
     }
 
-    @Override
     public Connection createConnection() throws SQLException {
         AbstractRetry<Connection> exec = new AbstractRetry<>() {
           @Override
           public ExecuteResult<Connection> execute() throws SQLException {
-            Connection conn = superCreateConnection();
+            Connection conn = DriverManager.getConnection(connectUri, props);
             return new ExecuteResult<>(new RetryConnection(conn));
           }
 
@@ -37,9 +39,5 @@ public class RetryConnectionFactory extends DriverManagerConnectionFactory {
 
         };
         return exec.doRetry().getResult();
-    }
-
-    private Connection superCreateConnection() throws SQLException {
-        return super.createConnection();
     }
 }

@@ -9,8 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.commons.dbcp.DelegatingConnection;
-
 /**
  * PreparedStatement wrapper that allows for retry on exception.
  * Current implementation retries when exception message matches 'SQLITE_BUSY'
@@ -20,7 +18,7 @@ import org.apache.commons.dbcp.DelegatingConnection;
  */
 public class RetryPreparedStatement extends DebugPreparedStatement {
     
-    RetryPreparedStatement(DelegatingConnection conn,
+    RetryPreparedStatement(DebugConnection conn,
             PreparedStatement stmt, String sql) {
         super(conn, stmt, sql);
     }
