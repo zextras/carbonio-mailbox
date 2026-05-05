@@ -14,7 +14,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Closeables;
-import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.zextras.mailbox.quota.QuotaCheckSingleton;
 import com.zimbra.client.ZFolder;
 import com.zimbra.client.ZMailbox;
@@ -599,10 +599,10 @@ public class Mailbox implements MailboxStore {
     private final Mailbox mbox;
 
     public ItemCache(Mailbox mbox) {
-      mapById =
-          new ConcurrentLinkedHashMap.Builder<Integer, MailItem>()
-              .maximumWeightedCapacity(MAX_ITEM_CACHE_WITH_LISTENERS)
-              .build();
+      mapById = Caffeine.newBuilder()
+          .maximumSize(MAX_ITEM_CACHE_WITH_LISTENERS)
+          .<Integer, MailItem>build()
+          .asMap();
       uuid2id = new ConcurrentHashMap<>(MAX_ITEM_CACHE_WITH_LISTENERS);
       this.mbox = mbox;
     }
@@ -697,13 +697,15 @@ public class Mailbox implements MailboxStore {
   private Map<Object, Tag> mTagCache;
   private SoftReference<ItemCache> mItemCache = new SoftReference<>(null);
   private final Map<String, Integer> mConvHashes =
-      new ConcurrentLinkedHashMap.Builder<String, Integer>()
-          .maximumWeightedCapacity(MAX_MSGID_CACHE)
-          .build();
+      Caffeine.newBuilder()
+          .maximumSize(MAX_MSGID_CACHE)
+          .<String, Integer>build()
+          .asMap();
   private final Map<String, Integer> mSentMessageIDs =
-      new ConcurrentLinkedHashMap.Builder<String, Integer>()
-          .maximumWeightedCapacity(MAX_MSGID_CACHE)
-          .build();
+      Caffeine.newBuilder()
+          .maximumSize(MAX_MSGID_CACHE)
+          .<String, Integer>build()
+          .asMap();
 
   private MailboxMaintenance maintenance;
   private volatile boolean open = false;
