@@ -228,6 +228,8 @@ public abstract class NioServer implements Server {
      */
     @Override
     public void start() {
+        // Use direct (off-heap) ByteBuffers for I/O to avoid heap→native copies on SSL writes.
+        IoBuffer.setUseDirectBuffer(true);
         ServerConfig sc = getConfig();
         DefaultIoFilterChainBuilder fc = acceptor.getFilterChain();
         if (sc.isSslEnabled()) {

@@ -471,8 +471,20 @@
       </dependency>
       <dependency>
         <groupId>io.jsonwebtoken</groupId>
-        <artifactId>jjwt</artifactId>
-        <version>0.7.0</version>
+        <artifactId>jjwt-api</artifactId>
+        <version>0.12.6</version>
+      </dependency>
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-impl</artifactId>
+        <version>0.12.6</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-jackson</artifactId>
+        <version>0.12.6</version>
+        <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>com.unboundid</groupId>

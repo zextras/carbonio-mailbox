@@ -11,155 +11,135 @@
  */
 package com.zimbra.cs.account.cache;
 
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.zimbra.common.util.MapUtil;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.zimbra.common.stats.Counter;
 import com.zimbra.common.stats.HitRateCounter;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
+import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang.StringUtils;
 
 public class AccountCache implements IAccountCache {
 
-    private Map<String, CacheEntry> mNameCache;
-    private Map<String, CacheEntry> mIdCache;
-    private Map<String, CacheEntry> mAliasCache;
-    private Map<String, CacheEntry> mForeignPrincipalCache;
-    private Map<String, CacheEntry> mOldNameCache;
-    private Counter mHitRate = new HitRateCounter();
-
-    private long mRefreshTTL;
-
-    static class CacheEntry {
-        long mLifetime;
-        Account mEntry;
-
-        CacheEntry(Account entry, long expires) {
-            mEntry = entry;
-            mLifetime = System.currentTimeMillis() + expires;
-        }
-
-        boolean isStale() {
-            return mLifetime < System.currentTimeMillis();
-        }
-    }
+    private final Cache<String, Account> mNameCache;
+    private final Cache<String, Account> mIdCache;
+    private final Cache<String, Account> mAliasCache;
+    private final Cache<String, Account> mForeignPrincipalCache;
+    private final Cache<String, Account> mOldNameCache;
+    private final Counter mHitRate = new HitRateCounter();
 
     /**
      * @param maxItems
      * @param refreshTTL
      */
     public AccountCache(int maxItems, long refreshTTL) {
-        mNameCache = MapUtil.newLruMap(maxItems);
-        mIdCache = MapUtil.newLruMap(maxItems);
-        mAliasCache = MapUtil.newLruMap(maxItems);
-        mForeignPrincipalCache = MapUtil.newLruMap(maxItems);
-        mOldNameCache = MapUtil.newLruMap(maxItems);
-        mRefreshTTL = refreshTTL;
+        mNameCache = buildCache(maxItems, refreshTTL);
+        mIdCache = buildCache(maxItems, refreshTTL);
+        mAliasCache = buildCache(maxItems, refreshTTL);
+        mForeignPrincipalCache = buildCache(maxItems, refreshTTL);
+        mOldNameCache = buildCache(maxItems, refreshTTL);
+    }
+
+    private Cache<String, Account> buildCache(int maxItems, long refreshTTL) {
+        Caffeine<Object, Object> builder = Caffeine.newBuilder().maximumSize(maxItems);
+        if (refreshTTL > 0) {
+            builder = builder.expireAfterWrite(refreshTTL, TimeUnit.MILLISECONDS);
+        }
+        return builder.build();
     }
 
     @Override
-    public synchronized void clear() {
-        mNameCache.clear();
-        mIdCache.clear();
-        mAliasCache.clear();
-        mForeignPrincipalCache.clear();
-        mOldNameCache.clear();
+    public void clear() {
+        mNameCache.invalidateAll();
+        mIdCache.invalidateAll();
+        mAliasCache.invalidateAll();
+        mForeignPrincipalCache.invalidateAll();
+        mOldNameCache.invalidateAll();
     }
 
     @Override
-    public synchronized void remove(Account entry) {
+    public void remove(Account entry) {
         if (entry != null) {
-            mNameCache.remove(entry.getName());
-            mIdCache.remove(entry.getId());
+            mNameCache.invalidate(entry.getName());
+            mIdCache.invalidate(entry.getId());
 
             String[] aliases = entry.getMultiAttr(Provisioning.A_zimbraMailAlias);
             for (String alias : aliases) {
-                mAliasCache.remove(alias);
+                mAliasCache.invalidate(alias);
             }
 
             String[] fps = entry.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
             for (String fp : fps) {
-                mForeignPrincipalCache.remove(fp);
+                mForeignPrincipalCache.invalidate(fp);
             }
-            mOldNameCache.remove(entry.getOldMailAddress());
+            mOldNameCache.invalidate(entry.getOldMailAddress());
         }
     }
 
     @Override
-    public synchronized void put(Account entry) {
+    public void put(Account entry) {
         if (entry != null) {
-            CacheEntry cacheEntry = new CacheEntry(entry, mRefreshTTL);
-            mNameCache.put(entry.getName(), cacheEntry);
-            mIdCache.put(entry.getId(), cacheEntry);
+            mNameCache.put(entry.getName(), entry);
+            mIdCache.put(entry.getId(), entry);
 
             String[] aliases = entry.getMultiAttr(Provisioning.A_zimbraMailAlias);
             for (String alias : aliases) {
-                mAliasCache.put(alias, cacheEntry);
+                mAliasCache.put(alias, entry);
             }
 
             String[] fps = entry.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
             for (String fp : fps) {
-                mForeignPrincipalCache.put(fp, cacheEntry);
+                mForeignPrincipalCache.put(fp, entry);
             }
             if (StringUtils.isNotEmpty(entry.getOldMailAddress())) {
-                mOldNameCache.put(entry.getOldMailAddress(), cacheEntry);
+                mOldNameCache.put(entry.getOldMailAddress(), entry);
             }
         }
     }
 
     @Override
-    public synchronized void replace(Account entry) {
+    public void replace(Account entry) {
         remove(entry);
         put(entry);
     }
 
-    private Account get(String key, Map cache) {
-        CacheEntry ce = (CacheEntry) cache.get(key);
-        if (ce != null) {
-            if (mRefreshTTL != 0 && ce.isStale()) {
-                remove(ce.mEntry);
-                mHitRate.increment(0);
-                return null;
-            } else {
-                mHitRate.increment(100);
-                return ce.mEntry;
-            }
-        } else {
-            mHitRate.increment(0);
-            return null;
-        }
-    }
-
-    @Override
-    public synchronized Account getById(String key) {
-        return get(key, mIdCache);
-    }
-
-    @Override
-    public synchronized Account getByName(String key) {
-        Account acct = get(key.toLowerCase(), mNameCache) != null ? get(key.toLowerCase(), mNameCache)
-                : get(key.toLowerCase(), mAliasCache) != null ? get(key.toLowerCase(), mAliasCache)
-                        : get(key.toLowerCase(), mOldNameCache);
+    private Account get(String key, Cache<String, Account> cache) {
+        Account acct = cache.getIfPresent(key);
+        mHitRate.increment(acct != null ? 100 : 0);
         return acct;
     }
 
     @Override
-    public synchronized Account getByForeignPrincipal(String key) {
+    public Account getById(String key) {
+        return get(key, mIdCache);
+    }
+
+    @Override
+    public Account getByName(String key) {
+        String lk = key.toLowerCase();
+        Account acct = mNameCache.getIfPresent(lk);
+        if (acct == null) acct = mAliasCache.getIfPresent(lk);
+        if (acct == null) acct = mOldNameCache.getIfPresent(lk);
+        mHitRate.increment(acct != null ? 100 : 0);
+        return acct;
+    }
+
+    @Override
+    public Account getByForeignPrincipal(String key) {
         return get(key, mForeignPrincipalCache);
     }
 
     @Override
-    public synchronized int getSize() {
-        return mIdCache.size();
+    public int getSize() {
+        return (int) mIdCache.estimatedSize();
     }
 
     /**
      * Returns the cache hit rate as a value between 0 and 100.
      */
     @Override
-    public synchronized double getHitRate() {
+    public double getHitRate() {
         return mHitRate.getAverage();
     }
 }

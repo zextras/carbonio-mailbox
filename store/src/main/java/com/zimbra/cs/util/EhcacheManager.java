@@ -19,6 +19,7 @@ import org.ehcache.config.units.MemoryUnit;
 import org.ehcache.expiry.Duration;
 import org.ehcache.expiry.Expirations;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
@@ -38,15 +39,28 @@ public final class EhcacheManager {
     private static EhcacheManager SINGLETON = null;
 
     private CacheManager cacheManager;
+    private com.github.benmanes.caffeine.cache.Cache<String, ImapFolder> activeSessionCaffeineCache;
 
     public static final String IMAP_ACTIVE_SESSION_CACHE = "imap-active-session-cache";
     public static final String IMAP_INACTIVE_SESSION_CACHE = "imap-inactive-session-cache";
     public static final String SYNC_STATE_ITEM_CACHE = "sync-state-item-cache";
 
     private EhcacheManager(Service service) {
+        // Initialize Caffeine cache for active sessions
+        int maxActiveSessions;
+        try {
+            maxActiveSessions = Provisioning.getInstance().getLocalServer().getImapMaxConnections();
+        } catch (ServiceException e) {
+            ZimbraLog.imap.warn("Could not read imap max connections, defaulting active session cache to 10000", e);
+            maxActiveSessions = 10_000;
+        }
+        activeSessionCaffeineCache = Caffeine.newBuilder()
+            .maximumSize(maxActiveSessions)
+            .expireAfterAccess(LC.imap_authenticated_max_idle_time.intValue(), TimeUnit.SECONDS)
+            .build();
+
         cacheManager = CacheManagerBuilder.newCacheManagerBuilder()
                 .with(CacheManagerBuilder.persistence(LC.zimbra_home.value() + File.separator + "data" + File.separator + service.val))
-                .withCache(IMAP_ACTIVE_SESSION_CACHE, createImapActiveSessionCache())
                 .build(true);
 
         if (MemcachedConnector.isConnected()) {
@@ -69,22 +83,6 @@ public final class EhcacheManager {
     }
 
     public void startup() {
-    }
-
-    private CacheConfiguration<String, ImapFolder> createImapActiveSessionCache() {
-        long maxBytesOnLocalDisk;
-        try {
-            maxBytesOnLocalDisk = Provisioning.getInstance().getLocalServer().getImapActiveSessionEhcacheMaxDiskSize();
-        } catch (ServiceException e) {
-            ZimbraLog.imap.error("Exception while fetching attribute %s", Provisioning.A_zimbraImapActiveSessionEhcacheMaxDiskSize, e);
-            maxBytesOnLocalDisk = new MemoryUnitUtil().convertToBytes("100GB");
-        }
-        return CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class,
-                ImapFolder.class,
-                ResourcePoolsBuilder.newResourcePoolsBuilder()
-                .heap(1, EntryUnit.ENTRIES)
-                .disk(maxBytesOnLocalDisk, MemoryUnit.B, false))  // disk backed not persistent
-                .build();
     }
 
     private CacheConfiguration<String, ImapFolder> createImapInactiveSessionCache() {
@@ -142,6 +140,10 @@ public final class EhcacheManager {
                 .disk(diskSize, MemoryUnit.B, true)) // disk backed persistent store
                 .withExpiry(Expirations.timeToLiveExpiration(Duration.of(timeout, TimeUnit.MILLISECONDS)))
                 .build();
+    }
+
+    public com.github.benmanes.caffeine.cache.Cache<String, ImapFolder> getActiveSessionCaffeineCache() {
+        return activeSessionCaffeineCache;
     }
 
     public Cache<String, ImapFolder> getEhcache(String cacheName) {

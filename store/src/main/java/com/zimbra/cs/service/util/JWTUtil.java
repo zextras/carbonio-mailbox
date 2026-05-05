@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.service.util;
 
-import java.security.Key;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
@@ -44,9 +43,8 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 
 public class JWTUtil {
 
@@ -66,13 +64,13 @@ public class JWTUtil {
      */
     public static final String generateJWT(byte[] jwtKey, String salt, long issuedAt, AuthTokenProperties properties, long keyVersion) throws AuthFailedServiceException {
         if (properties != null) {
-            Key key = new SecretKeySpec(jwtKey, SignatureAlgorithm.HS512.getJcaName());
+            javax.crypto.SecretKey key = new SecretKeySpec(jwtKey, "HmacSHA512");
             JwtBuilder builder = Jwts.builder();
-            builder.setSubject(properties.getAccountId());
-            builder.setIssuedAt(new Date(issuedAt));
-            builder.setExpiration(new Date(properties.getExpires()));
+            builder.subject(properties.getAccountId());
+            builder.issuedAt(new Date(issuedAt));
+            builder.expiration(new Date(properties.getExpires()));
             String jti = UUID.randomUUID().toString();
-            builder.setId(jti);
+            builder.id(jti);
             builder.claim(AuthTokenProperties.C_AID, properties.getAdminAccountId());
             builder.claim(AuthTokenProperties.C_ADMIN, properties.isAdmin());
             builder.claim(AuthTokenProperties.C_DOMAIN, properties.isDomainAdmin());
@@ -92,7 +90,7 @@ public class JWTUtil {
                 builder.claim(AuthTokenProperties.C_USAGE, properties.getUsage().getCode());
             }
             JWTCache.put(jti, new JWTInfo(salt, properties.getExpires()));
-            return builder.signWith(SignatureAlgorithm.HS512, key).compact();
+            return builder.signWith(key, Jwts.SIG.HS512).compact();
         } else {
             throw AuthFailedServiceException.AUTH_FAILED("properties is required"); 
         }
@@ -150,10 +148,10 @@ public class JWTUtil {
             throw AuthFailedServiceException.AUTH_FAILED("no salt value");
         }
         byte[] finalKey = Bytes.concat(getOriginalKey(jwt), salt.getBytes());
-        Key key = new SecretKeySpec(finalKey, SignatureAlgorithm.HS512.getJcaName());
+        javax.crypto.SecretKey key = new SecretKeySpec(finalKey, "HmacSHA512");
         Claims claims = null;
         try {
-            claims = Jwts.parser().setSigningKey(key).parseClaimsJws(jwt).getBody();
+            claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(jwt).getPayload();
             Account acct = Provisioning.getInstance().get(AccountBy.id, claims.getSubject());
             if (acct == null ) {
                 throw AccountServiceException.NO_SUCH_ACCOUNT(claims.getSubject());
@@ -206,9 +204,9 @@ public class JWTUtil {
             for (String salt:saltArr) {
                 if (!StringUtil.isNullOrEmpty(salt)) {
                     byte[] finalKey = Bytes.concat(tokenKey, salt.getBytes());
-                    Key key = new SecretKeySpec(finalKey, SignatureAlgorithm.HS512.getJcaName());
+                    javax.crypto.SecretKey key = new SecretKeySpec(finalKey, "HmacSHA512");
                     try {
-                        Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(jwt).getBody();
+                        Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(jwt).getPayload();
                         jwtSpecificSalt = salt;
                         JWTCache.put(jti, new JWTInfo(salt, claims.getExpiration().getTime()));
                         break;
@@ -245,7 +243,7 @@ public class JWTUtil {
                 int i = jwt.lastIndexOf('.');
                 String untrustedJwtString = jwt.substring(0, i+1);
                 try {
-                    claims = Jwts.parser().parseClaimsJwt(untrustedJwtString).getBody();
+                    claims = Jwts.parser().build().parseUnsecuredClaims(untrustedJwtString).getPayload();
                     CLAIMS_CACHE.put(jwt, claims);
                 } catch(ExpiredJwtException eje) {
                     ZimbraLog.account.debug("jwt expired", eje);
