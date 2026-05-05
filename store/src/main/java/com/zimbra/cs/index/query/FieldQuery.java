@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeQuery;
-import org.apache.lucene.util.NumericUtils;
+import org.apache.lucene.util.BytesRef;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.index.LuceneFields;
@@ -110,30 +110,30 @@ public final class FieldQuery extends TextQuery {
             switch (range) {
                 case EQ:
                     query = new TermQuery(new Term(LuceneFields.L_FIELD,
-                            name + "#:" + NumericUtils.intToPrefixCoded(number)));
+                            name + "#:" + String.format("%010d", number)));
                     break;
                 case GT:
                     query = new TermRangeQuery(LuceneFields.L_FIELD,
-                            name + "#:" + NumericUtils.intToPrefixCoded(number),
-                            name + "#:" + NumericUtils.intToPrefixCoded(Integer.MAX_VALUE),
+                            new BytesRef(name + "#:" + String.format("%010d", number)),
+                            new BytesRef(name + "#:" + String.format("%010d", Integer.MAX_VALUE)),
                             false, true);
                     break;
                 case GT_EQ:
                     query = new TermRangeQuery(LuceneFields.L_FIELD,
-                            name + "#:" + NumericUtils.intToPrefixCoded(number),
-                            name + "#:" + NumericUtils.intToPrefixCoded(Integer.MAX_VALUE),
+                            new BytesRef(name + "#:" + String.format("%010d", number)),
+                            new BytesRef(name + "#:" + String.format("%010d", Integer.MAX_VALUE)),
                             true, true);
                     break;
                 case LT:
                     query = new TermRangeQuery(LuceneFields.L_FIELD,
-                            name + "#:" + NumericUtils.intToPrefixCoded(Integer.MIN_VALUE),
-                            name + "#:" + NumericUtils.intToPrefixCoded(number),
+                            new BytesRef(name + "#:" + String.format("%010d", Integer.MIN_VALUE)),
+                            new BytesRef(name + "#:" + String.format("%010d", number)),
                             true, false);
                     break;
                 case LT_EQ:
                     query = new TermRangeQuery(LuceneFields.L_FIELD,
-                            name + "#:" + NumericUtils.intToPrefixCoded(Integer.MIN_VALUE),
-                            name + "#:" + NumericUtils.intToPrefixCoded(number),
+                            new BytesRef(name + "#:" + String.format("%010d", Integer.MIN_VALUE)),
+                            new BytesRef(name + "#:" + String.format("%010d", number)),
                             true, true);
                     break;
                 default:

@@ -6,9 +6,9 @@
 package com.zimbra.cs.index.analysis;
 
 import java.io.IOException;
+import java.io.Reader;
 
 import org.apache.lucene.analysis.CharFilter;
-import org.apache.lucene.analysis.CharStream;
 
 /**
  * Normalizes token text:
@@ -24,22 +24,22 @@ import org.apache.lucene.analysis.CharStream;
  */
 public final class NormalizeTokenFilter extends CharFilter {
 
-    public NormalizeTokenFilter(CharStream in) {
+    public NormalizeTokenFilter(Reader in) {
         super(in);
     }
 
     @Override
-    public int read() throws IOException {
-        return normalize(super.read());
-    }
-
-    @Override
     public int read(char[] buf, int offset, int len) throws IOException {
-        int result = super.read(buf, offset, len);
+        int result = input.read(buf, offset, len);
         for (int i = 0; i < result; i++) {
             buf[offset + i] = (char) normalize(buf[offset + i]);
         }
         return result;
+    }
+
+    @Override
+    protected int correct(int currentOff) {
+        return currentOff; // 1:1 character mapping, no offset correction needed
     }
 
     public static int normalize(int c) {

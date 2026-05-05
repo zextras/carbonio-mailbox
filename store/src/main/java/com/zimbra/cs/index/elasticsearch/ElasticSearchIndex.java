@@ -28,7 +28,7 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.Fieldable;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
@@ -456,12 +456,8 @@ public final class ElasticSearchIndex extends IndexStore {
          */
         private boolean useZimbraAnalyzer(String fieldName) {
             LuceneFields.IndexField field = LuceneFields.IndexField.fromFieldName(fieldName);
-            if ( (field.getIndexSetting().equals(Field.Index.NOT_ANALYZED)) ||
-                 (field.getIndexSetting().equals(Field.Index.NOT_ANALYZED_NO_NORMS)) ||
-                 (field.getIndexSetting().equals(Field.Index.NO))) {
-                return false;
-            }
-            return true;
+            // getIndexSetting() returns true if tokenized (analyzed), false if not
+            return field.getIndexSetting();
         }
 
         private String readerToTokenString(String fieldName, Reader original) throws IOException {
@@ -492,24 +488,19 @@ public final class ElasticSearchIndex extends IndexStore {
             }
         }
 
-        private void addFieldToDocument(JSONObject jsonObj, Fieldable field) throws IOException {
+        private void addFieldToDocument(JSONObject jsonObj, org.apache.lucene.index.IndexableField field) throws IOException {
             try {
-                if (field.isTokenized()) {
-                    TokenStream stream = field.tokenStreamValue();
+                if (field.fieldType().tokenized()) {
+                    TokenStream stream = field.tokenStream(null, null);
                     if (stream != null) {
                         String tokens = streamToString(stream);
                         jsonObj.put(field.name(), tokens);
                     } else {
-                        Reader reader = field.readerValue();
-                        if (reader != null) {
-                            jsonObj.put(field.name(), readerToTokenString(field.name(), reader));
+                        String val = field.stringValue();
+                        if (val != null) {
+                            jsonObj.put(field.name(), stringToTokenString(field.name(), val));
                         } else {
-                            String val = field.stringValue();
-                            if (val != null) {
-                                jsonObj.put(field.name(), stringToTokenString(field.name(), val));
-                            } else {
-                                ZimbraLog.index.debug("addFieldToDocument IGNORING tokenized field=%s", field.name());
-                            }
+                            ZimbraLog.index.debug("addFieldToDocument IGNORING tokenized field=%s", field.name());
                         }
                     }
                 } else {
@@ -562,7 +553,7 @@ public final class ElasticSearchIndex extends IndexStore {
                 synchronized (doc) {
                     setFields(item, doc);
                     Document luceneDoc = doc.toDocument();
-                    for (Fieldable field :luceneDoc.getFields()) {
+                    for (org.apache.lucene.index.IndexableField field :luceneDoc.getFields()) {
                         addFieldToDocument(jsonObj, field);
                     }
                 }
@@ -768,7 +759,7 @@ public final class ElasticSearchIndex extends IndexStore {
                         Iterator iter = body.keys();
                         while (iter.hasNext()) {
                             String key = (String)iter.next();
-                            document.add(new Field(key, body.getString(key), Field.Store.YES, Field.Index.NO));
+                            document.add(new org.apache.lucene.document.StoredField(key, body.getString(key)));
                         }
                         return document;
                     }
@@ -812,75 +803,63 @@ public final class ElasticSearchIndex extends IndexStore {
             return 0;
         }
 
-        @Override
-        public ZimbraIndexReader getIndexReader() {
-            return reader;
-        }
+         @Override
+         public ZimbraIndexReader getIndexReader() {
+             return reader;
+         }
 
-        /**
-         * Finds the top n hits for query.
-         */
-        @Override
-        public ZimbraTopDocs search(Query query, int n) throws IOException {
-            return search(query, null, n);
-        }
-        /**
-         * Finds the top n hits for query, applying filter if non-null.
-         */
-        @Override
-        public ZimbraTopDocs search(Query query, ZimbraTermsFilter filter, int n) throws IOException {
-            List<ZimbraScoreDoc>scoreDocs = Lists.newArrayList();
-            JSONObject requestJson = null;
-            try {
-                requestJson = searchQueryToJSON(query, filter, null);
-                if (requestJson == null) {
-                    return ZimbraTopDocs.create(scoreDocs.size(), scoreDocs);
-                }
-            } catch (JSONException e) {
-                ZimbraLog.index.debug("ElasticSearchIndex search - problem creating JSON for Query", e);
-                return ZimbraTopDocs.create(scoreDocs.size(), scoreDocs);
-            }
-            if (requestJson != null) {
-                // Can also specify timeout, from and search_type
-                String url = String.format("%s%s/_search?size=%d", indexUrl, indexType, n);
-                try {
-                    refreshIndexIfNecessary();
-                    // Both HTTP GET and HTTP POST can be used to execute search with body.
-                    // Since not all clients support GET with body, POST is allowed as well.
-                    HttpPost method = new HttpPost(ElasticSearchConnector.actualUrl(url));
-                    method.setEntity(new StringEntity(requestJson.toString(),
-                                MimeConstants.CT_APPLICATION_JSON, MimeConstants.P_CHARSET_UTF8));
-                    ElasticSearchConnector connector = new ElasticSearchConnector();
-                    int statusCode = connector.executeMethod(method);
-                    if (statusCode == HttpStatus.SC_OK) {
-                        JSONArray hits =  connector.getArrayAtJsonPath(new String[] {"hits", "hits"});
-                        if (hits != null) {
-                            for (int index = 0; index < hits.length(); index++) {
-                                JSONObject hit = hits.optJSONObject(index);
-                                if (hit != null) {
-                                    String id = hit.getString("_id");
-                                    if (id != null) {
-                                        scoreDocs.add(ZimbraScoreDoc.create(new ZimbraElasticDocumentID(id)));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } catch (IOException e) {
-                    ZimbraLog.index.error("Problem with query against index %s", url, e);
-                } catch (JSONException e) {
-                    ZimbraLog.index.debug("search - problem processing JSON Query response against index %s", url, e);
-                }
-            }
-            return ZimbraTopDocs.create(scoreDocs.size(), scoreDocs);
-        }
+         @Override
+         public ZimbraTopDocs search(Query query, int n) throws IOException {
+             List<ZimbraScoreDoc> scoreDocs = Lists.newArrayList();
+             JSONObject requestJson = null;
+             try {
+                 requestJson = searchQueryToJSON(query, null, null);
+                 if (requestJson == null) {
+                     return ZimbraTopDocs.create(scoreDocs.size(), scoreDocs);
+                 }
+             } catch (JSONException e) {
+                 ZimbraLog.index.debug("ElasticSearchIndex search - problem creating JSON for Query", e);
+                 return ZimbraTopDocs.create(scoreDocs.size(), scoreDocs);
+             }
+             if (requestJson != null) {
+                 String url = String.format("%s%s/_search?size=%d", indexUrl, indexType, n);
+                 refreshIndexIfNecessary();
+                 try {
+                     HttpPost method = new HttpPost(ElasticSearchConnector.actualUrl(url));
+                     method.setEntity(new StringEntity(requestJson.toString(),
+                                 MimeConstants.CT_APPLICATION_JSON, MimeConstants.P_CHARSET_UTF8));
+                     ElasticSearchConnector connector = new ElasticSearchConnector();
+                     int statusCode = connector.executeMethod(method);
+                     if (statusCode == HttpStatus.SC_OK) {
+                         JSONArray hits = connector.getArrayAtJsonPath(new String[] {"hits", "hits"});
+                         if (hits != null) {
+                             for (int index = 0; index < hits.length(); index++) {
+                                 JSONObject hit = hits.optJSONObject(index);
+                                 if (hit != null) {
+                                     String id = hit.optString("_id");
+                                     float score = (float) hit.optDouble("_score", Float.NaN);
+                                     scoreDocs.add(ZimbraScoreDoc.create(new ZimbraElasticDocumentID(id), score));
+                                 }
+                             }
+                         }
+                     }
+                 } catch (IOException e) {
+                     ZimbraLog.index.error("Problem searching index", e);
+                 }
+             }
+             return ZimbraTopDocs.create(scoreDocs.size(), scoreDocs);
+         }
 
-        /**
-         * Search implementation with arbitrary sorting. Finds the top n hits for query, applying filter if non-null,
-         * and sorting the hits by the criteria in sort.
-         */
-        @Override
-        public ZimbraTopFieldDocs search(Query query, ZimbraTermsFilter filter, int n, Sort sort) throws IOException {
+         @Override
+         public ZimbraTopDocs search(Query query, int n, Sort sort) throws IOException {
+             ZimbraTopFieldDocs fieldDocs = search(query, null, n, sort);
+             return ZimbraTopDocs.create(fieldDocs.getTotalHits(), fieldDocs.getScoreDocs());
+         }
+
+          /**
+           * Finds the top n hits for query with sorting.
+           */
+          public ZimbraTopFieldDocs search(Query query, ZimbraTermsFilter filter, int n, Sort sort) throws IOException {
             List<ZimbraScoreDoc> scoreDocs = Lists.newArrayList();
             List<SortField> sortFields = Lists.newArrayList();
             if (sort != null) {
@@ -973,16 +952,11 @@ public final class ElasticSearchIndex extends IndexStore {
             JSONObject queryObj = new JSONObject();
             JSONObject fieldObj = new JSONObject();
             JSONObject detailsObj = new JSONObject();
-            if (null != query.getCollator()) {
-                // Should not get here given current Zimbra functionality
-                ZimbraLog.index.error("ElasticSearchIndex does not support TermRangeQueries with collators");
-                return null;
-            }
+            // In Lucene 9.x, collators are no longer supported
             detailsObj.put("from", query.getLowerTerm());
             detailsObj.put("to", query.getUpperTerm());
             detailsObj.put("include_lower", query.includesLower());
             detailsObj.put("include_upper", query.includesUpper());
-            detailsObj.put("boost", query.getBoost());
             fieldObj.put(query.getField(), detailsObj);
             queryObj.put("range", fieldObj);
             return queryObj;

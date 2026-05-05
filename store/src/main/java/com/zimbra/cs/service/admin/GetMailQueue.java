@@ -101,25 +101,25 @@ public class GetMailQueue extends AdminDocumentHandler {
     }
 
     public static Query buildLuceneQuery(Element queryElem) throws ServiceException {
-        BooleanQuery fq = new BooleanQuery();
+        BooleanQuery.Builder fqBuilder = new BooleanQuery.Builder();
         boolean emptyQuery = true;
         for (Iterator fieldIter = queryElem.elementIterator(AdminConstants.E_FIELD); fieldIter.hasNext();) {
             emptyQuery = false;
             Element fieldElement = (Element)fieldIter.next();
             String fieldName = fieldElement.getAttribute(AdminConstants.A_NAME);
-            BooleanQuery mq = new BooleanQuery();
+            BooleanQuery.Builder mqBuilder = new BooleanQuery.Builder();
             for (Iterator matchIter = fieldElement.elementIterator(AdminConstants.E_MATCH); matchIter.hasNext();) {
                 Element matchElement = (Element)matchIter.next();
                 String matchValue = matchElement.getAttribute(AdminConstants.A_VALUE);
                 Term term = new Term(fieldName, matchValue);
-                mq.add(new TermQuery(term), Occur.SHOULD);
+                mqBuilder.add(new TermQuery(term), Occur.SHOULD);
             }
-            fq.add(mq, Occur.MUST);
+            fqBuilder.add(mqBuilder.build(), Occur.MUST);
         }
         if (emptyQuery) {
             return null;
         } else {
-            return fq;
+            return fqBuilder.build();
         }
     }
 

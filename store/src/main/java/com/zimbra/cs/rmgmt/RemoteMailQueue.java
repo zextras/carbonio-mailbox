@@ -19,16 +19,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.MultiTerms;
+import org.apache.lucene.index.PostingsEnum;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermDocs;
-import org.apache.lucene.index.TermEnum;
+import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.store.MMapDirectory;
+import org.apache.lucene.util.BytesRef;
 
 import com.zimbra.common.account.Key;
 import com.zimbra.common.localconfig.LC;
@@ -39,8 +45,6 @@ import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
-import com.zimbra.cs.index.LuceneDirectory;
-import com.zimbra.cs.index.LuceneIndex;
 import com.zimbra.cs.service.admin.GetMailQueue;
 
 public class RemoteMailQueue {
@@ -106,19 +110,16 @@ public class RemoteMailQueue {
             mNumMessages.incrementAndGet();
 
             Document doc = new Document();
-            // public Field(String name, String string, boolean store, boolean index, boolean token, boolean storeTermVector) {
             String id = map.get(QueueAttr.id.toString());
             if (id == null) {
                 throw new IOException("no ID defined near line=" + lineNo);
             }
-            doc.add(new Field(QueueAttr.id.toString(), id,
-                    Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.NO));
+            doc.add(new StringField(QueueAttr.id.toString(), id, Field.Store.YES));
 
             String time = map.get(QueueAttr.time.toString());
             if (time != null && time.length() > 0) {
                 long timeMillis = Long.parseLong(time) * 1000;
-                doc.add(new Field(QueueAttr.time.toString(), Long.toString(timeMillis),
-                        Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.NO));
+                doc.add(new StringField(QueueAttr.time.toString(), Long.toString(timeMillis), Field.Store.YES));
             }
 
             addSimpleField(doc, map, QueueAttr.size);
@@ -149,19 +150,16 @@ public class RemoteMailQueue {
     void addSimpleField(Document doc, Map<String,String> map, QueueAttr attr) {
         String value = map.get(attr.toString());
         if (value != null && value.length() > 0) {
-            doc.add(new Field(attr.toString(), value.toLowerCase(),
-                    Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.NO));
+            doc.add(new StringField(attr.toString(), value.toLowerCase(), Field.Store.YES));
         }
     }
 
     void addEmailAddress(Document doc, String address, QueueAttr addressAttr, QueueAttr domainAttr) {
         address = address.toLowerCase();
-        doc.add(new Field(addressAttr.toString(), address,
-                Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.NO));
+        doc.add(new StringField(addressAttr.toString(), address, Field.Store.YES));
         String[] parts = address.split("@");
         if (parts != null && parts.length > 1) {
-            doc.add(new Field(domainAttr.toString(), parts[1],
-                    Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.NO));
+            doc.add(new StringField(domainAttr.toString(), parts[1], Field.Store.YES));
         }
     }
 
@@ -221,9 +219,9 @@ public class RemoteMailQueue {
             if (ZimbraLog.rmgmt.isDebugEnabled()) {
                 ZimbraLog.rmgmt.debug("clearing index (" + mIndexPath + ") for " + this);
             }
-            writer = new IndexWriter(LuceneDirectory.open(mIndexPath),
-                    new StandardAnalyzer(LuceneIndex.VERSION), true,
-                    IndexWriter.MaxFieldLength.LIMITED);
+            IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+            config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+            writer = new IndexWriter(MMapDirectory.open(mIndexPath.toPath()), config);
             mNumMessages.set(0);
         } finally {
             if (writer != null) {
@@ -318,9 +316,9 @@ public class RemoteMailQueue {
         if (ZimbraLog.rmgmt.isDebugEnabled()) {
             ZimbraLog.rmgmt.debug("opening indexwriter " + this);
         }
-        mIndexWriter = new IndexWriter(LuceneDirectory.open(mIndexPath),
-                new StandardAnalyzer(LuceneIndex.VERSION), true,
-                IndexWriter.MaxFieldLength.LIMITED);
+        IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+        config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+        mIndexWriter = new IndexWriter(MMapDirectory.open(mIndexPath.toPath()), config);
     }
 
     void closeIndexWriter() throws IOException {
@@ -335,9 +333,9 @@ public class RemoteMailQueue {
             ZimbraLog.rmgmt.debug("reopening indexwriter " + this);
         }
         mIndexWriter.close();
-        mIndexWriter = new IndexWriter(LuceneDirectory.open(mIndexPath),
-                new StandardAnalyzer(LuceneIndex.VERSION), false,
-                IndexWriter.MaxFieldLength.LIMITED);
+        IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+        config.setOpenMode(IndexWriterConfig.OpenMode.APPEND);
+        mIndexWriter = new IndexWriter(MMapDirectory.open(mIndexPath.toPath()), config);
     }
 
     public static final class SummaryItem implements Comparable<SummaryItem> {
@@ -371,13 +369,18 @@ public class RemoteMailQueue {
     }
 
     private void summarize(SearchResult result, IndexReader indexReader) throws IOException {
-        TermEnum terms = indexReader.terms();
-        boolean hasDeletions = indexReader.hasDeletions();
-        do {
-            Term term = terms.term();
-            if (term != null) {
-                String field = term.field();
-                if (field != null && field.length() > 0) {
+        // Get all fields from the index
+        java.util.Set<String> fields = new java.util.HashSet<>();
+        for (int i = 0; i < indexReader.maxDoc(); i++) {
+            org.apache.lucene.document.Document doc = indexReader.document(i);
+            for (org.apache.lucene.index.IndexableField field : doc.getFields()) {
+                fields.add(field.name());
+            }
+        }
+        
+        for (String field : fields) {
+            if (field != null && field.length() > 0) {
+                try {
                     QueueAttr attr = QueueAttr.valueOf(field);
                     if (attr == QueueAttr.addr ||
                         attr == QueueAttr.host ||
@@ -393,34 +396,39 @@ public class RemoteMailQueue {
                             list = new LinkedList<>();
                             result.sitems.put(attr, list);
                         }
-                        int count = 0;
-                        if (hasDeletions) {
-                            TermDocs termDocs = indexReader.termDocs(term);
-                            while (termDocs.next()) {
-                                if (!indexReader.isDeleted(termDocs.doc())) {
+                        org.apache.lucene.index.Terms terms = MultiTerms.getTerms(indexReader, field);
+                        if (terms != null) {
+                            TermsEnum te = terms.iterator();
+                            BytesRef termRef;
+                            while ((termRef = te.next()) != null) {
+                                String text = termRef.utf8ToString();
+                                int count = 0;
+                                PostingsEnum pe = te.postings(null, PostingsEnum.NONE);
+                                int docId;
+                                while ((docId = pe.nextDoc()) != PostingsEnum.NO_MORE_DOCS) {
                                     count++;
                                 }
+                                if (count > 0) {
+                                    list.add(new SummaryItem(text, count));
+                                }
                             }
-                        } else {
-                            count = terms.docFreq();
-                        }
-                        if (count > 0) {
-                            list.add(new SummaryItem(term.text(), count));
                         }
                     }
+                } catch (IllegalArgumentException e) {
+                    // Field is not a QueueAttr, skip it
                 }
             }
-        } while (terms.next());
+        }
     }
 
     private Map<QueueAttr,String> docToQueueItem(Document doc) {
         Map<QueueAttr, String> qitem = new HashMap<>();
         for (QueueAttr attr : QueueAttr.values()) {
-            Field[] fields = doc.getFields(attr.toString());
+            org.apache.lucene.index.IndexableField[] fields = doc.getFields(attr.toString());
             if (fields != null) {
                 StringBuilder sb = new StringBuilder();
                 boolean first = true;
-                for (Field field : fields) {
+                for (org.apache.lucene.index.IndexableField field : fields) {
                     if (first) {
                         first = false;
                     } else {
@@ -445,10 +453,6 @@ public class RemoteMailQueue {
         int listed = 0;
 
         for (int i = 0; i < max; i++) {
-            if (indexReader.isDeleted(i)) {
-                continue;
-            }
-
             if (skip < offset) {
                 skip++;
                 continue;
@@ -471,8 +475,8 @@ public class RemoteMailQueue {
         if (ZimbraLog.rmgmt.isDebugEnabled()) {
             ZimbraLog.rmgmt.debug("searching query=" + query + " offset=" + offset + " limit=" + limit + " " + this);
         }
-      try (Searcher searcher = new IndexSearcher(indexReader)) {
-        TopDocs topDocs = searcher.search(query, null, limit);
+        IndexSearcher searcher = new IndexSearcher(indexReader);
+        TopDocs topDocs = searcher.search(query, limit);
         ScoreDoc[] hits = topDocs.scoreDocs;
 
         if (offset < hits.length) {
@@ -490,7 +494,6 @@ public class RemoteMailQueue {
           }
         }
         result.hits = hits.length;
-      }
     }
 
     public SearchResult search(Query query, int offset, int limit) throws ServiceException {
@@ -500,7 +503,7 @@ public class RemoteMailQueue {
             if (!mIndexPath.exists()) {
                 return result;
             }
-            indexReader = IndexReader.open(LuceneDirectory.open(mIndexPath));
+            indexReader = DirectoryReader.open(MMapDirectory.open(mIndexPath.toPath()));
             summarize(result, indexReader);
             if (query == null) {
                 list0(result, indexReader, offset, limit);
@@ -527,7 +530,7 @@ public class RemoteMailQueue {
     public void action(Server server, QueueAction action, String[] ids) throws ServiceException {
         if (ZimbraLog.rmgmt.isDebugEnabled()) ZimbraLog.rmgmt.debug("action=" + action + " ids=" + Arrays.deepToString(ids) + " " + this);
         RemoteManager rm = RemoteManager.getRemoteManager(server);
-        IndexReader indexReader = null;
+        IndexWriter indexWriter = null;
 
         try {
             boolean all = false;
@@ -536,7 +539,9 @@ public class RemoteMailQueue {
                 clearIndex();
                 all = true;
             } else {
-                indexReader = IndexReader.open(LuceneDirectory.open(mIndexPath), false);
+                IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+                config.setOpenMode(IndexWriterConfig.OpenMode.APPEND);
+                indexWriter = new IndexWriter(MMapDirectory.open(mIndexPath.toPath()), config);
             }
 
             int done = 0;
@@ -556,9 +561,9 @@ public class RemoteMailQueue {
                     }
                     if (!all) {
                         Term toDelete = new Term(QueueAttr.id.toString(), ids[i]);
-                        int numDeleted = indexReader.deleteDocuments(toDelete);
-                        mNumMessages.getAndAdd(-numDeleted);
-                        if (ZimbraLog.rmgmt.isDebugEnabled()) ZimbraLog.rmgmt.debug("deleting term:" + toDelete + ", docs deleted=" + numDeleted);
+                        indexWriter.deleteDocuments(toDelete);
+                        mNumMessages.decrementAndGet();
+                        if (ZimbraLog.rmgmt.isDebugEnabled()) ZimbraLog.rmgmt.debug("deleting term:" + toDelete);
                     }
                     sb.append(ids[i]);
                 }
@@ -568,11 +573,11 @@ public class RemoteMailQueue {
         } catch (IOException ioe) {
             throw ServiceException.FAILURE("exception occurred performing queue action", ioe);
         } finally {
-            if (indexReader != null) {
+            if (indexWriter != null) {
                 try {
-                    indexReader.close();
+                    indexWriter.close();
                 } catch  (IOException ioe) {
-                    ZimbraLog.rmgmt.warn("exception occured closing index reader during action", ioe);
+                    ZimbraLog.rmgmt.warn("exception occured closing index writer during action", ioe);
                 }
             }
         }

@@ -11,15 +11,17 @@ import java.text.ParseException;
 
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.MMapDirectory;
 
 public final class RawIndexEditor {
 
     private final Directory luceneDirectory;
 
     RawIndexEditor(String path) throws IOException {
-        luceneDirectory = LuceneDirectory.open(new File(path));
+        luceneDirectory = MMapDirectory.open(new File(path).toPath());
     }
 
     public static String Format(String s, int len) {
@@ -80,12 +82,17 @@ public final class RawIndexEditor {
 
 
     void dumpAll() throws IOException {
-      try (IndexReader reader = IndexReader.open(luceneDirectory)) {
+      try (IndexReader reader = DirectoryReader.open(luceneDirectory)) {
         int maxDoc = reader.maxDoc();
         System.out.println("There are " + maxDoc + " documents in this index.");
 
         for (int i = 0; i < maxDoc; i++) {
-          dumpDocument(reader.document(i), reader.isDeleted(i));
+          try {
+            dumpDocument(reader.document(i), false);
+          } catch (IllegalArgumentException e) {
+            // Document is deleted
+            dumpDocument(new Document(), true);
+          }
         }
       }
     }

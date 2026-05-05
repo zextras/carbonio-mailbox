@@ -40,14 +40,8 @@ public interface ZimbraIndexSearcher extends Closeable {
     ZimbraTopDocs search(Query query, int n) throws IOException;
     
     /**
-     * Finds the top n hits for query, applying filter if non-null.
+     * Finds the top n hits for query with sorting.
      */
-    ZimbraTopDocs search(Query query, ZimbraTermsFilter filter, int n) throws IOException;
+    ZimbraTopDocs search(Query query, int n, Sort sort) throws IOException;
 
-    /**
-     * Search implementation with arbitrary sorting. Finds the top n hits for query, applying filter if non-null,
-     * and sorting the hits by the criteria in sort. NOTE: this does not compute scores by default; use
-     * setDefaultFieldSortScoring(boolean, boolean) to enable scoring.
-     */
-    ZimbraTopFieldDocs search(Query query, ZimbraTermsFilter filter, int n, Sort sort) throws IOException;
 }

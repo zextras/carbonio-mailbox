@@ -5,26 +5,26 @@
 
 package com.zimbra.cs.index.analysis;
 
-import java.io.Reader;
-
-import org.apache.lucene.analysis.CharTokenizer;
-
-import com.zimbra.cs.index.LuceneIndex;
+import org.apache.lucene.analysis.util.CharTokenizer;
 
 /**
  * Split by comma, space, CR, LF, dot.
+ *
+ * <p>Normalization (accent folding, case folding, full-width → half-width) is applied by wrapping
+ * this tokenizer with {@link NormalizeTokenFilter} as a {@code CharFilter} in the analyzer's
+ * {@code createComponents} method.
  *
  * @author tim
  * @author ysasaki
  */
 public final class FilenameTokenizer extends CharTokenizer {
 
-    public FilenameTokenizer(Reader reader) {
-        super(LuceneIndex.VERSION, reader);
+    public FilenameTokenizer() {
+        super();
     }
 
     @Override
-    protected boolean isTokenChar(char c) {
+    protected boolean isTokenChar(int c) {
         switch (c) {
             case ',':
             case ' ':
@@ -35,11 +35,6 @@ public final class FilenameTokenizer extends CharTokenizer {
             default:
                 return true;
         }
-    }
-
-    @Override
-    protected char normalize(char c) {
-        return (char) NormalizeTokenFilter.normalize(c);
     }
 
 }

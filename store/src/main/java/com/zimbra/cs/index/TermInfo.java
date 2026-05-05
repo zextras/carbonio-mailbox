@@ -15,7 +15,8 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
-import org.apache.lucene.document.Fieldable;
+import org.apache.lucene.index.IndexableField;
+import org.apache.lucene.index.IndexOptions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
@@ -56,20 +57,20 @@ public final class TermInfo {
      * @param pos is the current position
      * @return new value for {@code pos}
      */
-    public static int updateMapWithDetailsForField(Analyzer analyzer, Fieldable field,
+    public static int updateMapWithDetailsForField(Analyzer analyzer, IndexableField field,
             Map<String, TermInfo> term2info, int pos)
     throws IOException {
-        if (!field.isIndexed()) {
+        if (field.fieldType().indexOptions() == IndexOptions.NONE) {
             return pos;
         }
         Character prefix = LuceneFields.FIELD2PREFIX.get(field.name());
         if (prefix == null) {
             ZimbraLog.index.info("TermInfo.updateMapWithDetailsForField - skipping indexed field " + field.name() +
-                    " isTokenized=" + field.isTokenized());
+                    " isTokenized=" + field.fieldType().tokenized());
             return pos;
         }
-        if (field.isTokenized()) {
-            TokenStream stream = field.tokenStreamValue();
+        if (field.fieldType().tokenized()) {
+            TokenStream stream = field.tokenStream(analyzer, null);
             if (stream == null) {
                 stream = analyzer.tokenStream(field.name(), new StringReader(field.stringValue()));
             }

@@ -24,8 +24,14 @@ public final class NumberTokenizer extends Tokenizer {
     private CharTermAttribute termAttr = addAttribute(CharTermAttribute.class);
     private OffsetAttribute offsetAttr = addAttribute(OffsetAttribute.class);
 
-    public NumberTokenizer(Reader reader) {
-        super(reader);
+    public NumberTokenizer() {
+        super();
+    }
+
+    @Override
+    public void reset() throws IOException {
+        super.reset();
+        endPos = 0;
     }
 
     @Override

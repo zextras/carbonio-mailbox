@@ -8,6 +8,8 @@ package com.zimbra.cs.index;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
 
 import com.google.common.base.Strings;
 import com.zimbra.cs.index.analysis.FieldTokenStream;
@@ -35,20 +37,19 @@ public final class IndexDocument {
     }
 
     public void addMimeType(MimeTypeTokenStream stream) {
-        document.add(new Field(LuceneFields.L_MIMETYPE, stream));
+        document.add(new TextField(LuceneFields.L_MIMETYPE, stream));
     }
 
     public void addPartName(String value) {
-        document.add(new Field(LuceneFields.L_PARTNAME, value, Field.Store.YES, Field.Index.NOT_ANALYZED));
+        document.add(new StringField(LuceneFields.L_PARTNAME, value, Field.Store.YES));
     }
 
     public void addFilename(String value) {
-        document.add(new Field(LuceneFields.L_FILENAME, value, Field.Store.YES, Field.Index.ANALYZED));
+        document.add(new TextField(LuceneFields.L_FILENAME, value, Field.Store.YES));
     }
 
     public void addSortSize(long value) {
-        document.add(new Field(LuceneFields.L_SORT_SIZE, String.valueOf(value), Field.Store.YES,
-                Field.Index.NOT_ANALYZED));
+        document.add(new StringField(LuceneFields.L_SORT_SIZE, String.valueOf(value), Field.Store.YES));
     }
 
     public void removeSortSize() {
@@ -56,8 +57,8 @@ public final class IndexDocument {
     }
 
     public void addSortAttachment(boolean value) {
-        document.add(new Field(LuceneFields.L_SORT_ATTACH, LuceneFields.valueForBooleanField(value),
-                Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+        document.add(new StringField(LuceneFields.L_SORT_ATTACH, LuceneFields.valueForBooleanField(value),
+                Field.Store.YES));
     }
 
     public void removeSortAttachment() {
@@ -65,8 +66,8 @@ public final class IndexDocument {
     }
 
     public void addSortFlag(boolean value) {
-        document.add(new Field(LuceneFields.L_SORT_FLAG, LuceneFields.valueForBooleanField(value),
-                Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+        document.add(new StringField(LuceneFields.L_SORT_FLAG, LuceneFields.valueForBooleanField(value),
+                Field.Store.YES));
     }
 
     public void removeSortFlag() {
@@ -74,8 +75,8 @@ public final class IndexDocument {
     }
 
     public void addSortPriority(int value) {
-        document.add(new Field(LuceneFields.L_SORT_PRIORITY, LuceneFields.valueForPriority(value),
-                Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+        document.add(new StringField(LuceneFields.L_SORT_PRIORITY, LuceneFields.valueForPriority(value),
+                Field.Store.YES));
     }
 
     public void removeSortPriority() {
@@ -83,7 +84,7 @@ public final class IndexDocument {
     }
 
     public void addFrom(RFC822AddressTokenStream stream) {
-        document.add(new Field(LuceneFields.L_H_FROM, stream));
+        document.add(new TextField(LuceneFields.L_H_FROM, stream));
     }
 
     public void removeFrom() {
@@ -91,7 +92,7 @@ public final class IndexDocument {
     }
 
     public void addTo(RFC822AddressTokenStream stream) {
-        document.add(new Field(LuceneFields.L_H_TO, stream));
+        document.add(new TextField(LuceneFields.L_H_TO, stream));
     }
 
     public void removeTo() {
@@ -99,7 +100,7 @@ public final class IndexDocument {
     }
 
     public void addCc(RFC822AddressTokenStream stream) {
-        document.add(new Field(LuceneFields.L_H_CC, stream));
+        document.add(new TextField(LuceneFields.L_H_CC, stream));
     }
 
     public void removeCc() {
@@ -107,27 +108,26 @@ public final class IndexDocument {
     }
 
     public void addEnvFrom(RFC822AddressTokenStream stream) {
-        document.add(new Field(LuceneFields.L_H_X_ENV_FROM, stream));
+        document.add(new TextField(LuceneFields.L_H_X_ENV_FROM, stream));
     }
 
     public void addEnvTo(RFC822AddressTokenStream stream) {
-        document.add(new Field(LuceneFields.L_H_X_ENV_TO, stream));
+        document.add(new TextField(LuceneFields.L_H_X_ENV_TO, stream));
     }
 
     public void addMessageId(String value) {
-        document.add(new Field(LuceneFields.L_H_MESSAGE_ID, value, Field.Store.NO, Field.Index.NOT_ANALYZED));
+        document.add(new StringField(LuceneFields.L_H_MESSAGE_ID, value, Field.Store.NO));
     }
 
     public void addField(FieldTokenStream stream) {
-        document.add(new Field(LuceneFields.L_FIELD, stream));
+        document.add(new TextField(LuceneFields.L_FIELD, stream));
     }
 
     public void addSortName(String value) {
         if (Strings.isNullOrEmpty(value)) {
             return;
         }
-        document.add(new Field(LuceneFields.L_SORT_NAME, value.toLowerCase(),
-                Field.Store.NO, Field.Index.NOT_ANALYZED));
+        document.add(new StringField(LuceneFields.L_SORT_NAME, value.toLowerCase(), Field.Store.NO));
     }
 
     public void removeSortName() {
@@ -135,7 +135,7 @@ public final class IndexDocument {
     }
 
     public void addSubject(String value) {
-        document.add(new Field(LuceneFields.L_H_SUBJECT, value, Field.Store.NO, Field.Index.ANALYZED));
+        document.add(new TextField(LuceneFields.L_H_SUBJECT, value, Field.Store.NO));
     }
 
     public void removeSubject() {
@@ -146,8 +146,7 @@ public final class IndexDocument {
         if (Strings.isNullOrEmpty(value)) {
             return;
         }
-        document.add(new Field(LuceneFields.L_SORT_SUBJECT, value.toUpperCase(),
-                Field.Store.NO, Field.Index.NOT_ANALYZED));
+        document.add(new StringField(LuceneFields.L_SORT_SUBJECT, value.toUpperCase(), Field.Store.NO));
     }
 
     public void removeSortSubject() {
@@ -155,16 +154,15 @@ public final class IndexDocument {
     }
 
     public void addContent(String value) {
-        document.add(new Field(LuceneFields.L_CONTENT, value, Field.Store.NO, Field.Index.ANALYZED));
+        document.add(new TextField(LuceneFields.L_CONTENT, value, Field.Store.NO));
     }
 
     public void addAttachments(MimeTypeTokenStream stream) {
-        document.add(new Field(LuceneFields.L_ATTACHMENTS, stream));
+        document.add(new TextField(LuceneFields.L_ATTACHMENTS, stream));
     }
 
     public void addMailboxBlobId(int value) {
-        document.add(new Field(LuceneFields.L_MAILBOX_BLOB_ID, String.valueOf(value),
-                Field.Store.YES, Field.Index.NOT_ANALYZED));
+        document.add(new StringField(LuceneFields.L_MAILBOX_BLOB_ID, String.valueOf(value), Field.Store.YES));
     }
 
     public void removeMailboxBlobId() {
@@ -172,9 +170,8 @@ public final class IndexDocument {
     }
 
     public void addSortDate(long value) {
-        document.add(new Field(LuceneFields.L_SORT_DATE,
-                DateTools.timeToString(value, DateTools.Resolution.MILLISECOND),
-                Field.Store.YES, Field.Index.NOT_ANALYZED));
+        document.add(new StringField(LuceneFields.L_SORT_DATE,
+                DateTools.timeToString(value, DateTools.Resolution.MILLISECOND), Field.Store.YES));
     }
 
     public void removeSortDate() {
@@ -182,16 +179,15 @@ public final class IndexDocument {
     }
 
     public void addContactData(String value) {
-        document.add(new Field(LuceneFields.L_CONTACT_DATA, value, Field.Store.NO, Field.Index.ANALYZED));
+        document.add(new TextField(LuceneFields.L_CONTACT_DATA, value, Field.Store.NO));
     }
 
     public void addObjects(String value) {
-        document.add(new Field(LuceneFields.L_OBJECTS, value, Field.Store.NO, Field.Index.ANALYZED));
+        document.add(new TextField(LuceneFields.L_OBJECTS, value, Field.Store.NO));
     }
 
     public void addVersion(int value) {
-        document.add(new Field(LuceneFields.L_VERSION, String.valueOf(value),
-                Field.Store.YES, Field.Index.NOT_ANALYZED));
+        document.add(new StringField(LuceneFields.L_VERSION, String.valueOf(value), Field.Store.YES));
     }
 
 }

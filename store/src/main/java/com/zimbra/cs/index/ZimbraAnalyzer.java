@@ -13,8 +13,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.KeywordTokenizer;
+import org.apache.lucene.analysis.core.KeywordTokenizer;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
@@ -24,8 +25,10 @@ import com.zimbra.cs.index.analysis.AddrCharTokenizer;
 import com.zimbra.cs.index.analysis.ContactTokenFilter;
 import com.zimbra.cs.index.analysis.FilenameTokenizer;
 import com.zimbra.cs.index.analysis.HalfwidthKanaVoicedMappingFilter;
+import com.zimbra.cs.index.analysis.NormalizeTokenFilter;
 import com.zimbra.cs.index.analysis.NumberTokenizer;
 import com.zimbra.cs.index.analysis.UniversalAnalyzer;
+import com.zimbra.cs.index.LuceneIndex;
 
 /***
  * Global analyzer wrapper for Zimbra Indexer.
@@ -41,7 +44,7 @@ public final class ZimbraAnalyzer extends Analyzer {
     private static ZimbraAnalyzer SINGLETON = new ZimbraAnalyzer();
     private static final Map<String, Analyzer> ANALYZERS = new ConcurrentHashMap<>();
     static {
-        ANALYZERS.put("StandardAnalyzer", new ForwardingAnalyzer(new StandardAnalyzer(LuceneIndex.VERSION)));
+        ANALYZERS.put("StandardAnalyzer", new ForwardingAnalyzer(new StandardAnalyzer()));
     }
 
     private final Analyzer defaultAnalyzer = new UniversalAnalyzer();
@@ -129,42 +132,113 @@ public final class ZimbraAnalyzer extends Analyzer {
     }
 
     @Override
-    public TokenStream tokenStream(String field, Reader reader) {
-        return tokenStream(field, reader, defaultAnalyzer);
+    protected TokenStreamComponents createComponents(String fieldName) {
+        return createComponents(fieldName, defaultAnalyzer);
     }
 
-    private TokenStream tokenStream(String field, Reader reader, Analyzer analyzer) {
-        if (field.equals(LuceneFields.L_H_MESSAGE_ID)) {
-            return new KeywordTokenizer(reader);
-        } else if (field.equals(LuceneFields.L_ATTACHMENTS) || field.equals(LuceneFields.L_MIMETYPE)) {
+    private TokenStreamComponents createComponents(String fieldName, Analyzer analyzer) {
+        if (fieldName.equals(LuceneFields.L_H_MESSAGE_ID)) {
+            KeywordTokenizer tokenizer = new KeywordTokenizer();
+            return new TokenStreamComponents(tokenizer, tokenizer);
+        } else if (fieldName.equals(LuceneFields.L_ATTACHMENTS) || fieldName.equals(LuceneFields.L_MIMETYPE)) {
             throw new IllegalArgumentException("Use MimeTypeTokenStream");
-        } else if (field.equals(LuceneFields.L_SORT_SIZE)) {
-            return new NumberTokenizer(reader);
-        } else if (field.equals(LuceneFields.L_H_FROM)
-                || field.equals(LuceneFields.L_H_TO)
-                || field.equals(LuceneFields.L_H_CC)
-                || field.equals(LuceneFields.L_H_X_ENV_FROM)
-                || field.equals(LuceneFields.L_H_X_ENV_TO)) {
+        } else if (fieldName.equals(LuceneFields.L_SORT_SIZE)) {
+            NumberTokenizer tokenizer = new NumberTokenizer();
+            return new TokenStreamComponents(tokenizer, tokenizer);
+        } else if (fieldName.equals(LuceneFields.L_H_FROM)
+                || fieldName.equals(LuceneFields.L_H_TO)
+                || fieldName.equals(LuceneFields.L_H_CC)
+                || fieldName.equals(LuceneFields.L_H_X_ENV_FROM)
+                || fieldName.equals(LuceneFields.L_H_X_ENV_TO)) {
             // This is only for search. We don't need address-aware tokenization
             // because we put all possible forms of address while indexing.
             // Use RFC822AddressTokenStream for indexing.
-            return new AddrCharTokenizer(reader);
-        } else if (field.equals(LuceneFields.L_CONTACT_DATA)) {
-            return new ContactTokenFilter(new AddrCharTokenizer(reader)); // for bug 48146
-        } else if (field.equals(LuceneFields.L_FILENAME)) {
-            return new FilenameTokenizer(reader);
+            // NormalizeTokenFilter is applied as a CharFilter to handle accent/case folding.
+            AddrCharTokenizer tokenizer = new AddrCharTokenizer();
+            return new TokenStreamComponents(
+                reader -> tokenizer.setReader(new NormalizeTokenFilter(reader)),
+                tokenizer);
+        } else if (fieldName.equals(LuceneFields.L_CONTACT_DATA)) {
+            AddrCharTokenizer tokenizer = new AddrCharTokenizer();
+            TokenStream result = new ContactTokenFilter(tokenizer); // for bug 48146
+            return new TokenStreamComponents(
+                reader -> tokenizer.setReader(new NormalizeTokenFilter(reader)),
+                result);
+        } else if (fieldName.equals(LuceneFields.L_FILENAME)) {
+            FilenameTokenizer tokenizer = new FilenameTokenizer();
+            return new TokenStreamComponents(
+                reader -> tokenizer.setReader(new NormalizeTokenFilter(reader)),
+                tokenizer);
         } else {
-            return analyzer.tokenStream(field, new HalfwidthKanaVoicedMappingFilter((reader)));
+            // For default analyzer, wrap with HalfwidthKanaVoicedMappingFilter
+            // Create a custom tokenizer that applies the CharFilter
+            WrappedTokenizer tokenizer = new WrappedTokenizer(analyzer);
+            return new TokenStreamComponents(tokenizer, tokenizer);
+        }
+    }
+
+    /**
+     * Wrapper tokenizer that applies HalfwidthKanaVoicedMappingFilter to the input
+     * before delegating to the underlying analyzer's token stream.
+     * <p>
+     * This is used for the default field case where we want to normalize Japanese
+     * half-width kana before running the underlying analyzer.
+     */
+    private static class WrappedTokenizer extends Tokenizer {
+        private final Analyzer analyzer;
+        private TokenStream delegateStream;
+        private CharTermAttribute delegateTermAttr;
+        private CharTermAttribute myTermAttr;
+
+        WrappedTokenizer(Analyzer analyzer) {
+            this.analyzer = analyzer;
+            this.myTermAttr = addAttribute(CharTermAttribute.class);
+        }
+
+        @Override
+        public void reset() throws IOException {
+            super.reset();
+            // Apply HalfwidthKanaVoicedMappingFilter to the input reader
+            Reader filtered = new HalfwidthKanaVoicedMappingFilter(input);
+            // Use tokenStream() which is public API
+            delegateStream = analyzer.tokenStream("default", filtered);
+            delegateTermAttr = delegateStream.addAttribute(CharTermAttribute.class);
+            delegateStream.reset();
+        }
+
+        @Override
+        public boolean incrementToken() throws IOException {
+            if (delegateStream == null) {
+                return false;
+            }
+            clearAttributes();
+            if (delegateStream.incrementToken()) {
+                myTermAttr.copyBuffer(delegateTermAttr.buffer(), 0, delegateTermAttr.length());
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void end() throws IOException {
+            if (delegateStream != null) {
+                delegateStream.end();
+            }
+            super.end();
+        }
+
+        @Override
+        public void close() throws IOException {
+            if (delegateStream != null) {
+                delegateStream.close();
+                delegateStream = null;
+            }
+            super.close();
         }
     }
 
     public static final TokenStream getTokenStream(String field, Reader reader) {
         return SINGLETON.tokenStream(field, reader);
-    }
-
-    @Override
-    public TokenStream reusableTokenStream(String field, Reader reader) {
-        return tokenStream(field, reader);
     }
 
     private static final class ForwardingAnalyzer extends Analyzer {
@@ -175,8 +249,8 @@ public final class ZimbraAnalyzer extends Analyzer {
         }
 
         @Override
-        public TokenStream tokenStream(String field, Reader reader) {
-            return SINGLETON.tokenStream(field, reader, forwarding);
+        protected TokenStreamComponents createComponents(String fieldName) {
+            return SINGLETON.createComponents(fieldName, forwarding);
         }
     }
 

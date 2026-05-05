@@ -8,8 +8,6 @@ package com.zimbra.cs.index;
 import com.zimbra.cs.mailbox.Flag;
 import java.util.Map;
 
-import org.apache.lucene.document.Field;
-
 import com.google.common.collect.ImmutableMap;
 
 /**
@@ -185,47 +183,47 @@ public final class LuceneFields {
     public static final String L_FIELD = "l.field";
 
     public enum IndexField {
-        MIMETYPE(L_MIMETYPE, Field.Store.YES, Field.Index.ANALYZED),
-        PARTNAME(L_PARTNAME, Field.Store.YES, Field.Index.NOT_ANALYZED),
-        FILENAME(L_FILENAME, Field.Store.YES, Field.Index.ANALYZED),
-        SORT_SIZE(L_SORT_SIZE, Field.Store.YES, Field.Index.NOT_ANALYZED),
-        SORT_ATTACH(L_SORT_ATTACH, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS),
-        SORT_FLAG(L_SORT_FLAG, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS),
-        SORT_PRIORITY(L_SORT_PRIORITY, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS),
-        H_FROM(L_H_FROM, Field.Store.YES, Field.Index.ANALYZED),
-        H_TO(L_H_TO, Field.Store.YES, Field.Index.ANALYZED),
-        H_CC(L_H_CC, Field.Store.YES, Field.Index.ANALYZED),
-        H_X_ENV_FROM(L_H_X_ENV_FROM, Field.Store.YES, Field.Index.ANALYZED),
-        H_X_ENV_TO(L_H_X_ENV_TO, Field.Store.YES, Field.Index.ANALYZED),
-        H_MESSAGE_ID(L_H_MESSAGE_ID, Field.Store.NO, Field.Index.NOT_ANALYZED),
-        FIELD(L_FIELD, Field.Store.YES, Field.Index.ANALYZED),
-        SORT_NAME(L_SORT_NAME, Field.Store.NO, Field.Index.NOT_ANALYZED),
-        H_SUBJECT(L_H_SUBJECT, Field.Store.NO, Field.Index.ANALYZED),
-        SORT_SUBJECT(L_SORT_SUBJECT, Field.Store.NO, Field.Index.NOT_ANALYZED),
-        CONTENT(L_CONTENT, Field.Store.NO, Field.Index.ANALYZED),
-        ATTACHMENTS(L_ATTACHMENTS, Field.Store.YES, Field.Index.ANALYZED),
-        MAILBOX_BLOB_ID(L_MAILBOX_BLOB_ID, Field.Store.YES, Field.Index.NOT_ANALYZED),
-        SORT_DATE(L_SORT_DATE, Field.Store.YES, Field.Index.NOT_ANALYZED),
-        CONTACT_DATA(L_CONTACT_DATA, Field.Store.NO, Field.Index.ANALYZED),
-        OBJECTS(L_OBJECTS, Field.Store.NO, Field.Index.ANALYZED),
-        VERSION(L_VERSION, Field.Store.YES, Field.Index.NOT_ANALYZED);
+        MIMETYPE(L_MIMETYPE, true, true),
+        PARTNAME(L_PARTNAME, true, false),
+        FILENAME(L_FILENAME, true, true),
+        SORT_SIZE(L_SORT_SIZE, true, false),
+        SORT_ATTACH(L_SORT_ATTACH, true, false),
+        SORT_FLAG(L_SORT_FLAG, true, false),
+        SORT_PRIORITY(L_SORT_PRIORITY, true, false),
+        H_FROM(L_H_FROM, true, true),
+        H_TO(L_H_TO, true, true),
+        H_CC(L_H_CC, true, true),
+        H_X_ENV_FROM(L_H_X_ENV_FROM, true, true),
+        H_X_ENV_TO(L_H_X_ENV_TO, true, true),
+        H_MESSAGE_ID(L_H_MESSAGE_ID, false, false),
+        FIELD(L_FIELD, true, true),
+        SORT_NAME(L_SORT_NAME, false, false),
+        H_SUBJECT(L_H_SUBJECT, false, true),
+        SORT_SUBJECT(L_SORT_SUBJECT, false, false),
+        CONTENT(L_CONTENT, false, true),
+        ATTACHMENTS(L_ATTACHMENTS, true, true),
+        MAILBOX_BLOB_ID(L_MAILBOX_BLOB_ID, true, false),
+        SORT_DATE(L_SORT_DATE, true, false),
+        CONTACT_DATA(L_CONTACT_DATA, false, true),
+        OBJECTS(L_OBJECTS, false, true),
+        VERSION(L_VERSION, true, false);
 
         private String fieldName;
-        private Field.Store storeSetting;
-        private Field.Index indexSetting;
-        IndexField(String fieldName, Field.Store storeSetting, Field.Index indexSetting) {
+        private boolean stored;
+        private boolean tokenized;
+        IndexField(String fieldName, boolean stored, boolean tokenized) {
             this.fieldName = fieldName;
-            this.storeSetting = storeSetting;
-            this.indexSetting = indexSetting;
+            this.stored = stored;
+            this.tokenized = tokenized;
         }
         public String getFieldName() {
             return fieldName;
         }
-        public Field.Store getStoreSetting() {
-            return storeSetting;
+        public boolean getStoreSetting() {
+            return stored;
         }
-        public Field.Index getIndexSetting() {
-            return indexSetting;
+        public boolean getIndexSetting() {
+            return tokenized;
         }
         public static IndexField fromFieldName(String name) {
             for (IndexField ifield: IndexField.values()) {

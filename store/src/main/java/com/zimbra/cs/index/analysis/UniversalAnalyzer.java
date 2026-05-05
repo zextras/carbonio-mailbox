@@ -10,20 +10,19 @@ import java.io.Reader;
 import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.CharReader;
-import org.apache.lucene.analysis.StopAnalyzer;
+import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.analysis.StopFilter;
 import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 
 import com.google.common.base.CharMatcher;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.index.LuceneIndex;
 
 /**
  * Hybrid {@link Analyzer} of {@code StandardAnalyzer} and {@code CJKAnalyzer}.
@@ -38,42 +37,22 @@ import com.zimbra.cs.index.LuceneIndex;
  */
 public final class UniversalAnalyzer extends Analyzer {
 
-    private Tokenizer savedTokenizer;
-    private TokenStream savedTokenStream;
-
     @Override
-    public TokenStream tokenStream(String field, Reader in) {
-        return createTokenStream(createTokenizer(in));
-    }
-
-    @Override
-    public final TokenStream reusableTokenStream(String field, Reader in)
-        throws IOException {
-
-        if (savedTokenizer != null && savedTokenStream != null) {
-            savedTokenizer.reset(new NormalizeTokenFilter(CharReader.get(in)));
-        } else {
-            savedTokenizer = createTokenizer(in);
-            savedTokenStream = createTokenStream(savedTokenizer);
-        }
-        return savedTokenStream;
-    }
-
-    private Tokenizer createTokenizer(Reader in) {
-        return new UniversalTokenizer(new NormalizeTokenFilter(CharReader.get(in)));
-    }
-
-    private TokenStream createTokenStream(Tokenizer tokenizer) {
+    protected TokenStreamComponents createComponents(String fieldName) {
+        UniversalTokenizer tokenizer = new UniversalTokenizer();
         TokenStream result = new UniversalTokenFilter(tokenizer);
-        Set stopWords = StopAnalyzer.ENGLISH_STOP_WORDS_SET;
+        CharArraySet stopWords = CharArraySet.copy(EnglishAnalyzer.ENGLISH_STOP_WORDS_SET);
         try {
-        	stopWords = Provisioning.getInstance().getConfig().getMultiAttrSet(Provisioning.A_zimbraDefaultAnalyzerStopWords);
+            Set<?> ldapStopWords = Provisioning.getInstance().getConfig().getMultiAttrSet(Provisioning.A_zimbraDefaultAnalyzerStopWords);
+            if (ldapStopWords != null && !ldapStopWords.isEmpty()) {
+                stopWords = new CharArraySet(ldapStopWords, true);
+            }
         } catch (ServiceException e) {
         	ZimbraLog.index.error("Failed to retrieve stop words from LDAP", e);
         }
-        // disable position increment for backward compatibility
-        result = new StopFilter(LuceneIndex.VERSION, result, stopWords);
-        return result;
+        // In Lucene 9.x, position increments are always enabled
+        StopFilter stopFilter = new StopFilter(result, stopWords);
+        return new TokenStreamComponents(tokenizer, stopFilter);
     }
 
     private static class UniversalTokenFilter extends TokenFilter {

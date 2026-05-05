@@ -82,9 +82,13 @@
     </dependency>
 
     <dependency>
-      <artifactId>lucene-analyzers</artifactId>
+      <artifactId>lucene-analysis-common</artifactId>
       <groupId>org.apache.lucene</groupId>
-      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <artifactId>lucene-queryparser</artifactId>
+      <groupId>org.apache.lucene</groupId>
     </dependency>
 
     <dependency>

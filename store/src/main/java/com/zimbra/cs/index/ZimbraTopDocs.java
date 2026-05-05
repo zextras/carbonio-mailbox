@@ -40,8 +40,8 @@ public class ZimbraTopDocs {
      * Create equivalent ZimbraTopDocs object to a Lucene TopDocs object
      */
     public static ZimbraTopDocs create(TopDocs luceneTopDocs) {
-        return new ZimbraTopDocs(luceneTopDocs.totalHits,
-                ZimbraScoreDoc.listFromLuceneScoreDocs(luceneTopDocs.scoreDocs), luceneTopDocs.getMaxScore());
+        return new ZimbraTopDocs((int) luceneTopDocs.totalHits.value,
+                ZimbraScoreDoc.listFromLuceneScoreDocs(luceneTopDocs.scoreDocs), Float.NaN);
     }
 
     /**

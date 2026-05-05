@@ -248,7 +248,7 @@ public final class IndexEditor {
             outputStream.print("DELETED ");
         }
         String subj, blobId;
-        Field f;
+        org.apache.lucene.index.IndexableField f;
         f = d.getField(LuceneFields.L_H_SUBJECT);
         if (f!=null) {
             subj = f.stringValue();
@@ -284,7 +284,7 @@ public final class IndexEditor {
         outputStream.println(Format(blobId, 10) + Format(dateStr, 45) +
                 Format(part, 10) + Format(sizeStr, 10) + "\"" + subj + "\"");
 
-        Field content = d.getField(LuceneFields.L_CONTENT);
+        org.apache.lucene.index.IndexableField content = d.getField(LuceneFields.L_CONTENT);
         if (content != null) {
             outputStream.println("\t"+ content);
         }

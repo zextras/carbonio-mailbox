@@ -35,9 +35,9 @@ final class UniversalTokenizer extends Tokenizer {
     private final PositionIncrementAttribute posIncAttr = addAttribute(PositionIncrementAttribute.class);
     private int cjk = -1;
 
-    UniversalTokenizer(Reader in) {
-        super(in);
-        lexer = new UniversalLexer(in);
+    UniversalTokenizer() {
+        super();
+        lexer = new UniversalLexer(input);
     }
 
     @Override
@@ -94,12 +94,6 @@ final class UniversalTokenizer extends Tokenizer {
     public void reset() throws IOException {
         super.reset();
         lexer.yyreset(input);
-    }
-
-    @Override
-    public void reset(Reader reader) throws IOException {
-        super.reset(reader);
-        reset();
     }
 
     private void setOffset(int start, int len) {

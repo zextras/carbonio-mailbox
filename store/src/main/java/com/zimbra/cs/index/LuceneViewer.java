@@ -27,14 +27,17 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.CheckIndex;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexableField;
+import org.apache.lucene.index.PostingsEnum;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermEnum;
-import org.apache.lucene.index.TermPositions;
+import org.apache.lucene.index.Terms;
+import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.index.CheckIndex.Status;
 import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.MMapDirectory;
 
 import com.zimbra.common.util.SetUtil;
 
@@ -85,7 +88,7 @@ public class LuceneViewer {
         mTermFilters = termFilters;
         mConsole = console;
 
-        mIndexReader = IndexReader.open(LuceneDirectory.open(new File(mIndexDir)));
+        mIndexReader = DirectoryReader.open(MMapDirectory.open(new File(mIndexDir).toPath()));
         mWriter = new FileWriter(mOutputFile);
 
         if (hasFilters()) {
@@ -192,8 +195,14 @@ public class LuceneViewer {
     private void dumpFields() throws IOException {
         outputBanner("Fields");
 
-        Collection<String> fieldNames = mIndexReader.getFieldNames(
-                IndexReader.FieldOption.ALL);
+        // In Lucene 9.x, use getFieldNames() from Terms
+        Set<String> fieldNames = new HashSet<>();
+        for (int i = 0; i < mIndexReader.numDocs(); i++) {
+            Document doc = mIndexReader.document(i);
+            for (IndexableField field : doc.getFields()) {
+                fieldNames.add(field.name());
+            }
+        }
         for (String fieldName : fieldNames) {
             outputLn("    " + fieldName);
         }
@@ -211,7 +220,7 @@ public class LuceneViewer {
         for (int i = 0; i < totalDocs; i++) {
             Document doc = null;
             try {
-                doc = mIndexReader.document(i, null);
+                doc = mIndexReader.document(i);
             } catch (IllegalArgumentException e) {
                 if ("attempt to access a deleted document".equals(e.getMessage())) {
                     mConsole.warn("encountered exception while dumping document " +
@@ -239,7 +248,7 @@ public class LuceneViewer {
         }
 
         // note: only stored fields will be returned
-        for (Fieldable field : doc.getFields()) {
+        for (IndexableField field : doc.getFields()) {
             String fieldName = field.name();
 
             boolean isDate = "l.date".equals(fieldName);
@@ -282,83 +291,95 @@ public class LuceneViewer {
     private void dumpTerms() throws IOException {
         outputBanner("Terms (in Term.compareTo() order)");
 
-        TermEnum terms = mIndexReader.terms();
         int order = 0;
-
-        while (terms.next()) {
-            order++;
-            Term term = terms.term();
-            String field = term.field();
-            String text = term.text();
-
-            if (!wantThisTerm(field, text)) {
-                continue;
-            }
-
-            outputLn(order + " " + field + ": " + text);
-
-            /*
-             * for each term, print the
-             * <document, frequency, <position>* > tuples for a term.
-             *
-             * document:  document in which the Term appears
-             * frequency: number of time the Term appears in the document
-             * position:  position for each appearance in the document
-             *
-             * e.g. doc.add(new Field("field", "one two three two four five", Field.Store.YES, Field.Index.ANALYZED));
-             *      then the tuple for Term("field", "two") in this document would be like:
-             *      88, 2, <2, 4>
-             *      where
-             *      88 is the document number
-             *      2  is the frequency this term appear in the document
-             *      <2, 4> are the positions for each appearance in the document
-             */
-            // by TermPositions
-            outputLn("    document, frequency, <position>*");
-
-            // keep track of docs that appear in all terms that are filtered in.
-            Set<Integer> docNums = null;
-            if (hasFilters()) {
-                docNums = new HashSet<>();
-            }
-
-            TermPositions termPos = mIndexReader.termPositions(term);
-            while (termPos.next()) {
-                int docNum = termPos.doc();
-                int freq = termPos.freq();
-
-                if (docNums != null) {
-                    docNums.add(docNum);
-                }
-
-                output("    " + docNum + ", " + freq + ", <");
-
-                boolean first = true;
-                for (int f = 0; f < freq; f++) {
-                    int positionInDoc = termPos.nextPosition();
-                    if (!first) {
-                        output(" ");
-                    } else {
-                        first = false;
-                    }
-                    output(positionInDoc + "");
-                }
-                outputLn(">");
-            }
-            termPos.close();
-
-            if (docNums != null) {
-                 computeDocsIntersection(docNums);
-            }
-
-            outputLn();
-
-            if (order % 1000 == 0) {
-                mConsole.debug("Dumped " + order + " terms");
+        
+        // Iterate through all fields
+        Set<String> fieldNames = new HashSet<>();
+        for (int i = 0; i < mIndexReader.numDocs(); i++) {
+            Document doc = mIndexReader.document(i);
+            for (IndexableField field : doc.getFields()) {
+                fieldNames.add(field.name());
             }
         }
+        for (String field : fieldNames) {
+            Terms terms = org.apache.lucene.index.MultiTerms.getTerms(mIndexReader, field);
+            if (terms == null) continue;
+            
+            TermsEnum termsEnum = terms.iterator();
+            org.apache.lucene.util.BytesRef term;
+            
+            while ((term = termsEnum.next()) != null) {
+                order++;
+                String text = term.utf8ToString();
 
-        terms.close();
+                if (!wantThisTerm(field, text)) {
+                    continue;
+                }
+
+                outputLn(order + " " + field + ": " + text);
+
+                /*
+                 * for each term, print the
+                 * <document, frequency, <position>* > tuples for a term.
+                 *
+                 * document:  document in which the Term appears
+                 * frequency: number of time the Term appears in the document
+                 * position:  position for each appearance in the document
+                 *
+                 * e.g. doc.add(new Field("field", "one two three two four five", Field.Store.YES, Field.Index.ANALYZED));
+                 *      then the tuple for Term("field", "two") in this document would be like:
+                 *      88, 2, <2, 4>
+                 *      where
+                 *      88 is the document number
+                 *      2  is the frequency this term appear in the document
+                 *      <2, 4> are the positions for each appearance in the document
+                 */
+                // by PostingsEnum
+                outputLn("    document, frequency, <position>*");
+
+                // keep track of docs that appear in all terms that are filtered in.
+                Set<Integer> docNums = null;
+                if (hasFilters()) {
+                    docNums = new HashSet<>();
+                }
+
+                PostingsEnum postings = termsEnum.postings(null, PostingsEnum.POSITIONS);
+                if (postings != null) {
+                    int docNum;
+                    while ((docNum = postings.nextDoc()) != PostingsEnum.NO_MORE_DOCS) {
+                        int freq = postings.freq();
+
+                        if (docNums != null) {
+                            docNums.add(docNum);
+                        }
+
+                        output("    " + docNum + ", " + freq + ", <");
+
+                        boolean first = true;
+                        for (int f = 0; f < freq; f++) {
+                            int positionInDoc = postings.nextPosition();
+                            if (!first) {
+                                output(" ");
+                            } else {
+                                first = false;
+                            }
+                            output(positionInDoc + "");
+                        }
+                        outputLn(">");
+                    }
+                }
+
+                if (docNums != null) {
+                     computeDocsIntersection(docNums);
+                }
+
+                outputLn();
+
+                if (order % 1000 == 0) {
+                    mConsole.debug("Dumped " + order + " terms");
+                }
+            }
+        }
     }
 
     private void dumpDocsIntersection() throws IOException {
@@ -550,7 +571,7 @@ public class LuceneViewer {
 
         Directory dir = null;
         try {
-            dir = LuceneDirectory.open(new File(indexDir));
+            dir = MMapDirectory.open(new File(indexDir).toPath());
         } catch (Throwable t) {
             console.info("ERROR: could not open directory \"" +
                     indexDir + "\"; exiting");

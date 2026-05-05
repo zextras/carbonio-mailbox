@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.util.NumericUtils;
 
 import com.google.common.base.Strings;
 import com.zimbra.common.util.ZimbraLog;
@@ -56,7 +55,7 @@ public final class FieldTokenStream extends TokenStream {
 
         if (NUMERIC_VALUE_REGEX.matcher(value).matches()) {
             try {
-                add(name + "#:" + NumericUtils.intToPrefixCoded(Integer.parseInt(value)));
+                add(name + "#:" + String.format("%010d", Integer.parseInt(value)));
             } catch (NumberFormatException ignore) { // pass through
             }
         }

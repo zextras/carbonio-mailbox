@@ -68,9 +68,11 @@ public final class RFC822AddressTokenStream extends TokenStream {
 
         // casually parse addresses, then tokenize them
         Set<String> emails = new HashSet<>();
-        Tokenizer tokenizer = new AddrCharTokenizer(new StringReader(decoded));
+        Tokenizer tokenizer = new AddrCharTokenizer();
+        tokenizer.setReader(new StringReader(decoded));
         CharTermAttribute term = tokenizer.addAttribute(CharTermAttribute.class);
         try {
+            tokenizer.reset();
             while (tokenizer.incrementToken()) {
                 if (term.length() == 1 && !Character.isLetter(term.charAt(0))) { // ignore single signs
                     continue;

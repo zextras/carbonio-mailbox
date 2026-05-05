@@ -123,10 +123,11 @@ public class TextQuery extends Query {
         } else {
             // Multi terms text (aka Phrase)
             assert tokens.size() > 1 : tokens.size();
-            PhraseQuery query = new PhraseQuery();
+            PhraseQuery.Builder builder = new PhraseQuery.Builder();
             for (String token : tokens) {
-                query.add(new Term(field, token));
+                builder.add(new Term(field, token));
             }
+            PhraseQuery query = builder.build();
 
             // Quote text in case of phrase
             String queryString = toQueryString(field, "\"%s\"".formatted(text));

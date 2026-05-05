@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+#
+OS=${1:-"ubuntu-jammy"}
+
+echo "Building for OS: $OS"
+
+docker run -it --rm \
+    --entrypoint=yap \
+    -v "$(pwd)/artifacts/${OS}":/artifacts \
+    -v "$(pwd)":/tmp/build \
+<<<<<<< HEAD
+    "docker.io/m0rf30/yap-${OS}:1.8" \
+||||||| parent of aa1e79f123 (chore(ci): bump jenkins-lib-common to 1.5.0 (#978))
+    "docker.io/m0rf30/yap-${OS}:1.49" \
+=======
+    "docker.io/m0rf30/yap-${OS}:1.53" \
+>>>>>>> aa1e79f123 (chore(ci): bump jenkins-lib-common to 1.5.0 (#978))
+    build "${OS}" /tmp/build/packages

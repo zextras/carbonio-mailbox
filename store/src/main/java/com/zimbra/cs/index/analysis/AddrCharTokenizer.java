@@ -5,22 +5,22 @@
 
 package com.zimbra.cs.index.analysis;
 
-import java.io.Reader;
-
-import org.apache.lucene.analysis.CharTokenizer;
-
-import com.zimbra.cs.index.LuceneIndex;
+import org.apache.lucene.analysis.util.CharTokenizer;
 
 /**
  * Tokenizer for email addresses.
+ *
+ * <p>Normalization (accent folding, case folding, full-width → half-width) is applied by wrapping
+ * this tokenizer with {@link NormalizeTokenFilter} as a {@code CharFilter} in the analyzer's
+ * {@code createComponents} method.
  *
  * @author tim
  * @author ysasaki
  */
 public final class AddrCharTokenizer extends CharTokenizer {
 
-    public AddrCharTokenizer(Reader reader) {
-        super(LuceneIndex.VERSION, reader);
+    public AddrCharTokenizer() {
+        super();
     }
 
     @Override
@@ -42,11 +42,6 @@ public final class AddrCharTokenizer extends CharTokenizer {
                 return false;
         }
         return true;
-    }
-
-    @Override
-    protected int normalize(int c) {
-        return (char) NormalizeTokenFilter.normalize(c);
     }
 
 }

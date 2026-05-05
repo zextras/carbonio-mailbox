@@ -6,6 +6,7 @@
 package com.zimbra.cs.index.query;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +39,21 @@ public final class ContactQuery extends Query {
     private final List<String> tokens = new ArrayList<>();
 
     public ContactQuery(String text) {
-        TokenStream stream = new ContactTokenFilter(new AddrCharTokenizer(new HalfwidthKanaVoicedMappingFilter(new StringReader(text))));
-        CharTermAttribute termAttr = stream.addAttribute(CharTermAttribute.class);
+        // Create tokenizer chain: HalfwidthKanaVoicedMappingFilter (CharFilter) -> AddrCharTokenizer -> ContactTokenFilter
         try {
+            // Create a reader first
+            StringReader reader = new StringReader(text);
+            // Apply CharFilter first (HalfwidthKanaVoicedMappingFilter)
+            Reader filteredReader = new HalfwidthKanaVoicedMappingFilter(reader);
+            // Create the tokenizer with the filtered reader
+            AddrCharTokenizer tokenizer = new AddrCharTokenizer();
+            tokenizer.setReader(filteredReader);
+            // Create the token filter
+            TokenStream stream = new ContactTokenFilter(tokenizer);
+            CharTermAttribute termAttr = stream.addAttribute(CharTermAttribute.class);
             stream.reset();
             while (stream.incrementToken()) {
-                tokens.add(CharMatcher.is('*').trimTrailingFrom(termAttr)); // remove trailing wildcard characters
+                tokens.add(CharMatcher.is('*').trimTrailingFrom(termAttr.toString())); // remove trailing wildcard characters
             }
             stream.end();
             stream.close();
