@@ -22,40 +22,41 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class ContactTokenFilterTest {
 
- @Test
- void contactDataFilter() throws Exception {
-  AddrCharTokenizer tokenizer = new AddrCharTokenizer(new StringReader("all-snv"));
-  TokenFilter filter = new ContactTokenFilter(tokenizer);
-  assertEquals(Collections.singletonList("all-snv"),
-    ZimbraAnalyzerTest.toTokens(filter));
+  @Test
+  void contactDataFilter() throws Exception {
+   AddrCharTokenizer tokenizer = new AddrCharTokenizer();
+   TokenFilter filter = new ContactTokenFilter(tokenizer);
+   tokenizer.setReader(new StringReader("all-snv"));
+   assertEquals(Collections.singletonList("all-snv"),
+     ZimbraAnalyzerTest.toTokens(filter));
 
-  tokenizer.reset(new StringReader("."));
-  assertEquals(Collections.EMPTY_LIST,
-    ZimbraAnalyzerTest.toTokens(filter));
+   tokenizer.setReader(new StringReader("."));
+   assertEquals(Collections.EMPTY_LIST,
+     ZimbraAnalyzerTest.toTokens(filter));
 
-  tokenizer.reset(new StringReader(".. ."));
-  assertEquals(Collections.singletonList(".."),
-    ZimbraAnalyzerTest.toTokens(filter));
+   tokenizer.setReader(new StringReader(".. ."));
+   assertEquals(Collections.singletonList(".."),
+     ZimbraAnalyzerTest.toTokens(filter));
 
-  tokenizer.reset(new StringReader(".abc"));
-  assertEquals(Collections.singletonList(".abc"),
-    ZimbraAnalyzerTest.toTokens(filter));
+   tokenizer.setReader(new StringReader(".abc"));
+   assertEquals(Collections.singletonList(".abc"),
+     ZimbraAnalyzerTest.toTokens(filter));
 
-  tokenizer.reset(new StringReader("a"));
-  assertEquals(Collections.singletonList("a"),
-    ZimbraAnalyzerTest.toTokens(filter));
+   tokenizer.setReader(new StringReader("a"));
+   assertEquals(Collections.singletonList("a"),
+     ZimbraAnalyzerTest.toTokens(filter));
 
-  tokenizer.reset(new StringReader("test.com"));
-  assertEquals(Collections.singletonList("test.com"),
-    ZimbraAnalyzerTest.toTokens(filter));
+   tokenizer.setReader(new StringReader("test.com"));
+   assertEquals(Collections.singletonList("test.com"),
+     ZimbraAnalyzerTest.toTokens(filter));
 
-  tokenizer.reset(new StringReader("user1@zim"));
-  assertEquals(Collections.singletonList("user1@zim"),
-    ZimbraAnalyzerTest.toTokens(filter));
+   tokenizer.setReader(new StringReader("user1@zim"));
+   assertEquals(Collections.singletonList("user1@zim"),
+     ZimbraAnalyzerTest.toTokens(filter));
 
-  tokenizer.reset(new StringReader("user1@zimbra.com"));
-  assertEquals(Collections.singletonList("user1@zimbra.com"),
-    ZimbraAnalyzerTest.toTokens(filter));
- }
+   tokenizer.setReader(new StringReader("user1@zimbra.com"));
+   assertEquals(Collections.singletonList("user1@zimbra.com"),
+     ZimbraAnalyzerTest.toTokens(filter));
+  }
 
 }

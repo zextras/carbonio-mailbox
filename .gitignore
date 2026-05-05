@@ -35,6 +35,10 @@ target/
 
 # Ignore asdf local config
 .tool-versions
+
+# AI agent working directories
+.claude/
+.omc/
 /artifacts/x86_64/
 /artifacts/
 /store/ldap/generated/

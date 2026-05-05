@@ -41,8 +41,10 @@ import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.TermInSetQuery;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeQuery;
+import org.apache.lucene.util.BytesRef;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -165,8 +167,16 @@ public abstract class AbstractIndexStoreTest extends MailboxTestSuite {
 		ZimbraTermsFilter filter = new ZimbraTermsFilter(terms);
 		ZimbraIndexSearcher searcher = index.openSearcher();
 		ZimbraTopDocs result;
-		result = searcher.search(new TermQuery(new Term(LuceneFields.L_CONTACT_DATA, "zimbra.com")),
-				filter, 100);
+		// Build TermInSetQuery from filter terms
+		java.util.List<BytesRef> blobIds = filter.getTerms().stream()
+				.map(t -> new BytesRef(t.text()))
+				.collect(java.util.stream.Collectors.toList());
+		Query filterQuery = new TermInSetQuery(LuceneFields.L_MAILBOX_BLOB_ID, blobIds);
+		BooleanQuery combined = new BooleanQuery.Builder()
+				.add(new TermQuery(new Term(LuceneFields.L_CONTACT_DATA, "zimbra.com")), Occur.MUST)
+				.add(filterQuery, Occur.FILTER)
+				.build();
+		result = searcher.search(combined, 100);
 		assertNotNull(result, "searcher.search result object - searching for zimbra.com");
 		ZimbraLog.test.debug("Result for search for 'zimbra.com', filtering by IDs\n%s",
 				result.toString());
@@ -214,9 +224,17 @@ public abstract class AbstractIndexStoreTest extends MailboxTestSuite {
 		ZimbraTermsFilter filter = new ZimbraTermsFilter(terms);
 		ZimbraIndexSearcher srchr = index.openSearcher();
 		ZimbraTopDocs result;
-		Sort sort = new Sort(new SortField(LuceneFields.L_SORT_DATE, SortField.STRING, false));
-		result = srchr.search(new TermQuery(new Term(LuceneFields.L_CONTACT_DATA, "zimbra.com")),
-				filter, 100, sort);
+		Sort sort = new Sort(new SortField(LuceneFields.L_SORT_DATE, SortField.Type.STRING, false));
+		// Build TermInSetQuery from filter terms
+		java.util.List<BytesRef> blobIds = filter.getTerms().stream()
+				.map(t -> new BytesRef(t.text()))
+				.collect(java.util.stream.Collectors.toList());
+		Query filterQuery = new TermInSetQuery(LuceneFields.L_MAILBOX_BLOB_ID, blobIds);
+		BooleanQuery combined = new BooleanQuery.Builder()
+				.add(new TermQuery(new Term(LuceneFields.L_CONTACT_DATA, "zimbra.com")), Occur.MUST)
+				.add(filterQuery, Occur.FILTER)
+				.build();
+		result = srchr.search(combined, 100, sort);
 		assertNotNull(result, "searcher.search result object - searching for zimbra.com");
 		ZimbraLog.test.debug("Result for search for 'zimbra.com', filtering by IDs 2,4 & 5\n%s",
 				result.toString());
@@ -226,9 +244,16 @@ public abstract class AbstractIndexStoreTest extends MailboxTestSuite {
 		assertEquals(String.valueOf(con4.getId()), getBlobIdForResultDoc(srchr, result, 1),
 				"Match Blob ID 2");
 		// Repeat but with a reverse sort this time
-		sort = new Sort(new SortField(LuceneFields.L_SORT_DATE, SortField.STRING, true));
-		result = srchr.search(new TermQuery(new Term(LuceneFields.L_CONTACT_DATA, "zimbra.com")),
-				filter, 100, sort);
+		sort = new Sort(new SortField(LuceneFields.L_SORT_DATE, SortField.Type.STRING, true));
+		blobIds = filter.getTerms().stream()
+				.map(t -> new BytesRef(t.text()))
+				.collect(java.util.stream.Collectors.toList());
+		filterQuery = new TermInSetQuery(LuceneFields.L_MAILBOX_BLOB_ID, blobIds);
+		combined = new BooleanQuery.Builder()
+				.add(new TermQuery(new Term(LuceneFields.L_CONTACT_DATA, "zimbra.com")), Occur.MUST)
+				.add(filterQuery, Occur.FILTER)
+				.build();
+		result = srchr.search(combined, 100, sort);
 		assertNotNull(result, "searcher.search result object - searching for zimbra.com");
 		ZimbraLog.test.debug("Result for search for 'zimbra.com' sorted reverse, filter by IDs\n%s",
 				result.toString());
@@ -251,8 +276,8 @@ public abstract class AbstractIndexStoreTest extends MailboxTestSuite {
 		IndexStore index = mbox.index.getIndexStore();
 		ZimbraIndexSearcher searcher = index.openSearcher();
 		// This seems to be the supported way of enabling leading wildcard queries for Lucene
-		QueryParser queryParser = new QueryParser(LuceneIndex.VERSION, LuceneFields.L_CONTACT_DATA,
-				new StandardAnalyzer(LuceneIndex.VERSION));
+		QueryParser queryParser = new QueryParser(LuceneFields.L_CONTACT_DATA,
+				new StandardAnalyzer());
 		queryParser.setAllowLeadingWildcard(true);
 		Query query = queryParser.parse("*irst");
 		ZimbraTopDocs result = searcher.search(query, 100);
@@ -277,16 +302,17 @@ public abstract class AbstractIndexStoreTest extends MailboxTestSuite {
 		IndexStore index = mbox.index.getIndexStore();
 		ZimbraIndexSearcher searcher = index.openSearcher();
 		// This seems to be the supported way of enabling leading wildcard queries
-		QueryParser queryParser = new QueryParser(LuceneIndex.VERSION, LuceneFields.L_CONTACT_DATA,
-				new StandardAnalyzer(LuceneIndex.VERSION));
+		QueryParser queryParser = new QueryParser(LuceneFields.L_CONTACT_DATA,
+				new StandardAnalyzer());
 		queryParser.setAllowLeadingWildcard(true);
 		Query wquery = queryParser.parse("*irst");
 		Query tquery = new TermQuery(new Term(LuceneFields.L_CONTACT_DATA, "absent"));
 		Query tquery2 = new TermQuery(new Term(LuceneFields.L_CONTACT_DATA, "Last"));
-		BooleanQuery bquery = new BooleanQuery();
-		bquery.add(wquery, Occur.MUST);
-		bquery.add(tquery, Occur.MUST_NOT);
-		bquery.add(tquery2, Occur.SHOULD);
+		BooleanQuery bquery = new BooleanQuery.Builder()
+				.add(wquery, Occur.MUST)
+				.add(tquery, Occur.MUST_NOT)
+				.add(tquery2, Occur.SHOULD)
+				.build();
 		ZimbraTopDocs result = searcher.search(bquery, 100);
 		assertNotNull(result, "searcher.search result object");
 		ZimbraLog.test.debug("Result for search [hits=%d]:%s", result.getTotalHits(),
@@ -310,11 +336,12 @@ public abstract class AbstractIndexStoreTest extends MailboxTestSuite {
 
 		IndexStore index = mbox.index.getIndexStore();
 		ZimbraIndexSearcher searcher = index.openSearcher();
-		PhraseQuery pquery = new PhraseQuery();
+		PhraseQuery pquery = new PhraseQuery.Builder()
+				.add(new Term(LuceneFields.L_CONTENT, "software"))
+				.add(new Term(LuceneFields.L_CONTENT, "development"))
+				.add(new Term(LuceneFields.L_CONTENT, "engineer"))
+				.build();
 		// Lower case required for each term for Lucene
-		pquery.add(new Term(LuceneFields.L_CONTENT, "software"));
-		pquery.add(new Term(LuceneFields.L_CONTENT, "development"));
-		pquery.add(new Term(LuceneFields.L_CONTENT, "engineer"));
 		ZimbraTopDocs result = searcher.search(pquery, 100);
 		assertNotNull(result, "searcher.search result object");
 		ZimbraLog.test.debug("Result for search [hits=%d]:%s", result.getTotalHits(),
@@ -323,11 +350,12 @@ public abstract class AbstractIndexStoreTest extends MailboxTestSuite {
 		String expected1Id = String.valueOf(contact2.getId());
 		String match1Id = getBlobIdForResultDoc(searcher, result, 0);
 		assertEquals(expected1Id, match1Id, "Mailbox Blob ID of match");
-		pquery = new PhraseQuery();
+		pquery = new PhraseQuery.Builder()
+				.add(new Term(LuceneFields.L_CONTENT, "development"))
+				.add(new Term(LuceneFields.L_CONTENT, "software"))
+				.add(new Term(LuceneFields.L_CONTENT, "engineer"))
+				.build();
 		// Try again with words out of order
-		pquery.add(new Term(LuceneFields.L_CONTENT, "development"));
-		pquery.add(new Term(LuceneFields.L_CONTENT, "software"));
-		pquery.add(new Term(LuceneFields.L_CONTENT, "engineer"));
 		result = searcher.search(pquery, 100);
 		assertNotNull(result, "searcher.search result object");
 		ZimbraLog.test.debug("Result for search [hits=%d]:%s", result.getTotalHits(),
@@ -347,11 +375,12 @@ public abstract class AbstractIndexStoreTest extends MailboxTestSuite {
 
 		IndexStore index = mbox.index.getIndexStore();
 		ZimbraIndexSearcher searcher = index.openSearcher();
-		PhraseQuery pquery = new PhraseQuery();
+		PhraseQuery pquery = new PhraseQuery.Builder()
+				.add(new Term(LuceneFields.L_CONTENT, "william"))
+				// pquery.add(new Term(LuceneFields.L_CONTENT, "the")); - excluded because it is a stop word
+				.add(new Term(LuceneFields.L_CONTENT, "conqueror"))
+				.build();
 		// Lower case required for each term for Lucene
-		pquery.add(new Term(LuceneFields.L_CONTENT, "william"));
-		// pquery.add(new Term(LuceneFields.L_CONTENT, "the")); - excluded because it is a stop word
-		pquery.add(new Term(LuceneFields.L_CONTENT, "conqueror"));
 		ZimbraTopDocs result = searcher.search(pquery, 100);
 		assertNotNull(result, "searcher.search result object");
 		ZimbraLog.test.debug("Result for search [hits=%d]:%s", result.getTotalHits(),
@@ -382,18 +411,19 @@ public abstract class AbstractIndexStoreTest extends MailboxTestSuite {
 
 		IndexStore index = mbox.index.getIndexStore();
 		ZimbraIndexSearcher searcher = index.openSearcher();
-		MultiPhraseQuery pquery = new MultiPhraseQuery();
 		// Lower case required for each term for Lucene
 		Term[] firstWords = {new Term(LuceneFields.L_CONTENT, "softly"),
 				new Term(LuceneFields.L_CONTENT, "software")
 		};
-		pquery.add(firstWords);
 		Term[] secondWords = {new Term(LuceneFields.L_CONTENT, "dev"),
 				new Term(LuceneFields.L_CONTENT, "development"),
 				new Term(LuceneFields.L_CONTENT, "developer")
 		};
-		pquery.add(secondWords);
-		pquery.add(new Term(LuceneFields.L_CONTENT, "engineer"));
+		MultiPhraseQuery pquery = new MultiPhraseQuery.Builder()
+				.add(firstWords)
+				.add(secondWords)
+				.add(new Term(LuceneFields.L_CONTENT, "engineer"))
+				.build();
 		ZimbraTopDocs result = searcher.search(pquery, 100);
 		assertNotNull(result, "searcher.search result object");
 		ZimbraLog.test.debug("Result for search [hits=%d]:%s", result.getTotalHits(),
@@ -461,8 +491,8 @@ public abstract class AbstractIndexStoreTest extends MailboxTestSuite {
 		IndexStore index = mbox.index.getIndexStore();
 		ZimbraIndexSearcher searcher = index.openSearcher();
 		TermRangeQuery query = new TermRangeQuery(LuceneFields.L_FIELD,
-				"email:aba@zimbra.com",
-				"email:abz@zimbra.com",
+				new BytesRef("email:aba@zimbra.com"),
+				new BytesRef("email:abz@zimbra.com"),
 				false, true);
 		ZimbraTopDocs result = searcher.search(query, 100);
 		assertNotNull(result, "searcher.search result object");

@@ -8,7 +8,6 @@ package com.zimbra.cs.index.analysis;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.apache.lucene.util.NumericUtils;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Strings;
@@ -32,11 +31,11 @@ public final class FieldTokenStreamTest {
   stream.add("#calendarItemClass", "public");
   stream.add("zimbraCalResCapacity", "10");
 
-  assertEquals(Arrays.asList(
-      "test1:val1", "test1:val2", "test1:val3", "test1:val4", "test1:test", "test1:val5",
-      "#test2:2val1", "#test2:2val2:_123", "#test2:2val3", "test3:zzz", "#calendaritemclass:public",
-      "zimbracalrescapacity#:" + NumericUtils.intToPrefixCoded(10), "zimbracalrescapacity:10"),
-    ZimbraAnalyzerTest.toTokens(stream));
+   assertEquals(Arrays.asList(
+       "test1:val1", "test1:val2", "test1:val3", "test1:val4", "test1:test", "test1:val5",
+       "#test2:2val1", "#test2:2val2:_123", "#test2:2val3", "test3:zzz", "#calendaritemclass:public",
+       "zimbracalrescapacity#:0000000010", "zimbracalrescapacity:10"),
+     ZimbraAnalyzerTest.toTokens(stream));
  }
 
  @Test

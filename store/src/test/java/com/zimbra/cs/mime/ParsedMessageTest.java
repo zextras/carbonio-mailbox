@@ -30,6 +30,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexableField;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -49,36 +50,36 @@ public final class ParsedMessageTest extends MailboxTestSuite {
   assertEquals(1, docs.size());
   Document doc = docs.get(0).toDocument();
 
-   try (RFC822AddressTokenStream from = (RFC822AddressTokenStream) doc.getFieldable(
-       LuceneFields.L_H_FROM).tokenStreamValue()) {
-     assertEquals(Arrays.asList("pete", "a", "wonderful", "chap", "pete", "his", "account", "comment",
-         "silly.test", "his", "host", "pete@silly.test", "pete", "@silly.test", "silly.test"),
-       from.getAllTokens());
-   }
+    IndexableField fromField = doc.getField(LuceneFields.L_H_FROM);
+    try (RFC822AddressTokenStream from = (RFC822AddressTokenStream) fromField.tokenStream(null, null)) {
+      assertEquals(Arrays.asList("pete", "a", "wonderful", "chap", "pete", "his", "account", "comment",
+          "silly.test", "his", "host", "pete@silly.test", "pete", "@silly.test", "silly.test"),
+        from.getAllTokens());
+    }
 
-   try (RFC822AddressTokenStream to = (RFC822AddressTokenStream) doc.getFieldable(
-       LuceneFields.L_H_TO).tokenStreamValue()) {
-     assertEquals(Arrays.asList("chris", "c@", "c", "xxx", "bbb", "public.example", "joe@example.org", "joe",
-       "@example.org", "example.org", "example", "@example", "john", "jdoe@one.test", "jdoe", "@one.test",
-       "one.test", "my", "dear", "friend", "the", "end", "of", "the", "group", "c@public.example", "c",
-       "@public.example", "public.example"), to.getAllTokens());
-   }
+    IndexableField toField = doc.getField(LuceneFields.L_H_TO);
+    try (RFC822AddressTokenStream to = (RFC822AddressTokenStream) toField.tokenStream(null, null)) {
+      assertEquals(Arrays.asList("chris", "c@", "c", "xxx", "bbb", "public.example", "joe@example.org", "joe",
+        "@example.org", "example.org", "example", "@example", "john", "jdoe@one.test", "jdoe", "@one.test",
+        "one.test", "my", "dear", "friend", "the", "end", "of", "the", "group", "c@public.example", "c",
+        "@public.example", "public.example"), to.getAllTokens());
+    }
 
-   try (RFC822AddressTokenStream cc = (RFC822AddressTokenStream) doc.getFieldable(
-       LuceneFields.L_H_CC).tokenStreamValue()) {
-     assertEquals(Arrays.asList("empty", "list", "start", "undisclosed", "recipients", "nobody", "that", "i",
-       "know"), cc.getAllTokens());
-   }
+    IndexableField ccField = doc.getField(LuceneFields.L_H_CC);
+    try (RFC822AddressTokenStream cc = (RFC822AddressTokenStream) ccField.tokenStream(null, null)) {
+      assertEquals(Arrays.asList("empty", "list", "start", "undisclosed", "recipients", "nobody", "that", "i",
+        "know"), cc.getAllTokens());
+    }
 
-   try (RFC822AddressTokenStream xEnvFrom = (RFC822AddressTokenStream) doc.getFieldable(
-       LuceneFields.L_H_X_ENV_FROM).tokenStreamValue()) {
-     assertEquals(0, xEnvFrom.getAllTokens().size());
-   }
+    IndexableField xEnvFromField = doc.getField(LuceneFields.L_H_X_ENV_FROM);
+    try (RFC822AddressTokenStream xEnvFrom = (RFC822AddressTokenStream) xEnvFromField.tokenStream(null, null)) {
+      assertEquals(0, xEnvFrom.getAllTokens().size());
+    }
 
-   try (RFC822AddressTokenStream xEnvTo = (RFC822AddressTokenStream) doc.getFieldable(
-       LuceneFields.L_H_X_ENV_TO).tokenStreamValue()) {
-     assertEquals(0, xEnvTo.getAllTokens().size());
-   }
+    IndexableField xEnvToField = doc.getField(LuceneFields.L_H_X_ENV_TO);
+    try (RFC822AddressTokenStream xEnvTo = (RFC822AddressTokenStream) xEnvToField.tokenStream(null, null)) {
+      assertEquals(0, xEnvTo.getAllTokens().size());
+    }
  }
 
  private static List<IndexDocument> getIndexDocuments() throws ServiceException {

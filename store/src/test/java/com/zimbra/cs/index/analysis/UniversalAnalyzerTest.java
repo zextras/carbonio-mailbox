@@ -18,7 +18,6 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
-import org.apache.lucene.util.Version;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -32,8 +31,8 @@ public final class UniversalAnalyzerTest extends MailboxTestSuite {
 
 	private UniversalAnalyzer universalAnalyzer = new UniversalAnalyzer();
 	// for backward compatibility
-	private StandardAnalyzer standardAnalyzer = new StandardAnalyzer(Version.LUCENE_24);
-	private CJKAnalyzer cjkAnalyzer = new CJKAnalyzer(Version.LUCENE_31);
+	private StandardAnalyzer standardAnalyzer = new StandardAnalyzer();
+	private CJKAnalyzer cjkAnalyzer = new CJKAnalyzer();
 	// See https://issues.apache.org/jira/browse/LUCENE-1068
 	private boolean assertOffset = true;
 
