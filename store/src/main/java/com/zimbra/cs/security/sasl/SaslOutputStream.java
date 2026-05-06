@@ -15,7 +15,11 @@ import java.nio.ByteBuffer;
 public class SaslOutputStream extends OutputStream {
     private final DataOutputStream mOutputStream;
     private final SaslSecurityLayer mSecurityLayer;
-    private final SaslOutputBuffer mBuffer;
+
+    // Inlined from deleted SaslOutputBuffer
+    private ByteBuffer mBuffer;
+    private final int mMaxSize;
+    private static final int MINSIZE = 512;
 
     private static final boolean DEBUG = false;
 
@@ -26,11 +30,12 @@ public class SaslOutputStream extends OutputStream {
     public SaslOutputStream(OutputStream os, SaslClient client) {
         this(os, SaslSecurityLayer.getInstance(client));
     }
-    
+
     public SaslOutputStream(OutputStream os, SaslSecurityLayer securityLayer) {
         mOutputStream = new DataOutputStream(os);
         mSecurityLayer = securityLayer;
-        mBuffer = new SaslOutputBuffer(securityLayer.getMaxSendSize());
+        mMaxSize = securityLayer.getMaxSendSize();
+        mBuffer = ByteBuffer.allocate(Math.min(MINSIZE, mMaxSize));
     }
 
     @Override public void write(byte[] b, int off, int len) throws IOException {
@@ -52,36 +57,70 @@ public class SaslOutputStream extends OutputStream {
     @Override public void write(int b) throws IOException {
         debug("write: enter b = %d", b);
         ensureBuffer();
-        mBuffer.put((byte) b);
+        bufferPut((byte) b);
     }
-    
+
     private int writeBytes(byte[] b, int off, int len) throws IOException {
         ensureBuffer();
         ByteBuffer bb = ByteBuffer.wrap(b, off, len);
-        mBuffer.put(bb);
+        bufferPut(bb);
         return bb.position();
     }
 
     private void ensureBuffer() throws IOException {
-        if (mBuffer.isFull()) flushBuffer();
+        if (bufferIsFull()) flushBuffer();
     }
 
     private void flushBuffer() throws IOException {
-        byte[] b = mBuffer.wrap(mSecurityLayer);
+        byte[] b = mSecurityLayer.wrap(mBuffer.array(), 0, mBuffer.position());
         mOutputStream.writeInt(b.length);
         mOutputStream.write(b);
         mBuffer.clear();
     }
 
     @Override public void flush() throws IOException {
-        if (DEBUG) debug("flushBuffer: size = %d", mBuffer.size());
-        if (mBuffer.size() > 0) flushBuffer();
+        if (DEBUG) debug("flushBuffer: size = %d", mBuffer.position());
+        if (mBuffer.position() > 0) flushBuffer();
         mOutputStream.flush();
     }
 
     @Override public void close() throws IOException {
         flush();
         mOutputStream.close();
+    }
+
+    // --- inlined SaslOutputBuffer helpers ---
+
+    private void bufferPut(ByteBuffer bb) {
+        if (bufferIsFull()) return;
+        if (bb.remaining() > mBuffer.remaining()) {
+            int minSize = Math.min(bb.remaining(), mMaxSize);
+            mBuffer = expand(mBuffer, minSize, mMaxSize);
+        }
+        int len = Math.min(mBuffer.remaining(), bb.remaining());
+        int pos = mBuffer.position();
+        bb.get(mBuffer.array(), pos, len);
+        mBuffer.position(pos + len);
+    }
+
+    private void bufferPut(byte b) {
+        if (bufferIsFull()) return;
+        if (!mBuffer.hasRemaining()) {
+            mBuffer = expand(mBuffer, 1, mMaxSize);
+        }
+        mBuffer.put(b);
+    }
+
+    private boolean bufferIsFull() {
+        return mBuffer.position() >= mMaxSize;
+    }
+
+    private static ByteBuffer expand(ByteBuffer buf, int needed, int maxSize) {
+        int newSize = Math.min(Math.max(buf.capacity() * 2, buf.position() + needed), maxSize);
+        ByteBuffer expanded = ByteBuffer.allocate(newSize);
+        buf.flip();
+        expanded.put(buf);
+        return expanded;
     }
 
     private static void debug(String format, Object... args) {
