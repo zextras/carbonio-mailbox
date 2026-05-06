@@ -8,7 +8,7 @@ package com.zimbra.cs.mailclient.smtp;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.base.Charsets;
-import com.sun.mail.smtp.SMTPMessage;
+import org.eclipse.angus.mail.smtp.SMTPMessage;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.zmime.ZMimeMessage;
 import com.zimbra.cs.util.JMSession;
