@@ -1007,6 +1007,16 @@ EOF
             </goals>
           </execution>
         </executions>
+        <dependencies>
+          <!-- swagger-jaxrs2 (used internally by the plugin) still references javax/ws/rs/Path.
+               This plugin-scoped dependency makes that class available to the plugin classloader
+               without polluting the project compile/runtime classpath. -->
+          <dependency>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
+            <version>2.0.1.Final</version>
+          </dependency>
+        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
