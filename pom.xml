@@ -854,7 +854,7 @@
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
     <!-- Mailbox version -->
-    <revision>4.25.2</revision>
+    <revision>8.9.0</revision>
     <mockserver.version>5.13.0</mockserver.version>
     <json-unit.version>4.1.0</json-unit.version>
     <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
