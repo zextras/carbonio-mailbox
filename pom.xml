@@ -1110,6 +1110,14 @@
                   <!-- jakarta.activation impl and API overlap; one always appears unused depending on classpath order -->
                   <ignoredUnusedDeclaredDependency>jakarta.activation:jakarta.activation-api</ignoredUnusedDeclaredDependency>
                   <ignoredUnusedDeclaredDependency>com.sun.activation:jakarta.activation</ignoredUnusedDeclaredDependency>
+                  <!-- Servlet API: jetty-jakarta-servlet-api and jakarta.servlet-api provide identical classes;
+                       plugin attributes usage to one or the other depending on classpath order -->
+                  <ignoredUnusedDeclaredDependency>org.eclipse.jetty.toolchain:jetty-jakarta-servlet-api</ignoredUnusedDeclaredDependency>
+                  <ignoredUnusedDeclaredDependency>jakarta.servlet:jakarta.servlet-api</ignoredUnusedDeclaredDependency>
+                  <!-- Angus mail: angus-mail and jakarta.mail are the same implementation under different artifact IDs;
+                       plugin attributes usage to one or the other depending on classpath order -->
+                  <ignoredUnusedDeclaredDependency>org.eclipse.angus:angus-mail</ignoredUnusedDeclaredDependency>
+                  <ignoredUnusedDeclaredDependency>org.eclipse.angus:jakarta.mail</ignoredUnusedDeclaredDependency>
                 </ignoredUnusedDeclaredDependencies>
               </configuration>
             </execution>
