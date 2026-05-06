@@ -84,6 +84,7 @@
     <dependency>
       <artifactId>lucene-queryparser</artifactId>
       <groupId>org.apache.lucene</groupId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -362,10 +363,8 @@
       <groupId>ical4j</groupId>
       <artifactId>ical4j</artifactId>
     </dependency>
-    <dependency>
-      <groupId>javax.activation</groupId>
-      <artifactId>activation</artifactId>
-    </dependency>
+    <!-- javax.activation:activation is stale; replaced by jakarta.activation -->
+    <!-- Removed: javax.activation:activation (unused declared) -->
     <dependency>
       <groupId>commons-cli</groupId>
       <artifactId>commons-cli</artifactId>
@@ -397,10 +396,8 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-http</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-io</artifactId>
-    </dependency>
+    <!-- jetty-io is a transitive dep of jetty-server; not directly imported -->
+    <!-- Removed: jetty-io (unused declared) -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
@@ -464,10 +461,8 @@
       <artifactId>dom4j</artifactId>
 
     </dependency>
-    <dependency>
-      <artifactId>jakarta.servlet-api</artifactId>
-      <groupId>jakarta.servlet</groupId>
-    </dependency>
+    <!-- jakarta.servlet-api is provided by jetty-ee9-servlet transitively -->
+    <!-- Removed: jakarta.servlet-api (unused declared) -->
     <dependency>
       <groupId>jakarta.ws.rs</groupId>
       <artifactId>jakarta.ws.rs-api</artifactId>
@@ -505,11 +500,8 @@
       <type>pom</type>
       <scope>runtime</scope>
     </dependency>
-    <!-- RESTEasy (JAX-RS 2.1) — compile: directly used -->
-    <dependency>
-      <groupId>org.jboss.spec.javax.ws.rs</groupId>
-      <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-    </dependency>
+    <!-- jboss-jaxrs-api_2.1_spec is pulled transitively by resteasy-core; not directly imported -->
+    <!-- Removed: jboss-jaxrs-api_2.1_spec (unused declared) -->
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-core</artifactId>
@@ -548,10 +540,8 @@
       <groupId>io.prometheus</groupId>
       <artifactId>simpleclient</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.prometheus</groupId>
-      <artifactId>simpleclient_servlet</artifactId>
-    </dependency>
+    <!-- simpleclient_servlet uses javax.servlet; replaced by custom PrometheusMetricsServlet -->
+    <!-- Removed: simpleclient_servlet (unused declared) -->
     <!-- JMX stats collector -->
     <dependency>
       <groupId>io.prometheus</groupId>
@@ -590,6 +580,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>net.javacrumbs.json-unit</groupId>
       <artifactId>json-unit-assertj</artifactId>
       <scope>test</scope>
@@ -619,6 +614,42 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-rewrite</artifactId>
+    </dependency>
+
+    <!-- Used directly (transitive from jetty-ee9-security) — must be declared explicitly -->
+    <dependency>
+      <groupId>org.eclipse.jetty.ee9</groupId>
+      <artifactId>jetty-ee9-nested</artifactId>
+    </dependency>
+    <!-- Used directly (transitive from jetty-server) — must be declared explicitly -->
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-security</artifactId>
+    </dependency>
+    <!-- Used directly (transitive from jetty-ee9-servlet) — must be declared explicitly -->
+    <dependency>
+      <groupId>org.eclipse.jetty.toolchain</groupId>
+      <artifactId>jetty-jakarta-servlet-api</artifactId>
+    </dependency>
+    <!-- Used directly (transitive from jakarta.mail-api) — must be declared explicitly -->
+    <dependency>
+      <groupId>com.sun.activation</groupId>
+      <artifactId>jakarta.activation</artifactId>
+    </dependency>
+    <!-- Used directly (transitive from micrometer-registry-prometheus) -->
+    <dependency>
+      <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient_common</artifactId>
+    </dependency>
+    <!-- Used directly (transitive from commons-fileupload2-jakarta-servlet5) -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-fileupload2-core</artifactId>
+    </dependency>
+    <!-- Used directly (transitive from jakarta.mail-api) -->
+    <dependency>
+      <groupId>org.eclipse.angus</groupId>
+      <artifactId>angus-mail</artifactId>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
