@@ -626,10 +626,10 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-security</artifactId>
     </dependency>
-    <!-- Used directly (transitive from jetty-ee9-servlet) — must be declared explicitly -->
+    <!-- Used directly — canonical Jakarta Servlet API -->
     <dependency>
-      <groupId>org.eclipse.jetty.toolchain</groupId>
-      <artifactId>jetty-jakarta-servlet-api</artifactId>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
     </dependency>
     <!-- Used directly (transitive from jakarta.mail-api) — must be declared explicitly -->
     <dependency>
@@ -646,10 +646,10 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-fileupload2-core</artifactId>
     </dependency>
-    <!-- Used directly (transitive from jakarta.mail-api) -->
+    <!-- Used directly (implementation of jakarta.mail-api) -->
     <dependency>
       <groupId>org.eclipse.angus</groupId>
-      <artifactId>angus-mail</artifactId>
+      <artifactId>jakarta.mail</artifactId>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
