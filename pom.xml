@@ -51,6 +51,11 @@
         <version>2.0.1</version>
       </dependency>
       <dependency>
+        <groupId>com.sun.activation</groupId>
+        <artifactId>jakarta.activation</artifactId>
+        <version>2.0.1</version>
+      </dependency>
+      <dependency>
         <groupId>org.javassist</groupId>
         <artifactId>javassist</artifactId>
         <version>${javassist.version}</version>
@@ -1067,6 +1072,9 @@
                 <ignoredUnusedDeclaredDependencies>
                   <!-- Provided by the JDK's java.xml module; kept declared for classpath stability -->
                   <ignoredUnusedDeclaredDependency>xml-apis:xml-apis</ignoredUnusedDeclaredDependency>
+                  <!-- jakarta.activation impl and API overlap; one always appears unused depending on classpath order -->
+                  <ignoredUnusedDeclaredDependency>jakarta.activation:jakarta.activation-api</ignoredUnusedDeclaredDependency>
+                  <ignoredUnusedDeclaredDependency>com.sun.activation:jakarta.activation</ignoredUnusedDeclaredDependency>
                 </ignoredUnusedDeclaredDependencies>
               </configuration>
             </execution>
