@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.account.ldap;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -255,6 +256,15 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
   public LdapProvisioning() throws LdapException {
     this(CacheMode.DEFAULT);
+  }
+
+  @VisibleForTesting
+  public void clearCache() {
+    this.cache.domainCache().clear();
+    this.cache.accountCache().clear();
+    this.cache.cosCache().clear();
+    this.cache.groupCache().clear();
+    this.cache.zimletCache().clear();
   }
 
   protected LdapProvisioning(CacheMode cacheMode, LdapClient ldapClient) {

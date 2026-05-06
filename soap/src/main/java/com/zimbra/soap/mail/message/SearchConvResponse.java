@@ -45,9 +45,6 @@ public class SearchConvResponse {
      * <br />
      * If sort-by is "none" then cursors MUST NOT be used, and some searches are impossible (searches that require
      * intersection of complex sub-ops). Server will throw an IllegalArgumentException if the search is invalid.
-     * ADDITIONAL SORT MODES FOR TASKS: valid only if types="task" (and task alone):
-     * <br />
-     * taskDueAsc|taskDueDesc|taskStatusAsc|taskStatusDesc|taskPercCompletedAsc|taskPercCompletedDesc
      */
     @XmlAttribute(name=MailConstants.A_SORTBY /* sortBy */, required=false)
     private String sortBy;

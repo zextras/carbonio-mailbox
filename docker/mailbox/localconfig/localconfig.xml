@@ -61,4 +61,10 @@
   <key name="files_service_url">
     <value>CARBONIO_FILES_SERVICE_URL</value>
   </key>
+  <key name="mailbox_internal_api_bind_address">
+    <value>CARBONIO_MAILBOX_INTERNAL_API_HOST</value>
+  </key>
+  <key name="mailbox_internal_api_port">
+    <value>CARBONIO_MAILBOX_INTERNAL_API_PORT</value>
+  </key>
 </localconfig>

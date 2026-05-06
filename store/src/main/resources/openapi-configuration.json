@@ -1,0 +1,13 @@
+{
+  "resourcePackages": [
+    "com.zextras.mailbox.api.rest.resource"
+  ],
+  "readAllResources": false,
+  "openAPI": {
+    "info": {
+      "title": "Carbonio Mailbox Internal API",
+      "version": "1.0",
+      "description": "Service-to-service REST API for carbonio-mailbox"
+    }
+  }
+}

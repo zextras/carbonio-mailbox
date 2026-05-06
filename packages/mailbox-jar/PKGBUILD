@@ -18,13 +18,13 @@ section="mail"
 priority="optional"
 
 package() {
-  cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
+  cd "$(dirname "$(find /project -name "yap.json" -print -quit)")/.."
 
   install -D store/target/zm-store.jar \
     "${pkgdir}/opt/zextras/mailbox/jars/mailbox.jar"
 
   install -D store/target/dependencies/*.jar \
-     "${pkgdir}/opt/zextras/mailbox/jars/"
+    "${pkgdir}/opt/zextras/mailbox/jars/"
 
   install -Ddm755 "${pkgdir}/opt/zextras/jython/jars/"
 

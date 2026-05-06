@@ -39,9 +39,7 @@ public class MemcachedImapCacheTest extends MailboxTestSuite {
 
 	@Test
 	void testInvalidObject() {
-		try {
-
-			mockStatic(MemcachedConnector.class);
+		try (var mockedStatic = mockStatic(MemcachedConnector.class)) {
 			ZimbraMemcachedClient memcachedClient = new MockZimbraMemcachedClient();
 			when(MemcachedConnector.getClient()).thenReturn(memcachedClient);
 			ImapFolder folder = mock(ImapFolder.class);

@@ -242,6 +242,30 @@ public class Folder {
   @XmlAttribute(name = MailConstants.A_URL /* url */, required = false)
   private String url;
 
+  /**
+   * @zm-api-field-tag last-sync-date
+   * @zm-api-field-description Last successful sync date from external URL in epoch seconds
+   */
+  @XmlAttribute(name = MailConstants.A_LAST_SYNC_DATE /* lsd */, required = false)
+  private Long lastSyncDate;
+
+  /**
+   * @zm-api-field-tag datasource-id
+   * @zm-api-field-description If this folder is the root folder of a DataSource (e.g. a CalDAV or
+   *     IMAP sync account), this attribute contains the ID of that DataSource. Only present on
+   *     datasource root folders; absent on regular folders and datasource sub-folders.
+   */
+  @XmlAttribute(name = MailConstants.A_DATASOURCE_ID /* dsId */, required = false)
+  private String datasourceId;
+
+  /**
+   * @zm-api-field-tag datasource-type
+   * @zm-api-field-description Type of the DataSource this folder is the root of (e.g.
+   *     <b>caldav</b>, <b>imap</b>, <b>pop3</b>). Only present when {@code dsId} is present.
+   */
+  @XmlAttribute(name = MailConstants.A_DATASOURCE_TYPE /* dsType */, required = false)
+  private String datasourceType;
+
   @XmlAttribute(
       name = MailConstants.A_ACTIVESYNC_DISABLED /* activesyncdisabled */,
       required = false)
@@ -385,6 +409,18 @@ public class Folder {
     return url;
   }
 
+  public Long getLastSyncDate() {
+    return lastSyncDate;
+  }
+
+  public String getDatasourceId() {
+    return datasourceId;
+  }
+
+  public String getDatasourceType() {
+    return datasourceType;
+  }
+
   public Boolean isActiveSyncDisabled() {
     return ZmBoolean.toBool(activeSyncDisabled);
   }
@@ -499,6 +535,18 @@ public class Folder {
 
   public void setUrl(String url) {
     this.url = url;
+  }
+
+  public void setLastSyncDate(Long lastSyncDate) {
+    this.lastSyncDate = lastSyncDate;
+  }
+
+  public void setDatasourceId(String datasourceId) {
+    this.datasourceId = datasourceId;
+  }
+
+  public void setDatasourceType(String datasourceType) {
+    this.datasourceType = datasourceType;
   }
 
   public void setDisableActiveSync(Boolean disableActiveSync) {

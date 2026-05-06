@@ -16,10 +16,8 @@ import com.zimbra.soap.admin.type.AccountInfo;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
@@ -34,23 +32,13 @@ class CreateAccountTest extends MailboxTestSuite {
         provisioning = Provisioning.getInstance();
     }
 
-    @BeforeEach
-    void init() throws Exception {
-        this.initData();
-    }
-
-    @AfterEach
-    void clear() throws Exception {
-        this.clearData();
-    }
-
     @ParameterizedTest
     @ValueSource(strings = {"0"})
     @NullSource
     void whenDomainMaxAccountIsNullOrZero_creatingANewAccount_willCompleteTheOperationSuccessfully(String maxAccount) throws Exception {
-        final String domainName = provisionDomain("test.domain.com", maxAccount);
+        final String domainName = provisionDomain(maxAccount);
         final String expectedAccountName = "testName@" + domainName;
-        final Map<String, Object> context = provisionAdminContext();
+        final Map<String, Object> context = provisionAdminContext(domainName);
 
         final CreateAccount creator = new CreateAccount();
         final CreateAccountRequest createAccountRequest = new CreateAccountRequest(expectedAccountName, "superSecretAccountPassword");
@@ -68,9 +56,9 @@ class CreateAccountTest extends MailboxTestSuite {
 
     @Test
     void whenDomainMaxAccountIsReached_creatingANewAccount_willThrowKnownException() throws Exception {
-        final String domainName = provisionDomain("test.domain.com", "1");
+        final String domainName = provisionDomain("1");
         final String expectedAccountName = "testName@" + domainName;
-        final Map<String, Object> context = provisionAdminContext();
+        final Map<String, Object> context = provisionAdminContext(domainName);
 
         final CreateAccount creator = new CreateAccount();
         final CreateAccountRequest createAccountRequest = new CreateAccountRequest(expectedAccountName, "superSecretAccountPassword");
@@ -78,14 +66,14 @@ class CreateAccountTest extends MailboxTestSuite {
 
         final AccountServiceException actualException = Assertions.assertThrows(AccountServiceException.class, () -> creator.handle(request, context));
 
-        assertEquals("number of accounts reached the limit: domain=test.domain.com (1)", actualException.getMessage());
+        assertEquals(String.format("number of accounts reached the limit: domain=%s (1)", domainName), actualException.getMessage());
     }
 
     @Test
     void create_account_should_throw_service_exception_if_zimbraId_invalid() throws Exception {
-        final String domainName = provisionDomain("test.domain.com", "2");
+        final String domainName = provisionDomain("2");
         final String expectedAccountName = "testName@" + domainName;
-        final Map<String, Object> context = provisionAdminContext();
+        final Map<String, Object> context = provisionAdminContext(domainName);
 
         final CreateAccount creator = new CreateAccount();
         final CreateAccountRequest createAccountRequest = new CreateAccountRequest(expectedAccountName, "superSecretAccountPassword");
@@ -101,9 +89,9 @@ class CreateAccountTest extends MailboxTestSuite {
 
     @Test
     void should_create_account_when_passed_zimbraId_is_valid() throws Exception {
-        final String domainName = provisionDomain("test.domain.com", "2");
+        final String domainName = provisionDomain("2");
         final String expectedAccountName = "testName@" + domainName;
-        final Map<String, Object> context = provisionAdminContext();
+        final Map<String, Object> context = provisionAdminContext(domainName);
 
         final CreateAccount creator = new CreateAccount();
         final CreateAccountRequest createAccountRequest = new CreateAccountRequest(expectedAccountName, "superSecretAccountPassword");
@@ -119,21 +107,22 @@ class CreateAccountTest extends MailboxTestSuite {
         assertEquals(zimbraId, accountInfo.getId());
     }
 
-    private String provisionDomain(String domain, String domainMaxAccounts) throws ServiceException {
+    private String provisionDomain(String domainMaxAccounts) throws ServiceException {
         final Map<String, Object> extraAttr = new HashMap<>();
         if (domainMaxAccounts != null) {
             extraAttr.put(Provisioning.A_zimbraDomainMaxAccounts, domainMaxAccounts);
         }
-        provisioning.createDomain(domain, extraAttr);
-        return domain;
+        var domainName = UUID.randomUUID() + ".com";
+        provisioning.createDomain(domainName, extraAttr);
+        return domainName;
     }
 
-    private Map<String, Object> provisionAdminContext() throws Exception {
+    private Map<String, Object> provisionAdminContext(String domainName) throws Exception {
         final Map<String, Object> adminExtraAttr = new HashMap<>();
         adminExtraAttr.put(Provisioning.A_zimbraIsAdminAccount, "TRUE");
         adminExtraAttr.put(Provisioning.A_zimbraMailHost, SERVER_NAME);
         final Account adminAccount = provisioning.createAccount(
-                "admin@test.domain.com",
+                "admin@" + domainName,
                 "superSecretAdminPassword",
                 adminExtraAttr
         );

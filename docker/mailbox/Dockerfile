@@ -12,7 +12,7 @@ COPY common                           common
 COPY right-manager                    right-manager
 COPY client                           client
 
-RUN --mount=type=cache,target=/root/.m2 mvn clean install -DskipTests
+RUN --mount=type=cache,target=/root/.m2 mvn clean install -Dmaven.test.skip=true
 
 # Prepare directory structure and scripts in build stage
 RUN mkdir -p /staging/opt/zextras/mailbox/jars/ && \
@@ -46,12 +46,11 @@ ARG BASE_JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
     -XX:+UseG1GC -XX:SoftRefLRUPolicyMSPerMB=1 -XX:+UnlockExperimentalVMOptions \
     -XX:G1NewSizePercent=15 -XX:G1MaxNewSizePercent=45 -XX:-OmitStackTraceInFastThrow \
     -Djava.security.egd=file:/dev/./urandom \
+    --enable-preview --enable-native-access=ALL-UNNAMED \
     --add-opens java.base/java.lang=ALL-UNNAMED \
     -Xss256k \
     -Xms1996m -Xmx1996m -Djava.io.tmpdir=/opt/zextras/mailboxd/work \
-    -Djava.library.path=/opt/zextras/lib \
     -Dzimbra.config=/localconfig/localconfig.xml \
-    -Dzimbra.native.required=false \
     -Dlog4j.configurationFile=/opt/zextras/conf/log4j.properties \
     -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/*"
 
@@ -86,6 +85,7 @@ ADD https://github.com/open-telemetry/opentelemetry-java-instrumentation/release
 # Copy additional config files
 COPY docker/mailbox/log4j.properties /opt/zextras/conf/log4j.properties
 COPY docker/mailbox/localconfig/localconfig.xml /localconfig/localconfig.xml
+COPY packages/appserver-service/otel.properties /etc/carbonio/mailbox/otel.properties
 
 ENV LDAP_URL="ldap://openldap:1389" \
     LDAP_ROOT_PASSWORD=qh6hWZvc \
@@ -95,7 +95,10 @@ ENV LDAP_URL="ldap://openldap:1389" \
     MARIADB_PORT=3306 \
     CARBONIO_FILES_SERVICE_URL="http://carbonio-files:10000" \
     CARBONIO_PREVIEW_SERVICE_URL="http://carbonio-preview:10000" \
-    MAILBOXD_JAVA_OPTS="-Xss256k -Xms1996m -Xmx1996m"
+    CARBONIO_MAILBOX_INTERNAL_API_HOST="0.0.0.0" \
+    CARBONIO_MAILBOX_INTERNAL_API_PORT="10000" \
+    MAILBOXD_JAVA_OPTS="-Xss256k -Xms1996m -Xmx1996m" \
+    OTEL_JAVAAGENT_CONFIGURATION_FILE="/etc/carbonio/mailbox/otel.properties"
 
 COPY docker/mailbox/entrypoint.sh .
 

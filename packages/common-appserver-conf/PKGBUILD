@@ -19,7 +19,7 @@ backup=(
 )
 
 _package() {
-  cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
+  cd "$(dirname "$(find /project -name "yap.json" -print -quit)")/.."
 
   unzip -o store/target/dependencies/mailbox-attribute-manager-*.jar 'conf/*' 'attrs-schema' -d attribute-manager
   install -D "attribute-manager/attrs-schema" \

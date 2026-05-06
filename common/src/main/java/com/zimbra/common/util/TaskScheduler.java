@@ -80,8 +80,8 @@ public class TaskScheduler<V> {
                 }
             } catch (Throwable t) {
                 if (t instanceof OutOfMemoryError) {
-                    ZimbraLog.scheduler.fatal("Shutting down", t);
-                    System.exit(1);
+                    ZimbraLog.scheduler.fatal("Shutting down due to OutOfMemoryError", t);
+                    throw (OutOfMemoryError) t;
                 } else {
                     ZimbraLog.scheduler.warn("Exception during execution of task %s", mId, t);
                     mLastResult = null;

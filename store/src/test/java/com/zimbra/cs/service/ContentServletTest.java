@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mime.MimeConstants;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class ContentServletTest {
 
  @Test
  void shouldSendBackDefangedHtmlWhenCalled() throws MessagingException, IOException {
-
+   LC.zimbra_use_owasp_html_sanitizer.setDefault(true);
   InputStream stubInputStream =
     IOUtils.toInputStream(
       "<a>alert(‘suspicious text MFA authentication failed. realm=%s username=%s"

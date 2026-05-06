@@ -6,6 +6,7 @@
 package com.zimbra.cs.util;
 
 import com.sun.mail.smtp.SMTPMessage;
+import com.zextras.mailbox.quota.QuotaCheckSingleton;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.Key.DomainBy;
@@ -37,7 +38,6 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.TokenUtil;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailItem.Type;
-import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Metadata;
 import com.zimbra.cs.mailbox.MetadataList;
@@ -119,18 +119,7 @@ public class AccountUtil {
    */
   public static void checkQuotaWhenSendMail(Mailbox mbox) throws ServiceException {
     Account account = mbox.getAccount();
-    long acctQuota = AccountUtil.getEffectiveQuota(account);
-    if (account.isMailAllowReceiveButNotSendWhenOverQuota()
-        && acctQuota != 0
-        && mbox.getSize() > acctQuota) {
-      throw MailServiceException.QUOTA_EXCEEDED(acctQuota);
-    }
-    Domain domain = Provisioning.getInstance().getDomain(account);
-    if (domain != null
-        && AccountUtil.isOverAggregateQuota(domain)
-        && !AccountUtil.isSendAllowedOverAggregateQuota(domain)) {
-      throw MailServiceException.DOMAIN_QUOTA_EXCEEDED(domain.getDomainAggregateQuota());
-    }
+    QuotaCheckSingleton.getInstance().onSendMessage(account);
   }
 
   public static InternetAddress getFriendlyEmailAddress(Account acct) {

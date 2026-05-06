@@ -55,15 +55,7 @@ public enum SortBy {
     NAME_NATURAL_ORDER_DESC(null, Key.NAME_NATURAL_ORDER, Direction.DESC, null),
 
     NAME_LOCALIZED_ASC(null, Key.NAME, Direction.ASC, null),
-    NAME_LOCALIZED_DESC(null, Key.NAME, Direction.DESC, null),
-
-    // special TASK-only sorts
-    TASK_DUE_ASC("taskDueAsc", Key.DATE, Direction.ASC, ZimbraSortBy.taskDueAsc),
-    TASK_DUE_DESC("taskDueDesc", Key.DATE, Direction.DESC, ZimbraSortBy.taskDueDesc),
-    TASK_STATUS_ASC("taskStatusAsc", Key.DATE, Direction.ASC, ZimbraSortBy.taskStatusAsc),
-    TASK_STATUS_DESC("taskStatusDesc", Key.DATE, Direction.DESC, ZimbraSortBy.taskStatusDesc),
-    TASK_PERCENT_COMPLETE_ASC("taskPercCompletedAsc",  Key.DATE, Direction.ASC, ZimbraSortBy.taskPercCompletedAsc),
-    TASK_PERCENT_COMPLETE_DESC("taskPercCompletedDesc", Key.DATE, Direction.DESC, ZimbraSortBy.taskPercCompletedDesc);
+    NAME_LOCALIZED_DESC(null, Key.NAME, Direction.DESC, null);
 
     private final String name;
     private final Key key;

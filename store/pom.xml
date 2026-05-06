@@ -14,6 +14,11 @@
   <!-- To sort out dependencies take a look at:
   https://wiki.eclipse.org/Jetty/Reference/Dependencies -->
   <dependencies>
+    <dependency>
+      <groupId>com.zextras.carbonio</groupId>
+      <artifactId>carbonio-systemd-notify</artifactId>
+      <version>1.0.1</version>
+    </dependency>
     <!-- Must be provided to avoid collision -->
     <dependency>
       <artifactId>httpclient</artifactId>
@@ -123,7 +128,6 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
-      <version>1.17.6</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -133,14 +137,12 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>mariadb</artifactId>
-      <version>1.17.6</version>
+      <artifactId>testcontainers-mariadb</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>rabbitmq</artifactId>
-      <version>1.19.8</version>
+      <artifactId>testcontainers-rabbitmq</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -155,12 +157,6 @@
       <version>5.2.0</version>
     </dependency>
 
-    <dependency>
-      <groupId>com.github.docker-java</groupId>
-      <artifactId>docker-java-api</artifactId>
-      <version>3.2.13</version>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-library</artifactId>
@@ -477,11 +473,6 @@
       <artifactId>zm-soap</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.zextras</groupId>
-      <artifactId>mailbox-native</artifactId>
-    </dependency>
-
-    <dependency>
       <artifactId>mailbox-attribute-manager</artifactId>
       <groupId>com.zextras</groupId>
     </dependency>
@@ -494,6 +485,31 @@
       <artifactId>store-extra-runtime-dependencies</artifactId>
       <type>pom</type>
       <scope>runtime</scope>
+    </dependency>
+    <!-- RESTEasy (JAX-RS 2.1) — compile: directly used -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.ws.rs</groupId>
+      <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-core</artifactId>
+    </dependency>
+    <!-- RESTEasy — runtime: needed for servlet wiring but not directly imported -->
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-servlet-initializer</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jackson2-provider</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <!-- OpenAPI — compile: annotations used directly -->
+    <dependency>
+      <groupId>io.swagger.core.v3</groupId>
+      <artifactId>swagger-annotations</artifactId>
     </dependency>
     <!-- DI -->
     <dependency>
@@ -554,6 +570,21 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>net.javacrumbs.json-unit</groupId>
+      <artifactId>json-unit-assertj</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.javacrumbs.json-unit</groupId>
+      <artifactId>json-unit-core</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- https://mvnrepository.com/artifact/com.icegreen/greenmail -->
     <dependency>
       <groupId>com.icegreen</groupId>
@@ -563,8 +594,7 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>1.19.0</version>
+      <artifactId>testcontainers-junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -597,6 +627,15 @@
     </testResources>
 
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <compilerArgs>
+            <arg>--enable-preview</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
       <!-- Generate classes -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -869,26 +908,32 @@ EOF
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <forkCount>${surefire.forkCount}</forkCount>
-          <reuseForks>${surefire.reuseForks}</reuseForks>
-          <argLine>@{argLine} -Dserver.dir=${project.basedir}
+          <forkCount>1</forkCount>
+          <reuseForks>true</reuseForks>
+          <argLine>@{argLine} --enable-preview --enable-native-access=ALL-UNNAMED -Xmx2g -Dserver.dir=${project.basedir}
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
             -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
           </argLine>
+          <environmentVariables>
+            <LC_ALL>C.UTF-8</LC_ALL>
+          </environmentVariables>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
-          <forkCount>${surefire.forkCount}</forkCount>
-          <reuseForks>${surefire.reuseForks}</reuseForks>
-          <argLine>@{argLine} -Dserver.dir=${project.basedir}
+          <forkCount>1</forkCount>
+          <reuseForks>true</reuseForks>
+          <argLine>@{argLine} --enable-preview --enable-native-access=ALL-UNNAMED -Xmx2g -Dserver.dir=${project.basedir}
             -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
           </argLine>
+          <environmentVariables>
+            <LC_ALL>C.UTF-8</LC_ALL>
+          </environmentVariables>
         </configuration>
       </plugin>
       <plugin>
@@ -896,6 +941,28 @@ EOF
         <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
 
+      <plugin>
+        <groupId>io.swagger.core.v3</groupId>
+        <artifactId>swagger-maven-plugin</artifactId>
+        <version>${swagger.version}</version>
+        <configuration>
+          <outputFileName>internal-api-openapi</outputFileName>
+          <outputPath>${project.basedir}</outputPath>
+          <outputFormat>YAML</outputFormat>
+          <resourcePackages>
+            <resourcePackage>com.zextras.mailbox.api.rest.resource</resourcePackage>
+          </resourcePackages>
+          <configurationFilePath>${project.basedir}/src/main/resources/openapi-configuration.json</configurationFilePath>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>resolve</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -999,8 +1066,6 @@ EOF
 
   </build>
   <properties>
-    <surefire.reuseForks>true</surefire.reuseForks>
-    <surefire.forkCount>1</surefire.forkCount>
     <build.dir>target</build.dir>
     <maven-exec-plugin.version>3.1.0</maven-exec-plugin.version>
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>

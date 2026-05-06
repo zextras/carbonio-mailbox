@@ -1,0 +1,26 @@
+{
+  "key_prefix": [
+    {
+      "carbonio-mailbox-internal-api/": {
+        "policy": "read"
+      }
+    }
+  ],
+  "node_prefix": [
+    {
+      "": {
+        "policy": "read"
+      }
+    }
+  ],
+  "service": [
+    {
+      "carbonio-mailbox-internal-api": {
+        "policy": "write"
+      },
+      "carbonio-mailbox-internal-api-sidecar-proxy": {
+        "policy": "write"
+      }
+    }
+  ]
+}

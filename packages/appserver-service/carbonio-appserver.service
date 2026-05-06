@@ -1,11 +1,14 @@
 [Unit]
 Description=Carbonio Appserver Daemon
 After=carbonio-appserver-db.service carbonio-configd.service
-Wants=carbonio-appserver-db.service carbonio-configd.service
+Wants=carbonio-appserver-db.service carbonio-configd.service carbonio-mailbox-sidecar.service carbonio-mailbox-internal-api-sidecar.service
 PartOf=carbonio-appserver.target
 
 [Service]
 User=zextras
+Type=notify
+NotifyAccess=main
+Environment=OTEL_JAVAAGENT_CONFIGURATION_FILE=/etc/carbonio/mailbox/otel.properties
 EnvironmentFile=-/opt/zextras/data/systemd.env
 ExecStartPre=echo REWRITE \
   sasl \
@@ -18,20 +21,51 @@ ExecStartPre=echo REWRITE \
   | netcat -w 120 localhost 7171
 ExecStartPre=-/opt/zextras/bin/zmtlsctl
 ExecStart=/opt/zextras/common/bin/java \
+  --enable-preview \
+  --enable-native-access=ALL-UNNAMED \
   -Dfile.encoding=UTF-8 \
   $mailboxd_java_options \
   -Xms${java_xms}m \
   -Xmx${java_xmx}m \
   -Djava.io.tmpdir=/opt/zextras/mailboxd/work \
-  -Djava.library.path=/opt/zextras/lib \
   -Dzimbra.config=/opt/zextras/conf/localconfig.xml \
   -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/* \
   com.zextras.mailbox.Mailbox
 LimitNOFILE=524288
+TimeoutStartSec=300s
 RestartSec=3s
 Restart=on-failure
 SuccessExitStatus=143
 StandardError=append:/opt/zextras/log/zmmailboxd.out
+
+# Hardening
+PrivateTmp=yes
+ProtectSystem=strict
+ReadWritePaths=/opt/zextras/backup
+ReadWritePaths=/opt/zextras/cache
+ReadWritePaths=/opt/zextras/conf
+ReadWritePaths=/opt/zextras/data
+ReadWritePaths=/opt/zextras/incoming
+ReadWritePaths=/opt/zextras/index
+ReadWritePaths=/opt/zextras/log
+ReadWritePaths=/opt/zextras/mailboxd
+ReadWritePaths=/opt/zextras/redolog
+ReadWritePaths=/opt/zextras/store
+ReadWritePaths=/run/carbonio
+NoNewPrivileges=yes
+PrivateDevices=yes
+ProtectHome=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+ProtectHostname=yes
+ProtectClock=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
 
 [Install]
 WantedBy=carbonio-appserver.target

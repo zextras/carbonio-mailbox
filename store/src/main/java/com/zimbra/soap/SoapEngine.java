@@ -49,6 +49,7 @@ import com.zimbra.cs.util.Zimbra;
 import com.zimbra.soap.ZimbraSoapContext.SessionInfo;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
+import io.opentelemetry.api.trace.Span;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -275,6 +276,7 @@ public class SoapEngine {
       SoapProtocol soapProto = chooseFaultProtocolFromBadXml(new ByteArrayInputStream(soapMessage));
       return soapFaultEnv(soapProto, "SOAP exception", e);
     }
+
     Element resp = dispatch(path, document, context);
 
     /*
@@ -319,6 +321,17 @@ public class SoapEngine {
       return soapFaultEnv(
           soapProto, "SOAP exception", ServiceException.INVALID_REQUEST("No SOAP body", null));
     }
+
+    Span currentSpan = Span.current();
+    if (currentSpan != null && currentSpan.getSpanContext().isValid()) {
+      var documentBodyName = doc.getName();
+      currentSpan.setAttribute("document.body.name", documentBodyName);
+      currentSpan.setAttribute("document.namespace", doc.getQName().getNamespace().getName());
+      if (!path.contains(documentBodyName)) {
+        currentSpan.updateName(path + doc.getName());
+      }
+    }
+
 
     ServletRequest servReq = (ServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
 

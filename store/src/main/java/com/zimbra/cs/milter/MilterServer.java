@@ -13,6 +13,7 @@ import org.apache.mina.filter.codec.ProtocolEncoder;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
+import com.zextras.carbonio.systemd.SystemdNotify;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.ZimbraLog;
@@ -101,6 +102,7 @@ public final class MilterServer extends NioServer implements Server {
 
             ZimbraLog.milter.info("Starting milter server");
             server.start();
+            SystemdNotify.ready("milter ready");
         } catch (ServiceException e) {
             ZimbraLog.milter.error("Unable to start milter server", e);
         }

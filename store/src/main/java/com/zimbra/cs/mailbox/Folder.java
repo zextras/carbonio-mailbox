@@ -932,8 +932,13 @@ public class Folder extends MailItem implements FolderStore {
     data.folderId = (id == Mailbox.ID_FOLDER_ROOT ? id : parent.getId());
     data.parentId = data.folderId;
     data.date = date == null ? mbox.getOperationTimestamp() : (int) (date / 1000);
-    data.setFlags(
-        (flags | Flag.toBitmask(mbox.getAccount().getDefaultFolderFlags())) & Flag.FLAGS_FOLDER);
+    // Automatically apply the SYNCFOLDER flag when the folder is created with an external
+    // sync URL (iCal/ICS, RSS, etc.) so that the 'y' flag is correctly reported to clients.
+    int effectiveFlags = flags | Flag.toBitmask(mbox.getAccount().getDefaultFolderFlags());
+    if (url != null && !url.isEmpty()) {
+      effectiveFlags |= Flag.BITMASK_SYNCFOLDER;
+    }
+    data.setFlags(effectiveFlags & Flag.FLAGS_FOLDER);
     data.name = name;
     data.setSubject(name);
     data.metadata =
@@ -1024,6 +1029,8 @@ public class Folder extends MailItem implements FolderStore {
     }
     markItemModified(Change.URL);
     syncData = new SyncData(url);
+    // Keep SYNCFOLDER flag in sync with the URL: present when a URL is set, absent when cleared.
+    alterTag(Flag.FlagInfo.SYNCFOLDER.toFlag(mMailbox), !url.isEmpty());
     saveMetadata();
   }
 

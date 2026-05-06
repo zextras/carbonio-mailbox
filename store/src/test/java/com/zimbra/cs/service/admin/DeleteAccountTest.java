@@ -17,6 +17,9 @@ import com.zextras.mailbox.acl.AclService;
 import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.soap.AccountConstants;
+import com.zimbra.common.soap.AdminConstants;
+import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -28,6 +31,7 @@ import com.zimbra.cs.account.accesscontrol.ZimbraACE;
 import com.zimbra.cs.account.accesscontrol.generated.AdminRights;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
+import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import io.vavr.control.Try;
@@ -229,6 +233,8 @@ class DeleteAccountTest extends MailboxTestSuite {
 
 	private void doDeleteAccount(DeleteAccount deleteAccount, Account caller,
 			String accountToDeleteId) throws Exception {
+		// TODO: prefer creating api tests and interact through http call rather then using DocumentHandler handle
+		deleteAccount.setResponseQName(AdminConstants.DELETE_ACCOUNT_RESPONSE);
 		deleteAccount.handle(
 				JaxbUtil.jaxbToElement(new DeleteAccountRequest(accountToDeleteId)),
 				ServiceTestUtil.getRequestContext(caller));

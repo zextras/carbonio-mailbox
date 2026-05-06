@@ -32,7 +32,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 @Tag("api")
 class ProvUtilAPITest {
 
-
   @RegisterExtension
   static SoapExtension soapExtension = new SoapExtension.Builder()
       .addEngineHandler("com.zimbra.cs.service.admin.AdminService")
@@ -55,7 +54,8 @@ class ProvUtilAPITest {
 
   @BeforeEach
   void setUpBefore() throws Exception {
-    soapExtension.initData();
+      soapExtension.clearData();
+      soapExtension.initData();
   }
 
   @AfterEach

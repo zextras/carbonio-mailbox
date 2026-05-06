@@ -58,6 +58,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.GranteeType;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE;
+import com.zimbra.cs.datasource.CalDavDataImport;
 import com.zimbra.cs.fb.FreeBusy;
 import com.zimbra.cs.gal.GalGroup;
 import com.zimbra.cs.gal.GalGroup.GroupInfo;
@@ -303,6 +304,12 @@ public final class ToXML {
         // that is either RSS or a remote calendar object
         elem.addAttribute(MailConstants.A_URL, HttpUtil.sanitizeURL(url));
       }
+      if (!url.isEmpty()) {
+        long lastSyncDate = folder.getLastSyncDate();
+        if (lastSyncDate > 0 || fields != NOTIFY_FIELDS) {
+          elem.addAttribute(MailConstants.A_LAST_SYNC_DATE, lastSyncDate / 1000);
+        }
+      }
     }
 
     Mailbox mbox = folder.getMailbox();
@@ -313,12 +320,84 @@ public final class ToXML {
     if (remote) {
       // return effective permissions only for remote folders
       String perms = encodeEffectivePermissions(folder, octxt);
-      elem.addAttribute(MailConstants.A_RIGHTS, perms);
-      canAdminister = perms != null && perms.indexOf(ACL.ABBR_ADMIN) != -1;
-      // Need to know retention policy if grantees can delete from a folder so clients can warn
-      // them when they try to delete something within the retention period
-      canDelete = canAdminister || (perms != null && perms.indexOf(ACL.ABBR_DELETE) != -1);
+      if (!folder.getUrl().isEmpty()) {
+        // External URL-based (iCal/ICS/RSS) folders are effectively read-only: the folder content
+        // is synced one-way FROM the external URL and cannot be written back. Signal this to clients
+        // so they do not allow creating or editing items in these folders, even on delegated access.
+        perms = String.valueOf(ACL.ABBR_READ);
+        canAdminister = false;
+        canDelete = false;
+      } else {
+        canAdminister = perms != null && perms.indexOf(ACL.ABBR_ADMIN) != -1;
+        // Need to know retention policy if grantees can delete from a folder so clients can warn
+        // them when they try to delete something within the retention period
+        canDelete = canAdminister || (perms != null && perms.indexOf(ACL.ABBR_DELETE) != -1);
+      }
+      if (perms != null) {
+        elem.addAttribute(MailConstants.A_RIGHTS, perms);
+      }
+    } else if (!folder.getUrl().isEmpty()) {
+      // External URL-based (iCal/ICS/RSS) folders are effectively read-only: the folder content
+      // is synced one-way FROM the external URL and cannot be written back. Signal this to clients
+      // so they do not allow creating or editing items in these folders.
+      elem.addAttribute(MailConstants.A_RIGHTS, String.valueOf(ACL.ABBR_READ));
     }
+
+    // Handle CalDAV datasource root folders with importOnly=true: mark as read-only
+     // since content is synced one-way FROM the remote CalDAV server and cannot be written back.
+     // Also mark child folders as read-only to prevent local modifications.
+     if (folder.getId() > Mailbox.HIGHEST_SYSTEM_ID && folder.getUrl().isEmpty()) {
+       try {
+         if (hasFullAccess(mbox, octxt)) {
+           DataSource ds = OperationContextData.DataSourceIndex.lookup(
+               octxt, folder.getMailbox().getAccount(), folder.getId());
+           if (ds != null && ds.getType() == DataSourceType.caldav && ds.isImportOnly()) {
+             elem.addAttribute(MailConstants.A_RIGHTS, String.valueOf(ACL.ABBR_READ));
+           }
+         }
+       } catch (ServiceException e) {
+         // Log and continue; failure here should not block folder encoding
+         ZimbraLog.soap.debug("Unable to determine if CalDAV datasource is import-only for folder %d", folder.getId(), e);
+       }
+
+       // Check if this folder is a child of a CalDAV datasource importOnly root
+       try {
+         if (hasFullAccess(mbox, octxt)) {
+           MailItem parentItem = null;
+           try {
+             parentItem = folder.getParent();
+           } catch (ServiceException ignored) {
+             // Parent might not exist
+           }
+
+           while (parentItem instanceof Folder) {
+             Folder parentFolder = (Folder) parentItem;
+             // Root/system folders terminate ancestry walk; root points to itself.
+             if (parentFolder.getId() <= Mailbox.HIGHEST_SYSTEM_ID) {
+               break;
+             }
+             DataSource dsParent = OperationContextData.DataSourceIndex.lookup(
+                 octxt, folder.getMailbox().getAccount(), parentFolder.getId());
+             if (dsParent != null && dsParent.getType() == DataSourceType.caldav && dsParent.isImportOnly()) {
+               elem.addAttribute(MailConstants.A_RIGHTS, String.valueOf(ACL.ABBR_READ));
+               break;
+             }
+             try {
+               MailItem nextParent = parentFolder.getParent();
+               if (nextParent == parentFolder) {
+                 break;
+               }
+               parentItem = nextParent;
+             } catch (ServiceException ignored) {
+               break;
+             }
+           }
+         }
+       } catch (ServiceException e) {
+         // Log and continue; failure here should not block folder encoding
+         ZimbraLog.soap.debug("Unable to check if folder %d is child of CalDAV importOnly datasource", folder.getId(), e);
+       }
+     }
     if (canAdminister) {
       // return full ACLs for folders we have admin rights on
       if (needToOutput(fields, Change.ACL)) {
@@ -340,6 +419,63 @@ public final class ToXML {
         }
       }
     }
+
+    // Annotate the folder with the ID and type of the DataSource it is the root of, if any.
+    // This allows clients to identify CalDAV / IMAP / etc. sync root folders without
+    // separately correlating against a GetDataSources response.
+    // Only exposed to the account owner / full-access delegates (mirrors the GetDataSources
+    // canAccessAccount gate) to avoid leaking datasource UUIDs via shared-folder access.
+    // The datasource list is fetched once per account per request via DataSourceIndex and
+    // reused across all folder encodes (avoids N×getAllDataSources during GetFolder / Sync).
+    if (folder.getId() > Mailbox.HIGHEST_SYSTEM_ID) {
+      DataSource ds = null;
+      try {
+        if (hasFullAccess(mbox, octxt)) {
+          ds =
+              OperationContextData.DataSourceIndex.lookup(
+                  octxt, folder.getMailbox().getAccount(), folder.getId());
+          if (ds != null) {
+            elem.addAttribute(MailConstants.A_DATASOURCE_ID, ds.getId());
+            elem.addAttribute(MailConstants.A_DATASOURCE_TYPE, ds.getType().toString());
+          }
+        }
+      } catch (ServiceException e) {
+        ZimbraLog.soap.warn("Unable to encode datasource info for folder %d", folder.getId(), e);
+      }
+
+      // CalDAV roots do not use folder URL; expose lsd for URL updates and metadata-only sync ticks.
+      if ((needToOutput(fields, Change.URL) || needToOutput(fields, Change.METADATA))
+          && folder.getUrl().isEmpty()
+          && ds != null
+          && ds.getType() == DataSourceType.caldav) {
+        long lastSyncDate = 0;
+        try {
+          CustomMetadata custom = folder.getCustomData(CalDavDataImport.CUSTOM_METADATA_SECTION);
+          if (custom != null) {
+            String rawTs = custom.get(CalDavDataImport.CUSTOM_METADATA_KEY_LAST_SUCCESSFUL_SYNC_MS);
+            if (!Strings.isNullOrEmpty(rawTs)) {
+              lastSyncDate = Long.parseLong(rawTs);
+            }
+          }
+        } catch (Exception e) {
+          ZimbraLog.soap.debug(
+              "Unable to read CalDAV last successful sync metadata for folder %d", folder.getId(), e);
+        }
+
+        if (lastSyncDate <= 0) {
+          // Legacy fallback for old data where sync date might have been persisted as epoch millis.
+          long legacyValue = folder.getLastSyncDate();
+          if (legacyValue >= 1_000_000_000_000L) {
+            lastSyncDate = legacyValue;
+          }
+        }
+
+        if (lastSyncDate > 0 || fields != NOTIFY_FIELDS) {
+          elem.addAttribute(MailConstants.A_LAST_SYNC_DATE, lastSyncDate / 1000);
+        }
+      }
+    }
+
     return elem;
   }
 
@@ -643,6 +779,10 @@ public final class ToXML {
     // construct rest url based on owner name and folder name.
     elem.addAttribute(MailConstants.A_REST_URL, getRestUrl(ownerName, ownerFolderPath));
     elem.addAttribute(MailConstants.A_URL, mptTarget.getAttribute(MailConstants.A_URL, null));
+    String lastSyncDate = mptTarget.getAttribute(MailConstants.A_LAST_SYNC_DATE, null);
+    if (lastSyncDate != null) {
+      elem.addAttribute(MailConstants.A_LAST_SYNC_DATE, lastSyncDate);
+    }
     elem.addAttribute(MailConstants.A_RIGHTS, mptTarget.getAttribute(MailConstants.A_RIGHTS, null));
     if (mptTarget.getAttribute(MailConstants.A_FLAGS, "").contains("u")) {
       elem.addAttribute(

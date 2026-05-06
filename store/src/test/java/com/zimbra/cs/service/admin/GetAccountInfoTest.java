@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.google.common.collect.Maps;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.soap.AccountConstants;
+import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
@@ -41,7 +43,7 @@ class GetAccountInfoTest extends MailboxTestSuite {
     request.setAccount(AccountSelector.fromId(adminAccount.getId()));
     Element requestElement = JaxbUtil.jaxbToElement(request);
 
-    Element handle = new GetAccountInfo().handle(requestElement, getAdminContext(adminAccount));
+    Element handle = newRequest().handle(requestElement, getAdminContext(adminAccount));
     GetAccountInfoResponse response = JaxbUtil.elementToJaxb(handle);
 
     List<Attr> attrs =
@@ -65,7 +67,7 @@ class GetAccountInfoTest extends MailboxTestSuite {
     request.setAccount(AccountSelector.fromId(adminAccount.getId()));
     Element requestElement = JaxbUtil.jaxbToElement(request);
 
-    Element handle = new GetAccountInfo().handle(requestElement, getAdminContext(adminAccount));
+    Element handle = newRequest().handle(requestElement, getAdminContext(adminAccount));
     GetAccountInfoResponse response = JaxbUtil.elementToJaxb(handle);
 
     List<Attr> attrs =
@@ -86,5 +88,11 @@ class GetAccountInfoTest extends MailboxTestSuite {
             SoapProtocol.Soap12);
     context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
     return context;
+  }
+
+  private GetAccountInfo newRequest() {
+    final GetAccountInfo getAccountInfo = new GetAccountInfo();
+    getAccountInfo.setResponseQName(AdminConstants.GET_ACCOUNT_INFO_RESPONSE);
+    return getAccountInfo;
   }
 }

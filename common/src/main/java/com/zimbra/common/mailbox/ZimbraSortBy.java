@@ -13,7 +13,6 @@ import com.zimbra.common.zclient.ZClientException;
 public enum ZimbraSortBy {
     dateDesc, dateAsc, subjDesc, subjAsc, nameDesc, nameAsc, durDesc, durAsc, none,
     sizeAsc, sizeDesc, attachAsc, attachDesc, flagAsc, flagDesc, priorityAsc, priorityDesc,
-    taskDueAsc, taskDueDesc, taskStatusAsc, taskStatusDesc, taskPercCompletedAsc, taskPercCompletedDesc,
     rcptAsc, rcptDesc, idAsc, idDesc, readAsc, readDesc, changeDateAsc, changeDateDesc;
 
     public static ZimbraSortBy fromString(String s)

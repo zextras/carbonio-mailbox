@@ -1,5 +1,5 @@
 library(
-        identifier: 'jenkins-lib-common@1.3.2',
+        identifier: 'jenkins-lib-common@1.7.2',
         retriever: modernSCM([
                 $class: 'GitSCMSource',
                 credentialsId: 'jenkins-integration-with-github-account',
@@ -28,22 +28,13 @@ pipeline {
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
         JAVA_OPTS = '-Dfile.encoding=UTF8'
         LC_ALL = 'C.UTF-8'
-        MAVEN_OPTS = '-Xmx4g'
+        MAVEN_OPTS = '-Xmx2g'
     }
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
         skipDefaultCheckout()
         timeout(time: 2, unit: 'HOURS')
-    }
-
-    parameters {
-        booleanParam defaultValue: false,
-                description: 'Skip test and sonar analysis.',
-                name: 'SKIP_TEST_WITH_COVERAGE'
-        booleanParam defaultValue: false,
-                description: 'Skip sonar analysis.',
-                name: 'SKIP_SONARQUBE'
     }
 
     triggers {
@@ -84,45 +75,40 @@ pipeline {
         stage('UT, IT') {
             steps {
                 container('jdk-21') {
-                    sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,flaky,e2e"
+                    sh "mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -DexcludedGroups=api,flaky,e2e"
                 }
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
             }
         }
         stage('Flaky, API, E2E tests') {
-            steps {
-                container('jdk-21') {
-                    sh "cd store && mvn ${MVN_OPTS} verify -Dgroups=flaky,api && mvn ${MVN_OPTS} verify -Dgroups=e2e"
+                    steps {
+                        container('jdk-21') {
+                            sh "cd store && mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=flaky,api && mvn ${MVN_OPTS} jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=e2e"
+                        }
+                        junit allowEmptyResults: true,
+                                testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+                    }
                 }
-                junit allowEmptyResults: true,
-                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
-            }
-        }
 
         stage('Build and Package API Docs') {
             steps {
                 container('jdk-21') {
                     sh """
-                        cd soap
-                        mvn ${MVN_OPTS} antrun:run@generate-soap-docs
-                        cd ..
-                        VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-                        mkdir -p artifacts
-                        tar -czf artifacts/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
-                    """
+                (
+                    cd soap || { echo "Directory soap does not exist"; exit 1; }
+                    mvn ${MVN_OPTS} antrun:run@generate-soap-docs
+                )
+                VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+                mkdir -p docs
+                tar -czf docs/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
+            """
                 }
-                archiveArtifacts artifacts: 'artifacts/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'docs/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
             }
         }
 
         stage('Sonarqube Analysis') {
-            when {
-                allOf {
-                    expression { params.SKIP_SONARQUBE == false }
-                    expression { params.SKIP_TEST_WITH_COVERAGE == false }
-                }
-            }
             steps {
                 container('jdk-21') {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
@@ -137,84 +123,137 @@ pipeline {
             }
         }
 
-        stage('Publish SNAPSHOT to maven') {
-            when {
-                not { buildingTag() }
-            }
-            steps {
-                container('jdk-21') {
-                    withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                        script {
-                            sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -DskipTests=true"
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('Publish to maven') {
-            when {
-                buildingTag()
-            }
-            steps {
-                container('jdk-21') {
-                    withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                        script {
-                            sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -Dchangelist= -DskipTests=true"
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('Build and Publish Docker images') {
-            steps {
-                dockerStage([
-                        dockerfile: 'docker/mailbox/Dockerfile',
-                        imageName : 'carbonio-mailbox',
-                        ocLabels  : [
-                            title          : 'Carbonio Mailbox',
-                            descriptionFile: 'docker/mailbox/description.md'
-                        ]
-                ])
-                dockerStage([
-                        dockerfile: 'docker/mariadb/Dockerfile',
-                        imageName : 'carbonio-mariadb',
-                        ocLabels  : [
-                                title          : 'Carbonio MariaDB',
-                                descriptionFile: 'docker/mariadb/description.md'
-                        ]
-                ])
-            }
-        }
-
-        stage('Build deb/rpm') {
-            steps {
-                echo 'Building deb/rpm packages'
-                buildStage([
-                        skipStash: true,
-                        buildDirs: ['staging/packages'],
-                        overrides: [
-                                ubuntu: [
-                                        preBuildScript: '''
-                                apt-get update
-                                apt-get install -y --no-install-recommends rsync
-                            '''
-                                ]
-                        ]
-                ])
-            }
-        }
-
-        stage('Upload artifacts')
+        stage('Build and upload artifacts')
         {
-            tools {
-                jfrog 'jfrog-cli'
+            parallel {
+                stage('Packages') {
+                    stages {
+                        stage('Build deb/rpm') {
+                            steps {
+                                echo 'Building deb/rpm packages'
+                                buildStage([
+                                        addCarbonioRepos: true,
+                                        carbonioRepoCredentialId: 'artifactory-jenkins-gradle-properties-splitted',
+                                        skipStash: true,
+                                        buildDirs: ['staging/packages'],
+                                ])
+                            }
+                        }
+                        stage ('Publish packages') {
+                            tools {
+                                jfrog 'jfrog-cli'
+                            }
+                            steps {
+                                uploadStage(
+                                        packages: yapHelper.getPackageNames('staging/packages/yap.json')
+                                )
+                            }
+                        }
+                    }
+                }
+
+                stage('Publish SNAPSHOT to maven') {
+                    when {
+                        allOf {
+                            not { buildingTag() }
+                            branch 'devel'
+                        }
+
+                    }
+                    steps {
+                        container('jdk-21') {
+                            withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
+                                script {
+                                    sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -DskipTests=true"
+                                }
+                            }
+                        }
+                    }
+                }
+
+                stage('Publish to maven') {
+                    when {
+                        buildingTag()
+                    }
+                    steps {
+                        container('jdk-21') {
+                            withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
+                                script {
+                                    sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -Dchangelist= -DskipTests=true"
+                                }
+                            }
+                        }
+                    }
+                }
+
+                stage('Build and Publish Docker images') {
+                    steps {
+                        dockerStage([
+                                dockerfile: 'docker/mailbox/Dockerfile',
+                                imageName : 'carbonio-mailbox',
+                                platforms : ['linux/amd64', 'linux/arm64'] as Set,
+                                ocLabels  : [
+                                        title          : 'Carbonio Mailbox',
+                                        descriptionFile: 'docker/mailbox/description.md'
+                                ]
+                        ])
+                        dockerStage([
+                                dockerfile: 'docker/mailbox-sidecar/Dockerfile',
+                                imageName : 'carbonio-mailbox-sidecar',
+                                platforms : ['linux/amd64', 'linux/arm64'] as Set,
+                                ocLabels  : [
+                                        title : 'Carbonio Mailbox Sidecar',
+                                ]
+                        ])
+                        dockerStage([
+                                dockerfile: 'docker/mailbox-admin-sidecar/Dockerfile',
+                                imageName : 'carbonio-mailbox-admin-sidecar',
+                                platforms : ['linux/amd64', 'linux/arm64'] as Set,
+                                ocLabels  : [
+                                        title : 'Carbonio Mailbox Admin Sidecar',
+                                ]
+                        ])
+                        dockerStage([
+                                dockerfile: 'docker/mailbox-nslookup-sidecar/Dockerfile',
+                                imageName : 'carbonio-mailbox-nslookup-sidecar',
+                                platforms : ['linux/amd64', 'linux/arm64'] as Set,
+                                ocLabels  : [
+                                        title : 'Carbonio Mailbox NSLookup Sidecar',
+                                ]
+                        ])
+                        dockerStage([
+                                dockerfile: 'docker/mailbox-internal-api-sidecar/Dockerfile',
+                                imageName : 'carbonio-mailbox-internal-api-sidecar',
+                                platforms : ['linux/amd64', 'linux/arm64'] as Set,
+                                ocLabels  : [
+                                        title : 'Carbonio Mailbox Internal API Sidecar',
+                                ]
+                        ])
+                        dockerStage([
+                                dockerfile: 'docker/mariadb/Dockerfile',
+                                imageName : 'carbonio-mariadb',
+                                platforms : ['linux/amd64', 'linux/arm64'] as Set,
+                                ocLabels  : [
+                                        title          : 'Carbonio MariaDB',
+                                        descriptionFile: 'docker/mariadb/description.md'
+                                ]
+                        ])
+                    }
+                }
+            }
+
+        }
+        stage('Bump version and tag') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'devel'
+                }
             }
             steps {
-                uploadStage(
-                        packages: yapHelper.getPackageNames('staging/packages/yap.json')
-                )
+                script {
+                    dt2_semanticRelease()
+                }
             }
         }
     }

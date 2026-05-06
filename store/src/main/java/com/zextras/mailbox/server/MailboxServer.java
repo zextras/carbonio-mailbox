@@ -57,6 +57,7 @@ public class MailboxServer {
     initDependencies(); // old FirstServlet#init
     Zimbra.startup();
     server.start();
+    com.zextras.carbonio.systemd.SystemdNotify.ready("mailbox ready");
     ZimbraLog.misc.info("Mailbox server started");
   }
 

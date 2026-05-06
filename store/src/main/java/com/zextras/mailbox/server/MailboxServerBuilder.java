@@ -1,6 +1,7 @@
 package com.zextras.mailbox.server;
 
 import com.zextras.mailbox.MailboxAPIs;
+import com.zextras.mailbox.api.InternalApiContextHandler;
 import com.zextras.mailbox.server.MailboxServer.InstantiationException;
 import com.zimbra.common.jetty.JettyMonitor;
 import com.zimbra.common.localconfig.LC;
@@ -88,7 +89,12 @@ public class MailboxServerBuilder {
 
 			server.addConnector(createMtaAdminHttpsConnector(server));
 			server.addConnector(createExtensionsHttpsConnector(server));
+			server.addConnector(createInternalApiConnector(server, httpConfig));
+
+			// NOTE: separate handler for internal APIs, not affected by DoS filter and other filters
 			final ContextHandlerCollection contexts = new ContextHandlerCollection();
+			contexts.addHandler(InternalApiContextHandler.create());
+
 			Handler webAppHandler = new MailboxAPIs(localServer).createServletContextHandler();
 
 			final RewriteHandler mainHandler = createRewriteHandler();
@@ -160,6 +166,15 @@ public class MailboxServerBuilder {
 		return createHttpsConnector(server, localServer.getExtensionBindPort(),
 				localServer.getHttpConnectorMaxIdleTimeMillis(),
 				localServer.getExtensionBindAddress());
+	}
+
+	private ServerConnector createInternalApiConnector(Server server, HttpConfiguration httpConfig) {
+		final ServerConnector connector = new ServerConnector(server,
+				new HttpConnectionFactory(httpConfig));
+		connector.setPort(LC.mailbox_internal_api_port.intValue());
+		connector.setHost(LC.mailbox_internal_api_bind_address.value());
+		connector.setName(InternalApiContextHandler.CONNECTOR_NAME);
+		return connector;
 	}
 
 	private RewriteHandler createRewriteHandler() {

@@ -897,6 +897,7 @@ public final class MailConstants {
   public static final String A_VISIBLE = "visible";
   public static final String A_DELETABLE = "deletable";
   public static final String A_URL = "url";
+  public static final String A_LAST_SYNC_DATE = "lsd";
   public static final String A_NUM = "n";
   public static final String A_IMAP_UID = "i4uid";
   public static final String A_IMAP_NUM = "i4n";
@@ -997,6 +998,7 @@ public final class MailConstants {
   public static final String A_REPLY_TYPE = "rt";
   public static final String A_IDENTITY_ID = "idnt";
   public static final String A_DATASOURCE_ID = "dsId";
+  public static final String A_DATASOURCE_TYPE = "dsType";
   public static final String A_NO_SAVE_TO_SENT = "noSave";
   public static final String A_FETCH_SAVED_MSG = "fetchSavedMsg";
   public static final String A_SEND_UID = "suid";

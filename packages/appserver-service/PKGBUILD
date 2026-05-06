@@ -13,6 +13,7 @@ license=(
 )
 url="https://github.com/zextras"
 depends=(
+  "carbonio-core"
   "service-discover"
   "pending-setups"
 )
@@ -29,7 +30,7 @@ sha256sums=(
 )
 
 _package() {
-  cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
+  cd "$(dirname "$(find /project -name "yap.json" -print -quit)")/.."
 
   # Mailbox
   install -Dm755 packages/appserver-service/carbonio-mailbox \
@@ -44,6 +45,8 @@ _package() {
     "${pkgdir}/etc/carbonio/mailbox/service-discover/policies.json"
   install -Dm644 packages/appserver-service/carbonio-mailbox-service-protocol.json \
     "${pkgdir}/etc/carbonio/mailbox/service-discover/service-protocol.json"
+  install -Dm644 packages/appserver-service/otel.properties \
+    "${pkgdir}/etc/carbonio/mailbox/otel.properties"
 
   # Mailbox Admin
   install -Dm755 packages/appserver-service/carbonio-mailbox-admin \
@@ -73,6 +76,20 @@ _package() {
   install -Dm644 packages/appserver-service/carbonio-mailbox-nslookup-service-protocol.json \
     "${pkgdir}/etc/carbonio/mailbox-nslookup/service-discover/service-protocol.json"
 
+  # Mailbox Internal API
+  install -Dm755 packages/appserver-service/carbonio-mailbox-internal-api \
+    "${pkgdir}/usr/bin/carbonio-mailbox-internal-api"
+  install -Dm644 packages/appserver-service/411-carbonio-mailbox-internal-api.sh \
+    "${pkgdir}/etc/zextras/pending-setups.d/411-carbonio-mailbox-internal-api.sh"
+  install -Dm644 packages/appserver-service/carbonio-mailbox-internal-api.hcl \
+    "${pkgdir}/etc/zextras/service-discover/carbonio-mailbox-internal-api.hcl"
+  install -Dm644 packages/appserver-service/carbonio-mailbox-internal-api-intentions.json \
+    "${pkgdir}/etc/carbonio/mailbox-internal-api/service-discover/intentions.json"
+  install -Dm644 packages/appserver-service/carbonio-mailbox-internal-api-policies.json \
+    "${pkgdir}/etc/carbonio/mailbox-internal-api/service-discover/policies.json"
+  install -Dm644 packages/appserver-service/carbonio-mailbox-internal-api-service-protocol.json \
+    "${pkgdir}/etc/carbonio/mailbox-internal-api/service-discover/service-protocol.json"
+
   # systemd sysusers.d
   install -Dm644 packages/appserver-service/systemd-sysuser.conf \
     "${pkgdir}/usr/lib/sysusers.d/carbonio-appserver-service.conf"
@@ -88,6 +105,8 @@ _package_legacy() {
     "${pkgdir}/usr/lib/systemd/system/carbonio-mailbox-admin-sidecar.service"
   install -Dm644 packages/appserver-service/carbonio-mailbox-nslookup-sidecar-legacy.service \
     "${pkgdir}/usr/lib/systemd/system/carbonio-mailbox-nslookup-sidecar.service"
+  install -Dm644 packages/appserver-service/carbonio-mailbox-internal-api-sidecar-legacy.service \
+    "${pkgdir}/usr/lib/systemd/system/carbonio-mailbox-internal-api-sidecar.service"
 }
 
 _package_systemd() {
@@ -100,6 +119,8 @@ _package_systemd() {
     "${pkgdir}/usr/lib/systemd/system/carbonio-mailbox-admin-sidecar.service"
   install -Dm644 packages/appserver-service/carbonio-mailbox-nslookup-sidecar.service \
     "${pkgdir}/usr/lib/systemd/system/carbonio-mailbox-nslookup-sidecar.service"
+  install -Dm644 packages/appserver-service/carbonio-mailbox-internal-api-sidecar.service \
+    "${pkgdir}/usr/lib/systemd/system/carbonio-mailbox-internal-api-sidecar.service"
 }
 
 package() {
@@ -137,6 +158,7 @@ postinst() {
     systemctl enable carbonio-mailbox-sidecar.service &>/dev/null || :
     systemctl enable carbonio-mailbox-admin-sidecar.service &>/dev/null || :
     systemctl enable carbonio-mailbox-nslookup-sidecar.service &>/dev/null || :
+    systemctl enable carbonio-mailbox-internal-api-sidecar.service &>/dev/null || :
   fi
 
   echo "======================================================"
@@ -150,6 +172,7 @@ prerm() {
     systemctl --no-reload disable --now carbonio-mailbox-sidecar.service &>/dev/null || :
     systemctl --no-reload disable --now carbonio-mailbox-admin-sidecar.service &>/dev/null || :
     systemctl --no-reload disable --now carbonio-mailbox-nslookup-sidecar.service &>/dev/null || :
+    systemctl --no-reload disable --now carbonio-mailbox-internal-api-sidecar.service &>/dev/null || :
   fi
 }
 
@@ -157,6 +180,7 @@ postrm() {
   rm -f /etc/carbonio/mailbox/service-discover/token
   rm -f /etc/carbonio/mailbox-admin/service-discover/token
   rm -f /etc/carbonio/mailbox-nslookup/service-discover/token
+  rm -f /etc/carbonio/mailbox-internal-api/service-discover/token
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload &>/dev/null || :

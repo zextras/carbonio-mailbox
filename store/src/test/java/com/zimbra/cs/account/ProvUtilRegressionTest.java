@@ -58,11 +58,12 @@ public class ProvUtilRegressionTest {
 
   @AfterAll
   static void shutDown() throws Exception {
-    soapExtension.initData();
+    soapExtension.clearData();
   }
 
   @BeforeEach
   void setUpBefore() throws Exception {
+    soapExtension.clearData();
     soapExtension.initData();
     Provisioning provisioning = Provisioning.getInstance();
     provisioning.createAccount("adminAccount@test.com", "password", new HashMap<>(Map.of(

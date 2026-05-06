@@ -14,6 +14,7 @@ import com.zimbra.cs.account.Provisioning.GroupMembership;
 import com.zimbra.cs.account.Provisioning.SetPasswordResult;
 import com.zimbra.cs.account.auth.AuthContext;
 import com.zimbra.soap.admin.type.DataSourceType;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -518,4 +519,31 @@ public class Account extends ZAttrAccount implements GroupedEntry, AliasedEntry 
   public void refreshUserCredentials() throws ServiceException {
     getProvisioning().refreshUserCredentials(this);
   }
+
+  public boolean isOnLocalServer() throws ServiceException {
+    return getProvisioning().onLocalServer(this);
+  }
+
+
+  /**
+   * Returns the public service URL for the account's domain in the same format as the legacy SOAP
+   * {@code GetAccountInfoResponse.getPublicURL()} field:
+   * {@code {zimbraPublicServiceProtocol}://{zimbraPublicServiceHostname}}. Falls back to the plain
+   * domain name if the public service hostname is not configured.
+   */
+	public String getPublicServiceUrl() {
+    try {
+      Domain domain = Provisioning.getInstance().getDomain(this);
+      if (domain != null) {
+        String hostname = domain.getAttr(Provisioning.A_zimbraPublicServiceHostname, null);
+        if (hostname != null && !hostname.isBlank()) {
+          String proto = domain.getAttr(Provisioning.A_zimbraPublicServiceProtocol, "http");
+          return proto + "://" + hostname;
+        }
+      }
+    } catch (ServiceException ignored) {
+      // fall through to domain name fallback
+    }
+    return this.getDomainName();
+	}
 }

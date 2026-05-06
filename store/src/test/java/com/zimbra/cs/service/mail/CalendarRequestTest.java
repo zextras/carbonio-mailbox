@@ -4,7 +4,7 @@
 
 package com.zimbra.cs.service.mail;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -22,7 +22,6 @@ import com.zimbra.cs.mailbox.calendar.CalendarMailSender;
 import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mailbox.calendar.ZAttendee;
 import com.zimbra.cs.service.mail.CalendarRequest.MailSendQueue;
-import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -105,22 +104,23 @@ public class CalendarRequestTest {
   when(calItem.getSubpartMessage(2)).thenReturn(mm2);
 
   when(mbox.getCalendarItemById(octxt, calItem.getId())).thenReturn(calItem);
-  MockedStatic<CalendarMailSender> calendarMailSenderMockedStatic =
+  try (MockedStatic<CalendarMailSender> calendarMailSenderMockedStatic =
     mockStatic(CalendarMailSender.class);
-  calendarMailSenderMockedStatic
-    .when(() -> CalendarMailSender.toListFromAttendees(attendeeList))
-    .thenReturn(addressList);
-  MockedStatic<CalendarRequest> calendarRequestMockedStatic = mockStatic(CalendarRequest.class);
-  calendarRequestMockedStatic
-    .when(() -> CalendarRequest.isOnBehalfOfRequest(any(ZimbraSoapContext.class)))
-    .thenReturn(false);
-  calendarRequestMockedStatic
-    .when(() -> CalendarRequest.getAuthenticatedAccount(any(ZimbraSoapContext.class)))
-    .thenReturn(account);
+    MockedStatic<CalendarRequest> calendarRequestMockedStatic = mockStatic(CalendarRequest.class)) {
+    calendarMailSenderMockedStatic
+        .when(() -> CalendarMailSender.toListFromAttendees(attendeeList))
+        .thenReturn(addressList);
+    calendarRequestMockedStatic
+        .when(() -> CalendarRequest.isOnBehalfOfRequest(any(ZimbraSoapContext.class)))
+        .thenReturn(false);
+    calendarRequestMockedStatic
+        .when(() -> CalendarRequest.getAuthenticatedAccount(any(ZimbraSoapContext.class)))
+        .thenReturn(account);
 
-  CalendarRequest.notifyCalendarItem(
-    zsc, octxt, account, mbox, calItem, true, attendeeList, true, sendQueue);
-  assertEquals(1, sendQueue.queue.size());
+    CalendarRequest.notifyCalendarItem(
+        zsc, octxt, account, mbox, calItem, true, attendeeList, true, sendQueue);
+    assertEquals(1, sendQueue.queue.size());
+  }
  }
 
 }

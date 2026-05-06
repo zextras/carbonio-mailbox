@@ -6,6 +6,56 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-core</artifactId>
+        <version>${resteasy.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-servlet-initializer</artifactId>
+        <version>${resteasy.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jackson2-provider</artifactId>
+        <version>${resteasy.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.spec.javax.ws.rs</groupId>
+        <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
+        <version>2.0.1.Final</version>
+      </dependency>
+      <dependency>
+        <groupId>io.swagger.core.v3</groupId>
+        <artifactId>swagger-annotations</artifactId>
+        <version>${swagger.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging</artifactId>
+        <version>3.4.2.Final</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.jaxrs</groupId>
+        <artifactId>jackson-jaxrs-json-provider</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.jaxrs</groupId>
+        <artifactId>jackson-jaxrs-base</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.activation</groupId>
+        <artifactId>jakarta.activation-api</artifactId>
+        <version>1.2.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.javassist</groupId>
+        <artifactId>javassist</artifactId>
+        <version>${javassist.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm</artifactId>
         <version>${asm.version}</version>
@@ -96,7 +146,7 @@
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
-        <version>4.5.13</version>
+        <version>4.5.14</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
@@ -111,7 +161,7 @@
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpasyncclient</artifactId>
-        <version>4.1.4</version>
+        <version>4.1.5</version>
       </dependency>
       <dependency>
         <groupId>org.apache.mina</groupId>
@@ -176,7 +226,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
-        <version>1.1</version>
+        <version>1.12.0</version>
       </dependency>
       <dependency>
         <groupId>com.kohlschutter.junixsocket</groupId>
@@ -320,7 +370,7 @@
       <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
-        <version>${jersey.version}</version>
+        <version>1.13</version>
       </dependency>
       <dependency>
         <groupId>net.sourceforge.nekohtml</groupId>
@@ -384,13 +434,8 @@
       </dependency>
       <dependency>
         <groupId>com.zextras</groupId>
-        <artifactId>mailbox-native</artifactId>
-        <version>4.24.1</version>
-      </dependency>
-      <dependency>
-        <groupId>com.zextras</groupId>
         <artifactId>mailbox-attribute-manager</artifactId>
-        <version>4.27.2</version>
+        <version>4.29.0</version>
       </dependency>
       <dependency>
         <groupId>com.zextras</groupId>
@@ -561,36 +606,6 @@
         <version>2.1</version>
       </dependency>
       <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-client</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-core</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-json</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-servlet</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-server</artifactId>
-        <version>${jersey.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.sun.jersey.contribs</groupId>
-        <artifactId>jersey-multipart</artifactId>
-        <version>1.12</version>
-      </dependency>
-      <dependency>
         <groupId>javax.jws</groupId>
         <artifactId>jsr181-api</artifactId>
         <version>1.0-MR1</version>
@@ -599,11 +614,6 @@
         <groupId>javax.ws.rs</groupId>
         <artifactId>jsr311-api</artifactId>
         <version>1.1.1</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>3.7</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -746,6 +756,21 @@
         <version>${mockserver.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>3.26.3</version>
+      </dependency>
+      <dependency>
+        <groupId>net.javacrumbs.json-unit</groupId>
+        <artifactId>json-unit-assertj</artifactId>
+        <version>${json-unit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.javacrumbs.json-unit</groupId>
+        <artifactId>json-unit-core</artifactId>
+        <version>${json-unit.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.mariadb.jdbc</groupId>
         <artifactId>mariadb-java-client</artifactId>
         <version>${mariadb-java-client.version}</version>
@@ -771,6 +796,14 @@
          <artifactId>commons-net</artifactId>
          <version>3.10.0</version>
       </dependency>
+      <!-- Source: https://mvnrepository.com/artifact/org.testcontainers/testcontainers-bom -->
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>2.0.4</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -790,6 +823,7 @@
   <properties>
     <maven.compiler.source>21</maven.compiler.source>
     <test.argLine>
+      -Xmx512m
       -Dserver.dir=${project.basedir}
       -Djunit.jupiter.execution.parallel.enabled=true
       -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
@@ -801,7 +835,7 @@
     <jetty.version>9.4.57.v20241219</jetty.version>
     <lucene.version>3.5.0</lucene.version>
     <jackson.version>2.15.4</jackson.version>
-    <bouncycastle.version>1.78.1</bouncycastle.version>
+    <bouncycastle.version>1.79</bouncycastle.version>
     <asm.version>8.0.1</asm.version>
     <guava.version>33.3.1-jre</guava.version>
     <jython.version>2.5.3</jython.version>
@@ -813,13 +847,16 @@
     <unboundid-ldapsdk.version>4.0.5</unboundid-ldapsdk.version>
     <jsr305.version>3.0.2</jsr305.version>
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
-    <jersey.version>1.13</jersey.version>
+    <resteasy.version>4.7.9.Final</resteasy.version>
+    <swagger.version>2.2.28</swagger.version>
+    <javassist.version>3.30.2-GA</javassist.version>
     <carbonio-message-broker-sdk.version>0.1.2</carbonio-message-broker-sdk.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
     <!-- Mailbox version -->
     <revision>4.25.2</revision>
     <mockserver.version>5.13.0</mockserver.version>
+    <json-unit.version>4.1.0</json-unit.version>
     <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
   </properties>
   <distributionManagement>
@@ -930,12 +967,10 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.5.3</version>
+          <version>3.5.5</version>
           <configuration>
             <forkCount>4</forkCount>
-            <threadCount>4</threadCount>
             <reuseForks>false</reuseForks>
-            <parallel>both</parallel>
             <argLine>@{argLine} ${test.argLine}</argLine>
             <reportFormat>plain</reportFormat>
             <consoleOutputReporter>
@@ -946,11 +981,9 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.5.3</version>
+          <version>3.5.5</version>
           <configuration>
             <forkCount>4</forkCount>
-            <threadCount>4</threadCount>
-            <parallel>both</parallel>
             <reuseForks>false</reuseForks>
             <!-- argline preserves other plugin args, like JaCoCo -->
             <argLine>@{argLine} ${test.argLine}</argLine>
@@ -1021,7 +1054,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.6.1</version>
+          <version>3.6.2</version>
           <executions>
             <execution>
               <id>list-conflicts</id>

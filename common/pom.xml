@@ -173,10 +173,6 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>com.zextras</groupId>
-      <artifactId>mailbox-native</artifactId>
-    </dependency>
   </dependencies>
   <modelVersion>4.0.0</modelVersion>
 
