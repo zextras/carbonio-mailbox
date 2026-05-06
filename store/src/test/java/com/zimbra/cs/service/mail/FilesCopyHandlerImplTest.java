@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimePart;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimePart;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -7,8 +7,8 @@ package com.zimbra.soap.mail.type;
 
 import java.util.Arrays;
 
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 import com.google.common.base.Function;
 import com.zimbra.common.service.ServiceException;

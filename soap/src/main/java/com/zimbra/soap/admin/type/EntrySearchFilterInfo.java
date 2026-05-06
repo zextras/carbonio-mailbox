@@ -6,10 +6,10 @@
 package com.zimbra.soap.admin.type;
 
 import com.google.common.base.MoreObjects;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
 
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.soap.base.EntrySearchFilterInterface;

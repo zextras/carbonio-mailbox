@@ -1,7 +1,7 @@
 package com.zimbra.common.util;
 
 import java.util.Collection;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @since 4.0.9

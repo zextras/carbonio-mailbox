@@ -14,8 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.mail.Part;
-import javax.servlet.ServletException;
+import jakarta.mail.Part;
+import jakarta.servlet.ServletException;
 
 import com.zimbra.common.calendar.ZCalendar.ZCalendarBuilder;
 import com.zimbra.common.calendar.ZCalendar.ZICalendarParseHandler;

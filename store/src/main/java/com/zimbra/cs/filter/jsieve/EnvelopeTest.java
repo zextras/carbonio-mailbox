@@ -15,7 +15,7 @@ import static org.apache.jsieve.tests.AddressPartTags.DOMAIN_TAG;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 
 import org.apache.jsieve.Arguments;
 import org.apache.jsieve.SieveContext;

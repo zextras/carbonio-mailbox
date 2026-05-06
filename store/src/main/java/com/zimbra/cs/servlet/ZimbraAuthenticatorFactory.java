@@ -5,11 +5,11 @@
 
 package com.zimbra.cs.servlet;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
-import org.eclipse.jetty.security.Authenticator;
-import org.eclipse.jetty.security.Authenticator.AuthConfiguration;
-import org.eclipse.jetty.security.DefaultAuthenticatorFactory;
+import org.eclipse.jetty.ee9.security.Authenticator;
+import org.eclipse.jetty.ee9.security.Authenticator.AuthConfiguration;
+import org.eclipse.jetty.ee9.security.DefaultAuthenticatorFactory;
 import org.eclipse.jetty.security.IdentityService;
 import org.eclipse.jetty.security.LoginService;
 import org.eclipse.jetty.server.Server;

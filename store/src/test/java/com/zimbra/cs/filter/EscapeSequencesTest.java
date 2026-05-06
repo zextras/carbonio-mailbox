@@ -28,7 +28,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.mail.Header;
+import jakarta.mail.Header;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;

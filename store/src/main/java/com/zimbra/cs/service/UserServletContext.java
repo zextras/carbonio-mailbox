@@ -15,13 +15,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload2.core.FileItem;
+import org.apache.commons.fileupload2.core.FileItemInputIterator;
+import org.apache.commons.fileupload2.core.FileItemInput;
+import org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletFileUpload;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
@@ -737,17 +737,17 @@ public class UserServletContext {
         }
 
 
-        if (ServletFileUpload.isMultipartContent(req)) {
-            ServletFileUpload sfu = new ServletFileUpload();
+        if (JakartaServletFileUpload.isMultipartContent(req)) {
+            JakartaServletFileUpload sfu = new JakartaServletFileUpload();
 
             try {
-                FileItemIterator iter = sfu.getItemIterator(req);
+                FileItemInputIterator iter = sfu.getItemIterator(req);
 
                 while (iter.hasNext()) {
-                    FileItemStream fis = iter.next();
+                    FileItemInput fis = iter.next();
 
                     if (fis.isFormField()) {
-                        is = fis.openStream();
+                        is = fis.getInputStream();
                         params.put(fis.getFieldName(),
                             new String(ByteUtil.getContent(is, -1), StandardCharsets.UTF_8));
                         if (doCsrfCheck && !this.csrfAuthSucceeded) {
@@ -775,7 +775,7 @@ public class UserServletContext {
                         is.close();
                         is = null;
                     } else {
-                        is = new UploadInputStream(fis.openStream(), limit);
+                        is = new UploadInputStream(fis.getInputStream(), limit);
                         break;
                     }
                 }

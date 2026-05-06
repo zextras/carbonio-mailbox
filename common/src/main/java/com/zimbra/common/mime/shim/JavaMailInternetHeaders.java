@@ -13,9 +13,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.mail.Header;
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetHeaders;
+import jakarta.mail.Header;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetHeaders;
 
 import com.google.common.collect.ImmutableSet;
 import com.zimbra.common.util.Pair;
@@ -51,7 +51,9 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
                 throw new MessagingException("error reading InternetHeaders", ioe);
             }
         } else {
-            this.headers = new ArrayList<InternetHeader>(40); 
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            List headers_tmp = (List) new ArrayList<InternetHeaders.InternetHeader>(40);
+            this.headers = headers_tmp;
             load(is);
         }
     }
@@ -59,8 +61,8 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
     @SuppressWarnings("unchecked")
     JavaMailInternetHeaders(InternetHeaders jmheaders) {
         this();
-        for (Enumeration<InternetHeader> en = jmheaders.getAllHeaders(); en.hasMoreElements(); ) {
-            InternetHeader jmheader = en.nextElement();
+        for (Enumeration<Header> en = jmheaders.getAllHeaders(); en.hasMoreElements(); ) {
+            Header jmheader = en.nextElement();
             addHeader(jmheader.getName(), jmheader.getValue());
         }
     }
@@ -143,7 +145,7 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
             zheaders.addHeader(name, value.getBytes());
         } else {
             if (name != null && RESENT_HEADERS.contains(name.toLowerCase())) {
-                headers.add(0, new InternetHeader(name, value));
+                ((List)headers).add(0, new InternetHeaders.InternetHeader(name, value));
             } else {
                 super.addHeader(name, value);
             }
@@ -165,7 +167,7 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
         if (names == null) {
             names = NO_HEADERS;
         }
-        List<InternetHeader> jmheaders = new ArrayList<>();
+        List<Header> jmheaders = new ArrayList<>();
         for (com.zimbra.common.mime.MimeHeader header : zheaders) {
             int i = 0;
             for ( ; i < names.length; i++) {
@@ -174,7 +176,7 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
                 }
             }
             if (match == (i != names.length)) {
-                jmheaders.add(new InternetHeader(header.getName(), header.getValue(defaultCharset)));
+                jmheaders.add(new InternetHeaders.InternetHeader(header.getName(), header.getValue(defaultCharset)));
             }
         }
         return new IteratorEnumeration<>(jmheaders);

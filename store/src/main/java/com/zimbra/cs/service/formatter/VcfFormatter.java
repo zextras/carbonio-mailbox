@@ -12,8 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.mail.Part;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.mail.Part;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;

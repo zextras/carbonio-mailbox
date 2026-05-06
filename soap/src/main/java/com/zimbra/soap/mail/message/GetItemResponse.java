@@ -14,9 +14,9 @@ import com.zimbra.soap.mail.type.ConversationSummary;
 import com.zimbra.soap.mail.type.Folder;
 import com.zimbra.soap.mail.type.MessageSummary;
 import com.zimbra.soap.mail.type.TagInfo;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = MailConstants.E_GET_ITEM_RESPONSE)
 public class GetItemResponse {

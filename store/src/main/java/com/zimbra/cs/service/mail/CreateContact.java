@@ -16,11 +16,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimePart;
-import javax.mail.internet.MimePartDataSource;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimePart;
+import jakarta.mail.internet.MimePartDataSource;
 
 import org.apache.commons.io.IOUtils;
 

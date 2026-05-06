@@ -12,15 +12,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 
-import com.sun.mail.smtp.SMTPMessage;
+import org.eclipse.angus.mail.smtp.SMTPMessage;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -104,7 +104,7 @@ public class SendDeliveryReport extends MailDocumentHandler {
             report.setSubject(subject, CharsetUtil.checkCharset(subject, charset));
             report.setSentDate(new Date());
             report.setFrom(AccountUtil.getFriendlyEmailAddress(authAccount));
-            report.addRecipients(javax.mail.Message.RecipientType.TO, recipients);
+            report.addRecipients(jakarta.mail.Message.RecipientType.TO, recipients);
             report.setHeader("Auto-Submitted", "auto-replied (zimbra; read-receipt)");
             report.setHeader("Precedence", "bulk");
 

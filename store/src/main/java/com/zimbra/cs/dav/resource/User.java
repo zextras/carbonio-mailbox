@@ -8,7 +8,7 @@ package com.zimbra.cs.dav.resource;
 import java.util.ArrayList;
 
 import java.util.Arrays;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.dom4j.QName;
 

@@ -50,10 +50,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.http.Header;
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
@@ -429,12 +429,12 @@ public class ZimbraServlet extends HttpServlet {
       BasicCookieStore state)
       throws IOException, ServiceException, HttpException {
     // create an HTTP client with the same cookies
-    javax.servlet.http.Cookie[] cookies = req.getCookies();
+    jakarta.servlet.http.Cookie[] cookies = req.getCookies();
     String hostname = method.getURI().getHost();
     boolean hasZMAuth = hasZimbraAuthCookie(state);
     boolean hasJwtSalt = hasJWTSaltCookie(state);
     if (cookies != null) {
-      for (javax.servlet.http.Cookie value : cookies) {
+      for (jakarta.servlet.http.Cookie value : cookies) {
         if ((value.getName().equals(ZimbraCookie.COOKIE_ZM_AUTH_TOKEN) && hasZMAuth)
             || (hasJwtSalt && value.getName().equals(ZimbraCookie.COOKIE_ZM_JWT)))
           continue;

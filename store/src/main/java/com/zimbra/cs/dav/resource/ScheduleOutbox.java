@@ -15,11 +15,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.mail.Address;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.mail.Address;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.dom4j.Element;
 

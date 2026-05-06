@@ -7,8 +7,8 @@ package com.zimbra.cs.mime;
 
 import java.io.PipedOutputStream;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.ZimbraLog;

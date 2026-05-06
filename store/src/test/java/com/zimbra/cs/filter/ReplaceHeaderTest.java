@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.mail.Header;
+import jakarta.mail.Header;
 
 import org.apache.jsieve.exception.SyntaxException;
 import org.junit.jupiter.api.BeforeAll;

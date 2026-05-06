@@ -21,7 +21,7 @@ import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
 import java.util.Collections;
 import java.util.List;
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.internet.InternetAddress;
 import org.junit.jupiter.api.Test;
 
 /**

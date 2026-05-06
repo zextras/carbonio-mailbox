@@ -7,7 +7,7 @@ package com.zimbra.soap.mail.message;
 
 import com.zimbra.common.soap.MailConstants;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = MailConstants.E_EMPTY_CALENDAR_TRASH_RESPONSE)
 public class EmptyCalendarTrashResponse {

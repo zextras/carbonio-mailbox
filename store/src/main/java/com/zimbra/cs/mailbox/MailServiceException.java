@@ -7,7 +7,7 @@ package com.zimbra.cs.mailbox;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.service.util.ItemId;
-import javax.mail.Address;
+import jakarta.mail.Address;
 
 /**
  * @since Jun 1, 2004

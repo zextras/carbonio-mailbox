@@ -5,82 +5,92 @@
 
 package com.zimbra.cs.servlet.continuation;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.servlet.ServletRequest;
-
-import org.eclipse.jetty.continuation.Continuation;
-import org.eclipse.jetty.continuation.ContinuationListener;
-import org.eclipse.jetty.continuation.ContinuationSupport;
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.AsyncEvent;
+import jakarta.servlet.AsyncListener;
 
 import com.zimbra.common.util.ZimbraLog;
 
 /**
- * ContinuationListener implementation to handle internal details of when and when not to attempt resume
- * Application code which implements timeout + explicit resume should do so via this class
- *
+ * AsyncListener implementation to handle internal details of when and when not to attempt resume.
+ * Application code which implements timeout + explicit resume should do so via this class.
  */
-public class ResumeContinuationListener implements ContinuationListener {
+public class ResumeContinuationListener implements AsyncListener {
 
-    private Continuation continuation;
-    private AtomicBoolean readyToResume;
+    private volatile AsyncContext asyncContext;
+    private final AtomicBoolean readyToResume = new AtomicBoolean(false);
 
-    public ResumeContinuationListener(Continuation continuation) {
-        this.continuation = continuation;
-        this.readyToResume = new AtomicBoolean(false);
-        continuation.addContinuationListener(this);
-    }
-
-    public static ResumeContinuationListener getResumableContinuation(ServletRequest request) {
-        return new ResumeContinuationListener(ContinuationSupport.getContinuation(request));
+    public ResumeContinuationListener(AsyncContext asyncContext) {
+        this.asyncContext = asyncContext;
+        asyncContext.addListener(this);
     }
 
     @Override
-    public void onComplete(Continuation theContinuation) {
-        ZimbraLog.session.trace("ResumeContinuationListener.onTimeout");
+    public void onComplete(AsyncEvent event) throws IOException {
+        ZimbraLog.session.trace("ResumeContinuationListener.onComplete");
         readyToResume.set(false);
     }
 
     @Override
-    public void onTimeout(Continuation theContinuation) {
+    public void onTimeout(AsyncEvent event) throws IOException {
         ZimbraLog.session.trace("ResumeContinuationListener.onTimeout");
         readyToResume.set(false);
+        try {
+            event.getAsyncContext().dispatch();
+        } catch (IllegalStateException e) {
+            ZimbraLog.session.debug("ignoring IllegalStateException during timeout dispatch", e);
+        }
+    }
+
+    @Override
+    public void onError(AsyncEvent event) throws IOException {
+        ZimbraLog.session.trace("ResumeContinuationListener.onError");
+        readyToResume.set(false);
+    }
+
+    @Override
+    public void onStartAsync(AsyncEvent event) throws IOException {
+        // no-op
     }
 
     /**
-     * Attempt to resume continuation if it is currently suspended.
+     * Attempt to resume the async context if it is currently suspended.
      */
     public synchronized void resumeIfSuspended() {
         if (readyToResume.compareAndSet(true, false)) {
             try {
                 ZimbraLog.session.trace("ResumeContinuationListener.resumeIfSuspended RESUMING");
-                continuation.resume();
-            } catch (IllegalStateException ise) {
-                if (!(continuation.isExpired() || continuation.isResumed())) {
-                    //narrow race here; timeout could occur just after compareAndSet
-                    //not a problem as long as it is expired or resumed
-                    throw ise;
-                } else {
-                    ZimbraLog.session.debug(
-                            "ignoring IllegalStateException during resume; already resumed/expired", ise);
+                AsyncContext ctx = asyncContext;
+                if (ctx != null) {
+                    // Mark as resumed so SoapEngine can detect re-entry
+                    ctx.getRequest().setAttribute("waitset.resumed", Boolean.TRUE);
+                    ctx.dispatch();
                 }
+            } catch (IllegalStateException ise) {
+                ZimbraLog.session.debug(
+                        "ignoring IllegalStateException during resume; already resumed/expired", ise);
             }
         }
     }
 
     /**
-     * Put the continuation into suspended state.
-     * @param timeout
+     * Set the timeout on the async context and mark as ready to resume.
+     * @param timeout timeout in milliseconds
      */
     public synchronized void suspendAndUndispatch(long timeout) {
         readyToResume.set(true);
-        continuation.setTimeout(timeout);
-        continuation.suspend();
-        continuation.undispatch();
+        AsyncContext ctx = asyncContext;
+        if (ctx != null) {
+            ctx.setTimeout(timeout);
+        }
+        // The servlet returns after calling this — the container suspends the thread.
     }
 
-    public Continuation getContinuation() {
-        return continuation;
+    public AsyncContext getAsyncContext() {
+        return asyncContext;
     }
 
 }

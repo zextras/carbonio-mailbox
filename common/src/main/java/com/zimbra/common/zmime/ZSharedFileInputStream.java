@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import javax.mail.internet.SharedInputStream;
+import jakarta.mail.internet.SharedInputStream;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.common.util.ByteUtil.PositionInputStream;

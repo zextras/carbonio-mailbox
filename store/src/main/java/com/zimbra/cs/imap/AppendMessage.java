@@ -15,10 +15,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.InternetHeaders;
-import javax.mail.internet.MailDateFormat;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.InternetHeaders;
+import jakarta.mail.internet.MailDateFormat;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;

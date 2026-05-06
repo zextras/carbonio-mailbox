@@ -5,8 +5,8 @@
 
 package com.zimbra.cs.account.names;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 
 import com.google.common.base.Strings;
 import com.zimbra.common.service.ServiceException;

@@ -10,7 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.mail.internet.SharedInputStream;
+import jakarta.mail.internet.SharedInputStream;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.common.localconfig.LC;

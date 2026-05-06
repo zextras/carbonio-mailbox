@@ -38,7 +38,7 @@ import com.zimbra.soap.mail.type.SaveDraftMsg;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

@@ -14,10 +14,10 @@ import com.zimbra.soap.json.jackson.annotate.ZimbraKeyValuePairs;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * Note: Any subclasses that have fields for elements MUST either omit {@link XmlType} or specify a

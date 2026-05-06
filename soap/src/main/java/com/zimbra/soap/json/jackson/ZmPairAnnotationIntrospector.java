@@ -8,8 +8,8 @@ package com.zimbra.soap.json.jackson;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 
-import javax.xml.bind.annotation.XmlEnumValue;
-import javax.xml.bind.annotation.XmlValue;
+import jakarta.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlValue;
 
 import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.databind.introspect.Annotated;

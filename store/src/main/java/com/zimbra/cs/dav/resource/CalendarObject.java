@@ -60,7 +60,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * CalendarObject is a single instance of iCalendar (RFC 2445) object, such as VEVENT or VTODO.

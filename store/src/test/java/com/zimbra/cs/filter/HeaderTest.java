@@ -26,7 +26,7 @@ import com.zimbra.cs.util.JMSession;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

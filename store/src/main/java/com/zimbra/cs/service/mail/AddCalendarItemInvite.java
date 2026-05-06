@@ -24,7 +24,7 @@ import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.util.Map;
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 
 public class AddCalendarItemInvite extends CalendarRequest {
 

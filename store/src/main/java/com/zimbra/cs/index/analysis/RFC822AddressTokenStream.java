@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.mail.internet.MimeUtility;
+import jakarta.mail.internet.MimeUtility;
 
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;

@@ -34,7 +34,7 @@ import com.zimbra.soap.mail.message.SearchResponse;
 import com.zimbra.soap.type.SearchHit;
 import java.util.EnumSet;
 import java.util.List;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

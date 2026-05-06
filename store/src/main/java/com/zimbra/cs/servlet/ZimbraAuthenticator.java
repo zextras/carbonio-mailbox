@@ -5,17 +5,18 @@
 
 package com.zimbra.cs.servlet;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
-import org.eclipse.jetty.http.PathMap;
-import org.eclipse.jetty.security.ServerAuthException;
-import org.eclipse.jetty.security.UserAuthentication;
-import org.eclipse.jetty.security.authentication.BasicAuthenticator;
-import org.eclipse.jetty.server.Authentication;
-import org.eclipse.jetty.server.UserIdentity;
+import org.eclipse.jetty.ee9.nested.Authentication;
+import org.eclipse.jetty.ee9.security.ServerAuthException;
+import org.eclipse.jetty.ee9.security.UserAuthentication;
+import org.eclipse.jetty.ee9.security.authentication.BasicAuthenticator;
+import org.eclipse.jetty.http.pathmap.PathMappings;
+import org.eclipse.jetty.http.pathmap.ServletPathSpec;
+import org.eclipse.jetty.security.UserIdentity;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraCookie;
@@ -42,6 +43,12 @@ public class ZimbraAuthenticator extends BasicAuthenticator {
         this.urlPattern = urlPattern == null ? null : urlPattern.replace("//","/");
     }
 
+    private static boolean matchesPath(String pattern, String uri) {
+        PathMappings<Boolean> mappings = new PathMappings<>();
+        mappings.put(new ServletPathSpec(pattern), Boolean.TRUE);
+        return mappings.getMatched(uri) != null;
+    }
+
     @Override
     public Authentication validateRequest(ServletRequest req, ServletResponse resp, boolean mandatory)
                     throws ServerAuthException {
@@ -51,7 +58,7 @@ public class ZimbraAuthenticator extends BasicAuthenticator {
             //url pattern is mostly redundant with web.xml security-constraint declaration
             //however jetty does make upcall into authenticator from DoSFilter and other sites to find login username for logging
             //we want to just ignore rather than potentially flooding auth provider (which may be external)
-            if (PathMap.match(urlPattern, httpReq.getRequestURI())) {
+            if (matchesPath(urlPattern, httpReq.getRequestURI())) {
                 Cookie[] cookies = httpReq.getCookies();
 
                 if (cookies != null) {

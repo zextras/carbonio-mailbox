@@ -8,8 +8,8 @@ package com.zimbra.soap.util;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementRef;
 
 import com.google.common.collect.Lists;
 

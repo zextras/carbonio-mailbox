@@ -8,7 +8,7 @@ package com.zimbra.cs.util.http;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.zimbra.common.util.Pair;
 

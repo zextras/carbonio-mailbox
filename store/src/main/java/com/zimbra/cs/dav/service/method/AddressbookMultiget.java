@@ -7,7 +7,7 @@ package com.zimbra.cs.dav.service.method;
 
 import java.net.URI;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.dom4j.Element;
 

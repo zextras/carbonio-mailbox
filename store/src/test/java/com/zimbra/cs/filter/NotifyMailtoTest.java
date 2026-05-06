@@ -30,8 +30,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.mail.Header;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.Header;
+import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -13,10 +13,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.mail.Header;
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetHeaders;
-import javax.mail.internet.MimePart;
+import jakarta.mail.Header;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetHeaders;
+import jakarta.mail.internet.MimePart;
 
 import com.google.common.collect.ImmutableSet;
 import com.zimbra.common.zmime.ZMimeUtility.ByteBuilder;
@@ -27,13 +27,14 @@ public class ZInternetHeaders extends InternetHeaders {
     private ZMimePart parent;
     private boolean ordered = true;
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public ZInternetHeaders() {
-        this.headers = new ArrayList<ZInternetHeader>(5);
+        this.headers = (List) new ArrayList<ZInternetHeader>(5);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public ZInternetHeaders(ZInternetHeaders hblock) {
-        this.headers = new ArrayList<ZInternetHeader>(hblock.headers);
+        this.headers = (List) new ArrayList<ZInternetHeader>((List<ZInternetHeader>)(List)hblock.headers);
     }
 
     static ZInternetHeaders copyHeaders(MimePart part) throws MessagingException {
@@ -56,9 +57,9 @@ public class ZInternetHeaders extends InternetHeaders {
 
     /** Returns whether this header block contains any headers with the given
      *  {@code name}. */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     boolean containsHeader(String name) {
-        for (ZInternetHeader header : (List<ZInternetHeader>) headers) {
+        for (ZInternetHeader header : (List<ZInternetHeader>) (List) headers) {
             if (header.getName().equalsIgnoreCase(name)) {
                 return true;
             }
@@ -75,13 +76,13 @@ public class ZInternetHeaders extends InternetHeaders {
         super.load(is);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public String[] getHeader(String name) {
         if (ZPARSER) {
             Charset charset = defaultCharset();
             List<String> matches = new ArrayList<>(5);
-            for (ZInternetHeader header : (List<ZInternetHeader>) headers) {
+            for (ZInternetHeader header : (List<ZInternetHeader>) (List) headers) {
                 if (name.equalsIgnoreCase(header.getName())) {
                     matches.add(header.getEncodedValue(charset));
                 }
@@ -108,7 +109,7 @@ public class ZInternetHeaders extends InternetHeaders {
      *  applies.  If the {@code header} is {@code null}, any matching existing
      *  headers are removed and no new header is added.
      * @see #addHeader(ZInternetHeader) */
-    @SuppressWarnings({ "null", "unchecked" })
+    @SuppressWarnings({ "null", "unchecked", "rawtypes" })
     public ZInternetHeaders setHeader(String name, ZInternetHeader header) {
         if (header != null && !header.getName().equals(name)) {
             throw new IllegalArgumentException("name does not match header.getName()");
@@ -116,15 +117,15 @@ public class ZInternetHeaders extends InternetHeaders {
 
         boolean dirty = false, replaced = header == null;
         for (int index = 0; index < headers.size(); index++) {
-            if (((ZInternetHeader) headers.get(index)).getName().equalsIgnoreCase(name)) {
+            if (((ZInternetHeader) ((List) headers).get(index)).getName().equalsIgnoreCase(name)) {
                 dirty = true;
                 if (!replaced) {
                     // replace the first old instance of the header
-                    headers.set(index, header.clone());
+                    ((List) headers).set(index, header.clone());
                     replaced = true;
                 } else {
                     // all other old instances are cleared
-                    headers.remove(index--);
+                    ((List) headers).remove(index--);
                 }
             }
         }
@@ -149,7 +150,7 @@ public class ZInternetHeaders extends InternetHeaders {
             }
         } else {
             if (name != null && RESENT_HEADERS.contains(name.toLowerCase())) {
-                headers.add(0, new InternetHeader(name, value));
+                ((List)headers).add(0, new InternetHeaders.InternetHeader(name, value));
             } else {
                 super.addHeader(name, value);
             }
@@ -174,7 +175,7 @@ public class ZInternetHeaders extends InternetHeaders {
      *  <li>If none of the above apply, the header will be inserted at the end
      *  of the block.</ul>
      * @see ZInternetHeader.HeaderInfo */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public ZInternetHeaders addHeader(ZInternetHeader header) {
         if (header == null) {
             return this;
@@ -193,14 +194,14 @@ public class ZInternetHeaders extends InternetHeaders {
         } else if (hinfo.prepend) {
             // the first set of headers has to be *prepended* in the appropriate slot
             for (index = 0; index < headers.size(); index++) {
-                if (((ZInternetHeader) headers.get(index)).hinfo.position >= hinfo.position)
+                if (((ZInternetHeader) ((List) headers).get(index)).hinfo.position >= hinfo.position)
                     break;
             }
         } else if (ordered) {
             // if the headers are in our special ordering, try to maintain that ordering
             int slot = -1;
             for (index = headers.size(); index > 0; index--) {
-                ZInternetHeader existing = (ZInternetHeader) headers.get(index - 1);
+                ZInternetHeader existing = (ZInternetHeader) ((List) headers).get(index - 1);
                 if (existing.hinfo.position > hinfo.position)
                     continue;
                 if (existing.hinfo.position < hinfo.position) {
@@ -214,14 +215,14 @@ public class ZInternetHeaders extends InternetHeaders {
         } else {
             // put it after the last matching header, or at the end of the block if none match
             for (index = headers.size(); index > 0; index--) {
-                if (((ZInternetHeader) headers.get(index - 1)).getName().equalsIgnoreCase(header.getName()))
+                if (((ZInternetHeader) ((List) headers).get(index - 1)).getName().equalsIgnoreCase(header.getName()))
                     break;
             }
             if (index == 0) {
                 index = headers.size();
             }
         }
-        headers.add(index, header);
+        ((List) headers).add(index, header);
         return this;
     }
 
@@ -230,18 +231,19 @@ public class ZInternetHeaders extends InternetHeaders {
      *  header block is in our preferred order; if so, subsequent calls to
      *  {@link #addHeader(ZInternetHeader)} will maintain that ordering.
      * @see ZInternetHeader.HeaderInfo */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void appendHeader(ZInternetHeader header) {
         if (header == null)
             return;
 
-        if (ordered && !isEmpty() && header.hinfo.position < ((ZInternetHeader) headers.get(headers.size() - 1)).hinfo.position) {
+        if (ordered && !isEmpty() && header.hinfo.position < ((ZInternetHeader) ((List) headers).get(headers.size() - 1)).hinfo.position) {
             this.ordered = false;
         }
-        headers.add(header);
+        ((List) headers).add(header);
     }
 
     @Override
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void addHeaderLine(String line) {
         if (ZPARSER) {
             if (!line.endsWith("\r\n")) {
@@ -249,7 +251,7 @@ public class ZInternetHeaders extends InternetHeaders {
             }
             byte[] content = line.getBytes(ZInternetHeader.decodingCharset(defaultCharset()));
             if (!line.isEmpty() && Character.isWhitespace(line.charAt(0)) && !headers.isEmpty()) {
-                ZInternetHeader last = (ZInternetHeader) headers.remove(headers.size() - 1);
+                ZInternetHeader last = (ZInternetHeader) ((List) headers).remove(headers.size() - 1);
                 content = new ByteBuilder(last.content).append(content).toByteArray();
             }
             appendHeader(new ZInternetHeader(content));
@@ -264,7 +266,7 @@ public class ZInternetHeaders extends InternetHeaders {
             if (name == null)
                 return;
 
-            for (@SuppressWarnings("unchecked") Iterator<ZInternetHeader> it = headers.iterator(); it.hasNext(); ) {
+            for (@SuppressWarnings({"unchecked", "rawtypes"}) Iterator<ZInternetHeader> it = ((List) headers).iterator(); it.hasNext(); ) {
                 if (it.next().getName().equalsIgnoreCase(name)) {
                     it.remove();
                 }
@@ -298,14 +300,14 @@ public class ZInternetHeaders extends InternetHeaders {
 
     private static final String[] NO_HEADERS = new String[0];
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private Enumeration<Header> enumerateHeaders(boolean match, String[] names) {
         if (names == null) {
             names = NO_HEADERS;
         }
         Charset charset = defaultCharset();
-        List<InternetHeader> jmheaders = new ArrayList<>();
-        for (ZInternetHeader header : (List<ZInternetHeader>) headers) {
+        List<Header> jmheaders = new ArrayList<>();
+        for (ZInternetHeader header : (List<ZInternetHeader>) (List) headers) {
             int i = 0;
             for ( ; i < names.length; i++) {
                 if (header.getName().equalsIgnoreCase(names[i])) {
@@ -313,7 +315,7 @@ public class ZInternetHeaders extends InternetHeaders {
                 }
             }
             if (match == (i != names.length)) {
-                jmheaders.add(new InternetHeader(header.getName(), header.getEncodedValue(charset)));
+                jmheaders.add(new InternetHeaders.InternetHeader(header.getName(), header.getEncodedValue(charset)));
             }
         }
         return new IteratorEnumeration<>(jmheaders);
@@ -349,14 +351,14 @@ public class ZInternetHeaders extends InternetHeaders {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private Enumeration<String> enumerateHeaderLines(boolean match, String[] names) {
         if (names == null) {
             names = NO_HEADERS;
         }
         Charset charset = ZInternetHeader.decodingCharset(defaultCharset());
         List<String> jmheaders = new ArrayList<>();
-        for (ZInternetHeader header : (List<ZInternetHeader>) headers) {
+        for (ZInternetHeader header : (List<ZInternetHeader>) (List) headers) {
             int i = 0;
             for ( ; i < names.length; i++) {
                 if (header.getName().equalsIgnoreCase(names[i])) {
@@ -406,11 +408,11 @@ public class ZInternetHeaders extends InternetHeaders {
      *  a {@code byte[]}.  This count includes the extra {@code CRLF} that
      *  terminates the block.
      * @see #toByteArray() */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public int getLength() {
         int length = 0;
         if (headers != null) {
-            for (ZInternetHeader header : (List<ZInternetHeader>) headers) {
+            for (ZInternetHeader header : (List<ZInternetHeader>) (List) headers) {
                 length += header.getRawHeader().length;
             }
         }
@@ -418,12 +420,12 @@ public class ZInternetHeaders extends InternetHeaders {
         return length + 2;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public byte[] toByteArray() {
         byte[] block = new byte[getLength()];
         int offset = 0;
         if (headers != null) {
-            for (ZInternetHeader header : (List<ZInternetHeader>) headers) {
+            for (ZInternetHeader header : (List<ZInternetHeader>) (List) headers) {
                 byte[] line = header.getRawHeader();
                 System.arraycopy(line, 0, block, offset, line.length);
                 offset += line.length;

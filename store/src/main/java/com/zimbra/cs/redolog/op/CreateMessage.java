@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
-import javax.activation.DataSource;
+import jakarta.activation.DataSource;
 
 import com.google.common.collect.Lists;
 import com.zimbra.common.service.ServiceException;

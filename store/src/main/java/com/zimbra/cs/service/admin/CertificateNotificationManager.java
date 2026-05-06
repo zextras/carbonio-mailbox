@@ -14,13 +14,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.mail.Address;
-import javax.mail.Message.RecipientType;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.Address;
+import jakarta.mail.Message.RecipientType;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 /**
  * CertificateNotificationManager is intermediate between remote execution of {@link
@@ -183,7 +183,7 @@ public class CertificateNotificationManager {
 
   /**
    * Parses and creates a map based on Remote Manager/Certbot output which would be used to
-   * create {@link javax.mail.internet.MimeMessage}.
+   * create {@link jakarta.mail.internet.MimeMessage}.
    *
    * @param outputMessage output from RemoteManager/Certbot
    * @return map with needed values of notification SUBJECT and MESSAGE TEXT

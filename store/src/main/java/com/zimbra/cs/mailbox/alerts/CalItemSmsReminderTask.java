@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
 
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
@@ -53,7 +53,7 @@ public class CalItemSmsReminderTask extends CalItemReminderTaskBase {
                     Provisioning.A_zimbraCalendarReminderDeviceEmail);
             return;
         }
-        mm.setRecipient(javax.mail.Message.RecipientType.TO, new JavaMailInternetAddress(to));
+        mm.setRecipient(jakarta.mail.Message.RecipientType.TO, new JavaMailInternetAddress(to));
         mm.setText(getText(calItem, invite, locale, tz), MimeConstants.P_CHARSET_UTF8);
         mm.saveChanges();
         MailSender mailSender = calItem.getMailbox().getMailSender();

@@ -11,9 +11,9 @@ import java.io.IOException;
 import java.io.Serial;
 import java.time.Duration;
 import java.time.Instant;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * The preview service servlet - serves preview for requested mail attachments using Carbonio previewer service

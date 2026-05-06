@@ -63,18 +63,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import javax.activation.DataHandler;
-import javax.mail.MessagingException;
-import javax.mail.Part;
-import javax.mail.SendFailedException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.InternetHeaders;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimePart;
-import javax.mail.internet.MimeUtility;
-import javax.mail.util.SharedByteArrayInputStream;
+import jakarta.activation.DataHandler;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Part;
+import jakarta.mail.SendFailedException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.InternetHeaders;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.internet.MimePart;
+import jakarta.mail.internet.MimeUtility;
+import jakarta.mail.util.SharedByteArrayInputStream;
 
 /**
  * @since Sep 29, 2004
@@ -779,17 +779,17 @@ public final class ParseMimeMessage {
       throws MessagingException {
     InternetAddress[] addrs = maddrs.get(EmailType.TO.toString());
     if (addrs != null && addrs.length > 0) {
-      mm.addRecipients(javax.mail.Message.RecipientType.TO, addrs);
+      mm.addRecipients(jakarta.mail.Message.RecipientType.TO, addrs);
     }
 
     addrs = maddrs.get(EmailType.CC.toString());
     if (addrs != null && addrs.length > 0) {
-      mm.addRecipients(javax.mail.Message.RecipientType.CC, addrs);
+      mm.addRecipients(jakarta.mail.Message.RecipientType.CC, addrs);
     }
 
     addrs = maddrs.get(EmailType.BCC.toString());
     if (addrs != null && addrs.length > 0) {
-      mm.addRecipients(javax.mail.Message.RecipientType.BCC, addrs);
+      mm.addRecipients(jakarta.mail.Message.RecipientType.BCC, addrs);
     }
 
     addrs = maddrs.get(EmailType.FROM.toString());

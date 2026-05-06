@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.filter.jsieve;
 
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 
 import org.apache.jsieve.Arguments;
 import org.apache.jsieve.SieveContext;

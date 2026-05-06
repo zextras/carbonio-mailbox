@@ -16,8 +16,8 @@ import com.zimbra.soap.account.type.Identity;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Unmarshaller;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

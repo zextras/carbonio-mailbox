@@ -17,7 +17,7 @@ import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.account.ZimbraAuthToken;
 import java.net.MalformedURLException;
 import java.util.Random;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
-import javax.activation.DataSource;
+import jakarta.activation.DataSource;
 
 import org.apache.lucene.document.Document;
 

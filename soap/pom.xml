@@ -28,12 +28,12 @@
     </dependency>
 
     <dependency>
-      <artifactId>jaxb-api</artifactId>
-      <groupId>javax.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <groupId>jakarta.xml.bind</groupId>
     </dependency>
 
     <dependency>
-      <artifactId>jackson-module-jaxb-annotations</artifactId>
+      <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
       <groupId>com.fasterxml.jackson.module</groupId>
     </dependency>
     <!-- We need also jackson-core, databind and annotations -->
@@ -91,8 +91,8 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
       <scope>runtime</scope>
     </dependency>
     <dependency>

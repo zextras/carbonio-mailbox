@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
 
-import javax.mail.internet.SharedInputStream;
+import jakarta.mail.internet.SharedInputStream;
 
 import org.junit.jupiter.api.Test;
 

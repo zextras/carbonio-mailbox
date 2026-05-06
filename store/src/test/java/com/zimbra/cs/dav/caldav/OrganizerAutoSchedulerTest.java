@@ -19,7 +19,7 @@ import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mailbox.calendar.ZAttendee;
 import java.util.ArrayList;
 import java.util.List;
-import javax.mail.Address;
+import jakarta.mail.Address;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

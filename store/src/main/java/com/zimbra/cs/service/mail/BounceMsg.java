@@ -13,9 +13,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;

@@ -13,8 +13,8 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.service.util.SpamHandler;
 import com.zimbra.cs.util.JMSession;
-import javax.mail.internet.MimeMessage;
-import javax.mail.util.SharedByteArrayInputStream;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.util.SharedByteArrayInputStream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

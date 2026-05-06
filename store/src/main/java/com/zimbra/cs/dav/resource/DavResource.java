@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeSet;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.dom4j.Element;
 import org.dom4j.QName;

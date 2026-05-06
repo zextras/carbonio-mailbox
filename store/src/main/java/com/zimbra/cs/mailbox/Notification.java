@@ -14,18 +14,18 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.mail.Address;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MailDateFormat;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import jakarta.mail.Address;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MailDateFormat;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 
-import com.sun.mail.smtp.SMTPMessage;
+import org.eclipse.angus.mail.smtp.SMTPMessage;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
 import com.zimbra.common.service.ServiceException;
@@ -280,7 +280,7 @@ public class Notification implements LmtpCallback {
             }
 
             // To
-            out.setRecipient(javax.mail.Message.RecipientType.TO, envSender);
+            out.setRecipient(jakarta.mail.Message.RecipientType.TO, envSender);
 
             // Date
             out.setSentDate(new Date());
@@ -542,7 +542,7 @@ public class Notification implements LmtpCallback {
             InputStream is = new ByteArrayInputStream(msgBody.getBytes());
             out = new MimeMessage(smtpSession, is);
             InternetAddress address = new JavaMailInternetAddress(destination);
-            out.setRecipient(javax.mail.Message.RecipientType.TO, address);
+            out.setRecipient(jakarta.mail.Message.RecipientType.TO, address);
         } else {
             out = new ZMimeMessage(smtpSession);
 
@@ -561,7 +561,7 @@ public class Notification implements LmtpCallback {
             InternetAddress address = new JavaMailInternetAddress(from);
             out.setFrom(address);
             address = new JavaMailInternetAddress(destination);
-            out.setRecipient(javax.mail.Message.RecipientType.TO, address);
+            out.setRecipient(jakarta.mail.Message.RecipientType.TO, address);
 
             String charset = getCharset(account, subject);
             out.setSubject(subject, charset);
@@ -641,7 +641,7 @@ public class Notification implements LmtpCallback {
                     out.setFrom(address);
 
                     address = new JavaMailInternetAddress(interceptAddress);
-                    out.setRecipient(javax.mail.Message.RecipientType.TO, address);
+                    out.setRecipient(jakarta.mail.Message.RecipientType.TO, address);
 
                     String charset = getCharset(account, subject);
                     out.setSubject(subject, charset);

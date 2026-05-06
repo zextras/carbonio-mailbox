@@ -22,7 +22,7 @@ import com.zimbra.soap.SoapServlet;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.account.message.ResetPasswordRequest;
 import java.util.Map;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class ResetPassword extends AccountDocumentHandler {
 

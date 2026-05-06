@@ -24,8 +24,8 @@ import io.micrometer.core.instrument.MeterRegistry;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Date;
-import javax.mail.internet.MailDateFormat;
-import javax.mail.internet.MimeUtility;
+import jakarta.mail.internet.MailDateFormat;
+import jakarta.mail.internet.MimeUtility;
 
 public abstract class LmtpHandler extends ProtocolHandler {
   // Connection specific data

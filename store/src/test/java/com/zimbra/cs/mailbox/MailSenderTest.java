@@ -31,9 +31,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import javax.mail.util.SharedByteArrayInputStream;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.util.SharedByteArrayInputStream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -395,7 +395,7 @@ public final class MailSenderTest extends MailboxTestSuite {
 		mm.setFrom(address);
 
 		address = new JavaMailInternetAddress("test-jylee@zimbra.com");
-		mm.setRecipient(javax.mail.Message.RecipientType.TO, address);
+		mm.setRecipient(jakarta.mail.Message.RecipientType.TO, address);
 
 		mm.setSubject("test mail");
 		mm.setText("hello world");

@@ -7,8 +7,8 @@ package com.zimbra.cs.mailbox.calendar;
 
 import java.util.List;
 
-import javax.mail.Address;
-import javax.mail.internet.AddressException;
+import jakarta.mail.Address;
+import jakarta.mail.internet.AddressException;
 
 import com.zimbra.common.calendar.CalendarUtil;
 import com.zimbra.common.calendar.ZCalendar.ICalTok;

@@ -33,8 +33,8 @@ import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 import org.dom4j.DocumentException;
 

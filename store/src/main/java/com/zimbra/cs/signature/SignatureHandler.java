@@ -9,7 +9,7 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
 
 
 public interface SignatureHandler {

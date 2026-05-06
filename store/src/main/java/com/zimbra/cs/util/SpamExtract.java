@@ -22,12 +22,12 @@ import java.util.List;
 import java.util.Properties;
 import java.util.zip.GZIPInputStream;
 
-import javax.mail.BodyPart;
-import javax.mail.MessagingException;
-import javax.mail.Part;
-import javax.mail.Session;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import jakarta.mail.BodyPart;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Part;
+import jakarta.mail.Session;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;

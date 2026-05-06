@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.dav.resource;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;

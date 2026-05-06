@@ -5,7 +5,7 @@
 
 package com.zimbra.soap.mail.message;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import com.zimbra.common.soap.MailConstants;
 
 /**

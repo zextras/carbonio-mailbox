@@ -5,7 +5,7 @@ package com.zimbra.cs.smime;
 
 import java.util.List;
 
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
 
 import com.zextras.mailbox.encryption.smime.SmimeHandlerImpl;
 import com.zimbra.common.soap.Element;

@@ -20,8 +20,8 @@ import java.util.ListIterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeUtility;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeUtility;
 
 import org.apache.jsieve.Argument;
 import org.apache.jsieve.Arguments;

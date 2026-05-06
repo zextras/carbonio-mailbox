@@ -20,9 +20,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 
 import org.apache.commons.codec.binary.Hex;
 

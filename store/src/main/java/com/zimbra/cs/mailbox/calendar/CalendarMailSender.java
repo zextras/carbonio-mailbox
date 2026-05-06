@@ -70,20 +70,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.Address;
-import javax.mail.Header;
-import javax.mail.Message.RecipientType;
-import javax.mail.MessagingException;
-import javax.mail.Part;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.ContentType;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.util.ByteArrayDataSource;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.mail.Address;
+import jakarta.mail.Header;
+import jakarta.mail.Message.RecipientType;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Part;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.ContentType;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.util.ByteArrayDataSource;
 import org.apache.commons.io.IOUtils;
 
 public class CalendarMailSender {
@@ -638,7 +638,7 @@ public class CalendarMailSender {
       if (toAddrs != null) {
         Address[] addrs = new Address[toAddrs.size()];
         toAddrs.toArray(addrs);
-        mm.addRecipients(javax.mail.Message.RecipientType.TO, addrs);
+        mm.addRecipients(jakarta.mail.Message.RecipientType.TO, addrs);
       }
       if (fromAddr != null) mm.setFrom(fromAddr);
       if (senderAddr != null) {
@@ -749,12 +749,12 @@ public class CalendarMailSender {
         if (toAddrs != null) {
           Address[] addrs = new Address[toAddrs.size()];
           toAddrs.toArray(addrs);
-          mm.setRecipients(javax.mail.Message.RecipientType.TO, addrs);
+          mm.setRecipients(jakarta.mail.Message.RecipientType.TO, addrs);
         } else {
-          mm.setRecipients(javax.mail.Message.RecipientType.TO, (Address[]) null);
+          mm.setRecipients(jakarta.mail.Message.RecipientType.TO, (Address[]) null);
         }
-        mm.setRecipients(javax.mail.Message.RecipientType.CC, (Address[]) null);
-        mm.setRecipients(javax.mail.Message.RecipientType.BCC, (Address[]) null);
+        mm.setRecipients(jakarta.mail.Message.RecipientType.CC, (Address[]) null);
+        mm.setRecipients(jakarta.mail.Message.RecipientType.BCC, (Address[]) null);
 
         if (fromAddr != null) mm.setFrom(fromAddr);
         if (senderAddr != null) {

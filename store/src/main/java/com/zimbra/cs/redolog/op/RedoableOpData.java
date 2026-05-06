@@ -9,9 +9,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
-import javax.mail.util.ByteArrayDataSource;
+import jakarta.activation.DataSource;
+import jakarta.activation.FileDataSource;
+import jakarta.mail.util.ByteArrayDataSource;
 
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.FileSegmentDataSource;

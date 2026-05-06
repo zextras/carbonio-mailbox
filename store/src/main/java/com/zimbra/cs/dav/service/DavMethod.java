@@ -8,7 +8,7 @@ package com.zimbra.cs.dav.service;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpGet;

@@ -8,8 +8,8 @@ package com.zimbra.common.share;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimePart;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimePart;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;

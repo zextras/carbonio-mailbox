@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
+import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.zimbra.common.service.ServiceException;
@@ -85,12 +85,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import javax.xml.bind.annotation.XmlAnyAttribute;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlMixed;
+import jakarta.xml.bind.annotation.XmlAnyAttribute;
+import jakarta.xml.bind.annotation.XmlAnyElement;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlMixed;
 import javax.xml.parsers.DocumentBuilder;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -1895,7 +1895,7 @@ public class JaxbToJsonTest {
     ObjectMapper mapper = new ObjectMapper();
     mapper.setAnnotationIntrospector(
         AnnotationIntrospector.pair(
-            new JacksonAnnotationIntrospector(), new JaxbAnnotationIntrospector()));
+            new JacksonAnnotationIntrospector(), new JakartaXmlBindAnnotationIntrospector()));
     mapper.enable(SerializationFeature.INDENT_OUTPUT);
     return mapper;
   }

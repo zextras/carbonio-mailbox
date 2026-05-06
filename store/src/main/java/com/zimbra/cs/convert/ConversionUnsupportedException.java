@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.convert;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 public class ConversionUnsupportedException extends ServletException {
 

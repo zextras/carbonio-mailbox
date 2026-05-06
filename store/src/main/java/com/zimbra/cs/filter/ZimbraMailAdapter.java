@@ -20,11 +20,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import javax.mail.Header;
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimePart;
+import jakarta.mail.Header;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimePart;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.jsieve.SieveContext;
@@ -630,7 +630,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
                     String address = st.nextToken();
                     String delim = st.hasMoreTokens() ? st.nextToken() : "";
                     try {
-                        javax.mail.internet.InternetAddress inetAddr = new JavaMailInternetAddress(address);
+                        jakarta.mail.internet.InternetAddress inetAddr = new JavaMailInternetAddress(address);
                         String addr = inetAddr.getAddress();
                         String unicodeAddr = IDNUtil.toUnicode(addr);
                         if (unicodeAddr.equalsIgnoreCase(addr)) {

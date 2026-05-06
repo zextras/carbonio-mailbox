@@ -16,8 +16,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetHeaders;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetHeaders;
 
 import com.google.common.collect.Maps;
 import com.zimbra.common.localconfig.LC;

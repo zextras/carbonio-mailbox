@@ -61,13 +61,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import javax.mail.BodyPart;
-import javax.mail.MessagingException;
-import javax.mail.Part;
-import javax.mail.internet.ContentType;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimePart;
+import jakarta.mail.BodyPart;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Part;
+import jakarta.mail.internet.ContentType;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.internet.MimePart;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -1023,7 +1023,7 @@ public class Invite {
               return str;
             }
           }
-        } catch (javax.mail.internet.ParseException e) {
+        } catch (jakarta.mail.internet.ParseException e) {
           ZimbraLog.calendar.warn(
               "Invalid Content-Type found: \"" + ctStr + "\"; skipping part", e);
         }

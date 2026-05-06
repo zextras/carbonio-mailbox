@@ -381,14 +381,14 @@ public class MimeMessage extends MimePart {
         mm = new MimeMessage(new File(args[0] + File.separator + "digest-attachment-16771"));
         dumpParts(mm);
         try {
-            javax.mail.Session jsession = javax.mail.Session.getInstance(new Properties());
-            javax.mail.internet.MimeMessage jmm = new javax.mail.internet.MimeMessage(jsession, new FileInputStream(args[0] + File.separator + "23079"));
-            javax.mail.internet.MimeMultipart jmmulti = (javax.mail.internet.MimeMultipart) jmm.getContent();
-            javax.mail.internet.MimeBodyPart jmmbp = (javax.mail.internet.MimeBodyPart) jmmulti.getBodyPart(1);
-            javax.mail.internet.MimePartDataSource jmmpds = new javax.mail.internet.MimePartDataSource(jmmbp);
+            jakarta.mail.Session jsession = jakarta.mail.Session.getInstance(new Properties());
+            jakarta.mail.internet.MimeMessage jmm = new jakarta.mail.internet.MimeMessage(jsession, new FileInputStream(args[0] + File.separator + "23079"));
+            jakarta.mail.internet.MimeMultipart jmmulti = (jakarta.mail.internet.MimeMultipart) jmm.getContent();
+            jakarta.mail.internet.MimeBodyPart jmmbp = (jakarta.mail.internet.MimeBodyPart) jmmulti.getBodyPart(1);
+            jakarta.mail.internet.MimePartDataSource jmmpds = new jakarta.mail.internet.MimePartDataSource(jmmbp);
             MimePart mp = new MimeBodyPart(new ContentType("text/html")).setContent(jmmpds).setTransferEncoding(ContentTransferEncoding.QUOTED_PRINTABLE);
             ((MimeMultipart) mm.getSubpart("TEXT")).addPart(mp, 1);
-        } catch (javax.mail.MessagingException e) {
+        } catch (jakarta.mail.MessagingException e) {
             e.printStackTrace();
         }
         dumpParts(mm);

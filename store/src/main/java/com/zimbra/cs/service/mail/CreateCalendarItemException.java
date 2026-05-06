@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.Address;
-import javax.mail.MessagingException;
+import jakarta.mail.Address;
+import jakarta.mail.MessagingException;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.MailConstants;

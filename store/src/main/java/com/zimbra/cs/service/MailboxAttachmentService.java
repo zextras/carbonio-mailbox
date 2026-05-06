@@ -18,8 +18,8 @@ import com.zimbra.cs.service.util.ItemId;
 import io.vavr.API.Match.Pattern0;
 import io.vavr.control.Try;
 import java.util.Optional;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimePart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimePart;
 
 /**
  * Mailbox attachment provider

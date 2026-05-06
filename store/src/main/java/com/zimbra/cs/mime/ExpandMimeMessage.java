@@ -5,8 +5,8 @@
 
 package com.zimbra.cs.mime;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;

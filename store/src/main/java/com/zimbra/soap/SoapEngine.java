@@ -55,12 +55,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import org.eclipse.jetty.continuation.ContinuationSupport;
+// ContinuationSupport removed in Jetty 12 — use request attribute to detect resumed requests
 
 /** The soap engine. */
 public class SoapEngine {
@@ -140,7 +140,7 @@ public class SoapEngine {
     if (ZimbraLog.soap.isTraceEnabled() && !context.containsKey(SoapEngine.SOAP_REQUEST_LOGGED)) {
       HttpServletRequest servletRequest =
           (HttpServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
-      boolean isResumed = !ContinuationSupport.getContinuation(servletRequest).isInitial();
+      boolean isResumed = servletRequest.getAttribute("waitset.resumed") != null;
       ZimbraLog.soap.trace(!isResumed ? "C:\n%s" : "C: (resumed)\n%s", envelope.prettyPrint(true));
       context.put(SOAP_REQUEST_LOGGED, Boolean.TRUE);
     }
@@ -154,7 +154,7 @@ public class SoapEngine {
     if (ZimbraLog.soap.isInfoEnabled()) {
       HttpServletRequest servletRequest =
           (HttpServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
-      boolean isResumed = !ContinuationSupport.getContinuation(servletRequest).isInitial();
+      boolean isResumed = servletRequest.getAttribute("waitset.resumed") != null;
       if (ZimbraLog.soap.isTraceEnabled()) {
         ZimbraLog.soap.trace(
             !isResumed ? "C: (ParseError:%s)\n%s" : "C: (resumed) (ParseError:%s)\n%s",
@@ -461,7 +461,7 @@ public class SoapEngine {
 
     HttpServletRequest servletRequest =
         (HttpServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
-    boolean isResumed = !ContinuationSupport.getContinuation(servletRequest).isInitial();
+    boolean isResumed = servletRequest.getAttribute("waitset.resumed") != null;
 
     if (zsc.getSoapRequestId() != null) {
       ZimbraLog.addSoapIdToContext(zsc.getSoapRequestId());

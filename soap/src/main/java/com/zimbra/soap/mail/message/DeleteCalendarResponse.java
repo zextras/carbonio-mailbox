@@ -10,8 +10,8 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.json.jackson.annotate.ZimbraUniqueElement;
 import com.zimbra.soap.mail.type.FolderActionResult;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = MailConstants.E_DELETE_CALENDAR_RESPONSE)
 public class DeleteCalendarResponse {

@@ -24,7 +24,7 @@ import com.zimbra.soap.account.message.ChangePasswordRequest;
 import com.zimbra.soap.type.AccountSelector;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -14,15 +14,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.activation.DataHandler;
-import javax.mail.MessagingException;
-import javax.mail.Part;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.SharedInputStream;
-import javax.mail.util.ByteArrayDataSource;
-import javax.mail.util.SharedByteArrayInputStream;
+import jakarta.activation.DataHandler;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Part;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.internet.SharedInputStream;
+import jakarta.mail.util.ByteArrayDataSource;
+import jakarta.mail.util.SharedByteArrayInputStream;
 
 import org.json.JSONException;
 

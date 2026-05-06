@@ -14,12 +14,12 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mime.ParsedMessage;
 import java.util.Collection;
 import java.util.Properties;
-import javax.mail.Address;
-import javax.mail.SendFailedException;
-import javax.mail.Session;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.Address;
+import jakarta.mail.SendFailedException;
+import jakarta.mail.Session;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -196,7 +196,7 @@ class AutoSendDraftTaskTest extends MailboxTestSuite {
 
           @Override
           public com.zimbra.cs.service.util.ItemId sendMimeMessage(
-              OperationContext octxt, Mailbox mbox, javax.mail.internet.MimeMessage mm)
+              OperationContext octxt, Mailbox mbox, jakarta.mail.internet.MimeMessage mm)
               throws com.zimbra.common.service.ServiceException {
             throw abortedEx;
           }
@@ -239,7 +239,7 @@ class AutoSendDraftTaskTest extends MailboxTestSuite {
 
           @Override
           public com.zimbra.cs.service.util.ItemId sendMimeMessage(
-              OperationContext octxt, Mailbox mbox, javax.mail.internet.MimeMessage mm)
+              OperationContext octxt, Mailbox mbox, jakarta.mail.internet.MimeMessage mm)
               throws com.zimbra.common.service.ServiceException {
             throw tooBigEx;
           }
@@ -284,7 +284,7 @@ class AutoSendDraftTaskTest extends MailboxTestSuite {
 
           @Override
           public com.zimbra.cs.service.util.ItemId sendMimeMessage(
-              OperationContext octxt, Mailbox mbox, javax.mail.internet.MimeMessage mm)
+              OperationContext octxt, Mailbox mbox, jakarta.mail.internet.MimeMessage mm)
               throws com.zimbra.common.service.ServiceException {
             throw transientEx;
           }

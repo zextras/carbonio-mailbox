@@ -66,17 +66,15 @@ import java.util.Map;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.mail.util.SharedByteArrayInputStream;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.fileupload.DefaultFileItem;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadBase;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import jakarta.mail.util.SharedByteArrayInputStream;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.fileupload2.core.DiskFileItem;
+import org.apache.commons.fileupload2.core.DiskFileItemFactory;
+import org.apache.commons.fileupload2.core.FileItem;
+import org.apache.commons.fileupload2.core.FileUploadException;
+import org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletFileUpload;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpException;
@@ -262,17 +260,29 @@ public class FileUploadServlet extends ZimbraServlet {
     boolean success = false;
     try {
       // store the fetched file as a normal upload
-      ServletFileUpload upload = getUploader(limit);
-      long sizeMax = upload.getSizeMax();
-      fi = upload.getFileItemFactory().createItem("upload", contentType, false, filename);
-      // sizeMax=-1 means "no limit"
-      long size =
-          ByteUtil.copy(is, true, fi.getOutputStream(), true, sizeMax < 0 ? sizeMax : sizeMax + 1);
-      if (upload.getSizeMax() >= 0 && size > upload.getSizeMax()) {
-        mLog.warn("Exceeded maximum upload size of %s bytes", upload.getSizeMax());
+      JakartaServletFileUpload upload = getUploader(limit);
+      long sizeMax = upload.getMaxSize();
+      
+      // In commons-fileupload2, create a temporary file for the upload
+      java.nio.file.Path uploadDir = new File(getUploadDir()).toPath();
+      java.nio.file.Path tempFile = java.nio.file.Files.createTempFile(uploadDir, "upload_", ".tmp");
+      
+      long size = ByteUtil.copy(is, true, java.nio.file.Files.newOutputStream(tempFile), true, sizeMax < 0 ? sizeMax : sizeMax + 1);
+      if (upload.getMaxSize() >= 0 && size > upload.getMaxSize()) {
+        mLog.warn("Exceeded maximum upload size of %s bytes", upload.getMaxSize());
+        java.nio.file.Files.deleteIfExists(tempFile);
         throw MailServiceException.UPLOAD_TOO_LARGE(filename, "upload too large");
       }
 
+      // Create a DiskFileItem wrapper for the temp file
+      DiskFileItemFactory factory = (DiskFileItemFactory) upload.getFileItemFactory();
+      fi = factory.fileItemBuilder()
+          .setFieldName("upload")
+          .setContentType(contentType)
+          .setFormField(false)
+          .setFileName(filename)
+          .get();
+      
       Upload up = new Upload(accountId, fi);
       mLog.info("saveUpload(): received %s", up);
       synchronized (mPending) {
@@ -283,7 +293,11 @@ public class FileUploadServlet extends ZimbraServlet {
     } finally {
       if (!success && fi != null) {
         mLog.debug("saveUpload(): unsuccessful attempt.  Deleting %s", fi);
-        fi.delete();
+        try {
+          fi.delete();
+        } catch (Exception e) {
+          mLog.warn("Error deleting file item", e);
+        }
       }
     }
   }
@@ -304,7 +318,8 @@ public class FileUploadServlet extends ZimbraServlet {
     if (fi.isInMemory() || !(fi instanceof DiskFileItem)) {
       return null;
     }
-    return ((DiskFileItem) fi).getStoreLocation();
+    java.nio.file.Path path = ((DiskFileItem) fi).getPath();
+    return path != null ? path.toFile() : null;
   }
 
   public static void deleteUploads(Collection<Upload> uploads) {
@@ -484,17 +499,17 @@ public class FileUploadServlet extends ZimbraServlet {
     return maxSize;
   }
 
-  private static ServletFileUpload getUploader(Account account, boolean limitByFileUploadMaxSize) {
+  private static JakartaServletFileUpload getUploader(Account account, boolean limitByFileUploadMaxSize) {
     return getUploader(getFileUploadMaxSize(account, limitByFileUploadMaxSize));
   }
 
-  public static ServletFileUpload getUploader(long maxSize) {
-    DiskFileItemFactory dfif = new DiskFileItemFactory();
-    dfif.setSizeThreshold(32 * 1024);
-    dfif.setRepository(new File(getUploadDir()));
-    ServletFileUpload upload = new ServletFileUpload(dfif);
-    upload.setSizeMax(maxSize);
-    upload.setHeaderEncoding("utf-8");
+  public static JakartaServletFileUpload getUploader(long maxSize) {
+    DiskFileItemFactory dfif = DiskFileItemFactory.builder()
+        .setBufferSize(32 * 1024)
+        .setPath(new File(getUploadDir()).toPath())
+        .get();
+    JakartaServletFileUpload upload = new JakartaServletFileUpload(dfif);
+    upload.setMaxSize(maxSize);
     return upload;
   }
 
@@ -586,7 +601,7 @@ public class FileUploadServlet extends ZimbraServlet {
           req.getParameter(PARAM_LIMIT_BY_FILE_UPLOAD_MAX_SIZE_PER_FILE) != null;
 
       // file upload requires multipart enctype
-      if (ServletFileUpload.isMultipartContent(req)) {
+      if (JakartaServletFileUpload.isMultipartContent(req)) {
         handleMultipartUpload(
             req, resp, fmt, acct, limitByFileUploadMaxSizePerFile, at, csrfCheckComplete);
       } else {
@@ -670,7 +685,12 @@ public class FileUploadServlet extends ZimbraServlet {
         continue;
       }
       if (fileItem.isFormField() && "requestId".equals(fileItem.getFieldName())) {
-        return fileItem.getString();
+        try {
+          return fileItem.getString();
+        } catch (IOException e) {
+          mLog.warn("Failed to read requestId form field", e);
+          return null;
+        }
       }
     }
     return null;
@@ -687,9 +707,9 @@ public class FileUploadServlet extends ZimbraServlet {
    *     field is unsupported
    */
   private Map<FileItem, String> extractFileNamesFromFormFields(final List<FileItem> fileItems)
-      throws UnsupportedEncodingException {
+      throws UnsupportedEncodingException, IOException {
 
-    String suggestedCharset = StandardCharsets.UTF_8.toString();
+    java.nio.charset.Charset suggestedCharset = StandardCharsets.UTF_8;
     final LinkedList<String> names = new LinkedList<>();
     final HashMap<FileItem, String> fileNames = new HashMap<>();
 
@@ -702,7 +722,7 @@ public class FileUploadServlet extends ZimbraServlet {
 
       if (fileItem.isFormField()) {
         if ("_charset_".equals(fileItem.getFieldName()) && !fileItem.getString().isEmpty()) {
-          suggestedCharset = fileItem.getString();
+          suggestedCharset = java.nio.charset.Charset.forName(fileItem.getString());
         } else if (fileItem.getFieldName().startsWith("filename")) {
           names.clear();
           final String value = fileItem.getString(suggestedCharset);
@@ -755,7 +775,7 @@ public class FileUploadServlet extends ZimbraServlet {
     Preconditions.checkNotNull(account, "Account must not be null");
     List<FileItem> fileItems = new ArrayList<>();
 
-    final ServletFileUpload upload = getUploader(account, limitByFileUploadMaxSize);
+    final JakartaServletFileUpload upload = getUploader(account, limitByFileUploadMaxSize);
     try {
       fileItems = upload.parseRequest(request);
       if (!csrfCheckComplete && !CsrfUtil.checkCsrfInMultipartFileUpload(fileItems, authToken)) {
@@ -764,25 +784,27 @@ public class FileUploadServlet extends ZimbraServlet {
             account.getName());
         sendResponse(response, HttpServletResponse.SC_UNAUTHORIZED, format, null, null, fileItems);
       }
-    } catch (FileUploadBase.SizeLimitExceededException sizeLimitExceededException) {
-      mLog.info(
-          "Exceeded maximum upload size of "
-              + upload.getSizeMax()
-              + " bytes: "
-              + sizeLimitExceededException);
-      drainRequestStream(request);
-      sendResponse(
-          response, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, format, null, null, null);
-    } catch (FileUploadBase.InvalidContentTypeException invalidContentType) {
-      mLog.info("File upload failed", invalidContentType);
-      drainRequestStream(request);
-      sendResponse(
-          response, HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, format, null, null, null);
     } catch (FileUploadException fileUploadException) {
-      mLog.info("File upload failed", fileUploadException);
-      drainRequestStream(request);
-      sendResponse(
-          response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, format, null, null, null);
+      if (fileUploadException.getMessage() != null && fileUploadException.getMessage().contains("size")) {
+        mLog.info(
+            "Exceeded maximum upload size of "
+                + upload.getMaxSize()
+                + " bytes: "
+                + fileUploadException);
+        drainRequestStream(request);
+        sendResponse(
+            response, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, format, null, null, null);
+      } else if (fileUploadException.getMessage() != null && fileUploadException.getMessage().contains("content")) {
+        mLog.info("File upload failed", fileUploadException);
+        drainRequestStream(request);
+        sendResponse(
+            response, HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, format, null, null, null);
+      } else {
+        mLog.info("File upload failed", fileUploadException);
+        drainRequestStream(request);
+        sendResponse(
+            response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, format, null, null, null);
+      }
     }
 
     return fileItems;
@@ -854,19 +876,28 @@ public class FileUploadServlet extends ZimbraServlet {
     filename = StringEscapeUtils.unescapeHtml(filename);
 
     // store the fetched file as a normal upload
-    ServletFileUpload upload = getUploader(account, limitByFileUploadMaxSize);
-    FileItem fi = upload.getFileItemFactory().createItem("upload", contentType, false, filename);
+    JakartaServletFileUpload upload = getUploader(account, limitByFileUploadMaxSize);
+    
+    // In commons-fileupload2, create a temporary file for the upload
+    java.nio.file.Path uploadDir = new File(getUploadDir()).toPath();
+    java.nio.file.Path tempFile = java.nio.file.Files.createTempFile(uploadDir, "upload_", ".tmp");
+    long size = ByteUtil.copy(req.getInputStream(), false, java.nio.file.Files.newOutputStream(tempFile), true, upload.getMaxSize() * 3);
+    
+    DiskFileItemFactory factory = (DiskFileItemFactory) upload.getFileItemFactory();
+    FileItem fi = factory.fileItemBuilder()
+        .setFieldName("upload")
+        .setContentType(contentType)
+        .setFormField(false)
+        .setFileName(filename)
+        .get();
     try {
       // write the upload to disk, but make sure not to exceed the permitted max upload size
-      long size =
-          ByteUtil.copy(
-              req.getInputStream(), false, fi.getOutputStream(), true, upload.getSizeMax() * 3);
-      if ((upload.getSizeMax() >= 0 /* -1 would mean "no limit" */)
-          && (size > upload.getSizeMax())) {
+      if ((upload.getMaxSize() >= 0 /* -1 would mean "no limit" */)
+          && (size > upload.getMaxSize())) {
         mLog.debug("handlePlainUpload(): deleting %s", fi);
         fi.delete();
         mLog.info(
-            "Exceeded maximum upload size of " + upload.getSizeMax() + " bytes: " + account.getId());
+            "Exceeded maximum upload size of " + upload.getMaxSize() + " bytes: " + account.getId());
         drainRequestStream(req);
         sendResponse(response, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, format, null, null, null);
         return Collections.emptyList();
@@ -883,14 +914,17 @@ public class FileUploadServlet extends ZimbraServlet {
     Upload up = new Upload(account.getId(), fi, filename);
 
     if (filename.endsWith(".har")) {
-      File file = ((DiskFileItem) fi).getStoreLocation();
-      try {
-        String mimeType = MimeDetect.getMimeDetect().detect(file);
-        if (mimeType != null) {
-          up.contentType = mimeType;
+      java.nio.file.Path path = ((DiskFileItem) fi).getPath();
+      File file = path != null ? path.toFile() : null;
+      if (file != null) {
+        try {
+          String mimeType = MimeDetect.getMimeDetect().detect(file);
+          if (mimeType != null) {
+            up.contentType = mimeType;
+          }
+        } catch (IOException e) {
+          mLog.warn("Failed to detect file content type");
         }
-      } catch (IOException e) {
-        mLog.warn("Failed to detect file content type");
       }
     }
     final String finalMimeType = up.contentType;
@@ -1052,10 +1086,14 @@ public class FileUploadServlet extends ZimbraServlet {
       if (!file.isInMemory() && file instanceof DiskFileItem) {
         // If it's backed by a File, return a BlobInputStream so that any use by JavaMail
         // will avoid loading the whole thing in memory.
-        File f = ((DiskFileItem) file).getStoreLocation();
-        blobInputStream = new BlobInputStream(f, f.length());
-        return blobInputStream;
-      } else {
+        java.nio.file.Path path = ((DiskFileItem) file).getPath();
+        File f = path != null ? path.toFile() : null;
+        if (f != null) {
+          blobInputStream = new BlobInputStream(f, f.length());
+          return blobInputStream;
+        }
+      }
+      {
         return file.getInputStream();
       }
     }
@@ -1067,7 +1105,11 @@ public class FileUploadServlet extends ZimbraServlet {
     void purge() {
       if (file != null) {
         mLog.debug("Deleting from disk: id=%s, %s", uuid, file);
-        file.delete();
+        try {
+          file.delete();
+        } catch (IOException e) {
+          mLog.warn("Failed to delete upload file: %s", file, e);
+        }
       }
       if (blobInputStream != null) {
         blobInputStream.closeFile();
@@ -1107,8 +1149,8 @@ public class FileUploadServlet extends ZimbraServlet {
     TempFileFilter() {}
 
     /**
-     * Returns <code>true</code> if the specified <code>File</code> follows the {@link
-     * DefaultFileItem} naming convention (<code>upload_*.tmp</code>) and is older than {@link
+     * Returns <code>true</code> if the specified <code>File</code> follows the file upload
+     * naming convention (<code>upload_*.tmp</code>) and is older than {@link
      * FileUploadServlet#UPLOAD_TIMEOUT_MSEC}.
      */
     @Override
@@ -1118,7 +1160,7 @@ public class FileUploadServlet extends ZimbraServlet {
         return false;
       }
       String name = pathname.getName();
-      // file naming convention used by DefaultFileItem class
+      // file naming convention used by DiskFileItem class
       return name.startsWith("upload_")
           && name.endsWith(".tmp")
           && mNow - pathname.lastModified() > UPLOAD_TIMEOUT_MSEC;

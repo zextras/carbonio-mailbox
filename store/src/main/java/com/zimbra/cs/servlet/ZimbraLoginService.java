@@ -6,15 +6,17 @@
 package com.zimbra.cs.servlet;
 
 import java.security.Principal;
+import java.util.function.Function;
 
 import javax.security.auth.Subject;
-import javax.servlet.ServletRequest;
+import jakarta.servlet.ServletRequest;
 
-import org.eclipse.jetty.security.AbstractLoginService;
 import org.eclipse.jetty.security.DefaultIdentityService;
 import org.eclipse.jetty.security.IdentityService;
 import org.eclipse.jetty.security.LoginService;
-import org.eclipse.jetty.server.UserIdentity;
+import org.eclipse.jetty.security.UserIdentity;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Session;
 import org.eclipse.jetty.util.security.Credential;
 
 import com.zimbra.common.account.Key.AccountBy;
@@ -65,6 +67,30 @@ public class ZimbraLoginService implements LoginService {
     }
 
     @Override
+    public UserIdentity login(String username, Object credentials, Request request, Function<Boolean, Session> getOrCreateSession) {
+        Account account;
+        try {
+            Provisioning prov = Provisioning.getInstance();
+            account = prov.get(AccountBy.name, username);
+            if (account != null) {
+                if (!(credentials instanceof String)) {
+                    ZimbraLog.security.warn("passed credentials are not a String? [%s]", credentials == null ? "null" : credentials.getClass().getName());
+                }
+                tryLogin(account, (String) credentials, true);
+                UserIdentity identity = makeUserIdentity(username);
+                if (identity != null) {
+                    getOrCreateSession.apply(true);
+                }
+                return identity;
+            }
+        } catch (AuthFailedServiceException e) {
+            ZimbraLog.security.debug("Auth failed");
+        } catch (ServiceException e) {
+            ZimbraLog.security.warn("ServiceException in auth", e);
+        }
+        return null;
+    }
+
     public UserIdentity login(String username, Object credentials, ServletRequest req) {
         Account account;
         try {
@@ -111,11 +137,21 @@ public class ZimbraLoginService implements LoginService {
         Credential credential = Credential.getCredential("");
         // only need 'user' role for current implementation protecting
         String roleName = "user";
-        Principal userPrincipal = new AbstractLoginService.UserPrincipal(userName, credential);
+        Principal userPrincipal = new Principal() {
+            @Override
+            public String getName() {
+                return userName;
+            }
+        };
         Subject subject = new Subject();
         subject.getPrincipals().add(userPrincipal);
         subject.getPrivateCredentials().add(credential);
-        subject.getPrincipals().add(new AbstractLoginService.RolePrincipal(roleName));
+        subject.getPrincipals().add(new Principal() {
+            @Override
+            public String getName() {
+                return roleName;
+            }
+        });
         subject.setReadOnly();
 
         UserIdentity identity = identityService.newUserIdentity(subject,

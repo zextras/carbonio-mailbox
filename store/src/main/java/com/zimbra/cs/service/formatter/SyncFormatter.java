@@ -14,12 +14,12 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.mail.MessagingException;
-import javax.mail.Part;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimePart;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Part;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimePart;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;

@@ -14,20 +14,20 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.Header;
-import javax.mail.MessageAware;
-import javax.mail.MessageContext;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.internet.InternetHeaders;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.SharedInputStream;
-import javax.mail.util.ByteArrayDataSource;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.mail.Header;
+import jakarta.mail.MessageAware;
+import jakarta.mail.MessageContext;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
+import jakarta.mail.internet.InternetHeaders;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.SharedInputStream;
+import jakarta.mail.util.ByteArrayDataSource;
 
-import com.sun.mail.util.ASCIIUtility;
-import com.sun.mail.util.PropUtil;
+import org.eclipse.angus.mail.util.ASCIIUtility;
+import org.eclipse.angus.mail.util.PropUtil;
 import com.zimbra.common.util.ByteUtil;
 
 public class JavaMailMimeBodyPart extends MimeBodyPart implements JavaMailShim {

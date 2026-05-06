@@ -8,7 +8,7 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.pgp.PgpHandler;
 import com.zimbra.cs.smime.SmimeHandler;
 
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
 import java.util.Locale;
 import java.util.Optional;
 

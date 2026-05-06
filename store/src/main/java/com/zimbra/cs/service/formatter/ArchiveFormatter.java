@@ -94,10 +94,10 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-import javax.mail.Part;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimePart;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.mail.Part;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimePart;
+import jakarta.servlet.http.HttpServletResponse;
 
 public abstract class ArchiveFormatter extends Formatter {
   private final Pattern ILLEGAL_FILE_CHARS = Pattern.compile("[\\/\\:\\*\\?\\\"\\<\\>\\|\\\0]");

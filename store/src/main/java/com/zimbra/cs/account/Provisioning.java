@@ -53,7 +53,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.internet.InternetAddress;
 
 /**
  * @since Sep 23, 2004

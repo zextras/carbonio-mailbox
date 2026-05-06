@@ -10,9 +10,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.util.SharedByteArrayInputStream;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.util.SharedByteArrayInputStream;
 
 import com.zimbra.common.calendar.ICalTimeZone;
 import com.zimbra.common.calendar.TimeZoneMap;

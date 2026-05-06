@@ -5,8 +5,8 @@
 
 package com.zimbra.cs.util.http;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Represents Content-Range. Helps with parsing and manipulating Content-Range headers.

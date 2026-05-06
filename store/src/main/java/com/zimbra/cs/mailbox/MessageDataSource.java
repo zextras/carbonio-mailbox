@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.activation.DataSource;
-import javax.mail.MessagingException;
+import jakarta.activation.DataSource;
+import jakarta.mail.MessagingException;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;

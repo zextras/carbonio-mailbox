@@ -9,8 +9,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 
-import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.ZimbraLog;

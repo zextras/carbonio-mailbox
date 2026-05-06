@@ -23,10 +23,10 @@ import com.zimbra.cs.service.UserServletContext;
 import com.zimbra.cs.service.UserServletException;
 import com.zimbra.cs.service.formatter.FormatterFactory.FormatType;
 import java.io.IOException;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
 import org.apache.http.Header;
 import org.apache.http.HttpException;
 

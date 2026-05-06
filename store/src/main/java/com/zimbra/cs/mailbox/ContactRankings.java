@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import javax.mail.Address;
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.Address;
+import jakarta.mail.internet.InternetAddress;
 
 import com.zimbra.common.account.Key;
 import com.zimbra.common.localconfig.LC;

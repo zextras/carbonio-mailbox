@@ -3,7 +3,7 @@ package com.zimbra.cs.service.admin;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 // SPDX-FileCopyrightText: 2022 Synacor, Inc.
 // SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>

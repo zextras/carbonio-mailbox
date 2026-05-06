@@ -23,11 +23,11 @@ import java.util.Date;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.ByteUtil;

@@ -16,8 +16,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 import java.nio.charset.StandardCharsets;
-import javax.activation.DataSource;
-import javax.mail.internet.ContentType;
+import jakarta.activation.DataSource;
+import jakarta.mail.internet.ContentType;
 
 import com.zimbra.common.calendar.ZCalendar;
 import com.zimbra.common.calendar.ZCalendar.ICalTok;

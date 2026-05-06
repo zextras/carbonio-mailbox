@@ -8,7 +8,7 @@ package com.zimbra.common.util;
 import com.zimbra.common.localconfig.LC;
 import java.util.HashSet;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class RemoteIP {
 

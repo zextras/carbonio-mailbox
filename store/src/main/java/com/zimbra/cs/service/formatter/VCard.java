@@ -19,8 +19,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.mail.internet.ContentType;
-import javax.mail.internet.ParseException;
+import jakarta.mail.internet.ContentType;
+import jakarta.mail.internet.ParseException;
 
 import net.fortuna.ical4j.data.FoldingWriter;
 

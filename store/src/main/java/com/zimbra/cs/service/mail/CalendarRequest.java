@@ -58,11 +58,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Queue;
-import javax.mail.Address;
-import javax.mail.MessagingException;
-import javax.mail.SendFailedException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.Address;
+import jakarta.mail.MessagingException;
+import jakarta.mail.SendFailedException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 public abstract class CalendarRequest extends MailDocumentHandler {
 
@@ -377,7 +377,7 @@ public abstract class CalendarRequest extends MailDocumentHandler {
     if (notifyOwner) {
       try {
         InternetAddress addr = AccountUtil.getFriendlyEmailAddress(acct);
-        csd.mMm.addRecipient(javax.mail.Message.RecipientType.TO, addr);
+        csd.mMm.addRecipient(jakarta.mail.Message.RecipientType.TO, addr);
       } catch (MessagingException e) {
         throw ServiceException.FAILURE("count not add calendar owner to recipient list", e);
       }

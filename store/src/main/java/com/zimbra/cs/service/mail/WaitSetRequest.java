@@ -46,9 +46,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import javax.servlet.http.HttpServletRequest;
-import org.eclipse.jetty.continuation.Continuation;
-import org.eclipse.jetty.continuation.ContinuationSupport;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.AsyncContext;
 
 /** */
 public class WaitSetRequest extends MailDocumentHandler {
@@ -188,9 +187,9 @@ public class WaitSetRequest extends MailDocumentHandler {
     WaitSetCallback cb = (WaitSetCallback) servletRequest.getAttribute(VARS_ATTR_NAME);
 
     if (cb == null) { // Initial
-      Continuation continuation = ContinuationSupport.getContinuation(servletRequest);
+      AsyncContext asyncContext = servletRequest.startAsync();
       cb = new WaitSetCallback();
-      cb.continuationResume = new ResumeContinuationListener(continuation);
+      cb.continuationResume = new ResumeContinuationListener(asyncContext);
       servletRequest.setAttribute(VARS_ATTR_NAME, cb);
       servletRequest.setAttribute(ZimbraSoapContext.soapRequestIdAttr, zsc.getSoapRequestId());
 

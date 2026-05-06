@@ -39,9 +39,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javax.mail.Address;
-import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.mail.Address;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpServletRequest;
 
 public abstract class AutoScheduler {
   public static final String CANCEL_PREFIX = "Cancel: ";
@@ -608,7 +608,7 @@ public abstract class AutoScheduler {
     }
 
     /**
-     * Returns a list of {@link javax.mail.Address} from a list of attendees by filtering them based
+     * Returns a list of {@link jakarta.mail.Address} from a list of attendees by filtering them based
      * on SCHEDULE-AGENT and if organizer conditions.
      *
      * @param attendees meeting attendees

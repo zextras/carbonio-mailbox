@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.mail.internet.MailDateFormat;
+import jakarta.mail.internet.MailDateFormat;
 
 import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.EmailUtil;

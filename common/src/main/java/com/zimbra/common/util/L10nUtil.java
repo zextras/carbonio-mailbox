@@ -21,7 +21,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.common.localconfig.LC;

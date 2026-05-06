@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Set;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.mailbox.MailItem;

@@ -15,7 +15,7 @@ import com.zimbra.soap.util.JaxbInfo;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.xml.bind.annotation.XmlSchema;
+import jakarta.xml.bind.annotation.XmlSchema;
 
 /**
  * Helper class for ZmApiDoclet intended to facilitate the generation of documentation for the

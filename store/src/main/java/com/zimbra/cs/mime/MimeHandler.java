@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.activation.DataSource;
-import javax.mail.internet.MimeUtility;
+import jakarta.activation.DataSource;
+import jakarta.mail.internet.MimeUtility;
 
 import org.apache.lucene.document.Document;
 

@@ -53,8 +53,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimePart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimePart;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -219,11 +219,11 @@ public final class ContactTest extends MailboxTestSuite {
 		assertEquals("2, Test", contacts.get(1).getFileAsString());
 		assertEquals("TEST2@zimbra.com", contacts.get(1).getFields().get(ContactConstants.A_email));
 
-		Collection<javax.mail.Address> newAddrs =
+		Collection<jakarta.mail.Address> newAddrs =
 				mbox.newContactAddrs(
 						ImmutableList.of(
-								new javax.mail.internet.InternetAddress("test1@zimbra.com", "Test 1"),
-								new javax.mail.internet.InternetAddress("test2@zimbra.com", "Test 2")),
+								new jakarta.mail.internet.InternetAddress("test1@zimbra.com", "Test 1"),
+								new jakarta.mail.internet.InternetAddress("test2@zimbra.com", "Test 2")),
 						"aaa");
 
 		assertEquals(0, newAddrs.size());

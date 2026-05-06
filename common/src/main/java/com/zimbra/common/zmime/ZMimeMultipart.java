@@ -10,14 +10,14 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import javax.activation.DataSource;
-import javax.mail.MessagingException;
-import javax.mail.internet.ContentType;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMultipart;
+import jakarta.activation.DataSource;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.ContentType;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMultipart;
 
-import com.sun.mail.util.ASCIIUtility;
-import com.sun.mail.util.LineOutputStream;
+import org.eclipse.angus.mail.util.ASCIIUtility;
+import org.eclipse.angus.mail.util.LineOutputStream;
 
 public class ZMimeMultipart extends MimeMultipart {
     private static final boolean ZPARSER = ZMimeMessage.ZPARSER;

@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.EnumSet;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mime.MimeConstants;

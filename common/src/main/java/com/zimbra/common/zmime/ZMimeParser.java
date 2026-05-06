@@ -17,13 +17,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.internet.MimePartDataSource;
-import javax.mail.internet.SharedInputStream;
-import javax.mail.util.SharedByteArrayInputStream;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
+import jakarta.mail.internet.MimePartDataSource;
+import jakarta.mail.internet.SharedInputStream;
+import jakarta.mail.util.SharedByteArrayInputStream;
 
-import com.sun.mail.util.ASCIIUtility;
+import org.eclipse.angus.mail.util.ASCIIUtility;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.CharsetUtil;

@@ -15,7 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.internet.InternetAddress;
 
 public final class MessageAddresses {
 

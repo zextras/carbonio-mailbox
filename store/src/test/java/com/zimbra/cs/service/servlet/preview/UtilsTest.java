@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 
 import com.zextras.carbonio.preview.queries.Query;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

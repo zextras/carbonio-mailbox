@@ -7,7 +7,7 @@ package com.zimbra.cs.dav.service.method;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.dav.DavContext;

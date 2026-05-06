@@ -11,17 +11,17 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Properties;
 
-import javax.activation.DataHandler;
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimeUtility;
-import javax.mail.internet.SharedInputStream;
-import javax.mail.util.SharedByteArrayInputStream;
+import jakarta.activation.DataHandler;
+import jakarta.mail.Address;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.internet.MimeUtility;
+import jakarta.mail.internet.SharedInputStream;
+import jakarta.mail.util.SharedByteArrayInputStream;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.ByteUtil;

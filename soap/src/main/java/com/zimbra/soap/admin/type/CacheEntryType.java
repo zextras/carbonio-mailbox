@@ -7,7 +7,7 @@ package com.zimbra.soap.admin.type;
 
 import com.google.common.base.Joiner;
 import com.zimbra.common.service.ServiceException;
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 // TODO: Use this in ZimbraServer code instead of Provisioning.CacheEntryType
 @XmlEnum

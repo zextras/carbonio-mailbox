@@ -15,7 +15,7 @@ import com.zimbra.cs.imap.ImapPartSpecifier.BinaryDecodingException;
 import com.zimbra.cs.util.JMSession;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.Test;
 
 public class ImapPartSpecifierTest {

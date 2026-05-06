@@ -27,7 +27,7 @@ import com.zimbra.cs.mime.ParsedMessage;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
 
 /**
  * Extends {@link #shareWith(Account)}, so you can perform standard delete operations natively.
@@ -44,11 +44,11 @@ public class AccountAction extends Account {
 	 * of a message.
 	 *
 	 * @param message message to save
-	 * @return saved {@link javax.mail.Message}
+	 * @return saved {@link jakarta.mail.Message}
 	 * @throws ServiceException
 	 * @throws IOException
 	 */
-	public Message saveMsgInInbox(javax.mail.Message message) throws ServiceException, IOException {
+	public Message saveMsgInInbox(jakarta.mail.Message message) throws ServiceException, IOException {
 		final var parsedMessage = new ParsedMessage((MimeMessage) message, false);
 		final var deliveryOptions =
 				new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);

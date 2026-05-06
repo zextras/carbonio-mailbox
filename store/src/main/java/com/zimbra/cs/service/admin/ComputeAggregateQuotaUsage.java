@@ -16,9 +16,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import javax.mail.Transport;
+import jakarta.mail.Transport;
 
-import com.sun.mail.smtp.SMTPMessage;
+import org.eclipse.angus.mail.smtp.SMTPMessage;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
 import com.zimbra.common.service.ServiceException;
@@ -127,7 +127,7 @@ public class ComputeAggregateQuotaUsage extends AdminDocumentHandler {
                 out.setFrom(new JavaMailInternetAddress("Postmaster <postmaster@" + domain.getName() + ">"));
 
                 for (String recipient : recipients) {
-                    out.setRecipient(javax.mail.Message.RecipientType.TO, new JavaMailInternetAddress(recipient));
+                    out.setRecipient(jakarta.mail.Message.RecipientType.TO, new JavaMailInternetAddress(recipient));
                 }
 
                 out.setSentDate(new Date());

@@ -3,7 +3,7 @@ package com.zimbra.cs.service;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.service.util.ItemId;
 import io.vavr.control.Try;
-import javax.mail.internet.MimePart;
+import jakarta.mail.internet.MimePart;
 
 /**
  * Interface for attachment content provider (get).
@@ -20,7 +20,7 @@ public interface AttachmentService {
    * @param token     authorization token for the account
    * @param messageId id of the email/message where attachment lies
    * @param part      part number that identifies attachment in the mail
-   * @return try of {@link javax.mail.internet.MimePart} representing the attachment
+   * @return try of {@link jakarta.mail.internet.MimePart} representing the attachment
    */
   Try<MimePart> getAttachment(String accountId, AuthToken token, int messageId, String part);
 
@@ -31,7 +31,7 @@ public interface AttachmentService {
    * @param token     authorization token for the account
    * @param itemId    {@link ItemId} object for attachment
    * @param part      part number that identifies attachment in the mail
-   * @return try of {@link javax.mail.internet.MimePart} representing the attachment
+   * @return try of {@link jakarta.mail.internet.MimePart} representing the attachment
    */
   Try<MimePart> getAttachmentByItemId(String accountId, AuthToken token, ItemId itemId, String part);
 

@@ -16,10 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.internet.MimeMessage;
-import javax.mail.util.ByteArrayDataSource;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.util.ByteArrayDataSource;
 
 import org.json.JSONArray;
 import org.json.JSONException;

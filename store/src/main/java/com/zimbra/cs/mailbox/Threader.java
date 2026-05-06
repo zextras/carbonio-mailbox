@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;

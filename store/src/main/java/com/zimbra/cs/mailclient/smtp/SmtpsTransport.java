@@ -5,10 +5,10 @@
 
 package com.zimbra.cs.mailclient.smtp;
 
-import javax.mail.Provider;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.URLName;
+import jakarta.mail.Provider;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.URLName;
 
 import com.zimbra.cs.util.BuildInfo;
 

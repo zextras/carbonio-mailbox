@@ -8,7 +8,7 @@ package com.zimbra.cs.service.mail;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;

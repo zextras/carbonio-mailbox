@@ -49,7 +49,7 @@ public final class ParsedAddress implements Comparable<ParsedAddress> {
         initialize(ia.getAddress(), ia.getPersonal());
     }
 
-    public ParsedAddress(javax.mail.internet.InternetAddress ia) {
+    public ParsedAddress(jakarta.mail.internet.InternetAddress ia) {
         initialize(ia.getAddress(), ia.getPersonal());
     }
 

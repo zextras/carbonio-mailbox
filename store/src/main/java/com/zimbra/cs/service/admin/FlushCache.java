@@ -30,10 +30,10 @@ import com.zimbra.soap.admin.type.CacheSelector;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 public class FlushCache extends AdminDocumentHandler {
 

@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.mail.Address;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeBodyPart;
+import jakarta.mail.Address;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeBodyPart;
 
 import com.zimbra.common.calendar.ICalTimeZone;
 import com.zimbra.common.calendar.TimeZoneMap;

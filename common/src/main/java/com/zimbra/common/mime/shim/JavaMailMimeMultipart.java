@@ -11,14 +11,14 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.activation.DataSource;
-import javax.mail.BodyPart;
-import javax.mail.MessagingException;
-import javax.mail.MultipartDataSource;
-import javax.mail.internet.InternetHeaders;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimePart;
+import jakarta.activation.DataSource;
+import jakarta.mail.BodyPart;
+import jakarta.mail.MessagingException;
+import jakarta.mail.MultipartDataSource;
+import jakarta.mail.internet.InternetHeaders;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.internet.MimePart;
 
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.ZimbraLog;

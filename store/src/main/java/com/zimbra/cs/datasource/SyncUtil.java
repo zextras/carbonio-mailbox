@@ -16,8 +16,8 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 
-import javax.mail.internet.MimeMessage;
-import javax.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.MessagingException;
 import java.util.Date;
 
 public final class SyncUtil {

@@ -28,9 +28,9 @@ import com.zimbra.soap.mail.type.RssDataSourceNameOrId;
 import com.zimbra.soap.type.DataSource;
 import com.zimbra.soap.type.DataSource.ConnectionType;
 import java.util.List;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import org.junit.jupiter.api.Test;
 
 public class DataSourceJaxbTest {

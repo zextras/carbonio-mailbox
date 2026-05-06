@@ -9,18 +9,17 @@ import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrTokenizer;
-import org.eclipse.jetty.continuation.Continuation;
-import org.eclipse.jetty.continuation.ContinuationSupport;
+import jakarta.servlet.AsyncContext;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 
@@ -69,13 +68,13 @@ public class ContextPathBasedThreadPoolBalancerFilter implements Filter {
 
         // Suspend request
         if (suspend) {
-            Continuation continuation = ContinuationSupport.getContinuation(request);
             HttpServletRequest hreq = (HttpServletRequest) request;
             ZimbraServlet.addRemoteIpToLoggingContext(hreq);
             ZimbraServlet.addUAToLoggingContext(hreq);
             ZimbraLog.clearContext();
-            continuation.setTimeout(suspendMs);
-            continuation.suspend();
+            AsyncContext asyncContext = hreq.startAsync(request, response);
+            asyncContext.setTimeout(suspendMs);
+            // Return from filter — container suspends the thread until timeout
             return;
         }
 

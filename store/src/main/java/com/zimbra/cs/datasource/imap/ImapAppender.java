@@ -14,10 +14,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MailDateFormat;
-import javax.mail.internet.MimeMessage;
-import javax.mail.util.SharedByteArrayInputStream;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MailDateFormat;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.util.SharedByteArrayInputStream;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;

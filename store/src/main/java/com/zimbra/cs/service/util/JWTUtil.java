@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -113,7 +113,7 @@ public class JWTUtil {
                 ZimbraLog.account.debug("salt not found in soap context or engine context, looking in cookie");
                 HttpServletRequest req = (HttpServletRequest) engineCtxt.get(SoapServlet.SERVLET_REQUEST);
                 if (req != null) {
-                    javax.servlet.http.Cookie[] cookies =  req.getCookies();
+                    jakarta.servlet.http.Cookie[] cookies =  req.getCookies();
                     if (cookies != null) {
                       for (Cookie cookie : cookies) {
                         if (ZimbraCookie.COOKIE_ZM_JWT.equals(cookie.getName())) {

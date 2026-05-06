@@ -13,18 +13,18 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Set;
 
-import javax.activation.CommandMap;
-import javax.activation.DataHandler;
-import javax.activation.MailcapCommandMap;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimePart;
-import javax.mail.internet.SharedInputStream;
+import jakarta.activation.CommandMap;
+import jakarta.activation.DataHandler;
+import jakarta.activation.MailcapCommandMap;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.internet.MimePart;
+import jakarta.mail.internet.SharedInputStream;
 
 import com.google.common.collect.ImmutableSet;
-import com.sun.mail.util.PropUtil;
+import org.eclipse.angus.mail.util.PropUtil;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.ZimbraLog;
 
@@ -36,10 +36,10 @@ public class ZMimeBodyPart extends MimeBodyPart implements ZMimePart {
 
     static {
         MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
-        mc.addMailcap("application/xml;;x-java-content-handler=com.sun.mail.handlers.text_xml");
-        mc.addMailcap("text/xml;;x-java-content-handler=com.sun.mail.handlers.text_xml");
-        mc.addMailcap("text/plain;;x-java-content-handler=com.sun.mail.handlers.text_plain");
-        mc.addMailcap("xml/x-share;;x-java-content-handler=com.sun.mail.handlers.text_plain");
+        mc.addMailcap("application/xml;;x-java-content-handler=org.eclipse.angus.mail.handlers.text_xml");
+        mc.addMailcap("text/xml;;x-java-content-handler=org.eclipse.angus.mail.handlers.text_xml");
+        mc.addMailcap("text/plain;;x-java-content-handler=org.eclipse.angus.mail.handlers.text_plain");
+        mc.addMailcap("xml/x-share;;x-java-content-handler=org.eclipse.angus.mail.handlers.text_plain");
         CommandMap.setDefaultCommandMap(mc);
     }
 

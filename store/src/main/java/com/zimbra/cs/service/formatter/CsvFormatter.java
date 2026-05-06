@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.mail.Part;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.mail.Part;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Charsets;
 import com.ibm.icu.text.CharsetDetector;

@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.activation.DataSource;
+import jakarta.activation.DataSource;
 
 import net.fortuna.ical4j.data.ParserException;
 

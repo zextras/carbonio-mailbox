@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.zimbra.cs.dav.DavContext;
 import com.zimbra.cs.dav.DavElements;

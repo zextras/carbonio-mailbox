@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.activation.DataSource;
+import jakarta.activation.DataSource;
 
 import com.zimbra.cs.mailbox.MailboxOperation;
 import com.zimbra.cs.redolog.RedoLogInput;

@@ -62,8 +62,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 /**
  * @since Jun 13, 2004
@@ -453,7 +453,7 @@ public class Message extends MailItem {
   }
 
   /**
-   * Returns a JavaMail {@link javax.mail.internet.MimeMessage} encapsulating the message content.
+   * Returns a JavaMail {@link jakarta.mail.internet.MimeMessage} encapsulating the message content.
    * If possible, uuencoded attachments are expanded and their components are presented as
    * standard MIME attachments. If uuencode decoding fails, the MimeMessage wraps the raw
    * message content.
@@ -470,7 +470,7 @@ public class Message extends MailItem {
   }
 
   /**
-   * Returns a JavaMail {@link javax.mail.internet.MimeMessage} encapsulating the message content.
+   * Returns a JavaMail {@link jakarta.mail.internet.MimeMessage} encapsulating the message content.
    * If <tt>runConverters</tt> is <tt>true</tt>, uuencoded attachments are expanded and
    * their components are presented as standard MIME attachments. If <tt>runConverters</tt> is
    * <tt>false</tt> or if uuencode decoding fails, the MimeMessage wraps the raw message

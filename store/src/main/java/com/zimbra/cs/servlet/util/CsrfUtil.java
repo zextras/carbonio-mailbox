@@ -12,12 +12,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload2.core.FileItem;
 
 import com.google.common.base.Joiner;
 import com.google.common.net.HttpHeaders;
@@ -503,7 +503,13 @@ public final class CsrfUtil {
             if (item.isFormField()) {
                 if (item.getFieldName().equals(PARAM_CSRF_TOKEN)) {
                     if (item.getSize() < 128) { // if the value is larger, it is not a CSRF token
-                        String csrfToken = item.getString();
+                        String csrfToken;
+                        try {
+                            csrfToken = item.getString();
+                        } catch (java.io.IOException e) {
+                            ZimbraLog.misc.warn("Failed to read CSRF token from multipart upload", e);
+                            break;
+                        }
                         if (CsrfUtil.isValidCsrfToken(csrfToken, at)) {
                             return true;
                         } else {

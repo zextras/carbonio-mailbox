@@ -5,7 +5,7 @@
 
 package com.zimbra.soap.admin.message;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import com.zimbra.common.soap.BackupConstants;
 
 @XmlRootElement(name=BackupConstants.E_MOVE_MAILBOX_RESPONSE)

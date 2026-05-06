@@ -21,13 +21,13 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.mail.Address;
-import javax.mail.Header;
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import jakarta.mail.Address;
+import jakarta.mail.Header;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -35,7 +35,7 @@ import org.apache.jsieve.exception.SyntaxException;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
-import com.sun.mail.smtp.SMTPMessage;
+import org.eclipse.angus.mail.smtp.SMTPMessage;
 import com.zimbra.client.ZFolder;
 import com.zimbra.client.ZMailbox;
 import com.zimbra.common.account.Key.AccountBy;
@@ -353,7 +353,7 @@ public final class FilterUtil {
             to = Mime.getSender(mimeMessage);
         if (StringUtil.isNullOrEmpty(to))
             throw new MessagingException("Can't locate the address to reply to");
-        replyMsg.setRecipient(javax.mail.Message.RecipientType.TO, new JavaMailInternetAddress(to));
+        replyMsg.setRecipient(jakarta.mail.Message.RecipientType.TO, new JavaMailInternetAddress(to));
 
         String subject = mimeMessage.getSubject();
         if (subject == null) {
@@ -404,7 +404,7 @@ public final class FilterUtil {
         //Map<String, String> vars = getVarsMap(mailbox, parsedMessage, mimeMessage);
         if (origHeaders == null || origHeaders.isEmpty()) {
             // no headers need to be copied from the original message
-            notification.setRecipient(javax.mail.Message.RecipientType.TO, new JavaMailInternetAddress(emailAddr));
+            notification.setRecipient(jakarta.mail.Message.RecipientType.TO, new JavaMailInternetAddress(emailAddr));
             notification.setSentDate(new Date());
             if (!StringUtil.isNullOrEmpty(subjectTemplate)) {
                 notification.setSubject(subjectTemplate, getCharset(account, subjectTemplate));
@@ -510,7 +510,7 @@ public final class FilterUtil {
 
         // MDN header
         report.setEnvelopeFrom("<>");
-        report.setRecipient(javax.mail.Message.RecipientType.TO, new JavaMailInternetAddress(reportTo));
+        report.setRecipient(jakarta.mail.Message.RecipientType.TO, new JavaMailInternetAddress(reportTo));
         String subject = L10nUtil.getMessage(MsgKey.seiveRejectMDNSubject, locale);
         report.setSubject(subject);
         report.setSentDate(new Date());
@@ -600,20 +600,20 @@ public final class FilterUtil {
         // RFC 5436 2.7. (2nd and 5th item of the 'guidelines')
         Set<String> envelopeTos = new HashSet<>();
         envelopeTos.add(mailto);
-        notification.addRecipient(javax.mail.Message.RecipientType.TO, new JavaMailInternetAddress(mailto));
+        notification.addRecipient(jakarta.mail.Message.RecipientType.TO, new JavaMailInternetAddress(mailto));
 
         List<String> tos = mailtoParams.get("to");
         if (tos != null && tos.size() > 0) {
             for (String to : tos) {
                 envelopeTos.add(to);
-                notification.addRecipient(javax.mail.Message.RecipientType.TO, new JavaMailInternetAddress(to));
+                notification.addRecipient(jakarta.mail.Message.RecipientType.TO, new JavaMailInternetAddress(to));
             }
         }
         List<String> ccs = mailtoParams.get("cc");
         if (ccs != null && ccs.size() > 0) {
             for (String cc : ccs) {
                 envelopeTos.add(cc);
-                notification.addRecipient(javax.mail.Message.RecipientType.CC, new JavaMailInternetAddress(cc));
+                notification.addRecipient(jakarta.mail.Message.RecipientType.CC, new JavaMailInternetAddress(cc));
             }
         }
         List<String> bccs = mailtoParams.get("bcc");

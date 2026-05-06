@@ -6,7 +6,7 @@ import static io.vavr.API.Case;
 import static io.vavr.API.For;
 import static java.util.function.Function.identity;
 
-import com.sun.mail.util.MimeUtil;
+
 import com.zextras.carbonio.files.FilesClient;
 import com.zextras.carbonio.files.entities.NodeId;
 import com.zimbra.common.service.ServiceException;
@@ -27,10 +27,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import javax.mail.MessagingException;
-import javax.mail.internet.ContentType;
-import javax.mail.internet.MimePart;
-import javax.mail.internet.MimeUtility;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.ContentType;
+import jakarta.mail.internet.MimePart;
+import jakarta.mail.internet.MimeUtility;
 
 public class FilesCopyHandlerImpl implements FilesCopyHandler {
 
@@ -201,7 +201,10 @@ public class FilesCopyHandlerImpl implements FilesCopyHandler {
 
     if (StringUtil.isNullOrEmpty(filename)) {
       String contentTypeHeader = part.getHeader("Content-Type", null);
-      String cleanContentType = MimeUtil.cleanContentType(part, contentTypeHeader);
+      // Strip parameters from content type (e.g. "text/plain; charset=utf-8" -> "text/plain")
+      String cleanContentType = contentTypeHeader != null
+          ? contentTypeHeader.split(";")[0].trim()
+          : null;
       if (cleanContentType != null) {
         var tryFileName = Try.of( () -> {
           ContentType contentType = new ContentType(cleanContentType);

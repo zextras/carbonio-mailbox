@@ -7,8 +7,8 @@ package com.zimbra.soap.type;
 
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;

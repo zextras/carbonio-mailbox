@@ -10,8 +10,8 @@ package com.zimbra.cs.mime.handler;
 
 import java.io.InputStream;
 
-import javax.activation.DataSource;
-import javax.mail.internet.InternetHeaders;
+import jakarta.activation.DataSource;
+import jakarta.mail.internet.InternetHeaders;
 
 import org.apache.lucene.document.Document;
 

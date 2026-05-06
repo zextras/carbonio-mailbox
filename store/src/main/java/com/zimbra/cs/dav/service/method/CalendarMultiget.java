@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.dav.service.method;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
 

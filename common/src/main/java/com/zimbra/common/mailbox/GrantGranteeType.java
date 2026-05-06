@@ -7,7 +7,7 @@ package com.zimbra.common.mailbox;
 
 import java.util.Arrays;
 
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 import com.zimbra.common.service.ServiceException;
 

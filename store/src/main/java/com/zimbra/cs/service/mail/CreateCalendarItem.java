@@ -24,8 +24,8 @@ import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.util.Map;
-import javax.mail.Address;
-import javax.mail.MessagingException;
+import jakarta.mail.Address;
+import jakarta.mail.MessagingException;
 
 /**
  * @author tim

@@ -12,7 +12,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /** This Utility class contains common utility methods to be used by the PreAuth service. */
 class Utils {

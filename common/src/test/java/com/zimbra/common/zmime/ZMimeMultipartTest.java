@@ -11,8 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.util.Properties;
 
-import javax.mail.Session;
-import javax.mail.util.SharedByteArrayInputStream;
+import jakarta.mail.Session;
+import jakarta.mail.util.SharedByteArrayInputStream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

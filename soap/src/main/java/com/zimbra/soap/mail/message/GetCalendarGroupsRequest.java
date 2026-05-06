@@ -6,7 +6,7 @@
 package com.zimbra.soap.mail.message;
 
 import com.zimbra.common.soap.MailConstants;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * @zm-api-command-auth-required true

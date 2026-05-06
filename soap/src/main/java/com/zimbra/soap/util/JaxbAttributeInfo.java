@@ -6,7 +6,7 @@
 package com.zimbra.soap.util;
 
 import java.lang.reflect.Type;
-import javax.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlAttribute;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.ZimbraLog;
 

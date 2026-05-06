@@ -6,8 +6,8 @@
 
 package com.zextras.mailbox.api;
 
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.ee9.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee9.servlet.ServletHolder;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 
 public class InternalApiContextHandler {
@@ -30,7 +30,7 @@ public class InternalApiContextHandler {
 		context.setVirtualHosts(new String[]{"@" + CONNECTOR_NAME});
 
 		final ServletHolder servlet = new ServletHolder(new HttpServletDispatcher());
-		servlet.setInitParameter("javax.ws.rs.Application",
+		servlet.setInitParameter("jakarta.ws.rs.Application",
 				InternalApiApplication.class.getName());
 		context.addServlet(servlet, "/*");
 

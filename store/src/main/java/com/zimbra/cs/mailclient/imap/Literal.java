@@ -13,7 +13,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
 import java.nio.charset.StandardCharsets;
-import javax.mail.util.SharedByteArrayInputStream;
+import jakarta.mail.util.SharedByteArrayInputStream;
 
 import com.zimbra.common.zmime.ZSharedFileInputStream;
 

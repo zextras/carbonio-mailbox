@@ -7,9 +7,9 @@ package com.zimbra.soap.admin.type;
 
 import java.util.Collection;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
 
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.cs.account.accesscontrol.TargetType.SoapTargetType;

@@ -4,7 +4,7 @@
 
 package com.zimbra.soap.mail.type;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlAttribute;
 
 public class SmartLink {
   @XmlAttribute(name = "publicUrl")

@@ -8,7 +8,7 @@ package com.zimbra.cs.dav.service.method;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.dom4j.Element;
 import org.dom4j.QName;

@@ -36,7 +36,7 @@ import com.zimbra.cs.mailbox.calendar.Invite;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.StringTokenizer;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * UrlNamespace provides a mapping from a URL to a DavResource.

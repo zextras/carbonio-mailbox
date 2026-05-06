@@ -20,8 +20,8 @@ import com.zimbra.soap.util.WsdlGenerator;
 import com.zimbra.soap.util.WsdlServiceInfo;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
 
 /** The wsdl service servlet - serves up files comprising Zimbra's WSDL definition */
 public class WsdlServlet extends ZimbraServlet {
@@ -45,8 +45,8 @@ public class WsdlServlet extends ZimbraServlet {
 
   @Override
   protected void doGet(
-      javax.servlet.http.HttpServletRequest req, javax.servlet.http.HttpServletResponse resp)
-      throws javax.servlet.ServletException, IOException {
+      jakarta.servlet.http.HttpServletRequest req, jakarta.servlet.http.HttpServletResponse resp)
+      throws jakarta.servlet.ServletException, IOException {
     ZimbraLog.clearContext();
     try {
       addRemoteIpToLoggingContext(req);

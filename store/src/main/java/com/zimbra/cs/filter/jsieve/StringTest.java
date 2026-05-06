@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 
 import org.apache.jsieve.Argument;
 import org.apache.jsieve.Arguments;

@@ -8,7 +8,7 @@ package com.zimbra.doc.soap;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-import javax.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Joiner;

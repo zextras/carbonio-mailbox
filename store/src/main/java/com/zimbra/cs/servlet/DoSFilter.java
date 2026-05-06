@@ -13,11 +13,11 @@ import com.zimbra.cs.server.ServerConfig;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
 
-public class DoSFilter extends org.eclipse.jetty.servlets.DoSFilter {
+public class DoSFilter extends org.eclipse.jetty.ee9.servlets.DoSFilter {
 
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {

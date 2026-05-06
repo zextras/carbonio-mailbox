@@ -48,17 +48,17 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.activation.DataHandler;
-import javax.mail.Address;
-import javax.mail.Header;
-import javax.mail.Message.RecipientType;
-import javax.mail.MessagingException;
-import javax.mail.Part;
-import javax.mail.internet.ContentType;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import jakarta.activation.DataHandler;
+import jakarta.mail.Address;
+import jakarta.mail.Header;
+import jakarta.mail.Message.RecipientType;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Part;
+import jakarta.mail.internet.ContentType;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 
 public class ForwardCalendarItem extends CalendarRequest {
 
@@ -440,9 +440,9 @@ public class ForwardCalendarItem extends CalendarRequest {
         }
 
         mm.setSentDate(new Date());
-        mm.setRecipients(javax.mail.Message.RecipientType.TO, (Address[]) null);
-        mm.setRecipients(javax.mail.Message.RecipientType.CC, (Address[]) null);
-        mm.setRecipients(javax.mail.Message.RecipientType.BCC, (Address[]) null);
+        mm.setRecipients(jakarta.mail.Message.RecipientType.TO, (Address[]) null);
+        mm.setRecipients(jakarta.mail.Message.RecipientType.CC, (Address[]) null);
+        mm.setRecipients(jakarta.mail.Message.RecipientType.BCC, (Address[]) null);
 
         if (fromAddr != null) mm.setFrom(fromAddr);
         if (senderAddr != null) mm.setSender(senderAddr);

@@ -10,11 +10,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
-import javax.mail.internet.MimeUtility;
+import jakarta.mail.internet.MimeUtility;
 
-import com.sun.mail.util.BEncoderStream;
-import com.sun.mail.util.PropUtil;
-import com.sun.mail.util.QEncoderStream;
+import org.eclipse.angus.mail.util.BEncoderStream;
+import org.eclipse.angus.mail.util.PropUtil;
+import org.eclipse.angus.mail.util.QEncoderStream;
 
 public class MimeUtil {
     /** (non-Javadoc)
@@ -86,6 +86,35 @@ public class MimeUtil {
     private static final boolean foldEncodedWords =
             PropUtil.getBooleanSystemProperty("mail.mime.foldencodedwords", false);
 
+    /**
+     * Calculate the length of Q-encoded (quoted-printable) bytes.
+     * In Q encoding, printable ASCII chars (except =, _, ?) count as 1 byte,
+     * others count as 3 bytes (=XX). Space can be encoded as _ (1 byte) if encodingWord is true.
+     */
+    private static int qEncodedLength(byte[] bytes, boolean encodingWord) {
+        int len = 0;
+        for (byte b : bytes) {
+            // Convert byte to unsigned int for comparison
+            int c = b & 0xFF;
+            // Printable ASCII: 33-60 (! to <), 62-126 (> to ~), excluding = (61), _ (95), ? (63)
+            if ((c >= 33 && c <= 60) || (c >= 62 && c <= 94) || (c >= 96 && c <= 126)) {
+                // Printable, but check for special chars
+                if (c == 61 || c == 63) { // = or ?
+                    len += 3;
+                } else if (c == 95) { // _
+                    len += 3;
+                } else {
+                    len += 1;
+                }
+            } else if (c == 32 && encodingWord) { // space in encoding word
+                len += 1; // encoded as _
+            } else {
+                len += 3; // encoded as =XX
+            }
+        }
+        return len;
+    }
+
     /** (non-Javadoc)
      * @see javax.mail.internet.MimeUtility.doEncode(String string, boolean b64, String jcharset, int avail, String prefix, boolean first, boolean encodingWord, StringBuffer buf)
      */
@@ -99,11 +128,11 @@ public class MimeUtil {
         byte[] bytes = string.getBytes(jcharset);
         int len;
         if (b64) {
-            // "B" encoding
-            len = BEncoderStream.encodedLength(bytes);
+            // "B" encoding - base64 length formula: ((bytes.length + 2) / 3) * 4
+            len = ((bytes.length + 2) / 3) * 4;
         } else {
-            // "Q"
-            len = QEncoderStream.encodedLength(bytes, encodingWord);
+            // "Q" encoding
+            len = qEncodedLength(bytes, encodingWord);
         }
 
         int size;

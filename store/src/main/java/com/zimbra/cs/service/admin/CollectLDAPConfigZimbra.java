@@ -8,10 +8,10 @@ package com.zimbra.cs.service.admin;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import javax.mail.Part;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.mail.Part;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.zimbra.common.account.Key;
 import com.zimbra.common.localconfig.LC;

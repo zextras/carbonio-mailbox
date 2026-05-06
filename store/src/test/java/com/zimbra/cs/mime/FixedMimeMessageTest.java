@@ -10,8 +10,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.google.common.base.Charsets;
 import com.zimbra.cs.mime.Mime.FixedMimeMessage;
 import com.zimbra.cs.util.JMSession;
-import javax.mail.internet.MimeMessage;
-import javax.mail.util.SharedByteArrayInputStream;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.util.SharedByteArrayInputStream;
 import org.junit.jupiter.api.Test;
 
 /**

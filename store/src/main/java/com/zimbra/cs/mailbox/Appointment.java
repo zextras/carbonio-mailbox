@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
 
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.CalendarResource;

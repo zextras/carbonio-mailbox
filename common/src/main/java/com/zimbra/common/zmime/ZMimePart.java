@@ -7,8 +7,8 @@ package com.zimbra.common.zmime;
 
 import java.nio.charset.Charset;
 
-import javax.mail.internet.MimePart;
-import javax.mail.internet.SharedInputStream;
+import jakarta.mail.internet.MimePart;
+import jakarta.mail.internet.SharedInputStream;
 
 public interface ZMimePart extends MimePart {
     void appendHeader(ZInternetHeader header);

@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Random;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;

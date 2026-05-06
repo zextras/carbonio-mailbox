@@ -5,8 +5,8 @@
 
 package com.zimbra.soap.account.type;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 import com.zimbra.soap.type.ContactsDataSource;
 

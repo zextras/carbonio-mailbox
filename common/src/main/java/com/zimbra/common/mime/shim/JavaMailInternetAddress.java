@@ -9,9 +9,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.List;
 
-import javax.mail.Address;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.Address;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 
 public class JavaMailInternetAddress extends InternetAddress implements JavaMailShim {
     private static final long serialVersionUID = -8715292468770012173L;

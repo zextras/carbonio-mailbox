@@ -8,7 +8,7 @@ package com.zimbra.cs.mime;
 import java.io.File;
 import java.io.IOException;
 
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
 
 import com.zimbra.cs.store.Blob;
 

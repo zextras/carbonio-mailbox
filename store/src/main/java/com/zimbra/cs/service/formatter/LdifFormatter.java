@@ -15,9 +15,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.MessagingException;
-import javax.mail.Part;
-import javax.servlet.ServletException;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Part;
+import jakarta.servlet.ServletException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;

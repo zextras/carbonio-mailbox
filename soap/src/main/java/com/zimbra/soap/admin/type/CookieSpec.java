@@ -5,7 +5,7 @@
 
 package com.zimbra.soap.admin.type;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlAttribute;
 
 import com.zimbra.common.soap.AdminConstants;
 

@@ -22,7 +22,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class FreeBusyQuery {
   public static final int CALENDAR_FOLDER_ALL = -1;

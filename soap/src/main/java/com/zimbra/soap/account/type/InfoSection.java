@@ -7,8 +7,8 @@ package com.zimbra.soap.account.type;
 
 import com.zimbra.common.service.ServiceException;
 import java.util.Arrays;
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 @XmlEnum
 public enum InfoSection {

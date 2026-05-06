@@ -10,19 +10,19 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.activation.DataHandler;
-import javax.mail.MessagingException;
-import javax.mail.Part;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import jakarta.activation.DataHandler;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Part;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.sun.mail.smtp.SMTPMessage;
+import org.eclipse.angus.mail.smtp.SMTPMessage;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
@@ -107,7 +107,7 @@ public class SpamHandler {
         if (config.isSmtpSendAddOriginatingIP() && sr.origIp != null)
             out.addHeader(MailSender.X_ORIGINATING_IP, MailSender.formatXOrigIpHeader(sr.origIp));
 
-        out.setRecipient(javax.mail.Message.RecipientType.TO, sr.reportRecipient);
+        out.setRecipient(jakarta.mail.Message.RecipientType.TO, sr.reportRecipient);
         out.setEnvelopeFrom(config.getSpamReportEnvelopeFrom());
         out.setSubject(config.getSpamTrainingSubjectPrefix() + " " + sr.accountName + ": " + isSpamString);
         Transport.send(out);

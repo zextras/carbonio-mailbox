@@ -14,7 +14,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
-import javax.activation.DataSource;
+import jakarta.activation.DataSource;
 
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.CharsetUtil;

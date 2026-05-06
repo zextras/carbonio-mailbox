@@ -14,10 +14,10 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
-import javax.mail.Header;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeUtility;
+import jakarta.mail.Header;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeUtility;
 
 import org.apache.jsieve.Arguments;
 import org.apache.jsieve.Block;

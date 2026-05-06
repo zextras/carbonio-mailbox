@@ -26,8 +26,12 @@
       <artifactId>httpcore</artifactId>
     </dependency>
     <dependency>
-      <artifactId>mail</artifactId>
-      <groupId>javax.mail</groupId>
+      <groupId>jakarta.mail</groupId>
+      <artifactId>jakarta.mail-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.angus</groupId>
+      <artifactId>angus-mail</artifactId>
     </dependency>
 
     <dependency>
@@ -46,8 +50,8 @@
     </dependency>
 
     <dependency>
-      <artifactId>javax.servlet-api</artifactId>
-      <groupId>javax.servlet</groupId>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
     </dependency>
 
     <dependency>
@@ -95,8 +99,8 @@
     </dependency>
 
     <dependency>
-      <artifactId>jaxb-api</artifactId>
-      <groupId>javax.xml.bind</groupId>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
     </dependency>
 
     <dependency>
@@ -115,8 +119,8 @@
     </dependency>
 
     <dependency>
-      <artifactId>javax.annotation-api</artifactId>
-      <groupId>javax.annotation</groupId>
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
     </dependency>
 
     <dependency>
@@ -142,6 +146,11 @@
     <dependency>
       <groupId>io.prometheus</groupId>
       <artifactId>simpleclient</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.activation</groupId>
+      <artifactId>jakarta.activation-api</artifactId>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <!-- TODO: this is also defined in zm-zcs-lib -->

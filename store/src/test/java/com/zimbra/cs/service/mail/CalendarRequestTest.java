@@ -26,8 +26,8 @@ import com.zimbra.soap.ZimbraSoapContext;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import javax.mail.Address;
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.Address;
+import jakarta.mail.internet.InternetAddress;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -46,8 +46,8 @@ public class CalendarRequestTest {
   private Invite invite1;
   private Invite invite2;
   private Account account;
-  private javax.mail.internet.MimeMessage mm;
-  private javax.mail.internet.MimeMessage mm2;
+  private jakarta.mail.internet.MimeMessage mm;
+  private jakarta.mail.internet.MimeMessage mm2;
 
   /**
    * @throws java.lang.Exception

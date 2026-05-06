@@ -13,8 +13,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 import com.zextras.mailbox.encryption.EncryptionHandler;
 import com.zextras.mailbox.encryption.EncryptionHandlerFactory;
@@ -127,7 +127,7 @@ public class MessageCache {
         }
     }
 
-    /** Returns a JavaMail {@link javax.mail.internet.MimeMessage}
+    /** Returns a JavaMail {@link jakarta.mail.internet.MimeMessage}
      *  encapsulating the message content.  If possible, uuencoded
      *  attachments are expanded and their components are presented as
      *  standard MIME attachments.  If uuencode decoding fails, the

@@ -7,7 +7,7 @@ package com.zimbra.soap;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.dom4j.QName;
 

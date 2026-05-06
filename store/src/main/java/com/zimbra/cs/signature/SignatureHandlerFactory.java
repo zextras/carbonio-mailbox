@@ -9,9 +9,9 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.pgp.PgpHandler;
 import com.zimbra.cs.smime.SmimeHandler;
 
-import javax.mail.BodyPart;
-import javax.mail.Multipart;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.BodyPart;
+import jakarta.mail.Multipart;
+import jakarta.mail.internet.MimeMessage;
 import java.util.Locale;
 import java.util.Optional;
 

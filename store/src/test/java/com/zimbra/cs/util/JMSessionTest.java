@@ -14,7 +14,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailclient.smtp.SmtpTransport;
 import com.zimbra.cs.mailclient.smtp.SmtpsTransport;
 import java.util.HashMap;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.Test;
 
 /**

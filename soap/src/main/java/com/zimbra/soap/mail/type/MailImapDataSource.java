@@ -9,7 +9,7 @@ import com.google.common.base.MoreObjects;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.type.ImapDataSource;
 import com.zimbra.soap.type.ZmBoolean;
-import javax.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlAttribute;
 
 public class MailImapDataSource extends MailDataSource implements ImapDataSource {
 

@@ -27,7 +27,7 @@ import com.zimbra.cs.mime.MPartInfo;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.soap.ZimbraSoapContext;
 
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.HashSet;

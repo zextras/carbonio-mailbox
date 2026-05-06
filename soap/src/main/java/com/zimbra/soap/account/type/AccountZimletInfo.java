@@ -8,11 +8,11 @@ package com.zimbra.soap.account.type;
 import org.w3c.dom.Element;
 
 import com.google.common.base.MoreObjects;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAnyElement;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.ZimletConstants;

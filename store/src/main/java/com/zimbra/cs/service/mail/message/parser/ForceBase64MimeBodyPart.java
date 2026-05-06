@@ -8,7 +8,7 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.zmime.ZMimeBodyPart;
 import com.zimbra.cs.mime.Mime;
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 
 /**
  * Overrides the default transfer encoding and sets the encoding of all non-message attachments to

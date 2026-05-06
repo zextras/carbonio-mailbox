@@ -10,10 +10,10 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.json.jackson.annotate.ZimbraUniqueElement;
 import com.zimbra.soap.mail.type.FolderActionSelector;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 // TODO: This class is extracted from FolderAction. Only calendar ids are needed for this request. Remove unnecessary fields.
 @XmlAccessorType(XmlAccessType.NONE)

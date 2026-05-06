@@ -49,9 +49,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 
 public class SendShareNotification extends MailDocumentHandler {
 

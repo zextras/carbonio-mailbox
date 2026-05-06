@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.dom4j.Document;
 import org.dom4j.Element;

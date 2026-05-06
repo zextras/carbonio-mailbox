@@ -11,17 +11,16 @@ import java.util.Map;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import org.eclipse.jetty.continuation.Continuation;
-import org.eclipse.jetty.continuation.ContinuationSupport;
+import jakarta.servlet.AsyncContext;
 
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import com.zimbra.common.localconfig.LC;
@@ -115,14 +114,15 @@ public class ZimbraQoSFilter implements Filter {
                     pass.release();
                 }
             } else {
-                Continuation continuation = ContinuationSupport.getContinuation(request);
                 HttpServletRequest hreq = (HttpServletRequest) request;
                 ZimbraServlet.addRemoteIpToLoggingContext(hreq);
                 ZimbraServlet.addUAToLoggingContext(hreq);
-                ZimbraLog.misc.warn("Exceeded the max requests limit. Suspending " + continuation);
+                ZimbraLog.misc.warn("Exceeded the max requests limit. Suspending request.");
                 ZimbraLog.clearContext();
-                continuation.setTimeout(suspendMs);
-                continuation.suspend();
+                AsyncContext asyncContext = hreq.startAsync(request, response);
+                asyncContext.setTimeout(suspendMs);
+                // Return from filter — container suspends the thread until timeout
+                return;
             }
         } catch(InterruptedException e) {
             ((HttpServletResponse)response).sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);

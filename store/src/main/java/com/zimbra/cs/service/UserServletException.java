@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.service;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class UserServletException extends Exception {
     private int mCode;

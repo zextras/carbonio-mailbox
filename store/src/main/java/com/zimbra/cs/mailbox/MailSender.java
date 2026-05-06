@@ -64,15 +64,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.mail.Address;
-import javax.mail.MessagingException;
-import javax.mail.NoSuchProviderException;
-import javax.mail.SendFailedException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.URLName;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.Address;
+import jakarta.mail.MessagingException;
+import jakarta.mail.NoSuchProviderException;
+import jakarta.mail.SendFailedException;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.URLName;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 public class MailSender {
 
@@ -242,9 +242,9 @@ public class MailSender {
   }
 
   /**
-   * Sets an alternate JavaMail {@link javax.mail.Session} and SMTP hosts that will be used to send
+   * Sets an alternate JavaMail {@link jakarta.mail.Session} and SMTP hosts that will be used to send
    * the message based on the domain values. The default behavior is to use SMTP settings from the
-   * {@link javax.mail.Session} on the {@link MimeMessage}.
+   * {@link jakarta.mail.Session} on the {@link MimeMessage}.
    *
    * @param domain {@link com.zimbra.cs.account.Domain}
    * @throws ServiceException if not able to get SMTP session for the domain
@@ -296,7 +296,7 @@ public class MailSender {
   }
 
   /**
-   * Returns the current session {@link javax.mail.Session}.
+   * Returns the current session {@link jakarta.mail.Session}.
    *
    * @return {@link #mSession} value
    * @author Yuliya Aheeva
@@ -466,16 +466,16 @@ public class MailSender {
   }
 
   /**
-   * Sends a list of messages {@link javax.mail.internet.MimeMessage}.
+   * Sends a list of messages {@link jakarta.mail.internet.MimeMessage}.
    *
    * <p>Tries to find the account by name (if unable to find will set account from the mailbox later
    * with the {@link #sendMimeMessage(OperationContext, Mailbox, MimeMessage)} method) and provide
    * the proper operational context.
    *
    * @param mbox object of {@link com.zimbra.cs.mailbox.Mailbox}
-   * @param mimeMessageList a list of {@link javax.mail.internet.MimeMessage} to be sent
+   * @param mimeMessageList a list of {@link jakarta.mail.internet.MimeMessage} to be sent
    * @throws ServiceException if sender is not set for the specific {@link
-   *     javax.mail.internet.MimeMessage}
+   *     jakarta.mail.internet.MimeMessage}
    * @author Yuliya Aheeva
    * @since 23.5.0
    */

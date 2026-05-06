@@ -54,12 +54,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Hex;
 
 public class ExternalUserProvServlet extends ZimbraServlet {
@@ -205,7 +205,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
 
           // check if the external user is already logged-in
           String zAuthTokenCookie = null;
-          javax.servlet.http.Cookie[] cookies = req.getCookies();
+          jakarta.servlet.http.Cookie[] cookies = req.getCookies();
           if (cookies != null) {
             for (Cookie cookie : cookies) {
               if (cookie.getName().equals("ZM_AUTH_TOKEN")) {
@@ -357,7 +357,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
     String password = req.getParameter("password");
 
     String prelimToken = null;
-    javax.servlet.http.Cookie[] cookies = req.getCookies();
+    jakarta.servlet.http.Cookie[] cookies = req.getCookies();
     if (cookies != null) {
       for (Cookie cookie : cookies) {
         if (cookie.getName().equals("ZM_PRELIM_AUTH_TOKEN")) {

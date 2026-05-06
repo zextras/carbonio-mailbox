@@ -7,7 +7,7 @@ package com.zimbra.common.httpclient;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 import javax.net.ssl.SSLContext;
 
 import org.apache.http.client.config.RequestConfig;

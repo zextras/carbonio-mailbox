@@ -17,7 +17,7 @@ import com.zimbra.cs.mailbox.MailboxManager;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.core.Application;
 import java.util.Set;
 
 @OpenAPIDefinition(

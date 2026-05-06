@@ -7,25 +7,22 @@ import com.zimbra.common.jetty.JettyMonitor;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.account.Config;
 import java.io.IOException;
-import javax.servlet.DispatcherType;
 import org.eclipse.jetty.http.HttpVersion;
-import org.eclipse.jetty.rewrite.handler.MsieSslRule;
 import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.rewrite.handler.RewritePatternRule;
 import org.eclipse.jetty.rewrite.handler.RewriteRegexRule;
+import org.eclipse.jetty.server.CustomRequestLog;
 import org.eclipse.jetty.server.ForwardedRequestCustomizer;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HostHeaderCustomizer;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
-import org.eclipse.jetty.server.NCSARequestLog;
+import org.eclipse.jetty.server.AsyncRequestLogWriter;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.handler.HandlerCollection;
-import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
@@ -39,7 +36,7 @@ public class MailboxServerBuilder {
 	private final Config config;
 	private final com.zimbra.cs.account.Server localServer;
 	private HttpConfiguration httpsConfig;
-	private SslContextFactory sslContextFactory;
+	private SslContextFactory.Server sslContextFactory;
 	private boolean dump = true;
 
 	public MailboxServerBuilder(Config config, com.zimbra.cs.account.Server localServer) {
@@ -52,20 +49,13 @@ public class MailboxServerBuilder {
 		return this;
 	}
 
-	private static RequestLogHandler createRequestLogHandler() {
+	private static CustomRequestLog createRequestLog() {
 		final String accessLogFileName = LC.zimbra_log_directory.value() + "/access_log.yyyy_mm_dd";
-		final NCSARequestLog ncsaRequestLog = new NCSARequestLog(accessLogFileName);
-		ncsaRequestLog.setLogDateFormat("dd/MMM/yyyy:HH:mm:ss:ms Z");
-		ncsaRequestLog.setRetainDays(30);
-		ncsaRequestLog.setAppend(true);
-		ncsaRequestLog.setExtended(true);
-		ncsaRequestLog.setFilenameDateFormat("yyyy-MM-dd");
-		ncsaRequestLog.setPreferProxiedForAddress(true);
-		ncsaRequestLog.setLogLatency(true);
-
-		final RequestLogHandler requestLogHandler = new RequestLogHandler();
-		requestLogHandler.setRequestLog(ncsaRequestLog);
-		return requestLogHandler;
+		final AsyncRequestLogWriter writer = new AsyncRequestLogWriter(accessLogFileName);
+		writer.setRetainDays(30);
+		writer.setAppend(true);
+		writer.setTimeZone("UTC");
+		return new CustomRequestLog(writer, CustomRequestLog.EXTENDED_NCSA_FORMAT);
 	}
 
 	public MailboxServer create() throws InstantiationException {
@@ -95,18 +85,20 @@ public class MailboxServerBuilder {
 			final ContextHandlerCollection contexts = new ContextHandlerCollection();
 			contexts.addHandler(InternalApiContextHandler.create());
 
-			Handler webAppHandler = new MailboxAPIs(localServer).createServletContextHandler();
+			Handler webAppHandler = new MailboxAPIs(localServer).createServletContextHandler().get();
 
 			final RewriteHandler mainHandler = createRewriteHandler();
-			mainHandler.setHandler(new HandlerCollection(contexts, webAppHandler,
-					createRequestLogHandler()));
+			final Handler.Sequence handlerSequence = new Handler.Sequence(contexts, webAppHandler);
+			mainHandler.setHandler(handlerSequence);
+
+			server.setRequestLog(createRequestLog());
 
 			if (localServer.isHttpCompressionEnabled()) {
 				final GzipHandler gzipHandler = new GzipHandler();
 				gzipHandler.setHandler(mainHandler);
 				gzipHandler.setMinGzipSize(2048);
-				gzipHandler.setCompressionLevel(-1);
-				gzipHandler.setExcludedAgentPatterns(".*MSIE.6\\.0.*");
+				// setCompressionLevel removed in Jetty 12 (uses default deflate level)
+				// setExcludedAgentPatterns removed in Jetty 12 (IE6 no longer supported)
 				gzipHandler.setIncludedMethods("GET", "POST");
 				server.setHandler(gzipHandler);
 			} else {
@@ -179,14 +171,8 @@ public class MailboxServerBuilder {
 
 	private RewriteHandler createRewriteHandler() {
 		final RewriteHandler rewriteHandler = new RewriteHandler();
-		rewriteHandler.setRewriteRequestURI(true);
-		rewriteHandler.setRewritePathInfo(false);
+		// setRewriteRequestURI/setRewritePathInfo/setDispatcherTypes removed in Jetty 12
 		rewriteHandler.setOriginalPathAttribute("requestedPath");
-
-		rewriteHandler.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC,
-				DispatcherType.ERROR,
-				DispatcherType.FORWARD);
-		rewriteHandler.addRule(new MsieSslRule());
 
 		final String mailURL = localServer.getMailURL();
 
@@ -271,8 +257,8 @@ public class MailboxServerBuilder {
 		return sslHttpConfig;
 	}
 
-	private SslContextFactory createSSLContextFactory() {
-		SslContextFactory localSslContextFactory = new SslContextFactory.Server();
+	private SslContextFactory.Server createSSLContextFactory() {
+		SslContextFactory.Server localSslContextFactory = new SslContextFactory.Server();
 		localSslContextFactory.setKeyStorePath(LC.mailboxd_keystore.value());
 		localSslContextFactory.setKeyStorePassword(LC.mailboxd_keystore_password.value());
 		localSslContextFactory.setKeyManagerPassword(LC.mailboxd_keystore_password.value());

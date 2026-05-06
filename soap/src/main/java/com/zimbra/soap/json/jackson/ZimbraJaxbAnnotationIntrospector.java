@@ -4,23 +4,22 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.soap.json.jackson;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
+import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
 
 import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.AnnotatedField;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 /**
  * This class exists because of:
  *     https://github.com/FasterXML/jackson-modules-base/issues/47
  * Perhaps when that is fixed, this can go away.
  */
-public class ZimbraJaxbAnnotationIntrospector extends JaxbAnnotationIntrospector {
+public class ZimbraJaxbAnnotationIntrospector extends JakartaXmlBindAnnotationIntrospector {
     private static final long serialVersionUID = 3903948048784286612L;
 
     public ZimbraJaxbAnnotationIntrospector(TypeFactory typeFactory) {

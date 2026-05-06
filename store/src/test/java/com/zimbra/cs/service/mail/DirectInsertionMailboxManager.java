@@ -17,9 +17,9 @@ import com.zimbra.cs.mime.ParsedMessage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.mail.Address;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.Address;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 public class DirectInsertionMailboxManager extends MailboxManager {
 

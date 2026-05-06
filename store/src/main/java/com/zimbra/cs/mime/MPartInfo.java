@@ -10,8 +10,8 @@ package com.zimbra.cs.mime;
 
 import java.util.List;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimePart;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimePart;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.common.mime.ContentType;

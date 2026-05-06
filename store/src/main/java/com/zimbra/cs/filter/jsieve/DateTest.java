@@ -15,8 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ListIterator;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 import org.apache.jsieve.Argument;
 import org.apache.jsieve.Arguments;

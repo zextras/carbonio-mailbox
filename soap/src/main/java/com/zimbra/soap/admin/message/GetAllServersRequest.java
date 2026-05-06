@@ -7,8 +7,8 @@ package com.zimbra.soap.admin.message;
 
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.soap.type.ZmBoolean;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * @zm-api-command-auth-required true

@@ -9,7 +9,7 @@ import static com.zimbra.common.util.TaskUtil.newDaemonThreadFactory;
 import static java.util.Collections.newSetFromMap;
 import static java.util.concurrent.Executors.newCachedThreadPool;
 
-import com.sun.mail.smtp.SMTPTransport;
+import org.eclipse.angus.mail.smtp.SMTPTransport;
 import com.zimbra.common.account.ZAttrProvisioning.AccountStatus;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -46,9 +46,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
 
 public class DataSourceManager {
 

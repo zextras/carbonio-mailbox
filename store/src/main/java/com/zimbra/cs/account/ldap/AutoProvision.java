@@ -23,17 +23,17 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.Address;
-import javax.mail.MessagingException;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMultipart;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.mail.Address;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMultipart;
 
-import com.sun.mail.smtp.SMTPMessage;
+import org.eclipse.angus.mail.smtp.SMTPMessage;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.account.ZAttrProvisioning.AutoProvMode;
 import com.zimbra.common.mime.MimeConstants;
@@ -475,7 +475,7 @@ public abstract class AutoProvision {
 
             // To
 
-            out.setRecipient(javax.mail.Message.RecipientType.TO, new JavaMailInternetAddress(toAddr));
+            out.setRecipient(jakarta.mail.Message.RecipientType.TO, new JavaMailInternetAddress(toAddr));
 
             // Date
             out.setSentDate(new Date());
@@ -512,7 +512,7 @@ public abstract class AutoProvision {
             Transport.send(out);
 
             // log
-            Address[] rcpts = out.getRecipients(javax.mail.Message.RecipientType.TO);
+            Address[] rcpts = out.getRecipients(jakarta.mail.Message.RecipientType.TO);
             StringBuilder rcptAddr = new StringBuilder();
             for (Address a : rcpts)
                 rcptAddr.append(a.toString());

@@ -12,7 +12,7 @@ import com.zimbra.common.account.ZAttrProvisioning.FeatureAddressVerificationSta
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import java.util.HashMap;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

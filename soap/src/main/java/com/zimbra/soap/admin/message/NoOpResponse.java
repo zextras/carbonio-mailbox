@@ -5,7 +5,7 @@
 
 package com.zimbra.soap.admin.message;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import com.zimbra.common.soap.AdminConstants;
 
 @XmlRootElement(name=AdminConstants.E_NO_OP_RESPONSE)

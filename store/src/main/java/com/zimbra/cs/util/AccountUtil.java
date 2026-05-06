@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.util;
 
-import com.sun.mail.smtp.SMTPMessage;
+import org.eclipse.angus.mail.smtp.SMTPMessage;
 import com.zextras.mailbox.quota.QuotaCheckSingleton;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
@@ -58,14 +58,14 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.activation.DataHandler;
-import javax.mail.Address;
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import jakarta.activation.DataHandler;
+import jakarta.mail.Address;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import org.apache.commons.codec.binary.Hex;
 
 public class AccountUtil {
@@ -540,7 +540,7 @@ public class AccountUtil {
         for (String iRecipient : internalRecipients) {
           try {
             mm.addRecipient(
-                javax.mail.Message.RecipientType.TO, new JavaMailInternetAddress(iRecipient));
+                jakarta.mail.Message.RecipientType.TO, new JavaMailInternetAddress(iRecipient));
           } catch (AddressException e) {
             ZimbraLog.account.warn("Ignoring error while sending notification to " + iRecipient, e);
           }
@@ -548,9 +548,9 @@ public class AccountUtil {
       }
     } else if (externalRecipient != null) {
       mm.setRecipient(
-          javax.mail.Message.RecipientType.TO, new JavaMailInternetAddress(externalRecipient));
+          jakarta.mail.Message.RecipientType.TO, new JavaMailInternetAddress(externalRecipient));
     } else {
-      mm.setRecipient(javax.mail.Message.RecipientType.TO, new JavaMailInternetAddress(recipient));
+      mm.setRecipient(jakarta.mail.Message.RecipientType.TO, new JavaMailInternetAddress(recipient));
     }
     mm.setContent(mmp);
     mm.saveChanges();
@@ -794,7 +794,7 @@ public class AccountUtil {
     }
   }
 
-  private abstract static class MimePartDataSource implements javax.activation.DataSource {
+  private abstract static class MimePartDataSource implements jakarta.activation.DataSource {
 
     private final String mText;
     private byte[] mBuf = null;

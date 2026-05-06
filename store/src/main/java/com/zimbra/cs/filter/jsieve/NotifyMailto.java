@@ -35,8 +35,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.AddressException;
 
 
 /**

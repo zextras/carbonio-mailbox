@@ -217,10 +217,10 @@ import com.zimbra.soap.admin.type.DataSourceType;
 import com.zimbra.soap.mail.type.Policy;
 import com.zimbra.soap.mail.type.RetentionPolicy;
 
-import javax.mail.Address;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimePart;
+import jakarta.mail.Address;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimePart;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -8895,8 +8895,8 @@ public class Mailbox implements MailboxStore {
     }
     Set<Address> newAddrs = new HashSet<>();
     for (Address addr : addrs) {
-      if (addr instanceof javax.mail.internet.InternetAddress) {
-        javax.mail.internet.InternetAddress iaddr = (javax.mail.internet.InternetAddress) addr;
+      if (addr instanceof jakarta.mail.internet.InternetAddress) {
+        jakarta.mail.internet.InternetAddress iaddr = (jakarta.mail.internet.InternetAddress) addr;
         try {
           if (!Strings.isNullOrEmpty(iaddr.getAddress())
               && !iaddr.getAddress().contains(sender_domain)

@@ -17,8 +17,8 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.util.JMSession;
 import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.ZimbraSoapContext;
-import javax.mail.MessagingException;
-import javax.mail.Session;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
 
 /**
  * Class encapsulating common data passed among methods.

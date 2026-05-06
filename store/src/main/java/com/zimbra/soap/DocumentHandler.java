@@ -32,7 +32,7 @@ import com.zimbra.cs.util.Zimbra;
 import com.zimbra.soap.ZimbraSoapContext.SessionInfo;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.dom4j.QName;
 
 /**

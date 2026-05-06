@@ -8,7 +8,7 @@ package com.zimbra.cs.account;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.internet.InternetAddress;
 
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;

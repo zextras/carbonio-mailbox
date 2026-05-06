@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimePart;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimePart;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * This Utility class. Contains common utility/helper methods to be used by the Preview Servlet.

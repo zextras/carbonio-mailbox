@@ -9,8 +9,8 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.zimbra.common.soap.MailConstants;
 import java.util.List;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
 
 public class SyncFolder extends Folder {
 

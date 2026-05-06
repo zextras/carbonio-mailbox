@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.internet.MimeUtility;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.mail.internet.MimeUtility;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.net.URLCodec;
 

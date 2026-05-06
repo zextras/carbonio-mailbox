@@ -8,7 +8,7 @@ package com.zimbra.cs.dav.service.method;
 import java.io.IOException;
 
 import java.nio.charset.StandardCharsets;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.zimbra.common.mime.ContentType;
 import com.zimbra.common.mime.MimeConstants;

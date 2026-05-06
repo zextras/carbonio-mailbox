@@ -8,8 +8,8 @@ package com.zimbra.soap.type;
 import java.util.Arrays;
 import java.util.Locale;
 
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 import com.zimbra.common.service.ServiceException;
 

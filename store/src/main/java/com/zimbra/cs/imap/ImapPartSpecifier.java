@@ -14,10 +14,10 @@ import java.io.PrintStream;
 import java.util.Enumeration;
 import java.util.List;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimePart;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimePart;
 
 import com.zimbra.common.mailbox.ZimbraMailItem;
 import com.zimbra.common.service.ServiceException;
@@ -240,7 +240,7 @@ class ImapPartSpecifier {
                 int start = octetStart;
                 // the JavaMail implementations of the content-transfer decoders
                 // don't do skip() correctly
-                if (is instanceof com.sun.mail.util.BASE64DecoderStream || is instanceof com.sun.mail.util.QPDecoderStream) {
+                if (is instanceof org.eclipse.angus.mail.util.BASE64DecoderStream || is instanceof org.eclipse.angus.mail.util.QPDecoderStream) {
                     ByteUtil.skip(is, start);
                     start = 0;
                 }

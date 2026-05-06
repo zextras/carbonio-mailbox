@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.activation.DataSource;
+import jakarta.activation.DataSource;
 
 /**
  * Wraps another <tt>DataSource</tt> and allows the caller to

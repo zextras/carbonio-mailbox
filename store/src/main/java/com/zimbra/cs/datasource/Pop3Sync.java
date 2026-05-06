@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 import javax.security.auth.login.LoginException;
 
 import com.zimbra.common.localconfig.LC;
