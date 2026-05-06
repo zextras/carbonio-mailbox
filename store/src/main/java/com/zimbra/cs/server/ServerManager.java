@@ -11,14 +11,12 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.imap.ImapConfig;
 import com.zimbra.cs.imap.ImapServer;
-import com.zimbra.cs.imap.NioImapServer;
 import com.zimbra.cs.imap.TcpImapServer;
 import com.zimbra.cs.lmtpserver.LmtpConfig;
 import com.zimbra.cs.lmtpserver.LmtpServer;
 import com.zimbra.cs.lmtpserver.TcpLmtpServer;
 import com.zimbra.cs.milter.MilterConfig;
-import com.zimbra.cs.milter.MilterServer;
-import com.zimbra.cs.pop3.NioPop3Server;
+import com.zimbra.cs.milter.TcpMilterServer;
 import com.zimbra.cs.pop3.Pop3Config;
 import com.zimbra.cs.pop3.Pop3Server;
 import com.zimbra.cs.pop3.TcpPop3Server;
@@ -30,12 +28,9 @@ public final class ServerManager {
     private Pop3Server pop3SSLServer;
     private ImapServer imapServer;
     private ImapServer imapSSLServer;
-    private MilterServer milterServer;
+    private TcpMilterServer milterServer;
 
     private static final ServerManager INSTANCE = new ServerManager();
-
-    // For debugging...
-    private static final boolean NIO_ENABLED = Boolean.getBoolean("ZimbraNioEnabled");
 
     public static ServerManager getInstance() {
         return INSTANCE;
@@ -64,7 +59,7 @@ public final class ServerManager {
         }
 
         // run milter service in the same process as mailtoxd. should be used only in dev environment
-        if (app.supports(MilterServer.class)) {
+        if (app.supports(TcpMilterServer.class)) {
             if (LC.milter_in_process_mode.booleanValue()) {
                 milterServer = startMilterServer();
             }
@@ -84,22 +79,20 @@ public final class ServerManager {
 
     private Pop3Server startPop3Server(boolean ssl) throws ServiceException {
         Pop3Config config = new Pop3Config(ssl);
-        Pop3Server server = NIO_ENABLED || LC.nio_pop3_enabled.booleanValue() ?
-            new NioPop3Server(config, Metrics.METER_REGISTRY) : new TcpPop3Server(config, Metrics.METER_REGISTRY);
+        Pop3Server server = new TcpPop3Server(config, Metrics.METER_REGISTRY);
         server.start();
         return server;
     }
 
     private ImapServer startImapServer(boolean ssl) throws ServiceException {
         ImapConfig config = new ImapConfig(ssl);
-        ImapServer server = NIO_ENABLED || LC.nio_imap_enabled.booleanValue() ?
-            new NioImapServer(config, Metrics.METER_REGISTRY) : new TcpImapServer(config, Metrics.METER_REGISTRY);
+        ImapServer server = new TcpImapServer(config, Metrics.METER_REGISTRY);
         server.start();
         return server;
     }
 
-    private MilterServer startMilterServer() throws ServiceException {
-        MilterServer server = new MilterServer(new MilterConfig());
+    private TcpMilterServer startMilterServer() throws ServiceException {
+        TcpMilterServer server = new TcpMilterServer(new MilterConfig());
         server.start();
         return server;
     }

@@ -39,11 +39,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>mina-core</artifactId>
-      <groupId>org.apache.mina</groupId>
-    </dependency>
-
-    <dependency>
       <artifactId>concurrentlinkedhashmap-lru</artifactId>
       <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
     </dependency>

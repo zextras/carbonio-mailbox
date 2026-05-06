@@ -5,34 +5,22 @@
 
 package com.zimbra.cs.milter;
 
-import org.apache.mina.core.session.IoSession;
-import org.apache.mina.filter.codec.ProtocolCodecFactory;
-import org.apache.mina.filter.codec.ProtocolDecoder;
-import org.apache.mina.filter.codec.ProtocolEncoder;
-
-import sun.misc.Signal;
-import sun.misc.SignalHandler;
-
 import com.zextras.carbonio.systemd.SystemdNotify;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.Log;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.PermissionCache;
 import com.zimbra.cs.account.ldap.LdapProv;
-import com.zimbra.cs.server.NioConnection;
-import com.zimbra.cs.server.NioHandler;
-import com.zimbra.cs.server.NioServer;
-import com.zimbra.cs.server.Server;
-import com.zimbra.cs.server.ServerConfig;
+import com.zimbra.cs.server.ProtocolHandler;
+import com.zimbra.cs.server.TcpServer;
 
-public final class MilterServer extends NioServer implements Server {
-    private final ProtocolDecoder decoder = new NioMilterDecoder();
-    private final ProtocolEncoder encoder = new NioMilterEncoder();
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
 
-    public MilterServer(ServerConfig config) throws ServiceException {
+public final class TcpMilterServer extends TcpServer {
+
+    public TcpMilterServer(MilterConfig config) throws ServiceException {
         super(config);
-        registerMBean(getName());
     }
 
     @Override
@@ -41,23 +29,8 @@ public final class MilterServer extends NioServer implements Server {
     }
 
     @Override
-    public NioHandler createHandler(NioConnection conn) {
-        return new MilterHandler(conn);
-    }
-
-    @Override
-    protected ProtocolCodecFactory getProtocolCodecFactory() {
-        return new ProtocolCodecFactory() {
-            @Override
-            public ProtocolDecoder getDecoder(IoSession session) {
-                return decoder;
-            }
-
-            @Override
-            public ProtocolEncoder getEncoder(IoSession session) {
-                return encoder;
-            }
-        };
+    protected ProtocolHandler newProtocolHandler() {
+        return new TcpMilterHandler(this);
     }
 
     @Override
@@ -65,15 +38,10 @@ public final class MilterServer extends NioServer implements Server {
         return (MilterConfig) super.getConfig();
     }
 
-    @Override
-    public Log getLog() {
-        return ZimbraLog.milter;
-    }
-
     private static final class MilterShutdownHook extends Thread {
-        private final MilterServer server;
+        private final TcpMilterServer server;
 
-        public MilterShutdownHook(MilterServer server) {
+        MilterShutdownHook(TcpMilterServer server) {
             this.server = server;
         }
 
@@ -92,9 +60,8 @@ public final class MilterServer extends NioServer implements Server {
             }
 
             MilterConfig config = new MilterConfig();
-            MilterServer server = new MilterServer(config);
+            TcpMilterServer server = new TcpMilterServer(config);
 
-            // register the signal handler
             ClearCacheSignalHandler.register();
 
             MilterShutdownHook shutdownHook = new MilterShutdownHook(server);
@@ -108,16 +75,7 @@ public final class MilterServer extends NioServer implements Server {
         }
     }
 
-    /**
-     * The signal handler for SIGCONT that triggers the invalidation of the Permission cache
-     *
-     * @author jpowers
-     */
     private static final class ClearCacheSignalHandler implements SignalHandler {
-
-        /**
-         * Handles the signal, resets the cache
-         */
         @Override
         public void handle(Signal signal) {
             ZimbraLog.milter.info("Received Signal: %s", signal.getName());
@@ -126,19 +84,13 @@ public final class MilterServer extends NioServer implements Server {
             ZimbraLog.milter.info("ACL cache successfully cleared");
         }
 
-        /**
-         * Creates the signal handler and registers it with the vm
-         */
         public static void register() {
             try {
                 Signal hup = new Signal("CONT");
                 ClearCacheSignalHandler handler = new ClearCacheSignalHandler();
-                // register it
                 Signal.handle(hup, handler);
                 ZimbraLog.milter.info("Registered signal handler: %s(%d)", hup.getName(), hup.getNumber());
             } catch (Throwable t) {
-                // in case we're running on an os that doesn't have a HUP. Need to make sure
-                // milter will still start
                 ZimbraLog.milter.error("Unable to register signal handler CONT/19 and script refresh will not work", t);
             }
         }

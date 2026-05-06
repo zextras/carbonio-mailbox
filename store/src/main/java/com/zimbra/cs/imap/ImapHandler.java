@@ -475,9 +475,6 @@ public abstract class ImapHandler {
         boolean byUID = false;
         req.skipSpace();
         String command = lastCommand = req.readATOM();
-        if (req instanceof NioImapRequest) {
-            ((NioImapRequest)req).checkSize(command.length());
-        }
 
         do {
             if (!THROTTLED_COMMANDS.contains(command)) {

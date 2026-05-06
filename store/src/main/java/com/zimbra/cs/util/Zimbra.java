@@ -48,7 +48,6 @@ import java.io.IOException;
 import java.security.Security;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
-import org.apache.mina.core.buffer.IoBuffer;
 import org.dom4j.DocumentException;
 
 /**
@@ -291,10 +290,6 @@ public final class Zimbra {
               .getIntAttr(Provisioning.A_zimbraAuthTokenNotificationInterval, 60000));
 
       if (!redoLog.isSlave()) {
-        boolean useDirectBuffers = server.isMailUseDirectBuffers();
-        IoBuffer.setUseDirectBuffer(useDirectBuffers);
-        ZimbraLog.misc.info("MINA setUseDirectBuffers(" + useDirectBuffers + ")");
-
         ServerManager.getInstance().startServers();
       }
 
