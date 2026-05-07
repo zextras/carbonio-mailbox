@@ -3,6 +3,73 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <artifactId>zm-mailbox</artifactId>
+
+  <groupId>com.zextras</groupId>
+  <modelVersion>4.0.0</modelVersion>
+  <modules>
+    <module>common</module>
+    <module>right-manager</module>
+    <module>client</module>
+    <module>soap</module>
+    <module>store</module>
+    <module>store-extra-runtime-dependencies</module>
+    <module>jython-libs</module>
+  </modules>
+  <packaging>pom</packaging>
+
+  <version>${revision}${changelist}</version>
+
+  <properties>
+    <!-- Mailbox version -->
+    <revision>4.26.0</revision>
+    <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
+    <changelist>-SNAPSHOT</changelist>
+
+    <maven.compiler.source>21</maven.compiler.source>
+
+    <test.argLine>
+      -Xmx512m
+      -Dserver.dir=${project.basedir}
+      -Djunit.jupiter.execution.parallel.enabled=true
+      -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
+      -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
+    </test.argLine>
+    <maven.compiler.target>21</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <sonar.version>5.5.0.6356</sonar.version>
+    <jetty.version>9.4.57.v20241219</jetty.version>
+    <lucene.version>3.5.0</lucene.version>
+    <jackson.version>2.15.4</jackson.version>
+    <bouncycastle.version>1.79</bouncycastle.version>
+    <asm.version>8.0.1</asm.version>
+    <guava.version>33.3.1-jre</guava.version>
+    <jython.version>2.5.3</jython.version>
+    <nekohtml.version>1.9.22</nekohtml.version>
+    <log4j.version>2.20.0</log4j.version>
+    <dom4j.version>2.1.4</dom4j.version>
+    <hsqldb.version>2.7.1</hsqldb.version>
+    <mockito.version>5.21.0</mockito.version>
+    <unboundid-ldapsdk.version>4.0.5</unboundid-ldapsdk.version>
+    <jsr305.version>3.0.2</jsr305.version>
+    <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
+    <resteasy.version>4.7.9.Final</resteasy.version>
+    <swagger.version>2.2.28</swagger.version>
+    <javassist.version>3.30.2-GA</javassist.version>
+    <carbonio-message-broker-sdk.version>0.1.2</carbonio-message-broker-sdk.version>
+    <mockserver.version>5.13.0</mockserver.version>
+    <json-unit.version>4.1.0</json-unit.version>
+    <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>prod</id>
+      <properties>
+        <changelist></changelist>
+      </properties>
+    </profile>
+  </profiles>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -435,7 +502,7 @@
       <dependency>
         <groupId>com.zextras</groupId>
         <artifactId>mailbox-attribute-manager</artifactId>
-        <version>4.28.0</version>
+        <version>4.29.0</version>
       </dependency>
       <dependency>
         <groupId>com.zextras</groupId>
@@ -807,58 +874,6 @@
     </dependencies>
   </dependencyManagement>
 
-  <groupId>com.zextras</groupId>
-  <modelVersion>4.0.0</modelVersion>
-  <modules>
-    <module>common</module>
-    <module>right-manager</module>
-    <module>client</module>
-    <module>soap</module>
-    <module>store</module>
-    <module>store-extra-runtime-dependencies</module>
-    <module>jython-libs</module>
-  </modules>
-  <packaging>pom</packaging>
-
-  <properties>
-    <maven.compiler.source>21</maven.compiler.source>
-    <test.argLine>
-      -Xmx512m
-      -Dserver.dir=${project.basedir}
-      -Djunit.jupiter.execution.parallel.enabled=true
-      -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
-      -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
-    </test.argLine>
-    <maven.compiler.target>21</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <sonar.version>5.5.0.6356</sonar.version>
-    <jetty.version>9.4.57.v20241219</jetty.version>
-    <lucene.version>3.5.0</lucene.version>
-    <jackson.version>2.15.4</jackson.version>
-    <bouncycastle.version>1.79</bouncycastle.version>
-    <asm.version>8.0.1</asm.version>
-    <guava.version>33.3.1-jre</guava.version>
-    <jython.version>2.5.3</jython.version>
-    <nekohtml.version>1.9.22</nekohtml.version>
-    <log4j.version>2.20.0</log4j.version>
-    <dom4j.version>2.1.4</dom4j.version>
-    <hsqldb.version>2.7.1</hsqldb.version>
-    <mockito.version>5.21.0</mockito.version>
-    <unboundid-ldapsdk.version>4.0.5</unboundid-ldapsdk.version>
-    <jsr305.version>3.0.2</jsr305.version>
-    <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
-    <resteasy.version>4.7.9.Final</resteasy.version>
-    <swagger.version>2.2.28</swagger.version>
-    <javassist.version>3.30.2-GA</javassist.version>
-    <carbonio-message-broker-sdk.version>0.1.2</carbonio-message-broker-sdk.version>
-    <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
-    <changelist>-SNAPSHOT</changelist>
-    <!-- Mailbox version -->
-    <revision>4.25.2</revision>
-    <mockserver.version>5.13.0</mockserver.version>
-    <json-unit.version>4.1.0</json-unit.version>
-    <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
-  </properties>
   <distributionManagement>
     <repository>
       <id>artifactory</id>
@@ -869,15 +884,7 @@
         <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
       </snapshotRepository>
   </distributionManagement>
-  <version>${revision}${changelist}</version>
-  <profiles>
-    <profile>
-      <id>prod</id>
-      <properties>
-        <changelist></changelist>
-      </properties>
-    </profile>
-  </profiles>
+
 
   <repositories>
     <repository>

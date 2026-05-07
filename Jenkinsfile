@@ -1,5 +1,5 @@
 library(
-        identifier: 'jenkins-lib-common@1.6.2',
+        identifier: 'jenkins-lib-common@1.7.2',
         retriever: modernSCM([
                 $class: 'GitSCMSource',
                 credentialsId: 'jenkins-integration-with-github-account',
@@ -114,7 +114,9 @@ pipeline {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         sh """
                             mvn ${MVN_OPTS} \
+                                jacoco:report \
                                 sonar:sonar \
+                                -Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco/jacoco.xml \
                                 -Dsonar.junit.reportPaths=target/surefire-reports,target/failsafe-reports \
                                 -Dsonar.exclusions=**/com/zimbra/soap/mail/type/*.java,**/com/zimbra/soap/mail/message/*.java,**/com/zimbra/cs/account/ZAttr*.java,**/com/zimbra/common/account/ZAttr*.java
                         """

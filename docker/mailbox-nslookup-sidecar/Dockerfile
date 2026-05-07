@@ -1,4 +1,4 @@
-FROM registry.dev.zextras.com/dev/carbonio-sidecar:latest
+FROM registry.dev.zextras.com/dev/carbonio-sidecar:devel
 
 # Service registration
 COPY packages/appserver-service/carbonio-mailbox-nslookup.hcl /consul/config/
@@ -10,7 +10,6 @@ COPY packages/appserver-service/carbonio-mailbox-nslookup-policies.json         
 
 # Setup script
 COPY packages/appserver-service/carbonio-mailbox-nslookup /usr/local/bin/carbonio-mailbox-nslookup
-RUN chmod +x /usr/local/bin/carbonio-mailbox-nslookup
 
 ENV SERVICE_NAME=carbonio-mailbox-nslookup
 ENV SETUP_SCRIPT="carbonio-mailbox-nslookup setup"
