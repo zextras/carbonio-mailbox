@@ -13,6 +13,7 @@ String mvnOpts = "-Ddebug=0 -Dis-production=1 ${profile}"
 
 defaultPipeline(timeoutMin: 120) {
     withEnv(['MAVEN_OPTS=-Xmx2g']) {
+      try {
 
         stage('Build') {
             withMaven {
@@ -173,5 +174,9 @@ defaultPipeline(timeoutMin: 120) {
                     },
             )
         }
+      } catch (err) {
+          notifyJiraOnFailure(project: 'IN')
+          throw err
+      }
     }
 }
