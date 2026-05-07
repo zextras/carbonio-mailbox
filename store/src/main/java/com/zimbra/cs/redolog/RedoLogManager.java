@@ -18,6 +18,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
+import com.zextras.mailbox.hardlinks.HardLink;
 import com.zimbra.common.util.FileUtil;
 import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.ZimbraLog;
@@ -32,7 +33,6 @@ import com.zimbra.cs.redolog.op.Checkpoint;
 import com.zimbra.cs.redolog.op.CommitTxn;
 import com.zimbra.cs.redolog.op.RedoableOp;
 import com.zimbra.cs.util.Zimbra;
-import com.zimbra.znative.IO;
 
 /**
  * @since 2004. 7. 16.
@@ -753,7 +753,7 @@ public class RedoLogManager {
                 for (int i = 0; i < logs.length; i++) {
                     File src = logs[i];
                     File dest = new File(linkDir, logs[i].getName());
-                    IO.link(src.getAbsolutePath(), dest.getAbsolutePath());
+                    HardLink.link(src.getAbsolutePath(), dest.getAbsolutePath());
                     logs[i] = dest;
                 }
             } finally {

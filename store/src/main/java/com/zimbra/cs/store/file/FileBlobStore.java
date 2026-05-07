@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.zextras.mailbox.hardlinks.HardLink;
 import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -27,7 +28,6 @@ import com.zimbra.cs.store.StagedBlob;
 import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.volume.Volume;
 import com.zimbra.cs.volume.VolumeManager;
-import com.zimbra.znative.IO;
 
 /**
  * @since 2004.10.13
@@ -210,7 +210,7 @@ public class FileBlobStore extends StoreManager {
         short srcVolumeId = ((VolumeBlob) src).getVolumeId();
         if (srcVolumeId == destVolumeId) {
             try {
-                IO.link(srcPath, destPath);
+                HardLink.link(srcPath, destPath);
             } catch (IOException e) {
                 // Did it fail because the destination file already exists?
                 // This can happen if we stored a file (or link), and we failed to
@@ -234,7 +234,7 @@ public class FileBlobStore extends StoreManager {
                     }
                     // Existing file is now renamed to <file>.bak.
                     // Retry link creation.
-                    IO.link(srcPath, destPath);
+                    HardLink.link(srcPath, destPath);
                 } else {
                     throw e;
                 }
