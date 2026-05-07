@@ -175,7 +175,7 @@ defaultPipeline(timeoutMin: 120) {
             )
         }
       } catch (err) {
-          notifyJiraOnFailure(project: 'IN')
+          notifyEmailOnFailure(to: 'devops@zextras.com')
           throw err
       }
     }
