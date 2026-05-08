@@ -44,3 +44,4 @@ target/
 /attribute-manager/
 /store/cacerts
 /store/cacerts_trusted
+/docs/

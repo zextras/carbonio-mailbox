@@ -18,7 +18,7 @@ defaultPipeline {
         ]) {
             stage('Build') {
                 sh """
-                    mvn -DskipTests=true clean install
+                    make build
                     mkdir staging
                     cp -a store* right-manager \
                             client common packages soap jython-libs \
@@ -28,27 +28,19 @@ defaultPipeline {
             }
 
             stage('UT, IT') {
-                sh "mvn jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -DexcludedGroups=api,flaky,e2e"
+                sh "make tests"
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
             }
 
             stage('Flaky, API, E2E tests') {
-                sh "cd store && mvn jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=flaky,api && mvn jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=e2e"
+                sh "make flaky-api-e2e-tests"
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
             }
 
             stage('Build and Package API Docs') {
-                sh """
-                    (
-                        cd soap || { echo "Directory soap does not exist"; exit 1; }
-                        mvn antrun:run@generate-soap-docs
-                    )
-                    VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-                    mkdir -p docs
-                    tar -czf docs/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
-                """
+                sh "make api-docs"
                 archiveArtifacts artifacts: 'docs/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
             }
 
