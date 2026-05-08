@@ -83,8 +83,7 @@ defaultPipeline {
                         ])
                     }
                     stage('Publish packages') {
-                        def jfrogHome = tool name: 'jfrog-cli'
-                        withEnv(["PATH+JFROG=${jfrogHome}/bin"]) {
+                        withJfrog {
                             uploadStage(
                                     packages: yapHelper.getPackageNames('staging/packages/yap.json')
                             )
