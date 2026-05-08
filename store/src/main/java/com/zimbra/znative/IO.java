@@ -5,6 +5,8 @@
 
 package com.zimbra.znative;
 
+import com.zextras.mailbox.hardlinks.HardLink;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.foreign.Arena;
@@ -200,15 +202,7 @@ public final class IO {
    * Creates a hard link from {@code oldpath} to {@code newpath}.
    */
   public static void link(Path oldpath, Path newpath) throws IOException {
-    try {
-      Files.createLink(newpath, oldpath);
-    } catch (NoSuchFileException e) {
-      throw new FileNotFoundException(
-          String.format("link(%s, %s): %s", oldpath, newpath, e.getMessage()));
-    } catch (FileAlreadyExistsException e) {
-      throw new IOException(
-          String.format("link(%s, %s): %s", oldpath, newpath, e.getMessage()), e);
-    }
+    HardLink.link(oldpath, newpath);
   }
 
   /**

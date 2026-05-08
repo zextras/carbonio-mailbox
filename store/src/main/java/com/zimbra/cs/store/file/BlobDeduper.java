@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.zextras.mailbox.hardlinks.HardLink;
 import org.apache.commons.collections.MultiMap;
 import org.apache.commons.collections.map.MultiValueMap;
 
@@ -152,7 +153,7 @@ public class BlobDeduper {
         String holdPath = src.path() + "_HOLD";
         File holdFile = new File(holdPath);
         try {
-            IO.link(src.path(), holdPath);
+            HardLink.link(src.path(), holdPath);
             for (int i = 0; i < blobs.size(); i++) {
                 tryLinkOne(blobs.get(i), paths[i], holdPath, src.inodeNum(), acc);
             }
@@ -203,7 +204,7 @@ public class BlobDeduper {
         String tempPath = path + "_TEMP";
         File tempFile = new File(tempPath);
         try {
-            IO.link(holdPath, tempPath);
+            HardLink.link(holdPath, tempPath);
             // Prefer the raw File#renameTo syscall over Files.move: on this hot path
             // it avoids ~1.5us of FileSystemProvider dispatch per blob (+73% in our
             // bench). Semantics match rename(2) on Linux: atomic, replaces target.
