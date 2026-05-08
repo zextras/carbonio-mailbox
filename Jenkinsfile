@@ -1,5 +1,5 @@
 library(
-        identifier: 'jenkins-lib-common@maven-refactor',
+        identifier: 'jenkins-dt2-lib@main',
         retriever: modernSCM([
                 $class: 'GitSCMSource',
                 credentialsId: 'jenkins-integration-with-github-account',
