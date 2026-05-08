@@ -14,10 +14,10 @@ String mvnOpts = "-Ddebug=0 -Dis-production=1 ${profile}"
 defaultPipeline(timeoutMin: 120, notifyOnFailure: [to: 'devops@zextras.com']) {
     withEnv(['MAVEN_OPTS=-Xmx2g']) {
 
-        stage('Build') {
-            withMaven {
+        withMaven {
+            stage('Build') {
                 sh """
-                    mvn ${mvnOpts} -s \$SETTINGS_PATH \
+                    mvn ${mvnOpts}  \
                         -DskipTests=true \
                         clean install
                     mkdir staging
@@ -27,44 +27,36 @@ defaultPipeline(timeoutMin: 120, notifyOnFailure: [to: 'devops@zextras.com']) {
                 """
                 stash includes: 'staging/**', name: 'staging'
             }
-        }
 
-        stage('UT, IT') {
-            withMaven {
-                sh "mvn ${mvnOpts} -s \$SETTINGS_PATH jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -DexcludedGroups=api,flaky,e2e"
+            stage('UT, IT') {
+                sh "mvn ${mvnOpts}  jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -DexcludedGroups=api,flaky,e2e"
+                junit allowEmptyResults: true,
+                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
             }
-            junit allowEmptyResults: true,
-                    testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
-        }
 
-        stage('Flaky, API, E2E tests') {
-            withMaven {
-                sh "cd store && mvn ${mvnOpts} -s \$SETTINGS_PATH jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=flaky,api && mvn ${mvnOpts} -s \$SETTINGS_PATH jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=e2e"
+            stage('Flaky, API, E2E tests') {
+                sh "cd store && mvn ${mvnOpts}  jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=flaky,api && mvn ${mvnOpts}  jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=e2e"
+                junit allowEmptyResults: true,
+                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
             }
-            junit allowEmptyResults: true,
-                    testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
-        }
 
-        stage('Build and Package API Docs') {
-            withMaven {
+            stage('Build and Package API Docs') {
                 sh """
                     (
                         cd soap || { echo "Directory soap does not exist"; exit 1; }
-                        mvn ${mvnOpts} -s \$SETTINGS_PATH antrun:run@generate-soap-docs
+                        mvn ${mvnOpts}  antrun:run@generate-soap-docs
                     )
-                    VERSION=\$(mvn help:evaluate -s \$SETTINGS_PATH -Dexpression=project.version -q -DforceStdout)
+                    VERSION=\$(mvn help:evaluate  -Dexpression=project.version -q -DforceStdout)
                     mkdir -p docs
                     tar -czf docs/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
                 """
+                archiveArtifacts artifacts: 'docs/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
             }
-            archiveArtifacts artifacts: 'docs/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
-        }
 
-        stage('Sonarqube Analysis') {
-            withMaven {
+            stage('Sonarqube Analysis') {
                 withSonarQube {
                     sh """
-                        mvn ${mvnOpts} -s \$SETTINGS_PATH \
+                        mvn ${mvnOpts}  \
                             jacoco:report \
                             sonar:sonar \
                             -Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco/jacoco.xml \
