@@ -3,7 +3,7 @@ library(
         retriever: modernSCM([
                 $class: 'GitSCMSource',
                 credentialsId: 'jenkins-integration-with-github-account',
-                remote: 'git@github.com:zextras/jenkins-lib-common.git',
+                remote: 'git@github.com:zextras/jenkins-dt2-lib.git',
         ])
 )
 
