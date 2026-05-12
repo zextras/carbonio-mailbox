@@ -62,6 +62,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,6 +77,13 @@ public class SoapSession extends Session {
   public class DelegateSession extends Session {
     private long mNextFolderCheck;
     private Set<Integer> mVisibleFolderIds;
+    /**
+     * IDs (in the target mailbox) of the folders this user has mounted as a share. A mountpoint
+     * carries its own name/color/flags, so the owner's changes to those attributes on these folders
+     * must not be forwarded; folders only seen through delegated access (no mountpoint of their own)
+     * keep the owner's metadata.
+     */
+    private Set<Integer> mMountedTargetFolderIds = Collections.emptySet();
     private boolean mParentHasFullAccess = false;
 
     DelegateSession(String authId, String targetId) {
@@ -187,6 +195,7 @@ public class SoapSession extends Session {
       cacheAccountAccess(mAuthenticatedAccountId, mTargetAccountId);
       if (mbox == null) {
         mVisibleFolderIds = Collections.emptySet();
+        mMountedTargetFolderIds = Collections.emptySet();
         return true;
       }
 
@@ -196,17 +205,44 @@ public class SoapSession extends Session {
           return mVisibleFolderIds != null;
         }
 
-        Set<Integer> visible =
+        mVisibleFolderIds =
             MailItem.toId(
                 mbox.getVisibleFolders(new OperationContext(getAuthenticatedAccountId())));
-        mVisibleFolderIds = visible;
         mNextFolderCheck =
             DebugConfig.visibileFolderRecalcInterval > 0
                 ? now + DebugConfig.visibileFolderRecalcInterval
                 : -1;
-        return visible != null;
       } finally {
         mbox.lock.release();
+      }
+      // Done outside the target mailbox lock: this reads the *parent* (delegating) mailbox.
+      mMountedTargetFolderIds = collectMountedTargetFolderIds();
+      return mVisibleFolderIds != null;
+    }
+
+    /**
+     * Returns the IDs (in the target mailbox) of the folders the delegating user has mounted from
+     * the target account.
+     */
+    private Set<Integer> collectMountedTargetFolderIds() {
+      Mailbox parentMbox = getParentSession().getMailboxOrNull();
+      if (parentMbox == null) {
+        return Collections.emptySet();
+      }
+      try {
+        Set<Integer> ids = new HashSet<>();
+        OperationContext octxt = new OperationContext(getAuthenticatedAccountId());
+        for (MailItem item : parentMbox.getItemList(octxt, MailItem.Type.MOUNTPOINT)) {
+          if (item instanceof Mountpoint mountpoint
+              && mTargetAccountId.equalsIgnoreCase(mountpoint.getOwnerId())) {
+            ids.add(mountpoint.getRemoteId());
+          }
+        }
+        return ids;
+      } catch (ServiceException e) {
+        ZimbraLog.session.warn(
+            "delegate session: unable to enumerate mountpoints into %s", mTargetAccountId, e);
+        return Collections.emptySet();
       }
     }
 
@@ -230,6 +266,8 @@ public class SoapSession extends Session {
     private static final int BASIC_CONVERSATION_FLAGS = Change.FLAGS | Change.TAGS | Change.UNREAD;
     private static final int MODIFIED_CONVERSATION_FLAGS =
         BASIC_CONVERSATION_FLAGS | Change.SIZE | Change.SENDERS;
+    private static final int RESTRICTED_MOUNTED_FOLDER_CHANGES =
+        Change.NAME | Change.COLOR | Change.FLAGS;
 
     private PendingLocalModifications filterNotifications(PendingLocalModifications pms)
         throws ServiceException {
@@ -278,13 +316,11 @@ public class SoapSession extends Session {
                   item, chg.why | MODIFIED_CONVERSATION_FLAGS, (MailItem) chg.preModifyObj);
             } else if (isVisible) {
               int why = chg.why;
-              // Filter out name/color/flags changes on shared folders to prevent notification spam
-              boolean isSharedFolder =
-                  item instanceof Folder folder
-                      && folder.isSharedWithUser(mAuthenticatedAccountId);
-              if (isSharedFolder) {
-                int restrictedChangesForSharedFolders = Change.NAME | Change.COLOR | Change.FLAGS;
-                why &= ~restrictedChangesForSharedFolders;
+              // A folder the user mounted as a share carries its own (mountpoint) name/color/flags,
+              // so don't forward the owner's changes to those attributes. Folders only seen through
+              // delegated access (no mountpoint of their own) keep the owner's metadata.
+              if (item instanceof Folder && mMountedTargetFolderIds.contains(item.getId())) {
+                why &= ~RESTRICTED_MOUNTED_FOLDER_CHANGES;
               }
               if (why != 0) {
                 filtered.recordModified(item, why, (MailItem) chg.preModifyObj);
