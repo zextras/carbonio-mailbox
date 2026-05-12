@@ -2,7 +2,7 @@ pkgname="carbonio-common-appserver-conf"
 pkgver="4.26.0"
 pkgrel="1"
 pkgdesc="Carbonio Core Mailbox Configuration"
-arch=('x86_64')
+arch=('any')
 maintainer="Zextras <packages@zextras.com>"
 copyright=(
   "2022-2024, Zextras <https://www.zextras.com>"
