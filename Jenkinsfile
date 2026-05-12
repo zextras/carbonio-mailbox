@@ -92,55 +92,56 @@ defaultPipeline {
                 },
                 'Docker images': {
                     stage('Build and Publish Docker images') {
-                        dockerStage([
-                                dockerfile: 'docker/mailbox/Dockerfile',
-                                imageName : 'carbonio-mailbox',
-                                platforms : ['linux/amd64', 'linux/arm64'] as Set,
-                                ocLabels  : [
-                                        title          : 'Carbonio Mailbox',
-                                        descriptionFile: 'docker/mailbox/description.md'
-                                ]
-                        ])
-                        dockerStage([
-                                dockerfile: 'docker/mailbox-sidecar/Dockerfile',
-                                imageName : 'carbonio-mailbox-sidecar',
-                                platforms : ['linux/amd64', 'linux/arm64'] as Set,
-                                ocLabels  : [
-                                        title: 'Carbonio Mailbox Sidecar',
-                                ]
-                        ])
-                        dockerStage([
-                                dockerfile: 'docker/mailbox-admin-sidecar/Dockerfile',
-                                imageName : 'carbonio-mailbox-admin-sidecar',
-                                platforms : ['linux/amd64', 'linux/arm64'] as Set,
-                                ocLabels  : [
-                                        title: 'Carbonio Mailbox Admin Sidecar',
-                                ]
-                        ])
-                        dockerStage([
-                                dockerfile: 'docker/mailbox-nslookup-sidecar/Dockerfile',
-                                imageName : 'carbonio-mailbox-nslookup-sidecar',
-                                platforms : ['linux/amd64', 'linux/arm64'] as Set,
-                                ocLabels  : [
-                                        title: 'Carbonio Mailbox NSLookup Sidecar',
-                                ]
-                        ])
-                        dockerStage([
-                                dockerfile: 'docker/mailbox-internal-api-sidecar/Dockerfile',
-                                imageName : 'carbonio-mailbox-internal-api-sidecar',
-                                platforms : ['linux/amd64', 'linux/arm64'] as Set,
-                                ocLabels  : [
-                                        title: 'Carbonio Mailbox Internal API Sidecar',
-                                ]
-                        ])
-                        dockerStage([
-                                dockerfile: 'docker/mariadb/Dockerfile',
-                                imageName : 'carbonio-mariadb',
-                                platforms : ['linux/amd64', 'linux/arm64'] as Set,
-                                ocLabels  : [
-                                        title          : 'Carbonio MariaDB',
-                                        descriptionFile: 'docker/mariadb/description.md'
-                                ]
+                        dockerStage(
+                        [
+                            dockerfile: 'docker/mailbox/Dockerfile',
+                            imageName : 'carbonio-mailbox',
+                            platforms : ['linux/amd64', 'linux/arm64'] as Set,
+                            ocLabels  : [
+                                    title          : 'Carbonio Mailbox',
+                                    descriptionFile: 'docker/mailbox/description.md'
+                            ]
+                        ],
+                        [
+                            dockerfile: 'docker/mailbox-sidecar/Dockerfile',
+                            imageName : 'carbonio-mailbox-sidecar',
+                            platforms : ['linux/amd64', 'linux/arm64'] as Set,
+                            ocLabels  : [
+                                    title: 'Carbonio Mailbox Sidecar',
+                            ]
+                        ],
+                        [
+                            dockerfile: 'docker/mailbox-admin-sidecar/Dockerfile',
+                            imageName : 'carbonio-mailbox-admin-sidecar',
+                            platforms : ['linux/amd64', 'linux/arm64'] as Set,
+                            ocLabels  : [
+                                    title: 'Carbonio Mailbox Admin Sidecar',
+                            ]
+                        ],
+                        [
+                            dockerfile: 'docker/mailbox-nslookup-sidecar/Dockerfile',
+                            imageName : 'carbonio-mailbox-nslookup-sidecar',
+                            platforms : ['linux/amd64', 'linux/arm64'] as Set,
+                            ocLabels  : [
+                                    title: 'Carbonio Mailbox NSLookup Sidecar',
+                            ]
+                        ],
+                        [
+                            dockerfile: 'docker/mailbox-internal-api-sidecar/Dockerfile',
+                            imageName : 'carbonio-mailbox-internal-api-sidecar',
+                            platforms : ['linux/amd64', 'linux/arm64'] as Set,
+                            ocLabels  : [
+                                    title: 'Carbonio Mailbox Internal API Sidecar',
+                            ]
+                        ],
+                        [
+                            dockerfile: 'docker/mariadb/Dockerfile',
+                            imageName : 'carbonio-mariadb',
+                            platforms : ['linux/amd64', 'linux/arm64'] as Set,
+                            ocLabels  : [
+                                    title          : 'Carbonio MariaDB',
+                                    descriptionFile: 'docker/mariadb/description.md'
+                            ]
                         ])
                     }
                 },
