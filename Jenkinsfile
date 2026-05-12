@@ -92,7 +92,7 @@ defaultPipeline {
                 },
                 'Docker images': {
                     stage('Build and Publish Docker images') {
-                        dockerStage(
+                        dockerStage(images: [
                         [
                             dockerfile: 'docker/mailbox/Dockerfile',
                             imageName : 'carbonio-mailbox',
@@ -142,6 +142,7 @@ defaultPipeline {
                                     title          : 'Carbonio MariaDB',
                                     descriptionFile: 'docker/mariadb/description.md'
                             ]
+                        ]
                         ])
                     }
                 },
