@@ -202,6 +202,43 @@ class SharedFolderNotificationFilteringTest extends SoapTestSuite {
   }
 
   /**
+   * Tests that name changes on a sub-folder of a shared folder are still delivered to the grantee.
+   *
+   * <p>The sub-folder is reached through an inherited grant (it has no grant of its own), which is
+   * also what happens when a whole mailbox is shared for delegated access; such changes must not be
+   * filtered out.
+   */
+  @Test
+  void nameChangeOnSubfolderOfSharedFolderIsDeliveredToGrantee() throws Exception {
+    var ownerMailbox = mailboxManager.getMailboxByAccount(ownerAccount);
+    var sharedParent =
+        ownerMailbox.createFolder(
+            null, "SharedParent", new Folder.FolderOptions().setDefaultView(Type.MESSAGE));
+    var subFolder =
+        ownerMailbox.createFolder(
+            null,
+            "SubFolder",
+            sharedParent.getId(),
+            new Folder.FolderOptions().setDefaultView(Type.MESSAGE));
+
+    shareFolder(ownerAccount, granteeAccount, sharedParent.getId());
+    createMountpoint(granteeAccount, sharedParent, "Shared Parent", Type.MESSAGE.toString());
+
+    String sessionId = createSessionForGrantee();
+    acknowledgeRefresh(sessionId);
+
+    var renameAction = new FolderActionSelector(String.valueOf(subFolder.getId()), "rename");
+    renameAction.setName("Renamed SubFolder");
+    getSoapClient().executeSoap(ownerAccount, new FolderActionRequest(renameAction));
+
+    SoapResponse response = checkForNotifications(sessionId);
+
+    Assertions.assertTrue(
+        response.body().contains("<notify"),
+        "Name changes on a sub-folder of a shared folder must still be delivered to the grantee");
+  }
+
+  /**
    * Tests that name changes on a calendar folder shared with a distribution list (group) are
    * filtered out from notifications for a member of that group.
    */
