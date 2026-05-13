@@ -202,6 +202,29 @@ class SharedFolderNotificationFilteringTest extends SoapTestSuite {
   }
 
   /**
+   * Tests that the \Checked flag toggle on a shared calendar folder is filtered out (the grantee
+   * only sees the mountpoint, which has its own flags).
+   */
+  @Test
+  void flagToggleOnSharedCalendarFolderIsFilteredOut() throws Exception {
+    var userACalendar = getFirstCalendar(ownerAccount);
+    shareFolder(ownerAccount, granteeAccount, userACalendar.getId());
+    createMountpoint(granteeAccount, userACalendar, "test shared calendar", "appointment");
+
+    String sessionId = createSessionForGrantee();
+    acknowledgeRefresh(sessionId);
+
+    var checkAction = new FolderActionSelector(userACalendar.getFolderIdAsString(), "check");
+    getSoapClient().executeSoap(ownerAccount, new FolderActionRequest(checkAction));
+
+    final SoapResponse response = checkForNotifications(sessionId);
+
+    Assertions.assertFalse(
+        response.body().contains("<notify"),
+        "Flag toggles on shared calendar folders should be filtered out from notifications");
+  }
+
+  /**
    * Tests that name changes on a sub-folder of a shared folder are still delivered to the grantee.
    *
    * <p>The sub-folder is reached through an inherited grant (it has no grant of its own), which is
@@ -210,14 +233,63 @@ class SharedFolderNotificationFilteringTest extends SoapTestSuite {
    */
   @Test
   void nameChangeOnSubfolderOfSharedFolderIsDeliveredToGrantee() throws Exception {
+    SubfolderSetup setup = setupSubfolderUnderSharedFolder();
+
+    var renameAction = new FolderActionSelector(String.valueOf(setup.subFolderId), "rename");
+    renameAction.setName("Renamed SubFolder");
+    getSoapClient().executeSoap(ownerAccount, new FolderActionRequest(renameAction));
+
+    SoapResponse response = checkForNotifications(setup.sessionId);
+
+    Assertions.assertTrue(
+        response.body().contains("<notify"),
+        "Name changes on a sub-folder of a shared folder must still be delivered to the grantee");
+  }
+
+  /** Color changes on a sub-folder of a shared folder must still reach the grantee. */
+  @Test
+  void colorChangeOnSubfolderOfSharedFolderIsDeliveredToGrantee() throws Exception {
+    SubfolderSetup setup = setupSubfolderUnderSharedFolder();
+
+    var colorAction = new FolderActionSelector(String.valueOf(setup.subFolderId), "color");
+    colorAction.setColor((byte) 4);
+    getSoapClient().executeSoap(ownerAccount, new FolderActionRequest(colorAction));
+
+    SoapResponse response = checkForNotifications(setup.sessionId);
+
+    Assertions.assertTrue(
+        response.body().contains("<notify"),
+        "Color changes on a sub-folder of a shared folder must still be delivered to the grantee");
+  }
+
+  /** Flag toggles on a sub-folder of a shared folder must still reach the grantee. */
+  @Test
+  void flagToggleOnSubfolderOfSharedFolderIsDeliveredToGrantee() throws Exception {
+    SubfolderSetup setup = setupSubfolderUnderSharedFolder();
+
+    var checkAction = new FolderActionSelector(String.valueOf(setup.subFolderId), "check");
+    getSoapClient().executeSoap(ownerAccount, new FolderActionRequest(checkAction));
+
+    SoapResponse response = checkForNotifications(setup.sessionId);
+
+    Assertions.assertTrue(
+        response.body().contains("<notify"),
+        "Flag toggles on a sub-folder of a shared folder must still be delivered to the grantee");
+  }
+
+  private record SubfolderSetup(int subFolderId, String sessionId) {}
+
+  private SubfolderSetup setupSubfolderUnderSharedFolder() throws Exception {
     var ownerMailbox = mailboxManager.getMailboxByAccount(ownerAccount);
     var sharedParent =
         ownerMailbox.createFolder(
-            null, "SharedParent", new Folder.FolderOptions().setDefaultView(Type.MESSAGE));
+            null,
+            "SharedParent-" + UUID.randomUUID(),
+            new Folder.FolderOptions().setDefaultView(Type.MESSAGE));
     var subFolder =
         ownerMailbox.createFolder(
             null,
-            "SubFolder",
+            "SubFolder-" + UUID.randomUUID(),
             sharedParent.getId(),
             new Folder.FolderOptions().setDefaultView(Type.MESSAGE));
 
@@ -226,16 +298,7 @@ class SharedFolderNotificationFilteringTest extends SoapTestSuite {
 
     String sessionId = createSessionForGrantee();
     acknowledgeRefresh(sessionId);
-
-    var renameAction = new FolderActionSelector(String.valueOf(subFolder.getId()), "rename");
-    renameAction.setName("Renamed SubFolder");
-    getSoapClient().executeSoap(ownerAccount, new FolderActionRequest(renameAction));
-
-    SoapResponse response = checkForNotifications(sessionId);
-
-    Assertions.assertTrue(
-        response.body().contains("<notify"),
-        "Name changes on a sub-folder of a shared folder must still be delivered to the grantee");
+    return new SubfolderSetup(subFolder.getId(), sessionId);
   }
 
   /**
