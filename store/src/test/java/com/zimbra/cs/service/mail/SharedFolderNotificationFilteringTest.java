@@ -277,6 +277,38 @@ class SharedFolderNotificationFilteringTest extends SoapTestSuite {
         "Flag toggles on a sub-folder of a shared folder must still be delivered to the grantee");
   }
 
+  /**
+   * The grantee mounts shared folders from two different accounts. A rename on the owner's folder
+   * must still be filtered for the owner's delegate session, even though the grantee has another
+   * mountpoint pointing at an unrelated account: the mountpoint-enumeration step must scope the set
+   * of mounted folders to the delegate session's target account.
+   */
+  @Test
+  void mountpointToUnrelatedAccountDoesNotInterfereWithSuppression() throws Exception {
+    Account otherAccount = createAccount().create();
+    var otherCalendar = getFirstCalendar(otherAccount);
+    shareFolder(otherAccount, granteeAccount, otherCalendar.getId());
+    createMountpoint(granteeAccount, otherCalendar, "other shared calendar", "appointment");
+
+    var ownerCalendar = getFirstCalendar(ownerAccount);
+    shareFolder(ownerAccount, granteeAccount, ownerCalendar.getId());
+    createMountpoint(granteeAccount, ownerCalendar, "owner shared calendar", "appointment");
+
+    String sessionId = createSessionForGrantee();
+    acknowledgeRefresh(sessionId);
+
+    var renameAction = new FolderActionSelector(ownerCalendar.getFolderIdAsString(), "rename");
+    renameAction.setName("Renamed Owner Calendar");
+    getSoapClient().executeSoap(ownerAccount, new FolderActionRequest(renameAction));
+
+    SoapResponse response = checkForNotifications(sessionId);
+
+    Assertions.assertFalse(
+        response.body().contains("<notify"),
+        "A mountpoint to another account must not leak into the suppression set for the owner's "
+            + "delegate session");
+  }
+
   private record SubfolderSetup(int subFolderId, String sessionId) {}
 
   private SubfolderSetup setupSubfolderUnderSharedFolder() throws Exception {
