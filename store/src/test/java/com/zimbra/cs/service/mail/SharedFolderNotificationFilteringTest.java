@@ -262,9 +262,13 @@ class SharedFolderNotificationFilteringTest extends SoapTestSuite {
         "Color changes on a sub-folder of a shared folder must still be delivered to the grantee");
   }
 
-  /** Flag toggles on a sub-folder of a shared folder must still reach the grantee. */
+  /**
+   * The \Checked toggle on a delegated folder (no mountpoint of its own) must NOT reach the
+   * grantee: both accounts often work the mailbox concurrently and echoing the owner's
+   * calendar-visibility toggle stomps on the delegate's UI.
+   */
   @Test
-  void flagToggleOnSubfolderOfSharedFolderIsDeliveredToGrantee() throws Exception {
+  void checkedToggleOnSubfolderOfSharedFolderIsFilteredOut() throws Exception {
     SubfolderSetup setup = setupSubfolderUnderSharedFolder();
 
     var checkAction = new FolderActionSelector(String.valueOf(setup.subFolderId), "check");
@@ -272,9 +276,106 @@ class SharedFolderNotificationFilteringTest extends SoapTestSuite {
 
     SoapResponse response = checkForNotifications(setup.sessionId);
 
+    Assertions.assertFalse(
+        response.body().contains("<notify"),
+        "\\Checked toggles on delegated folders must be suppressed for the grantee");
+  }
+
+  /**
+   * When the delegate themselves toggles \Checked on a delegated folder, the change must echo
+   * back to their own session — the client UI updates its store off the notification.
+   */
+  @Test
+  void checkedToggleByDelegateOnSubfolderIsDeliveredToDelegate() throws Exception {
+    SubfolderSetup setup = setupSubfolderUnderSharedFolder();
+
+    var checkAction = new FolderActionSelector(String.valueOf(setup.subFolderId), "check");
+    SoapResponse actionResponse =
+        getSoapClient()
+            .newRequest()
+            .setCaller(granteeAccount)
+            .setRequestedAccount(ownerAccount)
+            .setSessionId(setup.sessionId)
+            .setSoapBody(new FolderActionRequest(checkAction))
+            .execute();
+
+    // The delegate's UI relies on the notification to update its store. It is piggybacked on
+    // the same SOAP response as the action itself, so the change must appear in the action's
+    // <notify> block.
+    Assertions.assertTrue(
+        actionResponse.body().contains("<notify"),
+        "Delegate's own \\Checked toggle must echo back to their session "
+            + "— the UI relies on the notification to update its store");
+  }
+
+  /**
+   * Symmetric to {@link #checkedToggleOnSubfolderOfSharedFolderIsFilteredOut} — when the
+   * delegate toggles \Checked on the owner's folder, the owner must NOT see the toggle echoed
+   * into their own session. The bit is shared mailbox state and concurrent users would
+   * otherwise keep stomping on each other's calendar-visibility selection.
+   */
+  @Test
+  void checkedToggleByDelegateIsNotEchoedToOwner() throws Exception {
+    SubfolderSetup setup = setupSubfolderUnderSharedFolder();
+    String ownerSessionId = createSessionForOwner();
+    acknowledgeOwnerRefresh(ownerSessionId);
+
+    var checkAction = new FolderActionSelector(String.valueOf(setup.subFolderId), "check");
+    getSoapClient()
+        .newRequest()
+        .setCaller(granteeAccount)
+        .setRequestedAccount(ownerAccount)
+        .setSessionId(setup.sessionId)
+        .setSoapBody(new FolderActionRequest(checkAction))
+        .execute();
+
+    SoapResponse ownerResponse = checkForOwnerNotifications(ownerSessionId);
+
+    Assertions.assertFalse(
+        ownerResponse.body().contains("<notify"),
+        "Delegate's \\Checked toggle on the owner's folder must NOT be echoed back to the owner");
+  }
+
+  /**
+   * Sanity guard for the symmetric filter: the owner's own \Checked toggle must still reach the
+   * owner's session — otherwise the owner's UI would stop updating on local actions.
+   */
+  @Test
+  void checkedToggleByOwnerIsDeliveredToOwner() throws Exception {
+    SubfolderSetup setup = setupSubfolderUnderSharedFolder();
+    String ownerSessionId = createSessionForOwner();
+    acknowledgeOwnerRefresh(ownerSessionId);
+
+    var checkAction = new FolderActionSelector(String.valueOf(setup.subFolderId), "check");
+    SoapResponse actionResponse =
+        getSoapClient()
+            .newRequest()
+            .setCaller(ownerAccount)
+            .setSessionId(ownerSessionId)
+            .setSoapBody(new FolderActionRequest(checkAction))
+            .execute();
+
+    Assertions.assertTrue(
+        actionResponse.body().contains("<notify"),
+        "Owner's own \\Checked toggle must echo back to their session");
+  }
+
+  /**
+   * Flag changes other than \Checked on a delegated folder must still reach the grantee — the
+   * suppression is scoped to the calendar-visibility bit.
+   */
+  @Test
+  void nonCheckedFlagChangeOnSubfolderOfSharedFolderIsDeliveredToGrantee() throws Exception {
+    SubfolderSetup setup = setupSubfolderUnderSharedFolder();
+
+    var syncAction = new FolderActionSelector(String.valueOf(setup.subFolderId), "syncon");
+    getSoapClient().executeSoap(ownerAccount, new FolderActionRequest(syncAction));
+
+    SoapResponse response = checkForNotifications(setup.sessionId);
+
     Assertions.assertTrue(
         response.body().contains("<notify"),
-        "Flag toggles on a sub-folder of a shared folder must still be delivered to the grantee");
+        "Non-\\Checked flag changes on delegated folders must still be delivered to the grantee");
   }
 
   /**
@@ -412,6 +513,37 @@ class SharedFolderNotificationFilteringTest extends SoapTestSuite {
         .newSessionRequest(sessionId)
         .setCaller(granteeAccount)
         .setSoapBody(noOpReq)
+        .execute();
+  }
+
+  private String createSessionForOwner() throws Exception {
+    Element getFolderReq = new Element.XMLElement(MailConstants.GET_FOLDER_REQUEST);
+    final SoapResponse response =
+        getSoapClient()
+            .newSessionRequest()
+            .setCaller(ownerAccount)
+            .setSoapBody(getFolderReq)
+            .execute();
+    String sessionId = SoapUtils.getSessionId(response);
+    Assertions.assertNotNull(sessionId, "Owner session ID should be present");
+    return sessionId;
+  }
+
+  private void acknowledgeOwnerRefresh(String sessionId) throws Exception {
+    Element noOpReq = new Element.XMLElement(MailConstants.NO_OP_REQUEST);
+    getSoapClient()
+        .newSessionRequest(sessionId)
+        .setCaller(ownerAccount)
+        .setSoapBody(noOpReq)
+        .execute();
+  }
+
+  private SoapResponse checkForOwnerNotifications(String sessionId) throws Exception {
+    Element getFolderReq = new Element.XMLElement(MailConstants.GET_FOLDER_REQUEST);
+    return getSoapClient()
+        .newSessionRequest(sessionId)
+        .setCaller(ownerAccount)
+        .setSoapBody(getFolderReq)
         .execute();
   }
 
