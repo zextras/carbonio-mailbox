@@ -148,7 +148,7 @@ public enum Command {
   DESCRIBE(
       "describe",
       "desc",
-      "[[-v] [-ni] [{entry-type}]] | [-a {attribute-name}]",
+      "[[-v] [-ni] [-since {version} | -since-after {version}] [{entry-type}]] | [-a {attribute-name}] | [-list-since-versions]",
       Category.MISC,
       0,
       Integer.MAX_VALUE,

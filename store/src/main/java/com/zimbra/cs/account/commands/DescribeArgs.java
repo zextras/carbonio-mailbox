@@ -34,6 +34,34 @@ class DescribeArgs {
           throw ServiceException.INVALID_REQUEST("cannot specify -only when -a is specified", null);
         }
         descArgs.mOnThisObjectTypeOnly = true;
+      } else if ("-list-since-versions".equals(args[i])) {
+        descArgs.mListSinceVersions = true;
+      } else if ("-since".equals(args[i])) {
+        if (descArgs.mAttr != null) {
+          throw ServiceException.INVALID_REQUEST("cannot specify -since when -a is specified", null);
+        }
+        if (descArgs.mSinceAfter != null) {
+          throw ServiceException.INVALID_REQUEST("cannot specify both -since and -since-after", null);
+        }
+        if (args.length <= i + 1) {
+          throw ServiceException.INVALID_REQUEST("-since requires a version argument", null);
+        }
+        i++;
+        descArgs.mSinceParts = parseVersionGranularity(args[i]);
+        descArgs.mSince = parseVersion(args[i]);
+      } else if ("-since-after".equals(args[i])) {
+        if (descArgs.mAttr != null) {
+          throw ServiceException.INVALID_REQUEST("cannot specify -since-after when -a is specified", null);
+        }
+        if (descArgs.mSince != null) {
+          throw ServiceException.INVALID_REQUEST("cannot specify both -since and -since-after", null);
+        }
+        if (args.length <= i + 1) {
+          throw ServiceException.INVALID_REQUEST("-since-after requires a version argument", null);
+        }
+        i++;
+        descArgs.mSinceAfterParts = parseVersionGranularity(args[i]);
+        descArgs.mSinceAfter = parseVersion(args[i]);
       } else if (args[i].startsWith("-a")) {
         if (descArgs.mAttrClass != null) {
           throw ServiceException.INVALID_REQUEST(
@@ -78,7 +106,79 @@ class DescribeArgs {
           "-ni -only must be specified with an entry type", null);
     }
 
+    if (descArgs.mListSinceVersions
+        && (descArgs.mAttr != null
+            || descArgs.mAttrClass != null
+            || descArgs.hasSinceFilter()
+            || descArgs.mVerbose
+            || descArgs.mNonInheritedOnly
+            || descArgs.mOnThisObjectTypeOnly)) {
+      throw ServiceException.INVALID_REQUEST(
+          "-list-since-versions cannot be combined with other options", null);
+    }
+
     return descArgs;
+  }
+
+  private static AttributeVersion parseVersion(String version) throws ServiceException {
+    try {
+      return new AttributeVersion(version);
+    } catch (AttributeManagerException e) {
+      throw ServiceException.INVALID_REQUEST(
+          "invalid version \"" + version + "\" — expected MAJOR.MINOR[.MICRO], e.g. 26.6 or 26.6.0",
+          null);
+    }
+  }
+
+  /**
+   * Returns the number of dot-separated numeric segments in the user-supplied version
+   * (ignoring any release suffix like "_BETA1"). Used to determine match granularity:
+   * 2 segments (e.g. "26.6") matches the whole major.minor line; 3 segments (e.g. "26.6.1")
+   * requires an exact match. Single-segment input is rejected.
+   */
+  private static int parseVersionGranularity(String version) throws ServiceException {
+    if (AttributeVersion.FUTURE.equalsIgnoreCase(version)) {
+      return 3;
+    }
+    int underscoreAt = version.indexOf('_');
+    String numericPart = underscoreAt == -1 ? version : version.substring(0, underscoreAt);
+    int parts = numericPart.split("\\.").length;
+    if (parts < 2) {
+      throw ServiceException.INVALID_REQUEST(
+          "version \"" + version + "\" must include at least major and minor (e.g., 26.6 or 26.6.0)",
+          null);
+    }
+    return parts;
+  }
+
+  boolean hasSinceFilter() {
+    return mSince != null || mSinceAfter != null;
+  }
+
+  boolean matchesSinceFilter(AttributeInfo ai) {
+    if (!hasSinceFilter()) {
+      return true;
+    }
+    List<AttributeVersion> attrSince = ai.getSince();
+    if (attrSince == null || attrSince.isEmpty()) {
+      return false;
+    }
+    if (mSince != null) {
+      boolean exact = mSinceParts >= 3;
+      for (AttributeVersion v : attrSince) {
+        if (exact ? v.compareTo(mSince) == 0 : v.isSameMinorRelease(mSince)) {
+          return true;
+        }
+      }
+      return false;
+    }
+    boolean exact = mSinceAfterParts >= 3;
+    for (AttributeVersion v : attrSince) {
+      if (exact ? v.compareTo(mSinceAfter) > 0 : v.isLaterMajorMinorRelease(mSinceAfter)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   enum Field {
@@ -247,6 +347,15 @@ class DescribeArgs {
   boolean mOnThisObjectTypeOnly;
   AttributeClass mAttrClass;
   boolean mVerbose;
+
+  /*
+   * version filters
+   */
+  AttributeVersion mSince;
+  AttributeVersion mSinceAfter;
+  int mSinceParts;
+  int mSinceAfterParts;
+  boolean mListSinceVersions;
 
   /*
    * args when a specific attribute is specified
