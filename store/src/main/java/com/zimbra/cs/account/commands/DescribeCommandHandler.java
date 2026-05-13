@@ -37,7 +37,7 @@ class DescribeCommandHandler implements CommandHandler {
   }
 
   private void doDescribe(String[] args) throws ServiceException, InvalidCommandException {
-    DescribeArgs descArgs = null;
+    DescribeArgs descArgs;
     try {
       descArgs = DescribeArgs.parseDescribeArgs(args);
     } catch (ServiceException | NumberFormatException e) {
@@ -62,7 +62,7 @@ class DescribeCommandHandler implements CommandHandler {
       // attrs in a class
       attrs = new TreeSet<>(am.getAllAttrsInClass(descArgs.mAttrClass));
       if (descArgs.mNonInheritedOnly) {
-        Set<String> inheritFrom = null;
+        Set<String> inheritFrom;
         Set<String> netAttrs = null;
         switch (descArgs.mAttrClass) {
           case account:
@@ -293,7 +293,7 @@ class DescribeCommandHandler implements CommandHandler {
     }
     StringBuilder sb = new StringBuilder();
     for (AttributeVersion v : since) {
-      if (sb.length() > 0) sb.append(",");
+      if (!sb.isEmpty()) sb.append(",");
       sb.append(v.toString());
     }
     return sb.toString();
@@ -308,7 +308,7 @@ class DescribeCommandHandler implements CommandHandler {
     }
     StringBuilder sb = new StringBuilder();
     for (AttributeClass ac : applies) {
-      if (sb.length() > 0) sb.append(",");
+      if (!sb.isEmpty()) sb.append(",");
       sb.append(ac.name());
     }
     return sb.toString();
