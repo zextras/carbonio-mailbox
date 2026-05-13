@@ -49,7 +49,7 @@ class DescribeCommandHandlerTest {
   }
 
   @Test
-  void skipsAttributesWithoutSinceMetadata() throws Exception {
+  void skipsAttributesWithoutSinceMetadata() {
     List<AttributeInfo> attrs = List.of(attrIntroducedIn((List<AttributeVersion>) null));
 
     SortedMap<AttributeVersion, Integer> counts = DescribeCommandHandler.countSinceVersions(attrs);
