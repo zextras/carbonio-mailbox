@@ -1018,6 +1018,21 @@ public class SoapSession extends Session {
   }
 
   /**
+   * Queues a synthetic {@link Change#FLAGS} notification for the given folder onto this
+   * session's outbound queue, bypassing the mailbox-level broadcast.
+   *
+   * <p>Used to refresh the caller's UI cache after a folder-flag toggle that the server treated
+   * as a no-op (e.g. when the caller's cached state had drifted from the server's). Since the
+   * notification is queued directly here, it only reaches this session — not other listeners
+   * on the mailbox.
+   */
+  public void queueFolderFlagsRefresh(Folder folder) {
+    PendingLocalModifications pms = new PendingLocalModifications();
+    pms.recordModified(folder, Change.FLAGS);
+    handleNotifications(pms, true);
+  }
+
+  /**
    * Returns a copy of {@code pms} with the {@link Change#FLAGS} bit cleared on any modification
    * that represents nothing but a {@code \Checked} toggle on a folder. Returns the input
    * unchanged when nothing matches.

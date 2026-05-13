@@ -337,6 +337,65 @@ class SharedFolderNotificationFilteringTest extends SoapTestSuite {
   }
 
   /**
+   * Suppression lets the two sides' UI caches drift, so a "toggle" from one side that happens to
+   * match the server state becomes a no-op and the cache never re-syncs. To break the deadlock,
+   * the no-op still queues a session-private FLAGS notification to the caller so their UI can
+   * refresh to the current server value.
+   */
+  @Test
+  void noopCheckedToggleByDelegateStillRefreshesDelegateUi() throws Exception {
+    SubfolderSetup setup = setupSubfolderUnderSharedFolder();
+    // Owner pre-checks the subfolder so the grantee's later "check" is a no-op on the server.
+    // The grantee's session never saw the owner's toggle (suppressed by the filter), so its UI
+    // cache is stale.
+    var ownerCheckAction = new FolderActionSelector(String.valueOf(setup.subFolderId), "check");
+    getSoapClient().executeSoap(ownerAccount, new FolderActionRequest(ownerCheckAction));
+
+    var checkAction = new FolderActionSelector(String.valueOf(setup.subFolderId), "check");
+    SoapResponse actionResponse =
+        getSoapClient()
+            .newRequest()
+            .setCaller(granteeAccount)
+            .setRequestedAccount(ownerAccount)
+            .setSessionId(setup.sessionId)
+            .setSoapBody(new FolderActionRequest(checkAction))
+            .execute();
+
+    Assertions.assertTrue(
+        actionResponse.body().contains("<notify"),
+        "No-op \\Checked toggle by delegate must still refresh their UI via a session-private "
+            + "FLAGS notification");
+  }
+
+  /**
+   * The session-private refresh used by {@link #noopCheckedToggleByDelegateStillRefreshesDelegateUi}
+   * must NOT escape to the owner — only the caller's session should get the synthetic notification.
+   */
+  @Test
+  void noopCheckedToggleByDelegateIsNotBroadcastToOwner() throws Exception {
+    SubfolderSetup setup = setupSubfolderUnderSharedFolder();
+    var ownerCheckAction = new FolderActionSelector(String.valueOf(setup.subFolderId), "check");
+    getSoapClient().executeSoap(ownerAccount, new FolderActionRequest(ownerCheckAction));
+    String ownerSessionId = createSessionForOwner();
+    acknowledgeOwnerRefresh(ownerSessionId);
+
+    var checkAction = new FolderActionSelector(String.valueOf(setup.subFolderId), "check");
+    getSoapClient()
+        .newRequest()
+        .setCaller(granteeAccount)
+        .setRequestedAccount(ownerAccount)
+        .setSessionId(setup.sessionId)
+        .setSoapBody(new FolderActionRequest(checkAction))
+        .execute();
+
+    SoapResponse ownerResponse = checkForOwnerNotifications(ownerSessionId);
+
+    Assertions.assertFalse(
+        ownerResponse.body().contains("<notify"),
+        "Delegate's no-op refresh must be session-private, not broadcast to the owner");
+  }
+
+  /**
    * Sanity guard for the symmetric filter: the owner's own \Checked toggle must still reach the
    * owner's session — otherwise the owner's UI would stop updating on local actions.
    */
