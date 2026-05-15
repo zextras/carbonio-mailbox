@@ -11,14 +11,11 @@ license=(
   "GPL-2.0-only"
 )
 url="https://github.com/zextras"
-makedepends=(
-  "unzip"
-)
 section="mail"
 priority="optional"
 
 package() {
-  cd "$(dirname "$(find /project -name "yap.json" -print -quit)")/.."
+  cd "${repodir}"
 
   install -D store/target/zm-store.jar \
     "${pkgdir}/opt/zextras/mailbox/jars/mailbox.jar"
