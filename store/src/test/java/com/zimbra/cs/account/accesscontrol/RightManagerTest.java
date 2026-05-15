@@ -2,8 +2,6 @@ package com.zimbra.cs.account.accesscontrol;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.AttributeManager;
-import com.zimbra.cs.account.AttributeManagerException;
-import javax.management.AttributeNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -31,7 +29,7 @@ class RightManagerTest {
   }
 
   private void assertRightsLoaded(RightManager rightManager) throws ServiceException {
-    Assertions.assertEquals(420, rightManager.getAllAdminRights().size());
+    Assertions.assertEquals(421, rightManager.getAllAdminRights().size());
     Assertions.assertEquals(11, rightManager.getAllUserRights().size());
 
     final AdminRight domainAdminRights = rightManager.getAdminRight("domainAdminRights");

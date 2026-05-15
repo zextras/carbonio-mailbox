@@ -72,6 +72,12 @@ public class RemoveDistributionListMember extends ReloadMemberPostProxyHandler {
 
         Group group = getGroupFromContext(context);
         String id = request.getAttribute(AdminConstants.E_ID);
+
+        if (group.getBooleanAttr("zimbraIsAdminGroup", false)) {
+            defendAgainstGroupHarvesting(group, DistributionListBy.id, id, zsc,
+                    Admin.R_removeGroupMember, Admin.R_modifyAdminDistributionListMember);
+        }
+
         defendAgainstGroupHarvesting(group, DistributionListBy.id, id, zsc,
                 Admin.R_removeGroupMember, Admin.R_removeDistributionListMember);
 
