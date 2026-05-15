@@ -7,13 +7,13 @@ tests:
 	mvn verify -DexcludedGroups=api,flaky,e2e -Dfile.encoding=UTF-8
 
 api-tests:
-	cd store && mvn verify -Dgroups=api -Dfile.encoding=UTF-8
+	mvn verify -Dgroups=api -Dfile.encoding=UTF-8
 
 flaky-tests:
-	cd store && mvn verify -Dgroups=flaky -Dfile.encoding=UTF-8
+	mvn verify -Dgroups=flaky -Dfile.encoding=UTF-8
 
 e2e-tests:
-	cd store && mvn verify -Dgroups=e2e -Dfile.encoding=UTF-8
+	mvn verify -Dgroups=e2e -Dfile.encoding=UTF-8
 
 build-packages: build
 	./build_packages.sh	

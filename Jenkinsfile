@@ -28,13 +28,16 @@ defaultPipeline {
             }
 
             stage('UT, IT') {
-                sh "mvn jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -DexcludedGroups=api,flaky,e2e"
+                sh "mvn verify -DexcludedGroups=api,flaky,e2e"
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
             }
 
             stage('Flaky, API, E2E tests') {
-                sh "cd store && mvn jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=flaky,api && mvn jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=e2e"
+                sh """
+                    mvn verify -Dgroups=flaky,api
+                    mvn verify -Dgroups=e2e
+                """
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
             }
