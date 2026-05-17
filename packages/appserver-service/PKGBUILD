@@ -30,7 +30,7 @@ sha256sums=(
 )
 
 _package() {
-  cd "$(dirname "$(find /project -name "yap.json" -print -quit)")/.."
+  cd "${repodir}"
 
   # Mailbox
   install -Dm755 packages/appserver-service/carbonio-mailbox \
