@@ -1,18 +1,13 @@
-FROM --platform=$BUILDPLATFORM maven:3-eclipse-temurin-21-alpine AS build
+FROM --platform=$BUILDPLATFORM alpine:3 AS build
 
 WORKDIR /build
 
-# Copy all project files
-COPY pom.xml                          pom.xml
-COPY store                            store
-COPY soap                             soap
-COPY store-extra-runtime-dependencies store-extra-runtime-dependencies
-COPY jython-libs                      jython-libs
-COPY common                           common
-COPY right-manager                    right-manager
-COPY client                           client
-
-RUN --mount=type=cache,target=/root/.m2 mvn clean install -Dmaven.test.skip=true
+# Consume artifacts built on the host: run `mvn -DskipTests install` before `docker build`.
+COPY store/target/zm-store.jar                    store/target/zm-store.jar
+COPY store/target/dependencies                    store/target/dependencies
+COPY store/conf                                   store/conf
+COPY store/db                                     store/db
+COPY store/src/test/resources/timezones-test.ics  store/src/test/resources/timezones-test.ics
 
 # Prepare directory structure and scripts in build stage
 RUN mkdir -p /staging/opt/zextras/mailbox/jars/ && \
