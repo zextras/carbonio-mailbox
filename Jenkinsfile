@@ -7,7 +7,7 @@ library(
         ])
 )
 
-String profile = env.TAG_NAME ? '-Pprod' : (env.BRANCH_NAME == 'devel' ? '-Pdev' : '')
+String profile = env.TAG_NAME ? '-Pprod' : ''
 
 defaultPipeline {
 
