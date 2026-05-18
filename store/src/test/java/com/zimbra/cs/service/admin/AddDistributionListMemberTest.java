@@ -33,11 +33,10 @@ class AddDistributionListMemberTest extends SoapTestSuite {
   @BeforeAll
   static void setUp() {
     provisioning = Provisioning.getInstance();
-    
   }
 
   @Test
-  void addDistributionListMember() throws Exception {
+  void addDistributionListMemberByDomainAdmin() throws Exception {
     final Account domainAdminAccount = createAccount()
         .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE").create();
     final Account userAccount = createAccount().create();
@@ -67,5 +66,45 @@ class AddDistributionListMemberTest extends SoapTestSuite {
             .execute();
 
     Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
+
+    var members = provisioning.getGroupMembers(dl);
+    Assertions.assertEquals(1, members.length);
+    Assertions.assertEquals(userAccount.getName(), members[0]);
+  }
+
+  @Test
+  void addDistributionListMemberByDelegatedAdmin() throws Exception {
+    final Account delegatedAdmin = createAccount()
+            .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE").create();
+    final Account userAccount = createAccount().create();
+    final Domain target = provisioning.getDomain(delegatedAdmin);
+
+    final Set<ZimbraACE> aces = new HashSet<>();
+    aces.add(new ZimbraACE(
+            delegatedAdmin.getId(),
+            GranteeType.GT_USER,
+            RightManager.getInstance().getRight(Right.RT_domainAdminDistributionListRights),
+            RightModifier.RM_CAN_DELEGATE,
+            null));
+    ACLUtil.grantRight(provisioning, target, aces);
+
+    var dl = provisioning.createDistributionList("admin-group-dl@" + getDefaultDomainName(), new HashMap<>(
+            Map.of(ZAttrProvisioning.A_zimbraIsAdminGroup, "TRUE")
+    ));
+
+    var request = new AddDistributionListMemberRequest(
+            dl.getId(),
+            List.of(userAccount.getName())
+    );
+
+    final SoapResponse response = getSoapClient().newRequest()
+            .setCaller(delegatedAdmin)
+            .setSoapBody(request)
+            .execute();
+
+    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, response.statusCode());
+
+    var members = provisioning.getGroupMembers(dl);
+    Assertions.assertEquals(0, members.length);
   }
 }
