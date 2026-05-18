@@ -30,6 +30,7 @@ import com.zimbra.cs.fb.FreeBusyProvider;
 import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Flag;
+import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.FolderActionEmptyOpTypes;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
@@ -38,6 +39,8 @@ import com.zimbra.cs.mailbox.Mailbox.FolderNode;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
+import com.zimbra.cs.session.Session;
+import com.zimbra.cs.session.SoapSession;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.type.RetentionPolicy;
@@ -136,7 +139,17 @@ public class FolderAction extends ItemAction {
             mbox.alterTag(octxt, iid.getId(), MailItem.Type.FOLDER, Flag.FlagInfo.EXCLUDE_FREEBUSY, fb, null);
             FreeBusyProvider.mailboxChanged(zsc.getRequestedAccountId());
         } else if (operation.equals(OP_CHECK) || operation.equals(OP_UNCHECK)) {
-            mbox.alterTag(octxt, iid.getId(), MailItem.Type.FOLDER, Flag.FlagInfo.CHECKED, operation.equals(OP_CHECK), null);
+            boolean check = operation.equals(OP_CHECK);
+            Folder folder = mbox.getFolderById(octxt, iid.getId());
+            boolean wasChecked = folder.isTagged(Flag.FlagInfo.CHECKED);
+            mbox.alterTag(octxt, iid.getId(), MailItem.Type.FOLDER, Flag.FlagInfo.CHECKED, check, null);
+            if (wasChecked == check) {
+                // No-op on the server: the caller's UI cache may be stale (e.g. an earlier
+                // toggle by the folder's owner was filtered out for them via delegation). Queue
+                // a session-private FLAGS notification so their UI can re-sync to the current
+                // server state without us broadcasting to other listeners.
+                queueFlagsRefreshForCaller(octxt, folder);
+            }
         } else if (operation.equals(OP_SET_URL)) {
             String url = action.getAttribute(MailConstants.A_URL, "");
             mbox.setFolderUrl(octxt, iid.getId(), url);
@@ -287,6 +300,19 @@ public class FolderAction extends ItemAction {
         }
 
         return ifmt.formatItemId(iid);
+    }
+
+    private static void queueFlagsRefreshForCaller(OperationContext octxt, Folder folder) {
+        Session caller = octxt.getSession();
+        SoapSession soapSession = null;
+        if (caller instanceof SoapSession.DelegateSession ds) {
+            soapSession = ds.getParentSession();
+        } else if (caller instanceof SoapSession ss) {
+            soapSession = ss;
+        }
+        if (soapSession != null) {
+            soapSession.queueFolderFlagsRefresh(folder);
+        }
     }
 
     private void handleFolderEmptyOperation(Element action, Mailbox mbox, OperationContext octxt, ItemId iid) throws ServiceException {

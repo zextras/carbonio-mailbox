@@ -104,7 +104,7 @@ public class OperationContext implements OpContext {
     return this;
   }
 
-  Session getSession() {
+  public Session getSession() {
     return session;
   }
 

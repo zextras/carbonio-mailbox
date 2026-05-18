@@ -62,6 +62,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,6 +77,13 @@ public class SoapSession extends Session {
   public class DelegateSession extends Session {
     private long mNextFolderCheck;
     private Set<Integer> mVisibleFolderIds;
+    /**
+     * IDs (in the target mailbox) of the folders this user has mounted as a share. A mountpoint
+     * carries its own name/color/flags, so the owner's changes to those attributes on these folders
+     * must not be forwarded; folders only seen through delegated access (no mountpoint of their own)
+     * keep the owner's metadata.
+     */
+    private Set<Integer> mMountedTargetFolderIds = Collections.emptySet();
     private boolean mParentHasFullAccess = false;
 
     DelegateSession(String authId, String targetId) {
@@ -128,9 +136,13 @@ public class SoapSession extends Session {
     public void notifyPendingChanges(PendingModifications pmsIn, int changeId, Session source) {
       PendingLocalModifications pms = (PendingLocalModifications) pmsIn;
       try {
-        if (calculateVisibleFolders(false)) pms = filterNotifications(pms);
-        if (pms != null && pms.hasNotifications())
-          handleNotifications(pms, source == this || source == SoapSession.this);
+        boolean changesAreOurs =
+            source != null
+                && (source == this
+                    || source == SoapSession.this
+                    || mAuthenticatedAccountId.equalsIgnoreCase(source.getAuthenticatedAccountId()));
+        if (calculateVisibleFolders(false)) pms = filterNotifications(pms, changesAreOurs);
+        if (pms != null && pms.hasNotifications()) handleNotifications(pms, changesAreOurs);
       } catch (ServiceException e) {
         ZimbraLog.session.warn("exception during delegated notifyPendingChanges", e);
       }
@@ -187,6 +199,7 @@ public class SoapSession extends Session {
       cacheAccountAccess(mAuthenticatedAccountId, mTargetAccountId);
       if (mbox == null) {
         mVisibleFolderIds = Collections.emptySet();
+        mMountedTargetFolderIds = Collections.emptySet();
         return true;
       }
 
@@ -196,17 +209,44 @@ public class SoapSession extends Session {
           return mVisibleFolderIds != null;
         }
 
-        Set<Integer> visible =
+        mVisibleFolderIds =
             MailItem.toId(
                 mbox.getVisibleFolders(new OperationContext(getAuthenticatedAccountId())));
-        mVisibleFolderIds = visible;
         mNextFolderCheck =
             DebugConfig.visibileFolderRecalcInterval > 0
                 ? now + DebugConfig.visibileFolderRecalcInterval
                 : -1;
-        return visible != null;
       } finally {
         mbox.lock.release();
+      }
+      // Done outside the target mailbox lock: this reads the *parent* (delegating) mailbox.
+      mMountedTargetFolderIds = collectMountedTargetFolderIds();
+      return mVisibleFolderIds != null;
+    }
+
+    /**
+     * Returns the IDs (in the target mailbox) of the folders the delegating user has mounted from
+     * the target account.
+     */
+    private Set<Integer> collectMountedTargetFolderIds() {
+      Mailbox parentMbox = getParentSession().getMailboxOrNull();
+      if (parentMbox == null) {
+        return Collections.emptySet();
+      }
+      try {
+        Set<Integer> ids = new HashSet<>();
+        OperationContext octxt = new OperationContext(getAuthenticatedAccountId());
+        for (MailItem item : parentMbox.getItemList(octxt, MailItem.Type.MOUNTPOINT)) {
+          if (item instanceof Mountpoint mountpoint
+              && mTargetAccountId.equalsIgnoreCase(mountpoint.getOwnerId())) {
+            ids.add(mountpoint.getRemoteId());
+          }
+        }
+        return ids;
+      } catch (ServiceException e) {
+        ZimbraLog.session.warn(
+            "delegate session: unable to enumerate mountpoints into %s", mTargetAccountId, e);
+        return Collections.emptySet();
       }
     }
 
@@ -230,9 +270,11 @@ public class SoapSession extends Session {
     private static final int BASIC_CONVERSATION_FLAGS = Change.FLAGS | Change.TAGS | Change.UNREAD;
     private static final int MODIFIED_CONVERSATION_FLAGS =
         BASIC_CONVERSATION_FLAGS | Change.SIZE | Change.SENDERS;
+    private static final int RESTRICTED_MOUNTED_FOLDER_CHANGES =
+        Change.NAME | Change.COLOR | Change.FLAGS;
 
-    private PendingLocalModifications filterNotifications(PendingLocalModifications pms)
-        throws ServiceException {
+    private PendingLocalModifications filterNotifications(
+        PendingLocalModifications pms, boolean changesAreOurs) throws ServiceException {
       // first, recalc visible folders if any folders got created or moved or had their ACL changed
       if (folderRecalcRequired(pms) && !calculateVisibleFolders(true)) {
         return pms;
@@ -278,13 +320,21 @@ public class SoapSession extends Session {
                   item, chg.why | MODIFIED_CONVERSATION_FLAGS, (MailItem) chg.preModifyObj);
             } else if (isVisible) {
               int why = chg.why;
-              // Filter out name/color/flags changes on shared folders to prevent notification spam
-              boolean isSharedFolder =
-                  item instanceof Folder folder
-                      && folder.isSharedWithUser(mAuthenticatedAccountId);
-              if (isSharedFolder) {
-                int restrictedChangesForSharedFolders = Change.NAME | Change.COLOR | Change.FLAGS;
-                why &= ~restrictedChangesForSharedFolders;
+              // Don't filter changes the delegate itself made: the client UI relies on the
+              // notification to update its store, so toggling a folder must echo back to its
+              // own session.
+              if (!changesAreOurs && item instanceof Folder folder) {
+                if (mMountedTargetFolderIds.contains(folder.getId())) {
+                  // Directly mounted share: the mountpoint carries its own name/color/flags,
+                  // so don't forward the owner's changes to those attributes.
+                  why &= ~RESTRICTED_MOUNTED_FOLDER_CHANGES;
+                } else if ((why & Change.FLAGS) != 0
+                    && chg.preModifyObj instanceof Folder pre
+                    && (pre.getFlagBitmask() ^ folder.getFlagBitmask()) == Flag.BITMASK_CHECKED) {
+                  // Delegated access (no mountpoint of its own): both accounts often work in the
+                  // mailbox concurrently, so don't echo the owner's calendar-visibility toggle.
+                  why &= ~Change.FLAGS;
+                }
               }
               if (why != 0) {
                 filtered.recordModified(item, why, (MailItem) chg.preModifyObj);
@@ -927,6 +977,16 @@ public class SoapSession extends Session {
     if (pms == null || mbox == null || !pms.hasNotifications()) {
       return;
     }
+    // \Checked is folder state shared across delegates and the owner. When another user (e.g. a
+    // delegate working in our mailbox) toggles it, don't echo the toggle to us — concurrent
+    // users would otherwise keep stomping on each other's calendar-visibility selection.
+    if (source != null
+        && !mAuthenticatedAccountId.equalsIgnoreCase(source.getAuthenticatedAccountId())) {
+      pms = stripForeignCheckedToggles(pms);
+      if (!pms.hasNotifications()) {
+        return;
+      }
+    }
     if (source == this) {
       updateLastWrite(mbox);
     } else {
@@ -955,6 +1015,72 @@ public class SoapSession extends Session {
     }
 
     handleNotifications(pms, source == this);
+  }
+
+  /**
+   * Queues a synthetic {@link Change#FLAGS} notification for the given folder onto this
+   * session's outbound queue, bypassing the mailbox-level broadcast.
+   *
+   * <p>Used to refresh the caller's UI cache after a folder-flag toggle that the server treated
+   * as a no-op (e.g. when the caller's cached state had drifted from the server's). Since the
+   * notification is queued directly here, it only reaches this session — not other listeners
+   * on the mailbox.
+   */
+  public void queueFolderFlagsRefresh(Folder folder) {
+    PendingLocalModifications pms = new PendingLocalModifications();
+    pms.recordModified(folder, Change.FLAGS);
+    handleNotifications(pms, true);
+  }
+
+  /**
+   * Returns a copy of {@code pms} with the {@link Change#FLAGS} bit cleared on any modification
+   * that represents nothing but a {@code \Checked} toggle on a folder. Returns the input
+   * unchanged when nothing matches.
+   */
+  private PendingLocalModifications stripForeignCheckedToggles(PendingLocalModifications pms) {
+    if (pms.modified == null || pms.modified.isEmpty()) {
+      return pms;
+    }
+    boolean needsRewrite = false;
+    for (Change chg : pms.modified.values()) {
+      if (isCheckedOnlyToggle(chg)) {
+        needsRewrite = true;
+        break;
+      }
+    }
+    if (!needsRewrite) {
+      return pms;
+    }
+    PendingLocalModifications copy = new PendingLocalModifications();
+    copy.changedTypes = pms.changedTypes;
+    copy.addChangedParentFolderIds(pms.getChangedParentFolders());
+    if (pms.created != null && !pms.created.isEmpty()) {
+      for (BaseItemInfo item : pms.created.values()) {
+        copy.recordCreated(item);
+      }
+    }
+    if (pms.deleted != null && !pms.deleted.isEmpty()) {
+      copy.recordDeleted(pms.deleted);
+    }
+    for (Change chg : pms.modified.values()) {
+      int why = isCheckedOnlyToggle(chg) ? (chg.why & ~Change.FLAGS) : chg.why;
+      if (why == 0) {
+        continue;
+      }
+      if (chg.what instanceof MailItem mi) {
+        copy.recordModified(mi, why, (MailItem) chg.preModifyObj);
+      } else if (chg.what instanceof Mailbox mb) {
+        copy.recordModified(mb, why);
+      }
+    }
+    return copy;
+  }
+
+  private static boolean isCheckedOnlyToggle(Change chg) {
+    return (chg.why & Change.FLAGS) != 0
+        && chg.what instanceof Folder folder
+        && chg.preModifyObj instanceof Folder pre
+        && (pre.getFlagBitmask() ^ folder.getFlagBitmask()) == Flag.BITMASK_CHECKED;
   }
 
   boolean hasSerializableChanges(PendingLocalModifications pms) {
