@@ -3,6 +3,7 @@ package com.zimbra.cs.service.admin;
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
@@ -42,16 +43,9 @@ class AddDistributionListMemberTest extends SoapTestSuite {
     final Account userAccount = createAccount().create();
     final Domain target = provisioning.getDomain(domainAdminAccount);
 
-    final Set<ZimbraACE> aces = new HashSet<>();
-    aces.add(new ZimbraACE(
-                  domainAdminAccount.getId(),
-                  GranteeType.GT_USER,
-                  RightManager.getInstance().getRight(Right.RT_domainAdminRights),
-                  RightModifier.RM_CAN_DELEGATE,
-                  null));
-    ACLUtil.grantRight(provisioning, target, aces);
+    grantRights(domainAdminAccount, Right.RT_domainAdminRights, target);
 
-    var dl = provisioning.createDistributionList("admin-group-dl@" + getDefaultDomainName(), new HashMap<>(
+    var dl = provisioning.createDistributionList("admin-group-dl1@" + getDefaultDomainName(), new HashMap<>(
             Map.of(ZAttrProvisioning.A_zimbraIsAdminGroup, "TRUE")
     ));
 
@@ -79,16 +73,9 @@ class AddDistributionListMemberTest extends SoapTestSuite {
     final Account userAccount = createAccount().create();
     final Domain target = provisioning.getDomain(delegatedAdmin);
 
-    final Set<ZimbraACE> aces = new HashSet<>();
-    aces.add(new ZimbraACE(
-            delegatedAdmin.getId(),
-            GranteeType.GT_USER,
-            RightManager.getInstance().getRight(Right.RT_domainAdminDistributionListRights),
-            RightModifier.RM_CAN_DELEGATE,
-            null));
-    ACLUtil.grantRight(provisioning, target, aces);
+    grantRights(delegatedAdmin, Right.RT_domainAdminDistributionListRights, target);
 
-    var dl = provisioning.createDistributionList("admin-group-dl@" + getDefaultDomainName(), new HashMap<>(
+    var dl = provisioning.createDistributionList("admin-group-dl2@" + getDefaultDomainName(), new HashMap<>(
             Map.of(ZAttrProvisioning.A_zimbraIsAdminGroup, "TRUE")
     ));
 
@@ -106,5 +93,16 @@ class AddDistributionListMemberTest extends SoapTestSuite {
 
     var members = provisioning.getGroupMembers(dl);
     Assertions.assertEquals(0, members.length);
+  }
+
+  private static void grantRights(Account delegatedAdmin, String rights, Domain target) throws ServiceException {
+    final Set<ZimbraACE> aces = new HashSet<>();
+    aces.add(new ZimbraACE(
+            delegatedAdmin.getId(),
+            GranteeType.GT_USER,
+            RightManager.getInstance().getRight(rights),
+            RightModifier.RM_CAN_DELEGATE,
+            null));
+    ACLUtil.grantRight(provisioning, target, aces);
   }
 }
