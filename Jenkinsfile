@@ -79,10 +79,9 @@ defaultPipeline {
                     stage('Build deb/rpm') {
                         echo 'Building deb/rpm packages'
                         buildStage([
-                                addCarbonioRepos: true,
-                                carbonioRepoCredentialId: 'artifactory-jenkins-gradle-properties-splitted',
-                                skipStash: true,
+                                stashIncludes: 'staging/**',
                                 buildDirs: ['staging/packages'],
+                                buildFlags: ' -sd ',
                         ])
                     }
                     stage('Publish packages') {
