@@ -13,7 +13,7 @@ import com.zimbra.cs.account.accesscontrol.Right;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.accesscontrol.RightModifier;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE;
-import com.zimbra.soap.admin.message.AddDistributionListMemberRequest;
+import com.zimbra.soap.admin.message.RemoveDistributionListMemberRequest;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Tag("api")
-class AddDistributionListMemberTest extends SoapTestSuite {
+class RemoveDistributionListMemberTest extends SoapTestSuite {
 
   private static Provisioning provisioning;
 
@@ -37,7 +37,7 @@ class AddDistributionListMemberTest extends SoapTestSuite {
   }
 
   @Test
-  void addDistributionListMemberByGlobalAdmin() throws Exception {
+  void removeDistributionListMemberByGlobalAdmin() throws Exception {
     final Account domainAdminAccount = createAccount().asGlobalAdmin().create();
     final Account userAccount = createAccount().create();
     final Domain target = provisioning.getDomain(domainAdminAccount);
@@ -48,7 +48,9 @@ class AddDistributionListMemberTest extends SoapTestSuite {
             Map.of(ZAttrProvisioning.A_zimbraIsAdminGroup, "TRUE")
     ));
 
-    var request = new AddDistributionListMemberRequest(
+    provisioning.addGroupMembers(dl, new String[] {userAccount.getName()});
+
+    var request = new RemoveDistributionListMemberRequest(
             dl.getId(),
             List.of(userAccount.getName())
     );
@@ -57,16 +59,14 @@ class AddDistributionListMemberTest extends SoapTestSuite {
             .setCaller(domainAdminAccount)
             .setSoapBody(request)
             .execute();
-
     Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
 
     var members = provisioning.getGroupMembers(dl);
-    Assertions.assertEquals(1, members.length);
-    Assertions.assertEquals(userAccount.getName(), members[0]);
+    Assertions.assertEquals(0, members.length);
   }
 
   @Test
-  void addDistributionListMemberByDomainAdmin() throws Exception {
+  void removeDistributionListMemberByDomainAdmin() throws Exception {
     final Account domainAdminAccount = createAccount()
         .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE").create();
     final Account userAccount = createAccount().create();
@@ -78,7 +78,9 @@ class AddDistributionListMemberTest extends SoapTestSuite {
             Map.of(ZAttrProvisioning.A_zimbraIsAdminGroup, "TRUE")
     ));
 
-    var request = new AddDistributionListMemberRequest(
+    provisioning.addGroupMembers(dl, new String[] {userAccount.getName()});
+
+    var request = new RemoveDistributionListMemberRequest(
             dl.getId(),
             List.of(userAccount.getName())
     );
@@ -87,16 +89,14 @@ class AddDistributionListMemberTest extends SoapTestSuite {
             .setCaller(domainAdminAccount)
             .setSoapBody(request)
             .execute();
-
     Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
 
     var members = provisioning.getGroupMembers(dl);
-    Assertions.assertEquals(1, members.length);
-    Assertions.assertEquals(userAccount.getName(), members[0]);
+    Assertions.assertEquals(0, members.length);
   }
 
   @Test
-  void addDistributionListMemberByDelegatedAdmin() throws Exception {
+  void removeDistributionListMemberByDelegatedAdmin() throws Exception {
     final Account delegatedAdmin = createAccount()
             .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE").create();
     final Account userAccount = createAccount().create();
@@ -108,7 +108,9 @@ class AddDistributionListMemberTest extends SoapTestSuite {
             Map.of(ZAttrProvisioning.A_zimbraIsAdminGroup, "TRUE")
     ));
 
-    var request = new AddDistributionListMemberRequest(
+    provisioning.addGroupMembers(dl, new String[] {userAccount.getName()});
+
+    var request = new RemoveDistributionListMemberRequest(
             dl.getId(),
             List.of(userAccount.getName())
     );
@@ -121,7 +123,8 @@ class AddDistributionListMemberTest extends SoapTestSuite {
     Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, response.statusCode());
 
     var members = provisioning.getGroupMembers(dl);
-    Assertions.assertEquals(0, members.length);
+    Assertions.assertEquals(1, members.length);
+    Assertions.assertEquals(userAccount.getName(), members[0]);
   }
 
   private static void grantRights(Account delegatedAdmin, String rights, Domain target) throws ServiceException {
