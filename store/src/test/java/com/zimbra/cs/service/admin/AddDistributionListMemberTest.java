@@ -13,7 +13,6 @@ import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.accesscontrol.RightModifier;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE;
 import com.zimbra.soap.admin.message.AddDistributionListMemberRequest;
-import com.zimbra.soap.admin.message.ModifyAccountRequest;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -59,7 +58,7 @@ class AddDistributionListMemberTest extends SoapTestSuite {
 
     var request = new AddDistributionListMemberRequest(
             dl.getId(),
-            List.of(userAccount.getId())
+            List.of(userAccount.getName())
     );
 
     final SoapResponse response = getSoapClient().newRequest()
