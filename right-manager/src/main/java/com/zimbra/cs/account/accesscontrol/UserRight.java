@@ -5,17 +5,16 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
-import java.util.EnumSet;
-import java.util.Set;
-
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.accesscontrol.generated.UserRights;
+import java.util.EnumSet;
+import java.util.Set;
 
 public class UserRight extends Right {
 
     static void init(RightManager rm) throws ServiceException {
         UserRights.init(rm);
-    }
+		}
 
     UserRight(String name) {
         super(name, RightType.preset);

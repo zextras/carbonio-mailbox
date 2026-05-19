@@ -11,6 +11,7 @@ package com.zimbra.common.service;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
+import com.zextras.entry.IServiceException;
 import com.zimbra.common.util.HttpUtil;
 import com.zimbra.common.util.StringUtil;
 import java.security.SecureRandom;
@@ -20,7 +21,7 @@ import java.util.List;
 import org.apache.commons.codec.binary.Hex;
 
 @SuppressWarnings("serial")
-public class ServiceException extends Exception {
+public class ServiceException extends IServiceException {
 
   public static final String FAILURE = "service.FAILURE";
   public static final String INVALID_REQUEST = "service.INVALID_REQUEST";

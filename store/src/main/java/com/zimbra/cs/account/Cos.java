@@ -20,12 +20,12 @@ import java.util.Map;
  *
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class Cos extends ZAttrCos {
- 
+public class Cos extends NamedEntry implements ZAttrCos<Provisioning> {
+
     private Map<String, Object> mAccountDefaults = new HashMap<>();
 
     public Cos(String name, String id, Map<String,Object> attrs, Provisioning prov) {
-        super(name, id, attrs, prov);
+        super(name, id, attrs, null, prov);
         resetData();
     }
     

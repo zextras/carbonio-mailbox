@@ -94,7 +94,7 @@ public class DynamicResultsHelper {
                 }
             }
             deleteBadValues();
-            return new EphemeralResult(results.toArray(new EphemeralKeyValuePair[0]));
+            return new EphemeralResult(results.toArray(new EphemeralKeyValuePair[0]), ZimbraLog.ephemeral::warn);
         }
     }
 

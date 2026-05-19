@@ -47,14 +47,25 @@ public abstract class Group extends MailTarget implements AliasedEntry {
      */
     public abstract Set<String> getAllMembersSet() throws ServiceException;
 
-    /*
-     * bridge getters with generated getters used
-     */
-    public abstract String getDisplayName();
-    public abstract String getMail();
-    public abstract boolean isPrefReplyToEnabled();
-    public abstract String getPrefReplyToAddress();
-    public abstract String getPrefReplyToDisplay();
+    public String getDisplayName() {
+        return getAttr(Provisioning.A_displayName, null, true);
+    }
+
+    public String getMail() {
+        return getAttr(Provisioning.A_mail, null, true);
+    }
+
+    public boolean isPrefReplyToEnabled() {
+        return getBooleanAttr(Provisioning.A_zimbraPrefReplyToEnabled, false, true);
+    }
+
+    public String getPrefReplyToAddress() {
+        return getAttr(Provisioning.A_zimbraPrefReplyToAddress, null, true);
+    }
+
+    public String getPrefReplyToDisplay() {
+        return getAttr(Provisioning.A_zimbraPrefReplyToDisplay, null, true);
+    }
 
     public boolean hideInGal() {
         String hideInGal = getAttr(Provisioning.A_zimbraHideInGal);

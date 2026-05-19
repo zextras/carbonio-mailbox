@@ -10,11 +10,8 @@ import java.util.Map;
 /**
  * @author jhahm
  */
-public class CalendarResource extends ZAttrCalendarResource {
+public class CalendarResource extends Account {
 
-    public CalendarResource(String name, String id, Map<String, Object> attrs, Map<String, Object> defaults, Provisioning prov) {
-        super(name, id, attrs, defaults, prov);
-    }
     
     @Override
     public EntryType getEntryType() {

@@ -46,7 +46,7 @@ public class RedisEphemeralStore extends EphemeralStore {
     final String key = getAccessKey(location, ephemeralKey);
     try (Jedis jedis = jedisPool.getResource()) {
       final String gotResult = jedis.get(key);
-      return new EphemeralResult(ephemeralKey, gotResult);
+      return new EphemeralResult(ephemeralKey, gotResult, ZimbraLog.ephemeral::warn);
     }
   }
 

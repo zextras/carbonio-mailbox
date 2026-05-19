@@ -8,6 +8,8 @@ package com.zimbra.cs.account;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
+import com.zextras.entry.IEntry;
+import com.zextras.entry.IProvisioning;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.ProvisioningConstants;
@@ -59,7 +61,7 @@ import javax.mail.internet.InternetAddress;
  * @since Sep 23, 2004
  * @author schemers
  */
-public abstract class Provisioning extends ZAttrProvisioning {
+public abstract class Provisioning implements IProvisioning, ZAttrProvisioning {
 
   public static final String DEFAULT_COS_NAME = "default";
   public static final String DEFAULT_EXTERNAL_COS_NAME = "defaultExternal";
@@ -390,6 +392,12 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public void modifyAttrs(Entry e, Map<String, ? extends Object> attrs) throws ServiceException {
     modifyAttrs(e, attrs, false);
   }
+
+  @Override
+  public void modifyAttrs(IEntry e, Map<String, ? extends Object> attrs) throws ServiceException {
+    modifyAttrs((Entry) e, attrs, false);
+  }
+
 
   /**
    * Modifies this entry. <code>attrs</code> is a <code>Map</code> consisting of keys that are

@@ -20,13 +20,13 @@ import java.util.Map;
  *
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class Config extends ZAttrConfig implements AttributeConfig {
-    
+public class Config extends Entry implements AttributeConfig, ZAttrConfig<Provisioning> {
+
     private Map<String, Object> mDomainDefaults = new HashMap<>();
     private Map<String, Object> mServerDefaults = new HashMap<>();
 
     public Config(Map<String, Object> attrs, Provisioning provisioning) {
-        super(attrs, provisioning);
+        super(attrs, null, provisioning);
         resetData();
     }
     

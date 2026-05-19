@@ -13,7 +13,7 @@ import com.zimbra.common.service.ServiceException;
 /**
  * @author pshao
  */
-public abstract class DynamicGroup extends ZAttrDynamicGroup {
+public abstract class DynamicGroup extends Group implements ZAttrDynamicGroup<Provisioning> {
 
     private Boolean hasCustomMemberURL = null;
 

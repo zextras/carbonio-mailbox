@@ -82,7 +82,6 @@
     <dependency>
       <groupId>com.zextras</groupId>
       <artifactId>mailbox-attribute-manager</artifactId>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <artifactId>dom4j</artifactId>

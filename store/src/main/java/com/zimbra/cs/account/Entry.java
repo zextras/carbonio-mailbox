@@ -9,6 +9,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.TreeMultimap;
+import com.zextras.entry.IEntry;
 import com.zimbra.client.ToZJSONObject;
 import com.zimbra.client.ZJSONObject;
 import com.zimbra.common.account.ProvisioningConstants;
@@ -45,7 +46,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.json.JSONException;
 
-public abstract class Entry implements ToZJSONObject, AttributeEntry {
+public abstract class Entry implements ToZJSONObject, AttributeEntry, IEntry {
 
   private Map<String, Object> mAttrs;
   private Map<String, Object> mDefaults;
@@ -290,7 +291,7 @@ public abstract class Entry implements ToZJSONObject, AttributeEntry {
     return v == null ? defaultValue : v;
   }
 
-  protected String getAttr(String name, String defaultValue, boolean skipEphemeralCheck) {
+  public String getAttr(String name, String defaultValue, boolean skipEphemeralCheck) {
     String v = getAttr(name, true, skipEphemeralCheck);
     return v == null ? defaultValue : v;
   }
@@ -404,7 +405,7 @@ public abstract class Entry implements ToZJSONObject, AttributeEntry {
     return getBooleanAttr(name, defaultValue, false);
   }
 
-  protected boolean getBooleanAttr(String name, boolean defaultValue, boolean skipEphemeralCheck) {
+  public boolean getBooleanAttr(String name, boolean defaultValue, boolean skipEphemeralCheck) {
     String v = getAttr(name, true, skipEphemeralCheck);
     return v == null ? defaultValue : ProvisioningConstants.TRUE.equals(v);
   }
@@ -413,7 +414,7 @@ public abstract class Entry implements ToZJSONObject, AttributeEntry {
     return getBinaryAttr(name, false);
   }
 
-  protected byte[] getBinaryAttr(String name, boolean skipEphemeralCheck) {
+  public byte[] getBinaryAttr(String name, boolean skipEphemeralCheck) {
     String v = getAttr(name, true, skipEphemeralCheck);
     return v == null ? null : ByteUtil.decodeLDAPBase64(v);
   }
@@ -427,12 +428,17 @@ public abstract class Entry implements ToZJSONObject, AttributeEntry {
     return getGeneralizedTimeAttr(name, defaultValue, false);
   }
 
-  protected Date getGeneralizedTimeAttr(
+  public Date getGeneralizedTimeAttr(
       String name, Date defaultValue, boolean skipEphemeralCheck) {
     String v = getAttr(name, true, skipEphemeralCheck);
     if (v == null) return defaultValue;
     Date d = LdapDateUtil.parseGeneralizedTime(v);
     return d == null ? defaultValue : d;
+  }
+
+  @Override
+  public String toGeneralizedTime(Date date) {
+    return LdapDateUtil.toGeneralizedTime(date);
   }
 
   /**
@@ -444,7 +450,7 @@ public abstract class Entry implements ToZJSONObject, AttributeEntry {
     return getIntAttr(name, defaultValue, false);
   }
 
-  protected int getIntAttr(String name, int defaultValue, boolean skipEphemeralCheck) {
+  public int getIntAttr(String name, int defaultValue, boolean skipEphemeralCheck) {
     String v = getAttr(name, true, skipEphemeralCheck);
     try {
       return v == null ? defaultValue : Integer.parseInt(v);
@@ -477,7 +483,7 @@ public abstract class Entry implements ToZJSONObject, AttributeEntry {
     return getLongAttr(name, defaultValue, false);
   }
 
-  protected long getLongAttr(String name, long defaultValue, boolean skipEphemeralCheck) {
+  public long getLongAttr(String name, long defaultValue, boolean skipEphemeralCheck) {
     String v = getAttr(name, true, skipEphemeralCheck);
     try {
       if (MemoryUnitUtil.isMemoryUnit(v)) return new MemoryUnitUtil(1024).convertToBytes(v);
@@ -631,7 +637,7 @@ public abstract class Entry implements ToZJSONObject, AttributeEntry {
     return getTimeInterval(name, defaultValue, false);
   }
 
-  protected long getTimeInterval(String name, long defaultValue, boolean skipEphemeralCheck) {
+  public long getTimeInterval(String name, long defaultValue, boolean skipEphemeralCheck) {
     String v = getAttr(name, true, skipEphemeralCheck);
     return DateUtil.getTimeInterval(v, defaultValue);
   }
@@ -830,6 +836,7 @@ public abstract class Entry implements ToZJSONObject, AttributeEntry {
     return getEphemeralAttr(key, null);
   }
 
+  @Override
   public EphemeralResult getEphemeralAttr(String key, String dynamicComponent)
       throws ServiceException {
     EphemeralLocation location = new LdapEntryLocation(this);
@@ -839,7 +846,8 @@ public abstract class Entry implements ToZJSONObject, AttributeEntry {
     return result == null ? EphemeralResult.emptyResult(ephemeralKey) : result;
   }
 
-  protected void deleteEphemeralAttr(String key) throws ServiceException {
+  @Override
+  public void deleteEphemeralAttr(String key) throws ServiceException {
     // The EphemeralStore API currently doesn't support deleting all values for a key,
     // but this method is only called by unsetters for single-valued non-dynamic ephemeral
     // attributes,
@@ -851,6 +859,7 @@ public abstract class Entry implements ToZJSONObject, AttributeEntry {
     store.delete(ephemeralKey, curValue, location);
   }
 
+  @Override
   public void deleteEphemeralAttr(String key, String dynamicComponent, String value)
       throws ServiceException {
     EphemeralLocation location = new LdapEntryLocation(this);
@@ -888,6 +897,7 @@ public abstract class Entry implements ToZJSONObject, AttributeEntry {
     }
   }
 
+  @Override
   public void modifyEphemeralAttr(
       String key, String dynamicComponent, String value, boolean update, Expiration expiration)
       throws ServiceException {
@@ -913,12 +923,14 @@ public abstract class Entry implements ToZJSONObject, AttributeEntry {
         getEphemeralAttr(key, dynamicComponent).getValue(), defaultValue);
   }
 
+  @Override
   public void purgeEphemeralAttr(String key) throws ServiceException {
     EphemeralLocation location = new LdapEntryLocation(this);
     EphemeralStore store = EphemeralStore.getFactory().getStore();
     store.purgeExpired(new EphemeralKey(key), location);
   }
 
+  @Override
   public boolean hasEphemeralAttr(String key, String dynamicComponent) throws ServiceException {
     EphemeralLocation location = new LdapEntryLocation(this);
     EphemeralStore store = EphemeralStore.getFactory().getStore();

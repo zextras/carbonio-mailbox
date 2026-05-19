@@ -216,7 +216,7 @@ public class EphemeralStoreTest {
 	@Test
 	void testDefaults() throws Exception {
 		EphemeralKey key = new EphemeralKey("foo");
-		EphemeralResult result = new EphemeralResult(key, (String) null);
+		EphemeralResult result = new EphemeralResult(key, (String) null, com.zimbra.common.util.ZimbraLog.ephemeral::warn);
 		assertNull(result.getValue());
 		assertEquals("bar", result.getValue("bar"));
 		assertNull(result.getIntValue());

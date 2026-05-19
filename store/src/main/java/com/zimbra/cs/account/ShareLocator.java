@@ -7,10 +7,10 @@ package com.zimbra.cs.account;
 
 import java.util.Map;
 
-public class ShareLocator extends ZAttrShareLocator {
+public class ShareLocator extends NamedEntry implements ZAttrShareLocator<Provisioning> {
 
     public ShareLocator(String id, Map<String, Object> attrs, Provisioning prov) {
-        super(id, attrs, prov);
+        super(null, id, attrs, null, prov);
     }
 
     public String getUuid() {

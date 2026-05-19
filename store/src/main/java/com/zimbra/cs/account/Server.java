@@ -19,7 +19,7 @@ import java.util.Map;
  * @author schemers
  * <p>Window - Preferences - Java - Code Style - Code Templates
  */
-public class Server extends ZAttrServer {
+public class Server extends NamedEntry implements ZAttrServer<Provisioning> {
 
   private volatile String ipAddress;
 
