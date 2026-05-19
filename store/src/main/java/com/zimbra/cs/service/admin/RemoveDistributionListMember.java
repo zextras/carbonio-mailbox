@@ -19,7 +19,7 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
-import com.zimbra.cs.account.accesscontrol.Rights.Admin;
+import com.zimbra.cs.account.accesscontrol.generated.AdminRights;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.RemoveDistributionListMemberResponse;
 
@@ -72,8 +72,14 @@ public class RemoveDistributionListMember extends ReloadMemberPostProxyHandler {
 
         Group group = getGroupFromContext(context);
         String id = request.getAttribute(AdminConstants.E_ID);
+
+        if (group.getBooleanAttr("zimbraIsAdminGroup", false)) {
+            defendAgainstGroupHarvesting(group, DistributionListBy.id, id, zsc,
+                    AdminRights.R_removeGroupMember, AdminRights.R_modifyAdminDistributionListMember);
+        }
+
         defendAgainstGroupHarvesting(group, DistributionListBy.id, id, zsc,
-                Admin.R_removeGroupMember, Admin.R_removeDistributionListMember);
+                AdminRights.R_removeGroupMember, AdminRights.R_removeDistributionListMember);
 
         memberList = addMembersFromAccountElements(request, memberList, group);
 
@@ -88,7 +94,7 @@ public class RemoveDistributionListMember extends ReloadMemberPostProxyHandler {
 
     @Override
     public void docRights(List<AdminRight> relatedRights, List<String> notes) {
-        relatedRights.add(Admin.R_removeDistributionListMember);
-        relatedRights.add(Admin.R_removeGroupMember);
+        relatedRights.add(AdminRights.R_removeDistributionListMember);
+        relatedRights.add(AdminRights.R_removeGroupMember);
     }
 }

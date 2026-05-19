@@ -48,6 +48,9 @@ public class AccountService {
       if (authToken.isExpired()) {
         throw ServiceException.AUTH_EXPIRED("Auth token expired");
       }
+      if (!authToken.isRegistered()) {
+        throw ServiceException.AUTH_EXPIRED("Auth token is no longer valid");
+      }
       return authToken;
     });
   }

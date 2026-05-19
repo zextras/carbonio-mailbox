@@ -242,6 +242,20 @@ class AccountResourceIT {
 		assertEquals(401, response.statusCode());
 	}
 
+	@Test
+	void myselfInfoWithDeregisteredToken() throws Exception {
+		final Account account = server.getAccountFactory().create();
+		final ZimbraAuthToken authToken = new ZimbraAuthToken(account);
+		final String token = authToken.getEncoded();
+		authToken.deRegister();
+
+		final Response response = server.getHttpClient()
+				.get(server.getInternalApiEndpoint() + "/accounts/myself",
+						Map.of("Cookie", "ZM_AUTH_TOKEN=" + token));
+
+		assertEquals(401, response.statusCode());
+	}
+
 	// --- GET /accounts?email= tests ---
 
 	@Test
