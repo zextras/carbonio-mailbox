@@ -5,9 +5,10 @@
 
 package com.zimbra.cs.account;
 
+import com.zimbra.common.service.ServiceException;
 import java.util.Map;
 
-public class ShareLocator extends NamedEntry implements ZAttrShareLocator<Provisioning> {
+public class ShareLocator extends NamedEntry implements ZAttrShareLocator<Provisioning, ServiceException> {
 
     public ShareLocator(String id, Map<String, Object> attrs, Provisioning prov) {
         super(null, id, attrs, null, prov);

@@ -61,7 +61,7 @@ import javax.mail.internet.InternetAddress;
  * @since Sep 23, 2004
  * @author schemers
  */
-public abstract class Provisioning implements IProvisioning, ZAttrProvisioning {
+public abstract class Provisioning implements IProvisioning<ServiceException>, ZAttrProvisioning {
 
   public static final String DEFAULT_COS_NAME = "default";
   public static final String DEFAULT_EXTERNAL_COS_NAME = "defaultExternal";
@@ -394,7 +394,7 @@ public abstract class Provisioning implements IProvisioning, ZAttrProvisioning {
   }
 
   @Override
-  public void modifyAttrs(IEntry e, Map<String, ? extends Object> attrs) throws ServiceException {
+  public void modifyAttrs(IEntry<ServiceException> e, Map<String, ? extends Object> attrs) throws ServiceException {
     modifyAttrs((Entry) e, attrs, false);
   }
 

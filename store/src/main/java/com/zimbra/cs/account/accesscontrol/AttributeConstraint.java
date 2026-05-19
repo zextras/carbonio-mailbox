@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
+import com.zextras.entry.IServiceException;
 import com.zimbra.cs.account.AttributeManagerException;
 import com.zimbra.cs.account.StoreAttributeManager;
 import java.util.ArrayList;
@@ -640,9 +641,9 @@ public class AttributeConstraint {
 
         Account acct = prov.get(Key.AccountBy.name, "user1@phoebe.mac");
         Cos cos = prov.getCOS(acct);
-        cos.unsetConstraint();
+				cos.unsetConstraint();
 
-        Map<String, Object> cosConstraints = new HashMap<>();
+			Map<String, Object> cosConstraints = new HashMap<>();
 
         // integer
         cos.addConstraint("zimbraPasswordMinLength:min=6:max=10:values=8,9", cosConstraints);

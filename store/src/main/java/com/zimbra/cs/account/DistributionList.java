@@ -29,7 +29,7 @@ import com.zimbra.cs.ldap.ZLdapFilter;
 import com.zimbra.cs.ldap.ZLdapFilterFactory;
 import com.zimbra.cs.ldap.ZSearchResultEntry;
 
-public abstract class DistributionList extends Group implements GroupedEntry, ZAttrDistributionList<Provisioning> {
+public abstract class DistributionList extends Group implements GroupedEntry, ZAttrDistributionList<Provisioning, ServiceException> {
 
     protected static final String MEMBER_ATTR = Provisioning.A_zimbraMailForwardingAddress;
 

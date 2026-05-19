@@ -5,14 +5,18 @@
 
 package com.zimbra.cs.account;
 
+import com.zimbra.common.service.ServiceException;
 import java.util.Map;
 
 /**
  * @author jhahm
  */
-public class CalendarResource extends Account {
+public class CalendarResource extends Account implements ZAttrCalendarResource<Provisioning, ServiceException> {
 
-    
+    public CalendarResource(String name, String id, Map<String, Object> attrs, Map<String, Object> defaults, Provisioning prov) {
+        super(name, id, attrs, defaults, prov);
+    }
+
     @Override
     public EntryType getEntryType() {
         return EntryType.CALRESOURCE;

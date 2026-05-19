@@ -20,7 +20,7 @@ import java.util.Map;
  *
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class Cos extends NamedEntry implements ZAttrCos<Provisioning> {
+public class Cos extends NamedEntry implements ZAttrCos<Provisioning, ServiceException> {
 
     private Map<String, Object> mAccountDefaults = new HashMap<>();
 

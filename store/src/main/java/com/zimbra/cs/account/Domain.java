@@ -23,7 +23,7 @@ import java.util.Map;
  *
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class Domain extends NamedEntry implements ZAttrDomain<Provisioning> {
+public class Domain extends NamedEntry implements ZAttrDomain<Provisioning, ServiceException> {
     private final String mUnicodeName;
     private final Map<String, Object> mAccountDefaults = new HashMap<>();
     
