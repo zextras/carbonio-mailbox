@@ -7,7 +7,6 @@ package com.zimbra.cs.account;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.zextras.entry.IServiceException;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;

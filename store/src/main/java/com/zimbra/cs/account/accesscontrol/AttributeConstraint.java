@@ -5,17 +5,6 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
-import com.zextras.entry.IServiceException;
-import com.zimbra.cs.account.AttributeManagerException;
-import com.zimbra.cs.account.StoreAttributeManager;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
@@ -24,14 +13,23 @@ import com.zimbra.common.util.DateUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AttributeManager;
+import com.zimbra.cs.account.AttributeManagerException;
 import com.zimbra.cs.account.AttributeType;
 import com.zimbra.cs.account.Cos;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
+import com.zimbra.cs.account.StoreAttributeManager;
 import com.zimbra.cs.ldap.LdapDateUtil;
 import com.zimbra.soap.admin.type.ConstraintInfo;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class AttributeConstraint {
     private static final String CONSTRAINT_CACHE_KEY = "CONSTRAINT_CACHE";
