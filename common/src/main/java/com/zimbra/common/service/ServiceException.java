@@ -89,17 +89,6 @@ public class ServiceException extends IServiceException {
     ID_KEY = new String(Hex.encodeHex(key));
   }
 
-  /**
-   * Adapts an {@link IServiceException} to a concrete {@code ServiceException}. If {@code e} is
-   * already a {@code ServiceException} it is returned as-is; otherwise it is wrapped as a
-   * {@link #FAILURE} fault preserving the original as the cause.
-   */
-  public static ServiceException from(IServiceException e) {
-    if (e instanceof ServiceException) {
-      return (ServiceException) e;
-    }
-    return new ServiceException(e.getMessage(), FAILURE, RECEIVERS_FAULT, e);
-  }
 
   @Override
   public String toString() {
