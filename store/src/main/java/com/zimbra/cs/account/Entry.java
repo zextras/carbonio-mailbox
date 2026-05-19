@@ -441,6 +441,11 @@ public abstract class Entry implements ToZJSONObject, AttributeEntry, IEntry<Ser
     return LdapDateUtil.toGeneralizedTime(date);
   }
 
+  @Override
+  public Date parseGeneralizedTime(String time) {
+    return LdapDateUtil.parseGeneralizedTime(time);
+  }
+
   /**
    * @param name name of the attribute to retreive.
    * @param defaultValue value to use if attr is not present or can't be parsed.

@@ -19,6 +19,10 @@
       <groupId>com.zextras</groupId>
     </dependency>
     <dependency>
+      <artifactId>zattr</artifactId>
+      <groupId>com.zextras</groupId>
+    </dependency>
+    <dependency>
       <artifactId>guava</artifactId>
       <groupId>com.google.guava</groupId>
     </dependency>

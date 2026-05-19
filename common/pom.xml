@@ -188,50 +188,6 @@
           </excludes>
         </configuration>
       </plugin>
-      <!-- Generate ZAttr and LDAP schema -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-ZAttrAccount</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>java</goal>
-            </goals>
-            <configuration>
-              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-              <arguments>
-                <argument>-a</argument>
-                <argument>generateProvisioning</argument>
-                <argument>-r</argument>
-                <argument>${generated-zattr}/ZAttrProvisioning.java</argument>
-              </arguments>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- Add zattr -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.0.0</version>
-        <executions>
-          <execution>
-            <id>add-zattr</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>${generated-sources}/zattr/</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
@@ -271,7 +227,6 @@
   </build>
   <properties>
     <generated-sources>${project.build.directory}/generated-sources</generated-sources>
-    <generated-zattr>${generated-sources}/zattr/com/zimbra/common/account</generated-zattr>
   </properties>
 
 </project>
