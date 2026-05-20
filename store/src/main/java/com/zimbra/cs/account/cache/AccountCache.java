@@ -13,7 +13,7 @@ package com.zimbra.cs.account.cache;
 
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.zimbra.common.util.MapUtil;
 import com.zimbra.common.stats.Counter;

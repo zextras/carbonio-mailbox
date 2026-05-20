@@ -8,7 +8,7 @@ package com.zimbra.cs.filter;
 import java.math.BigInteger;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jsieve.comparators.AsciiNumeric;
 import org.apache.jsieve.exception.FeatureException;
 

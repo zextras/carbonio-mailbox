@@ -8,7 +8,7 @@ package com.zimbra.cs.service.util;
 import java.util.Date;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.zimbra.common.account.ForgetPasswordEnums.CodeConstants;
 import com.zimbra.common.account.ZAttrProvisioning.FeatureResetPasswordStatus;

@@ -24,10 +24,11 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.GenCSRRequest;
 import com.zimbra.soap.base.CertSubjectAttrs;
+import org.apache.commons.text.StringEscapeUtils;
+
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.StringEscapeUtils;
 
 public class GenerateCSR extends AdminDocumentHandler {
 
@@ -87,7 +88,7 @@ public class GenerateCSR extends AdminDocumentHandler {
 
             String subjectAltNames = getSubjectAltNames(req.getSubjectAltNames()) ;
             if (!Strings.isNullOrEmpty(subjectAltNames)) {
-                cmd.append(" -subjectAltNames '").append(StringEscapeUtils.escapeJavaScript(subjectAltNames))
+                cmd.append(" -subjectAltNames '").append(StringEscapeUtils.escapeEcmaScript(subjectAltNames))
                         .append("'");
             }
             RemoteManager rmgr = RemoteManager.getRemoteManager(server);
@@ -124,7 +125,7 @@ public class GenerateCSR extends AdminDocumentHandler {
 
     private static void appendToSubject(StringBuilder subject, String attrName, String attrValue) {
         if (!Strings.isNullOrEmpty(attrValue)) {
-            subject.append("/").append(attrName).append("=").append(StringEscapeUtils.escapeJavaScript(attrValue));
+            subject.append("/").append(attrName).append("=").append(org.apache.commons.text.StringEscapeUtils.escapeEcmaScript(attrValue));
         }
     }
 

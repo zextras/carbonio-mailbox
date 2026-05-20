@@ -19,7 +19,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.type.GalSearchType;
 import java.util.ArrayList;
 import java.util.Map;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class AutoComplete extends MailDocumentHandler {
 
