@@ -125,7 +125,7 @@ public class GenerateCSR extends AdminDocumentHandler {
 
     private static void appendToSubject(StringBuilder subject, String attrName, String attrValue) {
         if (!Strings.isNullOrEmpty(attrValue)) {
-            subject.append("/").append(attrName).append("=").append(org.apache.commons.text.StringEscapeUtils.escapeEcmaScript(attrValue));
+            subject.append("/").append(attrName).append("=").append(StringEscapeUtils.escapeEcmaScript(attrValue));
         }
     }
 
