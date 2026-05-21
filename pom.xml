@@ -655,7 +655,7 @@
       <dependency>
         <groupId>org.apache.neethi</groupId>
         <artifactId>neethi</artifactId>
-        <version>3.0.2</version>
+        <version>3.2.2</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.woodstox</groupId>
