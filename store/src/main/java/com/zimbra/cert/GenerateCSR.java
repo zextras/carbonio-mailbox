@@ -114,8 +114,7 @@ public class GenerateCSR extends AdminDocumentHandler {
         return response;
     }
 
-    public static StringBuilder appendSubjectArgToCommand(StringBuilder cmd, String subject)
-    throws ServiceException {
+    public static StringBuilder appendSubjectArgToCommand(StringBuilder cmd, String subject) {
         if (Strings.isNullOrEmpty(subject)) {
             return cmd;
         }
@@ -123,7 +122,7 @@ public class GenerateCSR extends AdminDocumentHandler {
         return cmd;
     }
 
-    private static void appendToSubject(StringBuilder subject, String attrName, String attrValue) {
+    private static void appendToSubject(StringBuilder subject, String attrName, String attrValue) throws ServiceException {
         if (!Strings.isNullOrEmpty(attrValue)) {
 
             validateSubjectValue(attrValue);
@@ -135,9 +134,13 @@ public class GenerateCSR extends AdminDocumentHandler {
         }
     }
 
-    private static void validateSubjectValue(String value) {
+    private static void validateSubjectValue(String value)
+            throws ServiceException {
+
         if (value.contains("\n") || value.contains("\r")) {
-            throw new IllegalArgumentException("Invalid subject value");
+            throw ServiceException.INVALID_REQUEST(
+                    "Subject value must not contain CR/LF characters",
+                    null);
         }
     }
 
