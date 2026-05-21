@@ -125,9 +125,26 @@ public class GenerateCSR extends AdminDocumentHandler {
 
     private static void appendToSubject(StringBuilder subject, String attrName, String attrValue) {
         if (!Strings.isNullOrEmpty(attrValue)) {
-            subject.append("/").append(attrName).append("=").append(StringEscapeUtils.escapeEcmaScript(attrValue));
+
+            validateSubjectValue(attrValue);
+
+            subject.append("/")
+                    .append(attrName)
+                    .append("=")
+                    .append(escapeShellSingleQuotedArg(attrValue));
         }
     }
+
+    private static void validateSubjectValue(String value) {
+        if (value.contains("\n") || value.contains("\r")) {
+            throw new IllegalArgumentException("Invalid subject value");
+        }
+    }
+
+    private static String escapeShellSingleQuotedArg(String value) {
+        return value.replace("'", "'\"'\"'");
+    }
+
 
     public static String getSubject(CertSubjectAttrs req)
     throws ServiceException {
