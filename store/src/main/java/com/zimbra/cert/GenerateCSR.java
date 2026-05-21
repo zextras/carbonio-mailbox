@@ -24,10 +24,11 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.GenCSRRequest;
 import com.zimbra.soap.base.CertSubjectAttrs;
+import org.apache.commons.text.StringEscapeUtils;
+
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.StringEscapeUtils;
 
 public class GenerateCSR extends AdminDocumentHandler {
 
@@ -87,7 +88,7 @@ public class GenerateCSR extends AdminDocumentHandler {
 
             String subjectAltNames = getSubjectAltNames(req.getSubjectAltNames()) ;
             if (!Strings.isNullOrEmpty(subjectAltNames)) {
-                cmd.append(" -subjectAltNames '").append(StringEscapeUtils.escapeJavaScript(subjectAltNames))
+                cmd.append(" -subjectAltNames '").append(StringEscapeUtils.escapeEcmaScript(subjectAltNames))
                         .append("'");
             }
             RemoteManager rmgr = RemoteManager.getRemoteManager(server);
@@ -113,8 +114,7 @@ public class GenerateCSR extends AdminDocumentHandler {
         return response;
     }
 
-    public static StringBuilder appendSubjectArgToCommand(StringBuilder cmd, String subject)
-    throws ServiceException {
+    public static StringBuilder appendSubjectArgToCommand(StringBuilder cmd, String subject) {
         if (Strings.isNullOrEmpty(subject)) {
             return cmd;
         }
@@ -122,11 +122,32 @@ public class GenerateCSR extends AdminDocumentHandler {
         return cmd;
     }
 
-    private static void appendToSubject(StringBuilder subject, String attrName, String attrValue) {
+    private static void appendToSubject(StringBuilder subject, String attrName, String attrValue) throws ServiceException {
         if (!Strings.isNullOrEmpty(attrValue)) {
-            subject.append("/").append(attrName).append("=").append(StringEscapeUtils.escapeJavaScript(attrValue));
+
+            validateSubjectValue(attrValue);
+
+            subject.append("/")
+                    .append(attrName)
+                    .append("=")
+                    .append(escapeShellSingleQuotedArg(attrValue));
         }
     }
+
+    private static void validateSubjectValue(String value)
+            throws ServiceException {
+
+        if (value.contains("\n") || value.contains("\r")) {
+            throw ServiceException.INVALID_REQUEST(
+                    "Subject value must not contain CR/LF characters",
+                    null);
+        }
+    }
+
+    private static String escapeShellSingleQuotedArg(String value) {
+        return value.replace("'", "'\"'\"'");
+    }
+
 
     public static String getSubject(CertSubjectAttrs req)
     throws ServiceException {

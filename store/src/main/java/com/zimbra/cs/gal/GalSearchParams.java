@@ -7,7 +7,7 @@ package com.zimbra.cs.gal;
 
 import java.util.EnumSet;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.QName;
 
 import com.zimbra.common.service.ServiceException;

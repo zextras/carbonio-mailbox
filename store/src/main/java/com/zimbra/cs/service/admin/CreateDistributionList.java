@@ -18,7 +18,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.CreateDistributionListRequest;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class CreateDistributionList extends AdminDocumentHandler {
 

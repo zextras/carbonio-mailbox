@@ -136,8 +136,8 @@
     </dependency>
 
     <dependency>
-      <artifactId>commons-lang</artifactId>
-      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <groupId>org.apache.commons</groupId>
     </dependency>
     <dependency>
       <groupId>io.prometheus</groupId>

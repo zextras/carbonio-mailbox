@@ -11,18 +11,7 @@ import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.servlet.ZThreadLocal;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.xerces.xni.Augmentations;
 import org.apache.xerces.xni.NamespaceContext;
 import org.apache.xerces.xni.QName;
@@ -34,6 +23,18 @@ import org.apache.xerces.xni.XNIException;
 import org.cyberneko.html.filters.DefaultFilter;
 import org.owasp.html.PolicyFactory;
 import org.owasp.html.Sanitizers;
+
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * very Mutated version of ElementRemover.java filter from cyberneko html. change accepted/removed
@@ -814,7 +815,7 @@ public class DefangFilter extends DefaultFilter {
       }
     }
     String temp = sb.toString();
-    temp = StringEscapeUtils.unescapeHtml(temp);
+    temp = StringEscapeUtils.unescapeHtml4(temp);
     if (index != -1
         && (temp.toLowerCase().contains("javascript") || temp.toLowerCase().contains("vbscript"))) {
       sanitizedStr = temp + result.substring(index);

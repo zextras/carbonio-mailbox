@@ -27,7 +27,7 @@ import com.zimbra.soap.type.AccountSelector;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class ChangePrimaryEmail extends AdminDocumentHandler {
 

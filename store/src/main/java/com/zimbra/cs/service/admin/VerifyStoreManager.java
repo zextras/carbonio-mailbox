@@ -14,7 +14,7 @@ import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import com.google.common.base.MoreObjects;
 import com.zimbra.common.service.ServiceException;
