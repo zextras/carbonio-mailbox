@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver-service"
-pkgver="4.27.3"
+pkgver="4.27.4"
 pkgrel="1"
 pkgdesc="Carbonio Mailbox Service"
 arch=('any')
