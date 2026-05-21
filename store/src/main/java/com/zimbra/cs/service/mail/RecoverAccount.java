@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 public final class RecoverAccount extends MailDocumentHandler {
   public static final String LOG_OPERATION = "RecoverAccount:";

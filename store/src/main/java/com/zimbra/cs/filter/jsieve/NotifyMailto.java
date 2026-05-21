@@ -6,7 +6,7 @@
 package com.zimbra.cs.filter.jsieve;
 
 import java.nio.charset.StandardCharsets;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jsieve.Argument;
 import org.apache.jsieve.Arguments;
 import org.apache.jsieve.Block;

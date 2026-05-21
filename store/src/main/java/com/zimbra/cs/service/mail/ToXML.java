@@ -151,7 +151,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimePart;
 import javax.mail.internet.MimeUtility;
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 
 /**
