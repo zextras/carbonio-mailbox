@@ -13,8 +13,6 @@ boolean isBuildingTag() {
     return env.TAG_NAME ? true : false
 }
 
-String profile = isBuildingTag() ? '-Pprod' : ''
-
 pipeline {
     agent {
         node {
@@ -23,7 +21,7 @@ pipeline {
     }
 
     environment {
-        MVN_OPTS = "-Ddebug=0 -Dis-production=1 ${profile}"
+        MVN_OPTS = "-Ddebug=0 -Dis-production=1 -Pprod"
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
         JAVA_OPTS = '-Dfile.encoding=UTF8'
         LC_ALL = 'C.UTF-8'
@@ -43,12 +41,6 @@ pipeline {
     stages {
 
         stage('Bump version and tag') {
-            when {
-                anyOf {
-                    branch 'main'
-                    branch 'devel'
-                }
-            }
             steps {
                 script {
                     dt2_semanticRelease()
