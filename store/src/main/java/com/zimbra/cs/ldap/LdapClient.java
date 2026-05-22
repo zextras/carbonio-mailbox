@@ -250,9 +250,6 @@ public abstract class LdapClient {
 
     protected abstract ZMutableEntry createMutableEntryImpl();
 
-    protected abstract ZSearchControls createSearchControlsImpl(
-            ZSearchScope searchScope, int sizeLimit, String[] returnAttrs);
-
     protected abstract void externalLdapAuthenticateImpl(String[] urls,
             boolean wantStartTLS, String bindDN, String password, String note)
     throws ServiceException;

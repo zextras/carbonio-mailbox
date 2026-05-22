@@ -20,7 +20,7 @@ public class UBIDSearchControls extends ZSearchControls {
     private int sizeLimit;
     private List<String> returnAttrs;
     
-    UBIDSearchControls(ZSearchScope searchScope, int sizeLimit, String[] returnAttrs) {
+    public UBIDSearchControls(ZSearchScope searchScope, int sizeLimit, String[] returnAttrs) {
         this.searchScope = ((UBIDSearchScope) searchScope).getNative();
         this.sizeLimit = sizeLimit;
         

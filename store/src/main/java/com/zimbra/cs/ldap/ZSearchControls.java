@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.ldap;
 
+import com.zimbra.cs.ldap.unboundid.UBIDSearchControls;
+
 public abstract class ZSearchControls {
 
     public static final int SIZE_UNLIMITED  = 0;
@@ -25,8 +27,7 @@ public abstract class ZSearchControls {
     
     public static ZSearchControls createSearchControls(ZSearchScope searchScope,
             int sizeLimit, String[] returnAttrs) {
-        return LdapClient.getInstance().createSearchControlsImpl(
-                searchScope, sizeLimit, returnAttrs);
+        return new UBIDSearchControls(searchScope, sizeLimit, returnAttrs);
     }
 
 

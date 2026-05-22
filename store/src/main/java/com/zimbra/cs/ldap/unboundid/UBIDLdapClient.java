@@ -15,7 +15,6 @@ import com.zimbra.cs.ldap.LdapUsage;
 import com.zimbra.cs.ldap.ZLdapContext;
 import com.zimbra.cs.ldap.ZLdapFilterFactory;
 import com.zimbra.cs.ldap.ZMutableEntry;
-import com.zimbra.cs.ldap.ZSearchControls;
 import com.zimbra.cs.ldap.ZSearchScope;
 import com.zimbra.cs.ldap.ZSearchScope.ZSearchScopeFactory;
 import com.zimbra.cs.ldap.unboundid.UBIDSearchScope.UBIDSearchScopeFactory;
@@ -112,12 +111,6 @@ public class UBIDLdapClient extends LdapClient {
 	@Override
 	protected ZMutableEntry createMutableEntryImpl() {
 		return new UBIDMutableEntry();
-	}
-
-	@Override
-	protected ZSearchControls createSearchControlsImpl(
-			ZSearchScope searchScope, int sizeLimit, String[] returnAttrs) {
-		return new UBIDSearchControls(searchScope, sizeLimit, returnAttrs);
 	}
 
 	@Override
