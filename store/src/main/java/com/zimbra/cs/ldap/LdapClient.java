@@ -48,7 +48,7 @@ public class LdapClient {
         return ldapClient;
     }
 
-     static synchronized LdapClient getInstance() {
+     private static synchronized LdapClient getInstance() {
          try {
              LdapClient.getInstanceIfLDAPavailable();
          } catch (LdapException e) {
