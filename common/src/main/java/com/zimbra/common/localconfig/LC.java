@@ -662,7 +662,7 @@ public final class LC {
   */
 
   public static final KnownKey zimbra_class_ldap_client =
-      KnownKey.newKey("com.zimbra.cs.ldap.unboundid.UBIDLdapClient");
+      KnownKey.newKey("com.zimbra.cs.ldap.LdapClient");
   public static final KnownKey zimbra_class_provisioning =
       KnownKey.newKey("com.zimbra.cs.account.ldap.LdapProvisioning");
 
