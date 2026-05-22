@@ -13,8 +13,7 @@ boolean isBuildingTag() {
     return env.TAG_NAME ? true : false
 }
 
-String profile = isBuildingTag() ? '-Pprod' :
-        (env.BRANCH_NAME == 'devel' ? '-Pdev' : '')
+String profile = isBuildingTag() ? '-Pprod' : ''
 
 pipeline {
     agent {
@@ -42,6 +41,21 @@ pipeline {
     }
 
     stages {
+
+        stage('Bump version and tag') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'devel'
+                }
+            }
+            steps {
+                script {
+                    dt2_semanticRelease()
+                }
+            }
+        }
+
         stage('Setup') {
             steps {
                 checkout scm
@@ -154,25 +168,6 @@ pipeline {
                     }
                 }
 
-                stage('Publish SNAPSHOT to maven') {
-                    when {
-                        allOf {
-                            not { buildingTag() }
-                            branch 'devel'
-                        }
-
-                    }
-                    steps {
-                        container('jdk-21') {
-                            withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                                script {
-                                    sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -DskipTests=true"
-                                }
-                            }
-                        }
-                    }
-                }
-
                 stage('Publish to maven') {
                     when {
                         buildingTag()
@@ -181,7 +176,7 @@ pipeline {
                         container('jdk-21') {
                             withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
                                 script {
-                                    sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -Dchangelist= -DskipTests=true"
+                                    sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -DskipTests=true"
                                 }
                             }
                         }
@@ -244,19 +239,6 @@ pipeline {
                 }
             }
 
-        }
-        stage('Bump version and tag') {
-            when {
-                anyOf {
-                    branch 'main'
-                    branch 'devel'
-                }
-            }
-            steps {
-                script {
-                    dt2_semanticRelease()
-                }
-            }
         }
     }
 }
