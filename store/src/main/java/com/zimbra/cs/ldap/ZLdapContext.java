@@ -41,7 +41,6 @@ import com.zimbra.cs.ldap.unboundid.LdapConnectionPool;
 import com.zimbra.cs.ldap.unboundid.LdapSSLUtil;
 import com.zimbra.cs.ldap.unboundid.LdapServerPool;
 import com.zimbra.cs.ldap.unboundid.NoopSearchControl;
-import com.zimbra.cs.ldap.unboundid.UBIDLdapException;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapOperation;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapPoolConfig;
 import com.zimbra.cs.ldap.unboundid.UBIDLogger;
@@ -156,11 +155,11 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 			this.closeContext(true); //force connection to be terminated
 		}
 		if (isZimbraLdap) {
-			return UBIDLdapException.mapToLdapException(message, e);
+			return LdapException.mapToLdapException(message, e);
 		} else {
 			// need more precise mapping for external LDAP exceptions so we
 			// can report config error better
-			return UBIDLdapException.mapToExternalLdapException(message, e);
+			return LdapException.mapToExternalLdapException(message, e);
 		}
 	}
 
@@ -758,7 +757,7 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 			}
 			succeeded = true;
 		} catch (LDAPException e) {
-			throw UBIDLdapException.mapToExternalLdapException("unable to ldap authenticate", e);
+			throw LdapException.mapToExternalLdapException("unable to ldap authenticate", e);
 		} finally {
 			UBIDLdapOperation.GENERIC_OP.end(LdapOp.OPEN_CONN, usage, startTime,
 					succeeded,

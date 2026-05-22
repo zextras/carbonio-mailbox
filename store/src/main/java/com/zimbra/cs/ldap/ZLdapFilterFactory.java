@@ -11,7 +11,6 @@ import com.unboundid.ldap.sdk.LDAPException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.ldap.unboundid.UBIDLdapException;
 import java.util.Collection;
 import java.util.List;
 
@@ -74,7 +73,7 @@ public class ZLdapFilterFactory extends ZLdapElement {
     try {
       _initialize();
     } catch (LDAPException e) {
-      throw UBIDLdapException.mapToLdapException(e);
+      throw LdapException.mapToLdapException(e);
     }
   }
 
@@ -491,7 +490,7 @@ public class ZLdapFilterFactory extends ZLdapElement {
     try {
       return new ZLdapFilter(filterId, Filter.create(encloseFilterIfNot(filterString)));
     } catch (LDAPException e) {
-      throw UBIDLdapException.mapToLdapException(filterString, e);
+      throw LdapException.mapToLdapException(filterString, e);
     }
   }
 

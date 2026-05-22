@@ -96,7 +96,7 @@ public class LdapConnectionPool {
                     config.getConnPoolMaxSize(), postConnectProcessor);
             connPool.setRetryFailedOperationsDueToInvalidConnections(true);
         } catch (LDAPException e) {
-            throw UBIDLdapException.mapToLdapException(e);
+            throw LdapException.mapToLdapException(e);
         }
 
         return connPool;

@@ -81,7 +81,7 @@ public class LdapSSLUtil {
         try {
             return sslUtil.createSSLContext();
         } catch (GeneralSecurityException e) {
-            throw UBIDLdapException.mapToLdapException(e);
+            throw LdapException.mapToLdapException(e);
         }
     }
 }
