@@ -9,7 +9,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.ldap.LdapServerConfig.ExternalLdapConfig;
 import com.zimbra.cs.ldap.LdapServerConfig.GenericLdapConfig;
-import com.zimbra.cs.ldap.ZSearchScope.ZSearchScopeFactory;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapClient;
 import com.zimbra.cs.util.Zimbra;
 
@@ -229,8 +228,6 @@ public abstract class LdapClient {
     protected abstract void terminate();
 
     protected abstract void forceUsingMaster();
-
-    protected abstract ZSearchScopeFactory getSearchScopeFactoryInstance();
 
     protected abstract ZLdapFilterFactory getLdapFilterFactoryInstance()
     throws LdapException;

@@ -14,20 +14,20 @@ import com.zimbra.cs.ldap.LdapUtil;
 
 public class UBIDUtil {
     
-    static ASN1OctetString newASN1OctetString(boolean isBinary, String value) {
+    public static ASN1OctetString newASN1OctetString(boolean isBinary, String value) {
         if (isBinary) {
             return new ASN1OctetString(ByteUtil.decodeLDAPBase64(value));
         } else {
             return new ASN1OctetString(value);
         }
     }
-    
-    static Attribute newAttribute(boolean isBinaryTransfer, String attrName, ASN1OctetString value) {
+
+    public static Attribute newAttribute(boolean isBinaryTransfer, String attrName, ASN1OctetString value) {
         String transferAttrName = LdapUtil.attrNameToBinaryTransferAttrName(isBinaryTransfer, attrName);
         return new Attribute(transferAttrName, value);
     }
-    
-    static Attribute newAttribute(boolean isBinaryTransfer, String attrName, ASN1OctetString[] values) {
+
+    public static Attribute newAttribute(boolean isBinaryTransfer, String attrName, ASN1OctetString[] values) {
         String transferAttrName = LdapUtil.attrNameToBinaryTransferAttrName(isBinaryTransfer, attrName);
         return new Attribute(transferAttrName, (Schema)null, values);
     }

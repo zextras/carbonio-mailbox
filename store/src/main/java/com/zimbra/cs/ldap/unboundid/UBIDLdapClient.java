@@ -15,9 +15,6 @@ import com.zimbra.cs.ldap.LdapUsage;
 import com.zimbra.cs.ldap.ZLdapContext;
 import com.zimbra.cs.ldap.ZLdapFilterFactory;
 import com.zimbra.cs.ldap.ZMutableEntry;
-import com.zimbra.cs.ldap.ZSearchScope;
-import com.zimbra.cs.ldap.ZSearchScope.ZSearchScopeFactory;
-import com.zimbra.cs.ldap.unboundid.UBIDSearchScope.UBIDSearchScopeFactory;
 import java.util.Date;
 
 public class UBIDLdapClient extends LdapClient {
@@ -29,9 +26,8 @@ public class UBIDLdapClient extends LdapClient {
 	}
 
 	public static UBIDLdapClient createNew(UBIDLdapPoolConfig poolConfig) throws LdapException {
-		UBIDLdapFilterFactory.initialize();
-		final UBIDLdapFilterFactory ubidLdapFilterFactory = new UBIDLdapFilterFactory();
-		ZSearchScope.init(new UBIDSearchScopeFactory());
+		ZLdapFilterFactory.initialize();
+		final ZLdapFilterFactory ubidLdapFilterFactory = new ZLdapFilterFactory();
 		ZLdapFilterFactory.setInstance(ubidLdapFilterFactory);
 		return new UBIDLdapClient(poolConfig);
 	}
@@ -52,15 +48,10 @@ public class UBIDLdapClient extends LdapClient {
 	}
 
 	@Override
-	protected ZSearchScopeFactory getSearchScopeFactoryInstance() {
-		return new UBIDSearchScope.UBIDSearchScopeFactory();
-	}
-
-	@Override
 	protected ZLdapFilterFactory getLdapFilterFactoryInstance()
 			throws LdapException {
-		UBIDLdapFilterFactory.initialize();
-		return new UBIDLdapFilterFactory();
+		ZLdapFilterFactory.initialize();
+		return new ZLdapFilterFactory();
 	}
 
 	@Override
@@ -110,7 +101,7 @@ public class UBIDLdapClient extends LdapClient {
 
 	@Override
 	protected ZMutableEntry createMutableEntryImpl() {
-		return new UBIDMutableEntry();
+		return new ZMutableEntry();
 	}
 
 	@Override

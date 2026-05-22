@@ -41,17 +41,10 @@ import com.zimbra.cs.ldap.unboundid.LdapConnectionPool;
 import com.zimbra.cs.ldap.unboundid.LdapSSLUtil;
 import com.zimbra.cs.ldap.unboundid.LdapServerPool;
 import com.zimbra.cs.ldap.unboundid.NoopSearchControl;
-import com.zimbra.cs.ldap.unboundid.UBIDAttributes;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapException;
-import com.zimbra.cs.ldap.unboundid.UBIDLdapFilter;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapOperation;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapPoolConfig;
-import com.zimbra.cs.ldap.unboundid.UBIDLdapSchema;
 import com.zimbra.cs.ldap.unboundid.UBIDLogger;
-import com.zimbra.cs.ldap.unboundid.UBIDModificationList;
-import com.zimbra.cs.ldap.unboundid.UBIDMutableEntry;
-import com.zimbra.cs.ldap.unboundid.UBIDSearchResultEnumeration;
-import com.zimbra.cs.ldap.unboundid.UBIDSearchScope;
 import com.zimbra.cs.stats.ZimbraPerf;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -214,7 +207,7 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 
 	public void createEntry(ZMutableEntry entry) throws ServiceException {
 		try {
-			UBIDLdapOperation.CREATE_ENTRY.execute(this, ((UBIDMutableEntry) entry).getNative());
+			UBIDLdapOperation.CREATE_ENTRY.execute(this, ((ZMutableEntry) entry).getNative());
 		} catch (LDAPException e) {
 			throw mapToLdapException("unable to create entry", e);
 		}
@@ -222,7 +215,7 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 
 	public void createEntry(String dn, String objectClass, String[] attrs)
 			throws ServiceException {
-		UBIDMutableEntry entry = new UBIDMutableEntry();
+		ZMutableEntry entry = new ZMutableEntry();
 		entry.setDN(dn);
 
 		entry.setAttr(LdapConstants.ATTR_objectClass, objectClass);
@@ -236,7 +229,7 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 
 	public void createEntry(String dn, String[] objectClasses, String[] attrs)
 			throws ServiceException {
-		UBIDMutableEntry entry = new UBIDMutableEntry();
+		ZMutableEntry entry = new ZMutableEntry();
 		entry.setDN(dn);
 
 		Set<String> ocs = new HashSet<>(Arrays.asList(objectClasses));
@@ -250,7 +243,7 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 	}
 
 	public ZModificationList createModificationList() {
-		return new UBIDModificationList();
+		return new ZModificationList();
 	}
 
 	public void deleteChildren(String dn) throws ServiceException {
@@ -267,7 +260,7 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 					0,  // size limit
 					0,  // time limit
 					false, // getTypesOnly
-					((UBIDLdapFilter) filter).getNative()
+					filter.getNative()
 			);
 
 			searchRequest.setAttributes("dn");
@@ -290,7 +283,7 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 			if (entry == null) {
 				throw LdapException.ENTRY_NOT_FOUND("entry not found at " + dn, null);
 			}
-			return new UBIDAttributes(entry);
+			return new ZAttributes(entry);
 		} catch (LDAPException e) {
 			throw mapToLdapException("unable to get attributes", e);
 		}
@@ -299,19 +292,13 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 	public ZLdapSchema getSchema() throws LdapException {
 		try {
 			Schema schema = UBIDLdapOperation.GET_SCHEMA.execute(this);
-			return new UBIDLdapSchema(schema);
+			return new ZLdapSchema(schema);
 		} catch (LDAPException e) {
 			throw mapToLdapException("unable to get schema", e);
 		}
 	}
 
-	public void modifyAttributes(String dn, ZModificationList modList)
-			throws LdapException {
-		UBIDModificationList modificationList = (UBIDModificationList) modList;
-		modifyAttributes(dn, modificationList);
-	}
-
-	private void modifyAttributes(String dn, UBIDModificationList modificationList)
+	public void modifyAttributes(String dn, ZModificationList modificationList)
 			throws LdapException {
 		try {
 			LDAPResult result = UBIDLdapOperation.MODIFY_ATTRS.execute(
@@ -354,8 +341,8 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 			ZModificationList modList, ZLdapFilter testFilter)
 			throws LdapException {
 		try {
-			ModifyRequest modReq = new ModifyRequest(dn, ((UBIDModificationList) modList).getModList());
-			modReq.addControl(new AssertionRequestControl(((UBIDLdapFilter) testFilter).getNative()));
+			ModifyRequest modReq = new ModifyRequest(dn, ((ZModificationList) modList).getModList());
+			modReq.addControl(new AssertionRequestControl(testFilter.getNative()));
 
 			LDAPResult result = UBIDLdapOperation.TEST_AND_MODIFY_ATTRS.execute(this, modReq);
 			return true;
@@ -383,7 +370,7 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 					0,  // size limit
 					0,  // time limit
 					false, // getTypesOnly
-					((UBIDLdapFilter) filter).getNative()
+					filter.getNative()
 			);
 
 			searchRequest.setAttributes("dn");
@@ -418,7 +405,7 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 	public void replaceAttributes(String dn, ZAttributes attrs) throws LdapException {
 		Map<String, Object> attrMap = attrs.getAttrs();
 
-		UBIDModificationList modList = new UBIDModificationList();
+		ZModificationList modList = new ZModificationList();
 		modList.replaceAll(attrMap);
 		modifyAttributes(dn, modList);
 	}
@@ -429,7 +416,7 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 		String base = searchOptions.getSearchBase();
 		ZLdapFilter filter = searchOptions.getFilter();
 		Set<String> binaryAttrs = searchOptions.getBinaryAttrs();
-		SearchScope searchScope = ((UBIDSearchScope) searchOptions.getSearchScope()).getNative();
+		SearchScope searchScope = searchOptions.getSearchScope().getNative();
 		SearchLdapOptions.SearchLdapVisitor visitor = searchOptions.getVisitor();
 		SearchGalResult searchGalResult = searchOptions.getSearchGalResult();
 		int pageSize = searchOptions.getResultPageSize();
@@ -470,7 +457,7 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 					maxResults,
 					0,
 					false,
-					((UBIDLdapFilter) filter).getNative());
+					filter.getNative());
 
 			searchRequest.setAttributes(searchOptions.getReturnAttrs());
 
@@ -499,7 +486,7 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 							SearchResult searchResult = (SearchResult) ldapResult;
 							for (SearchResultEntry entry : searchResult.getSearchEntries()) {
 								String dn = entry.getDN();
-								UBIDAttributes ubidAttrs = new UBIDAttributes(entry);
+								ZAttributes ubidAttrs = new ZAttributes(entry);
 								if (visitor.wantAttrMapOnVisit()) {
 									visitor.visit(dn, ubidAttrs.getAttrs(binaryAttrs), ubidAttrs);
 								} else {
@@ -535,7 +522,7 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 					for (index = pageOffset; index < entries.size() && limit > 0; index++) {
 						SearchResultEntry entry = entries.get(index);
 						String dn = entry.getDN();
-						UBIDAttributes ubidAttrs = new UBIDAttributes(entry);
+						ZAttributes ubidAttrs = new ZAttributes(entry);
 						if (visitor.wantAttrMapOnVisit()) {
 							visitor.visit(dn, ubidAttrs.getAttrs(binaryAttrs), ubidAttrs);
 						} else {
@@ -591,7 +578,7 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 			} else {
 				entry = entries.get(size - 1);
 			}
-			UBIDAttributes ubidAttrs = new UBIDAttributes(entry);
+			ZAttributes ubidAttrs = new ZAttributes(entry);
 			leCreateDate =
 					ubidAttrs.getAttrString("whenCreated") != null ? ubidAttrs.getAttrString("whenCreated")
 							: ubidAttrs.getAttrString("createTimeStamp");
@@ -635,18 +622,18 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 
 		try {
 			SearchRequest searchRequest = new SearchRequest(baseDN,
-					((UBIDSearchScope) sc.getSearchScope()).getNative(),
+					sc.getSearchScope().getNative(),
 					derefAliasPolicy,
 					sc.getSizeLimit(),
 					sc.getTimeLimit(),
 					sc.getTypesOnly(),
-					((UBIDLdapFilter) filter).getNative());
+					filter.getNative());
 
 			searchRequest.setAttributes(sc.getReturnAttrs());
 
 			SearchResult result = UBIDLdapOperation.SEARCH.execute(this, searchRequest, filter);
 
-			return new UBIDSearchResultEnumeration(result);
+			return new ZSearchResultEnumeration(result);
 		} catch (LDAPException e) {
 			throw mapToLdapException("unable to search ldap", e);
 		}
@@ -659,12 +646,12 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 
 		try {
 			SearchRequest searchRequest = new SearchRequest(baseDN,
-					((UBIDSearchScope) sc.getSearchScope()).getNative(),
+					sc.getSearchScope().getNative(),
 					derefAliasPolicy,
 					sc.getSizeLimit(),
 					sc.getTimeLimit(),
 					sc.getTypesOnly(),
-					((UBIDLdapFilter) filter).getNative());
+					filter.getNative());
 
 			NoopSearchControl noopSearchCtl = new NoopSearchControl();
 			searchRequest.addControl(noopSearchCtl);
