@@ -7,7 +7,7 @@ import com.google.common.collect.Maps;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.ldap.LdapException;
-import com.zimbra.cs.ldap.unboundid.UBIDLdapClient;
+import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapPoolConfig;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import com.zimbra.cs.mime.MockMimeTypeInfo;
@@ -28,11 +28,11 @@ public final class LdapProvisioningWithMockMime extends LdapProvisioning {
     private final Map<String, List<MimeTypeInfo>> mimeConfig = Maps.newHashMap();
 
     public static LdapProvisioningWithMockMime get(UBIDLdapPoolConfig poolConfig) throws LdapException {
-        final UBIDLdapClient client = UBIDLdapClient.createNew(poolConfig);
+        final LdapClient client = LdapClient.createNew(poolConfig);
         return new LdapProvisioningWithMockMime(client);
     }
 
-    public LdapProvisioningWithMockMime(UBIDLdapClient client) {
+    public LdapProvisioningWithMockMime(LdapClient client) {
         super(CacheMode.ON, client);
         initializeMimeHandlers();
     }
