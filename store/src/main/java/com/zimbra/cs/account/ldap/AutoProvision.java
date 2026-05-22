@@ -622,7 +622,7 @@ public abstract class AutoProvision {
      *                          Note: regardless of this parameter, the ldapVisitor.visit
      *                          is called for each entry returned from LDAP.
      *                          This behavior is currently hardcoded in
-     *                          UBIDLdapContext.searchPaged and has been the legacy behavior.
+     *                          ZLdapContext.searchPaged and has been the legacy behavior.
      *                          We can probably change it into a parameter in SearchLdapOptions.
      * @throws ServiceException
      * @return whether LdapSizeLimitExceededException was hit

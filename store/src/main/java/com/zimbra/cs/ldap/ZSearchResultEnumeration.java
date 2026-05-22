@@ -5,19 +5,30 @@
 
 package com.zimbra.cs.ldap;
 
-import com.zimbra.cs.ldap.LdapTODO.*;
+import com.unboundid.ldap.sdk.SearchResult;
+import com.unboundid.ldap.sdk.SearchResultEntry;
+import java.util.Iterator;
 
-/*
- * migration path for javax.naming.NamingEnumeration interface
- * 
- * TODO: delete this eventually and do everything the pure unboundid way
- * 
- * try to gather all searchDir calls to LdapHelper.searchDir
- */
-@TODO
-public interface ZSearchResultEnumeration {
-    ZSearchResultEntry next() throws LdapException;
-    boolean hasMore() throws LdapException;
-    void close() throws LdapException;
+public class ZSearchResultEnumeration {
+
+    private SearchResult searchResult;
+    private Iterator<SearchResultEntry> entriesIter;
+
+    public ZSearchResultEnumeration(SearchResult searchResult) {
+        this.searchResult = searchResult;
+        this.entriesIter = searchResult.getSearchEntries().iterator();
+    }
+
+    public void close() throws LdapException {
+        // DO nothing
+    }
+
+    public boolean hasMore() throws LdapException {
+        return entriesIter.hasNext();
+    }
+
+    public ZSearchResultEntry next() throws LdapException {
+        SearchResultEntry searchResultEntry = entriesIter.next();
+        return new ZSearchResultEntry(searchResultEntry);
+    }
 }
-

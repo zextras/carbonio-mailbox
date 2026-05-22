@@ -78,7 +78,7 @@ public class UBIDLdapPoolConfig {
 		LdapConnectionPool.closeAll();
 	}
 
-	synchronized void setReplicaToMasterPool() {
+	public synchronized void setReplicaToMasterPool() {
 		replicaConnPool = masterConnPool;
 	}
 }

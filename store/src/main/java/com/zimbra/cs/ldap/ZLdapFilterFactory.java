@@ -6,14 +6,15 @@
 package com.zimbra.cs.ldap;
 
 import com.google.common.collect.Lists;
+import com.unboundid.ldap.sdk.Filter;
+import com.unboundid.ldap.sdk.LDAPException;
+import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.Provisioning;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * @author pshao
- */
-public abstract class ZLdapFilterFactory extends ZLdapElement {
+public class ZLdapFilterFactory extends ZLdapElement {
 
   private static ZLdapFilterFactory SINGLETON;
 
@@ -23,6 +24,207 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
 
   public static ZLdapFilterFactory getInstance() {
     return SINGLETON;
+  }
+
+  @Override
+  public void debug() {}
+
+  /*
+   * canned filters
+   */
+  private static Filter FILTER_ALL_ACCOUNTS; // including calendar resources
+  private static Filter FILTER_ALL_ACCOUNTS_ONLY; // excluding calendar resources
+  private static Filter FILTER_ALL_ADMIN_ACCOUNTS;
+  private static Filter FILTER_ALL_ALIASES;
+  private static Filter FILTER_ALL_CALENDAR_RESOURCES;
+  private static Filter FILTER_ALL_COSES;
+  private static Filter FILTER_ALL_DATASOURCES;
+  private static Filter FILTER_ALL_DISTRIBUTION_LISTS;
+  private static Filter FILTER_ALL_DOMAINS;
+  private static Filter FILTER_ALL_DYNAMIC_GROUPS;
+  private static Filter FILTER_ALL_DYNAMIC_GROUP_DYNAMIC_UNITS;
+  private static Filter FILTER_ALL_DYNAMIC_GROUP_STATIC_UNITS;
+  private static Filter FILTER_ALL_GROUPS;
+  private static Filter FILTER_ALL_IDENTITIES;
+  private static Filter FILTER_ALL_MIME_ENTRIES;
+  private static Filter FILTER_ALL_NON_SYSTEM_ACCOUNTS;
+  private static Filter FILTER_ALL_NON_SYSTEM_ARCHIVING_ACCOUNTS;
+  private static Filter FILTER_ALL_NON_SYSTEM_INTERNAL_ACCOUNTS;
+  private static Filter FILTER_ALL_SERVERS;
+  private static Filter FILTER_ALL_SHARE_LOCATORS;
+  private static Filter FILTER_ALL_SIGNATURES;
+  private static Filter FILTER_ALL_ZIMLETS;
+  private static Filter FILTER_ANY_ENTRY;
+  private static Filter FILTER_DOMAIN_LABEL;
+  private static Filter FILTER_HAS_SUBORDINATES;
+  private static Filter FILTER_IS_ARCHIVING_ACCOUNT;
+  private static Filter FILTER_IS_EXTERNAL_ACCOUNT;
+  private static Filter FILTER_IS_SYSTEM_RESOURCE;
+  private static Filter FILTER_NOT_SYSTEM_RESOURCE;
+  private static Filter FILTER_PUBLIC_SHARE;
+  private static Filter FILTER_ALLAUTHED_SHARE;
+  private static Filter FILTER_NOT_EXCLUDED_FROM_CMB_SEARCH;
+  private static Filter FILTER_WITH_ARCHIVE;
+  private static Filter FILTER_ALL_INTERNAL_ACCOUNTS;
+  private static Filter FILTER_ALL_ADDRESS_LISTS;
+
+  public static synchronized void initialize() throws LdapException {
+
+    try {
+      _initialize();
+    } catch (LDAPException e) {
+      throw LdapException.mapToLdapException(e);
+    }
+  }
+
+  /**
+   * initialize canned filters
+   */
+  private static void _initialize() throws LDAPException {
+
+    /*
+     * self-defined filters
+     */
+    FILTER_ALL_ACCOUNTS =
+        Filter.createEqualityFilter(
+            LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraAccount);
+
+    FILTER_ALL_ALIASES =
+        Filter.createEqualityFilter(LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraAlias);
+
+    FILTER_ALL_CALENDAR_RESOURCES =
+        Filter.createEqualityFilter(
+            LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraCalendarResource);
+
+    FILTER_ALL_COSES =
+        Filter.createEqualityFilter(LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraCOS);
+
+    FILTER_ALL_DATASOURCES =
+        Filter.createEqualityFilter(
+            LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraDataSource);
+
+    FILTER_ALL_DISTRIBUTION_LISTS =
+        Filter.createEqualityFilter(
+            LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraDistributionList);
+
+    FILTER_ALL_DOMAINS =
+        Filter.createEqualityFilter(LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraDomain);
+
+    FILTER_ALL_DYNAMIC_GROUPS =
+        Filter.createEqualityFilter(LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraGroup);
+
+    FILTER_ALL_DYNAMIC_GROUP_DYNAMIC_UNITS =
+        Filter.createEqualityFilter(
+            LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraGroupDynamicUnit);
+
+    FILTER_ALL_DYNAMIC_GROUP_STATIC_UNITS =
+        Filter.createEqualityFilter(
+            LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraGroupStaticUnit);
+
+    FILTER_ALL_IDENTITIES =
+        Filter.createEqualityFilter(
+            LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraIdentity);
+
+    FILTER_ALL_MIME_ENTRIES =
+        Filter.createEqualityFilter(
+            LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraMimeEntry);
+
+    FILTER_ALL_SERVERS =
+        Filter.createEqualityFilter(LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraServer);
+
+    FILTER_ALL_SHARE_LOCATORS =
+        Filter.createEqualityFilter(
+            LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraShareLocator);
+
+    FILTER_ALL_SIGNATURES =
+        Filter.createEqualityFilter(
+            LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraSignature);
+
+    FILTER_ALL_ZIMLETS =
+        Filter.createEqualityFilter(
+            LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraZimletEntry);
+
+    FILTER_ANY_ENTRY = Filter.createPresenceFilter(LdapConstants.ATTR_objectClass);
+
+    FILTER_DOMAIN_LABEL =
+        Filter.createEqualityFilter(LdapConstants.ATTR_objectClass, LdapConstants.OC_dcObject);
+
+    FILTER_HAS_SUBORDINATES =
+        Filter.createEqualityFilter(LdapConstants.ATTR_hasSubordinates, LdapConstants.LDAP_TRUE);
+
+    FILTER_IS_ARCHIVING_ACCOUNT =
+        Filter.createPresenceFilter(Provisioning.A_amavisArchiveQuarantineTo);
+
+    FILTER_IS_EXTERNAL_ACCOUNT =
+        Filter.createEqualityFilter(
+            Provisioning.A_zimbraIsExternalVirtualAccount, LdapConstants.LDAP_TRUE);
+
+    FILTER_IS_SYSTEM_RESOURCE =
+        Filter.createEqualityFilter(Provisioning.A_zimbraIsSystemResource, LdapConstants.LDAP_TRUE);
+
+    FILTER_NOT_SYSTEM_RESOURCE = Filter.createNOTFilter(FILTER_IS_SYSTEM_RESOURCE);
+
+    FILTER_PUBLIC_SHARE =
+        Filter.createSubstringFilter(
+            Provisioning.A_zimbraSharedItem, null, new String[] {"granteeType:pub"}, null);
+
+    FILTER_ALLAUTHED_SHARE =
+        Filter.createSubstringFilter(
+            Provisioning.A_zimbraSharedItem, null, new String[] {"granteeType:all"}, null);
+
+    FILTER_NOT_EXCLUDED_FROM_CMB_SEARCH =
+        Filter.createORFilter(
+            Filter.createNOTFilter(
+                Filter.createPresenceFilter(Provisioning.A_zimbraExcludeFromCMBSearch)),
+            Filter.createEqualityFilter(Provisioning.A_zimbraExcludeFromCMBSearch, "FALSE"));
+
+    FILTER_WITH_ARCHIVE = Filter.createPresenceFilter(Provisioning.A_zimbraArchiveAccount);
+
+    /*
+     * filters built on top of other filters
+     */
+    FILTER_ALL_ACCOUNTS_ONLY =
+        Filter.createANDFilter(
+            FILTER_ALL_ACCOUNTS, Filter.createNOTFilter(FILTER_ALL_CALENDAR_RESOURCES));
+
+    FILTER_ALL_ADMIN_ACCOUNTS =
+        Filter.createANDFilter(
+            FILTER_ALL_ACCOUNTS,
+            Filter.createORFilter(
+                Filter.createEqualityFilter(
+                    Provisioning.A_zimbraIsAdminAccount, LdapConstants.LDAP_TRUE),
+                Filter.createEqualityFilter(
+                    Provisioning.A_zimbraIsDelegatedAdminAccount, LdapConstants.LDAP_TRUE),
+                Filter.createEqualityFilter(
+                    Provisioning.A_zimbraIsDomainAdminAccount, LdapConstants.LDAP_TRUE)));
+
+    FILTER_ALL_NON_SYSTEM_ACCOUNTS =
+        Filter.createANDFilter(
+            FILTER_ALL_ACCOUNTS_ONLY, Filter.createNOTFilter(FILTER_IS_SYSTEM_RESOURCE));
+
+    FILTER_ALL_NON_SYSTEM_ARCHIVING_ACCOUNTS =
+        Filter.createANDFilter(
+            FILTER_ALL_ACCOUNTS_ONLY,
+            Filter.createNOTFilter(FILTER_IS_SYSTEM_RESOURCE),
+            FILTER_IS_ARCHIVING_ACCOUNT);
+
+    FILTER_ALL_NON_SYSTEM_INTERNAL_ACCOUNTS =
+        Filter.createANDFilter(
+            FILTER_ALL_ACCOUNTS,
+            Filter.createNOTFilter(FILTER_IS_SYSTEM_RESOURCE),
+            Filter.createNOTFilter(FILTER_ALL_CALENDAR_RESOURCES),
+            Filter.createNOTFilter(FILTER_IS_EXTERNAL_ACCOUNT));
+
+    FILTER_ALL_GROUPS =
+        Filter.createORFilter(FILTER_ALL_DYNAMIC_GROUPS, FILTER_ALL_DISTRIBUTION_LISTS);
+
+    FILTER_ALL_INTERNAL_ACCOUNTS =
+        Filter.createANDFilter(
+            FILTER_ALL_ACCOUNTS, Filter.createNOTFilter(FILTER_IS_EXTERNAL_ACCOUNT));
+
+    FILTER_ALL_ADDRESS_LISTS =
+        Filter.createEqualityFilter(
+            LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraAddressList);
   }
 
   public enum FilterId {
@@ -188,18 +390,13 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
     }
 
     public String getStatString() {
-      return LdapOp.SEARCH.name() + "_" + name(); // + ": " + template;
+      return LdapOp.SEARCH.name() + "_" + name();
     }
-
   }
 
-
-  /**
-   * Encodes the provided value into a form suitable for use as the assertion value in the string
-   * representation of a search filter.
-   *
-   */
-  public abstract String encodeValue(String value);
+  public String encodeValue(String value) {
+    return Filter.encodeValue(value);
+  }
 
   protected String encloseFilterIfNot(String filterString) {
     if (filterString.startsWith("(") && filterString.endsWith(")")) {
@@ -209,26 +406,9 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
     }
   }
 
-  /*
-   * operational
-   */
-  public abstract ZLdapFilter hasSubordinates();
-
-  public abstract ZLdapFilter createdLaterOrEqual(String generalizedTime);
-
-  public abstract ZLdapFilter timeLaterOrEqual(String column, String generalizedTime) ;
-
-  /*
-   * general
-   */
-  public abstract ZLdapFilter anyEntry();
-
-  public abstract ZLdapFilter fromFilterString(FilterId filterId, String filterString)
-      throws LdapException;
-
-  public abstract ZLdapFilter andWith(ZLdapFilter filter, ZLdapFilter otherFilter);
-
-  public abstract ZLdapFilter negate(ZLdapFilter filter);
+  private Filter homedOnServerFilter(String serverServiceHostname) {
+    return Filter.createEqualityFilter(Provisioning.A_zimbraMailHost, serverServiceHostname);
+  }
 
   public String presenceFilter(String attr) {
     return String.format(
@@ -281,235 +461,727 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
   }
 
   /*
+   * operational
+   */
+  public ZLdapFilter hasSubordinates() {
+    return new ZLdapFilter(FilterId.HAS_SUBORDINATES, FILTER_HAS_SUBORDINATES);
+  }
+
+  public ZLdapFilter createdLaterOrEqual(String generalizedTime) {
+    return new ZLdapFilter(
+        FilterId.CREATED_LATEROREQUAL,
+        Filter.createGreaterOrEqualFilter(LdapConstants.ATTR_createTimestamp, generalizedTime));
+  }
+
+  public ZLdapFilter timeLaterOrEqual(String column, String generalizedTime) {
+    return new ZLdapFilter(
+            FilterId.CREATED_LATEROREQUAL,
+            Filter.createGreaterOrEqualFilter(column, generalizedTime));
+  }
+
+  /*
+   * general
+   */
+  public ZLdapFilter anyEntry() {
+    return new ZLdapFilter(FilterId.ANY_ENTRY, FILTER_ANY_ENTRY);
+  }
+
+  public ZLdapFilter fromFilterString(FilterId filterId, String filterString) throws LdapException {
+    try {
+      return new ZLdapFilter(filterId, Filter.create(encloseFilterIfNot(filterString)));
+    } catch (LDAPException e) {
+      throw LdapException.mapToLdapException(filterString, e);
+    }
+  }
+
+  public ZLdapFilter andWith(ZLdapFilter filter, ZLdapFilter otherFilter) {
+    ZLdapFilter andedFilter = null;
+    try {
+      andedFilter =
+          new ZLdapFilter(
+              filter.getFilterId(),
+              Filter.createANDFilter(
+                  filter.getNative(),
+                  fromFilterString(FilterId.DN_SUBTREE_MATCH, otherFilter.toFilterString())
+                      .getNative()));
+    } catch (LdapException e) {
+      ZimbraLog.ldap.warn("filter error", e);
+      assert (false);
+    }
+    return andedFilter;
+  }
+
+  public ZLdapFilter negate(ZLdapFilter filter) {
+    return new ZLdapFilter(
+        filter.getFilterId(), Filter.createNOTFilter(filter.getNative()));
+  }
+
+  /*
    * Mail target (accounts and groups)
    */
-  public abstract ZLdapFilter addrsExist(String[] addrs);
+  public ZLdapFilter addrsExist(String[] addrs) {
+    List<Filter> filters = Lists.newArrayList();
+    for (String addr : addrs) {
+      filters.add(Filter.createEqualityFilter(Provisioning.A_zimbraMailDeliveryAddress, addr));
+      filters.add(Filter.createEqualityFilter(Provisioning.A_zimbraMailAlias, addr));
+    }
+
+    return new ZLdapFilter(FilterId.ADDRS_EXIST, Filter.createORFilter(filters));
+  }
 
   /*
    * account
    */
-  public abstract ZLdapFilter allAccounts();
+  public ZLdapFilter allAccounts() {
+    return new ZLdapFilter(FilterId.ALL_ACCOUNTS, FILTER_ALL_ACCOUNTS);
+  }
 
-  public abstract ZLdapFilter allAccountsOnly();
+  public ZLdapFilter allAccountsOnly() {
+    return new ZLdapFilter(FilterId.ALL_ACCOUNTS_ONLY, FILTER_ALL_ACCOUNTS_ONLY);
+  }
 
-  public abstract ZLdapFilter allAccountsOnlyByCos(String cosId);
+  public ZLdapFilter allAccountsOnlyByCos(String cosId) {
+    return new ZLdapFilter(
+        FilterId.ALL_ACCOUNTS_ONLY_BY_COS,
+        Filter.createANDFilter(
+            FILTER_ALL_ACCOUNTS_ONLY,
+            Filter.createORFilter(
+                Filter.createANDFilter(
+                    Filter.createNOTFilter(FILTER_IS_EXTERNAL_ACCOUNT),
+                    Filter.createNOTFilter(
+                        Filter.createPresenceFilter(Provisioning.A_zimbraCOSId))),
+                Filter.createEqualityFilter(Provisioning.A_zimbraCOSId, cosId))));
+  }
 
-  public abstract ZLdapFilter allAdminAccounts();
+  public ZLdapFilter allAdminAccounts() {
+    return new ZLdapFilter(FilterId.ALL_ADMIN_ACCOUNTS, FILTER_ALL_ADMIN_ACCOUNTS);
+  }
 
-  public abstract ZLdapFilter allNonSystemAccounts();
+  public ZLdapFilter allNonSystemAccounts() {
+    return new ZLdapFilter(FilterId.ALL_NON_SYSTEM_ACCOUNTS, FILTER_ALL_NON_SYSTEM_ACCOUNTS);
+  }
 
-  public abstract ZLdapFilter allNonSystemArchivingAccounts();
+  public ZLdapFilter allNonSystemArchivingAccounts() {
+    return new ZLdapFilter(
+        FilterId.ALL_NON_SYSTEM_ARCHIVING_ACCOUNTS, FILTER_ALL_NON_SYSTEM_ARCHIVING_ACCOUNTS);
+  }
 
-  public abstract ZLdapFilter allNonSystemInternalAccounts();
+  public ZLdapFilter allNonSystemInternalAccounts() {
+    return new ZLdapFilter(
+        FilterId.ALL_NON_SYSTEM_INTERNAL_ACCOUNTS, FILTER_ALL_NON_SYSTEM_INTERNAL_ACCOUNTS);
+  }
 
-  public abstract ZLdapFilter accountByForeignPrincipal(String foreignPrincipal);
+  public ZLdapFilter accountByForeignPrincipal(String foreignPrincipal) {
+    return new ZLdapFilter(
+        FilterId.ACCOUNT_BY_FOREIGN_PRINCIPAL,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraForeignPrincipal, foreignPrincipal),
+            FILTER_ALL_ACCOUNTS));
+  }
 
-  public abstract ZLdapFilter accountById(String id);
+  public ZLdapFilter accountById(String id) {
+    return new ZLdapFilter(
+        FilterId.ACCOUNT_BY_ID,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraId, id), FILTER_ALL_ACCOUNTS));
+  }
 
-  public abstract ZLdapFilter accountByMemberOf(String dynGroupId);
+  public ZLdapFilter accountByMemberOf(String dynGroupId) {
+    return new ZLdapFilter(
+        FilterId.ACCOUNT_BY_MEMBEROF,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraMemberOf, dynGroupId),
+            FILTER_ALL_INTERNAL_ACCOUNTS));
+  }
 
-  public abstract ZLdapFilter accountByName(String name);
+  public ZLdapFilter accountByName(String name) {
+    return new ZLdapFilter(
+        FilterId.ACCOUNT_BY_NAME,
+        Filter.createANDFilter(
+            Filter.createORFilter(
+                Filter.createEqualityFilter(Provisioning.A_zimbraMailDeliveryAddress, name),
+                Filter.createEqualityFilter(Provisioning.A_zimbraMailAlias, name),
+                Filter.createEqualityFilter(Provisioning.A_zimbraOldMailAddress, name)),
+            FILTER_ALL_ACCOUNTS));
+  }
 
-  public abstract ZLdapFilter adminAccountByRDN(String namingRdnAttr, String name);
+  public ZLdapFilter adminAccountByRDN(String namingRdnAttr, String name) {
+    return new ZLdapFilter(
+        FilterId.ADMIN_ACCOUNT_BY_RDN,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(namingRdnAttr, name), FILTER_ALL_ACCOUNTS));
+  }
 
-  public abstract ZLdapFilter accountsHomedOnServer(String serverServiceHostname);
+  public ZLdapFilter accountsHomedOnServer(String serverServiceHostname) {
+    return new ZLdapFilter(
+        FilterId.ACCOUNTS_HOMED_ON_SERVER,
+        Filter.createANDFilter(FILTER_ALL_ACCOUNTS, homedOnServerFilter(serverServiceHostname)));
+  }
 
-  public abstract ZLdapFilter accountsHomedOnServerAccountsOnly(
-      String serverServiceHostname); // no calendar resources
+  public ZLdapFilter accountsHomedOnServerAccountsOnly(String serverServiceHostname) {
+    return new ZLdapFilter(
+        FilterId.ACCOUNTS_HOMED_ON_SERVER_ACCOUNTS_ONLY,
+        Filter.createANDFilter(
+            FILTER_ALL_ACCOUNTS_ONLY, homedOnServerFilter(serverServiceHostname)));
+  }
 
-  public abstract ZLdapFilter homedOnServer(String serverServiceHostname);
+  public ZLdapFilter homedOnServer(String serverServiceHostname) {
+    return new ZLdapFilter(FilterId.HOMED_ON_SERVER, homedOnServerFilter(serverServiceHostname));
+  }
 
-  public abstract ZLdapFilter accountsOnServerAndCosHasSubordinates(
-      String serverServiceHostname, String cosId);
+  public ZLdapFilter accountsOnServerAndCosHasSubordinates(
+      String serverServiceHostname, String cosId) {
+    return new ZLdapFilter(
+        FilterId.ACCOUNTS_ON_SERVER_AND_COS_HAS_SUBORDINATES,
+        Filter.createANDFilter(
+            FILTER_ALL_ACCOUNTS,
+            homedOnServerFilter(serverServiceHostname),
+            FILTER_HAS_SUBORDINATES,
+            Filter.createORFilter(
+                Filter.createNOTFilter(Filter.createPresenceFilter(Provisioning.A_zimbraCOSId)),
+                Filter.createEqualityFilter(Provisioning.A_zimbraCOSId, cosId))));
+  }
 
-  public abstract ZLdapFilter externalAccountsHomedOnServer(String serverServiceHostname);
+  public ZLdapFilter externalAccountsHomedOnServer(String serverServiceHostname) {
+    return new ZLdapFilter(
+        FilterId.EXTERNAL_ACCOUNTS_HOMED_ON_SERVER,
+        Filter.createANDFilter(
+            FILTER_ALL_ACCOUNTS_ONLY,
+            FILTER_IS_EXTERNAL_ACCOUNT,
+            homedOnServerFilter(serverServiceHostname)));
+  }
 
-  public abstract ZLdapFilter accountsByGrants(
-      List<String> granteeIds, boolean includePublicShares, boolean includeAllAuthedShares);
+  public ZLdapFilter accountsByGrants(
+      List<String> granteeIds, boolean includePublicShares, boolean includeAllAuthedShares) {
 
-  public abstract ZLdapFilter CMBSearchAccountsOnly();
+    List<Filter> filters = Lists.newArrayList();
+    for (String granteeId : granteeIds) {
+      filters.add(
+          Filter.createSubstringFilter(
+              Provisioning.A_zimbraSharedItem, "granteeId:" + granteeId, null, null));
+    }
 
-  public abstract ZLdapFilter CMBSearchAccountsOnlyWithArchive();
+    if (includePublicShares) {
+      filters.add(FILTER_PUBLIC_SHARE);
+    }
 
-  public abstract ZLdapFilter CMBSearchNonSystemResourceAccountsOnly();
+    if (includeAllAuthedShares) {
+      filters.add(FILTER_ALLAUTHED_SHARE);
+    }
+
+    return new ZLdapFilter(
+        FilterId.ACCOUNTS_BY_GRANTS,
+        Filter.createANDFilter(FILTER_ALL_ACCOUNTS, Filter.createORFilter(filters)));
+  }
+
+  public ZLdapFilter CMBSearchAccountsOnly() {
+    return new ZLdapFilter(
+        FilterId.CMB_SEARCH_ACCOUNTS_ONLY,
+        Filter.createANDFilter(FILTER_ALL_ACCOUNTS_ONLY, FILTER_NOT_EXCLUDED_FROM_CMB_SEARCH));
+  }
+
+  public ZLdapFilter CMBSearchAccountsOnlyWithArchive() {
+    return new ZLdapFilter(
+        FilterId.CMB_SEARCH_ACCOUNTS_ONLY_WITH_ARCHIVE,
+        Filter.createANDFilter(
+            FILTER_ALL_ACCOUNTS_ONLY, FILTER_WITH_ARCHIVE, FILTER_NOT_EXCLUDED_FROM_CMB_SEARCH));
+  }
+
+  public ZLdapFilter CMBSearchNonSystemResourceAccountsOnly() {
+    return new ZLdapFilter(
+        FilterId.CMB_SEARCH_NON_SYSTEM_RESOURCE_ACCOUNTS_ONLY,
+        Filter.createANDFilter(
+            FILTER_ALL_ACCOUNTS_ONLY,
+            FILTER_NOT_SYSTEM_RESOURCE,
+            FILTER_NOT_EXCLUDED_FROM_CMB_SEARCH));
+  }
 
   /*
    * alias
    */
-  public abstract ZLdapFilter allAliases();
+  public ZLdapFilter allAliases() {
+    return new ZLdapFilter(FilterId.ALL_ALIASES, FILTER_ALL_ALIASES);
+  }
 
   /*
    * calendar resource
    */
-  public abstract ZLdapFilter allCalendarResources();
+  public ZLdapFilter allCalendarResources() {
+    return new ZLdapFilter(FilterId.ALL_CALENDAR_RESOURCES, FILTER_ALL_CALENDAR_RESOURCES);
+  }
 
-  public abstract ZLdapFilter calendarResourceByForeignPrincipal(String foreignPrincipal);
+  public ZLdapFilter calendarResourceByForeignPrincipal(String foreignPrincipal) {
+    return new ZLdapFilter(
+        FilterId.CALENDAR_RESOURCE_BY_FOREIGN_PRINCIPAL,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraForeignPrincipal, foreignPrincipal),
+            FILTER_ALL_CALENDAR_RESOURCES));
+  }
 
-  public abstract ZLdapFilter calendarResourceById(String id);
+  public ZLdapFilter calendarResourceById(String id) {
+    return new ZLdapFilter(
+        FilterId.CALENDAR_RESOURCE_BY_ID,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraId, id),
+            FILTER_ALL_CALENDAR_RESOURCES));
+  }
 
-  public abstract ZLdapFilter calendarResourceByName(String name);
+  public ZLdapFilter calendarResourceByName(String name) {
+    return new ZLdapFilter(
+        FilterId.CALENDAR_RESOURCE_BY_NAME,
+        Filter.createANDFilter(
+            Filter.createORFilter(
+                Filter.createEqualityFilter(Provisioning.A_zimbraMailDeliveryAddress, name),
+                Filter.createEqualityFilter(Provisioning.A_zimbraMailAlias, name)),
+            FILTER_ALL_CALENDAR_RESOURCES));
+  }
 
-  public abstract ZLdapFilter calendarResourcesHomedOnServer(String serverServiceHostname);
+  public ZLdapFilter calendarResourcesHomedOnServer(String serverServiceHostname) {
+    return new ZLdapFilter(
+        FilterId.CALENDAR_RESOURCES_HOMED_ON_SERVER,
+        Filter.createANDFilter(
+            FILTER_ALL_CALENDAR_RESOURCES, homedOnServerFilter(serverServiceHostname)));
+  }
 
   /*
    * cos
    */
-  public abstract ZLdapFilter allCoses();
+  public ZLdapFilter allCoses() {
+    return new ZLdapFilter(FilterId.ALL_COSES, FILTER_ALL_COSES);
+  }
 
-  public abstract ZLdapFilter cosById(String id);
+  public ZLdapFilter cosById(String id) {
+    return new ZLdapFilter(
+        FilterId.COS_BY_ID,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraId, id), FILTER_ALL_COSES));
+  }
 
-  public abstract ZLdapFilter cosesByMailHostPool(String serverId);
+  public ZLdapFilter cosesByMailHostPool(String serverId) {
+    return new ZLdapFilter(
+        FilterId.COSES_BY_MAILHOST_POOL,
+        Filter.createANDFilter(
+            FILTER_ALL_COSES,
+            Filter.createEqualityFilter(Provisioning.A_zimbraMailHostPool, serverId)));
+  }
 
   /*
    * data source
    */
-  public abstract ZLdapFilter allDataSources();
+  public ZLdapFilter allDataSources() {
+    return new ZLdapFilter(FilterId.ALL_DATA_SOURCES, FILTER_ALL_DATASOURCES);
+  }
 
-  public abstract ZLdapFilter dataSourceById(String id);
+  public ZLdapFilter dataSourceById(String id) {
+    return new ZLdapFilter(
+        FilterId.DATA_SOURCE_BY_ID,
+        Filter.createANDFilter(
+            FILTER_ALL_DATASOURCES,
+            Filter.createEqualityFilter(Provisioning.A_zimbraDataSourceId, id)));
+  }
 
-  public abstract ZLdapFilter dataSourceByName(String name);
+  public ZLdapFilter dataSourceByName(String name) {
+    return new ZLdapFilter(
+        FilterId.DATA_SOURCE_BY_NAME,
+        Filter.createANDFilter(
+            FILTER_ALL_DATASOURCES,
+            Filter.createEqualityFilter(Provisioning.A_zimbraDataSourceName, name)));
+  }
 
   /*
    * distribution list
    */
-  public abstract ZLdapFilter allDistributionLists();
+  public ZLdapFilter allDistributionLists() {
+    return new ZLdapFilter(FilterId.ALL_DISTRIBUTION_LISTS, FILTER_ALL_DISTRIBUTION_LISTS);
+  }
 
-  public abstract ZLdapFilter distributionListById(String id);
+  public ZLdapFilter distributionListById(String id) {
+    return new ZLdapFilter(
+        FilterId.DISTRIBUTION_LIST_BY_ID,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraId, id),
+            FILTER_ALL_DISTRIBUTION_LISTS));
+  }
 
-  public abstract ZLdapFilter distributionListByName(String name);
+  public ZLdapFilter distributionListByName(String name) {
+    return new ZLdapFilter(
+        FilterId.DISTRIBUTION_LIST_BY_NAME,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraMailAlias, name),
+            FILTER_ALL_DISTRIBUTION_LISTS));
+  }
 
-  public abstract ZLdapFilter distributionListsByMemberAddrs(String[] memberAddrs);
+  public ZLdapFilter distributionListsByMemberAddrs(String[] memberAddrs) {
+    List<Filter> filters = Lists.newArrayList();
+    for (String memberAddr : memberAddrs) {
+      filters.add(
+          Filter.createEqualityFilter(Provisioning.A_zimbraMailForwardingAddress, memberAddr));
+    }
+
+    return new ZLdapFilter(
+        FilterId.DISTRIBUTION_LISTS_BY_MEMBER_ADDRS,
+        Filter.createANDFilter(FILTER_ALL_DISTRIBUTION_LISTS, Filter.createORFilter(filters)));
+  }
 
   /*
    * dynamic group
    */
-  public abstract ZLdapFilter allDynamicGroups();
+  public ZLdapFilter allDynamicGroups() {
+    return new ZLdapFilter(FilterId.ALL_DYNAMIC_GROUPS, FILTER_ALL_DYNAMIC_GROUPS);
+  }
 
-  public abstract ZLdapFilter dynamicGroupById(String id);
+  public ZLdapFilter dynamicGroupById(String id) {
+    return new ZLdapFilter(
+        FilterId.DYNAMIC_GROUP_BY_ID,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraId, id), FILTER_ALL_DYNAMIC_GROUPS));
+  }
 
-  public abstract ZLdapFilter dynamicGroupByIds(String[] strings);
+  public ZLdapFilter dynamicGroupByIds(String[] ids) {
+    List<Filter> filters = Lists.newArrayList();
+    for (String id : ids) {
+      filters.add(Filter.createEqualityFilter(Provisioning.A_zimbraId, id));
+    }
+    return new ZLdapFilter(
+        FilterId.DYNAMIC_GROUP_BY_IDS,
+        Filter.createANDFilter(
+            FILTER_ALL_DYNAMIC_GROUPS, Filter.createORFilter(Filter.createORFilter(filters))));
+  }
 
-  public abstract ZLdapFilter dynamicGroupByName(String name);
+  public ZLdapFilter dynamicGroupByName(String name) {
+    return new ZLdapFilter(
+        FilterId.DYNAMIC_GROUP_BY_NAME,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraMailAlias, name),
+            FILTER_ALL_DYNAMIC_GROUPS));
+  }
 
-  public abstract ZLdapFilter dynamicGroupDynamicUnitByMailAddr(String mailAddr);
+  public ZLdapFilter dynamicGroupDynamicUnitByMailAddr(String mailAddr) {
+    return new ZLdapFilter(
+        FilterId.DYNAMIC_GROUP_DYNAMIC_UNIT_BY_MAIL_ADDR,
+        Filter.createANDFilter(
+            FILTER_ALL_DYNAMIC_GROUP_DYNAMIC_UNITS,
+            Filter.createEqualityFilter(Provisioning.A_mail, mailAddr)));
+  }
 
-  public abstract ZLdapFilter dynamicGroupsStaticUnitByMemberAddr(String memberAddr);
+  public ZLdapFilter dynamicGroupsStaticUnitByMemberAddr(String memberAddr) {
+    return new ZLdapFilter(
+        FilterId.DYNAMIC_GROUPS_STATIC_UNIT_BY_MEMBER_ADDR,
+        Filter.createANDFilter(
+            FILTER_ALL_DYNAMIC_GROUP_STATIC_UNITS,
+            Filter.createEqualityFilter(Provisioning.A_zimbraMailForwardingAddress, memberAddr)));
+  }
 
   /*
-   * groups (distribution list or dynamic group)
+   * group (distribution list or dynamic group)
    */
-  public abstract ZLdapFilter allGroups();
+  public ZLdapFilter allGroups() {
+    return new ZLdapFilter(FilterId.ALL_GROUPS, FILTER_ALL_GROUPS);
+  }
 
-  public abstract ZLdapFilter groupById(String id);
+  public ZLdapFilter groupById(String id) {
+    return new ZLdapFilter(
+        FilterId.GROUP_BY_ID,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraId, id), FILTER_ALL_GROUPS));
+  }
 
-  public abstract ZLdapFilter groupByName(String name);
+  public ZLdapFilter groupByName(String name) {
+    return new ZLdapFilter(
+        FilterId.GROUP_BY_NAME,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraMailAlias, name), FILTER_ALL_GROUPS));
+  }
 
   /*
    * domain
    */
-  public abstract ZLdapFilter allDomains();
+  public ZLdapFilter allDomains() {
+    return new ZLdapFilter(FilterId.ALL_DOMAINS, FILTER_ALL_DOMAINS);
+  }
 
-  public abstract ZLdapFilter domainAliases(String id);
+  public ZLdapFilter domainAliases(String id) {
+    return new ZLdapFilter(
+        FilterId.DOMAIN_ALIASES,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(
+                Provisioning.A_zimbraDomainAliasTargetId,
+                id),
+            FILTER_ALL_DOMAINS,
+            Filter.createEqualityFilter(
+                Provisioning.A_zimbraDomainType, Provisioning.DomainType.alias.name())));
+  }
 
-  public abstract ZLdapFilter domainById(String id);
+  public ZLdapFilter domainById(String id) {
+    return new ZLdapFilter(
+        FilterId.DOMAIN_BY_ID,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraId, id), FILTER_ALL_DOMAINS));
+  }
 
-  public abstract ZLdapFilter domainsByIds(Collection<String> ids);
+  public ZLdapFilter domainsByIds(Collection<String> ids) {
+    List<Filter> filters = Lists.newArrayList();
+    for (String id : ids) {
+      filters.add(Filter.createEqualityFilter(Provisioning.A_zimbraId, id));
+    }
+    return new ZLdapFilter(
+        FilterId.DOMAINS_BY_IDS,
+        Filter.createANDFilter(
+            FILTER_ALL_DOMAINS, Filter.createORFilter(Filter.createORFilter(filters))));
+  }
 
-  public abstract ZLdapFilter domainByName(String name);
+  public ZLdapFilter domainByName(String name) {
+    return new ZLdapFilter(
+        FilterId.DOMAIN_BY_NAME,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraDomainName, name),
+            FILTER_ALL_DOMAINS));
+  }
 
-  public abstract ZLdapFilter domainByKrb5Realm(String krb5Realm);
+  public ZLdapFilter domainByKrb5Realm(String krb5Realm) {
+    return new ZLdapFilter(
+        FilterId.DOMAIN_BY_KRB5_REALM,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraAuthKerberos5Realm, krb5Realm),
+            FILTER_ALL_DOMAINS));
+  }
 
-  public abstract ZLdapFilter domainByVirtualHostame(String virtualHostname);
+  public ZLdapFilter domainByVirtualHostame(String virtualHostname) {
+    return new ZLdapFilter(
+        FilterId.DOMAIN_BY_VIRTUAL_HOSTNAME,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraVirtualHostname, virtualHostname),
+            FILTER_ALL_DOMAINS));
+  }
 
-  public abstract ZLdapFilter domainByForeignName(String foreignName);
+  public ZLdapFilter domainByForeignName(String foreignName) {
+    return new ZLdapFilter(
+        FilterId.DOMAIN_BY_FOREIGN_NAME,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraForeignName, foreignName),
+            FILTER_ALL_DOMAINS));
+  }
 
-  public abstract ZLdapFilter domainLabel();
+  public ZLdapFilter domainLabel() {
+    return new ZLdapFilter(FilterId.DOMAIN_LABEL, FILTER_DOMAIN_LABEL);
+  }
 
-  public abstract ZLdapFilter domainLockedForEagerAutoProvision();
+  public ZLdapFilter domainLockedForEagerAutoProvision() {
+    return new ZLdapFilter(
+        FilterId.DOMAIN_LOCKED_FOR_AUTO_PROVISION,
+        Filter.createNOTFilter(Filter.createPresenceFilter(Provisioning.A_zimbraAutoProvLock)));
+  }
 
   /*
    * global config
    */
-  public abstract ZLdapFilter globalConfig();
+  public ZLdapFilter globalConfig() {
+    return new ZLdapFilter(
+        FilterId.GLOBAL_CONFIG, Filter.createEqualityFilter(Provisioning.A_cn, "config"));
+  }
 
   /*
    * identity
    */
-  public abstract ZLdapFilter allIdentities();
+  public ZLdapFilter allIdentities() {
+    return new ZLdapFilter(FilterId.ALL_IDENTITIES, FILTER_ALL_IDENTITIES);
+  }
 
-  public abstract ZLdapFilter identityByName(String name);
+  public ZLdapFilter identityByName(String name) {
+    return new ZLdapFilter(
+        FilterId.IDENTITY_BY_NAME,
+        Filter.createANDFilter(
+            FILTER_ALL_IDENTITIES,
+            Filter.createEqualityFilter(Provisioning.A_zimbraPrefIdentityName, name)));
+  }
 
   /*
-   * mime enrty
+   * mime entry
    */
-  public abstract ZLdapFilter allMimeEntries();
+  public ZLdapFilter allMimeEntries() {
+    return new ZLdapFilter(FilterId.ALL_MIME_ENTRIES, FILTER_ALL_MIME_ENTRIES);
+  }
 
-  public abstract ZLdapFilter mimeEntryByMimeType(String mimeType);
+  public ZLdapFilter mimeEntryByMimeType(String mimeType) {
+    return new ZLdapFilter(
+        FilterId.MIME_ENTRY_BY_MIME_TYPE,
+        Filter.createEqualityFilter(Provisioning.A_zimbraMimeType, mimeType));
+  }
 
   /*
    * server
    */
-  public abstract ZLdapFilter allServers();
+  public ZLdapFilter allServers() {
+    return new ZLdapFilter(FilterId.ALL_SERVERS, FILTER_ALL_SERVERS);
+  }
 
-  public abstract ZLdapFilter serverById(String id);
+  public ZLdapFilter serverById(String id) {
+    return new ZLdapFilter(
+        FilterId.SERVER_BY_ID,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraId, id), FILTER_ALL_SERVERS));
+  }
 
-  public abstract ZLdapFilter serverByService(String service);
+  public ZLdapFilter serverByService(String service) {
+    return new ZLdapFilter(
+        FilterId.SERVER_BY_SERVICE,
+        Filter.createANDFilter(
+            FILTER_ALL_SERVERS,
+            Filter.createEqualityFilter(Provisioning.A_zimbraServiceEnabled, service)));
+  }
 
   /*
    * share locator
    */
-  public abstract ZLdapFilter shareLocatorById(String id);
+  public ZLdapFilter shareLocatorById(String id) {
+    return new ZLdapFilter(
+        FilterId.SHARE_LOCATOR_BY_ID,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_cn, id), FILTER_ALL_SHARE_LOCATORS));
+  }
 
   /*
    * signature
    */
-  public abstract ZLdapFilter allSignatures();
+  public ZLdapFilter allSignatures() {
+    return new ZLdapFilter(FilterId.ALL_SIGNATURES, FILTER_ALL_SIGNATURES);
+  }
 
-  public abstract ZLdapFilter signatureById(String id);
+  public ZLdapFilter signatureById(String id) {
+    return new ZLdapFilter(
+        FilterId.SIGNATURE_BY_ID,
+        Filter.createANDFilter(
+            FILTER_ALL_SIGNATURES,
+            Filter.createEqualityFilter(Provisioning.A_zimbraSignatureId, id)));
+  }
 
   /*
    * zimlet
    */
-  public abstract ZLdapFilter allZimlets();
+  public ZLdapFilter allZimlets() {
+    return new ZLdapFilter(FilterId.ALL_ZIMLETS, FILTER_ALL_ZIMLETS);
+  }
 
   /*
    * AD
    */
-  public abstract ZLdapFilter memberOf(String dnOfGroup);
+  public ZLdapFilter memberOf(String dnOfGroup) {
+    return new ZLdapFilter(
+        FilterId.MEMBER_OF, Filter.createEqualityFilter(LdapConstants.ATTR_memberOf, dnOfGroup));
+  }
 
   /*
    * Velodrome
    */
-  public abstract ZLdapFilter velodromeAllAccountsByDomain(String domainName);
+  private Filter velodromePrimaryEmailOnDomainFilter(String domainName) {
+    return Filter.createSubstringFilter(
+        Provisioning.A_zimbraMailDeliveryAddress, null, null, "@" + domainName);
+  }
 
-  public abstract ZLdapFilter velodromeAllAccountsOnlyByDomain(String domainName);
+  private Filter velodromeMailOrZimbraMailAliasOnDomainFilter(String domainName) {
+    return Filter.createORFilter(
+        Filter.createSubstringFilter(Provisioning.A_mail, null, null, "@" + domainName),
+        Filter.createSubstringFilter(Provisioning.A_zimbraMailAlias, null, null, "@" + domainName));
+  }
 
-  public abstract ZLdapFilter velodromeAllCalendarResourcesByDomain(String domainName);
+  public ZLdapFilter velodromeAllAccountsByDomain(String domainName) {
+    return new ZLdapFilter(
+        FilterId.VELODROME_ALL_ACCOUNTS_BY_DOMAIN,
+        Filter.createANDFilter(
+            FILTER_ALL_ACCOUNTS, velodromePrimaryEmailOnDomainFilter(domainName)));
+  }
 
-  public abstract ZLdapFilter velodromeAllAccountsByDomainAndServer(
-      String domainName, String serverServiceHostname);
+  public ZLdapFilter velodromeAllAccountsOnlyByDomain(String domainName) {
+    return new ZLdapFilter(
+        FilterId.VELODROME_ALL_ACCOUNTS_ONLY_BY_DOMAIN,
+        Filter.createANDFilter(
+            FILTER_ALL_ACCOUNTS_ONLY, velodromePrimaryEmailOnDomainFilter(domainName)));
+  }
 
-  public abstract ZLdapFilter velodromeAllAccountsOnlyByDomainAndServer(
-      String domainName, String serverServiceHostname);
+  public ZLdapFilter velodromeAllCalendarResourcesByDomain(String domainName) {
+    return new ZLdapFilter(
+        FilterId.VELODROME_ALL_CALENDAR_RESOURCES_BY_DOMAIN,
+        Filter.createANDFilter(
+            FILTER_ALL_CALENDAR_RESOURCES, velodromePrimaryEmailOnDomainFilter(domainName)));
+  }
 
-  public abstract ZLdapFilter velodromeAllCalendarResourcesByDomainAndServer(
-      String domainName, String serverServiceHostname);
+  public ZLdapFilter velodromeAllAccountsByDomainAndServer(
+      String domainName, String serverServiceHostname) {
+    return new ZLdapFilter(
+        FilterId.VELODROME_ALL_ACCOUNTS_BY_DOMAIN_AND_SERVER,
+        Filter.createANDFilter(
+            FILTER_ALL_ACCOUNTS,
+            homedOnServerFilter(serverServiceHostname),
+            velodromePrimaryEmailOnDomainFilter(domainName)));
+  }
 
-  public abstract ZLdapFilter velodromeAllDistributionListsByDomain(String domainName);
+  public ZLdapFilter velodromeAllAccountsOnlyByDomainAndServer(
+      String domainName, String serverServiceHostname) {
+    return new ZLdapFilter(
+        FilterId.VELODROME_ALL_ACCOUNTS_ONLY_BY_DOMAIN_AND_SERVER,
+        Filter.createANDFilter(
+            FILTER_ALL_ACCOUNTS_ONLY,
+            homedOnServerFilter(serverServiceHostname),
+            velodromePrimaryEmailOnDomainFilter(domainName)));
+  }
 
-  public abstract ZLdapFilter velodromeAllGroupsByDomain(String domainName);
+  public ZLdapFilter velodromeAllCalendarResourcesByDomainAndServer(
+      String domainName, String serverServiceHostname) {
+    return new ZLdapFilter(
+        FilterId.VELODROME_ALL_CALENDAR_RESOURCES_BY_DOMAIN_AND_SERVER,
+        Filter.createANDFilter(
+            FILTER_ALL_CALENDAR_RESOURCES,
+            homedOnServerFilter(serverServiceHostname),
+            velodromePrimaryEmailOnDomainFilter(domainName)));
+  }
+
+  public ZLdapFilter velodromeAllDistributionListsByDomain(String domainName) {
+    return new ZLdapFilter(
+        FilterId.VELODROME_ALL_DISTRIBUTION_LISTS_BY_DOMAIN,
+        Filter.createANDFilter(
+            FILTER_ALL_DISTRIBUTION_LISTS,
+            velodromeMailOrZimbraMailAliasOnDomainFilter(domainName)));
+  }
+
+  public ZLdapFilter velodromeAllGroupsByDomain(String domainName) {
+    return new ZLdapFilter(
+        FilterId.VELODROME_ALL_GROUPS_BY_DOMAIN,
+        Filter.createANDFilter(
+            FILTER_ALL_GROUPS, velodromeMailOrZimbraMailAliasOnDomainFilter(domainName)));
+  }
+
+  public ZLdapFilter dnSubtreeMatch(String... dns) {
+    List<Filter> filters = Lists.newArrayList();
+    for (String dn : dns) {
+      filters.add(
+          Filter.createExtensibleMatchFilter(
+              LdapConstants.DN_SUBTREE_MATCH_ATTR,
+              LdapConstants.DN_SUBTREE_MATCH_MATCHING_RULE,
+              false,
+              dn));
+    }
+
+    return new ZLdapFilter(FilterId.DN_SUBTREE_MATCH, Filter.createORFilter(filters));
+  }
 
   /*
-   * Address Lists
+   * address lists
    */
-  public abstract ZLdapFilter allAddressLists();
+  public ZLdapFilter allAddressLists() {
+    return new ZLdapFilter(FilterId.ALL_ADDRESS_LISTS, FILTER_ALL_ADDRESS_LISTS);
+  }
 
-  public abstract ZLdapFilter addressListById(String id);
+  public ZLdapFilter addressListById(String id) {
+    return new ZLdapFilter(
+        FilterId.ADDRESS_LIST_BY_ID,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_zimbraId, id), FILTER_ALL_ADDRESS_LISTS));
+  }
 
-  public abstract ZLdapFilter addressListByName(String name);
-  /*
-   * util
-   */
-  public abstract ZLdapFilter dnSubtreeMatch(String... dns);
-
+  public ZLdapFilter addressListByName(String name) {
+    return new ZLdapFilter(
+        FilterId.ADDRESS_LIST_BY_NAME,
+        Filter.createANDFilter(
+            Filter.createEqualityFilter(Provisioning.A_uid, name), FILTER_ALL_ADDRESS_LISTS));
+  }
 }

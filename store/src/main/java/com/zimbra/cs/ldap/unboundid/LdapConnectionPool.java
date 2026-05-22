@@ -96,7 +96,7 @@ public class LdapConnectionPool {
                     config.getConnPoolMaxSize(), postConnectProcessor);
             connPool.setRetryFailedOperationsDueToInvalidConnections(true);
         } catch (LDAPException e) {
-            throw UBIDLdapException.mapToLdapException(e);
+            throw LdapException.mapToLdapException(e);
         }
 
         return connPool;
@@ -130,7 +130,7 @@ public class LdapConnectionPool {
         return pool;
     }
 
-    static LDAPConnectionPool getConnPoolByConfig(ExternalLdapConfig config)
+    public static LDAPConnectionPool getConnPoolByConfig(ExternalLdapConfig config)
     throws LdapException {
         String connPoolName = ExternalLdapConfig.ConnPoolKey.getConnPoolKey(config);
         return getConnPool(connPoolName, config);
@@ -162,14 +162,14 @@ public class LdapConnectionPool {
     //
     // static wrappers for DebugConnPool
     //
-    static void debugCheckOut(LDAPConnectionPool connPool, LDAPConnection conn) {
+    public static void debugCheckOut(LDAPConnectionPool connPool, LDAPConnection conn) {
         if (!DebugConnPool.enabled()) {
             return;
         }
         DebugConnPool.checkOut(connPool, conn);
     }
 
-    static void debugCheckIn(LDAPConnectionPool connPool, LDAPConnection conn) {
+    public static void debugCheckIn(LDAPConnectionPool connPool, LDAPConnection conn) {
         if (!DebugConnPool.enabled()) {
             return;
         }

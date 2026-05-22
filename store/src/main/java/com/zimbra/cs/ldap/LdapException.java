@@ -5,7 +5,10 @@
 
 package com.zimbra.cs.ldap;
 
+import com.unboundid.ldap.sdk.LDAPException;
+import com.unboundid.ldap.sdk.ResultCode;
 import com.zimbra.common.service.ServiceException;
+import java.io.IOException;
 
 public class LdapException extends ServiceException {
 
@@ -126,10 +129,102 @@ public class LdapException extends ServiceException {
     public static LdapException SIZE_LIMIT_EXCEEDED(String message, Throwable cause) {
         return new LdapSizeLimitExceededException(message, cause);
     }
-    
-    
+
+    public static LdapException mapToLdapException(Throwable e) {
+        return mapToLdapException(null, e);
+    }
+
+    public static LdapException mapToLdapException(String message, Throwable e) {
+        if (e instanceof LDAPException) {
+            return mapToLdapException(message, (LDAPException) e);
+        } else {
+            return LdapException.LDAP_ERROR(message, e);
+        }
+    }
+
+    public static LdapException mapToLdapException(LDAPException e) {
+        return mapToLdapException(null, e);
+    }
+
+    public static LdapException mapToLdapException(String message, LDAPException e) {
+        ResultCode rc = e.getResultCode();
+
+        if (ResultCode.ENTRY_ALREADY_EXISTS == rc) {
+            return LdapException.ENTRY_ALREADY_EXIST(message, e);
+        } else if (ResultCode.NOT_ALLOWED_ON_NONLEAF == rc) {
+            return LdapException.CONTEXT_NOT_EMPTY(message, e);
+        } else if (ResultCode.UNDEFINED_ATTRIBUTE_TYPE == rc) {
+            return LdapException.INVALID_ATTR_NAME(message, e);
+        } else if (ResultCode.CONSTRAINT_VIOLATION == rc
+                || ResultCode.INVALID_ATTRIBUTE_SYNTAX == rc) {
+            return LdapException.INVALID_ATTR_VALUE(message, e);
+        } else if (ResultCode.OBJECT_CLASS_VIOLATION == rc) {
+            return LdapException.OBJECT_CLASS_VIOLATION(message, e);
+        } else if (ResultCode.SIZE_LIMIT_EXCEEDED == rc) {
+            return LdapException.SIZE_LIMIT_EXCEEDED(message, e);
+        } else if (ResultCode.NO_SUCH_OBJECT == rc) {
+            // mostly when the search base DB does not exist in the DIT
+            return LdapException.ENTRY_NOT_FOUND(message, e);
+        } else if (ResultCode.FILTER_ERROR == rc) {
+            return LdapException.INVALID_SEARCH_FILTER(message, e);
+        }
+
+        return LdapException.LDAP_ERROR(message, e);
+    }
+
+    // need more precise mapping for external LDAP exceptions so we
+    // can report config error better
+    public static LdapException mapToExternalLdapException(String message, LDAPException e) {
+        Throwable cause = e.getCause();
+
+        // the LdapException instance to return
+        LdapException ldapException = mapToLdapException(message, e);
+
+        if (cause instanceof IOException) {
+            // Unboundid hides the original IOException and throws a generic IOException.
+            // This doesn't work with check.toResult(IOException). Do our best to figure
+            // out the original IOException and set it in the detail field.
+            //
+            // e.g. An error occurred while attempting to establish a connection to server bogus:389:
+            //      java.net.UnknownHostException: bogus
+            IOException ioException = (IOException) cause;
+            String causeMsg = ioException.getMessage();
+            IOException rootException = null;
+            if (causeMsg != null) {
+                if (causeMsg.contains("java.net.UnknownHostException")) {
+                    rootException = new java.net.UnknownHostException(causeMsg);
+                } else if (causeMsg.contains("java.net.ConnectException")) {
+                    rootException = new java.net.ConnectException(causeMsg);
+                } else if (causeMsg.contains("javax.net.ssl.SSLHandshakeException")) {
+                    rootException = new javax.net.ssl.SSLHandshakeException(causeMsg);
+                }
+            }
+            if (rootException != null) {
+                ldapException.setDetail(rootException);
+            } else {
+                ldapException.setDetail(cause);
+            }
+        } else {
+            String causeMsg = e.getMessage();
+
+            Throwable rootException;
+            if (causeMsg.contains("unsupported extended operation")) {
+                // most likely startTLS failed, for backward compatibility with check.toResult,
+                // return a generic IOException
+                rootException = new IOException(causeMsg);
+            } else {
+                rootException = mapToLdapException(message, e);
+            }
+
+            ldapException.setDetail(rootException);
+        }
+
+        return ldapException;
+    }
+
+
     //
-    // Subclasses mapped to native(JNDI/UBID) ldap exceptions
+    // Subclasses mapped to native ldap exceptions
     //
     
     public static class LdapContextNotEmptyException extends LdapException {

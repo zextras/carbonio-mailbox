@@ -21,7 +21,7 @@ import com.zimbra.cs.db.HSQLDB;
 import com.zimbra.cs.index.IndexStore;
 import com.zimbra.cs.index.ZimbraAnalyzer;
 import com.zimbra.cs.ldap.LdapClient;
-import com.zimbra.cs.ldap.unboundid.UBIDLdapClient;
+import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapPoolConfig;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.ScheduledTaskManager;
@@ -110,7 +110,7 @@ public class MailboxSetupHelper {
 
 		LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
 		final UBIDLdapPoolConfig poolConfig = UBIDLdapPoolConfig.createNewPool(true);
-		final UBIDLdapClient client = UBIDLdapClient.createNew(poolConfig);
+		final LdapClient client = LdapClient.createNew(poolConfig);
 		LdapClient.setInstance(client);
 		Provisioning.setInstance(new LdapProvisioningWithMockMime(client));
 		this.initData(mailboxTestData);
@@ -167,7 +167,7 @@ public class MailboxSetupHelper {
 		DbPool.shutDownAndClear();
 		inMemoryLdapServer.shutDown(true);
 		// TODO: avoid shutting down with explicit static method calls
-		UBIDLdapClient.shutdown();
+		LdapClient.shutdown();
 		FileUtils.deleteDirectory(mailboxHome.toFile());
 		FileUtils.deleteDirectory(mailboxTmpDirectory.toFile());
 	}

@@ -5,5 +5,33 @@
 
 package com.zimbra.cs.ldap;
 
-public abstract class ZSearchResultEntry extends ZEntry {
+import com.unboundid.ldap.sdk.SearchResultEntry;
+
+/**
+ * Represents one LDAP entry in a search result.
+ */
+public class ZSearchResultEntry extends ZEntry {
+
+    private SearchResultEntry searchResultEntry;
+    private ZAttributes zAttributes;
+
+    public ZSearchResultEntry(SearchResultEntry searchResultEntry) {
+        this.searchResultEntry = searchResultEntry;
+        this.zAttributes = new ZAttributes(searchResultEntry);
+    }
+
+    @Override
+    public void debug() {
+        println(searchResultEntry.toString());
+    }
+
+    @Override
+    public ZAttributes getAttributes() {
+        return zAttributes;
+    }
+
+    @Override
+    public String getDN() {
+        return searchResultEntry.getDN();
+    }
 }

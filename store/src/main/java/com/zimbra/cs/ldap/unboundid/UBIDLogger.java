@@ -47,7 +47,7 @@ public class UBIDLogger {
         return timer;
     }
     
-    static void beforeOp(LdapOp ldapOp, LDAPConnection conn) {
+    public static void beforeOp(LdapOp ldapOp, LDAPConnection conn) {
         if (!debugLogger.isDebugEnabled()) {
             return;
         }
