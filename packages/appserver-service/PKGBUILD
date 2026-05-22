@@ -15,6 +15,7 @@ url="https://github.com/zextras"
 depends=(
   "carbonio-core"
   "service-discover"
+  "service-discover-base"
   "pending-setups"
 )
 
