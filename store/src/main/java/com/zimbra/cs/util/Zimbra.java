@@ -46,6 +46,7 @@ import com.zimbra.znative.Util;
 import java.io.File;
 import java.io.IOException;
 import java.security.Security;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 import org.apache.mina.core.buffer.IoBuffer;
@@ -456,7 +457,11 @@ public final class Zimbra {
     try {
       ZimbraLog.system.fatal(message, t);
     } finally {
-      Runtime.getRuntime().halt(1);
-    }
+      // Fixme: there should be no need to halt the system. However this codebase has so many threads
+      //  that during tests they keep the process live and maven surefire crashes because it does not receieve goodbye.
+      if (!Objects.equals("true", System.getProperty("runningTests"))) {
+        Runtime.getRuntime().halt(1);
+      }
+      }
   }
 }

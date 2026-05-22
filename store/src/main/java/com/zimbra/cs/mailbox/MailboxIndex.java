@@ -378,7 +378,9 @@ public final class MailboxIndex {
     if (wait) {
       indexLock.acquireUninterruptibly();
     } else if (!indexLock.tryAcquire()) {
-      ZimbraLog.index.debug("index is in progress by other thread, skipping");
+      ZimbraLog.index.info(
+          "indexDeferredItems skipped: lock held by another thread mboxId=%d types=%s deferredCount=%d",
+          mailbox.getId(), types, getDeferredCount(types));
       return;
     }
     lastFailedTime = -1; // reset
