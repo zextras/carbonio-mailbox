@@ -21,7 +21,7 @@
 
   <properties>
     <!-- Mailbox version -->
-    <revision>4.27.4</revision>
+    <revision>4.27.5</revision>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
 
