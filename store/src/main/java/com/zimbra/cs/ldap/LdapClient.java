@@ -70,10 +70,6 @@ public class LdapClient {
         }
     }
 
-    public static void initializeIfLDAPAvailable() throws LdapException {
-        LdapClient.getInstanceIfLDAPavailable();
-    }
-
     public static void initialize() {
         LdapClient.getInstance();
     }
