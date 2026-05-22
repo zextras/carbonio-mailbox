@@ -28,11 +28,11 @@ public class UBIDModificationList extends ZModificationList {
         }
     }
 
-    List<Modification> getModList() {
+    public List<Modification> getModList() {
         return modList;
     }
 
-    void replaceAll(Map<String, Object> attrs) {
+    public void replaceAll(Map<String, Object> attrs) {
 
         for (Map.Entry<String, Object> attr : attrs.entrySet()) {
             String attrName = attr.getKey();

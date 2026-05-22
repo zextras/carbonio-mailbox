@@ -21,7 +21,7 @@ public class UBIDLdapSchema extends ZLdapSchema {
 
     private Schema schema;
 
-    UBIDLdapSchema(Schema schema) {
+    public UBIDLdapSchema(Schema schema) {
         this.schema = schema;
     }
 

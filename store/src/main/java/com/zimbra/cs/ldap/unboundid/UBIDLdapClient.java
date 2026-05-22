@@ -66,9 +66,9 @@ public class UBIDLdapClient extends LdapClient {
 	@Override
 	protected void waitForLdapServerImpl() {
 		while (true) {
-			UBIDLdapContext zlc = null;
+			ZLdapContext zlc = null;
 			try {
-				zlc = new UBIDLdapContext(poolConfig, LdapServerType.REPLICA, LdapUsage.PING);
+				zlc = new ZLdapContext(poolConfig, LdapServerType.REPLICA, LdapUsage.PING);
 				break;
 			} catch (ServiceException e) {
 				// may called at server startup when logging is not up yet.
@@ -89,7 +89,7 @@ public class UBIDLdapClient extends LdapClient {
 	@Override
 	protected ZLdapContext getContextImpl(LdapServerType serverType, LdapUsage usage)
 			throws ServiceException {
-		return new UBIDLdapContext(poolConfig, serverType, usage);
+		return new ZLdapContext(poolConfig, serverType, usage);
 	}
 
 	/**
@@ -105,7 +105,7 @@ public class UBIDLdapClient extends LdapClient {
 	@Override
 	protected ZLdapContext getExternalContextImpl(ExternalLdapConfig config, LdapUsage usage)
 			throws ServiceException {
-		return new UBIDLdapContext(config, usage);
+		return new ZLdapContext(config, usage);
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public class UBIDLdapClient extends LdapClient {
 	protected void externalLdapAuthenticateImpl(String[] urls,
 			boolean wantStartTLS, String bindDN, String password, String note)
 			throws ServiceException {
-		UBIDLdapContext.externalLdapAuthenticate(urls, wantStartTLS,
+		ZLdapContext.externalLdapAuthenticate(urls, wantStartTLS,
 				bindDN, password, note);
 	}
 
@@ -125,7 +125,7 @@ public class UBIDLdapClient extends LdapClient {
 	protected void zimbraLdapAuthenticateImpl(String bindDN, String password)
 			throws ServiceException {
 		// TODO: check me
-		UBIDLdapContext.zimbraLdapAuthenticate(bindDN, password, poolConfig);
+		ZLdapContext.zimbraLdapAuthenticate(bindDN, password, poolConfig);
 	}
 
 }

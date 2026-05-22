@@ -28,27 +28,28 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.ldap.LdapOp;
 import com.zimbra.cs.ldap.LdapServerConfig.ExternalLdapConfig;
 import com.zimbra.cs.ldap.LdapUsage;
+import com.zimbra.cs.ldap.ZLdapContext;
 import com.zimbra.cs.ldap.ZLdapFilter;
 import com.zimbra.cs.stats.ZimbraPerf;
 import java.util.List;
 
-abstract class UBIDLdapOperation {
+public abstract class UBIDLdapOperation {
   private static final boolean STATS_ENABLED = true;
 
   private static Log debugLogger = ZimbraLog.ldap;
 
-  static final GetConnection GET_CONNECTION = new GetConnection();
-  static final CreateEntry CREATE_ENTRY = new CreateEntry();
-  static final DeleteEntry DELETE_ENTRY = new DeleteEntry();
-  static final Search SEARCH = new Search();
-  static final Compare COMPARE = new Compare();
-  static final GetEntry GET_ENTRY = new GetEntry();
-  static final GetSchema GET_SCHEMA = new GetSchema();
-  static final ModifyAttrs MODIFY_ATTRS = new ModifyAttrs();
-  static final TestAndModifyAttrs TEST_AND_MODIFY_ATTRS = new TestAndModifyAttrs();
-  static final ModifyDN MODIFY_DN = new ModifyDN();
-  static final SetPassword SET_PASSWORD = new SetPassword();
-  static final GenericOp GENERIC_OP = new GenericOp();
+  public static final GetConnection GET_CONNECTION = new GetConnection();
+  public static final CreateEntry CREATE_ENTRY = new CreateEntry();
+  public static final DeleteEntry DELETE_ENTRY = new DeleteEntry();
+  public static final Search SEARCH = new Search();
+  public static final Compare COMPARE = new Compare();
+  public static final GetEntry GET_ENTRY = new GetEntry();
+  public static final GetSchema GET_SCHEMA = new GetSchema();
+  public static final ModifyAttrs MODIFY_ATTRS = new ModifyAttrs();
+  public static final TestAndModifyAttrs TEST_AND_MODIFY_ATTRS = new TestAndModifyAttrs();
+  public static final ModifyDN MODIFY_DN = new ModifyDN();
+  public static final SetPassword SET_PASSWORD = new SetPassword();
+  public static final GenericOp GENERIC_OP = new GenericOp();
 
   protected void stat(long startTime) {
     stat(startTime, getOp());
@@ -78,16 +79,16 @@ abstract class UBIDLdapOperation {
     return debugLogger.isDebugEnabled();
   }
 
-  protected void debug(UBIDLdapContext ctx, long startTime) {
+  protected void debug(ZLdapContext ctx, long startTime) {
     debug(ctx, startTime, null);
   }
 
-  protected void debug(UBIDLdapContext ctx, long startTime, String extraInfo) {
+  protected void debug(ZLdapContext ctx, long startTime, String extraInfo) {
     debug(ctx, startTime, ctx.getConn(), extraInfo);
   }
 
   // for ops not returning a LDAPResponse
-  protected void debug(UBIDLdapContext ctx, long startTime, LDAPConnection conn, String extraInfo) {
+  protected void debug(ZLdapContext ctx, long startTime, LDAPConnection conn, String extraInfo) {
     debugLogger.debug(
         "%s - millis=[%d], usage=[%s], conn=[%s]%s",
         getOp().name(),
@@ -98,7 +99,7 @@ abstract class UBIDLdapOperation {
   }
 
   // for ops returning a LDAPResponse
-  protected void debug(UBIDLdapContext ctx, long startTime, LDAPResponse resp, String extraInfo) {
+  protected void debug(ZLdapContext ctx, long startTime, LDAPResponse resp, String extraInfo) {
     debugLogger.debug(
         "%s - millis=[%d], resp=[%s], usage=[%s], conn=[%s]%s",
         getOp().name(),
@@ -159,14 +160,14 @@ abstract class UBIDLdapOperation {
   }
 
   /** GetConnection */
-  static class GetConnection extends UBIDLdapOperation {
+  public static class GetConnection extends UBIDLdapOperation {
 
     @Override
     protected LdapOp getOp() {
       return LdapOp.GET_CONN;
     }
 
-    LDAPConnection execute(UBIDLdapContext ctx, LDAPConnectionPool pool) throws LDAPException {
+    public LDAPConnection execute(ZLdapContext ctx, LDAPConnectionPool pool) throws LDAPException {
       LDAPConnection connection = null;
       long startTime = System.currentTimeMillis();
       try {
@@ -186,14 +187,14 @@ abstract class UBIDLdapOperation {
   }
 
   /** CreateEntry */
-  static class CreateEntry extends UBIDLdapOperation {
+  public static class CreateEntry extends UBIDLdapOperation {
 
     @Override
     protected LdapOp getOp() {
       return LdapOp.CREATE_ENTRY;
     }
 
-    LDAPResult execute(UBIDLdapContext ctx, Entry entry) throws LDAPException {
+    public LDAPResult execute(ZLdapContext ctx, Entry entry) throws LDAPException {
       LDAPResult result = null;
       long startTime = System.currentTimeMillis();
       try {
@@ -217,14 +218,14 @@ abstract class UBIDLdapOperation {
   }
 
   /** DeleteEntry */
-  static class DeleteEntry extends UBIDLdapOperation {
+  public static class DeleteEntry extends UBIDLdapOperation {
 
     @Override
     protected LdapOp getOp() {
       return LdapOp.DELETE_ENTRY;
     }
 
-    LDAPResult execute(UBIDLdapContext ctx, String dn) throws LDAPException {
+    public LDAPResult execute(ZLdapContext ctx, String dn) throws LDAPException {
       LDAPResult result = null;
       long startTime = System.currentTimeMillis();
       try {
@@ -248,14 +249,14 @@ abstract class UBIDLdapOperation {
   }
 
   /** Search */
-  static class Search extends UBIDLdapOperation {
+  public static class Search extends UBIDLdapOperation {
 
     @Override
     protected LdapOp getOp() {
       return LdapOp.SEARCH;
     }
 
-    SearchResult execute(UBIDLdapContext ctx, SearchRequest searchRequest, ZLdapFilter zFilter)
+    public SearchResult execute(ZLdapContext ctx, SearchRequest searchRequest, ZLdapFilter zFilter)
         throws LDAPException {
       SearchResult result = null;
       long startTime = System.currentTimeMillis();
@@ -302,14 +303,14 @@ abstract class UBIDLdapOperation {
   }
 
   /** Compare */
-  static class Compare extends UBIDLdapOperation {
+  public static class Compare extends UBIDLdapOperation {
 
     @Override
     protected LdapOp getOp() {
       return LdapOp.COMPARE;
     }
 
-    CompareResult execute(UBIDLdapContext ctx, CompareRequest compareRequest) throws LDAPException {
+    public CompareResult execute(ZLdapContext ctx, CompareRequest compareRequest) throws LDAPException {
       CompareResult result = null;
       long startTime = System.currentTimeMillis();
       try {
@@ -355,14 +356,14 @@ abstract class UBIDLdapOperation {
   }
 
   /** GetEntry */
-  static class GetEntry extends UBIDLdapOperation {
+  public static class GetEntry extends UBIDLdapOperation {
 
     @Override
     protected LdapOp getOp() {
       return LdapOp.GET_ENTRY;
     }
 
-    SearchResultEntry execute(UBIDLdapContext ctx, String dn, String[] attrs) throws LDAPException {
+    public SearchResultEntry execute(ZLdapContext ctx, String dn, String[] attrs) throws LDAPException {
       long startTime = System.currentTimeMillis();
       try {
         SearchResultEntry entry =
@@ -389,14 +390,14 @@ abstract class UBIDLdapOperation {
   }
 
   /** GetSchema */
-  static class GetSchema extends UBIDLdapOperation {
+  public static class GetSchema extends UBIDLdapOperation {
 
     @Override
     protected LdapOp getOp() {
       return LdapOp.GET_SCHEMA;
     }
 
-    Schema execute(UBIDLdapContext ctx) throws LDAPException {
+    public Schema execute(ZLdapContext ctx) throws LDAPException {
       long startTime = System.currentTimeMillis();
       try {
         Schema schema = ctx.getConn().getSchema();
@@ -419,14 +420,14 @@ abstract class UBIDLdapOperation {
   }
 
   /** ModifyAttrs */
-  static class ModifyAttrs extends UBIDLdapOperation {
+  public static class ModifyAttrs extends UBIDLdapOperation {
 
     @Override
     protected LdapOp getOp() {
       return LdapOp.MODIFY_ATTRS;
     }
 
-    LDAPResult execute(UBIDLdapContext ctx, String dn, List<Modification> modList)
+    public LDAPResult execute(ZLdapContext ctx, String dn, List<Modification> modList)
         throws LDAPException {
       LDAPResult result = null;
       long startTime = System.currentTimeMillis();
@@ -455,14 +456,14 @@ abstract class UBIDLdapOperation {
   }
 
   /** TestAndModifyAttrs */
-  static class TestAndModifyAttrs extends UBIDLdapOperation {
+  public static class TestAndModifyAttrs extends UBIDLdapOperation {
 
     @Override
     protected LdapOp getOp() {
       return LdapOp.TEST_AND_MODIFY_ATTRS;
     }
 
-    LDAPResult execute(UBIDLdapContext ctx, ModifyRequest modReq) throws LDAPException {
+    public LDAPResult execute(ZLdapContext ctx, ModifyRequest modReq) throws LDAPException {
       LDAPResult result = null;
       long startTime = System.currentTimeMillis();
       try {
@@ -486,15 +487,15 @@ abstract class UBIDLdapOperation {
   }
 
   /** ModifyDN */
-  static class ModifyDN extends UBIDLdapOperation {
+  public static class ModifyDN extends UBIDLdapOperation {
 
     @Override
     protected LdapOp getOp() {
       return LdapOp.MODIFY_DN;
     }
 
-    LDAPResult execute(
-        UBIDLdapContext ctx, String dn, String newRDN, boolean deleteOldRDN, String newSuperiorDN)
+    public LDAPResult execute(
+        ZLdapContext ctx, String dn, String newRDN, boolean deleteOldRDN, String newSuperiorDN)
         throws LDAPException {
       LDAPResult result = null;
       long startTime = System.currentTimeMillis();
@@ -522,14 +523,14 @@ abstract class UBIDLdapOperation {
     }
   }
 
-  static class SetPassword extends UBIDLdapOperation {
+  public static class SetPassword extends UBIDLdapOperation {
 
     @Override
     protected LdapOp getOp() {
       return LdapOp.SET_PASSWORD;
     }
 
-    LDAPResult execute(UBIDLdapContext ctx, String dn, String newPassword) throws LDAPException {
+    public LDAPResult execute(ZLdapContext ctx, String dn, String newPassword) throws LDAPException {
       LDAPResult result = null;
       long startTime = System.currentTimeMillis();
       ExtendedRequest req = new PasswordModifyExtendedRequest(dn, null, newPassword);
@@ -556,12 +557,12 @@ abstract class UBIDLdapOperation {
   /**
    * GenericOp
    *
-   * <p>A wrapper for generic, UBIDLdapContext-less, LDAP operation or a sequence of operations that
+   * <p>A wrapper for generic, ZLdapContext-less, LDAP operation or a sequence of operations that
    * need to be timed and logged.
    *
    * <p>Callsite is responsible for always calling begin() and end() around the LDAP operation(s).
    */
-  static class GenericOp extends UBIDLdapOperation {
+  public static class GenericOp extends UBIDLdapOperation {
 
     @Override
     protected LdapOp getOp() {
@@ -569,11 +570,11 @@ abstract class UBIDLdapOperation {
       return null;
     }
 
-    long begin() {
+    public long begin() {
       return System.currentTimeMillis();
     }
 
-    void end(
+    public void end(
         LdapOp op,
         LdapUsage usage,
         long startTime,

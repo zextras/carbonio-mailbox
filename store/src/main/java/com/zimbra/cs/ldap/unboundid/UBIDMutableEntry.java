@@ -36,7 +36,7 @@ public class UBIDMutableEntry extends ZMutableEntry {
         print(debugListener, entry.toString());
     }
     
-    Entry getNative() {
+    public Entry getNative() {
         return entry;
     }
     

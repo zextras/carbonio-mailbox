@@ -74,7 +74,7 @@ public class LdapSSLUtil {
         }
     }
     
-    static SSLContext createSSLContext(boolean allowUntrustedCerts) throws LdapException {
+    public static SSLContext createSSLContext(boolean allowUntrustedCerts) throws LdapException {
         TrustManager tm = getTrustManager(allowUntrustedCerts);
         SSLUtil sslUtil = new SSLUtil(tm);
         

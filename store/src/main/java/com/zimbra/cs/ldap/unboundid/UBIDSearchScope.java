@@ -17,7 +17,7 @@ public class UBIDSearchScope extends ZSearchScope {
         this.searchScope = searchScope;
     }
     
-    SearchScope getNative() {
+    public SearchScope getNative() {
         return searchScope;
     }
 

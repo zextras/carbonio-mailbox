@@ -11,13 +11,13 @@ import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.ResultCode;
 import com.zimbra.cs.ldap.LdapException;
 
-class UBIDLdapException {
+public class UBIDLdapException {
     
-    static LdapException mapToLdapException(Throwable e) {
+    public static LdapException mapToLdapException(Throwable e) {
         return mapToLdapException(null, e);
     }
     
-    static LdapException mapToLdapException(String message, Throwable e) {
+    public static LdapException mapToLdapException(String message, Throwable e) {
         if (e instanceof LDAPException) {
             return mapToLdapException(message, (LDAPException) e);
         } else {
@@ -25,11 +25,11 @@ class UBIDLdapException {
         }
     }
 
-    static LdapException mapToLdapException(LDAPException e) {
+    public static LdapException mapToLdapException(LDAPException e) {
         return mapToLdapException(null, e);
     }
 
-    static LdapException mapToLdapException(String message, LDAPException e) {
+    public static LdapException mapToLdapException(String message, LDAPException e) {
         ResultCode rc = e.getResultCode();
         
         if (ResultCode.ENTRY_ALREADY_EXISTS == rc) {
@@ -65,7 +65,7 @@ class UBIDLdapException {
     
     // need more precise mapping for external LDAP exceptions so we
     // can report config error better
-    static LdapException mapToExternalLdapException(String message, LDAPException e) {
+    public static LdapException mapToExternalLdapException(String message, LDAPException e) {
         Throwable cause = e.getCause();
         ResultCode rc = e.getResultCode();
         

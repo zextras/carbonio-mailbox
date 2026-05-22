@@ -19,7 +19,7 @@ public class UBIDSearchResultEnumeration implements ZSearchResultEnumeration {
     SearchResult searchResult;
     Iterator<SearchResultEntry> entriesIter;
     
-    UBIDSearchResultEnumeration(SearchResult searchResult) {
+    public UBIDSearchResultEnumeration(SearchResult searchResult) {
         this.searchResult = searchResult;
         this.entriesIter = searchResult.getSearchEntries().iterator();
     }

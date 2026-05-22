@@ -32,11 +32,11 @@ public class UBIDAttributes extends ZAttributes {
     //
     private Entry entry;
     
-    UBIDAttributes(SearchResultEntry entry) {
+    public UBIDAttributes(SearchResultEntry entry) {
         this.entry = entry;
     }
-    
-    UBIDAttributes(Entry entry) {
+
+    public UBIDAttributes(Entry entry) {
         this.entry = entry;
     }
     

@@ -23,7 +23,7 @@ public class UBIDLdapFilter extends ZLdapFilter {
     public void debug() {
     }
 
-    Filter getNative() {
+    public Filter getNative() {
         return filter;
     }
 
