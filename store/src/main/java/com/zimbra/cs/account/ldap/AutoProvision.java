@@ -54,7 +54,6 @@ import com.zimbra.cs.account.Provisioning.DirectoryEntryVisitor;
 import com.zimbra.cs.account.names.NameUtil.EmailAddress;
 import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.ldap.IAttributes;
-import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.LdapConstants;
 import com.zimbra.cs.ldap.LdapException.LdapInvalidAttrValueException;
 import com.zimbra.cs.ldap.LdapException.LdapSizeLimitExceededException;
@@ -350,10 +349,10 @@ public abstract class AutoProvision {
         ZLdapContext zlc = null;
 
         try {
-            zlc = LdapClient.getExternalContext(config, LdapUsage.AUTO_PROVISION);
+            zlc = prov.getLdapClient().getInstanceExternalContext(config, LdapUsage.AUTO_PROVISION);
             return prov.getHelper().getAttributes(zlc, dn, getAttrsToFetch());
         } finally {
-            LdapClient.closeContext(zlc);
+            prov.getLdapClient().closeInstanceContext(zlc);
         }
     }
 
@@ -390,7 +389,7 @@ public abstract class AutoProvision {
         ZLdapContext zlc = null;
 
         try {
-            zlc = LdapClient.getExternalContext(config, LdapUsage.AUTO_PROVISION);
+            zlc = prov.getLdapClient().getInstanceExternalContext(config, LdapUsage.AUTO_PROVISION);
 
             String searchFilterTemplate = domain.getAutoProvLdapSearchFilter();
             if (searchFilterTemplate != null) {
@@ -420,7 +419,7 @@ public abstract class AutoProvision {
             }
 
         } finally {
-            LdapClient.closeContext(zlc);
+            prov.getLdapClient().closeInstanceContext(zlc);
         }
 
         throw ServiceException.FAILURE("One of " + Provisioning.A_zimbraAutoProvLdapBindDn +
@@ -661,7 +660,7 @@ public abstract class AutoProvision {
         ZLdapContext zlc = null;
         ZLdapFilter zFilter = null;
         try {
-            zlc = LdapClient.getExternalContext(config, LdapUsage.AUTO_PROVISION_ADMIN_SEARCH);
+            zlc = prov.getLdapClient().getInstanceExternalContext(config, LdapUsage.AUTO_PROVISION_ADMIN_SEARCH);
 
             String searchFilter = null;
             String searchFilterWithoutLastPolling = null;
@@ -726,7 +725,7 @@ public abstract class AutoProvision {
                 throw AccountServiceException.TOO_MANY_SEARCH_RESULTS("too many search results returned", e);
             }
         } finally {
-            LdapClient.closeContext(zlc);
+            prov.getLdapClient().closeInstanceContext(zlc);
         }
         return hitSizeLimitExceededException;
     }

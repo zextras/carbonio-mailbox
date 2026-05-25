@@ -10,7 +10,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.ldap.IAttributes;
 import com.zimbra.cs.ldap.ILdapContext;
-import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.LdapException;
 import com.zimbra.cs.ldap.LdapException.LdapEntryNotFoundException;
 import com.zimbra.cs.ldap.LdapException.LdapMultipleEntriesMatchedException;
@@ -265,12 +264,12 @@ public abstract class LdapHelper {
             ZLdapContext zlc = initZlc;
             try {
                 if (zlc == null) {
-                    zlc = LdapClient.getContext(ldapServerType, LdapUsage.SEARCH);
+                    zlc = ldapProv.getLdapClient().getInstanceContext(ldapServerType, LdapUsage.SEARCH);
                 }
                 zlc.searchPaged(searchOptions);
             } finally {
                 if (initZlc == null) {
-                    LdapClient.closeContext(zlc);
+                    ldapProv.getLdapClient().closeInstanceContext(zlc);
                 }
             }
 
