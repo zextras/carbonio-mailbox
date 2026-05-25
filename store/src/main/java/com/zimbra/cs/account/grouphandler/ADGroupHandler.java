@@ -20,7 +20,6 @@ import com.zimbra.cs.account.ldap.LdapHelper;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.ldap.IAttributes;
 import com.zimbra.cs.ldap.ILdapContext;
-import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.LdapConstants;
 import com.zimbra.cs.ldap.LdapUtil;
 import com.zimbra.cs.ldap.SearchLdapOptions;
@@ -211,7 +210,7 @@ public class ADGroupHandler extends GroupHandler {
             
             return attrs.getMultiAttrStringAsList(MEMBER_OF_ATTR, CheckBinary.NOCHECK);
         } finally {
-            LdapClient.closeContext(zlc);
+            prov.getLdapClient().closeInstanceContext(zlc);
         }
     }
     

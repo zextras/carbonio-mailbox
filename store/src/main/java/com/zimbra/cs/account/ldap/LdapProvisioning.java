@@ -9285,6 +9285,11 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   }
 
   @Override
+  public LdapClient getLdapClient() {
+    return ldapClient;
+  }
+
+  @Override
   public void dumpLdapSchema(PrintWriter writer) throws ServiceException {
     ZLdapContext zlc = null;
     try {
