@@ -93,13 +93,6 @@ public class NginxLookupExtension implements ZimbraExtension {
                 REV_PROXY_MAILHOST_EXTRA_ATTRS.add(Provisioning.A_zimbraExternalPop3SSLHostname);
                 REV_PROXY_MAILHOST_EXTRA_ATTRS.add(Provisioning.A_zimbraExternalImapHostname);
                 REV_PROXY_MAILHOST_EXTRA_ATTRS.add(Provisioning.A_zimbraExternalImapSSLHostname);
-                ExtensionUtil.initAllMatching(new NginxLookupExtensionMatcher());
-    }
-    public static class NginxLookupExtensionMatcher implements ExtensionUtil.ExtensionMatcher {
-        @Override
-        public boolean matches(ZimbraExtension ext) {
-            return true;
-        }
     }
 
     @Override
