@@ -36,7 +36,7 @@ public class LdapClient {
         return createNew(false);
     }
 
-     private static synchronized LdapClient getInstance() {
+    private static synchronized LdapClient newInstance() {
          try {
              return LdapClient.createNew();
          } catch (LdapException e) {
@@ -44,23 +44,6 @@ public class LdapClient {
          }
          // FIXME: unreachable code?
          throw new RuntimeException("LdapCLient not available");
-     }
-
-    public static void initialize() {
-        LdapClient.getInstance();
-    }
-
-    @Deprecated
-    public static ZLdapContext toZLdapContext(
-            com.zimbra.cs.account.Provisioning prov, ILdapContext ldapContext) {
-
-        // just a safety check, this should really not happen at this point
-        if (ldapContext != null && !(ldapContext instanceof ZLdapContext)) {
-            Zimbra.halt("ILdapContext instance is not ZLdapContext",
-                    ServiceException.FAILURE("internal error, wrong ldap context instance", null));
-        }
-
-        return (ZLdapContext)ldapContext;
     }
 
     public ZLdapContext toZLdapContext(ILdapContext ldapContext) {
@@ -74,40 +57,36 @@ public class LdapClient {
         return (ZLdapContext)ldapContext;
     }
 
-    /*
-     * ========================================================
-     * static methods just to short-hand the getInstance() call
-     * ========================================================
-     */
-    public static void waitForLdapServer() {
-        getInstance().waitForLdapServerImpl();
+    public void waitForLdapServer() {
+        while (true) {
+            ZLdapContext zlc = null;
+            try {
+                zlc = new ZLdapContext(poolConfig, LdapServerType.REPLICA, LdapUsage.PING);
+                break;
+            } catch (ServiceException e) {
+                // may be called at server startup when logging is not up yet.
+                System.err.println(new Date() + ": error communicating with LDAP (will retry)");
+                e.printStackTrace();
+                try {
+                    Thread.sleep(LdapConstants.CHECK_LDAP_SLEEP_MILLIS);
+                } catch (InterruptedException ie) {
+                }
+            } finally {
+                if (zlc != null) {
+                    zlc.closeContext(false);
+                }
+            }
+        }
     }
 
-    @Deprecated
-    public static ZLdapContext getContext(LdapUsage usage) throws ServiceException {
-        return getContext(LdapServerType.REPLICA, usage);
-    }
 
     public ZLdapContext getInstanceContext(LdapUsage usage) throws ServiceException {
         return this.getInstanceContext(LdapServerType.REPLICA, usage);
     }
 
-    @Deprecated
-    public static ZLdapContext getContext(LdapServerType serverType, LdapUsage usage)
-    throws ServiceException {
-        return getInstance().getContextImpl(serverType, usage);
-    }
-
     public ZLdapContext getInstanceContext(LdapServerType serverType, LdapUsage usage)
         throws ServiceException {
         return this.getContextImpl(serverType, usage);
-    }
-
-    @Deprecated
-    public static ZLdapContext getContext(LdapServerType serverType, boolean useConnPool,
-            LdapUsage usage)
-    throws ServiceException {
-        return getInstance().getContextImpl(serverType, useConnPool, usage);
     }
 
     public ZLdapContext getInstanceContext(LdapServerType serverType, boolean useConnPool,
@@ -122,14 +101,7 @@ public class LdapClient {
     public static ZLdapContext getContext(GenericLdapConfig ldapConfig,
             LdapUsage usage)
     throws ServiceException {
-        return getInstance().getExternalContextImpl(ldapConfig, usage);
-    }
-
-    @Deprecated
-    public static ZLdapContext getExternalContext(ExternalLdapConfig ldapConfig,
-            LdapUsage usage)
-    throws ServiceException {
-        return getInstance().getExternalContextImpl(ldapConfig, usage);
+        return newInstance().getExternalContextImpl(ldapConfig, usage);
     }
 
     public ZLdapContext getInstanceExternalContext(ExternalLdapConfig ldapConfig,
@@ -138,32 +110,20 @@ public class LdapClient {
         return this.getExternalContextImpl(ldapConfig, usage);
     }
 
-    @Deprecated
-    public static void closeContext(ZLdapContext lctxt) {
-        if (lctxt != null) {
-            lctxt.closeContext(false);
-        }
-    }
-
     public void closeInstanceContext(ZLdapContext lctxt) {
         if (lctxt != null) {
             lctxt.closeContext(false);
         }
     }
 
-    @Deprecated
-    public static ZMutableEntry createMutableEntry() {
-        return getInstance().createMutableEntryImpl();
-    }
-
     public ZMutableEntry createInstanceMutableEntry() {
         return this.createMutableEntryImpl();
     }
 
-    public static void externalLdapAuthenticate(String[] urls, boolean wantStartTLS,
+    public void externalLdapAuthenticate(String[] urls, boolean wantStartTLS,
             String bindDN, String password, String note)
     throws ServiceException {
-        getInstance().externalLdapAuthenticateImpl(urls, wantStartTLS,
+        this.externalLdapAuthenticateImpl(urls, wantStartTLS,
                 bindDN, password, note);
     }
 
@@ -187,28 +147,6 @@ public class LdapClient {
     protected ZLdapFilterFactory getLdapFilterFactoryInstance() throws LdapException {
         ZLdapFilterFactory.initialize();
         return new ZLdapFilterFactory();
-    }
-
-    protected void waitForLdapServerImpl() {
-        while (true) {
-            ZLdapContext zlc = null;
-            try {
-                zlc = new ZLdapContext(poolConfig, LdapServerType.REPLICA, LdapUsage.PING);
-                break;
-            } catch (ServiceException e) {
-                // may be called at server startup when logging is not up yet.
-                System.err.println(new Date() + ": error communicating with LDAP (will retry)");
-                e.printStackTrace();
-                try {
-                    Thread.sleep(LdapConstants.CHECK_LDAP_SLEEP_MILLIS);
-                } catch (InterruptedException ie) {
-                }
-            } finally {
-                if (zlc != null) {
-                    zlc.closeContext(false);
-                }
-            }
-        }
     }
 
     protected ZLdapContext getContextImpl(LdapServerType serverType, LdapUsage usage)
