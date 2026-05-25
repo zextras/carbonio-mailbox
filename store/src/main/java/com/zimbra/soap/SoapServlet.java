@@ -329,10 +329,6 @@ public class SoapServlet extends ZimbraServlet {
             !isResumed ? "C:\n%s" : "C: (resumed)\n%s", new String(buffer, Charsets.UTF_8));
       }
 
-      // don't interfere with Jetty Continuations -- pass the exception right up
-      if (e.getClass().getName().equals("org.eclipse.jetty.continuation.ContinuationThrowable"))
-        throw (Error) e;
-
       ZimbraLog.soap.warn("handler exception", e);
       Element fault = SoapProtocol.Soap12.soapFault(ServiceException.FAILURE(e.toString(), e));
       envelope = SoapProtocol.Soap12.soapEnvelope(fault);

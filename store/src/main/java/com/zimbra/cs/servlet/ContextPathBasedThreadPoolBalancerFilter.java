@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.servlet.AsyncContext;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -19,8 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrTokenizer;
-import org.eclipse.jetty.continuation.Continuation;
-import org.eclipse.jetty.continuation.ContinuationSupport;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 
@@ -69,13 +68,12 @@ public class ContextPathBasedThreadPoolBalancerFilter implements Filter {
 
         // Suspend request
         if (suspend) {
-            Continuation continuation = ContinuationSupport.getContinuation(request);
             HttpServletRequest hreq = (HttpServletRequest) request;
             ZimbraServlet.addRemoteIpToLoggingContext(hreq);
             ZimbraServlet.addUAToLoggingContext(hreq);
             ZimbraLog.clearContext();
-            continuation.setTimeout(suspendMs);
-            continuation.suspend();
+            AsyncContext asyncContext = request.startAsync();
+            asyncContext.setTimeout(suspendMs);
             return;
         }
 
@@ -90,7 +88,6 @@ public class ContextPathBasedThreadPoolBalancerFilter implements Filter {
             } else {
                 i.incrementAndGet();
             }
-            // ZimbraLog.misc.debug("%s concurrency=%d", contextPath, i.get());
 
             // Perform default operation
             chain.doFilter(request, response);
@@ -99,7 +96,6 @@ public class ContextPathBasedThreadPoolBalancerFilter implements Filter {
             // Stop tracking request
             AtomicInteger i = activeRequestsByContextPath.get(contextPath);
             i.decrementAndGet();
-            // ZimbraLog.misc.debug("%s concurrency=%d", contextPath, i.get());
         }
     }
 

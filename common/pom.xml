@@ -46,8 +46,8 @@
     </dependency>
 
     <dependency>
-      <artifactId>javax.servlet-api</artifactId>
-      <groupId>javax.servlet</groupId>
+      <artifactId>jetty-servlet-api</artifactId>
+      <groupId>org.eclipse.jetty.toolchain</groupId>
     </dependency>
 
     <dependency>

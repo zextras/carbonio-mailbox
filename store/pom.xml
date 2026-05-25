@@ -370,10 +370,6 @@
 
     <!-- Jetty -->
     <dependency>
-      <artifactId>jetty-continuation</artifactId>
-      <groupId>org.eclipse.jetty</groupId>
-    </dependency>
-    <dependency>
       <artifactId>jetty-security</artifactId>
       <groupId>org.eclipse.jetty</groupId>
     </dependency>
@@ -457,8 +453,8 @@
 
     </dependency>
     <dependency>
-      <artifactId>javax.servlet-api</artifactId>
-      <groupId>javax.servlet</groupId>
+      <artifactId>jetty-servlet-api</artifactId>
+      <groupId>org.eclipse.jetty.toolchain</groupId>
     </dependency>
     <dependency>
       <artifactId>zm-common</artifactId>

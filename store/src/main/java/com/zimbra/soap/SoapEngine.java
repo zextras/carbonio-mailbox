@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import org.eclipse.jetty.continuation.ContinuationSupport;
+
 
 /** The soap engine. */
 public class SoapEngine {
@@ -140,7 +140,7 @@ public class SoapEngine {
     if (ZimbraLog.soap.isTraceEnabled() && !context.containsKey(SoapEngine.SOAP_REQUEST_LOGGED)) {
       HttpServletRequest servletRequest =
           (HttpServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
-      boolean isResumed = !ContinuationSupport.getContinuation(servletRequest).isInitial();
+      boolean isResumed = servletRequest.getAttribute("com.zimbra.request.asyncResumed") != null;
       ZimbraLog.soap.trace(!isResumed ? "C:\n%s" : "C: (resumed)\n%s", envelope.prettyPrint(true));
       context.put(SOAP_REQUEST_LOGGED, Boolean.TRUE);
     }
@@ -154,7 +154,7 @@ public class SoapEngine {
     if (ZimbraLog.soap.isInfoEnabled()) {
       HttpServletRequest servletRequest =
           (HttpServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
-      boolean isResumed = !ContinuationSupport.getContinuation(servletRequest).isInitial();
+      boolean isResumed = servletRequest.getAttribute("com.zimbra.request.asyncResumed") != null;
       if (ZimbraLog.soap.isTraceEnabled()) {
         ZimbraLog.soap.trace(
             !isResumed ? "C: (ParseError:%s)\n%s" : "C: (resumed) (ParseError:%s)\n%s",
@@ -461,7 +461,7 @@ public class SoapEngine {
 
     HttpServletRequest servletRequest =
         (HttpServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
-    boolean isResumed = !ContinuationSupport.getContinuation(servletRequest).isInitial();
+    boolean isResumed = servletRequest.getAttribute("com.zimbra.request.asyncResumed") != null;
 
     if (zsc.getSoapRequestId() != null) {
       ZimbraLog.addSoapIdToContext(zsc.getSoapRequestId());
@@ -738,10 +738,6 @@ public class SoapEngine {
       response = soapFault(soapProto, "handler exception", e);
       // XXX: if the session was new, do we want to delete it?
     } catch (Throwable e) {
-      // don't interfere with Jetty Continuations -- pass the exception on up
-      if (e.getClass().getName().equals("org.eclipse.jetty.continuation.ContinuationThrowable")) {
-        throw (Error) e;
-      }
       // TODO: better exception stack traces during develope?
       response = soapProto.soapFault(ServiceException.FAILURE(e.toString(), e));
       if (e instanceof OutOfMemoryError) {

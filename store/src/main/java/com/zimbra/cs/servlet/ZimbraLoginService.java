@@ -10,7 +10,6 @@ import java.security.Principal;
 import javax.security.auth.Subject;
 import javax.servlet.ServletRequest;
 
-import org.eclipse.jetty.security.AbstractLoginService;
 import org.eclipse.jetty.security.DefaultIdentityService;
 import org.eclipse.jetty.security.IdentityService;
 import org.eclipse.jetty.security.LoginService;
@@ -106,16 +105,14 @@ public class ZimbraLoginService implements LoginService {
     }
 
     UserIdentity makeUserIdentity(String userName) {
-        // blank password/credentials. this is just a placeholder; we always
-        // check credentials via prov on each login
         Credential credential = Credential.getCredential("");
-        // only need 'user' role for current implementation protecting
         String roleName = "user";
-        Principal userPrincipal = new AbstractLoginService.UserPrincipal(userName, credential);
+        Principal userPrincipal = () -> userName;
+        Principal rolePrincipal = () -> roleName;
         Subject subject = new Subject();
         subject.getPrincipals().add(userPrincipal);
         subject.getPrivateCredentials().add(credential);
-        subject.getPrincipals().add(new AbstractLoginService.RolePrincipal(roleName));
+        subject.getPrincipals().add(rolePrincipal);
         subject.setReadOnly();
 
         UserIdentity identity = identityService.newUserIdentity(subject,

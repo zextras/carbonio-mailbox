@@ -11,10 +11,8 @@ package com.zimbra.cs.service.mail;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
-
-import org.eclipse.jetty.continuation.Continuation;
-import org.eclipse.jetty.continuation.ContinuationSupport;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -87,8 +85,8 @@ public class NoOp extends MailDocumentHandler  {
             if (origContext == null) { // Initial
                 servletRequest.setAttribute("nop_origcontext", zsc);
                 // NOT a resumed request -- block if necessary
-                Continuation continuation = ContinuationSupport.getContinuation(servletRequest);
-                if (zsc.beginWaitForNotifications(continuation, includeDelegates)) {
+                AsyncContext asyncContext = servletRequest.startAsync();
+                if (zsc.beginWaitForNotifications(asyncContext, includeDelegates)) {
                     if (enforceLimit) {
                         ZimbraSoapContext otherContext = sBlockedNops.put(zsc.getAuthtokenAccountId(), zsc);
                         if (otherContext != null) {

@@ -7,80 +7,76 @@ package com.zimbra.cs.servlet.continuation;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.servlet.AsyncContext;
+import javax.servlet.AsyncEvent;
+import javax.servlet.AsyncListener;
 import javax.servlet.ServletRequest;
-
-import org.eclipse.jetty.continuation.Continuation;
-import org.eclipse.jetty.continuation.ContinuationListener;
-import org.eclipse.jetty.continuation.ContinuationSupport;
 
 import com.zimbra.common.util.ZimbraLog;
 
-/**
- * ContinuationListener implementation to handle internal details of when and when not to attempt resume
- * Application code which implements timeout + explicit resume should do so via this class
- *
- */
-public class ResumeContinuationListener implements ContinuationListener {
+public class ResumeContinuationListener implements AsyncListener {
 
-    private Continuation continuation;
+    private AsyncContext asyncContext;
     private AtomicBoolean readyToResume;
 
-    public ResumeContinuationListener(Continuation continuation) {
-        this.continuation = continuation;
+    public ResumeContinuationListener(AsyncContext asyncContext) {
+        this.asyncContext = asyncContext;
         this.readyToResume = new AtomicBoolean(false);
-        continuation.addContinuationListener(this);
+        asyncContext.addListener(this);
     }
 
     public static ResumeContinuationListener getResumableContinuation(ServletRequest request) {
-        return new ResumeContinuationListener(ContinuationSupport.getContinuation(request));
+        return new ResumeContinuationListener(request.startAsync());
     }
 
     @Override
-    public void onComplete(Continuation theContinuation) {
+    public void onComplete(AsyncEvent event) {
+        ZimbraLog.session.trace("ResumeContinuationListener.onComplete");
+        readyToResume.set(false);
+    }
+
+    @Override
+    public void onTimeout(AsyncEvent event) {
         ZimbraLog.session.trace("ResumeContinuationListener.onTimeout");
         readyToResume.set(false);
     }
 
     @Override
-    public void onTimeout(Continuation theContinuation) {
-        ZimbraLog.session.trace("ResumeContinuationListener.onTimeout");
+    public void onError(AsyncEvent event) {
+        ZimbraLog.session.trace("ResumeContinuationListener.onError");
         readyToResume.set(false);
+    }
+
+    @Override
+    public void onStartAsync(AsyncEvent event) {
     }
 
     /**
-     * Attempt to resume continuation if it is currently suspended.
+     * Attempt to resume the async context if it is currently suspended.
      */
     public synchronized void resumeIfSuspended() {
         if (readyToResume.compareAndSet(true, false)) {
             try {
                 ZimbraLog.session.trace("ResumeContinuationListener.resumeIfSuspended RESUMING");
-                continuation.resume();
+                asyncContext.dispatch();
             } catch (IllegalStateException ise) {
-                if (!(continuation.isExpired() || continuation.isResumed())) {
-                    //narrow race here; timeout could occur just after compareAndSet
-                    //not a problem as long as it is expired or resumed
-                    throw ise;
-                } else {
-                    ZimbraLog.session.debug(
-                            "ignoring IllegalStateException during resume; already resumed/expired", ise);
-                }
+                ZimbraLog.session.debug(
+                        "ignoring IllegalStateException during dispatch; context may be completed", ise);
             }
         }
     }
 
     /**
-     * Put the continuation into suspended state.
+     * Put the async context into suspended state.
      * @param timeout
      */
     public synchronized void suspendAndUndispatch(long timeout) {
         readyToResume.set(true);
-        continuation.setTimeout(timeout);
-        continuation.suspend();
-        continuation.undispatch();
+        asyncContext.setTimeout(timeout);
     }
 
-    public Continuation getContinuation() {
-        return continuation;
+    public AsyncContext getAsyncContext() {
+        return asyncContext;
     }
 
 }

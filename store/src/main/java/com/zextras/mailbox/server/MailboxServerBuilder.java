@@ -18,7 +18,7 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HostHeaderCustomizer;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
-import org.eclipse.jetty.server.NCSARequestLog;
+import org.eclipse.jetty.server.CustomRequestLog;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -39,7 +39,7 @@ public class MailboxServerBuilder {
 	private final Config config;
 	private final com.zimbra.cs.account.Server localServer;
 	private HttpConfiguration httpsConfig;
-	private SslContextFactory sslContextFactory;
+	private SslContextFactory.Server sslContextFactory;
 	private boolean dump = true;
 
 	public MailboxServerBuilder(Config config, com.zimbra.cs.account.Server localServer) {
@@ -54,14 +54,7 @@ public class MailboxServerBuilder {
 
 	private static RequestLogHandler createRequestLogHandler() {
 		final String accessLogFileName = LC.zimbra_log_directory.value() + "/access_log.yyyy_mm_dd";
-		final NCSARequestLog ncsaRequestLog = new NCSARequestLog(accessLogFileName);
-		ncsaRequestLog.setLogDateFormat("dd/MMM/yyyy:HH:mm:ss:ms Z");
-		ncsaRequestLog.setRetainDays(30);
-		ncsaRequestLog.setAppend(true);
-		ncsaRequestLog.setExtended(true);
-		ncsaRequestLog.setFilenameDateFormat("yyyy-MM-dd");
-		ncsaRequestLog.setPreferProxiedForAddress(true);
-		ncsaRequestLog.setLogLatency(true);
+		final CustomRequestLog ncsaRequestLog = new CustomRequestLog(accessLogFileName, CustomRequestLog.EXTENDED_NCSA_FORMAT);
 
 		final RequestLogHandler requestLogHandler = new RequestLogHandler();
 		requestLogHandler.setRequestLog(ncsaRequestLog);
@@ -105,8 +98,6 @@ public class MailboxServerBuilder {
 				final GzipHandler gzipHandler = new GzipHandler();
 				gzipHandler.setHandler(mainHandler);
 				gzipHandler.setMinGzipSize(2048);
-				gzipHandler.setCompressionLevel(-1);
-				gzipHandler.setExcludedAgentPatterns(".*MSIE.6\\.0.*");
 				gzipHandler.setIncludedMethods("GET", "POST");
 				server.setHandler(gzipHandler);
 			} else {
@@ -271,8 +262,8 @@ public class MailboxServerBuilder {
 		return sslHttpConfig;
 	}
 
-	private SslContextFactory createSSLContextFactory() {
-		SslContextFactory localSslContextFactory = new SslContextFactory.Server();
+	private SslContextFactory.Server createSSLContextFactory() {
+		SslContextFactory.Server localSslContextFactory = new SslContextFactory.Server();
 		localSslContextFactory.setKeyStorePath(LC.mailboxd_keystore.value());
 		localSslContextFactory.setKeyStorePassword(LC.mailboxd_keystore_password.value());
 		localSslContextFactory.setKeyManagerPassword(LC.mailboxd_keystore_password.value());

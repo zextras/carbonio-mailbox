@@ -10,7 +10,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.jetty.http.PathMap;
+import org.eclipse.jetty.http.pathmap.ServletPathSpec;
 import org.eclipse.jetty.security.ServerAuthException;
 import org.eclipse.jetty.security.UserAuthentication;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
@@ -51,7 +51,7 @@ public class ZimbraAuthenticator extends BasicAuthenticator {
             //url pattern is mostly redundant with web.xml security-constraint declaration
             //however jetty does make upcall into authenticator from DoSFilter and other sites to find login username for logging
             //we want to just ignore rather than potentially flooding auth provider (which may be external)
-            if (PathMap.match(urlPattern, httpReq.getRequestURI())) {
+            if (urlPattern != null && new ServletPathSpec(urlPattern).matches(httpReq.getRequestURI())) {
                 Cookie[] cookies = httpReq.getCookies();
 
                 if (cookies != null) {

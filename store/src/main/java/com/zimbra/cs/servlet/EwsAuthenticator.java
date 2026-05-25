@@ -9,7 +9,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.jetty.http.PathMap;
+import org.eclipse.jetty.http.pathmap.ServletPathSpec;
 import org.eclipse.jetty.security.ServerAuthException;
 import org.eclipse.jetty.server.Authentication;
 import org.eclipse.jetty.util.security.Constraint;
@@ -57,7 +57,7 @@ public class EwsAuthenticator extends ZimbraAuthenticator {
 
 
         HttpServletRequest httpReq = (HttpServletRequest) request;
-        if (PathMap.match(urlPattern, httpReq.getRequestURI())) {
+        if (new ServletPathSpec(urlPattern).matches(httpReq.getRequestURI())) {
             //We want the Authentication to be set to Unauthenticated so that Spengo Service is not
             // invoked for EWS, returning null will set it to UnAuthenticated.
             return null;
