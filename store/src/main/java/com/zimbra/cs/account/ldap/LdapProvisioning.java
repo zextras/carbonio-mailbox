@@ -251,7 +251,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 	}
 
   public LdapProvisioning(CacheMode cacheMode) throws LdapException {
-    this(cacheMode, LdapClient.getInstanceIfLDAPavailable());
+    this(cacheMode, LdapClient.createNew());
   }
 
   public LdapProvisioning() throws LdapException {
@@ -9281,7 +9281,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
   @Override
   public void alwaysUseMaster() {
-    ldapClient.masterOnly();
+    ldapClient.forceUsingMaster();
   }
 
   @Override

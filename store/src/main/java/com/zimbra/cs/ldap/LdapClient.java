@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.ldap;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.ldap.LdapServerConfig.ExternalLdapConfig;
 import com.zimbra.cs.ldap.LdapServerConfig.GenericLdapConfig;
@@ -14,9 +13,6 @@ import com.zimbra.cs.util.Zimbra;
 import java.util.Date;
 
 public class LdapClient {
-
-    private static LdapClient ldapClient;
-    private static boolean ALWAYS_USE_MASTER = false;
 
     private final UBIDLdapPoolConfig poolConfig;
 
@@ -36,48 +32,22 @@ public class LdapClient {
         return createNew(poolConfig);
     }
 
-    @VisibleForTesting
-    public static void setInstance(LdapClient client) {
-        ldapClient = client;
-    }
-
-    public static synchronized LdapClient getInstanceIfLDAPavailable() throws LdapException {
-        if (ldapClient == null) {
-            ldapClient = createNew(ALWAYS_USE_MASTER);
-        }
-        return ldapClient;
+    public static synchronized LdapClient createNew() throws LdapException {
+        return createNew(false);
     }
 
      private static synchronized LdapClient getInstance() {
          try {
-             LdapClient.getInstanceIfLDAPavailable();
+             return LdapClient.createNew();
          } catch (LdapException e) {
              Zimbra.halt("failed to initialize LDAP client", e);
          }
-         return ldapClient;
+         // FIXME: unreachable code?
+         throw new RuntimeException("LdapCLient not available");
      }
-
-    private static synchronized void unsetInstance() {
-        ldapClient = null;
-    }
-
-    public static synchronized void masterOnly() {
-        ALWAYS_USE_MASTER = true;
-
-        if (ldapClient != null) {
-            // already initialized
-            ldapClient.forceUsingMaster();
-        }
-    }
 
     public static void initialize() {
         LdapClient.getInstance();
-    }
-
-    // called from unittest only
-    public static void shutdown() {
-        LdapClient.getInstance().terminate();
-        unsetInstance();
     }
 
     @Deprecated
@@ -206,11 +176,11 @@ public class LdapClient {
         this.zimbraLdapAuthenticateImpl(bindDN, password);
     }
 
-    protected void terminate() {
+    public void terminate() {
         poolConfig.shutdown();
     }
 
-    protected void forceUsingMaster() {
+    public void forceUsingMaster() {
         poolConfig.setReplicaToMasterPool();
     }
 

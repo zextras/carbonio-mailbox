@@ -22,7 +22,6 @@ import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.index.IndexStore;
 import com.zimbra.cs.index.ZimbraAnalyzer;
 import com.zimbra.cs.ldap.LdapClient;
-import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapPoolConfig;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.ScheduledTaskManager;
@@ -46,6 +45,7 @@ public class MailboxSetupHelper {
 	private final int ldapPort;
 
 	private final InMemoryLdapServer inMemoryLdapServer;
+	private LdapClient ldapClient;
 
 	private MailboxSetupHelper(Path mailboxHome, Path tmpDirectory, String timezoneFilePath, String datasourceFilePath, int ldapPort, InMemoryLdapServer inMemoryLdapServer) {
 		this.mailboxHome = mailboxHome;
@@ -111,9 +111,8 @@ public class MailboxSetupHelper {
 
 		LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
 		final UBIDLdapPoolConfig poolConfig = UBIDLdapPoolConfig.createNewPool(true);
-		final LdapClient client = LdapClient.createNew(poolConfig);
-		LdapClient.setInstance(client);
-		Provisioning.setInstance(new LdapProvisioningWithMockMime(client));
+		ldapClient = LdapClient.createNew(poolConfig);
+		Provisioning.setInstance(new LdapProvisioningWithMockMime(ldapClient));
 		this.initData(mailboxTestData);
 		HSQLDB.createDatabase(getVolumeDirectory());
 		DbPool.startup();
@@ -169,7 +168,7 @@ public class MailboxSetupHelper {
 		DbPool.shutDownAndClear();
 		inMemoryLdapServer.shutDown(true);
 		// TODO: avoid shutting down with explicit static method calls
-		LdapClient.shutdown();
+		ldapClient.terminate();
 		FileUtils.deleteDirectory(mailboxHome.toFile());
 		FileUtils.deleteDirectory(mailboxTmpDirectory.toFile());
 	}
