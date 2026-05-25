@@ -50,7 +50,7 @@ public class AutoProvisionEager extends AutoProvision {
             Server localServer = prov.getLocalServer();
             String[] scheduledDomains = localServer.getAutoProvScheduledDomains();
 
-            zlc = prov.getLdapClient().getInstanceContext(LdapServerType.MASTER, LdapUsage.AUTO_PROVISION);
+            zlc = prov.getLdapClient().getContext(LdapServerType.MASTER, LdapUsage.AUTO_PROVISION);
 
             for (String domainName : scheduledDomains) {
                 if (scheduler.isShutDownRequested()) {
@@ -102,7 +102,7 @@ public class AutoProvisionEager extends AutoProvision {
             // unable to get ldap context
             ZimbraLog.autoprov.warn("Unable to auto provision accounts", e);
         } finally {
-            prov.getLdapClient().closeInstanceContext(zlc);
+            prov.getLdapClient().closeContext(zlc);
         }
     }
 

@@ -55,10 +55,10 @@ public class ZLdapHelper extends LdapHelper {
     public void deleteEntry(String dn, LdapUsage ldapUsage) throws ServiceException {
         ZLdapContext zlc = null;
         try {
-            zlc = getProv().getLdapClient().getInstanceContext(LdapServerType.MASTER, ldapUsage);
+            zlc = getProv().getLdapClient().getContext(LdapServerType.MASTER, ldapUsage);
             zlc.deleteEntry(dn);
         } finally {
-            getProv().getLdapClient().closeInstanceContext(zlc);
+            getProv().getLdapClient().closeContext(zlc);
         }
     }
 
@@ -162,10 +162,10 @@ public class ZLdapHelper extends LdapHelper {
     throws ServiceException {
         ZLdapContext zlc = null;
         try {
-            zlc = getProv().getLdapClient().getInstanceContext(LdapServerType.MASTER, ldapUsage);
+            zlc = getProv().getLdapClient().getContext(LdapServerType.MASTER, ldapUsage);
             modifyAttrs(zlc, dn, attrs, entry);
         } finally {
-            getProv().getLdapClient().closeInstanceContext(zlc);
+            getProv().getLdapClient().closeContext(zlc);
         }
     }
 
@@ -186,7 +186,7 @@ public class ZLdapHelper extends LdapHelper {
         ZLdapContext zlc = initZlc;
         try {
             if (zlc == null) {
-                zlc = getProv().getLdapClient().getInstanceContext(LdapServerType.get(useMaster), LdapUsage.SEARCH);
+                zlc = getProv().getLdapClient().getContext(LdapServerType.get(useMaster), LdapUsage.SEARCH);
             }
 
             ZSearchControls sc = (returnAttrs == null) ? ZSearchControls.SEARCH_CTLS_SUBTREE() :
@@ -215,7 +215,7 @@ public class ZLdapHelper extends LdapHelper {
         */
         } finally {
             if (initZlc == null)
-                getProv().getLdapClient().closeInstanceContext(zlc);
+                getProv().getLdapClient().closeContext(zlc);
         }
         return null;
     }
@@ -237,13 +237,13 @@ public class ZLdapHelper extends LdapHelper {
         ZLdapContext zlc = initZlc;
         try {
             if (zlc == null) {
-                zlc = getProv().getLdapClient().getInstanceContext(LdapServerType.get(useMaster), LdapUsage.COMPARE);
+                zlc = getProv().getLdapClient().getContext(LdapServerType.get(useMaster), LdapUsage.COMPARE);
             }
 
             return zlc.compare(dn, attributeName, assertionValue);
         } finally {
             if (initZlc == null)
-                getProv().getLdapClient().closeInstanceContext(zlc);
+                getProv().getLdapClient().closeContext(zlc);
         }
     }
 
@@ -261,7 +261,7 @@ public class ZLdapHelper extends LdapHelper {
                 if (usage == null) {
                     throw ServiceException.FAILURE("Unexpected null usage with null ldap context.", null);
                 }
-                zlc = getProv().getLdapClient().getInstanceContext(ldapServerType, usage);
+                zlc = getProv().getLdapClient().getContext(ldapServerType, usage);
             }
             return zlc.getAttributes(dn, returnAttrs);
         /*  all callsites with the following @TODOEXCEPTIONMAPPING pattern can have ease of mind now and remove the
@@ -276,7 +276,7 @@ public class ZLdapHelper extends LdapHelper {
         */
         } finally {
             if (initZlc == null) {
-                getProv().getLdapClient().closeInstanceContext(zlc);
+                getProv().getLdapClient().closeContext(zlc);
             }
         }
     }
@@ -288,7 +288,7 @@ public class ZLdapHelper extends LdapHelper {
         ZLdapContext zlc = initZlc;
         try {
             if (zlc == null) {
-                zlc = getProv().getLdapClient().getInstanceContext(ldapServerType, LdapUsage.SEARCH);
+                zlc = getProv().getLdapClient().getContext(ldapServerType, LdapUsage.SEARCH);
             }
             return zlc.searchDir(baseDN, filter, searchControls);
         /*
@@ -299,7 +299,7 @@ public class ZLdapHelper extends LdapHelper {
         */
         } finally {
             if (initZlc == null) {
-                getProv().getLdapClient().closeInstanceContext(zlc);
+                getProv().getLdapClient().closeContext(zlc);
             }
         }
     }
@@ -311,12 +311,12 @@ public class ZLdapHelper extends LdapHelper {
         ZLdapContext zlc = initZlc;
         try {
             if (zlc == null) {
-                zlc = getProv().getLdapClient().getInstanceContext(ldapServerType, LdapUsage.SEARCH);
+                zlc = getProv().getLdapClient().getContext(ldapServerType, LdapUsage.SEARCH);
             }
             return zlc.countEntries(baseDN, filter, searchControls);
         } finally {
             if (initZlc == null) {
-                getProv().getLdapClient().closeInstanceContext(zlc);
+                getProv().getLdapClient().closeContext(zlc);
             }
         }
     }

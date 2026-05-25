@@ -349,10 +349,10 @@ public abstract class AutoProvision {
         ZLdapContext zlc = null;
 
         try {
-            zlc = prov.getLdapClient().getInstanceExternalContext(config, LdapUsage.AUTO_PROVISION);
+            zlc = prov.getLdapClient().getExternalContext(config, LdapUsage.AUTO_PROVISION);
             return prov.getHelper().getAttributes(zlc, dn, getAttrsToFetch());
         } finally {
-            prov.getLdapClient().closeInstanceContext(zlc);
+            prov.getLdapClient().closeContext(zlc);
         }
     }
 
@@ -389,7 +389,7 @@ public abstract class AutoProvision {
         ZLdapContext zlc = null;
 
         try {
-            zlc = prov.getLdapClient().getInstanceExternalContext(config, LdapUsage.AUTO_PROVISION);
+            zlc = prov.getLdapClient().getExternalContext(config, LdapUsage.AUTO_PROVISION);
 
             String searchFilterTemplate = domain.getAutoProvLdapSearchFilter();
             if (searchFilterTemplate != null) {
@@ -419,7 +419,7 @@ public abstract class AutoProvision {
             }
 
         } finally {
-            prov.getLdapClient().closeInstanceContext(zlc);
+            prov.getLdapClient().closeContext(zlc);
         }
 
         throw ServiceException.FAILURE("One of " + Provisioning.A_zimbraAutoProvLdapBindDn +
@@ -660,7 +660,7 @@ public abstract class AutoProvision {
         ZLdapContext zlc = null;
         ZLdapFilter zFilter = null;
         try {
-            zlc = prov.getLdapClient().getInstanceExternalContext(config, LdapUsage.AUTO_PROVISION_ADMIN_SEARCH);
+            zlc = prov.getLdapClient().getExternalContext(config, LdapUsage.AUTO_PROVISION_ADMIN_SEARCH);
 
             String searchFilter = null;
             String searchFilterWithoutLastPolling = null;
@@ -725,7 +725,7 @@ public abstract class AutoProvision {
                 throw AccountServiceException.TOO_MANY_SEARCH_RESULTS("too many search results returned", e);
             }
         } finally {
-            prov.getLdapClient().closeInstanceContext(zlc);
+            prov.getLdapClient().closeContext(zlc);
         }
         return hitSizeLimitExceededException;
     }

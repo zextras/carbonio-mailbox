@@ -182,13 +182,13 @@ public class LdapDynamicGroup extends DynamicGroup implements LdapEntry {
         ZLdapFilter filter = ZLdapFilterFactory.getInstance().allDynamicGroups();
         ZLdapContext zlcCompare = null;
         try {
-            zlcCompare = prov.getLdapClient().getInstanceContext(LdapServerType.get(false /* useMaster */), LdapUsage.COMPARE);
+            zlcCompare = prov.getLdapClient().getContext(LdapServerType.get(false /* useMaster */), LdapUsage.COMPARE);
             BySearchResultEntrySearcher searcher = new BySearchResultEntrySearcher(
                     prov, null, domain, BASIC_ATTRS, new GroupMembershipUpdator(prov, zlcCompare,
                             acctDN, membership, adminGroupsOnly, true, false));
             searcher.doSearch(filter, DYNAMIC_GROUPS_TYPE);
         } finally {
-            prov.getLdapClient().closeInstanceContext(zlcCompare);
+            prov.getLdapClient().closeContext(zlcCompare);
         }
         return membership;
     }
@@ -207,13 +207,13 @@ public class LdapDynamicGroup extends DynamicGroup implements LdapEntry {
         ZLdapFilter filter = ZLdapFilterFactory.getInstance().dynamicGroupByIds(ids.toArray(new String[0]));
         ZLdapContext zlcCompare = null;
         try {
-            zlcCompare = prov.getLdapClient().getInstanceContext(LdapServerType.get(false /* useMaster */), LdapUsage.COMPARE);
+            zlcCompare = prov.getLdapClient().getContext(LdapServerType.get(false /* useMaster */), LdapUsage.COMPARE);
             BySearchResultEntrySearcher searcher = new BySearchResultEntrySearcher(
                     prov, null, null, BASIC_ATTRS, new GroupMembershipUpdator(prov, zlcCompare,
                             acctDN, membership, adminGroupsOnly, customGroupsOnly, nonCustomGroupsOnly));
             searcher.doSearch(filter, DYNAMIC_GROUPS_TYPE);
         } finally {
-            prov.getLdapClient().closeInstanceContext(zlcCompare);
+            prov.getLdapClient().closeContext(zlcCompare);
         }
         return membership;
     }

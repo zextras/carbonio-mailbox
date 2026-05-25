@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.ldap;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.ldap.LdapServerConfig.ExternalLdapConfig;
 import com.zimbra.cs.ldap.LdapServerConfig.GenericLdapConfig;
@@ -15,11 +14,10 @@ import java.util.Date;
 
 public class LdapClient {
 
-    private static LdapClient ldapClient;
-    private static boolean ALWAYS_USE_MASTER = false;
-
     private final UBIDLdapPoolConfig poolConfig;
 
+    // TODO: remove this, kept it for legacy zmconfigd, hopefully we will get rid of it
+    private static LdapClient zmconfigdLdapClient;
     private LdapClient(UBIDLdapPoolConfig poolConfig) {
         this.poolConfig = poolConfig;
     }
@@ -36,61 +34,19 @@ public class LdapClient {
         return createNew(poolConfig);
     }
 
-    @VisibleForTesting
-    public static void setInstance(LdapClient client) {
-        ldapClient = client;
+    public static synchronized LdapClient createNew() throws LdapException {
+        return createNew(false);
     }
 
-    public static synchronized LdapClient getInstanceIfLDAPavailable() throws LdapException {
-        if (ldapClient == null) {
-            ldapClient = createNew(ALWAYS_USE_MASTER);
+    private static synchronized LdapClient getLdapClientForZmconfigd() {
+        if (zmconfigdLdapClient == null) {
+            try {
+                zmconfigdLdapClient = LdapClient.createNew();
+            } catch (LdapException e) {
+                Zimbra.halt("failed to initialize LDAP client", e);
+            }
         }
-        return ldapClient;
-    }
-
-     private static synchronized LdapClient getInstance() {
-         try {
-             LdapClient.getInstanceIfLDAPavailable();
-         } catch (LdapException e) {
-             Zimbra.halt("failed to initialize LDAP client", e);
-         }
-         return ldapClient;
-     }
-
-    private static synchronized void unsetInstance() {
-        ldapClient = null;
-    }
-
-    public static synchronized void masterOnly() {
-        ALWAYS_USE_MASTER = true;
-
-        if (ldapClient != null) {
-            // already initialized
-            ldapClient.forceUsingMaster();
-        }
-    }
-
-    public static void initialize() {
-        LdapClient.getInstance();
-    }
-
-    // called from unittest only
-    public static void shutdown() {
-        LdapClient.getInstance().terminate();
-        unsetInstance();
-    }
-
-    @Deprecated
-    public static ZLdapContext toZLdapContext(
-            com.zimbra.cs.account.Provisioning prov, ILdapContext ldapContext) {
-
-        // just a safety check, this should really not happen at this point
-        if (ldapContext != null && !(ldapContext instanceof ZLdapContext)) {
-            Zimbra.halt("ILdapContext instance is not ZLdapContext",
-                    ServiceException.FAILURE("internal error, wrong ldap context instance", null));
-        }
-
-        return (ZLdapContext)ldapContext;
+        return zmconfigdLdapClient;
     }
 
     public ZLdapContext toZLdapContext(ILdapContext ldapContext) {
@@ -104,122 +60,7 @@ public class LdapClient {
         return (ZLdapContext)ldapContext;
     }
 
-    /*
-     * ========================================================
-     * static methods just to short-hand the getInstance() call
-     * ========================================================
-     */
-    public static void waitForLdapServer() {
-        getInstance().waitForLdapServerImpl();
-    }
-
-    @Deprecated
-    public static ZLdapContext getContext(LdapUsage usage) throws ServiceException {
-        return getContext(LdapServerType.REPLICA, usage);
-    }
-
-    public ZLdapContext getInstanceContext(LdapUsage usage) throws ServiceException {
-        return this.getInstanceContext(LdapServerType.REPLICA, usage);
-    }
-
-    @Deprecated
-    public static ZLdapContext getContext(LdapServerType serverType, LdapUsage usage)
-    throws ServiceException {
-        return getInstance().getContextImpl(serverType, usage);
-    }
-
-    public ZLdapContext getInstanceContext(LdapServerType serverType, LdapUsage usage)
-        throws ServiceException {
-        return this.getContextImpl(serverType, usage);
-    }
-
-    @Deprecated
-    public static ZLdapContext getContext(LdapServerType serverType, boolean useConnPool,
-            LdapUsage usage)
-    throws ServiceException {
-        return getInstance().getContextImpl(serverType, useConnPool, usage);
-    }
-
-    public ZLdapContext getInstanceContext(LdapServerType serverType, boolean useConnPool,
-        LdapUsage usage)
-        throws ServiceException {
-        return this.getContextImpl(serverType, useConnPool, usage);
-    }
-
-    /**
-     * For zmconfigd only.
-     */
-    public static ZLdapContext getContext(GenericLdapConfig ldapConfig,
-            LdapUsage usage)
-    throws ServiceException {
-        return getInstance().getExternalContextImpl(ldapConfig, usage);
-    }
-
-    @Deprecated
-    public static ZLdapContext getExternalContext(ExternalLdapConfig ldapConfig,
-            LdapUsage usage)
-    throws ServiceException {
-        return getInstance().getExternalContextImpl(ldapConfig, usage);
-    }
-
-    public ZLdapContext getInstanceExternalContext(ExternalLdapConfig ldapConfig,
-        LdapUsage usage)
-        throws ServiceException {
-        return this.getExternalContextImpl(ldapConfig, usage);
-    }
-
-    @Deprecated
-    public static void closeContext(ZLdapContext lctxt) {
-        if (lctxt != null) {
-            lctxt.closeContext(false);
-        }
-    }
-
-    public void closeInstanceContext(ZLdapContext lctxt) {
-        if (lctxt != null) {
-            lctxt.closeContext(false);
-        }
-    }
-
-    @Deprecated
-    public static ZMutableEntry createMutableEntry() {
-        return getInstance().createMutableEntryImpl();
-    }
-
-    public ZMutableEntry createInstanceMutableEntry() {
-        return this.createMutableEntryImpl();
-    }
-
-    public static void externalLdapAuthenticate(String[] urls, boolean wantStartTLS,
-            String bindDN, String password, String note)
-    throws ServiceException {
-        getInstance().externalLdapAuthenticateImpl(urls, wantStartTLS,
-                bindDN, password, note);
-    }
-
-    /**
-     * LDAP authenticate to the Zimbra LDAP server.
-     * Used when stored password is not SSHA.
-     */
-    public void zimbraLdapAuthenticate(String bindDN, String password)
-    throws ServiceException {
-        this.zimbraLdapAuthenticateImpl(bindDN, password);
-    }
-
-    protected void terminate() {
-        poolConfig.shutdown();
-    }
-
-    protected void forceUsingMaster() {
-        poolConfig.setReplicaToMasterPool();
-    }
-
-    protected ZLdapFilterFactory getLdapFilterFactoryInstance() throws LdapException {
-        ZLdapFilterFactory.initialize();
-        return new ZLdapFilterFactory();
-    }
-
-    protected void waitForLdapServerImpl() {
+    public void waitForLdapServer() {
         while (true) {
             ZLdapContext zlc = null;
             try {
@@ -239,6 +80,76 @@ public class LdapClient {
                 }
             }
         }
+    }
+
+
+    public ZLdapContext getContext(LdapUsage usage) throws ServiceException {
+        return this.getContext(LdapServerType.REPLICA, usage);
+    }
+
+    public ZLdapContext getContext(LdapServerType serverType, LdapUsage usage)
+        throws ServiceException {
+        return this.getContextImpl(serverType, usage);
+    }
+
+    public ZLdapContext getContext(LdapServerType serverType, boolean useConnPool,
+        LdapUsage usage)
+        throws ServiceException {
+        return this.getContextImpl(serverType, useConnPool, usage);
+    }
+
+    /**
+     * For zmconfigd only.
+     */
+    public static ZLdapContext getContext(GenericLdapConfig ldapConfig,
+            LdapUsage usage)
+    throws ServiceException {
+        return getLdapClientForZmconfigd().getExternalContextImpl(ldapConfig, usage);
+    }
+
+    public ZLdapContext getExternalContext(ExternalLdapConfig ldapConfig,
+        LdapUsage usage)
+        throws ServiceException {
+        return this.getExternalContextImpl(ldapConfig, usage);
+    }
+
+    public void closeContext(ZLdapContext lctxt) {
+        if (lctxt != null) {
+            lctxt.closeContext(false);
+        }
+    }
+
+    public ZMutableEntry createMutableEntry() {
+        return this.createMutableEntryImpl();
+    }
+
+    public void externalLdapAuthenticate(String[] urls, boolean wantStartTLS,
+            String bindDN, String password, String note)
+    throws ServiceException {
+        this.externalLdapAuthenticateImpl(urls, wantStartTLS,
+                bindDN, password, note);
+    }
+
+    /**
+     * LDAP authenticate to the Zimbra LDAP server.
+     * Used when stored password is not SSHA.
+     */
+    public void zimbraLdapAuthenticate(String bindDN, String password)
+    throws ServiceException {
+        this.zimbraLdapAuthenticateImpl(bindDN, password);
+    }
+
+    public void shutdown() {
+        poolConfig.shutdown();
+    }
+
+    public void forceUsingMaster() {
+        poolConfig.setReplicaToMasterPool();
+    }
+
+    protected ZLdapFilterFactory getLdapFilterFactoryInstance() throws LdapException {
+        ZLdapFilterFactory.initialize();
+        return new ZLdapFilterFactory();
     }
 
     protected ZLdapContext getContextImpl(LdapServerType serverType, LdapUsage usage)

@@ -38,13 +38,13 @@ public class NginxLookupLdapHelper extends AbstractNginxLookupLdapHelper {
 
     @Override
     ILdapContext getLdapContext() throws ServiceException {
-        return prov.getLdapClient().getInstanceContext(LdapUsage.NGINX_LOOKUP);
+        return prov.getLdapClient().getContext(LdapUsage.NGINX_LOOKUP);
     }
 
     @Override
     void closeLdapContext(ILdapContext ldapContext) {
         ZLdapContext zlc = prov.getLdapClient().toZLdapContext(ldapContext);
-        prov.getLdapClient().closeInstanceContext(zlc);
+        prov.getLdapClient().closeContext(zlc);
     }
 
     @Override
