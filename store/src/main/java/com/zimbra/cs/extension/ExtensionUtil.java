@@ -135,8 +135,6 @@ public class ExtensionUtil {
    * @param matcher - Used to filter which extensions to initialize. Can be null
    */
   public static synchronized void initAllMatching(ExtensionMatcher matcher) {
-    bootstrap();
-    initInternalExtensions();
     ZimbraLog.extensions.info("Initializing extensions");
     List<ZimbraExtensionClassLoader> sClassLoadersToRemove = new ArrayList<>();
     for (ZimbraExtensionClassLoader zcl : sClassLoaders) {
@@ -174,6 +172,8 @@ public class ExtensionUtil {
   }
 
   public static synchronized void initAll() {
+    bootstrap();
+    initInternalExtensions();
     initAllMatching(null);
   }
 
