@@ -30,8 +30,12 @@ public class ExtensionUtil {
   private static List<ZimbraExtensionClassLoader> sClassLoaders = new ArrayList<>();
   private static ClassLoader sExtParentClassLoader;
   private static Map<String, ZimbraExtension> sInitializedExtensions = new LinkedHashMap<>();
+  private static boolean sBootstrapDone = false;
 
-  static {
+  private static synchronized void bootstrap() {
+    if (sBootstrapDone) {
+      return;
+    }
     File extCommonDir = new File(LC.zimbra_extension_common_directory.value());
     URL[] extCommonURLs = dirListToURLs(extCommonDir);
     if (extCommonURLs == null) {
@@ -41,10 +45,14 @@ public class ExtensionUtil {
       sExtParentClassLoader =
           new URLClassLoader(extCommonURLs, ExtensionUtil.class.getClassLoader());
     }
-    ExtensionUtil.initInternalExtension(new ZimbraCertMgrExt());
-    ExtensionUtil.initInternalExtension(new NginxLookupExtension());
-    ExtensionUtil.initInternalExtension(new ClamScannerExtension());
     loadExtensionsFromDefaultDirectory();
+    sBootstrapDone = true;
+  }
+
+  public static synchronized void initInternalExtensions() {
+    initInternalExtension(new ZimbraCertMgrExt());
+    initInternalExtension(new NginxLookupExtension());
+    initInternalExtension(new ClamScannerExtension());
   }
 
   public static URL[] dirListToURLs(File dir) {
@@ -107,6 +115,9 @@ public class ExtensionUtil {
 
   private static synchronized void initInternalExtension(ZimbraExtension ext) {
     String extName = ext.getName();
+    if (sInitializedExtensions.containsKey(extName)) {
+      return;
+    }
     final String className = ext.getClass().getName();
     try {
       ext.init();
@@ -124,6 +135,8 @@ public class ExtensionUtil {
    * @param matcher - Used to filter which extensions to initialize. Can be null
    */
   public static synchronized void initAllMatching(ExtensionMatcher matcher) {
+    bootstrap();
+    initInternalExtensions();
     ZimbraLog.extensions.info("Initializing extensions");
     List<ZimbraExtensionClassLoader> sClassLoadersToRemove = new ArrayList<>();
     for (ZimbraExtensionClassLoader zcl : sClassLoaders) {
