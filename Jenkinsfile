@@ -153,7 +153,7 @@ pipeline {
                             }
                             steps {
                                 uploadStage(
-                                        packages: yapHelper.getPackageNames('staging/packages/yap.json')
+                                        yapPath: 'staging/packages/yap.json'
                                 )
                             }
                         }
