@@ -139,7 +139,7 @@ public class LdapClient {
         this.zimbraLdapAuthenticateImpl(bindDN, password);
     }
 
-    public void terminate() {
+    public void shutdown() {
         poolConfig.shutdown();
     }
 

@@ -168,7 +168,7 @@ public class MailboxSetupHelper {
 		DbPool.shutDownAndClear();
 		inMemoryLdapServer.shutDown(true);
 		// TODO: avoid shutting down with explicit static method calls
-		ldapClient.terminate();
+		ldapClient.shutdown();
 		FileUtils.deleteDirectory(mailboxHome.toFile());
 		FileUtils.deleteDirectory(mailboxTmpDirectory.toFile());
 	}
