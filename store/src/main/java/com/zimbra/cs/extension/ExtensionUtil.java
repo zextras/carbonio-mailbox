@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.extension;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.cert.ZimbraCertMgrExt;
 import com.zimbra.clam.ClamScannerExtension;
 import com.zimbra.common.localconfig.LC;
@@ -32,6 +33,10 @@ public class ExtensionUtil {
   private static Map<String, ZimbraExtension> sInitializedExtensions = new LinkedHashMap<>();
 
   static {
+    bootstrap();
+  }
+
+  private static synchronized void bootstrap() {
     File extCommonDir = new File(LC.zimbra_extension_common_directory.value());
     URL[] extCommonURLs = dirListToURLs(extCommonDir);
     if (extCommonURLs == null) {
@@ -41,10 +46,14 @@ public class ExtensionUtil {
       sExtParentClassLoader =
           new URLClassLoader(extCommonURLs, ExtensionUtil.class.getClassLoader());
     }
-    ExtensionUtil.initInternalExtension(new ZimbraCertMgrExt());
-    ExtensionUtil.initInternalExtension(new NginxLookupExtension());
-    ExtensionUtil.initInternalExtension(new ClamScannerExtension());
     loadExtensionsFromDefaultDirectory();
+    initInternalExtensions();
+  }
+
+  private static synchronized void initInternalExtensions() {
+    initInternalExtension(new ZimbraCertMgrExt());
+    initInternalExtension(new NginxLookupExtension());
+    initInternalExtension(new ClamScannerExtension());
   }
 
   public static URL[] dirListToURLs(File dir) {
@@ -161,6 +170,12 @@ public class ExtensionUtil {
   }
 
   public static synchronized void initAll() {
+    initAllMatching(null);
+  }
+
+  @VisibleForTesting
+  public static synchronized void initAllForTests() {
+    bootstrap();
     initAllMatching(null);
   }
 

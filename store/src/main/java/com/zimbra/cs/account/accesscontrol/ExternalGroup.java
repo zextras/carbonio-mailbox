@@ -19,7 +19,6 @@ import com.zimbra.cs.account.accesscontrol.ZimbraACE.ExternalGroupInfo;
 import com.zimbra.cs.account.cache.NamedEntryCache;
 import com.zimbra.cs.account.grouphandler.GroupHandler;
 import com.zimbra.cs.account.ldap.LdapProv;
-import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.LdapConstants;
 import com.zimbra.cs.ldap.LdapException;
 import com.zimbra.cs.ldap.LdapUtil;
@@ -152,7 +151,7 @@ public class ExternalGroup extends NamedEntry {
                 return null;
             }
         } finally {
-            LdapClient.closeContext(zlc);
+            prov.getLdapClient().closeInstanceContext(zlc);
         }
     }
 

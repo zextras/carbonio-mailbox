@@ -17,9 +17,9 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.ExternalGroup;
 import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.gal.ZimbraGalGroupHandler;
+import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.ldap.IAttributes;
 import com.zimbra.cs.ldap.ILdapContext;
-import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.LdapUsage;
 import com.zimbra.cs.ldap.ZLdapContext;
 import com.zimbra.cs.ldap.LdapServerConfig.ExternalLdapConfig;
@@ -110,7 +110,7 @@ public abstract class GroupHandler {
                 null, bindDN, bindPassword, null,
                 "search external group");
 
-        return LdapClient.getExternalContext(ldapConfig, LdapUsage.EXTERNAL_GROUP);
+        return LdapProv.getInst().getLdapClient().getInstanceExternalContext(ldapConfig, LdapUsage.EXTERNAL_GROUP);
     }
 
 }

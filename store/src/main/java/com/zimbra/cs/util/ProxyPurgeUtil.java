@@ -15,7 +15,6 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
-import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.LdapServerType;
 import com.zimbra.cs.ldap.LdapUsage;
 import com.zimbra.cs.ldap.ZLdapContext;
@@ -258,9 +257,10 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
         // get domain alias from the given the domain
         // this logic works for for all cases account=addr@<alias domain> or alias-name@<alias domain>
         if (prov instanceof LdapProvisioning) {
-          ZLdapContext ldpCtx = LdapClient.getContext(LdapServerType.MASTER, LdapUsage.GET_DOMAIN);
+          LdapProvisioning ldapProv = (LdapProvisioning) prov;
+          ZLdapContext ldpCtx = ldapProv.getLdapClient().getInstanceContext(LdapServerType.MASTER, LdapUsage.GET_DOMAIN);
           try {
-            List<String> aliasDomainIds = ((LdapProvisioning) prov).getEmptyAliasDomainIds(ldpCtx,
+            List<String> aliasDomainIds = ldapProv.getEmptyAliasDomainIds(ldpCtx,
                 d, false);
             if (aliasDomainIds != null) {
               for (String aliasDomainId : aliasDomainIds) {
@@ -277,7 +277,7 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
               }
             }
           } finally {
-            LdapClient.closeContext(ldpCtx);
+            ldapProv.getLdapClient().closeInstanceContext(ldpCtx);
           }
         }
 

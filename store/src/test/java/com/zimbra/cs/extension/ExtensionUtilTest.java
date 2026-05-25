@@ -36,7 +36,7 @@ public class ExtensionUtilTest extends MailboxTestSuite {
 	void simple() {
 		ExtensionUtil.addClassLoader(new ZimbraExtensionClassLoader(classpath,
 				SimpleExtension.class.getName()));
-		ExtensionUtil.initAll();
+		ExtensionUtil.initAllForTests();
 		SimpleExtension ext =
 				(SimpleExtension) ExtensionUtil.getExtension("simple");
 		Assertions.assertNotNull(ext);
@@ -48,26 +48,26 @@ public class ExtensionUtilTest extends MailboxTestSuite {
 	void resign() {
 		ExtensionUtil.addClassLoader(new ZimbraExtensionClassLoader(classpath,
 				ResignExtension.class.getName()));
-		ExtensionUtil.initAll();
+		ExtensionUtil.initAllForTests();
 		Assertions.assertNull(ExtensionUtil.getExtension("resign"));
 		Assertions.assertTrue(ResignExtension.isDestroyed());
 	}
 
 	@Test
 	void initAll_shouldInitNginxLookupExtension() {
-		ExtensionUtil.initAll();
+		ExtensionUtil.initAllForTests();
 		Assertions.assertNotNull(ExtensionUtil.getExtension(NginxLookupExtension.NAME));
 	}
 
 	@Test
 	void initAll_shouldInitClamScannerExtension() {
-		ExtensionUtil.initAll();
+		ExtensionUtil.initAllForTests();
 		Assertions.assertNotNull(ExtensionUtil.getExtension(ClamScannerExtension.NAME));
 	}
 
 	@Test
 	void initAll_shouldInitZimbraCertMgrExt() {
-		ExtensionUtil.initAll();
+		ExtensionUtil.initAllForTests();
 		Assertions.assertNotNull(ExtensionUtil.getExtension(ZimbraCertMgrExt.NAME));
 	}
 

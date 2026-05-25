@@ -22,7 +22,6 @@ import com.zimbra.cs.account.Provisioning.EagerAutoProvisionScheduler;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ldap.entry.LdapEntry;
 import com.zimbra.cs.ldap.IAttributes;
-import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.LdapDateUtil;
 import com.zimbra.cs.ldap.LdapServerType;
 import com.zimbra.cs.ldap.LdapUsage;
@@ -51,7 +50,7 @@ public class AutoProvisionEager extends AutoProvision {
             Server localServer = prov.getLocalServer();
             String[] scheduledDomains = localServer.getAutoProvScheduledDomains();
 
-            zlc = LdapClient.getContext(LdapServerType.MASTER, LdapUsage.AUTO_PROVISION);
+            zlc = prov.getLdapClient().getInstanceContext(LdapServerType.MASTER, LdapUsage.AUTO_PROVISION);
 
             for (String domainName : scheduledDomains) {
                 if (scheduler.isShutDownRequested()) {
@@ -103,7 +102,7 @@ public class AutoProvisionEager extends AutoProvision {
             // unable to get ldap context
             ZimbraLog.autoprov.warn("Unable to auto provision accounts", e);
         } finally {
-            LdapClient.closeContext(zlc);
+            prov.getLdapClient().closeInstanceContext(zlc);
         }
     }
 

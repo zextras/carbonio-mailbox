@@ -55,6 +55,8 @@ public abstract class LdapProv extends Provisioning implements ProvisioningCache
     return helper;
   }
 
+  public abstract LdapClient getLdapClient();
+
   public abstract int getAccountCacheSize();
 
   public abstract double getAccountCacheHitRate();

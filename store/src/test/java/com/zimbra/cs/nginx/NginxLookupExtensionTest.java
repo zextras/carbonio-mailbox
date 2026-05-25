@@ -36,7 +36,7 @@ class NginxLookupExtensionTest extends MailboxTestSuite {
 
 	@BeforeAll
 	static void setup() throws Exception {
-		ExtensionUtil.initAll();
+		ExtensionUtil.initAllForTests();
 		final var extensionDispatcherServlet = new ServletHolder(ExtensionDispatcherServlet.class);
 		extensionDispatcherServlet.setName("ExtensionDispatcherServlet");
 		var servlet = new JettyServerFactory().addServlet("/", extensionDispatcherServlet);

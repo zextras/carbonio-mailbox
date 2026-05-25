@@ -31,7 +31,9 @@ public class ZimbraCertMgrExt implements ZimbraExtension {
   public static final String CERT_TYPE_SELF = "self";
   public static final String CERT_TYPE_COMM = "comm";
 
-  public void destroy() {}
+  public void destroy() {
+    ExtensionDispatcherServlet.unregister(this);
+  }
 
   public String getName() {
     return NAME;

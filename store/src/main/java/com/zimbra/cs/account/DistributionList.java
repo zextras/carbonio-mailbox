@@ -20,7 +20,6 @@ import com.zimbra.cs.account.Provisioning.MemberOf;
 import com.zimbra.cs.account.SearchDirectoryOptions.ObjectType;
 import com.zimbra.cs.account.ldap.BySearchResultEntrySearcher;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
-import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.LdapServerType;
 import com.zimbra.cs.ldap.LdapUsage;
 import com.zimbra.cs.ldap.ZAttributes;
@@ -177,7 +176,7 @@ public abstract class DistributionList extends ZAttrDistributionList implements 
         try {
             if (zlc == null) {
                 ownContext = true;
-                zlc = LdapClient.getContext(LdapServerType.get(false /* useMaster */), LdapUsage.SEARCH);
+                zlc = prov.getLdapClient().getInstanceContext(LdapServerType.get(false /* useMaster */), LdapUsage.SEARCH);
             }
             BySearchResultEntrySearcher searcher = new BySearchResultEntrySearcher(prov, zlc, null,
                     BASIC_ATTRS, dlUpdator);
@@ -197,7 +196,7 @@ public abstract class DistributionList extends ZAttrDistributionList implements 
             return membership;
         } finally {
             if (ownContext) {
-                LdapClient.closeContext(zlc);
+                prov.getLdapClient().closeInstanceContext(zlc);
             }
         }
     }
@@ -221,7 +220,7 @@ public abstract class DistributionList extends ZAttrDistributionList implements 
         try {
             if (zlc == null) {
                 ownContext = true;
-                zlc = LdapClient.getContext(LdapServerType.get(false /* useMaster */), LdapUsage.SEARCH);
+                zlc = prov.getLdapClient().getInstanceContext(LdapServerType.get(false /* useMaster */), LdapUsage.SEARCH);
             }
             List<BasicInfo> directDLs = getContainingDLs(prov, zlc, dl, adminGroupsOnly, true /* directOnly */);
             Iterator<BasicInfo> iter = directDLs.iterator();
@@ -247,7 +246,7 @@ public abstract class DistributionList extends ZAttrDistributionList implements 
             return membership;
         } finally {
             if (ownContext) {
-                LdapClient.closeContext(zlc);
+                prov.getLdapClient().closeInstanceContext(zlc);
             }
         }
     }
@@ -260,7 +259,7 @@ public abstract class DistributionList extends ZAttrDistributionList implements 
         try {
             if (zlc == null) {
                 ownContext = true;
-                zlc = LdapClient.getContext(LdapServerType.get(false /* useMaster */), LdapUsage.SEARCH);
+                zlc = prov.getLdapClient().getInstanceContext(LdapServerType.get(false /* useMaster */), LdapUsage.SEARCH);
             }
             List<BasicInfo> directDLs = getContainingDLs(prov, zlc, dls, adminGroupsOnly, true /* directOnly */);
             Iterator<BasicInfo> iter = directDLs.iterator();
@@ -278,7 +277,7 @@ public abstract class DistributionList extends ZAttrDistributionList implements 
             return membership;
         } finally {
             if (ownContext) {
-                LdapClient.closeContext(zlc);
+                prov.getLdapClient().closeInstanceContext(zlc);
             }
         }
     }

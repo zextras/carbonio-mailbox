@@ -20,7 +20,6 @@ import com.zimbra.cs.account.Provisioning.MemberOf;
 import com.zimbra.cs.account.SearchDirectoryOptions.ObjectType;
 import com.zimbra.cs.account.ldap.BySearchResultEntrySearcher;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
-import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.LdapException;
 import com.zimbra.cs.ldap.LdapServerType;
 import com.zimbra.cs.ldap.LdapUsage;
@@ -183,13 +182,13 @@ public class LdapDynamicGroup extends DynamicGroup implements LdapEntry {
         ZLdapFilter filter = ZLdapFilterFactory.getInstance().allDynamicGroups();
         ZLdapContext zlcCompare = null;
         try {
-            zlcCompare = LdapClient.getContext(LdapServerType.get(false /* useMaster */), LdapUsage.COMPARE);
+            zlcCompare = prov.getLdapClient().getInstanceContext(LdapServerType.get(false /* useMaster */), LdapUsage.COMPARE);
             BySearchResultEntrySearcher searcher = new BySearchResultEntrySearcher(
                     prov, null, domain, BASIC_ATTRS, new GroupMembershipUpdator(prov, zlcCompare,
                             acctDN, membership, adminGroupsOnly, true, false));
             searcher.doSearch(filter, DYNAMIC_GROUPS_TYPE);
         } finally {
-            LdapClient.closeContext(zlcCompare);
+            prov.getLdapClient().closeInstanceContext(zlcCompare);
         }
         return membership;
     }
@@ -208,13 +207,13 @@ public class LdapDynamicGroup extends DynamicGroup implements LdapEntry {
         ZLdapFilter filter = ZLdapFilterFactory.getInstance().dynamicGroupByIds(ids.toArray(new String[0]));
         ZLdapContext zlcCompare = null;
         try {
-            zlcCompare = LdapClient.getContext(LdapServerType.get(false /* useMaster */), LdapUsage.COMPARE);
+            zlcCompare = prov.getLdapClient().getInstanceContext(LdapServerType.get(false /* useMaster */), LdapUsage.COMPARE);
             BySearchResultEntrySearcher searcher = new BySearchResultEntrySearcher(
                     prov, null, null, BASIC_ATTRS, new GroupMembershipUpdator(prov, zlcCompare,
                             acctDN, membership, adminGroupsOnly, customGroupsOnly, nonCustomGroupsOnly));
             searcher.doSearch(filter, DYNAMIC_GROUPS_TYPE);
         } finally {
-            LdapClient.closeContext(zlcCompare);
+            prov.getLdapClient().closeInstanceContext(zlcCompare);
         }
         return membership;
     }

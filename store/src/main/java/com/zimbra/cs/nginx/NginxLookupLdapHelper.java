@@ -12,7 +12,6 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Config;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.ldap.ILdapContext;
-import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.LdapConstants;
 import com.zimbra.cs.ldap.LdapException;
 import com.zimbra.cs.ldap.LdapUsage;
@@ -39,21 +38,21 @@ public class NginxLookupLdapHelper extends AbstractNginxLookupLdapHelper {
 
     @Override
     ILdapContext getLdapContext() throws ServiceException {
-        return LdapClient.getContext(LdapUsage.NGINX_LOOKUP);
+        return prov.getLdapClient().getInstanceContext(LdapUsage.NGINX_LOOKUP);
     }
 
     @Override
     void closeLdapContext(ILdapContext ldapContext) {
-        ZLdapContext zlc = LdapClient.toZLdapContext(prov, ldapContext);
-        LdapClient.closeContext(zlc);
+        ZLdapContext zlc = prov.getLdapClient().toZLdapContext(ldapContext);
+        prov.getLdapClient().closeInstanceContext(zlc);
     }
 
     @Override
     Map<String, Object> searchDir(ILdapContext ldapContext, String[] returnAttrs,
             Config config, ZLdapFilter filter, String searchBaseConfigAttr)
     throws NginxLookupException {
-        
-        ZLdapContext zlc = LdapClient.toZLdapContext(prov, ldapContext);
+
+        ZLdapContext zlc = prov.getLdapClient().toZLdapContext(ldapContext);
         
         Map<String, Object> attrs = null;
         
@@ -91,9 +90,9 @@ public class NginxLookupLdapHelper extends AbstractNginxLookupLdapHelper {
     SearchDirResult searchDirectory(ILdapContext ldapContext, String[] returnAttrs,
             Config config, FilterId filterId, String queryTemplate, String searchBase,
             String templateKey, String templateVal, Map<String, Boolean> attrs,
-            Set<String> extraAttrs) 
+            Set<String> extraAttrs)
     throws NginxLookupException {
-        ZLdapContext zlc = LdapClient.toZLdapContext(prov, ldapContext);
+        ZLdapContext zlc = prov.getLdapClient().toZLdapContext(ldapContext);
         
         HashMap<String, String> kv = new HashMap<String,String>();
         kv.put(templateKey, ZLdapFilterFactory.getInstance().encodeValue(templateVal));

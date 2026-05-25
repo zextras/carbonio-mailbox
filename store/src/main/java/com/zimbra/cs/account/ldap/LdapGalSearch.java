@@ -26,7 +26,6 @@ import com.zimbra.cs.account.krb5.Krb5Login;
 import com.zimbra.cs.gal.GalSearchConfig;
 import com.zimbra.cs.gal.GalSearchParams;
 import com.zimbra.cs.ldap.IAttributes;
-import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.LdapConstants;
 import com.zimbra.cs.ldap.LdapDateUtil;
 import com.zimbra.cs.ldap.LdapException.LdapEntryNotFoundException;
@@ -154,6 +153,7 @@ public class LdapGalSearch {
             String token,
             SearchGalResult result) throws ServiceException {
 
+        LdapProv prov = LdapProv.getInst();
         ZLdapContext zlc = null;
         try {
             LdapGalCredential credential = galParams.credential();
@@ -163,7 +163,7 @@ public class LdapGalSearch {
                     credential.getBindDn(), credential.getBindPassword(),
                     rules.getBinaryLdapAttrs(), "external GAL");
 
-            zlc = LdapClient.getExternalContext(ldapConfig, LdapUsage.fromGalOpLegacy(galOp));
+            zlc = prov.getLdapClient().getInstanceExternalContext(ldapConfig, LdapUsage.fromGalOpLegacy(galOp));
             searchGal(zlc,
                       GalSearchConfig.GalType.ldap,
                       galParams.pageSize(),
@@ -174,7 +174,7 @@ public class LdapGalSearch {
                       token,
                       result);
         } finally {
-            LdapClient.closeContext(zlc);
+            prov.getLdapClient().closeInstanceContext(zlc);
         }
     }
 
@@ -197,20 +197,21 @@ public class LdapGalSearch {
 
     private static void doGalSearch(GalSearchParams params) throws ServiceException {
 
+        LdapProv prov = LdapProv.getInst();
         ZLdapContext zlc = null;
         try {
             GalSearchConfig cfg = params.getConfig();
             GalSearchConfig.GalType galType =  params.getConfig().getGalType();
 
             if (galType == GalSearchConfig.GalType.zimbra) {
-                zlc = LdapClient.getContext(LdapUsage.fromGalOp(params.getOp()));
+                zlc = prov.getLdapClient().getInstanceContext(LdapUsage.fromGalOp(params.getOp()));
             } else {
                 ExternalLdapConfig ldapConfig = new ExternalLdapConfig(
                         cfg.getUrl(), cfg.getStartTlsEnabled(), cfg.getAuthMech(),
                         cfg.getBindDn(), cfg.getBindPassword(), cfg.getRules().getBinaryLdapAttrs(),
                         "external GAL");
 
-                zlc = LdapClient.getExternalContext(ldapConfig, LdapUsage.fromGalOp(params.getOp()));
+                zlc = prov.getLdapClient().getInstanceExternalContext(ldapConfig, LdapUsage.fromGalOp(params.getOp()));
             }
 
             String fetchEntryByDn = params.getSearchEntryByDn();
@@ -250,7 +251,7 @@ public class LdapGalSearch {
                 getGalEntryByDn(zlc, galType, fetchEntryByDn, cfg.getRules(), params.getResult());
             }
         } finally {
-            LdapClient.closeContext(zlc);
+            prov.getLdapClient().closeInstanceContext(zlc);
         }
     }
 
