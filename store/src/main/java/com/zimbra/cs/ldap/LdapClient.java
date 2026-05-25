@@ -18,7 +18,6 @@ public class LdapClient {
 
     // TODO: remove this, kept it for legacy zmconfigd, hopefully we will get rid of it
     private static LdapClient zmconfigdLdapClient;
-    // TODO: remove this, kept it for legacy zmconfigd, hopefully we will get rid of itnewIns
     private LdapClient(UBIDLdapPoolConfig poolConfig) {
         this.poolConfig = poolConfig;
     }
