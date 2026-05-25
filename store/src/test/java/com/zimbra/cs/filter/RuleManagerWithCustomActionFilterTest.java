@@ -78,7 +78,7 @@ public final class RuleManagerWithCustomActionFilterTest extends MailboxTestSuit
 		// register custom action extensions
 		ExtensionTestUtil.registerExtension("com.zimbra.extensions.DummyCustomDiscard");
 		ExtensionTestUtil.registerExtension("com.zimbra.extensions.DummyCustomTag");
-		ExtensionUtil.initAll();
+		ExtensionUtil.initAllForTests();
 	}
 
 	@AfterAll
@@ -108,7 +108,7 @@ public final class RuleManagerWithCustomActionFilterTest extends MailboxTestSuit
 
 		// register custom action extension
 		// ExtensionTestUtil.registerExtension("com.zimbra.extensions.DummyCustomDiscard");
-		// ExtensionUtil.initAll();
+		// ExtensionUtil.initAllForTests();
 
 		JsieveConfigMapHandler.registerCommand("discard", "com.zimbra.extensions.DummyCustomDiscard");
 		JsieveConfigMapHandler.registerCommand("tag", "com.zimbra.cs.filter.jsieve.Tag");
@@ -155,7 +155,7 @@ public final class RuleManagerWithCustomActionFilterTest extends MailboxTestSuit
 		// register custom action extensions
 		// ExtensionTestUtil.registerExtension("com.zimbra.extensions.DummyCustomDiscard");
 		// ExtensionTestUtil.registerExtension("com.zimbra.extensions.DummyCustomTag");
-		// ExtensionUtil.initAll();
+		// ExtensionUtil.initAllForTests();
 
 		JsieveConfigMapHandler.registerCommand("discard", "com.zimbra.extensions.DummyCustomDiscard");
 		JsieveConfigMapHandler.registerCommand("tag", "com.zimbra.extensions.DummyCustomTag");

@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.extension;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.cert.ZimbraCertMgrExt;
 import com.zimbra.clam.ClamScannerExtension;
 import com.zimbra.common.localconfig.LC;
@@ -30,12 +31,12 @@ public class ExtensionUtil {
   private static List<ZimbraExtensionClassLoader> sClassLoaders = new ArrayList<>();
   private static ClassLoader sExtParentClassLoader;
   private static Map<String, ZimbraExtension> sInitializedExtensions = new LinkedHashMap<>();
-  private static boolean sBootstrapDone = false;
+
+  static {
+    bootstrap();
+  }
 
   private static synchronized void bootstrap() {
-    if (sBootstrapDone) {
-      return;
-    }
     File extCommonDir = new File(LC.zimbra_extension_common_directory.value());
     URL[] extCommonURLs = dirListToURLs(extCommonDir);
     if (extCommonURLs == null) {
@@ -46,10 +47,10 @@ public class ExtensionUtil {
           new URLClassLoader(extCommonURLs, ExtensionUtil.class.getClassLoader());
     }
     loadExtensionsFromDefaultDirectory();
-    sBootstrapDone = true;
+    initInternalExtensions();
   }
 
-  public static synchronized void initInternalExtensions() {
+  private static synchronized void initInternalExtensions() {
     initInternalExtension(new ZimbraCertMgrExt());
     initInternalExtension(new NginxLookupExtension());
     initInternalExtension(new ClamScannerExtension());
@@ -115,9 +116,6 @@ public class ExtensionUtil {
 
   private static synchronized void initInternalExtension(ZimbraExtension ext) {
     String extName = ext.getName();
-    if (sInitializedExtensions.containsKey(extName)) {
-      return;
-    }
     final String className = ext.getClass().getName();
     try {
       ext.init();
@@ -172,8 +170,12 @@ public class ExtensionUtil {
   }
 
   public static synchronized void initAll() {
+    initAllMatching(null);
+  }
+
+  @VisibleForTesting
+  public static synchronized void initAllForTests() {
     bootstrap();
-    initInternalExtensions();
     initAllMatching(null);
   }
 
