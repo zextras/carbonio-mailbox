@@ -163,7 +163,7 @@ public class LdapGalSearch {
                     credential.getBindDn(), credential.getBindPassword(),
                     rules.getBinaryLdapAttrs(), "external GAL");
 
-            zlc = prov.getLdapClient().getInstanceExternalContext(ldapConfig, LdapUsage.fromGalOpLegacy(galOp));
+            zlc = prov.getLdapClient().getExternalContext(ldapConfig, LdapUsage.fromGalOpLegacy(galOp));
             searchGal(zlc,
                       GalSearchConfig.GalType.ldap,
                       galParams.pageSize(),
@@ -174,7 +174,7 @@ public class LdapGalSearch {
                       token,
                       result);
         } finally {
-            prov.getLdapClient().closeInstanceContext(zlc);
+            prov.getLdapClient().closeContext(zlc);
         }
     }
 
@@ -204,14 +204,14 @@ public class LdapGalSearch {
             GalSearchConfig.GalType galType =  params.getConfig().getGalType();
 
             if (galType == GalSearchConfig.GalType.zimbra) {
-                zlc = prov.getLdapClient().getInstanceContext(LdapUsage.fromGalOp(params.getOp()));
+                zlc = prov.getLdapClient().getContext(LdapUsage.fromGalOp(params.getOp()));
             } else {
                 ExternalLdapConfig ldapConfig = new ExternalLdapConfig(
                         cfg.getUrl(), cfg.getStartTlsEnabled(), cfg.getAuthMech(),
                         cfg.getBindDn(), cfg.getBindPassword(), cfg.getRules().getBinaryLdapAttrs(),
                         "external GAL");
 
-                zlc = prov.getLdapClient().getInstanceExternalContext(ldapConfig, LdapUsage.fromGalOp(params.getOp()));
+                zlc = prov.getLdapClient().getExternalContext(ldapConfig, LdapUsage.fromGalOp(params.getOp()));
             }
 
             String fetchEntryByDn = params.getSearchEntryByDn();
@@ -251,7 +251,7 @@ public class LdapGalSearch {
                 getGalEntryByDn(zlc, galType, fetchEntryByDn, cfg.getRules(), params.getResult());
             }
         } finally {
-            prov.getLdapClient().closeInstanceContext(zlc);
+            prov.getLdapClient().closeContext(zlc);
         }
     }
 

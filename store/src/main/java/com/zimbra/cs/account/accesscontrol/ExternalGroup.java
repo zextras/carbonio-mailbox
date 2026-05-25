@@ -151,7 +151,7 @@ public class ExternalGroup extends NamedEntry {
                 return null;
             }
         } finally {
-            prov.getLdapClient().closeInstanceContext(zlc);
+            prov.getLdapClient().closeContext(zlc);
         }
     }
 

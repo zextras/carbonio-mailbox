@@ -210,7 +210,7 @@ public class ADGroupHandler extends GroupHandler {
             
             return attrs.getMultiAttrStringAsList(MEMBER_OF_ATTR, CheckBinary.NOCHECK);
         } finally {
-            prov.getLdapClient().closeInstanceContext(zlc);
+            prov.getLdapClient().closeContext(zlc);
         }
     }
     

@@ -110,7 +110,7 @@ public abstract class GroupHandler {
                 null, bindDN, bindPassword, null,
                 "search external group");
 
-        return LdapProv.getInst().getLdapClient().getInstanceExternalContext(ldapConfig, LdapUsage.EXTERNAL_GROUP);
+        return LdapProv.getInst().getLdapClient().getExternalContext(ldapConfig, LdapUsage.EXTERNAL_GROUP);
     }
 
 }

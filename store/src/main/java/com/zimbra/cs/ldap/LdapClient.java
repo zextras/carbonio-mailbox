@@ -80,16 +80,16 @@ public class LdapClient {
     }
 
 
-    public ZLdapContext getInstanceContext(LdapUsage usage) throws ServiceException {
-        return this.getInstanceContext(LdapServerType.REPLICA, usage);
+    public ZLdapContext getContext(LdapUsage usage) throws ServiceException {
+        return this.getContext(LdapServerType.REPLICA, usage);
     }
 
-    public ZLdapContext getInstanceContext(LdapServerType serverType, LdapUsage usage)
+    public ZLdapContext getContext(LdapServerType serverType, LdapUsage usage)
         throws ServiceException {
         return this.getContextImpl(serverType, usage);
     }
 
-    public ZLdapContext getInstanceContext(LdapServerType serverType, boolean useConnPool,
+    public ZLdapContext getContext(LdapServerType serverType, boolean useConnPool,
         LdapUsage usage)
         throws ServiceException {
         return this.getContextImpl(serverType, useConnPool, usage);
@@ -104,19 +104,19 @@ public class LdapClient {
         return newInstance().getExternalContextImpl(ldapConfig, usage);
     }
 
-    public ZLdapContext getInstanceExternalContext(ExternalLdapConfig ldapConfig,
+    public ZLdapContext getExternalContext(ExternalLdapConfig ldapConfig,
         LdapUsage usage)
         throws ServiceException {
         return this.getExternalContextImpl(ldapConfig, usage);
     }
 
-    public void closeInstanceContext(ZLdapContext lctxt) {
+    public void closeContext(ZLdapContext lctxt) {
         if (lctxt != null) {
             lctxt.closeContext(false);
         }
     }
 
-    public ZMutableEntry createInstanceMutableEntry() {
+    public ZMutableEntry createMutableEntry() {
         return this.createMutableEntryImpl();
     }
 

@@ -258,7 +258,7 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
         // this logic works for for all cases account=addr@<alias domain> or alias-name@<alias domain>
         if (prov instanceof LdapProvisioning) {
           LdapProvisioning ldapProv = (LdapProvisioning) prov;
-          ZLdapContext ldpCtx = ldapProv.getLdapClient().getInstanceContext(LdapServerType.MASTER, LdapUsage.GET_DOMAIN);
+          ZLdapContext ldpCtx = ldapProv.getLdapClient().getContext(LdapServerType.MASTER, LdapUsage.GET_DOMAIN);
           try {
             List<String> aliasDomainIds = ldapProv.getEmptyAliasDomainIds(ldpCtx,
                 d, false);
@@ -277,7 +277,7 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
               }
             }
           } finally {
-            ldapProv.getLdapClient().closeInstanceContext(ldpCtx);
+            ldapProv.getLdapClient().closeContext(ldpCtx);
           }
         }
 

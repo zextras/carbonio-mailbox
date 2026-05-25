@@ -264,12 +264,12 @@ public abstract class LdapHelper {
             ZLdapContext zlc = initZlc;
             try {
                 if (zlc == null) {
-                    zlc = ldapProv.getLdapClient().getInstanceContext(ldapServerType, LdapUsage.SEARCH);
+                    zlc = ldapProv.getLdapClient().getContext(ldapServerType, LdapUsage.SEARCH);
                 }
                 zlc.searchPaged(searchOptions);
             } finally {
                 if (initZlc == null) {
-                    ldapProv.getLdapClient().closeInstanceContext(zlc);
+                    ldapProv.getLdapClient().closeContext(zlc);
                 }
             }
 
