@@ -16,6 +16,9 @@ public class LdapClient {
 
     private final UBIDLdapPoolConfig poolConfig;
 
+    // TODO: remove this, kept it for legacy zmconfigd, hopefully we will get rid of it
+    private static LdapClient zmconfigdLdapClient;
+    // TODO: remove this, kept it for legacy zmconfigd, hopefully we will get rid of itnewIns
     private LdapClient(UBIDLdapPoolConfig poolConfig) {
         this.poolConfig = poolConfig;
     }
@@ -36,14 +39,15 @@ public class LdapClient {
         return createNew(false);
     }
 
-    private static synchronized LdapClient newInstance() {
-         try {
-             return LdapClient.createNew();
-         } catch (LdapException e) {
-             Zimbra.halt("failed to initialize LDAP client", e);
-         }
-         // FIXME: unreachable code?
-         throw new RuntimeException("LdapCLient not available");
+    private static synchronized LdapClient getLdapClientForZmconfigd() {
+        if (zmconfigdLdapClient == null) {
+            try {
+                zmconfigdLdapClient = LdapClient.createNew();
+            } catch (LdapException e) {
+                Zimbra.halt("failed to initialize LDAP client", e);
+            }
+        }
+        return zmconfigdLdapClient;
     }
 
     public ZLdapContext toZLdapContext(ILdapContext ldapContext) {
@@ -101,7 +105,7 @@ public class LdapClient {
     public static ZLdapContext getContext(GenericLdapConfig ldapConfig,
             LdapUsage usage)
     throws ServiceException {
-        return newInstance().getExternalContextImpl(ldapConfig, usage);
+        return getLdapClientForZmconfigd().getExternalContextImpl(ldapConfig, usage);
     }
 
     public ZLdapContext getExternalContext(ExternalLdapConfig ldapConfig,
