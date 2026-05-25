@@ -13,7 +13,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.AttributeManager;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.ldap.ILdapContext;
-import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.LdapException;
 import com.zimbra.cs.ldap.LdapException.LdapEntryNotFoundException;
 import com.zimbra.cs.ldap.LdapException.LdapMultipleEntriesMatchedException;
@@ -48,7 +47,7 @@ public class ZLdapHelper extends LdapHelper {
     public void searchLdap(ILdapContext ldapContext, SearchLdapOptions searchOptions)
     throws ServiceException {
 
-        ZLdapContext zlc = LdapClient.toZLdapContext(getProv(), ldapContext);
+        ZLdapContext zlc = getProv().getLdapClient().toZLdapContext(ldapContext);
         zlc.searchPaged(searchOptions);
     }
 
@@ -56,10 +55,10 @@ public class ZLdapHelper extends LdapHelper {
     public void deleteEntry(String dn, LdapUsage ldapUsage) throws ServiceException {
         ZLdapContext zlc = null;
         try {
-            zlc = LdapClient.getContext(LdapServerType.MASTER, ldapUsage);
+            zlc = getProv().getLdapClient().getInstanceContext(LdapServerType.MASTER, ldapUsage);
             zlc.deleteEntry(dn);
         } finally {
-            LdapClient.closeContext(zlc);
+            getProv().getLdapClient().closeInstanceContext(zlc);
         }
     }
 
@@ -163,10 +162,10 @@ public class ZLdapHelper extends LdapHelper {
     throws ServiceException {
         ZLdapContext zlc = null;
         try {
-            zlc = LdapClient.getContext(LdapServerType.MASTER, ldapUsage);
+            zlc = getProv().getLdapClient().getInstanceContext(LdapServerType.MASTER, ldapUsage);
             modifyAttrs(zlc, dn, attrs, entry);
         } finally {
-            LdapClient.closeContext(zlc);
+            getProv().getLdapClient().closeInstanceContext(zlc);
         }
     }
 
@@ -187,7 +186,7 @@ public class ZLdapHelper extends LdapHelper {
         ZLdapContext zlc = initZlc;
         try {
             if (zlc == null) {
-                zlc = LdapClient.getContext(LdapServerType.get(useMaster), LdapUsage.SEARCH);
+                zlc = getProv().getLdapClient().getInstanceContext(LdapServerType.get(useMaster), LdapUsage.SEARCH);
             }
 
             ZSearchControls sc = (returnAttrs == null) ? ZSearchControls.SEARCH_CTLS_SUBTREE() :
@@ -216,7 +215,7 @@ public class ZLdapHelper extends LdapHelper {
         */
         } finally {
             if (initZlc == null)
-                LdapClient.closeContext(zlc);
+                getProv().getLdapClient().closeInstanceContext(zlc);
         }
         return null;
     }
@@ -238,13 +237,13 @@ public class ZLdapHelper extends LdapHelper {
         ZLdapContext zlc = initZlc;
         try {
             if (zlc == null) {
-                zlc = LdapClient.getContext(LdapServerType.get(useMaster), LdapUsage.COMPARE);
+                zlc = getProv().getLdapClient().getInstanceContext(LdapServerType.get(useMaster), LdapUsage.COMPARE);
             }
 
             return zlc.compare(dn, attributeName, assertionValue);
         } finally {
             if (initZlc == null)
-                LdapClient.closeContext(zlc);
+                getProv().getLdapClient().closeInstanceContext(zlc);
         }
     }
 
@@ -262,7 +261,7 @@ public class ZLdapHelper extends LdapHelper {
                 if (usage == null) {
                     throw ServiceException.FAILURE("Unexpected null usage with null ldap context.", null);
                 }
-                zlc = LdapClient.getContext(ldapServerType, usage);
+                zlc = getProv().getLdapClient().getInstanceContext(ldapServerType, usage);
             }
             return zlc.getAttributes(dn, returnAttrs);
         /*  all callsites with the following @TODOEXCEPTIONMAPPING pattern can have ease of mind now and remove the
@@ -277,7 +276,7 @@ public class ZLdapHelper extends LdapHelper {
         */
         } finally {
             if (initZlc == null) {
-                LdapClient.closeContext(zlc);
+                getProv().getLdapClient().closeInstanceContext(zlc);
             }
         }
     }
@@ -289,7 +288,7 @@ public class ZLdapHelper extends LdapHelper {
         ZLdapContext zlc = initZlc;
         try {
             if (zlc == null) {
-                zlc = LdapClient.getContext(ldapServerType, LdapUsage.SEARCH);
+                zlc = getProv().getLdapClient().getInstanceContext(ldapServerType, LdapUsage.SEARCH);
             }
             return zlc.searchDir(baseDN, filter, searchControls);
         /*
@@ -300,7 +299,7 @@ public class ZLdapHelper extends LdapHelper {
         */
         } finally {
             if (initZlc == null) {
-                LdapClient.closeContext(zlc);
+                getProv().getLdapClient().closeInstanceContext(zlc);
             }
         }
     }
@@ -312,12 +311,12 @@ public class ZLdapHelper extends LdapHelper {
         ZLdapContext zlc = initZlc;
         try {
             if (zlc == null) {
-                zlc = LdapClient.getContext(ldapServerType, LdapUsage.SEARCH);
+                zlc = getProv().getLdapClient().getInstanceContext(ldapServerType, LdapUsage.SEARCH);
             }
             return zlc.countEntries(baseDN, filter, searchControls);
         } finally {
             if (initZlc == null) {
-                LdapClient.closeContext(zlc);
+                getProv().getLdapClient().closeInstanceContext(zlc);
             }
         }
     }
