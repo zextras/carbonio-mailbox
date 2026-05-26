@@ -25,7 +25,7 @@ public class HealthServletModule extends ServletModule {
   @Provides
   @Singleton
   DbPool provideDatabasePool() {
-    return DbPool.newPool();
+    return DbPool.global();
   }
 
   @Provides

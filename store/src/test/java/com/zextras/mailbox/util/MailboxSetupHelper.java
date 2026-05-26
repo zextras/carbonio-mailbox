@@ -115,7 +115,7 @@ public class MailboxSetupHelper {
 		Provisioning.setInstance(new LdapProvisioningWithMockMime(ldapClient));
 		this.initData(mailboxTestData);
 		HSQLDB.createDatabase(getVolumeDirectory());
-		DbPool.startup();
+		DbPool.global();
 		MailboxManager.setInstance(new MailboxManager());
 		RedoLogProvider.setInstance(new DefaultRedoLogProvider());
 		RedoLogProvider.getInstance().startup();

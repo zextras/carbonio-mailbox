@@ -32,30 +32,27 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  */
 public class DbPool {
 
-    private static PoolingDataSource sPoolingDataSource;
-    private static String sRootUrl;
-    private static String sLoggerRootUrl;
-    private static GenericObjectPool sConnectionPool;
-    private static boolean sIsInitialized;
-
-
-    private static boolean isShutdown;
+    private static DbPool dbPool;
     private static boolean isUsageWarningEnabled = true;
 
     static ValueCounter<String> sConnectionStackCounter = new ValueCounter<>();
 
     // instance level
     private final Db db;
-    private final PoolingDataSource connectionPool;
-    private final GenericObjectPool poolManager;
+    private final PoolingDataSource dataSource;
+    private final GenericObjectPool pool;
+    private final String sRootUrl;
+    private final String sLoggerRootUrl;
 
-    private DbPool(Db db, PoolingDataSource connectionPool, GenericObjectPool poolManager) {
+    private DbPool(Db db, PoolingDataSource dataSource, GenericObjectPool pool) {
         this.db = db;
-        this.connectionPool = connectionPool;
-        this.poolManager = poolManager;
+        this.dataSource = dataSource;
+        this.pool = pool;
+        sRootUrl = db.getPoolConfig().mRootUrl;
+        sLoggerRootUrl = db.getPoolConfig().mLoggerUrl;
     }
 
-    public static DbPool newPool(Db db) {
+    static DbPool newPool(Db db) {
         PoolConfig pconfig = db.getPoolConfig();
         var connectionPool = new GenericObjectPool(null, pconfig.mPoolSize, pconfig.whenExhaustedAction, -1, pconfig.mPoolSize);
         ConnectionFactory cfac = ZimbraConnectionFactory.getConnectionFactory(pconfig);
@@ -69,14 +66,14 @@ public class DbPool {
         final DbPool dbPool = new DbPool(db, pds, connectionPool);
 
         System.setProperty("jdbc.drivers", pconfig.mDriverClassName);
-
-        sRootUrl = pconfig.mRootUrl;
-        sLoggerRootUrl = pconfig.mLoggerUrl;
         waitForDatabase(dbPool);
         return dbPool;
     }
 
-    public static DbPool newPool() {
+	/**
+	 * @return a new pool for local usage. No singleton.
+	 */
+    private static DbPool newPool() {
         return newPool(Db.getInstance());
     }
 
@@ -90,14 +87,12 @@ public class DbPool {
             long start = ZimbraPerf.STOPWATCH_DB_CONN.start();
 
             // If the connection pool is overutilized, warn about potential leaks
-            PoolingDataSource pool = this.connectionPool;
-            // TODO: think about warn about overutilized connections
-            // checkPoolUsage();
+            checkPoolUsage();
 
             Connection dbconn = null;
             DbConnection conn = null;
             try {
-                dbconn = pool.getConnection();
+                dbconn = this.dataSource.getConnection();
 
                 if (dbconn.getAutoCommit() != false)
                     dbconn.setAutoCommit(false);
@@ -291,22 +286,14 @@ public class DbPool {
     /**
      * Initializes the connection pool.  Applications that access the
      * database must call this method before calling {@link DbPool#getConnection}.
-     * If database was previously shutdown then {@link #isShutdown} is set to false.
+     * Allocates a global pool as singleton.
      *
      */
-    public static synchronized void startup() {
-        isShutdown = false;
-        if (isInitialized()) {
-            return;
+    public static synchronized DbPool global() {
+        if (dbPool == null) {
+            dbPool = newPool();
         }
-        PoolConfig pconfig = Db.getInstance().getPoolConfig();
-
-        System.setProperty("jdbc.drivers", pconfig.mDriverClassName);
-
-        sRootUrl = pconfig.mRootUrl;
-        sLoggerRootUrl = pconfig.mLoggerUrl;
-        sIsInitialized = true;
-        waitForDatabase();
+        return dbPool;
     }
 
     private static void waitForDatabase(DbPool dbPool) {
@@ -328,28 +315,9 @@ public class DbPool {
 
         DbPool.quietClose(conn);
     }
-    private static void waitForDatabase() {
-        DbConnection conn = null;
-        final int RETRY_SECONDS = 5;
-
-        while (conn == null) {
-            try {
-                conn = DbPool.getConnection();
-            } catch (ServiceException e) {
-                ZimbraLog.misc.warn("Could not establish a connection to the database.  Retrying in %d seconds.",
-                    RETRY_SECONDS, e);
-                try {
-                    Thread.sleep(RETRY_SECONDS * 1000);
-                } catch (InterruptedException e2) {
-                }
-            }
-        }
-
-        DbPool.quietClose(conn);
-    }
 
     private static boolean isInitialized() {
-        return sIsInitialized;
+        return dbPool != null;
     }
 
     /**
@@ -362,32 +330,6 @@ public class DbPool {
         } catch (ServiceException e) {
             ZimbraLog.system.warn("Unable to set slow SQL threshold.", e);
         }
-    }
-
-    /** Initializes the connection pool. */
-    private static synchronized PoolingDataSource getPool() {
-        if (isShutdown)
-            throw new RuntimeException("DbPool permanently shutdown");
-
-        if (sPoolingDataSource != null)
-            return sPoolingDataSource;
-
-        PoolConfig pconfig = Db.getInstance().getPoolConfig();
-        sConnectionPool = new GenericObjectPool(null, pconfig.mPoolSize, pconfig.whenExhaustedAction, -1, pconfig.mPoolSize);
-        ConnectionFactory cfac = ZimbraConnectionFactory.getConnectionFactory(pconfig);
-
-        boolean defAutoCommit = false, defReadOnly = false;
-        new PoolableConnectionFactory(cfac, sConnectionPool, null, null, defReadOnly, defAutoCommit);
-
-        PoolingDataSource pds = new PoolingDataSource(sConnectionPool);
-        pds.setAccessToUnderlyingConnectionAllowed(true);
-
-        sPoolingDataSource = pds;
-
-        if (pconfig.mSupportsStatsCallback)
-            ZimbraPerf.addStatsCallback(new DbStats());
-
-        return sPoolingDataSource;
     }
 
     /**
@@ -418,60 +360,13 @@ public class DbPool {
         if (!isInitialized()) {
             throw ServiceException.FAILURE("Database connection pool not initialized.", null);
         }
-        Integer mboxId = mbox != null ? mbox.getId() : -1; //-1 == zimbra db and/or initialization where mbox isn't known yet
-        try {
-            long start = ZimbraPerf.STOPWATCH_DB_CONN.start();
-
-            // If the connection pool is overutilized, warn about potential leaks
-            PoolingDataSource pool = getPool();
-            checkPoolUsage();
-
-            Connection dbconn = null;
-            DbConnection conn = null;
-            try {
-                dbconn = pool.getConnection();
-
-                if (dbconn.getAutoCommit() != false)
-                    dbconn.setAutoCommit(false);
-
-                // We want READ COMMITTED transaction isolation level for duplicate
-                // handling code in BucketBlobStore.newBlobInfo().
-                if (Db.supports(Db.Capability.READ_COMMITTED_ISOLATION))
-                    dbconn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-
-                conn = new DbConnection(dbconn, mboxId);
-            } catch (SQLException e) {
-                try {
-                    if (dbconn != null && !dbconn.isClosed())
-                        dbconn.close();
-                } catch (SQLException e2) {
-                    ZimbraLog.sqltrace.warn("DB connection close caught exception", e);
-                }
-                throw ServiceException.FAILURE("getting database connection", e);
-            }
-
-            // If we're debugging, update the counter with the current stack trace
-            if (ZimbraLog.dbconn.isDebugEnabled()) {
-                Throwable t = new Throwable();
-                conn.setStackTrace(t);
-
-                String stackTrace = SystemUtil.getStackTrace(t);
-                synchronized (sConnectionStackCounter) {
-                    sConnectionStackCounter.increment(stackTrace);
-                }
-            }
-
-            ZimbraPerf.STOPWATCH_DB_CONN.stop(start);
-            return conn;
-        } catch (ServiceException se) {
-            //if connection open fails unlock
-            throw se;
-        }
+        return dbPool.getConnectionInstance(mbox);
     }
 
-    private static void checkPoolUsage() {
-        int numActive = sConnectionPool.getNumActive();
-        int maxActive = sConnectionPool.getMaxActive();
+    private void checkPoolUsage() {
+        final GenericObjectPool poolStats = this.pool;
+        int numActive = poolStats.getNumActive();
+        int maxActive = poolStats.getMaxActive();
 
         if (numActive <= maxActive * 0.75)
             return;
@@ -512,7 +407,8 @@ public class DbPool {
         try {
             String user = LC.zimbra_mysql_user.value();
             String pwd = LC.zimbra_mysql_password.value();
-            Connection conn = DriverManager.getConnection(sRootUrl + "?user=" + user + "&password=" + pwd);
+            Connection conn = DriverManager.getConnection(
+                dbPool.sRootUrl + "?user=" + user + "&password=" + pwd);
             conn.setAutoCommit(false);
             return new DbConnection(conn);
         } catch (SQLException e) {
@@ -530,7 +426,7 @@ public class DbPool {
         try {
             String user = LC.zimbra_mysql_user.value();
             String pwd = null;
-            Connection conn = DriverManager.getConnection(sLoggerRootUrl + "?user=" + user + "&password=" + pwd);
+            Connection conn = DriverManager.getConnection(dbPool.sLoggerRootUrl + "?user=" + user + "&password=" + pwd);
             return new DbConnection(conn);
         } catch (SQLException e) {
             throw ServiceException.FAILURE("getting database logger connection", e);
@@ -608,42 +504,25 @@ public class DbPool {
      * Returns the number of connections currently in use.
      */
     public static int getSize() {
-        return sConnectionPool.getNumActive();
-    }
-
-    /**
-     * This is only to be used by DbOfflineMigration to completely close connection to Derby.
-     * Note that this doesn't permanently shutdown.  A new getPool() call will restart connections.
-     *
-     * @throws Exception
-     */
-    static synchronized void close() throws Exception {
-        if (sConnectionPool != null) {
-            sConnectionPool.close();
-            sConnectionPool = null;
-        }
-        sPoolingDataSource = null;
+        return dbPool.pool.getNumActive();
     }
 
     public static synchronized void shutdown() throws Exception {
-        isShutdown = true;
-        close();
+        dbPool.shutdownInstance();
     }
 
     public void shutdownInstance() throws Exception {
         synchronized (this) {
-            if (this.poolManager != null) {
-                poolManager.close();
+            if (this.pool != null) {
+                pool.close();
             }
         }
     }
 
     @VisibleForTesting
     public static synchronized void shutDownAndClear() throws Exception {
-        // TODO: avoid all this static an singleton usages
-        DbPool.shutdown();
-        isShutdown = false;
-        sIsInitialized = false;
+        dbPool.shutdownInstance();
+        dbPool = null;
         ZimbraConnectionFactory.close();
         Db.setInstance(null);
     }

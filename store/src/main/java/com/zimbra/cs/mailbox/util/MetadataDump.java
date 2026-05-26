@@ -348,7 +348,7 @@ public final class MetadataDump {
             }
 
             // Get data from db.
-            DbPool.startup();
+            DbPool.global();
             DbConnection conn = null;
 
             try {

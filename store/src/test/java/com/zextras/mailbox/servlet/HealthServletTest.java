@@ -142,7 +142,7 @@ public class HealthServletTest {
   }
 
   private void withDb(ThrowingRunnable runnable) throws Exception {
-    DbPool.startup();
+    DbPool.global();
     try {
       runnable.run();
     } catch (Exception e) {

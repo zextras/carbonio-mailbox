@@ -383,7 +383,7 @@ public class PlaybackUtil {
             loggerConfig.removeAppender(consoleAppender.get().getName());
             }
 
-        DbPool.startup();
+        DbPool.global();
         Zimbra.startupCLI();
     }
 
