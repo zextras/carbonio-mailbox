@@ -813,8 +813,7 @@ public class SoapEngine {
         // session ID is valid, so ping it back to the client:
         ZimbraSoapContext.encodeSession(ctxt, session.getSessionId(), session.getSessionType());
 
-        if (session instanceof SoapSession) {
-          SoapSession soap = (SoapSession) session;
+        if (session instanceof SoapSession soap) {
           if (session.getTargetAccountId().equals(requestedAccountId)) {
             requiresChangeHeader = false;
           }

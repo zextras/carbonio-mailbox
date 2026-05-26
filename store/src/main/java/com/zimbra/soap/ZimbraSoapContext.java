@@ -50,16 +50,16 @@ import org.dom4j.QName;
  * @since May 29, 2004
  */
 public final class ZimbraSoapContext {
-  public static String DEFAULT_NOTIFICATION_FORMAT = "DEFAULT";
+  public static final String DEFAULT_NOTIFICATION_FORMAT = "DEFAULT";
   public static final String soapRequestIdAttr = "zimbraSoapRequestId";
   /* seed randomly so that unlikely to get same ID used on different machines in network
    * at the same time. */
-  private static AtomicInteger soapIdBase =
+  private static final AtomicInteger soapIdBase =
       new AtomicInteger(new Random().nextInt(Integer.MAX_VALUE));
 
   final class SessionInfo {
     String sessionId;
-    int sequence;
+    final int sequence;
     boolean created;
 
     SessionInfo(String id, int seqNo, boolean newSession) {
@@ -793,9 +793,8 @@ public final class ZimbraSoapContext {
     continuationResume = new ResumeContinuationListener(asyncContext);
 
     Session session = SessionCache.lookup(mSessionInfo.sessionId, mAuthTokenAccountId);
-    if (!(session instanceof SoapSession)) return false;
+    if (!(session instanceof SoapSession ss)) return false;
 
-    SoapSession ss = (SoapSession) session;
     SoapSession.RegisterNotificationResult result =
         ss.registerNotificationConnection(mSessionInfo.getPushChannel(!includeDelegates));
     switch (result) {

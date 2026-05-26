@@ -58,7 +58,7 @@ public class NoOp extends MailDocumentHandler  {
         super.preProxy(request, context);
     }
 
-    ConcurrentHashMap<String /*AccountId*/, ZimbraSoapContext> sBlockedNops =
+    final ConcurrentHashMap<String /*AccountId*/, ZimbraSoapContext> sBlockedNops =
         new ConcurrentHashMap<>(5000, 0.75f, 50);
 
 	@Override

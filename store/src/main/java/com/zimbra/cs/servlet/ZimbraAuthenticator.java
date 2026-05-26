@@ -45,10 +45,9 @@ public class ZimbraAuthenticator extends BasicAuthenticator {
     @Override
     public Authentication validateRequest(ServletRequest req, ServletResponse resp, boolean mandatory)
                     throws ServerAuthException {
-        if (mandatory && req instanceof HttpServletRequest) {
-            HttpServletRequest httpReq = (HttpServletRequest) req;
+        if (mandatory && req instanceof HttpServletRequest httpReq) {
 
-            //url pattern is mostly redundant with web.xml security-constraint declaration
+          //url pattern is mostly redundant with web.xml security-constraint declaration
             //however jetty does make upcall into authenticator from DoSFilter and other sites to find login username for logging
             //we want to just ignore rather than potentially flooding auth provider (which may be external)
             if (urlPattern != null && new ServletPathSpec(urlPattern).matches(httpReq.getRequestURI())) {

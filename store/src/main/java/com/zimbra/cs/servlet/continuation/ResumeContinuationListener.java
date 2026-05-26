@@ -16,8 +16,8 @@ import com.zimbra.common.util.ZimbraLog;
 
 public class ResumeContinuationListener implements AsyncListener {
 
-    private AsyncContext asyncContext;
-    private AtomicBoolean readyToResume;
+    private final AsyncContext asyncContext;
+    private final AtomicBoolean readyToResume;
 
     public ResumeContinuationListener(AsyncContext asyncContext) {
         this.asyncContext = asyncContext;

@@ -46,7 +46,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 
 /** */
@@ -100,8 +99,7 @@ public class WaitSetRequest extends MailDocumentHandler {
     return getTimeoutMillis(to, isAdminRequest);
   }
 
-  public static long getTimeoutMillis(Long timeout, boolean isAdminRequest)
-      throws ServiceException {
+  public static long getTimeoutMillis(Long timeout, boolean isAdminRequest) {
     long to;
     if (!isAdminRequest) {
       to = (timeout != null) ? timeout : DEFAULT_TIMEOUT;

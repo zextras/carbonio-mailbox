@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpVersion;
@@ -70,10 +69,10 @@ public class SoapServlet extends ZimbraServlet {
   static final int SC_UNPROCESSABLE_CONTENT = 422;
 
   /** Keeps track of extra services added by extensions. */
-  private static LoadingCache<String, List<DocumentService>> sExtraServices =
+  private static final LoadingCache<String, List<DocumentService>> sExtraServices =
       CacheBuilder.newBuilder().build(CacheLoader.from(new ArrayListFactory()));
 
-  private static Log sLog = LogFactory.getLog(SoapServlet.class);
+  private static final Log sLog = LogFactory.getLog(SoapServlet.class);
   private SoapEngine mEngine;
 
   // Used by sExtraServices
@@ -154,11 +153,10 @@ public class SoapServlet extends ZimbraServlet {
       throw new ServletException("can't instantiate class " + cname, ie);
     }
 
-    if (!(dispatcher instanceof DocumentService)) {
+    if (!(dispatcher instanceof DocumentService hi)) {
       throw new ServletException("class not an instanceof HandlerInitializer: " + cname);
     }
 
-    DocumentService hi = (DocumentService) dispatcher;
     addService(hi);
   }
 
@@ -198,7 +196,7 @@ public class SoapServlet extends ZimbraServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws IOException, ServletException {
+      throws IOException {
     ZimbraLog.clearContext();
     long startTime = ZimbraPerf.STOPWATCH_SOAP.start();
 

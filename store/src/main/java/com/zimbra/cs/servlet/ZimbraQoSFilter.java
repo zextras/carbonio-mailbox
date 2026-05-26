@@ -51,14 +51,13 @@ public class ZimbraQoSFilter implements Filter {
     private long waitMs;
     private long suspendMs;
 
-    private ConcurrentLinkedHashMap<String, Semaphore> passes = new ConcurrentLinkedHashMap.Builder<String, Semaphore>()
+    private final ConcurrentLinkedHashMap<String, Semaphore> passes = new ConcurrentLinkedHashMap.Builder<String, Semaphore>()
                                                                 .maximumWeightedCapacity(2000).build();
 
     public static String extractUserId(ServletRequest request) {
         try {
-            if (request instanceof HttpServletRequest) {
-                HttpServletRequest req = (HttpServletRequest) request;
-                boolean isAdminRequest = AuthUtil.isAdminRequest(req);
+            if (request instanceof HttpServletRequest req) {
+              boolean isAdminRequest = AuthUtil.isAdminRequest(req);
                 AuthToken at = AuthProvider.getAuthToken(req, isAdminRequest);
                 if (at == null) {
                     Map <Object, Object> engineCtxt = new HashMap<>();
