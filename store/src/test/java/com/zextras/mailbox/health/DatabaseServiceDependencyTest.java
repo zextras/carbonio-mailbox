@@ -44,7 +44,7 @@ class DatabaseServiceDependencyTest {
     assertHealthy(databaseService);
 
     timer.timeElapsed(CacheIntervalMillis_1000 + 500L);
-    Mockito.when(dbPool.getDatabaseConnection())
+    Mockito.when(dbPool.getConnectionInstance())
         .thenThrow(ServiceException.FAILURE("Oops, cannot open connection to database"));
 
     assertUnhealthy(databaseService);
@@ -63,7 +63,7 @@ class DatabaseServiceDependencyTest {
     assertHealthy(databaseService);
 
     timer.timeElapsed(500L);
-    Mockito.when(dbPool.getDatabaseConnection())
+    Mockito.when(dbPool.getConnectionInstance())
         .thenThrow(ServiceException.FAILURE("Ooops, query failed"));
 
     assertHealthy(databaseService);
@@ -73,7 +73,7 @@ class DatabaseServiceDependencyTest {
   void shouldNotBeLiveAndReadyIfDbPoolConnectionCannotBeTaken() throws Exception {
     final DbPool dbPool = Mockito.mock(DbPool.class);
     final ServiceException dbConnectionException = Mockito.mock(ServiceException.class);
-    Mockito.when(dbPool.getDatabaseConnection()).thenThrow(dbConnectionException);
+    Mockito.when(dbPool.getConnectionInstance()).thenThrow(dbConnectionException);
 
     final DatabaseServiceDependency databaseService =
         new DatabaseServiceDependency(dbPool, System::currentTimeMillis);
@@ -85,7 +85,7 @@ class DatabaseServiceDependencyTest {
   void shouldNotBeLiveAndReadyIfPrepareStatementThrowsSqlException() throws Exception {
     final DbPool dbPool = Mockito.mock(DbPool.class);
     final DbConnection dbConnection = Mockito.mock(DbConnection.class);
-    Mockito.when(dbPool.getDatabaseConnection()).thenReturn(dbConnection);
+    Mockito.when(dbPool.getConnectionInstance()).thenReturn(dbConnection);
     Mockito.when(dbConnection.prepareStatement(anyString())).thenThrow(new SQLException());
 
     final DatabaseServiceDependency databaseService =
@@ -109,7 +109,7 @@ class DatabaseServiceDependencyTest {
     final DbConnection dbConnection = Mockito.mock(DbConnection.class);
     final PreparedStatement preparedStatement = Mockito.mock(PreparedStatement.class);
     final ResultSet resultSet = Mockito.mock(ResultSet.class);
-    Mockito.when(dbPool.getDatabaseConnection()).thenReturn(dbConnection);
+    Mockito.when(dbPool.getConnectionInstance()).thenReturn(dbConnection);
     Mockito.when(dbConnection.prepareStatement(anyString())).thenReturn(preparedStatement);
     Mockito.when(preparedStatement.executeQuery()).thenReturn(resultSet);
     Mockito.when(resultSet.next()).thenReturn(true);
