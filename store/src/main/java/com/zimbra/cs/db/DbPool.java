@@ -54,6 +54,7 @@ public class DbPool {
 
     static DbPool newPool(Db db) {
         PoolConfig pconfig = db.getPoolConfig();
+        System.setProperty("jdbc.drivers", pconfig.mDriverClassName);
         var connectionPool = new GenericObjectPool(null, pconfig.mPoolSize, pconfig.whenExhaustedAction, -1, pconfig.mPoolSize);
         ConnectionFactory cfac = ZimbraConnectionFactory.getConnectionFactory(pconfig);
 
@@ -65,7 +66,7 @@ public class DbPool {
 
         final DbPool dbPool = new DbPool(db, pds, connectionPool);
 
-        System.setProperty("jdbc.drivers", pconfig.mDriverClassName);
+
         waitForDatabase(dbPool);
         return dbPool;
     }
@@ -509,6 +510,7 @@ public class DbPool {
 
     public static synchronized void shutdown() throws Exception {
         dbPool.shutdownInstance();
+        dbPool = null;
     }
 
     public void shutdownInstance() throws Exception {
@@ -521,8 +523,7 @@ public class DbPool {
 
     @VisibleForTesting
     public static synchronized void shutDownAndClear() throws Exception {
-        dbPool.shutdownInstance();
-        dbPool = null;
+        shutdown();
         ZimbraConnectionFactory.close();
         Db.setInstance(null);
     }

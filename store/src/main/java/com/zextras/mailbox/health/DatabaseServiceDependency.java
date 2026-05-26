@@ -46,7 +46,7 @@ public class DatabaseServiceDependency extends ServiceDependency {
 
   private boolean doCheckStatus() {
     var selectStatement = "com.zimbra.cs.db.HSQLDB".equals(LC.zimbra_class_database.value()) ? "SELECT 1 FROM (VALUES(0)) AS t" : "SELECT 1";
-    try (DbConnection connection = dbPool.getDatabaseConnection();
+    try (DbConnection connection = dbPool.getConnectionInstance();
         PreparedStatement preparedStatement = connection.prepareStatement(selectStatement);
         ResultSet resultSet = preparedStatement.executeQuery()) {
       resultSet.next();
