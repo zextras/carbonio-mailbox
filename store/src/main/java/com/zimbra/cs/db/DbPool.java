@@ -38,10 +38,104 @@ public class DbPool {
     private static GenericObjectPool sConnectionPool;
     private static boolean sIsInitialized;
 
+
     private static boolean isShutdown;
     private static boolean isUsageWarningEnabled = true;
 
     static ValueCounter<String> sConnectionStackCounter = new ValueCounter<>();
+
+    // instance level
+    private final Db db;
+    private final PoolingDataSource connectionPool;
+    private final GenericObjectPool poolManager;
+
+    private DbPool(Db db, PoolingDataSource connectionPool, GenericObjectPool poolManager) {
+        this.db = db;
+        this.connectionPool = connectionPool;
+        this.poolManager = poolManager;
+    }
+
+    public static DbPool newPool(Db db) {
+        PoolConfig pconfig = db.getPoolConfig();
+        var connectionPool = new GenericObjectPool(null, pconfig.mPoolSize, pconfig.whenExhaustedAction, -1, pconfig.mPoolSize);
+        ConnectionFactory cfac = ZimbraConnectionFactory.getConnectionFactory(pconfig);
+
+        boolean defAutoCommit = false, defReadOnly = false;
+        new PoolableConnectionFactory(cfac, connectionPool, null, null, defReadOnly, defAutoCommit);
+
+        PoolingDataSource pds = new PoolingDataSource(connectionPool);
+        pds.setAccessToUnderlyingConnectionAllowed(true);
+
+        final DbPool dbPool = new DbPool(db, pds, connectionPool);
+
+        System.setProperty("jdbc.drivers", pconfig.mDriverClassName);
+
+        sRootUrl = pconfig.mRootUrl;
+        sLoggerRootUrl = pconfig.mLoggerUrl;
+        waitForDatabase(dbPool);
+        return dbPool;
+    }
+
+    public static DbPool newPool() {
+        return newPool(Db.getInstance());
+    }
+
+    public DbConnection getConnectionInstance() throws ServiceException {
+        return getConnectionInstance(null);
+    }
+
+    public DbConnection getConnectionInstance(Mailbox mbox) throws ServiceException {
+        Integer mboxId = mbox != null ? mbox.getId() : -1; //-1 == zimbra db and/or initialization where mbox isn't known yet
+        try {
+            long start = ZimbraPerf.STOPWATCH_DB_CONN.start();
+
+            // If the connection pool is overutilized, warn about potential leaks
+            PoolingDataSource pool = this.connectionPool;
+            // TODO: think about warn about overutilized connections
+            // checkPoolUsage();
+
+            Connection dbconn = null;
+            DbConnection conn = null;
+            try {
+                dbconn = pool.getConnection();
+
+                if (dbconn.getAutoCommit() != false)
+                    dbconn.setAutoCommit(false);
+
+                // We want READ COMMITTED transaction isolation level for duplicate
+                // handling code in BucketBlobStore.newBlobInfo().
+                if (db.instanceSupports(Db.Capability.READ_COMMITTED_ISOLATION))
+                    dbconn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
+                conn = new DbConnection(dbconn, mboxId);
+            } catch (SQLException e) {
+                try {
+                    if (dbconn != null && !dbconn.isClosed())
+                        dbconn.close();
+                } catch (SQLException e2) {
+                    ZimbraLog.sqltrace.warn("DB connection close caught exception", e);
+                }
+                throw ServiceException.FAILURE("getting database connection", e);
+            }
+
+            // If we're debugging, update the counter with the current stack trace
+            if (ZimbraLog.dbconn.isDebugEnabled()) {
+                Throwable t = new Throwable();
+                conn.setStackTrace(t);
+
+                String stackTrace = SystemUtil.getStackTrace(t);
+                synchronized (sConnectionStackCounter) {
+                    sConnectionStackCounter.increment(stackTrace);
+                }
+            }
+
+            ZimbraPerf.STOPWATCH_DB_CONN.stop(start);
+            return conn;
+        } catch (ServiceException se) {
+            //if connection open fails unlock
+            throw se;
+        }
+    }
 
     public static class DbConnection implements AutoCloseable {
         private final Connection connection;
@@ -215,6 +309,25 @@ public class DbPool {
         waitForDatabase();
     }
 
+    private static void waitForDatabase(DbPool dbPool) {
+        DbConnection conn = null;
+        final int RETRY_SECONDS = 5;
+
+        while (conn == null) {
+            try {
+                conn = dbPool.getConnectionInstance();
+            } catch (ServiceException e) {
+                ZimbraLog.misc.warn("Could not establish a connection to the database.  Retrying in %d seconds.",
+                    RETRY_SECONDS, e);
+                try {
+                    Thread.sleep(RETRY_SECONDS * 1000);
+                } catch (InterruptedException e2) {
+                }
+            }
+        }
+
+        DbPool.quietClose(conn);
+    }
     private static void waitForDatabase() {
         DbConnection conn = null;
         final int RETRY_SECONDS = 5;
@@ -515,6 +628,14 @@ public class DbPool {
     public static synchronized void shutdown() throws Exception {
         isShutdown = true;
         close();
+    }
+
+    public void shutdownInstance() throws Exception {
+        synchronized (this) {
+            if (this.poolManager != null) {
+                poolManager.close();
+            }
+        }
     }
 
     @VisibleForTesting

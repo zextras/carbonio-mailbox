@@ -88,6 +88,10 @@ public abstract class Db {
         return getInstance().supportsCapability(capability);
     }
 
+    public boolean instanceSupports(Db.Capability capability) {
+        return this.supportsCapability(capability);
+    }
+
     abstract boolean supportsCapability(Db.Capability capability);
 
     /** Returns whether the given {@link SQLException} is an instance of the
