@@ -156,7 +156,7 @@ public class HealthServletTest {
 
 
   private static void shutdownDb() throws Exception {
-    DbPool.shutdown();
+    DbPool.shutDownAndClear();
   }
 
   private interface ThrowingRunnable {
