@@ -3058,7 +3058,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     }
   }
 
-  private void createParentDomains(ZLdapContext zlc, String[] parts, String[] dns)
+  public void createParentDomains(ZLdapContext zlc, String[] parts, String[] dns)
       throws ServiceException {
     for (int i = dns.length - 1; i > 0; i--) {
       if (!domainDnExists(zlc, dns[i])) {
