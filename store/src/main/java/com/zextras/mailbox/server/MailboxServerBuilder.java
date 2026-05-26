@@ -258,7 +258,10 @@ public class MailboxServerBuilder {
 
 	private HttpConfiguration createHttpsConfig(HttpConfiguration baseConfig) {
 		HttpConfiguration sslHttpConfig = new HttpConfiguration(baseConfig);
-		sslHttpConfig.addCustomizer(new SecureRequestCustomizer());
+		SecureRequestCustomizer secureRequestCustomizer = new SecureRequestCustomizer();
+		secureRequestCustomizer.setSniHostCheck(false);
+		secureRequestCustomizer.setSniRequired(false);
+		sslHttpConfig.addCustomizer(secureRequestCustomizer);
 		return sslHttpConfig;
 	}
 
