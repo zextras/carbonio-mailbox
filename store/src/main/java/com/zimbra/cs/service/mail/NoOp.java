@@ -13,8 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.jetty.continuation.Continuation;
-import org.eclipse.jetty.continuation.ContinuationSupport;
+import javax.servlet.AsyncContext;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -87,8 +86,8 @@ public class NoOp extends MailDocumentHandler  {
             if (origContext == null) { // Initial
                 servletRequest.setAttribute("nop_origcontext", zsc);
                 // NOT a resumed request -- block if necessary
-                Continuation continuation = ContinuationSupport.getContinuation(servletRequest);
-                if (zsc.beginWaitForNotifications(continuation, includeDelegates)) {
+                AsyncContext asyncContext = servletRequest.startAsync();
+                if (zsc.beginWaitForNotifications(asyncContext, includeDelegates)) {
                     if (enforceLimit) {
                         ZimbraSoapContext otherContext = sBlockedNops.put(zsc.getAuthtokenAccountId(), zsc);
                         if (otherContext != null) {
@@ -98,14 +97,12 @@ public class NoOp extends MailDocumentHandler  {
 
                     synchronized (zsc) {
                         if (zsc.waitingForNotifications()) {
-                            //assert (!(continuation instanceof WaitingContinuation) || ((WaitingContinuation) continuation).getMutex() == zsc);
                             long timeout = parseTimeout(request);
                             if (ZimbraLog.soap.isTraceEnabled())
                                 ZimbraLog.soap.trace("Suspending <NoOpRequest> for %dms", timeout);
                             zsc.suspendAndUndispatch(timeout);
+                            return null;
                         }
-                        // bug 63230: Commenting out the below assertion.  continuation can be a RetryContinuation object, apparently.
-                        //assert(continuation instanceof WaitingContinuation); // this part of code only reached if we're using WaitingContinuations
 
                         if (zsc.isCanceledWaitForNotifications())
                             blockingUnsupported = true;

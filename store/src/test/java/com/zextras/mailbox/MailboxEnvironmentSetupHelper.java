@@ -137,7 +137,7 @@ public class MailboxEnvironmentSetupHelper {
 		KeyPair keyPair = keyPairGen.generateKeyPair();
 
 		// Create a self-signed certificate using BouncyCastle
-		X500Principal issuer = new X500Principal("CN=Test");
+		X500Principal issuer = new X500Principal("CN=localhost");
 		Date startDate = new Date();
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(startDate);

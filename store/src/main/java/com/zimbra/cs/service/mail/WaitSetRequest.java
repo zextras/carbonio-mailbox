@@ -47,8 +47,7 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
-import org.eclipse.jetty.continuation.Continuation;
-import org.eclipse.jetty.continuation.ContinuationSupport;
+import javax.servlet.AsyncContext;
 
 /** */
 public class WaitSetRequest extends MailDocumentHandler {
@@ -188,9 +187,9 @@ public class WaitSetRequest extends MailDocumentHandler {
     WaitSetCallback cb = (WaitSetCallback) servletRequest.getAttribute(VARS_ATTR_NAME);
 
     if (cb == null) { // Initial
-      Continuation continuation = ContinuationSupport.getContinuation(servletRequest);
+      AsyncContext asyncContext = servletRequest.startAsync();
       cb = new WaitSetCallback();
-      cb.continuationResume = new ResumeContinuationListener(continuation);
+      cb.continuationResume = new ResumeContinuationListener(asyncContext);
       servletRequest.setAttribute(VARS_ATTR_NAME, cb);
       servletRequest.setAttribute(ZimbraSoapContext.soapRequestIdAttr, zsc.getSoapRequestId());
 
@@ -256,13 +255,12 @@ public class WaitSetRequest extends MailDocumentHandler {
             long timeout = getTimeoutMillis(req.getTimeout(), adminAllowed);
             ZimbraLog.soap.trace("Suspending <WaitSetRequest> for %dms", timeout);
             cb.continuationResume.suspendAndUndispatch(timeout);
+            return;
           }
         }
       }
     }
 
-    // if we got here, then we did *not* execute a jetty RetryContinuation,
-    // soooo, we'll fall through and finish up at the bottom
     processCallback(resp, cb, waitSetId, lastKnownSeqNo, expand);
   }
 

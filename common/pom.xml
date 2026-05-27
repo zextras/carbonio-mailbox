@@ -134,6 +134,14 @@
       <artifactId>jetty-util</artifactId>
       <groupId>org.eclipse.jetty</groupId>
     </dependency>
+    <dependency>
+      <artifactId>jetty-http</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>jetty-server</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+    </dependency>
 
     <dependency>
       <artifactId>commons-lang3</artifactId>

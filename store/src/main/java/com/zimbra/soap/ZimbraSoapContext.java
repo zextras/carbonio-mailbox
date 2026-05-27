@@ -40,9 +40,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import org.dom4j.QName;
-import org.eclipse.jetty.continuation.Continuation;
 
 /**
  * This class models the soap context (the data from the soap envelope) for a single request.
@@ -787,10 +787,10 @@ public final class ZimbraSoapContext {
     return mSessionInfo != null;
   }
 
-  public boolean beginWaitForNotifications(Continuation continuation, boolean includeDelegates)
+  public boolean beginWaitForNotifications(AsyncContext asyncContext, boolean includeDelegates)
       throws ServiceException {
     mWaitForNotifications = true;
-    continuationResume = new ResumeContinuationListener(continuation);
+    continuationResume = new ResumeContinuationListener(asyncContext);
 
     Session session = SessionCache.lookup(mSessionInfo.sessionId, mAuthTokenAccountId);
     if (!(session instanceof SoapSession)) return false;

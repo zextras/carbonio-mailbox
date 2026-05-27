@@ -61,8 +61,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.util.EntityUtils;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.ee8.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee8.servlet.ServletHolder;
 import org.json.JSONArray;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -147,7 +147,7 @@ public class FileUploadServletTest extends MailboxTestSuite {
     var servletHolder = new ServletHolder(FileUploadServlet.class);
     var servletContextHandler = new ServletContextHandler();
     servletContextHandler.addServlet(servletHolder, "/*");
-    server.setHandler(servletContextHandler);
+    server.setHandler(servletContextHandler.getCoreContextHandler());
     server.start();
   }
 

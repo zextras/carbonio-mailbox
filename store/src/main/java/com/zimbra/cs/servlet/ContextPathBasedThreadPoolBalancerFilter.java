@@ -19,8 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrTokenizer;
-import org.eclipse.jetty.continuation.Continuation;
-import org.eclipse.jetty.continuation.ContinuationSupport;
+import javax.servlet.AsyncContext;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 
@@ -75,13 +74,12 @@ public class ContextPathBasedThreadPoolBalancerFilter implements Filter {
 
         // Suspend request
         if (suspend) {
-            Continuation continuation = ContinuationSupport.getContinuation(request);
+            AsyncContext asyncContext = request.startAsync(request, response);
             HttpServletRequest hreq = (HttpServletRequest) request;
             ZimbraServlet.addRemoteIpToLoggingContext(hreq);
             ZimbraServlet.addUAToLoggingContext(hreq);
             ZimbraLog.clearContext();
-            continuation.setTimeout(suspendMs);
-            continuation.suspend();
+            asyncContext.setTimeout(suspendMs);
             return;
         }
 
