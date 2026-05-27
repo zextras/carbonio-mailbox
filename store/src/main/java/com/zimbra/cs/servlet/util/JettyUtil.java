@@ -8,7 +8,7 @@ package com.zimbra.cs.servlet.util;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.jetty.io.EndPoint;
-import org.eclipse.jetty.server.HttpConnection;
+import org.eclipse.jetty.server.internal.HttpConnection;
 
 import com.zimbra.common.util.ZimbraLog;
 

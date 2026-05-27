@@ -37,7 +37,8 @@
     <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <sonar.version>5.5.0.6356</sonar.version>
-    <jetty.version>10.0.26</jetty.version>
+    <jetty.version>12.1.9</jetty.version>
+    <jetty10.version>10.0.26</jetty10.version>
     <lucene.version>3.5.0</lucene.version>
     <jackson.version>2.15.4</jackson.version>
     <bouncycastle.version>1.84</bouncycastle.version>
@@ -171,19 +172,29 @@
         <version>${jetty.version}</version>
       </dependency>
       <dependency>
-        <groupId>io.opentelemetry</groupId>
-        <artifactId>opentelemetry-api</artifactId>
-        <version>1.35.0</version>
+        <groupId>org.eclipse.jetty.ee8</groupId>
+        <artifactId>jetty-ee8-security</artifactId>
+        <version>${jetty.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-servlets</artifactId>
+        <groupId>org.eclipse.jetty.ee8</groupId>
+        <artifactId>jetty-ee8-nested</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty.ee8</groupId>
+        <artifactId>jetty-ee8-servlets</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty.ee8</groupId>
+        <artifactId>jetty-ee8-servlet</artifactId>
         <version>${jetty.version}</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-servlet</artifactId>
-        <version>${jetty.version}</version>
+        <version>${jetty10.version}</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
@@ -204,6 +215,11 @@
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-util</artifactId>
         <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentelemetry</groupId>
+        <artifactId>opentelemetry-api</artifactId>
+        <version>1.35.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
@@ -464,11 +480,7 @@
         <artifactId>commons-pool2</artifactId>
         <version>2.10.0</version>
       </dependency>
-      <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>apache-jsp</artifactId>
-        <version>${jetty.version}</version>
-      </dependency>
+
       <dependency>
         <groupId>org.dom4j</groupId>
         <artifactId>dom4j</artifactId>
@@ -611,6 +623,7 @@
         <artifactId>jetty-rewrite</artifactId>
         <version>${jetty.version}</version>
       </dependency>
+
       <dependency>
         <groupId>jline</groupId>
         <artifactId>jline</artifactId>

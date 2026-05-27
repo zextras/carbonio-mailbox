@@ -10,9 +10,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.jetty.http.pathmap.ServletPathSpec;
-import org.eclipse.jetty.security.ServerAuthException;
-import org.eclipse.jetty.server.Authentication;
-import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.ee8.security.ServerAuthException;
+import org.eclipse.jetty.ee8.nested.Authentication;
+import org.eclipse.jetty.ee8.nested.ServletConstraint;
 
 
 
@@ -45,7 +45,7 @@ public class EwsAuthenticator extends ZimbraAuthenticator {
      */
     @Override
     public String getAuthMethod() {
-        return Constraint.NONE;
+        return ServletConstraint.NONE;
     }
 
     /* (non-Javadoc)

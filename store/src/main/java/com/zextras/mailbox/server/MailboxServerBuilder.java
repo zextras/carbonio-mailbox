@@ -7,9 +7,7 @@ import com.zimbra.common.jetty.JettyMonitor;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.account.Config;
 import java.io.IOException;
-import javax.servlet.DispatcherType;
 import org.eclipse.jetty.http.HttpVersion;
-import org.eclipse.jetty.rewrite.handler.MsieSslRule;
 import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.rewrite.handler.RewritePatternRule;
 import org.eclipse.jetty.rewrite.handler.RewriteRegexRule;
@@ -24,8 +22,6 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.handler.HandlerCollection;
-import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
@@ -52,13 +48,10 @@ public class MailboxServerBuilder {
 		return this;
 	}
 
-	private static RequestLogHandler createRequestLogHandler() {
+	private static void configureRequestLog(Server server) {
 		final String accessLogFileName = LC.zimbra_log_directory.value() + "/access_log.yyyy_mm_dd";
 		final CustomRequestLog ncsaRequestLog = new CustomRequestLog(accessLogFileName, CustomRequestLog.EXTENDED_NCSA_FORMAT);
-
-		final RequestLogHandler requestLogHandler = new RequestLogHandler();
-		requestLogHandler.setRequestLog(ncsaRequestLog);
-		return requestLogHandler;
+		server.setRequestLog(ncsaRequestLog);
 	}
 
 	public MailboxServer create() throws InstantiationException {
@@ -87,12 +80,11 @@ public class MailboxServerBuilder {
 			// NOTE: separate handler for internal APIs, not affected by DoS filter and other filters
 			final ContextHandlerCollection contexts = new ContextHandlerCollection();
 			contexts.addHandler(InternalApiContextHandler.create());
-
-			Handler webAppHandler = new MailboxAPIs(localServer).createServletContextHandler();
+			contexts.addHandler(new MailboxAPIs(localServer).createServletContextHandler());
 
 			final RewriteHandler mainHandler = createRewriteHandler();
-			mainHandler.setHandler(new HandlerCollection(contexts, webAppHandler,
-					createRequestLogHandler()));
+			mainHandler.setHandler(contexts);
+			configureRequestLog(server);
 
 			if (localServer.isHttpCompressionEnabled()) {
 				final GzipHandler gzipHandler = new GzipHandler();
@@ -170,14 +162,7 @@ public class MailboxServerBuilder {
 
 	private RewriteHandler createRewriteHandler() {
 		final RewriteHandler rewriteHandler = new RewriteHandler();
-		rewriteHandler.setRewriteRequestURI(true);
-		rewriteHandler.setRewritePathInfo(false);
 		rewriteHandler.setOriginalPathAttribute("requestedPath");
-
-		rewriteHandler.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC,
-				DispatcherType.ERROR,
-				DispatcherType.FORWARD);
-		rewriteHandler.addRule(new MsieSslRule());
 
 		final String mailURL = localServer.getMailURL();
 

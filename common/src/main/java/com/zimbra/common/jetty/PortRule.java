@@ -6,13 +6,14 @@
 package com.zimbra.common.jetty;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.eclipse.jetty.rewrite.handler.Rule;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Response;
+import org.eclipse.jetty.util.Callback;
 
 import com.zimbra.common.util.L10nUtil;
 import com.zimbra.common.util.ZimbraLog;
@@ -20,105 +21,94 @@ import com.zimbra.common.util.ZimbraLog;
 public class PortRule extends Rule {
 
     private int _port;
-    protected Pattern _regex; 
-    
-    private Integer _httpErrorStatusRegexNotmatched;
-    private String _httpErrorReasonRegexNotMatched;  // a value on L10nUtil.MsgKey
+    protected Pattern _regex;
 
-    /* ------------------------------------------------------------ */
+    private Integer _httpErrorStatusRegexNotmatched;
+    private String _httpErrorReasonRegexNotMatched;
+
     public PortRule()
     {
-        _handling = true;
-        _terminating = true;
+        setTerminating(true);
     }
-    
-    /* ------------------------------------------------------------ */
-    /**
-     * Sets the port.
-     * 
-     * @param port the port
-     */
+
     public void setPort(int port)
     {
         _port = port;
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * Sets the regular expression string used to match with string URI.
-     * 
-     * @param regex the regular expression.
-     */
     public void setRegex(String regex)
     {
         _regex=Pattern.compile(regex);
     }
-    
-    /* ------------------------------------------------------------ */
-    /**
-     * If the regex is not matched, handle the request with the 
-     * http status and reason.
-     * 
-     * @param value the replacement string.
-     */
+
     public void setHttpErrorStatusRegexNotMatched(int status)
     {
         _httpErrorStatusRegexNotmatched = status;
     }
-    
-    /* ------------------------------------------------------------ */
-    /**
-     * If the regex is not matched, handle the request with the 
-     * http status and reason.
-     *  
-     * @param value the replacement string.
-     */
+
     public void setHttpErrorReasonRegexNotMatched(String reason)
     {
         _httpErrorReasonRegexNotMatched = reason;
     }
-    
+
     @Override
-    public String matchAndApply(String target, HttpServletRequest request, HttpServletResponse response) 
-    throws IOException {
-        int port = request.getLocalPort();
-        
+    public Handler matchAndApply(Handler handler) throws IOException {
+        if (_regex == null) {
+            return null;
+        }
+
+        final Request request = handler.getWrapped();
+        final int port = getLocalPort(request);
+
         if (port == _port) {
-            Matcher matcher=_regex.matcher(target);
+            final String target = request.getHttpURI().getPath();
+            final Matcher matcher = _regex.matcher(target);
             if (!matcher.matches()) {
-                return apply(target, request, response);
+                return createErrorHandler(handler, _httpErrorStatusRegexNotmatched, _httpErrorReasonRegexNotMatched);
             }
         }
         return null;
     }
 
-    private String apply(String target, HttpServletRequest request, HttpServletResponse response) throws IOException
-    {
-        String reason = null;
-        if (_httpErrorReasonRegexNotMatched != null) {
-            try {
-                L10nUtil.MsgKey reasonKey = L10nUtil.MsgKey.valueOf(_httpErrorReasonRegexNotMatched);
-                reason = L10nUtil.getMessage(reasonKey);
-            } catch (IllegalArgumentException e) {
-                ZimbraLog.misc.debug("invalid msg key: " + _httpErrorReasonRegexNotMatched);
-            }
+    private static int getLocalPort(Request request) {
+        final var addr = request.getConnectionMetaData().getLocalSocketAddress();
+        if (addr instanceof InetSocketAddress socketAddr) {
+            return socketAddr.getPort();
         }
-        
-        if (reason == null) {
-            response.sendError(_httpErrorStatusRegexNotmatched);
-        } else {
-            response.sendError(_httpErrorStatusRegexNotmatched, reason);
-        }
-        return target;
+        return -1;
     }
-    
-    
-    /**
-     * Returns the rule pattern.
-     */
+
+    private static Handler createErrorHandler(Handler handler, int status, String reasonKey) {
+        final String reason = resolveReason(reasonKey);
+        return new Handler(handler) {
+            @Override
+            protected boolean handle(Response response, Callback callback) throws Exception {
+                if (status > 0) {
+                    Response.writeError(getWrapped(), response, callback, status, reason);
+                } else {
+                    callback.succeeded();
+                }
+                return true;
+            }
+        };
+    }
+
+    private static String resolveReason(String reasonKey) {
+        if (reasonKey == null) {
+            return null;
+        }
+        try {
+            final L10nUtil.MsgKey key = L10nUtil.MsgKey.valueOf(reasonKey);
+            return L10nUtil.getMessage(key);
+        } catch (IllegalArgumentException e) {
+            ZimbraLog.misc.debug("invalid msg key: " + reasonKey);
+            return null;
+        }
+    }
+
     public String toString()
     {
-        return super.toString()+"["+_port+"]"+"["+ ((_regex != null) ? _regex.toString() : "") +"]"+"["+_httpErrorStatusRegexNotmatched+"]";                
+        return super.toString()+"["+_port+"]"+"["+ ((_regex != null) ? _regex.toString() : "") +"]"+"["+_httpErrorStatusRegexNotmatched+"]";
     }
 
 }
