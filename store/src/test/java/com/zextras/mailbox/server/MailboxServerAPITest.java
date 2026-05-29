@@ -126,4 +126,135 @@ class MailboxServerAPITest {
 		Assertions.assertEquals(200, response.statusCode());
 	}
 
+	@Test
+	void healthLiveOnInternalPort() throws Exception {
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getInternalApiPort() + "/service/health/live");
+		Assertions.assertEquals(200, response.statusCode());
+	}
+
+	@Test
+	void healthOnInternalPortShouldReturnJson() throws Exception {
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getInternalApiPort() + "/service/health");
+		Assertions.assertEquals(200, response.statusCode());
+		Assertions.assertTrue(response.body().contains("ready"));
+		Assertions.assertTrue(response.body().contains("dependencies"));
+	}
+
+	@Test
+	void unknownPathOnHttpPortShouldReturn404() throws Exception {
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getUserHttpPort() + "/nonexistent/path");
+		Assertions.assertEquals(404, response.statusCode());
+	}
+
+	@Test
+	void unknownPathOnHttpsPortShouldReturn404() throws Exception {
+		var response = server.getHttpClient().get(
+				"https://localhost:" + server.getUserHttpsPort() + "/nonexistent/path");
+		Assertions.assertEquals(404, response.statusCode());
+	}
+
+	@Test
+	void unknownPathOnInternalPortShouldReturn404() throws Exception {
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getInternalApiPort() + "/nonexistent/path");
+		Assertions.assertEquals(404, response.statusCode());
+	}
+
+	@Test
+	void davEndpointShouldBeServiced() throws Exception {
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getUserHttpPort() + "/dav/");
+		Assertions.assertNotEquals(404, response.statusCode());
+	}
+
+	@Test
+	void homeEndpointShouldBeServiced() throws Exception {
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getUserHttpPort() + "/home/");
+		Assertions.assertNotEquals(404, response.statusCode());
+	}
+
+	@Test
+	void userEndpointShouldBeServiced() throws Exception {
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getUserHttpPort() + "/user/");
+		Assertions.assertNotEquals(404, response.statusCode());
+	}
+
+	@Test
+	void shouldAuthenticateStandardUserOnUserHttpPortUsingFullServicePath() throws Exception {
+		final Account account = server.getAccountFactory()
+				.withPassword(PASSWORD)
+				.create();
+		SoapClient soapClient = new SoapClient("http://localhost:" + server.getUserHttpPort() + "/service/soap/");
+		final SoapResponse soapResponse = soapClient.newRequest()
+				.setSoapBody(new AuthRequest(AccountSelector.fromName(account.getName()), PASSWORD))
+				.call();
+		Assertions.assertEquals(200, soapResponse.statusCode());
+	}
+
+	@Test
+	void shouldReturnSuccessForAdminAuthOnHttpsAdminPort() throws Exception {
+		final Account account = server.getAccountFactory()
+				.withPassword(PASSWORD)
+				.asGlobalAdmin()
+				.create();
+		SoapClient soapClient = new SoapClient("https://localhost:" + server.getAdminPort() + "/service/admin/soap/");
+		final SoapResponse soapResponse = soapClient.newRequest()
+				.setSoapBody(new AuthRequest(AccountSelector.fromName(account.getName()), PASSWORD))
+				.call();
+		Assertions.assertEquals(200, soapResponse.statusCode());
+	}
+
+	@Test
+	void adminSoapOnUserHttpShouldReturnServerError() throws Exception {
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getUserHttpPort() + "/service/admin/soap/");
+		Assertions.assertNotEquals(200, response.statusCode());
+	}
+
+	@Test
+	void adminSoapOnInternalPortShouldReturnServerError() throws Exception {
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getInternalApiPort() + "/service/admin/soap/");
+		Assertions.assertNotEquals(200, response.statusCode());
+	}
+
+	@Test
+	void internalApiShouldReturn404ForUnknownAccount() throws Exception {
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getInternalApiPort() + "/internal/accounts/nonexistent-id/info");
+		Assertions.assertNotEquals(500, response.statusCode());
+	}
+
+	@Test
+	void serviceHealthShouldBeReachableOnUserHttpPort() throws Exception {
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getUserHttpPort() + "/service/health/");
+		Assertions.assertEquals(200, response.statusCode());
+	}
+
+	@Test
+	void contentEndpointShouldBeServiced() throws Exception {
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getUserHttpPort() + "/service/content/");
+		Assertions.assertNotEquals(404, response.statusCode());
+	}
+
+	@Test
+	void proxyEndpointShouldBeServiced() throws Exception {
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getUserHttpPort() + "/service/proxy/");
+		Assertions.assertNotEquals(404, response.statusCode());
+	}
+
+	@Test
+	void extensionEndpointShouldNotReturnServerError() throws Exception {
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getUserHttpPort() + "/service/extension/");
+		Assertions.assertNotEquals(500, response.statusCode());
+	}
 }
