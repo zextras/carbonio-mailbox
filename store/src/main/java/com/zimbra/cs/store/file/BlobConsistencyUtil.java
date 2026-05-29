@@ -185,7 +185,7 @@ public class BlobConsistencyUtil {
             mailboxIds = getAllMailboxIds(prov);
         }
         try {
-        	DbPool.startup();
+        	DbPool.global();
         	for (int mboxId : mailboxIds) {
         		System.out.println("Checking mailbox " + mboxId + ".");
         		checkMailbox(mboxId, prov);

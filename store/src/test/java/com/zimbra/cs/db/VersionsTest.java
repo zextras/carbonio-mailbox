@@ -26,7 +26,7 @@ public class VersionsTest {
 	static void setUp() throws Exception {
 		LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
 		HSQLDB.createDatabase(tempDir.getAbsolutePath());
-		DbPool.startup();
+		DbPool.global();
 	}
 
 	@AfterAll

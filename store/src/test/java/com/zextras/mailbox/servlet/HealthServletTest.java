@@ -84,6 +84,7 @@ public class HealthServletTest {
 
   @Test
   void liveShouldReturn500WhenDBConnectionFailing() throws Exception {
+    shutdownDb();
     try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
       final HttpGet httpGet = new HttpGet(server.getURI() + "/health/live");
 
@@ -110,6 +111,7 @@ public class HealthServletTest {
 
   @Test
   void readyShouldReturn500WhenDBConnectionFailing() throws Exception {
+    shutdownDb();
     try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
       final HttpGet httpGet = new HttpGet(server.getURI() + "/health/ready");
 
@@ -142,7 +144,7 @@ public class HealthServletTest {
   }
 
   private void withDb(ThrowingRunnable runnable) throws Exception {
-    DbPool.startup();
+    DbPool.global();
     try {
       runnable.run();
     } catch (Exception e) {
@@ -150,6 +152,11 @@ public class HealthServletTest {
     } finally {
       DbPool.shutDownAndClear();
     }
+  }
+
+
+  private static void shutdownDb() throws Exception {
+    DbPool.shutDownAndClear();
   }
 
   private interface ThrowingRunnable {

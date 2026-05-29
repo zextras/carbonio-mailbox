@@ -34,15 +34,6 @@ import org.hsqldb.cmdline.SqlFile;
  */
 public class HSQLDB extends Db {
 
-
-    @Deprecated
-    public static void createDatabase() throws Exception {
-        final String volumeDirectory = LC.zimbra_home.value() + "/build/test";
-        final String path = new File(volumeDirectory).getAbsolutePath();
-        createDatabase(path);
-    }
-
-
     /**
      * Populates ZIMBRA and MBOXGROUP1 schema.
      */

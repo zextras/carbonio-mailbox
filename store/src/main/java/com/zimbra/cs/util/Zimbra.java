@@ -205,7 +205,7 @@ public final class Zimbra {
 
     ZimbraPerf.prepare(ZimbraPerf.ServerID.ZIMBRA);
 
-    DbPool.startup();
+    DbPool.global();
 
     app.initializeZimbraDb(forMailboxd);
 
