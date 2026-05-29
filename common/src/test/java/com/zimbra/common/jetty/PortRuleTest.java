@@ -6,11 +6,10 @@
 
 package com.zimbra.common.jetty;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.zextras.mailbox.util.PortUtil;
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -18,19 +17,26 @@ import java.net.http.HttpResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.ee8.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee8.servlet.ServletHolder;
+import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-@Tag("e2e")
 class PortRuleTest {
 
 	private Server server;
+
+	private static int findFreePort() {
+		try (ServerSocket socket = new ServerSocket(0)) {
+			socket.setReuseAddress(true);
+			return socket.getLocalPort();
+		} catch (IOException e) {
+			throw new RuntimeException("Unable to find a free port", e);
+		}
+	}
 
 	@AfterEach
 	void afterEach() throws Exception {
@@ -53,7 +59,7 @@ class PortRuleTest {
 
 	private int startServerWithPortRule(int rulePort, String regex, int errorStatus, String errorReason) throws Exception {
 		server = new Server();
-		final int serverPort = PortUtil.findFreePort();
+		final int serverPort = findFreePort();
 		final ServerConnector connector = new ServerConnector(server);
 		connector.setPort(serverPort);
 		connector.setHost("localhost");
@@ -86,7 +92,7 @@ class PortRuleTest {
 
 	@Test
 	void portRuleShouldMatchSamePort() throws Exception {
-		final int serverPort = PortUtil.findFreePort();
+		final int serverPort = findFreePort();
 		final int port = startServerWithPortRule(serverPort, ".*", 0);
 		final HttpClient client = HttpClient.newHttpClient();
 		final HttpRequest request = HttpRequest.newBuilder()
@@ -109,7 +115,7 @@ class PortRuleTest {
 
 	@Test
 	void portRuleShouldReturnErrorWhenPathDoesNotMatchRegex() throws Exception {
-		final int serverPort = PortUtil.findFreePort();
+		final int serverPort = findFreePort();
 		server = new Server();
 		final ServerConnector connector = new ServerConnector(server);
 		connector.setPort(serverPort);
@@ -149,7 +155,7 @@ class PortRuleTest {
 
 	@Test
 	void portRuleShouldReturnCustomErrorWhenPathDoesNotMatchRegex() throws Exception {
-		final int serverPort = PortUtil.findFreePort();
+		final int serverPort = findFreePort();
 		server = new Server();
 		final ServerConnector connector = new ServerConnector(server);
 		connector.setPort(serverPort);
@@ -183,7 +189,7 @@ class PortRuleTest {
 
 	@Test
 	void portRuleShouldReturnCustomReasonWhenPathDoesNotMatchRegex() throws Exception {
-		final int serverPort = PortUtil.findFreePort();
+		final int serverPort = findFreePort();
 		server = new Server();
 		final ServerConnector connector = new ServerConnector(server);
 		connector.setPort(serverPort);
@@ -229,7 +235,7 @@ class PortRuleTest {
 
 	@Test
 	void portRuleShouldHandleInvalidReasonKey() throws Exception {
-		final int serverPort = PortUtil.findFreePort();
+		final int serverPort = findFreePort();
 		server = new Server();
 		final ServerConnector connector = new ServerConnector(server);
 		connector.setPort(serverPort);
@@ -263,7 +269,7 @@ class PortRuleTest {
 
 	@Test
 	void portRuleShouldReturnCustomReasonForValidKey() throws Exception {
-		final int serverPort = PortUtil.findFreePort();
+		final int serverPort = findFreePort();
 		server = new Server();
 		final ServerConnector connector = new ServerConnector(server);
 		connector.setPort(serverPort);
