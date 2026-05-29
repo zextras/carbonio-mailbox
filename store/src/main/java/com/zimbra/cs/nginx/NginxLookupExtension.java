@@ -9,7 +9,6 @@ package com.zimbra.cs.nginx;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.ProvisioningConstants;
-import com.zimbra.common.account.ZAttrProvisioning.IPMode;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Constants;
@@ -38,9 +37,6 @@ import com.zimbra.cs.nginx.AbstractNginxLookupLdapHelper.SearchDirResult;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.authenticator.ClientCertAuthenticator;
 import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.Inet6Address;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -1055,28 +1051,15 @@ public class NginxLookupExtension implements ZimbraExtension {
         }
 
         /**
-         * bug 37266, support proxy-side dns lookup
-         * @param hostname
-         * @return either <b>hostname</b> or the result of a proxy-side DNS lookup if appropriate
-         * @throws ServiceException
-         * @throws UnknownHostException
+         * bug 37266 / CO-443: send the raw configured hostname (e.g. zimbraMailHost) to the
+         * proxy as-is. Forcing server-side DNS resolution used to be controllable via the
+         * zimbraReverseProxyDnsLookupInServerEnabled attribute, whose default was FALSE; the
+         * attribute has since been removed, so the default (no resolution) is the only behavior.
+         * @param hostname the configured upstream hostname
+         * @return the hostname unchanged
          */
-        private String resolvedHostname(String hostname) throws ServiceException, UnknownHostException {
-            return getIPByIPMode(hostname).getHostAddress();
-//            boolean doDnsLookup = true;
-//            // TODO: check if these attributes are really deprecated
-////            Server server = prov.getLocalServer();
-////            if (server == null) {
-////                doDnsLookup = prov.getConfig().getBooleanAttr(
-////                        Provisioning.A_zimbraReverseProxyDnsLookupInServerEnabled, true);
-////            } else {
-////                doDnsLookup = server.getBooleanAttr(
-////                        Provisioning.A_zimbraReverseProxyDnsLookupInServerEnabled, true);
-////            }
-//            if (doDnsLookup) {
-//                return getIPByIPMode(hostname).getHostAddress();
-//            }
-//            return hostname;
+        private String resolvedHostname(String hostname) {
+            return hostname;
         }
 
         private SearchDirResult searchForReverseProxyMailHostInfo(
@@ -1101,7 +1084,7 @@ public class NginxLookupExtension implements ZimbraExtension {
          */
         private void useDomainExternalRoutingWhenNoUserFound(NginxLookupRequest req, ILdapContext zlc,
                 Config config, String authUser, String authUserWithRealDomainName)
-                        throws EntryNotFoundException, UnknownHostException, ServiceException {
+                        throws EntryNotFoundException, UnknownHostException {
             DomainExternalRouteInfo domain =
                     getDomainExternalRouteInfo(zlc, config, authUserWithRealDomainName);
             if (domain == null || !domain.useExternalRouteIfAccountNotExist()) {
@@ -1196,46 +1179,6 @@ public class NginxLookupExtension implements ZimbraExtension {
             return (domain == null) ?
                     prov.getDefaultDomain().isReverseProxyExternalRouteIncludeOriginalAuthusername() :
                     domain.externalRouteIncludeOriginalAuthusername();
-        }
-
-        /** get the IP address of the host name according to current IP mode
-         *
-         * for ipv4 mode, the first ipv4 address will be used.
-         * for ipv6 mode, the first ipv6 address will be used.
-         * for both mode, try to return the first available ipv4. If no ipv4 available,
-         * use the first available ipv6
-         *
-         * @param hostname the host name to be resolved
-         * @return the IP Address
-         * @throws ServiceException
-         * @throws UnknownHostException
-         */
-        public InetAddress getIPByIPMode(String hostname) throws ServiceException, UnknownHostException {
-            String localhost = LC.get("zimbra_server_hostname");
-            IPMode mode = Provisioning.getInstance().getServerByName(localhost).getIPMode();
-            InetAddress[] ips = InetAddress.getAllByName(hostname);
-            if (mode == IPMode.ipv4) {
-                for (InetAddress ip: ips) {
-                    if (ip instanceof Inet4Address) {
-                        return ip;
-                    }
-                }
-                throw ServiceException.FAILURE("Can't find available IPv4 address for upstream " + hostname + " whose IP mode is IPv4 only", null);
-            } else if (mode == IPMode.ipv6) {
-                for (InetAddress ip: ips) {
-                    if (ip instanceof Inet6Address) {
-                        return ip;
-                    }
-                }
-                throw ServiceException.FAILURE("Can't find available IPv6 address for upstream " + hostname + " whose IP mode is IPv6 bonly", null);
-            } else {
-                for (InetAddress ip: ips) {
-                    if (ip instanceof Inet4Address) {
-                        return ip;
-                    }
-                }
-                return ips[0];
-            }
         }
 
         /**
