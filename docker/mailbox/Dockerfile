@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM alpine:3 AS build
+FROM --platform=$BUILDPLATFORM docker.io/library/alpine:3 AS build
 
 WORKDIR /build
 
@@ -58,14 +58,14 @@ RUN mkdir -p /staging/usr/bin && \
     chmod +x /staging/usr/bin/zmmailbox
 
 # Generate keystore using Alpine-based builder stage
-FROM --platform=$BUILDPLATFORM eclipse-temurin:21-jre-alpine AS keystore-builder
+FROM --platform=$BUILDPLATFORM docker.io/library/eclipse-temurin:21-jre-alpine AS keystore-builder
 RUN mkdir -p /keystore && \
     keytool -genkey -keyalg RSA \
     -dname "cn=Unknown, ou=Unknown, o=Unknown, c=Unknown" \
     -keystore /keystore/keystore -keysize 2048 -validity 1461 \
     -keypass testkey1 -storepass teststore1
 
-FROM eclipse-temurin:21-jre-jammy
+FROM docker.io/library/eclipse-temurin:21-jre-jammy
 
 # Copy entire staged directory structure
 COPY --from=build /staging /

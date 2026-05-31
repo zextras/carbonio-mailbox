@@ -1,4 +1,4 @@
-FROM mariadb:10.4
+FROM docker.io/library/mariadb:10.4
 
 ENV MARIADB_ROOT_PASSWORD=password
 
