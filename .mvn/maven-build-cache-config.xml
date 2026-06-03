@@ -12,6 +12,8 @@
              is re-expanded into the installed/deployed pom even on a cache hit.
              Omitting it publishes a pom with unresolved ${revision} (invalid pom). -->
         <plugin artifactId="flatten-maven-plugin"/>
+        <plugin artifactId="maven-install-plugin"/>
+        <plugin artifactId="maven-deploy-plugin"/>
       </plugins>
     </runAlways>
   </executionControl>

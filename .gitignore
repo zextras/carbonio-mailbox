@@ -44,3 +44,6 @@ target/
 /attribute-manager/
 /store/cacerts
 /store/cacerts_trusted
+
+# Local Maven settings — contain Nexus credentials, never commit
+nexus-maven-settings.xml
