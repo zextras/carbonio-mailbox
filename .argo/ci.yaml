@@ -5,10 +5,9 @@
 #
 # Jenkinsfile stage -> Argo mapping:
 #   Bump version and tag (dt2_semanticRelease) -> ci-semantic-release guard
-#       (the [skip ci] guard). NOTE: the Jenkins job auto-bumps+tags on devel
-#       via a nightly cron; replicate that with an Argo CronWorkflow calling the
-#       ci-semantic-release `release` template — left as a follow-up so push/PR
-#       CI doesn't tag on every commit.
+#       (the [skip ci] guard) here, PLUS a nightly bump/tag on devel handled by
+#       the separate CronWorkflow in .argo/cron-release.yaml (push/PR CI must not
+#       tag on every commit).
 #   Setup / gitMetadata        -> ci-git-clone + ci-git-metadata
 #   Maven build + UT/IT + Sonar -> ci-maven-build (single call; the template runs
 #       build -> test -> coverage -> sonar -> deploy in sequence). The staging/
@@ -20,13 +19,13 @@
 #   Packages: Publish          -> ci-upload-artifacts (yap at staging/packages).
 #   Publish to maven (tag)     -> ci-maven-build deployArtifacts=true, gated by
 #       isTag (template deploy gating = default branch | tag | playground).
+#   Flaky, API, E2E tests      -> inline 'grouped-tests' template (cd store; run
+#       -Dgroups=flaky,api then -Dgroups=e2e), non-fatal like Jenkins.
+#   Build and Package API Docs -> inline 'api-docs' template (antrun soap-docs +
+#       tar), output as the 'api-docs' artifact (replaces archiveArtifacts).
 #   Docker images (x6)         -> ci-docker-build, one step each, parallel.
 #
-# CAVEATS (documented, not silently dropped):
-#   * 'Flaky, API, E2E tests' and 'Build and Package API Docs' stages are NOT
-#     yet mapped — they need extra Maven invocations (-Dgroups=flaky,api / e2e
-#     and the antrun soap-docs goal + archive). Track as a follow-up; the core
-#     build/test/coverage/sonar/package/deploy/docker path is covered.
+# NOTE:
 #   * Jenkins ran sonar with -Pprod (via MVN_OPTS); ci-maven-build runs sonar
 #     without the build profile (mavenStage parity). Acceptable for analysis.
 #
@@ -221,6 +220,25 @@ spec:
               artifacts:
                 - name: workspace
                   from: "{{steps.clone.outputs.artifacts.workspace}}"
+
+        # Step 5b: grouped tests + API docs (Jenkins 'Flaky, API, E2E tests' and
+        # 'Build and Package API Docs'), in parallel. Both consume the built
+        # workspace. Jenkins ran these without credentials (public dep resolution).
+        - - name: grouped-tests
+            when: "{{steps.release-guard.outputs.parameters.skip}} != true"
+            template: grouped-tests
+            arguments:
+              artifacts:
+                - name: workspace
+                  from: "{{steps.maven-build.outputs.artifacts.workspace}}"
+
+          - name: api-docs
+            when: "{{steps.release-guard.outputs.parameters.skip}} != true"
+            template: api-docs
+            arguments:
+              artifacts:
+                - name: workspace
+                  from: "{{steps.maven-build.outputs.artifacts.workspace}}"
 
         # Step 6: build deb/rpm packages (Jenkins 'Packages > Build deb/rpm':
         # buildStage(addCarbonioRepos, buildDirs: ['staging/packages'])).
@@ -522,6 +540,71 @@ spec:
               artifacts:
                 - name: workspace
                   from: "{{steps.maven-build.outputs.artifacts.workspace}}"
+
+    # ─── Inline: grouped tests — Jenkins 'Flaky, API, E2E tests' ───────────────
+    # cd store && (flaky,api) then (e2e). Non-fatal: Jenkins recorded junit with
+    # allowEmptyResults and didn't fail the build on these grouped suites.
+    - name: grouped-tests
+      inputs:
+        artifacts:
+          - name: workspace
+            path: /workspace
+      script:
+        image: eclipse-temurin:21-jdk
+        command: [bash]
+        workingDir: /workspace
+        env:
+          - name: MAVEN_OPTS
+            value: "-Xmx2g"
+        source: |
+          set -e
+          git config --global --add safe.directory /workspace
+          MVN="mvn --batch-mode --no-transfer-progress -Ddebug=0 -Dis-production=1 -Pprod"
+          cd store || { echo "store/ missing"; exit 1; }
+          echo "=== flaky,api ==="
+          $MVN jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=flaky,api || echo "WARNING: flaky,api suite reported failures"
+          echo "=== e2e ==="
+          $MVN jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -Dgroups=e2e || echo "WARNING: e2e suite reported failures"
+      outputs:
+        artifacts:
+          - name: test-reports
+            path: /workspace/store/target
+            archive:
+              none: {}
+            optional: true
+
+    # ─── Inline: SOAP API docs — Jenkins 'Build and Package API Docs' ──────────
+    - name: api-docs
+      inputs:
+        artifacts:
+          - name: workspace
+            path: /workspace
+      script:
+        image: eclipse-temurin:21-jdk
+        command: [bash]
+        workingDir: /workspace
+        env:
+          - name: MAVEN_OPTS
+            value: "-Xmx2g"
+        source: |
+          set -e
+          git config --global --add safe.directory /workspace
+          MVN="mvn --batch-mode --no-transfer-progress -Ddebug=0 -Dis-production=1 -Pprod"
+          (
+            cd soap || { echo "Directory soap does not exist"; exit 1; }
+            $MVN antrun:run@generate-soap-docs
+          )
+          VERSION=$($MVN help:evaluate -Dexpression=project.version -q -DforceStdout)
+          mkdir -p docs
+          tar -czf "docs/carbonio-mailbox-api-docs-${VERSION}.tar.gz" -C soap/target/docs/soap .
+          echo "Built docs/carbonio-mailbox-api-docs-${VERSION}.tar.gz"
+      outputs:
+        artifacts:
+          - name: api-docs
+            path: /workspace/docs
+            archive:
+              none: {}
+            optional: true
 
     # ─── Inline: merge per-distro artifact dirs into one ───────────────────────
     - name: collect-artifacts

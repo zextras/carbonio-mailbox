@@ -1,0 +1,66 @@
+---
+# CronWorkflow: carbonio-mailbox-nightly-release
+# Replaces the Jenkins 'Bump version and tag' (dt2_semanticRelease) stage, which
+# the Jenkinsfile ran on a nightly cron for the devel branch:
+#     triggers { cron(env.BRANCH_NAME == 'devel' ? 'H 5 * * *' : '') }
+#
+# This runs semantic-release on devel once a night: it analyzes conventional
+# commits, bumps the version, creates the git tag, and pushes it. The tag push
+# then triggers the normal push-CI (carbonio-mailbox WorkflowTemplate) via the
+# Argo Events Sensor, which is what actually builds + publishes the release.
+#
+# Kept separate from push/PR CI on purpose: tagging must NOT happen on every
+# commit — only on this schedule (mirrors the Jenkins behaviour).
+apiVersion: argoproj.io/v1alpha1
+kind: CronWorkflow
+metadata:
+  name: carbonio-mailbox-nightly-release
+  namespace: argo
+  labels:
+    app.kubernetes.io/part-of: carbonio-mailbox
+spec:
+  # 05:00 daily. Jenkins used H 5 * * * (hashed minute); a fixed minute is fine.
+  schedules:
+    - "0 5 * * *"
+  timezone: "Europe/Rome"
+  concurrencyPolicy: "Forbid"
+  startingDeadlineSeconds: 3600
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  workflowSpec:
+    entrypoint: release
+    serviceAccountName: argo-workflow
+    arguments:
+      parameters:
+        - name: repoUrl
+          value: git@github.com:zextras/carbonio-mailbox.git
+        - name: revision
+          value: devel
+    artifactGC:
+      strategy: OnWorkflowDeletion
+    templates:
+      - name: release
+        steps:
+          - - name: clone
+              templateRef:
+                name: ci-git-clone
+                clusterScope: true
+                template: clone
+              arguments:
+                parameters:
+                  - name: repoUrl
+                    value: "{{workflow.parameters.repoUrl}}"
+                  - name: revision
+                    value: "{{workflow.parameters.revision}}"
+
+          # semantic-release: analyze commits, bump, tag, push (the pushed tag
+          # triggers the normal build pipeline via the Sensor).
+          - - name: semantic-release
+              templateRef:
+                name: ci-semantic-release
+                clusterScope: true
+                template: release
+              arguments:
+                artifacts:
+                  - name: workspace
+                    from: "{{steps.clone.outputs.artifacts.workspace}}"
