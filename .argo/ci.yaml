@@ -1,0 +1,563 @@
+---
+# WorkflowTemplate: carbonio-mailbox
+# Migrated from Jenkinsfile (jenkins-lib-common@v2.10.0, Maven + packages +
+# multi-image docker). This is the most complex of the sample conversions.
+#
+# Jenkinsfile stage -> Argo mapping:
+#   Bump version and tag (dt2_semanticRelease) -> ci-semantic-release guard
+#       (the [skip ci] guard). NOTE: the Jenkins job auto-bumps+tags on devel
+#       via a nightly cron; replicate that with an Argo CronWorkflow calling the
+#       ci-semantic-release `release` template — left as a follow-up so push/PR
+#       CI doesn't tag on every commit.
+#   Setup / gitMetadata        -> ci-git-clone + ci-git-metadata
+#   Maven build + UT/IT + Sonar -> ci-maven-build (single call; the template runs
+#       build -> test -> coverage -> sonar -> deploy in sequence). The staging/
+#       tree the packages need is produced by postBuildScript.
+#   Sonarqube Analysis         -> folded into ci-maven-build (skipSonar=false,
+#       jacoco xml + exclusions via extraSonarArgs).
+#   Packages: Build deb/rpm    -> ci-build-packages (buildDirs staging/packages,
+#       addCarbonioRepos) on the 4 default distros, consuming the BUILT workspace.
+#   Packages: Publish          -> ci-upload-artifacts (yap at staging/packages).
+#   Publish to maven (tag)     -> ci-maven-build deployArtifacts=true, gated by
+#       isTag (template deploy gating = default branch | tag | playground).
+#   Docker images (x6)         -> ci-docker-build, one step each, parallel.
+#
+# CAVEATS (documented, not silently dropped):
+#   * 'Flaky, API, E2E tests' and 'Build and Package API Docs' stages are NOT
+#     yet mapped — they need extra Maven invocations (-Dgroups=flaky,api / e2e
+#     and the antrun soap-docs goal + archive). Track as a follow-up; the core
+#     build/test/coverage/sonar/package/deploy/docker path is covered.
+#   * Jenkins ran sonar with -Pprod (via MVN_OPTS); ci-maven-build runs sonar
+#     without the build profile (mavenStage parity). Acceptable for analysis.
+#
+# Manual run:
+#   argo submit --from workflowtemplate/carbonio-mailbox -p revision=devel -n argo
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: carbonio-mailbox
+  namespace: argo
+  labels:
+    app.kubernetes.io/part-of: carbonio-mailbox
+spec:
+  entrypoint: ci
+  serviceAccountName: argo-workflow
+
+  arguments:
+    parameters:
+      - name: repoUrl
+        value: git@github.com:zextras/carbonio-mailbox.git
+      - name: revision
+        value: devel
+      - name: changeTarget
+        value: ""
+      - name: commitSha
+        value: ""
+
+  artifactGC:
+    strategy: OnWorkflowDeletion
+
+  synchronization:
+    mutexes:
+      - name: carbonio-mailbox-ci
+
+  hooks:
+    running:
+      expression: "workflow.status == \"Running\" && workflow.parameters.commitSha != \"\""
+      templateRef:
+        name: ci-github-checks
+        clusterScope: true
+        template: report
+      arguments:
+        parameters:
+          - name: repoFullName
+            value: zextras/carbonio-mailbox
+          - name: headSha
+            value: "{{workflow.parameters.commitSha}}"
+          - name: name
+            value: "ci/argo"
+          - name: status
+            value: in_progress
+          - name: detailsUrl
+            value: "https://next.dev.zextras.com/workflows/argo/{{workflow.name}}"
+    exit:
+      expression: "workflow.parameters.commitSha != \"\""
+      templateRef:
+        name: ci-github-checks
+        clusterScope: true
+        template: report
+      arguments:
+        parameters:
+          - name: repoFullName
+            value: zextras/carbonio-mailbox
+          - name: headSha
+            value: "{{workflow.parameters.commitSha}}"
+          - name: name
+            value: "ci/argo"
+          - name: status
+            value: completed
+          - name: conclusion
+            value: "{{=workflow.status == 'Succeeded' ? 'success' : (workflow.status == 'Failed' || workflow.status == 'Error' ? 'failure' : 'neutral')}}"
+          - name: detailsUrl
+            value: "https://next.dev.zextras.com/workflows/argo/{{workflow.name}}"
+          - name: summary
+            value: "Argo pipeline {{workflow.status}}"
+
+  templates:
+
+    - name: ci
+      steps:
+        # Step 1: clone
+        - - name: clone
+            templateRef:
+              name: ci-git-clone
+              clusterScope: true
+              template: clone
+            arguments:
+              parameters:
+                - name: repoUrl
+                  value: "{{workflow.parameters.repoUrl}}"
+                - name: revision
+                  value: "{{workflow.parameters.revision}}"
+
+        # Step 2: git metadata
+        - - name: git-metadata
+            templateRef:
+              name: ci-git-metadata
+              clusterScope: true
+              template: extract
+            arguments:
+              parameters:
+                - name: defaultBranch
+                  value: devel
+              artifacts:
+                - name: workspace
+                  from: "{{steps.clone.outputs.artifacts.workspace}}"
+
+        # Step 3: [skip ci] guard (Jenkins 'Bump version and tag' entry guard).
+        - - name: release-guard
+            templateRef:
+              name: ci-semantic-release
+              clusterScope: true
+              template: guard
+            arguments:
+              parameters:
+                - name: commitMessage
+                  value: "{{steps.git-metadata.outputs.parameters.commitMessage}}"
+
+        # Step 4: security scan
+        - - name: gitleaks
+            when: "{{steps.release-guard.outputs.parameters.skip}} != true"
+            templateRef:
+              name: ci-gitleaks-scan
+              clusterScope: true
+              template: scan
+            arguments:
+              artifacts:
+                - name: workspace
+                  from: "{{steps.clone.outputs.artifacts.workspace}}"
+
+        # Step 5: Maven build + UT/IT + coverage + Sonar + (tag-gated) deploy.
+        # Mirrors Jenkins 'Build' (clean install -DskipTests), 'UT, IT',
+        # 'Sonarqube Analysis', and 'Publish to maven'. The staging/ tree the
+        # packages consume is produced by postBuildScript (Jenkins did it inline
+        # after the maven build). Server id 'artifactory' matches the POM's
+        # distributionManagement repository id.
+        - - name: maven-build
+            when: "{{steps.release-guard.outputs.parameters.skip}} != true"
+            templateRef:
+              name: ci-maven-build
+              clusterScope: true
+              template: build
+            arguments:
+              parameters:
+                - name: jdkImage
+                  value: "eclipse-temurin:21-jdk"
+                - name: mavenServerId
+                  value: artifactory
+                - name: mavenOpts
+                  value: "-Xmx2g"
+                - name: profile
+                  value: prod
+                - name: autoProfile
+                  value: "false"
+                # Jenkins: mvn -Ddebug=0 -Dis-production=1 -Pprod clean install -DskipTests=true
+                - name: overrideBuildCmd
+                  value: "clean install -DskipTests=true -Ddebug=0 -Dis-production=1"
+                # Stage the build output exactly as the Jenkins 'Maven build' step did.
+                - name: postBuildScript
+                  value: |
+                    mkdir -p staging
+                    cp -a store* right-manager client common packages soap jython-libs staging/
+                # Jenkins 'UT, IT' stage command (excludes the slow/grouped suites).
+                - name: overrideTestCmd
+                  value: "jacoco:prepare-agent surefire:test failsafe:integration-test failsafe:verify -DexcludedGroups=api,flaky,e2e -Ddebug=0 -Dis-production=1"
+                - name: coverageGoals
+                  value: "jacoco:report"
+                # Sonar with JaCoCo xml + the Jenkins exclusions list.
+                - name: skipSonar
+                  value: "false"
+                - name: extraSonarArgs
+                  value: >-
+                    -Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco/jacoco.xml
+                    -Dsonar.junit.reportPaths=target/surefire-reports,target/failsafe-reports
+                    -Dsonar.exclusions=**/com/zimbra/soap/mail/type/*.java,**/com/zimbra/soap/mail/message/*.java,**/com/zimbra/cs/account/ZAttr*.java,**/com/zimbra/common/account/ZAttr*.java
+                # Publish to maven — Jenkins gated on buildingTag(); template deploy
+                # gating additionally requires default branch | tag | playground.
+                - name: deployArtifacts
+                  value: "true"
+                - name: deployGoals
+                  value: "deploy"
+                - name: extraDeployArgs
+                  value: "-Ddebug=0 -Dis-production=1"
+                - name: isTag
+                  value: "{{steps.git-metadata.outputs.parameters.isTag}}"
+                - name: isDefaultBranch
+                  value: "{{steps.git-metadata.outputs.parameters.isDefaultBranch}}"
+                - name: gitTag
+                  value: "{{steps.git-metadata.outputs.parameters.tag}}"
+                - name: gitCommit
+                  value: "{{steps.git-metadata.outputs.parameters.commit}}"
+              artifacts:
+                - name: workspace
+                  from: "{{steps.clone.outputs.artifacts.workspace}}"
+
+        # Step 6: build deb/rpm packages (Jenkins 'Packages > Build deb/rpm':
+        # buildStage(addCarbonioRepos, buildDirs: ['staging/packages'])).
+        # Consumes the BUILT workspace (staging/ present). 4 default distros.
+        - - name: build-ubuntu-jammy
+            when: "{{steps.release-guard.outputs.parameters.skip}} != true"
+            templateRef:
+              name: ci-build-packages
+              clusterScope: true
+              template: build-single-distro
+            arguments:
+              parameters:
+                - name: distro
+                  value: ubuntu-jammy
+                - name: buildDirs
+                  value: '["staging/packages"]'
+                - name: addCarbonioRepos
+                  value: "true"
+                - name: prepare
+                  value: "true"
+              artifacts:
+                - name: workspace
+                  from: "{{steps.maven-build.outputs.artifacts.workspace}}"
+
+          - name: build-ubuntu-noble
+            when: "{{steps.release-guard.outputs.parameters.skip}} != true"
+            templateRef:
+              name: ci-build-packages
+              clusterScope: true
+              template: build-single-distro
+            arguments:
+              parameters:
+                - name: distro
+                  value: ubuntu-noble
+                - name: buildDirs
+                  value: '["staging/packages"]'
+                - name: addCarbonioRepos
+                  value: "true"
+                - name: prepare
+                  value: "true"
+              artifacts:
+                - name: workspace
+                  from: "{{steps.maven-build.outputs.artifacts.workspace}}"
+
+          - name: build-rocky-8
+            when: "{{steps.release-guard.outputs.parameters.skip}} != true"
+            templateRef:
+              name: ci-build-packages
+              clusterScope: true
+              template: build-single-distro
+            arguments:
+              parameters:
+                - name: distro
+                  value: rocky-8
+                - name: buildDirs
+                  value: '["staging/packages"]'
+                - name: addCarbonioRepos
+                  value: "true"
+                - name: prepare
+                  value: "true"
+              artifacts:
+                - name: workspace
+                  from: "{{steps.maven-build.outputs.artifacts.workspace}}"
+
+          - name: build-rocky-9
+            when: "{{steps.release-guard.outputs.parameters.skip}} != true"
+            templateRef:
+              name: ci-build-packages
+              clusterScope: true
+              template: build-single-distro
+            arguments:
+              parameters:
+                - name: distro
+                  value: rocky-9
+                - name: buildDirs
+                  value: '["staging/packages"]'
+                - name: addCarbonioRepos
+                  value: "true"
+                - name: prepare
+                  value: "true"
+              artifacts:
+                - name: workspace
+                  from: "{{steps.maven-build.outputs.artifacts.workspace}}"
+
+        # Step 7: collect packages
+        - - name: collect
+            when: "{{steps.release-guard.outputs.parameters.skip}} != true"
+            template: collect-artifacts
+            arguments:
+              artifacts:
+                - name: pkgs-ubuntu-jammy
+                  from: "{{steps.build-ubuntu-jammy.outputs.artifacts.packages}}"
+                - name: pkgs-ubuntu-noble
+                  from: "{{steps.build-ubuntu-noble.outputs.artifacts.packages}}"
+                - name: pkgs-rocky-8
+                  from: "{{steps.build-rocky-8.outputs.artifacts.packages}}"
+                - name: pkgs-rocky-9
+                  from: "{{steps.build-rocky-9.outputs.artifacts.packages}}"
+
+        # Step 8: upload packages (Jenkins 'Publish packages').
+        - - name: upload
+            when: "{{steps.release-guard.outputs.parameters.skip}} != true"
+            templateRef:
+              name: ci-upload-artifacts
+              clusterScope: true
+              template: upload
+            arguments:
+              parameters:
+                - name: repoName
+                  value: carbonio-mailbox
+                - name: gitBranch
+                  value: "{{steps.git-metadata.outputs.parameters.branch}}"
+                - name: gitTag
+                  value: "{{steps.git-metadata.outputs.parameters.tag}}"
+                - name: isDefaultBranch
+                  value: "{{steps.git-metadata.outputs.parameters.isDefaultBranch}}"
+              artifacts:
+                - name: packages
+                  from: "{{steps.collect.outputs.artifacts.all-packages}}"
+
+        # Step 9: build + publish the 6 docker images (Jenkins 'Build and Publish
+        # Docker images'), in parallel. Each consumes the built workspace.
+        - - name: docker-mailbox
+            when: "{{steps.release-guard.outputs.parameters.skip}} != true"
+            templateRef:
+              name: ci-docker-build
+              clusterScope: true
+              template: build-and-push
+            arguments:
+              parameters:
+                - name: imageName
+                  value: carbonio-mailbox
+                - name: dockerfile
+                  value: docker/mailbox/Dockerfile
+                - name: gitCommitShort
+                  value: "{{steps.git-metadata.outputs.parameters.commitShort}}"
+                - name: gitBranch
+                  value: "{{steps.git-metadata.outputs.parameters.branch}}"
+                - name: gitTag
+                  value: "{{steps.git-metadata.outputs.parameters.tag}}"
+                - name: gitRepo
+                  value: carbonio-mailbox
+                - name: gitCommit
+                  value: "{{workflow.parameters.commitSha}}"
+                - name: isRelease
+                  value: "{{steps.git-metadata.outputs.parameters.isTag}}"
+                - name: ocTitle
+                  value: "Carbonio Mailbox"
+              artifacts:
+                - name: workspace
+                  from: "{{steps.maven-build.outputs.artifacts.workspace}}"
+
+          - name: docker-mailbox-sidecar
+            when: "{{steps.release-guard.outputs.parameters.skip}} != true"
+            templateRef:
+              name: ci-docker-build
+              clusterScope: true
+              template: build-and-push
+            arguments:
+              parameters:
+                - name: imageName
+                  value: carbonio-mailbox-sidecar
+                - name: dockerfile
+                  value: docker/mailbox-sidecar/Dockerfile
+                - name: gitCommitShort
+                  value: "{{steps.git-metadata.outputs.parameters.commitShort}}"
+                - name: gitBranch
+                  value: "{{steps.git-metadata.outputs.parameters.branch}}"
+                - name: gitTag
+                  value: "{{steps.git-metadata.outputs.parameters.tag}}"
+                - name: gitRepo
+                  value: carbonio-mailbox
+                - name: gitCommit
+                  value: "{{workflow.parameters.commitSha}}"
+                - name: isRelease
+                  value: "{{steps.git-metadata.outputs.parameters.isTag}}"
+                - name: ocTitle
+                  value: "Carbonio Mailbox Sidecar"
+              artifacts:
+                - name: workspace
+                  from: "{{steps.maven-build.outputs.artifacts.workspace}}"
+
+          - name: docker-mailbox-admin-sidecar
+            when: "{{steps.release-guard.outputs.parameters.skip}} != true"
+            templateRef:
+              name: ci-docker-build
+              clusterScope: true
+              template: build-and-push
+            arguments:
+              parameters:
+                - name: imageName
+                  value: carbonio-mailbox-admin-sidecar
+                - name: dockerfile
+                  value: docker/mailbox-admin-sidecar/Dockerfile
+                - name: gitCommitShort
+                  value: "{{steps.git-metadata.outputs.parameters.commitShort}}"
+                - name: gitBranch
+                  value: "{{steps.git-metadata.outputs.parameters.branch}}"
+                - name: gitTag
+                  value: "{{steps.git-metadata.outputs.parameters.tag}}"
+                - name: gitRepo
+                  value: carbonio-mailbox
+                - name: gitCommit
+                  value: "{{workflow.parameters.commitSha}}"
+                - name: isRelease
+                  value: "{{steps.git-metadata.outputs.parameters.isTag}}"
+                - name: ocTitle
+                  value: "Carbonio Mailbox Admin Sidecar"
+              artifacts:
+                - name: workspace
+                  from: "{{steps.maven-build.outputs.artifacts.workspace}}"
+
+          - name: docker-mailbox-nslookup-sidecar
+            when: "{{steps.release-guard.outputs.parameters.skip}} != true"
+            templateRef:
+              name: ci-docker-build
+              clusterScope: true
+              template: build-and-push
+            arguments:
+              parameters:
+                - name: imageName
+                  value: carbonio-mailbox-nslookup-sidecar
+                - name: dockerfile
+                  value: docker/mailbox-nslookup-sidecar/Dockerfile
+                - name: gitCommitShort
+                  value: "{{steps.git-metadata.outputs.parameters.commitShort}}"
+                - name: gitBranch
+                  value: "{{steps.git-metadata.outputs.parameters.branch}}"
+                - name: gitTag
+                  value: "{{steps.git-metadata.outputs.parameters.tag}}"
+                - name: gitRepo
+                  value: carbonio-mailbox
+                - name: gitCommit
+                  value: "{{workflow.parameters.commitSha}}"
+                - name: isRelease
+                  value: "{{steps.git-metadata.outputs.parameters.isTag}}"
+                - name: ocTitle
+                  value: "Carbonio Mailbox NSLookup Sidecar"
+              artifacts:
+                - name: workspace
+                  from: "{{steps.maven-build.outputs.artifacts.workspace}}"
+
+          - name: docker-mailbox-internal-api-sidecar
+            when: "{{steps.release-guard.outputs.parameters.skip}} != true"
+            templateRef:
+              name: ci-docker-build
+              clusterScope: true
+              template: build-and-push
+            arguments:
+              parameters:
+                - name: imageName
+                  value: carbonio-mailbox-internal-api-sidecar
+                - name: dockerfile
+                  value: docker/mailbox-internal-api-sidecar/Dockerfile
+                - name: gitCommitShort
+                  value: "{{steps.git-metadata.outputs.parameters.commitShort}}"
+                - name: gitBranch
+                  value: "{{steps.git-metadata.outputs.parameters.branch}}"
+                - name: gitTag
+                  value: "{{steps.git-metadata.outputs.parameters.tag}}"
+                - name: gitRepo
+                  value: carbonio-mailbox
+                - name: gitCommit
+                  value: "{{workflow.parameters.commitSha}}"
+                - name: isRelease
+                  value: "{{steps.git-metadata.outputs.parameters.isTag}}"
+                - name: ocTitle
+                  value: "Carbonio Mailbox Internal API Sidecar"
+              artifacts:
+                - name: workspace
+                  from: "{{steps.maven-build.outputs.artifacts.workspace}}"
+
+          - name: docker-mariadb
+            when: "{{steps.release-guard.outputs.parameters.skip}} != true"
+            templateRef:
+              name: ci-docker-build
+              clusterScope: true
+              template: build-and-push
+            arguments:
+              parameters:
+                - name: imageName
+                  value: carbonio-mariadb
+                - name: dockerfile
+                  value: docker/mariadb/Dockerfile
+                - name: gitCommitShort
+                  value: "{{steps.git-metadata.outputs.parameters.commitShort}}"
+                - name: gitBranch
+                  value: "{{steps.git-metadata.outputs.parameters.branch}}"
+                - name: gitTag
+                  value: "{{steps.git-metadata.outputs.parameters.tag}}"
+                - name: gitRepo
+                  value: carbonio-mailbox
+                - name: gitCommit
+                  value: "{{workflow.parameters.commitSha}}"
+                - name: isRelease
+                  value: "{{steps.git-metadata.outputs.parameters.isTag}}"
+                - name: ocTitle
+                  value: "Carbonio MariaDB"
+              artifacts:
+                - name: workspace
+                  from: "{{steps.maven-build.outputs.artifacts.workspace}}"
+
+    # ─── Inline: merge per-distro artifact dirs into one ───────────────────────
+    - name: collect-artifacts
+      inputs:
+        artifacts:
+          - name: pkgs-ubuntu-jammy
+            path: /tmp/pkgs/ubuntu-jammy
+          - name: pkgs-ubuntu-noble
+            path: /tmp/pkgs/ubuntu-noble
+          - name: pkgs-rocky-8
+            path: /tmp/pkgs/rocky-8
+          - name: pkgs-rocky-9
+            path: /tmp/pkgs/rocky-9
+      script:
+        image: alpine:3
+        command: [sh]
+        source: |
+          set -e
+          mkdir -p /tmp/all-packages
+          for DIR in /tmp/pkgs/*/; do
+            [ -d "$DIR" ] || continue
+            for f in "$DIR"*; do
+              [ -e "$f" ] || continue
+              base=$(basename "$f")
+              if [ -e "/tmp/all-packages/$base" ]; then
+                echo "WARNING: duplicate artifact '$base' from $DIR — keeping first"
+                continue
+              fi
+              cp "$f" /tmp/all-packages/
+            done
+          done
+          echo "All packages:"
+          ls -lh /tmp/all-packages/
+      outputs:
+        artifacts:
+          - name: all-packages
+            path: /tmp/all-packages
+            archive:
+              none: {}
