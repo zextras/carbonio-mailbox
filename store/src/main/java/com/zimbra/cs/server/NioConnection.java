@@ -11,7 +11,6 @@ import java.net.InetSocketAddress;
 import javax.security.sasl.SaslServer;
 
 import org.apache.mina.core.session.IoSession;
-import org.apache.mina.filter.ssl.SslFilter;
 import org.apache.mina.filter.ssl.ZimbraSslFilter;
 
 import com.zimbra.cs.security.sasl.SaslFilter;
@@ -65,7 +64,7 @@ public final class NioConnection {
     public void startTls() {
         tlsSslFilter = server.newSSLFilter();
         session.getFilterChain().addFirst("ssl", tlsSslFilter);
-        session.setAttribute(SslFilter.DISABLE_ENCRYPTION_ONCE, true);
+        session.setAttribute(ZimbraSslFilter.DISABLE_ENCRYPTION_ONCE, true);
     }
 
     public void startSasl(SaslServer sasl) {

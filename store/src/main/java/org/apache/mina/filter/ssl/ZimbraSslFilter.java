@@ -8,32 +8,29 @@ import javax.net.ssl.SSLContext;
 
 import org.apache.mina.core.session.AttributeKey;
 import org.apache.mina.core.session.IoSession;
+import org.apache.mina.core.write.WriteRequest;
 
 /** classpath visibility workaround for access into SSL handshake status **/
 public class ZimbraSslFilter extends SslFilter {
 
-    private static final AttributeKey SSL_HANDLER_KEY = new AttributeKey(SslFilter.class, "handler");
+    public static final AttributeKey DISABLE_ENCRYPTION_ONCE = new AttributeKey(ZimbraSslFilter.class, "disableEncryptionOnce");
 
     public ZimbraSslFilter(SSLContext sslContext) {
         super(sslContext);
     }
 
-    public boolean isSslHandshakeComplete(IoSession session) {
-        SslHandler handler = getSslSessionHandler(session);
-        return handler != null && handler.isHandshakeComplete();
+    @Override
+    public void filterWrite(NextFilter nextFilter, IoSession session, WriteRequest writeRequest) throws Exception {
+        if (session.getAttribute(DISABLE_ENCRYPTION_ONCE) != null) {
+            session.removeAttribute(DISABLE_ENCRYPTION_ONCE);
+            nextFilter.filterWrite(session, writeRequest);
+            return;
+        }
+        super.filterWrite(nextFilter, session, writeRequest);
     }
 
-    private SslHandler getSslSessionHandler(IoSession session) {
-        SslHandler handler = (SslHandler) session.getAttribute(SSL_HANDLER_KEY);
-
-        if (handler == null) {
-            throw new IllegalStateException();
-        }
-
-        if (handler.getSslFilter() != this) {
-            throw new IllegalArgumentException("Not managed by this filter.");
-        }
-
-        return handler;
+    public boolean isSslHandshakeComplete(IoSession session) {
+        SslHandler handler = (SslHandler) session.getAttribute(SslFilter.SSL_HANDLER);
+        return handler != null && handler.isConnected();
     }
 }
