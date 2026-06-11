@@ -95,6 +95,11 @@ public class ZimbraInvalidLoginFilter extends DoSFilter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
         FilterChain chain) throws IOException, ServletException {
+        if (this.maxFailedLogin <= 0) {
+            // InvalidLoginFilter feature is turned off - skip all work.
+            chain.doFilter(request, response);
+            return;
+        }
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         RemoteIP remoteIp = new RemoteIP(req, ZimbraServlet.getTrustedIPs());
@@ -106,11 +111,6 @@ public class ZimbraInvalidLoginFilter extends DoSFilter {
             return;
         }
 
-        if (this.maxFailedLogin <=0) {
-            // InvalidLoginFilter feature is turned off
-            chain.doFilter(request, response);
-            return;
-        }
         if (this.suspiciousIpAddrLastAttempt.containsKey(clientIp)) {
             ZimbraLog.misc.info ("Access from IP " + clientIp +  " suspended, for repeated failed login.");
             res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
@@ -120,28 +120,21 @@ public class ZimbraInvalidLoginFilter extends DoSFilter {
             if (req.getAttribute(AUTH_FAILED) != null) {
                 ZimbraLog.misc
                 .info("Invalid login filter, checking if this was an auth req and authentication failed.");
-                String clientIP = (String) req.getAttribute(SoapEngine.REQUEST_IP);
                 boolean loginFailed = (Boolean) req.getAttribute(AUTH_FAILED);
                 if (loginFailed) {
-
-                    AtomicInteger count = null;
-                    if (this.numberOfFailedOccurence.containsKey(clientIp)) {
-                        count = this.numberOfFailedOccurence.get(clientIp);
-                    } else{
-                        this.numberOfFailedOccurence.put(clientIp, new AtomicInteger(0));
-                        count = this.numberOfFailedOccurence.get(clientIp);
+                    AtomicInteger count = this.numberOfFailedOccurence.get(clientIp);
+                    if (count == null) {
+                        AtomicInteger fresh = new AtomicInteger(0);
+                        AtomicInteger prev = this.numberOfFailedOccurence.putIfAbsent(clientIp, fresh);
+                        count = prev != null ? prev : fresh;
                     }
-
                     if (count.incrementAndGet() > maxFailedLogin) {
-                        this.numberOfFailedOccurence.put(clientIp, count);
-                        suspiciousIpAddrLastAttempt.put(clientIp,
-                            System.currentTimeMillis());
+                        suspiciousIpAddrLastAttempt.put(clientIp, System.currentTimeMillis());
                     }
-                    this.numberOfFailedOccurence.put(clientIp, count);
                 }
                 if (ZimbraLog.misc.isDebugEnabled()) {
-                    ZimbraLog.misc.debug("Login failed " + clientIP + ", "
-                        + loginFailed);
+                    String clientIPAttr = (String) req.getAttribute(SoapEngine.REQUEST_IP);
+                    ZimbraLog.misc.debug("Login failed " + clientIPAttr + ", " + loginFailed);
                 }
             }
         }
