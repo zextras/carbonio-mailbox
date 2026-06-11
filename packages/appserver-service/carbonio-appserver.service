@@ -51,6 +51,7 @@ ReadWritePaths=/opt/zextras/log
 ReadWritePaths=/opt/zextras/mailboxd
 ReadWritePaths=/opt/zextras/redolog
 ReadWritePaths=/opt/zextras/store
+ReadWritePaths=/opt/zextras/zmstat
 ReadWritePaths=/run/carbonio
 NoNewPrivileges=yes
 PrivateDevices=yes
