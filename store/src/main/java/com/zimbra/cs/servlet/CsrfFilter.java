@@ -10,7 +10,7 @@ import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -46,7 +46,8 @@ public class CsrfFilter implements Filter {
     public static final String AUTH_TOKEN = "AuthToken";
     public static final String CSRF_TOKEN_CHECK = "CsrfTokenCheck";
     protected int maxCsrfTokenValidityInMs;
-    private Random nonceGen = null;
+    private boolean csrfTokenCheckEnabled;
+    private boolean csrfRefererCheckEnabled;
 
     /*
      * (non-Javadoc)
@@ -59,11 +60,14 @@ public class CsrfFilter implements Filter {
         Provisioning prov = Provisioning.getInstance();
         try {
             this.allowedRefHosts = prov.getConfig().getCsrfAllowedRefererHosts();
-            nonceGen = new Random();
+            this.csrfTokenCheckEnabled = prov.getConfig().isCsrfTokenCheckEnabled();
+            this.csrfRefererCheckEnabled = prov.getConfig().isCsrfRefererCheckEnabled();
             CsrfTokenKey.getCurrentKey();
             if (ZimbraLog.misc.isInfoEnabled()) {
                 ZimbraLog.misc.info("CSRF filter was initialized: "
-                        + "CSRFAllowedRefHost: [" + Joiner.on(", ").join(this.allowedRefHosts) + "]");
+                        + "CSRFAllowedRefHost: [" + Joiner.on(", ").join(this.allowedRefHosts) + "]"
+                        + ", CSRFcheck enabled: " + csrfTokenCheckEnabled
+                        + ", CSRF referer check enabled: " + csrfRefererCheckEnabled);
             }
         } catch (ServiceException e) {
             throw new ServletException("Error initializing CSRF filter: "
@@ -97,21 +101,14 @@ public class CsrfFilter implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
-        req.setAttribute(CSRF_SALT, nonceGen.nextInt() + 1);
+        req.setAttribute(CSRF_SALT, ThreadLocalRandom.current().nextInt() + 1);
 
         if (ZimbraLog.misc.isDebugEnabled()) {
              ZimbraLog.misc.debug("CSRF Request URI: " + req.getRequestURI());
         }
 
-        boolean csrfCheckEnabled = Boolean.FALSE;
-        boolean csrfRefererCheckEnabled = Boolean.FALSE;
-        Provisioning prov = Provisioning.getInstance();
-        try {
-            csrfCheckEnabled = prov.getConfig().isCsrfTokenCheckEnabled();
-            csrfRefererCheckEnabled = prov.getConfig().isCsrfRefererCheckEnabled();
-        } catch (ServiceException e) {
-            ZimbraLog.misc.info("Error in CSRF filter." + e.getMessage(), e);
-        }
+        boolean csrfCheckEnabled = this.csrfTokenCheckEnabled;
+        boolean csrfRefererCheckEnabled = this.csrfRefererCheckEnabled;
 
         if (ZimbraLog.misc.isDebugEnabled()) {
             ZimbraLog.misc.debug("CSRF filter was initialized : "
