@@ -231,6 +231,8 @@ components:
         sessionLifetimeMs:
           type: integer
           format: int64
+        isExternalVirtualAccount:
+          type: boolean
     ErrorResponse:
       type: object
       properties:

@@ -12,7 +12,9 @@ public record AccountInfoResponse(String id, String name, String displayName, St
 																	String domainId, String domain, AccountStatus status,
 																	boolean isGlobalAdmin,
 																	boolean isExternal, String locale, Map<String, Boolean> features,
-																	Map<String, String> capabilities, Long sessionLifetimeMs) {
+																	Map<String, String> capabilities, Long sessionLifetimeMs,
+																	boolean isExternalVirtualAccount
+																	) {
 
 	public static AccountInfoResponse from(Account account) throws ServiceException {
 		return AccountInfoResponse.withLifetime(account, null);
@@ -43,6 +45,6 @@ public record AccountInfoResponse(String id, String name, String displayName, St
 		return new AccountInfoResponse(account.getId(), account.getName(), account.getDisplayName(),
 				account.getCOSId(), account.getDomainId(), account.getPublicServiceUrl(),
 				account.getAccountStatus(), account.isIsAdminAccount(), isExternal,
-				account.getLocale().toString(), features, capabilities, sessionLifetimeMs);
+				account.getLocale().toString(), features, capabilities, sessionLifetimeMs, account.isIsExternalVirtualAccount());
 	}
 }
