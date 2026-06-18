@@ -27,8 +27,12 @@ SuccessExitStatus=143
 
 # Hardening
 PrivateTmp=yes
-ProtectSystem=strict
-ReadWritePaths=/opt/zextras/log /opt/zextras/data /run/carbonio
+#ProtectSystem=strict
+#ReadWritePaths=/opt/zextras/log /opt/zextras/data /run/carbonio
+ProtectSystem=yes
+ReadOnlyPaths=/usr
+ReadOnlyPaths=/boot
+ReadOnlyPaths=/efi
 NoNewPrivileges=yes
 PrivateDevices=yes
 ProtectHome=yes
