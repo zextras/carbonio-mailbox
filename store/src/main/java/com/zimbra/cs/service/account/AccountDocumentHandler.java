@@ -17,7 +17,6 @@ import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AttributeClass;
-import com.zimbra.cs.account.AttributeManager;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Provisioning.MailMode;
 import com.zimbra.cs.account.Server;
@@ -27,8 +26,7 @@ import com.zimbra.soap.SoapServlet;
 
 public abstract class AccountDocumentHandler extends DocumentHandler {
 
-    @Override
-    protected Element proxyIfNecessary(Element request, Map<String, Object> context) throws ServiceException {
+    @Override public Element proxyIfNecessary(Element request, Map<String, Object> context) throws ServiceException {
         try {
             // by default, try to execute on the appropriate host
             return super.proxyIfNecessary(request, context);

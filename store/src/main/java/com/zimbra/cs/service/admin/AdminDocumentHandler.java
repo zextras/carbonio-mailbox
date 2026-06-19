@@ -22,7 +22,6 @@ import com.zimbra.cs.account.AccessManager.AttrRightChecker;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.AttributeClass;
-import com.zimbra.cs.account.AttributeManager;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.CalendarResource;
 import com.zimbra.cs.account.Cos;
@@ -623,8 +622,7 @@ public abstract class AdminDocumentHandler extends DocumentHandler implements Ad
     checker.check(group, groupSelectorKey);
   }
 
-  @Override
-  protected Element proxyIfNecessary(Element request, Map<String, Object> context)
+  @Override public Element proxyIfNecessary(Element request, Map<String, Object> context)
       throws ServiceException {
     // if we've explicitly been told to execute here, don't proxy
     ZimbraSoapContext zsc = getZimbraSoapContext(context);

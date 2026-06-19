@@ -33,7 +33,7 @@ import java.util.TreeSet;
 public class GetShareInfo extends AccountDocumentHandler {
 
   @Override
-  protected Element proxyIfNecessary(Element request, Map<String, Object> context)
+  public Element proxyIfNecessary(Element request, Map<String, Object> context)
       throws ServiceException {
 
     if (isInternal(request)) {
