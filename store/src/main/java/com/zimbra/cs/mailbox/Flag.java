@@ -124,7 +124,7 @@ public final class Flag extends Tag {
             return NAME2FLAG.get(fname.toLowerCase());
         }
 
-        static FlagInfo of(int id) {
+        public static FlagInfo of(int id) {
             int index = getIndex(id);
             return index < 0 || index >= INDEX2FLAG.length ? null : INDEX2FLAG[index];
         }
