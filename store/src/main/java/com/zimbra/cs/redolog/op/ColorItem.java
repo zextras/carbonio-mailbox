@@ -80,4 +80,16 @@ public class ColorItem extends RedoableOp {
         Mailbox mailbox = MailboxManager.getInstance().getMailboxById(mboxId);
         mailbox.setColor(getOperationContext(), mIds, type, Color.fromMetadata(mColor));
     }
+
+    public int[] getIds() {
+        return mIds;
+    }
+
+    public MailItem.Type getType() {
+        return type;
+    }
+
+    public long getColor() {
+        return mColor;
+    }
 }
