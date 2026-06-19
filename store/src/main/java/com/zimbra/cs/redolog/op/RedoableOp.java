@@ -76,7 +76,7 @@ public abstract class RedoableOp {
         this(op, RedoLogProvider.getInstance().getRedoLogManager());
     }
 
-    protected Version getVersion()      { return mVersion; }
+    public Version getVersion()      { return mVersion; }
     private void setVersion(Version v)  { mVersion = v; }
 
     public boolean getUnloggedReplay()        { return mUnloggedReplay; }
