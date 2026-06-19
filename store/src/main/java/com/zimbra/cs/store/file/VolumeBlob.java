@@ -17,6 +17,10 @@ public class VolumeBlob extends Blob {
         this.volumeId = volumeId;
     }
 
+    public VolumeBlob(VolumeBlob copy) {
+        this(copy.getFile(), copy.getVolumeId());
+    }
+
     public short getVolumeId() {
         return volumeId;
     }
