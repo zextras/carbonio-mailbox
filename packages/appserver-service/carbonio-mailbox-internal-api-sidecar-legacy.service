@@ -18,7 +18,11 @@ LimitNOFILE=65536
 
 # Hardening
 PrivateTmp=yes
-ProtectSystem=strict
+#ProtectSystem=strict
+ProtectSystem=yes
+ReadOnlyPaths=/usr
+ReadOnlyPaths=/boot
+ReadOnlyPaths=/efi
 NoNewPrivileges=yes
 PrivateDevices=yes
 ProtectHome=yes
