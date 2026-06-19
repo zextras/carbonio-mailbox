@@ -29,18 +29,24 @@ public class RequestStringFilter implements Filter {
                     ServletException {
         if (request instanceof HttpServletRequest) {
             HttpServletRequest httpReq = (HttpServletRequest) request;
-            if (httpReq.getQueryString() != null && httpReq.getQueryString().matches(".*(%00|\\x00).*")) {
+            String qs = httpReq.getQueryString();
+            if (qs != null && containsNull(qs)) {
                 ZimbraLog.misc.warn("Rejecting request containing null character in query string");
                 ((HttpServletResponse)response).sendError(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
-            if (httpReq.getRequestURI() != null && httpReq.getRequestURI().matches(".*(%00|\\x00).*")) {
+            String uri = httpReq.getRequestURI();
+            if (uri != null && containsNull(uri)) {
                 ZimbraLog.misc.warn("Rejecting request containing null character in URI");
                 ((HttpServletResponse)response).sendError(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
         }
         chain.doFilter(request, response);
+    }
+
+    private static boolean containsNull(String s) {
+        return s.indexOf('\0') >= 0 || s.indexOf("%00") >= 0;
     }
 
     @Override

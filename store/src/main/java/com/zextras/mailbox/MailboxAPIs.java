@@ -79,7 +79,7 @@ public class MailboxAPIs {
 		dosFilter.setAsyncSupported(true);
 		dosFilter.setInitParameter("delayMs", Integer.toString(server.getHttpDosFilterDelayMillis()));
 		dosFilter.setInitParameter("maxRequestsPerSec", Integer.toString(server.getHttpDosFilterMaxRequestsPerSec()));
-		dosFilter.setInitParameter("remotePort", "true");
+		dosFilter.setInitParameter("remotePort", "false");
 		dosFilter.setInitParameter("maxRequestMs", "9223372036854775807");
 		servletContextHandler.addFilter(dosFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
 

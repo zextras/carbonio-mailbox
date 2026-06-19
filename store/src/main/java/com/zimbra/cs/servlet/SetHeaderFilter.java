@@ -5,12 +5,9 @@
 
 package com.zimbra.cs.servlet;
 
-import com.zimbra.cs.account.soap.SoapProvisioning;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.common.account.ZAttrProvisioning;
-import com.zimbra.common.account.Key;
-import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.util.HttpUtil;
 import com.zimbra.common.util.Log;
@@ -91,12 +88,8 @@ public class SetHeaderFilter implements Filter {
         if (headers == null) {
             headers = NO_HEADERS;
             try {
-                SoapProvisioning provisioning = new SoapProvisioning();
-                String soapUri = LC.zimbra_admin_service_scheme.value() + LC.zimbra_zmprov_default_soap_server.value() +
-                    ':' + LC.zimbra_admin_service_port.intValue() + AdminConstants.ADMIN_SERVICE_URI;
-                provisioning.soapSetURI(soapUri);
-                provisioning.soapZimbraAdminAuthenticate();
-                Entry info = provisioning.getDomainInfo(Key.DomainBy.virtualHostname, serverName);
+                Provisioning provisioning = Provisioning.getInstance();
+                Entry info = provisioning.getDomainByVirtualHostname(serverName);
                 if (info == null) {
                     info = provisioning.getConfig();
                 }
@@ -115,6 +108,8 @@ public class SetHeaderFilter implements Filter {
                 }
             } catch (Exception e) {
                 getLogger().error("Unable to get domain config", e);
+                // Do not poison the cache on transient failures.
+                return NO_HEADERS;
             }
             RESPONSE_HEADERS.putIfAbsent(serverName, headers);
         }

@@ -64,6 +64,12 @@ public class ContextPathBasedThreadPoolBalancerFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
+        // Fast-path: nothing to balance when no rules are configured.
+        if (rulesByContextPath.isEmpty() || queuedThreadPool == null) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         // Determine whether to allow or suspend request
         boolean suspend = shouldSuspend(request);
 
