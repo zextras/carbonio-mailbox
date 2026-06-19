@@ -464,4 +464,8 @@ public final class Zimbra {
       }
       }
   }
+
+  public static boolean isMailboxd() {
+    return sIsMailboxd;
+  }
 }
