@@ -6,6 +6,7 @@
 
 package com.zextras.mailbox.store.ephemeral;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Config;
@@ -116,7 +117,7 @@ public class RedisEphemeralStore extends EphemeralStore {
     // attribute that must be deleted explicitly. Auth/CSRF/JWT tokens all carry an expiration
     // and are evicted by Redis on their own. Deleting this single, deterministically-named key
     // avoids scanning the whole keyspace on every account deletion.
-    final EphemeralKey lastLogonKey = new EphemeralKey(Provisioning.A_zimbraLastLogonTimestamp);
+    final EphemeralKey lastLogonKey = new EphemeralKey(ZAttrProvisioning.A_zimbraLastLogonTimestamp);
     final String accessKey = getAccessKey(location, lastLogonKey);
     try (Jedis jedis = jedisPool.getResource()) {
       jedis.del(accessKey);
