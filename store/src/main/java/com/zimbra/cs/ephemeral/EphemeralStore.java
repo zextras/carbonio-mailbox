@@ -45,7 +45,7 @@ public abstract class EphemeralStore {
     }
 
     private static Map<String, String> factories = new HashMap<>();
-    private static Factory factory;
+    private static volatile Factory factory;
     protected AttributeEncoder encoder;
     static {
         factories.put("ldap", LdapEphemeralStore.Factory.class.getName());
@@ -162,7 +162,7 @@ public abstract class EphemeralStore {
         }
     }
 
-    private static final void setFactory(String factoryClassName, FailureMode onFailure) {
+    private static synchronized void setFactory(String factoryClassName, FailureMode onFailure) {
         if (factoryClassName == null) {
             handleFailure(onFailure, "no EphemeralStore specified", null);
             return;
@@ -181,7 +181,7 @@ public abstract class EphemeralStore {
         setFactory(factoryClass, onFailure);
     }
 
-    public static final void clearFactory() {
+    public static synchronized void clearFactory() {
         if (factory != null) {
             factory.shutdown();
         }
@@ -193,7 +193,7 @@ public abstract class EphemeralStore {
         setFactory(factoryClass, FailureMode.halt);
     }
 
-    public static final void setFactory(Class<? extends Factory> factoryClass, FailureMode onFailure) {
+    public static synchronized void setFactory(Class<? extends Factory> factoryClass, FailureMode onFailure) {
         String className = factoryClass.getDeclaringClass().getSimpleName();
         try {
             boolean useForwarding = false;
@@ -305,7 +305,7 @@ public abstract class EphemeralStore {
         }
     }
 
-    public static Factory getFactory(FailureMode onFailure) throws ServiceException {
+    public static synchronized Factory getFactory(FailureMode onFailure) throws ServiceException {
         if (factory == null) {
             String factoryClass = null;
             String url = Provisioning.getInstance().getConfig().getEphemeralBackendURL();
