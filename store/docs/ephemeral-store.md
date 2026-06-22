@@ -46,13 +46,6 @@ Backend resolution is driven by URL prefix in `zimbraEphemeralBackendURL`:
 
 Factories are registered in `EphemeralStore.factories`. `EphemeralStore.getFactory()` creates and caches a global factory for the process, calls `startup()`, and returns backend stores via `factory.getStore()`.
 
-Thread-safety for factory lifecycle:
-
-- `factory` is `volatile`
-- `getFactory(...)`, `setFactory(...)`, and `clearFactory()` are synchronized
-
-This guarantees safe global initialization/clear under concurrent access.
-
 `EphemeralBackendCheck` validates backend URL changes, ensures the backend can be initialized (`factory.test(url)`), manages migration constraints, and updates `zimbraPreviousEphemeralBackendURL`.
 
 ## Backend implementations
@@ -83,7 +76,7 @@ Used for external ephemeral storage with native key expiration.
   - non-positive TTL is rejected and logged
 - `purgeExpired(...)` is a no-op (Redis TTL handles expiration)
 - `deleteData(...)` scans keys by location pattern and deletes in batches via `UNLINK` (non-blocking delete)
-- Factory is singleton-per-process and synchronized on create/shutdown
+- Factory is singleton-per-process
 
 Pool tuning values come from config:
 
@@ -126,6 +119,33 @@ Migration logic in `AttributeMigration` uses `ZimbraMigrationCallback` to:
 1. validate destination backend
 2. set migration backend type
 3. write converted `EphemeralInput` values into destination store
+
+## Usages
+### Recommended usage flow
+
+1. (Optional) Migrate existing ephemeral attributes from LDAP to Redis before switching backend:
+
+```bash
+zmmigrateattrs redis://<redis_host_or_ip>:<redis_port>
+```
+
+For targeted migration:
+
+```bash
+zmmigrateattrs -a <account@example.com> redis://<redis_host_or_ip>:<redis_port>
+```
+
+2. Switch primary ephemeral backend to Redis:
+
+```bash
+carbonio prov mcf zimbraEphemeralBackendUrl redis://<redis_host_or_ip>:<redis_port>
+```
+
+3. If needed, revert backend to LDAP:
+
+```bash
+carbonio prov mcf zimbraEphemeralBackendUrl ldap://default
+```
 
 ## Operational notes
 
