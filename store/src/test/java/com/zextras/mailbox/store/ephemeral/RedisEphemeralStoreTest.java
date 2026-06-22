@@ -169,18 +169,26 @@ class RedisEphemeralStoreTest {
   }
 
   @Test
-  void shouldOnlyDeleteLocationData() throws ServiceException {
-    redisEphemeralStore.set(new EphemeralInput(randomKey(), "myValue"), location);
-    redisEphemeralStore.set(new EphemeralInput(randomKey(), "myValue2"), location);
+  void deleteData_shouldDeleteLastLogonTimestamp_OnlyForGivenLocation() throws ServiceException {
+    final EphemeralKey lastLogon = new EphemeralKey("zimbraLastLogonTimestamp");
+    redisEphemeralStore.set(new EphemeralInput(lastLogon, "20251112020029.000Z"), location);
     final EphemeralLocation otherLocation = new TestLocation(new String[] {UUID.randomUUID().toString()});
-    redisEphemeralStore.set(new EphemeralInput(randomKey(), "otherLocation"), otherLocation);
+    redisEphemeralStore.set(new EphemeralInput(lastLogon, "20251112020030.000Z"), otherLocation);
 
     redisEphemeralStore.deleteData(location);
 
-    Assertions.assertEquals(1, jedisClient.keys("*").size());
-    final String keyinredis = getFirstKeyInRedis();
-    final String valueInRedis = jedisClient.get(keyinredis);
-    Assertions.assertEquals("otherLocation", valueInRedis);
+    Assertions.assertFalse(redisEphemeralStore.has(lastLogon, location));
+    Assertions.assertTrue(redisEphemeralStore.has(lastLogon, otherLocation));
+  }
+
+  @Test
+  void deleteData_shouldLeaveExpiringTokenData_ToBeEvictedByTtl() throws ServiceException {
+    final EphemeralKey authToken = new EphemeralKey("zimbraAuthTokens", "1125774878");
+    redisEphemeralStore.set(new EphemeralInput(authToken, "carbonio"), location);
+
+    redisEphemeralStore.deleteData(location);
+
+    Assertions.assertTrue(redisEphemeralStore.has(authToken, location));
   }
 
   private static class MockExpiration extends Expiration {

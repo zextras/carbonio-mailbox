@@ -19,18 +19,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.params.ScanParams;
-import redis.clients.jedis.resps.ScanResult;
 
 public class RedisEphemeralStore extends EphemeralStore {
-
-  private static final int DELETE_BATCH_SIZE = 500;
 
   private final JedisPool jedisPool;
 
@@ -117,37 +110,16 @@ public class RedisEphemeralStore extends EphemeralStore {
     // nothing to do here. Redis deletes expired keys automagically
   }
 
-  private Set<String> getAllKeys(String pattern, Jedis jedisResource) {
-    final ScanParams scanParams = new ScanParams().count(100).match(pattern);
-    final HashSet<String> keysSet = new HashSet<>();
-    String cursor = ScanParams.SCAN_POINTER_START;
-    do {
-      final ScanResult<String> scanResult = jedisResource.scan(cursor, scanParams);
-      keysSet.addAll(scanResult.getResult());
-      cursor = scanResult.getCursor();
-    } while (!ScanParams.SCAN_POINTER_START.equals(cursor));
-    return keysSet;
-  }
-
   @Override
   public void deleteData(EphemeralLocation location) {
-    try (var jedisClient = jedisPool.getResource()) {
-      final String accessKeyPattern = getLocationPartKey(location) + "|*";
-      final Set<String> keysToDelete = getAllKeys(accessKeyPattern, jedisClient);
-      if (keysToDelete.isEmpty()) {
-        return;
-      }
-      final List<String> batch = new ArrayList<>(DELETE_BATCH_SIZE);
-      for (String key : keysToDelete) {
-        batch.add(key);
-        if (batch.size() == DELETE_BATCH_SIZE) {
-          jedisClient.unlink(batch.toArray(new String[0]));
-          batch.clear();
-        }
-      }
-      if (!batch.isEmpty()) {
-        jedisClient.unlink(batch.toArray(new String[0]));
-      }
+    // Only zimbraLastLogonTimestamp is stored without a TTL, so it is the one ephemeral
+    // attribute that must be deleted explicitly. Auth/CSRF/JWT tokens all carry an expiration
+    // and are evicted by Redis on their own. Deleting this single, deterministically-named key
+    // avoids scanning the whole keyspace on every account deletion.
+    final EphemeralKey lastLogonKey = new EphemeralKey(Provisioning.A_zimbraLastLogonTimestamp);
+    final String accessKey = getAccessKey(location, lastLogonKey);
+    try (Jedis jedis = jedisPool.getResource()) {
+      jedis.del(accessKey);
     }
   }
 
