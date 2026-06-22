@@ -1676,7 +1676,7 @@ public class Mailbox implements MailboxStore {
     return currentChange().depth > 0;
   }
 
-  protected void beginTransaction(String caller, OperationContext octxt) throws ServiceException {
+  public void beginTransaction(String caller, OperationContext octxt) throws ServiceException {
     beginTransaction(caller, System.currentTimeMillis(), octxt, null, null, true);
   }
 
@@ -3525,7 +3525,7 @@ public class Mailbox implements MailboxStore {
   }
 
   /** translate from the DB representation of an item to its Mailbox abstraction */
-  MailItem getItem(MailItem.UnderlyingData data) throws ServiceException {
+  public MailItem getItem(MailItem.UnderlyingData data) throws ServiceException {
     if (data == null) {
       return null;
     }
@@ -10607,7 +10607,7 @@ public class Mailbox implements MailboxStore {
    * @param success true to commit the transaction, false to rollback
    * @throws ServiceException error
    */
-  protected void endTransaction(boolean success) throws ServiceException {
+  public void endTransaction(boolean success) throws ServiceException {
     assert !Thread.holdsLock(this) : "Use MailboxLock";
     if (lock.isUnlocked()) {
       ZimbraLog.mailbox.warn("transaction canceled because of lock failure");
@@ -11533,5 +11533,13 @@ public class Mailbox implements MailboxStore {
    */
   public void resetDefaultCalendarId() throws ServiceException {
     getAccount().setPrefDefaultCalendarId(ID_FOLDER_CALENDAR);
+  }
+
+  public Map<Object, Tag> getTagCache() {
+    return mTagCache;
+  }
+
+  public Collection<Folder> getCacheFolders() {
+    return mFolderCache.mapById.values();
   }
 }
