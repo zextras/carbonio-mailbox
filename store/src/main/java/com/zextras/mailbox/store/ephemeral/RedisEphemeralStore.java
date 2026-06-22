@@ -114,15 +114,15 @@ public class RedisEphemeralStore extends EphemeralStore {
     // nothing to do here. Redis deletes expired keys automagically
   }
 
-  private Set<String> getAllKeys(String pattern, String cursor, Jedis jedisResource) {
+  private Set<String> getAllKeys(String pattern, Jedis jedisResource) {
     final ScanParams scanParams = new ScanParams().count(100).match(pattern);
-
-    final ScanResult<String> scanResult = jedisResource.scan(cursor, scanParams);
-    final HashSet<String> keysSet = new HashSet<>(scanResult.getResult());
-
-    if (!ScanParams.SCAN_POINTER_START.equals(scanResult.getCursor())) {
-      keysSet.addAll(getAllKeys(pattern, scanResult.getCursor(), jedisResource));
-    }
+    final HashSet<String> keysSet = new HashSet<>();
+    String cursor = ScanParams.SCAN_POINTER_START;
+    do {
+      final ScanResult<String> scanResult = jedisResource.scan(cursor, scanParams);
+      keysSet.addAll(scanResult.getResult());
+      cursor = scanResult.getCursor();
+    } while (!ScanParams.SCAN_POINTER_START.equals(cursor));
     return keysSet;
   }
 
@@ -130,7 +130,7 @@ public class RedisEphemeralStore extends EphemeralStore {
   public void deleteData(EphemeralLocation location) {
     try (var jedisClient = jedisPool.getResource()) {
       final String accessKeyPattern = getLocationPartKey(location) + "|*";
-      final Set<String> keysToDelete = getAllKeys(accessKeyPattern, ScanParams.SCAN_POINTER_START, jedisClient);
+      final Set<String> keysToDelete = getAllKeys(accessKeyPattern, jedisClient);
       keysToDelete.forEach(jedisClient::del);
      }
   }
