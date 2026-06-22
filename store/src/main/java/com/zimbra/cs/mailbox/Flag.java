@@ -322,7 +322,7 @@ public final class Flag extends Tag {
     /**
      * Returns all the possible {@link Flag} objects for the given {@link Mailbox}.
      */
-    static List<Flag> allOf(Mailbox mbox) throws ServiceException {
+    public static List<Flag> allOf(Mailbox mbox) throws ServiceException {
         FlagInfo[] flags = FlagInfo.values();
         List<Flag> result = new ArrayList<>(flags.length);
         for (FlagInfo flag : flags) {
