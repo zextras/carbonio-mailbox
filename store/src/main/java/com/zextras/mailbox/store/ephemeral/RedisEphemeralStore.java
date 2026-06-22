@@ -151,9 +151,14 @@ public class RedisEphemeralStore extends EphemeralStore {
     }
   }
 
+  /** Closes the underlying connection pool. Call on shutdown to release resources. */
+  public void close() {
+    jedisPool.close();
+  }
+
   public static class RedisEphemeralStoreFactory extends Factory {
 
-    private EphemeralStore instance;
+    private RedisEphemeralStore instance;
 
     private static GenericObjectPoolConfig<Jedis> getPoolConfig() throws ServiceException {
       GenericObjectPoolConfig<Jedis> poolConfig = new GenericObjectPoolConfig<>();
@@ -180,7 +185,7 @@ public class RedisEphemeralStore extends EphemeralStore {
         return instance;
       }
     }
-    private EphemeralStore createStore() {
+    private RedisEphemeralStore createStore() {
       final GenericObjectPoolConfig<Jedis> poolConfig;
       try {
         var parsedURI = new URI(getURL());
@@ -197,7 +202,12 @@ public class RedisEphemeralStore extends EphemeralStore {
 
     @Override
     public void shutdown() {
-      instance = null;
+      synchronized (RedisEphemeralStoreFactory.class) {
+        if (instance != null) {
+          instance.close();
+          instance = null;
+        }
+      }
     }
 
     @Override
