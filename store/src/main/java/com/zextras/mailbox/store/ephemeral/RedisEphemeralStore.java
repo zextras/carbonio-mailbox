@@ -20,6 +20,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import redis.clients.jedis.Jedis;
@@ -28,6 +29,8 @@ import redis.clients.jedis.params.ScanParams;
 import redis.clients.jedis.resps.ScanResult;
 
 public class RedisEphemeralStore extends EphemeralStore {
+
+  private static final int DELETE_BATCH_SIZE = 500;
 
   private final JedisPool jedisPool;
 
@@ -131,8 +134,21 @@ public class RedisEphemeralStore extends EphemeralStore {
     try (var jedisClient = jedisPool.getResource()) {
       final String accessKeyPattern = getLocationPartKey(location) + "|*";
       final Set<String> keysToDelete = getAllKeys(accessKeyPattern, jedisClient);
-      keysToDelete.forEach(jedisClient::del);
-     }
+      if (keysToDelete.isEmpty()) {
+        return;
+      }
+      final List<String> batch = new ArrayList<>(DELETE_BATCH_SIZE);
+      for (String key : keysToDelete) {
+        batch.add(key);
+        if (batch.size() == DELETE_BATCH_SIZE) {
+          jedisClient.unlink(batch.toArray(new String[0]));
+          batch.clear();
+        }
+      }
+      if (!batch.isEmpty()) {
+        jedisClient.unlink(batch.toArray(new String[0]));
+      }
+    }
   }
 
   public static class RedisEphemeralStoreFactory extends Factory {
