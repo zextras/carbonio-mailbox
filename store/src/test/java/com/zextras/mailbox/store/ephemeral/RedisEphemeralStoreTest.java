@@ -99,14 +99,50 @@ class RedisEphemeralStoreTest {
 
   @ParameterizedTest
   @MethodSource("generateInput")
-  void set_shouldStoreExpiration_WhenPresent(EphemeralInput input) throws ServiceException {
+  void set_shouldStoreExpiration_AsRedisTtl(EphemeralInput input) throws ServiceException {
     long futureExpiry = System.currentTimeMillis() + 10_000L; // 10 seconds from now
     input.setExpiration(new AbsoluteExpiration(futureExpiry));
     redisEphemeralStore.set(input, location);
 
     final EphemeralResult ephemeralResult =
         redisEphemeralStore.get(input.getEphemeralKey(), location);
-    Assertions.assertEquals(input.getValue() + "|" + futureExpiry, ephemeralResult.getValue());
+    Assertions.assertEquals(input.getValue().toString(), ephemeralResult.getValue());
+  }
+
+  /**
+   * CO-3095: a value stored with an expiration must round-trip unchanged. The expiration belongs in
+   * the Redis TTL, not appended to the value. Reproduces the production failure where
+   * {@code LastLogon} read back "{@code <timestamp>|<epochMillis>}" and failed to parse it.
+   */
+  @Test
+  void get_shouldReturnValueWithoutExpirationSuffix_WhenExpirationPresent()
+      throws ServiceException {
+    final EphemeralKey key = new EphemeralKey("zimbraLastLogonTimestamp");
+    final String lastLogonTimestamp = "20251112020029.000Z";
+    final EphemeralInput input = new EphemeralInput(key, lastLogonTimestamp);
+    input.setExpiration(new AbsoluteExpiration(System.currentTimeMillis() + 10_000L));
+
+    redisEphemeralStore.set(input, location);
+
+    final EphemeralResult result = redisEphemeralStore.get(key, location);
+    Assertions.assertEquals(lastLogonTimestamp, result.getValue());
+  }
+
+  /**
+   * CO-3095: storing with an expiration must still apply the TTL while keeping the value clean, so
+   * the fix for the value format cannot regress key expiration.
+   */
+  @Test
+  void set_shouldNotStoreTtl_IntoValue() throws ServiceException {
+    final EphemeralKey key = new EphemeralKey("zimbraLastLogonTimestamp");
+    final String value = "20251112020029.000Z";
+    final EphemeralInput input = new EphemeralInput(key, value);
+    input.setExpiration(new AbsoluteExpiration(System.currentTimeMillis() + 10_000L));
+
+    redisEphemeralStore.set(input, location);
+
+    final String storedKey = getFirstKeyInRedis();
+    Assertions.assertEquals(value, jedisClient.get(storedKey));
   }
 
   @Test
@@ -303,14 +339,14 @@ class RedisEphemeralStoreTest {
 
   @ParameterizedTest
   @MethodSource("generateInput")
-  void update_shouldStoreExpiration_WhenPresent(EphemeralInput input) throws ServiceException {
+  void update_shouldStoreExpiration_AsRedisTtl(EphemeralInput input) throws ServiceException {
     long futureExpiry = System.currentTimeMillis() + 10_000L; // 10 seconds from now
     input.setExpiration(new AbsoluteExpiration(futureExpiry));
     redisEphemeralStore.update(input, location);
 
     final EphemeralResult ephemeralResult =
         redisEphemeralStore.get(input.getEphemeralKey(), location);
-    Assertions.assertEquals(input.getValue() + "|" + futureExpiry, ephemeralResult.getValue());
+    Assertions.assertEquals(input.getValue().toString(), ephemeralResult.getValue());
   }
 
   @ParameterizedTest

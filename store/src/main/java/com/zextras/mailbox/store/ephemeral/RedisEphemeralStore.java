@@ -68,7 +68,7 @@ public class RedisEphemeralStore extends EphemeralStore {
           ZimbraLog.ephemeral.warn("Cannot store value of key " + key + " with expiration " + ttlMillis + " milliseconds");
           return;
          }
-         jedis.psetex(key, ttlMillis, valueToStore + "|" + expiration);
+         jedis.psetex(key, ttlMillis, valueToStore);
       }
     }
   }
