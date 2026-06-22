@@ -2174,7 +2174,7 @@ public abstract class MailItem
     return 1;
   }
 
-  List<MailItem> loadRevisions() throws ServiceException {
+  public List<MailItem> loadRevisions() throws ServiceException {
     if (mRevisions == null) {
       mRevisions = new ArrayList<>();
 
