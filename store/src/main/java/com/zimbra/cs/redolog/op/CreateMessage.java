@@ -313,8 +313,7 @@ implements CreateCalendarItemPlayer, CreateCalendarItemRecorder {
         }
     }
 
-    @Override
-    protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         out.writeUTF(mRcptEmail != null ? mRcptEmail : "");
         if (getVersion().atLeast(1, 4)) {
             out.writeLong(mReceivedDate);

@@ -28,8 +28,7 @@ public class RenameFolder extends RenameItem {
         mOperation = MailboxOperation.RenameFolder;
     }
 
-    @Override
-    protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         out.writeInt(mId);
         out.writeInt(mFolderId);
         out.writeUTF(mName);

@@ -49,7 +49,7 @@ public class CommitTxn extends ControlOp {
         return sb.toString();
     }
 
-    protected void serializeData(RedoLogOutput out) throws IOException {
+    public void serializeData(RedoLogOutput out) throws IOException {
         out.writeInt(mTxnOpCode.getCode());
     }
 

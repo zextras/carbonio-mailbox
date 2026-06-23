@@ -30,8 +30,7 @@ public class IndexDeferredItems extends RedoableOp {
             throw new IllegalArgumentException("ItemIds and ItemTypes arrays must be same size");
     }
     
-    @Override
-    protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         out.writeInt(mItemIds.length);
       for (int mItemId : mItemIds)
         out.writeInt(mItemId);

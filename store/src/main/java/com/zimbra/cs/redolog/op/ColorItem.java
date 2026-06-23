@@ -44,8 +44,7 @@ public class ColorItem extends RedoableOp {
         return sb.toString();
     }
 
-    @Override
-    protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         out.writeInt(-1);
         out.writeByte(type.toByte());
         // mColor from byte to long in Version 1.27

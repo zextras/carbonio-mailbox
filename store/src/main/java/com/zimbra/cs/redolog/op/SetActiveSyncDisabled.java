@@ -50,8 +50,7 @@ public class SetActiveSyncDisabled extends RedoableOp {
         mbox.setActiveSyncDisabled(getOperationContext(), folderId, disableActiveSync);
     }
 
-    @Override
-    protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         out.writeInt(folderId);
         out.writeBoolean(disableActiveSync);
     }

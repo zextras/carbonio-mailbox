@@ -81,7 +81,7 @@ public class StoreIncomingBlob extends RedoableOp {
         return mData.getInputStream();
     }
 
-    @Override protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         if (getVersion().atLeast(1, 0)) {
             if (mMailboxIdList != null) {
                 out.writeInt(mMailboxIdList.size());

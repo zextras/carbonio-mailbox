@@ -40,7 +40,7 @@ public class DeleteMailbox extends RedoableOp {
     /* (non-Javadoc)
      * @see com.zimbra.cs.redolog.op.RedoableOp#serializeData(java.io.RedoLogOutput)
      */
-    @Override protected void serializeData(RedoLogOutput out) {
+    @Override public void serializeData(RedoLogOutput out) {
         // no members to serialize
     }
 

@@ -40,8 +40,7 @@ public class FixCalendarItemTZ extends RedoableOp {
         mReplacementMap = replacementMap;
     }
 
-    @Override
-    protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         out.writeInt(mId);
         if (mReplacementMap != null) {
             out.writeInt(mReplacementMap.size());

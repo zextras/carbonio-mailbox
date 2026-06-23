@@ -62,7 +62,7 @@ public class CreateInvite extends RedoableOp implements CreateCalendarItemRecord
         return sb.toString();
     }
 
-    @Override protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         out.writeInt(mCalendarItemId);
         if (getVersion().atLeast(1, 1))
             out.writeUTF(mCalendarItemPartStat);

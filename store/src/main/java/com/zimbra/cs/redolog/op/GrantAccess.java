@@ -55,7 +55,7 @@ public class GrantAccess extends RedoableOp {
         return sb.toString();
     }
 
-    @Override protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         out.writeInt(mFolderId);
         out.writeUTF(mGrantee);
         out.writeByte(mGranteeType);

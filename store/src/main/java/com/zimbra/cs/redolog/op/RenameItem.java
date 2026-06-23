@@ -50,8 +50,7 @@ public class RenameItem extends RedoableOp {
         return "id=" + mId + ", type=" + type + ", name=" + mName + ",parent=" + mFolderId + ", date=" + mDate;
     }
 
-    @Override
-    protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         out.writeInt(mId);
         out.writeInt(mFolderId);
         out.writeUTF(mName);

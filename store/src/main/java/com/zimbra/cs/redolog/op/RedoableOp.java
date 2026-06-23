@@ -317,7 +317,7 @@ public abstract class RedoableOp {
     protected abstract String getPrintableData();
 
     // Used by serialize() and deserialize().
-    protected abstract void serializeData(RedoLogOutput out) throws IOException;
+    public abstract void serializeData(RedoLogOutput out) throws IOException;
     protected abstract void deserializeData(RedoLogInput in) throws IOException;
 
     /**

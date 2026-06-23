@@ -34,8 +34,7 @@ public class SetCurrentVolume extends RedoableOp {
         return sb.toString();
     }
 
-    @Override
-    protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         out.writeShort(mType);
         out.writeShort(mId);
     }

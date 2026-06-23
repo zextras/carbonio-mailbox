@@ -29,7 +29,7 @@ public class RenameMailbox extends RedoableOp {
         mNewName = newName;
     }
 
-    @Override protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         out.writeUTF(mNewName);
         if (getVersion().atLeast(1,25))
             out.writeUTF(mOldName);

@@ -30,8 +30,7 @@ public class RenameTag extends RenameItem {
         mOperation = MailboxOperation.RenameTag;
     }
 
-    @Override
-    protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         out.writeInt(mId);
         out.writeUTF(mName);
     }
