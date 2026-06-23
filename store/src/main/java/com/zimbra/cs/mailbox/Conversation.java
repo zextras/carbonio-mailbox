@@ -830,8 +830,7 @@ public class Conversation extends MailItem {
         mEncodedSenders = meta.get(Metadata.FN_PARTICIPANTS, null);
     }
 
-    @Override
-    Metadata encodeMetadata(Metadata meta) {
+    @Override public Metadata encodeMetadata(Metadata meta) {
         String encoded = mEncodedSenders;
         if (encoded == null && mSenderList != null) {
             encoded = mSenderList.toString();

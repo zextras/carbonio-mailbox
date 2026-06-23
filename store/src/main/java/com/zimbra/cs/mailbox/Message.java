@@ -1731,8 +1731,7 @@ public class Message extends MailItem {
     }
   }
 
-  @Override
-  Metadata encodeMetadata(Metadata meta) {
+  @Override public Metadata encodeMetadata(Metadata meta) {
     return encodeMetadata(
         meta,
         mRGBColor,

@@ -207,7 +207,7 @@ public final class SearchFolder extends Folder implements SearchFolderStore {
         mSort = meta.get(Metadata.FN_SORT, null);
     }
 
-    @Override Metadata encodeMetadata(Metadata meta) {
+    @Override public Metadata encodeMetadata(Metadata meta) {
         return encodeMetadata(meta, mRGBColor, mMetaVersion, mVersion, mExtendedData, mQuery, mTypes, mSort);
     }
 

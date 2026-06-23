@@ -1600,8 +1600,7 @@ public class Folder extends MailItem implements FolderStore {
     webOfflineSyncDays = meta.getInt(Metadata.FN_WEB_OFFLINE_SYNC_DAYS, -1);
   }
 
-  @Override
-  Metadata encodeMetadata(Metadata meta) {
+  @Override public Metadata encodeMetadata(Metadata meta) {
     Metadata m =
         encodeMetadata(
             meta,

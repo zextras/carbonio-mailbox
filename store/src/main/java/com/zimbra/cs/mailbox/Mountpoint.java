@@ -191,8 +191,7 @@ public class Mountpoint extends Folder implements MountpointStore {
         mReminderEnabled = meta.getBool(Metadata.FN_REMINDER_ENABLED, false);
     }
 
-    @Override
-    Metadata encodeMetadata(Metadata meta) {
+    @Override public Metadata encodeMetadata(Metadata meta) {
         return encodeMetadata(meta, mRGBColor, mMetaVersion, mVersion, mExtendedData, attributes, defaultView, mOwnerId, mRemoteId, mRemoteUuid, mReminderEnabled);
     }
 

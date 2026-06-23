@@ -376,8 +376,7 @@ public final class Flag extends Tag {
     void decodeMetadata(Metadata meta) {
     }
 
-    @Override
-    Metadata encodeMetadata(Metadata meta) {
+    @Override public Metadata encodeMetadata(Metadata meta) {
         return meta;
     }
 

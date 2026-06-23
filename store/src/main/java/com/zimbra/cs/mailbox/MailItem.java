@@ -3584,7 +3584,7 @@ public abstract class MailItem
     return meta;
   }
 
-  abstract Metadata encodeMetadata(Metadata meta);
+  public abstract Metadata encodeMetadata(Metadata meta);
 
   static Metadata encodeMetadata(
       Metadata meta,
