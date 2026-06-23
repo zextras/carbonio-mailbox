@@ -6,6 +6,7 @@
 
 package com.zextras.mailbox.store.ephemeral;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Config;
@@ -19,13 +20,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.params.ScanParams;
-import redis.clients.jedis.resps.ScanResult;
 
 public class RedisEphemeralStore extends EphemeralStore {
 
@@ -68,7 +65,7 @@ public class RedisEphemeralStore extends EphemeralStore {
           ZimbraLog.ephemeral.warn("Cannot store value of key " + key + " with expiration " + ttlMillis + " milliseconds");
           return;
          }
-         jedis.psetex(key, ttlMillis, valueToStore + "|" + expiration);
+         jedis.psetex(key, ttlMillis, valueToStore);
       }
     }
   }
@@ -114,30 +111,27 @@ public class RedisEphemeralStore extends EphemeralStore {
     // nothing to do here. Redis deletes expired keys automagically
   }
 
-  private Set<String> getAllKeys(String pattern, String cursor, Jedis jedisResource) {
-    final ScanParams scanParams = new ScanParams().count(100).match(pattern);
-
-    final ScanResult<String> scanResult = jedisResource.scan(cursor, scanParams);
-    final HashSet<String> keysSet = new HashSet<>(scanResult.getResult());
-
-    if (!ScanParams.SCAN_POINTER_START.equals(scanResult.getCursor())) {
-      keysSet.addAll(getAllKeys(pattern, scanResult.getCursor(), jedisResource));
-    }
-    return keysSet;
-  }
-
   @Override
   public void deleteData(EphemeralLocation location) {
-    try (var jedisClient = jedisPool.getResource()) {
-      final String accessKeyPattern = getLocationPartKey(location) + "|*";
-      final Set<String> keysToDelete = getAllKeys(accessKeyPattern, ScanParams.SCAN_POINTER_START, jedisClient);
-      keysToDelete.forEach(jedisClient::del);
-     }
+    // Only zimbraLastLogonTimestamp is stored without a TTL, so it is the one ephemeral
+    // attribute that must be deleted explicitly. Auth/CSRF/JWT tokens all carry an expiration
+    // and are evicted by Redis on their own. Deleting this single, deterministically-named key
+    // avoids scanning the whole keyspace on every account deletion.
+    final EphemeralKey lastLogonKey = new EphemeralKey(ZAttrProvisioning.A_zimbraLastLogonTimestamp);
+    final String accessKey = getAccessKey(location, lastLogonKey);
+    try (Jedis jedis = jedisPool.getResource()) {
+      jedis.del(accessKey);
+    }
+  }
+
+  /** Closes the underlying connection pool. Call on shutdown to release resources. */
+  public void close() {
+    jedisPool.close();
   }
 
   public static class RedisEphemeralStoreFactory extends Factory {
 
-    private EphemeralStore instance;
+    private RedisEphemeralStore instance;
 
     private static GenericObjectPoolConfig<Jedis> getPoolConfig() throws ServiceException {
       GenericObjectPoolConfig<Jedis> poolConfig = new GenericObjectPoolConfig<>();
@@ -164,7 +158,7 @@ public class RedisEphemeralStore extends EphemeralStore {
         return instance;
       }
     }
-    private EphemeralStore createStore() {
+    private RedisEphemeralStore createStore() {
       final GenericObjectPoolConfig<Jedis> poolConfig;
       try {
         var parsedURI = new URI(getURL());
@@ -181,7 +175,12 @@ public class RedisEphemeralStore extends EphemeralStore {
 
     @Override
     public void shutdown() {
-      instance = null;
+      synchronized (RedisEphemeralStoreFactory.class) {
+        if (instance != null) {
+          instance.close();
+          instance = null;
+        }
+      }
     }
 
     @Override
