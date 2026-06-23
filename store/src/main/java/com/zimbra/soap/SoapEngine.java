@@ -574,7 +574,7 @@ public class SoapEngine {
   }
 
   /** Handles individual requests, either direct or from a batch */
-  Element dispatchRequest(Element request, Map<String, Object> context, ZimbraSoapContext zsc) {
+  public Element dispatchRequest(Element request, Map<String, Object> context, ZimbraSoapContext zsc) {
     SoapProtocol soapProto = zsc.getResponseProtocol();
 
     if (request == null) {
