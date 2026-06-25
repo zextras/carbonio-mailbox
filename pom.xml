@@ -21,7 +21,7 @@
 
   <properties>
     <!-- Mailbox version -->
-    <revision>4.27.22</revision>
+    <revision>4.27.21</revision>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
 
@@ -37,7 +37,7 @@
     <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <sonar.version>5.5.0.6356</sonar.version>
-    <jetty.version>12.1.9</jetty.version>
+    <jetty.version>12.1.10</jetty.version>
     <jetty.servlet-api.version>4.0.9</jetty.servlet-api.version>
     <lucene.version>3.5.0</lucene.version>
     <jackson.version>2.15.4</jackson.version>
