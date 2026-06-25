@@ -52,6 +52,8 @@ ARG BASE_JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
 RUN mkdir -p /staging/usr/bin && \
     printf '#!/bin/sh\njava %s com.zimbra.cs.account.ProvUtil "$@"\n' "${BASE_JAVA_ARGS}" > /staging/usr/bin/zmprov && \
     chmod +x /staging/usr/bin/zmprov && \
+    printf '#!/bin/sh\njava %s com.zimbra.cs.localconfig.LocalConfigCLI "$@"\n' "${BASE_JAVA_ARGS}" > /staging/usr/bin/zmlocalconfig && \
+    chmod +x /staging/usr/bin/zmlocalconfig && \
     printf '#!/bin/sh\njava %s com.zimbra.cs.util.GalSyncAccountUtil "$@"\n' "${BASE_JAVA_ARGS}" > /staging/usr/bin/zmgsautil && \
     chmod +x /staging/usr/bin/zmgsautil && \
     printf '#!/bin/sh\njava %s com.zimbra.cs.zclient.ZMailboxUtil "$@"\n' "${BASE_JAVA_ARGS}" > /staging/usr/bin/zmmailbox && \
