@@ -46,8 +46,8 @@
     </dependency>
 
     <dependency>
-      <artifactId>javax.servlet-api</artifactId>
-      <groupId>javax.servlet</groupId>
+      <groupId>org.eclipse.jetty.toolchain</groupId>
+      <artifactId>jetty-servlet-api</artifactId>
     </dependency>
 
     <dependency>
@@ -126,11 +126,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>jetty-rewrite</artifactId>
-      <groupId>org.eclipse.jetty</groupId>
-    </dependency>
-
-    <dependency>
       <artifactId>jetty-util</artifactId>
       <groupId>org.eclipse.jetty</groupId>
     </dependency>
@@ -153,6 +148,17 @@
       <!-- TODO: this is also defined in zm-zcs-lib -->
       <artifactId>jfreechart</artifactId>
       <groupId>org.jfree</groupId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-servlet</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-nested</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>

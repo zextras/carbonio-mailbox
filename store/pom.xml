@@ -370,20 +370,20 @@
 
     <!-- Jetty -->
     <dependency>
-      <artifactId>jetty-continuation</artifactId>
-      <groupId>org.eclipse.jetty</groupId>
-    </dependency>
-    <dependency>
       <artifactId>jetty-security</artifactId>
       <groupId>org.eclipse.jetty</groupId>
     </dependency>
     <dependency>
-      <artifactId>jetty-servlets</artifactId>
-      <groupId>org.eclipse.jetty</groupId>
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-security</artifactId>
     </dependency>
     <dependency>
-      <artifactId>jetty-servlet</artifactId>
-      <groupId>org.eclipse.jetty</groupId>
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-servlets</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-servlet</artifactId>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -400,6 +400,10 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-nested</artifactId>
     </dependency>
 
     <dependency>
@@ -457,8 +461,8 @@
 
     </dependency>
     <dependency>
-      <artifactId>javax.servlet-api</artifactId>
-      <groupId>javax.servlet</groupId>
+      <artifactId>jetty-servlet-api</artifactId>
+      <groupId>org.eclipse.jetty.toolchain</groupId>
     </dependency>
     <dependency>
       <artifactId>zm-common</artifactId>

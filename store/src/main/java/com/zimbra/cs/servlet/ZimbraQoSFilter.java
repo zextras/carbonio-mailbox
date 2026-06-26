@@ -20,8 +20,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.jetty.continuation.Continuation;
-import org.eclipse.jetty.continuation.ContinuationSupport;
+import javax.servlet.AsyncContext;
 
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import com.zimbra.common.localconfig.LC;
@@ -115,14 +114,13 @@ public class ZimbraQoSFilter implements Filter {
                     pass.release();
                 }
             } else {
-                Continuation continuation = ContinuationSupport.getContinuation(request);
+                AsyncContext asyncContext = request.startAsync(request, response);
                 HttpServletRequest hreq = (HttpServletRequest) request;
                 ZimbraServlet.addRemoteIpToLoggingContext(hreq);
                 ZimbraServlet.addUAToLoggingContext(hreq);
-                ZimbraLog.misc.warn("Exceeded the max requests limit. Suspending " + continuation);
+                ZimbraLog.misc.warn("Exceeded the max requests limit. Suspending request");
                 ZimbraLog.clearContext();
-                continuation.setTimeout(suspendMs);
-                continuation.suspend();
+                asyncContext.setTimeout(suspendMs);
             }
         } catch(InterruptedException e) {
             ((HttpServletResponse)response).sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);

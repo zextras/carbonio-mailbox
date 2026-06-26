@@ -45,12 +45,12 @@ import java.util.EnumSet;
 import java.util.List;
 import javax.servlet.DispatcherType;
 import javax.servlet.MultipartConfigElement;
-import org.eclipse.jetty.security.ConstraintMapping;
-import org.eclipse.jetty.security.ConstraintSecurityHandler;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.ee8.security.ConstraintMapping;
+import org.eclipse.jetty.ee8.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.ee8.nested.ServletConstraint;
+import org.eclipse.jetty.ee8.servlet.FilterHolder;
+import org.eclipse.jetty.ee8.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee8.servlet.ServletHolder;
 
 public class MailboxAPIs {
 
@@ -309,7 +309,7 @@ public class MailboxAPIs {
 		servletContextHandler.addServlet(autoDiscoverServlet, "/AutoDiscover/*");
 	}
 
-	private static ConstraintMapping buildSecurityMapping(String path, Constraint constraint) {
+	private static ConstraintMapping buildSecurityMapping(String path, ServletConstraint constraint) {
 		// this configures jetty to require HTTPS for all requests
 		ConstraintMapping mapping = new ConstraintMapping();
 		mapping.setPathSpec(path);
@@ -319,8 +319,8 @@ public class MailboxAPIs {
 
 
 	private void addSecurityConstraints(ServletContextHandler servletContextHandler) {
-		Constraint constraint = new Constraint();
-		constraint.setDataConstraint(Constraint.DC_CONFIDENTIAL);
+		ServletConstraint constraint = new ServletConstraint();
+		constraint.setDataConstraint(ServletConstraint.DC_CONFIDENTIAL);
 		ConstraintSecurityHandler security = new ConstraintSecurityHandler();
 		security.setConstraintMappings(List.of(
 				buildSecurityMapping("/service/user/*", constraint),

@@ -14,9 +14,9 @@ import javax.servlet.DispatcherType;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.ee8.servlet.FilterHolder;
+import org.eclipse.jetty.ee8.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee8.servlet.ServletHolder;
 
 
 /** Test utility class to create a {@link Server} instance with custom port and servlets. */
@@ -59,7 +59,7 @@ public class JettyServerFactory {
     listeners.forEach(servletContextHandler::addEventListener);
     filters.forEach((path, filterHolder) -> servletContextHandler.addFilter(filterHolder, path, EnumSet.of(DispatcherType.REQUEST)));
     servlets.forEach((path, servlet) -> servletContextHandler.addServlet(servlet, path));
-    server.setHandler(servletContextHandler);
+    server.setHandler(servletContextHandler.getCoreContextHandler());
     server.setConnectors(new Connector[] {connector});
     return new ServerWithConfiguration(server, port);
   }

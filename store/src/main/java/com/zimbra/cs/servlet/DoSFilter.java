@@ -17,7 +17,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 
-public class DoSFilter extends org.eclipse.jetty.servlets.DoSFilter {
+public class DoSFilter extends org.eclipse.jetty.ee8.servlets.DoSFilter {
 
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {

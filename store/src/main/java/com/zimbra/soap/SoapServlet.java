@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpVersion;
@@ -329,13 +328,13 @@ public class SoapServlet extends ZimbraServlet {
             !isResumed ? "C:\n%s" : "C: (resumed)\n%s", new String(buffer, Charsets.UTF_8));
       }
 
-      // don't interfere with Jetty Continuations -- pass the exception right up
-      if (e.getClass().getName().equals("org.eclipse.jetty.continuation.ContinuationThrowable"))
-        throw (Error) e;
-
       ZimbraLog.soap.warn("handler exception", e);
       Element fault = SoapProtocol.Soap12.soapFault(ServiceException.FAILURE(e.toString(), e));
       envelope = SoapProtocol.Soap12.soapEnvelope(fault);
+    }
+
+    if (req.isAsyncStarted()) {
+      return;
     }
 
     if (ZimbraLog.soap.isTraceEnabled()) {
