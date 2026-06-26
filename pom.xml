@@ -54,7 +54,7 @@
     <jsr305.version>3.0.2</jsr305.version>
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <resteasy.version>4.7.9.Final</resteasy.version>
-    <swagger.version>2.2.28</swagger.version>
+    <swagger.version>2.2.52</swagger.version>
     <javassist.version>3.30.2-GA</javassist.version>
     <carbonio-message-broker-sdk.version>0.1.2</carbonio-message-broker-sdk.version>
     <mockserver.version>5.13.0</mockserver.version>
