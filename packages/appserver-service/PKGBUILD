@@ -1,6 +1,6 @@
 pkgname="carbonio-appserver-service"
 pkgver="4.27.13"
-pkgrel="2"
+pkgrel="3"
 pkgdesc="Carbonio Mailbox Service"
 arch=('any')
 maintainer="Zextras <packages@zextras.com>"

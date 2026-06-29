@@ -2,7 +2,14 @@
 Description=Carbonio Mailbox Sidecar
 Documentation=https://docs.zextras.com/
 Requires=network-online.target
-After=network-online.target service-discover.service carbonio-appserver.service
+# NOTE: deliberately NOT ordered After=carbonio-appserver.service. This sidecar's
+# Envoy provides the appserver's OUTBOUND upstreams (incl. the carbonio-mailbox-db
+# core PostgreSQL at the local mesh bind), which mailboxd needs DURING its Zextras
+# bootstrap. Ordering it after the appserver inverted that dependency and caused a
+# cold-boot race: mailboxd's bootstrap failed to reach the DB, aborted before
+# registering /zx/auth and binding the address-book port, and stayed unhealthy
+# until a manual restart. carbonio-appserver.service now orders After= this unit.
+After=network-online.target service-discover.service
 PartOf=service-discover.target
 
 [Service]
