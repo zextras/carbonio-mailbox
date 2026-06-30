@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 #
 
-localconfig_path="${CARBONIO_LOCALCONFIG_PATH:-/localconfig/localconfig.xml}"
+localconfig_path="${CARBONIO_LOCALCONFIG_PATH}"
 
 sed -i -e "s#LDAP_URL#${LDAP_URL}#g" "${localconfig_path}"
 sed -i -e "s/LDAP_ROOT_PASSWORD/${LDAP_ROOT_PASSWORD}/g" "${localconfig_path}"

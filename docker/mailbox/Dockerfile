@@ -45,7 +45,7 @@ ARG BASE_JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
     --add-opens java.base/java.lang=ALL-UNNAMED \
     -Xss256k \
     -Xms1996m -Xmx1996m -Djava.io.tmpdir=/opt/zextras/mailboxd/work \
-    -Dzimbra.config=\${CARBONIO_LOCALCONFIG_PATH:-/localconfig/localconfig.xml} \
+    -Dzimbra.config=\${CARBONIO_LOCALCONFIG_PATH} \
     -Dlog4j.configurationFile=/opt/zextras/conf/log4j.properties \
     -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/*"
 
