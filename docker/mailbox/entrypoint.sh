@@ -5,17 +5,19 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 #
 
-sed -i -e "s#LDAP_URL#${LDAP_URL}#g" /localconfig/localconfig.xml
-sed -i -e "s/LDAP_ROOT_PASSWORD/${LDAP_ROOT_PASSWORD}/g" /localconfig/localconfig.xml
-sed -i -e "s/LDAP_ADMIN_PASSWORD/${LDAP_ADMIN_PASSWORD}/g" /localconfig/localconfig.xml
-sed -i -e "s/MARIADB_ROOT_PASSWORD/${MARIADB_ROOT_PASSWORD}/g" /localconfig/localconfig.xml
-sed -i -e "s/MARIADB_URL/${MARIADB_URL}/g" /localconfig/localconfig.xml
-sed -i -e "s/MARIADB_PORT/${MARIADB_PORT}/g" /localconfig/localconfig.xml
-sed -i -e "s/SERVER_HOSTNAME/${HOSTNAME}/g" /localconfig/localconfig.xml
-sed -i -e "s#CARBONIO_FILES_SERVICE_URL#${CARBONIO_FILES_SERVICE_URL}#g" /localconfig/localconfig.xml
-sed -i -e "s#CARBONIO_PREVIEW_SERVICE_URL#${CARBONIO_PREVIEW_SERVICE_URL}#g" /localconfig/localconfig.xml
-sed -i -e "s#CARBONIO_MAILBOX_INTERNAL_API_HOST#${CARBONIO_MAILBOX_INTERNAL_API_HOST}#g" /localconfig/localconfig.xml
-sed -i -e "s#CARBONIO_MAILBOX_INTERNAL_API_PORT#${CARBONIO_MAILBOX_INTERNAL_API_PORT}#g" /localconfig/localconfig.xml
+localconfig_path="${CARBONIO_LOCALCONFIG_PATH:-/localconfig/localconfig.xml}"
+
+sed -i -e "s#LDAP_URL#${LDAP_URL}#g" "${localconfig_path}"
+sed -i -e "s/LDAP_ROOT_PASSWORD/${LDAP_ROOT_PASSWORD}/g" "${localconfig_path}"
+sed -i -e "s/LDAP_ADMIN_PASSWORD/${LDAP_ADMIN_PASSWORD}/g" "${localconfig_path}"
+sed -i -e "s/MARIADB_ROOT_PASSWORD/${MARIADB_ROOT_PASSWORD}/g" "${localconfig_path}"
+sed -i -e "s/MARIADB_URL/${MARIADB_URL}/g" "${localconfig_path}"
+sed -i -e "s/MARIADB_PORT/${MARIADB_PORT}/g" "${localconfig_path}"
+sed -i -e "s/SERVER_HOSTNAME/${HOSTNAME}/g" "${localconfig_path}"
+sed -i -e "s#CARBONIO_FILES_SERVICE_URL#${CARBONIO_FILES_SERVICE_URL}#g" "${localconfig_path}"
+sed -i -e "s#CARBONIO_PREVIEW_SERVICE_URL#${CARBONIO_PREVIEW_SERVICE_URL}#g" "${localconfig_path}"
+sed -i -e "s#CARBONIO_MAILBOX_INTERNAL_API_HOST#${CARBONIO_MAILBOX_INTERNAL_API_HOST}#g" "${localconfig_path}"
+sed -i -e "s#CARBONIO_MAILBOX_INTERNAL_API_PORT#${CARBONIO_MAILBOX_INTERNAL_API_PORT}#g" "${localconfig_path}"
 
 SERVER_EXISTS=$(/usr/bin/zmprov -l gs "${HOSTNAME}" 2>&1)
 if [[ $SERVER_EXISTS == *"account.NO_SUCH_SERVER"* ]]; then
@@ -37,7 +39,7 @@ JAVA_OPTS="-Dfile.encoding=UTF-8 -server \
                          --enable-preview --enable-native-access=ALL-UNNAMED \
                          --add-opens java.base/java.lang=ALL-UNNAMED \
                          ${MAILBOXD_JAVA_OPTS} -Djava.io.tmpdir=/opt/zextras/mailboxd/work \
-                         -Dzimbra.config=/localconfig/localconfig.xml \
+                         -Dzimbra.config=${localconfig_path} \
                          -Dlog4j.configurationFile=/opt/zextras/conf/log4j.properties \
                          -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/*"
 
