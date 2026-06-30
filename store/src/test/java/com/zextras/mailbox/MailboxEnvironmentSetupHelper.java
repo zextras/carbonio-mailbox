@@ -113,6 +113,10 @@ public class MailboxEnvironmentSetupHelper {
 										ZAttrProvisioning.A_zimbraMailPort, String.valueOf(userHttpPort),
 										ZAttrProvisioning.A_zimbraMailSSLPort, String.valueOf(userHttpsPort),
 										ZAttrProvisioning.A_zimbraAdminPort, String.valueOf(adminPort),
+										// Randomize MTA-auth (default 7073) and extensions (default 7072) connector
+										// ports too, so concurrent test forks don't collide on these fixed defaults.
+										ZAttrProvisioning.A_zimbraMtaAuthPort, String.valueOf(PortUtil.findFreePort()),
+										ZAttrProvisioning.A_zimbraExtensionBindPort, String.valueOf(PortUtil.findFreePort()),
 										ZAttrProvisioning.A_zimbraMailMode, "both",
 										ZAttrProvisioning.A_zimbraPop3SSLServerEnabled, "FALSE",
 										ZAttrProvisioning.A_zimbraImapSSLServerEnabled, "FALSE")));
