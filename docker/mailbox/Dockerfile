@@ -45,18 +45,26 @@ ARG BASE_JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
     --add-opens java.base/java.lang=ALL-UNNAMED \
     -Xss256k \
     -Xms1996m -Xmx1996m -Djava.io.tmpdir=/opt/zextras/mailboxd/work \
-    -Dzimbra.config=/localconfig/localconfig.xml \
+    -Dzimbra.config=\${LOCALCONFIG_PATH} \
     -Dlog4j.configurationFile=/opt/zextras/conf/log4j.properties \
     -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/*"
 
 RUN mkdir -p /staging/usr/bin && \
-    printf '#!/bin/sh\njava %s com.zimbra.cs.account.ProvUtil "$@"\n' "${BASE_JAVA_ARGS}" > /staging/usr/bin/zmprov && \
+    printf '#!/bin/sh\njava %s com.zimbra.cs.account.ProvUtil "$@"\n' \
+      "${BASE_JAVA_ARGS}" \
+      > /staging/usr/bin/zmprov && \
     chmod +x /staging/usr/bin/zmprov && \
-    printf '#!/bin/sh\njava %s com.zimbra.cs.localconfig.LocalConfigCLI "$@"\n' "${BASE_JAVA_ARGS}" > /staging/usr/bin/zmlocalconfig && \
+    printf '#!/bin/sh\njava %s com.zimbra.cs.localconfig.LocalConfigCLI "$@"\n' \
+      "${BASE_JAVA_ARGS}" \
+      > /staging/usr/bin/zmlocalconfig && \
     chmod +x /staging/usr/bin/zmlocalconfig && \
-    printf '#!/bin/sh\njava %s com.zimbra.cs.util.GalSyncAccountUtil "$@"\n' "${BASE_JAVA_ARGS}" > /staging/usr/bin/zmgsautil && \
+    printf '#!/bin/sh\njava %s com.zimbra.cs.util.GalSyncAccountUtil "$@"\n' \
+      "${BASE_JAVA_ARGS}" \
+      > /staging/usr/bin/zmgsautil && \
     chmod +x /staging/usr/bin/zmgsautil && \
-    printf '#!/bin/sh\njava %s com.zimbra.cs.zclient.ZMailboxUtil "$@"\n' "${BASE_JAVA_ARGS}" > /staging/usr/bin/zmmailbox && \
+    printf '#!/bin/sh\njava %s com.zimbra.cs.zclient.ZMailboxUtil "$@"\n' \
+      "${BASE_JAVA_ARGS}" \
+      > /staging/usr/bin/zmmailbox && \
     chmod +x /staging/usr/bin/zmmailbox
 
 # Generate keystore using Alpine-based builder stage
@@ -84,7 +92,8 @@ COPY docker/mailbox/log4j.properties /opt/zextras/conf/log4j.properties
 COPY docker/mailbox/localconfig/localconfig.xml /localconfig/localconfig.xml
 COPY packages/appserver-service/otel.properties /etc/carbonio/mailbox/otel.properties
 
-ENV LDAP_URL="ldap://openldap:1389" \
+ENV LOCALCONFIG_PATH=/localconfig/localconfig.xml \
+    LDAP_URL="ldap://openldap:1389" \
     LDAP_ROOT_PASSWORD=qh6hWZvc \
     LDAP_ADMIN_PASSWORD=password \
     MARIADB_ROOT_PASSWORD=password \
