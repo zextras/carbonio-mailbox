@@ -58,7 +58,7 @@
     <javassist.version>3.30.2-GA</javassist.version>
     <carbonio-message-broker-sdk.version>0.1.2</carbonio-message-broker-sdk.version>
     <mockserver.version>5.13.0</mockserver.version>
-    <json-unit.version>4.1.0</json-unit.version>
+    <json-unit.version>4.1.1</json-unit.version>
     <mariadb-java-client.version>2.7.14</mariadb-java-client.version>
   </properties>
 
