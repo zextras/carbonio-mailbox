@@ -119,7 +119,7 @@ pipeline {
                 container('jdk-21') {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         sh """
-                            mvn ${MVN_OPTS} \
+                            MAVEN_OPTS='-Xmx4g' mvn ${MVN_OPTS} \
                                 jacoco:report \
                                 sonar:sonar \
                                 -Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco/jacoco.xml \
