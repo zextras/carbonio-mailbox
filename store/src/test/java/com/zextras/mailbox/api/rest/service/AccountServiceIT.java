@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.zextras.mailbox.util.MailboxServerExtension;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -19,8 +20,7 @@ import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.OperationContext;
-import com.zimbra.cs.mailbox.acl.AclPushSerializer;
-import com.zextras.mailbox.util.MailboxServerExtension;
+import com.zimbra.cs.mailbox.acl.AclPushTask;
 import io.vavr.control.Try;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
@@ -129,12 +129,12 @@ class AccountServiceIT {
 
 	private static void shareRootFolder(Account owner, Account grantee) throws ServiceException {
 		Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(owner);
-		Folder rootFolder = mailbox.getFolderById(new OperationContext(owner), Mailbox.ID_FOLDER_USER_ROOT);
-		ACL.Grant grant = mailbox.grantAccess(
+		mailbox.grantAccess(
 				new OperationContext(owner), Mailbox.ID_FOLDER_USER_ROOT,
 				grantee.getId(), ACL.GRANTEE_USER, ACL.RIGHT_READ, null);
-		String serialized = AclPushSerializer.serialize(rootFolder, grant);
-		owner.addSharedItem(serialized);
+		// grantAccess queues the share push, which production runs on a background thread.
+		// Flush it synchronously so the owner's shared item is written before we assert.
+		AclPushTask.doWork();
 	}
 
 	private static void shareSubFolder(Account owner, Account grantee, String folderName)
@@ -143,10 +143,9 @@ class AccountServiceIT {
 		Folder folder = mailbox.createFolder(
 				new OperationContext(owner), folderName, Mailbox.ID_FOLDER_USER_ROOT,
 				new Folder.FolderOptions());
-		ACL.Grant grant = mailbox.grantAccess(
+		mailbox.grantAccess(
 				new OperationContext(owner), folder.getId(),
 				grantee.getId(), ACL.GRANTEE_USER, ACL.RIGHT_READ, null);
-		String serialized = AclPushSerializer.serialize(folder, grant);
-		owner.addSharedItem(serialized);
+		AclPushTask.doWork();
 	}
 }
