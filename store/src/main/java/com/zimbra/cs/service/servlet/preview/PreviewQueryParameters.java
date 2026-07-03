@@ -1,7 +1,7 @@
 package com.zimbra.cs.service.servlet.preview;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.zextras.carbonio.preview.queries.Query;
+import com.zextras.carbonio.preview.sdk.Query;
 import java.util.Optional;
 import javax.swing.text.html.Option;
 

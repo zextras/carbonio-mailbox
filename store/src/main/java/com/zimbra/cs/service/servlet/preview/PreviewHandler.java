@@ -2,10 +2,8 @@ package com.zimbra.cs.service.servlet.preview;
 
 import static com.zimbra.cs.servlet.ZimbraServlet.proxyServletRequest;
 
-import com.zextras.carbonio.preview.PreviewClient;
-import com.zextras.carbonio.preview.exceptions.BadRequest;
-import com.zextras.carbonio.preview.exceptions.ItemNotFound;
-import com.zextras.carbonio.preview.exceptions.ValidationError;
+import com.zextras.carbonio.preview.sdk.PreviewClient;
+import com.zextras.carbonio.preview.sdk.PreviewException;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.Log;
@@ -156,12 +154,13 @@ public class PreviewHandler {
     mimePartTry.mapTry(Utils::mapMimePartResponseToDataBlob)
         .flatMapTry(attachmentDataBlob -> getAttachmentPreview(request, attachmentDataBlob))
         .onSuccess(previewDataBlob -> respondWithSuccess(response, request, previewDataBlob))
-        .onFailure(BadRequest.class,
-            ex -> respondWithError(request, response, HttpServletResponse.SC_BAD_REQUEST, ex.getMessage()))
-        .onFailure(ItemNotFound.class,
-            ex -> respondWithError(request, response, HttpServletResponse.SC_NOT_FOUND, ex.getMessage()))
-        .onFailure(ValidationError.class,
-            ex -> respondWithError(request, response, HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage()))
+        .onFailure(PreviewException.class, ex -> {
+          if (ex.isNotFound()) {
+            respondWithError(request, response, HttpServletResponse.SC_NOT_FOUND, ex.getMessage());
+          } else if (ex.isBadRequest()) {
+            respondWithError(request, response, HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+          }
+        })
         .onFailure(ex -> {
           var message = ex.getMessage();
           if (ex instanceof NullPointerException || message == null || message.trim().isEmpty()) {
@@ -237,12 +236,11 @@ public class PreviewHandler {
               () ->
                   previewClient.postThumbnailOfImage(
                       attachmentMimePartInputStream,
-                      Utils.generateQuery(previewArea, queryParameters),
-                      attachmentFileName))
+                      Utils.generateQuery(previewArea, queryParameters)))
           .flatMapTry(
               thumbnailOfImage ->
                   Utils.mapPreviewResponseToDataBlob(
-                      thumbnailOfImage.get(), attachmentFileName, dispositionType));
+                      thumbnailOfImage, attachmentFileName, dispositionType));
     }
 
     if (pdfThumbnailMatcher.find()) {
@@ -253,12 +251,11 @@ public class PreviewHandler {
               () ->
                   previewClient.postThumbnailOfPdf(
                       attachmentMimePartInputStream,
-                      Utils.generateQuery(previewArea, queryParameters),
-                      attachmentFileName))
+                      Utils.generateQuery(previewArea, queryParameters)))
           .flatMapTry(
               thumbnailOfPdf ->
                   Utils.mapPreviewResponseToDataBlob(
-                      thumbnailOfPdf.get(), attachmentFileName, dispositionType));
+                      thumbnailOfPdf, attachmentFileName, dispositionType));
     }
 
     if (documentThumbnailMatcher.find()) {
@@ -269,12 +266,11 @@ public class PreviewHandler {
               () ->
                   previewClient.postThumbnailOfDocument(
                       attachmentMimePartInputStream,
-                      Utils.generateQuery(previewArea, queryParameters),
-                      attachmentFileName))
+                      Utils.generateQuery(previewArea, queryParameters)))
           .flatMapTry(
               thumbnailOfDocument ->
                   Utils.mapPreviewResponseToDataBlob(
-                      thumbnailOfDocument.get(), attachmentFileName, dispositionType));
+                      thumbnailOfDocument, attachmentFileName, dispositionType));
     }
 
     if (imagePreviewMatcher.find()) {
@@ -286,12 +282,11 @@ public class PreviewHandler {
               () ->
                   previewClient.postPreviewOfImage(
                       attachmentMimePartInputStream,
-                      Utils.generateQuery(previewArea, queryParameters),
-                      attachmentFileName))
+                      Utils.generateQuery(previewArea, queryParameters)))
           .flatMapTry(
               previewOfImage ->
                   Utils.mapPreviewResponseToDataBlob(
-                      previewOfImage.get(), attachmentFileName, dispositionType));
+                      previewOfImage, attachmentFileName, dispositionType));
     }
 
     if (pdfPreviewMatcher.find()) {
@@ -301,12 +296,11 @@ public class PreviewHandler {
               () ->
                   previewClient.postPreviewOfPdf(
                       attachmentMimePartInputStream,
-                      Utils.generateQuery(null, queryParameters),
-                      attachmentFileName))
+                      Utils.generateQuery(null, queryParameters)))
           .flatMapTry(
               previewOfPdf ->
                   Utils.mapPreviewResponseToDataBlob(
-                      previewOfPdf.get(), attachmentFileName, dispositionType));
+                      previewOfPdf, attachmentFileName, dispositionType));
     }
 
     if (documentPreviewMatcher.find()) {
@@ -316,12 +310,11 @@ public class PreviewHandler {
               () ->
                   previewClient.postPreviewOfDocument(
                       attachmentMimePartInputStream,
-                      Utils.generateQuery(null, queryParameters),
-                      attachmentFileName))
+                      Utils.generateQuery(null, queryParameters)))
           .flatMapTry(
               previewOfDocument ->
                   Utils.mapPreviewResponseToDataBlob(
-                      previewOfDocument.get(), attachmentFileName, dispositionType));
+                      previewOfDocument, attachmentFileName, dispositionType));
     }
 
     return Try.failure(ServiceException.INVALID_REQUEST("[" + requestId + "] Cannot handle request", null));
