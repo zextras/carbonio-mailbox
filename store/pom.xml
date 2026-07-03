@@ -186,8 +186,20 @@
     </dependency>
 
     <dependency>
-      <artifactId>carbonio-preview-sdk</artifactId>
+      <artifactId>carbonio-preview-ce-rest-sdk</artifactId>
       <groupId>com.zextras.carbonio.preview</groupId>
+      <exclusions>
+        <!-- store already depends directly on io.swagger.core.v3:swagger-annotations for its own
+             internal REST API OpenAPI annotations; swagger-annotations-jakarta ships the exact same
+             io.swagger.v3.oas.annotations.* package, which would otherwise put duplicate/conflicting
+             classes on the classpath. The preview SDK's hand-written PreviewClient wrapper we use
+             never touches its generated OpenAPI/REST-model classes (the ones that need this
+             dependency), so it is safe to exclude here. -->
+        <exclusion>
+          <groupId>io.swagger.core.v3</groupId>
+          <artifactId>swagger-annotations-jakarta</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>

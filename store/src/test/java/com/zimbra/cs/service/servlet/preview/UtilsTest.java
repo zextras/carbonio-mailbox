@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.zextras.carbonio.preview.queries.Query;
+import com.zextras.carbonio.preview.sdk.Query;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Assertions;
@@ -136,7 +136,7 @@ class UtilsTest {
     final PreviewQueryParameters queryParameters = Utils.parseQueryParameters(query);
     final Query parameters = Utils.generateQuery("", queryParameters);
 
-    Assertions.assertEquals("1", parameters.getLangTag().get());
+    Assertions.assertEquals("1", parameters.getLangTag());
   }
 
 }
