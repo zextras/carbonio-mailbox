@@ -307,4 +307,12 @@ public class ExtensionUtil {
   public interface ExtensionMatcher {
     boolean matches(ZimbraExtension ext);
   }
+
+  public static void clearExtensions() {
+    sInitializedExtensions = new LinkedHashMap<>();
+  }
+
+  public static boolean removeExtension(String extensionName) {
+    return sInitializedExtensions.remove(extensionName) != null;
+  }
 }
