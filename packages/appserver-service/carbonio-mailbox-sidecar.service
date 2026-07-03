@@ -2,7 +2,7 @@
 Description=Carbonio Mailbox Sidecar
 Documentation=https://docs.zextras.com/
 Requires=network-online.target
-After=network-online.target service-discover.service carbonio-appserver.service
+After=network-online.target service-discover.service
 PartOf=service-discover.target
 
 [Service]
