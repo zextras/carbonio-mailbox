@@ -226,15 +226,15 @@ pipeline {
                 }
             }
 
+        }
 
-            stage('Bump version and tag') {
-                steps {
-                    script {
-                        semanticRelease()
-                    }
+
+        stage('Bump version and tag') {
+            steps {
+                script {
+                    semanticRelease()
                 }
             }
-
         }
     }
 }
