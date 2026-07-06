@@ -31,7 +31,7 @@ public class MimeHandlerManager {
     private static Map<String, HandlerInfo> sHandlers = new ConcurrentHashMap<>();
     private static Log sLog = LogFactory.getLog(MimeHandlerManager.class);
 
-    private static class HandlerInfo {
+    public static class HandlerInfo {
         MimeTypeInfo mimeType;
         Class<? extends MimeHandler> clazz;
         String realMimeType;
@@ -46,6 +46,18 @@ public class MimeHandlerManager {
           handler.setContentType(realMimeType);
             handler.setMimeTypeInfo(mimeType);
             return handler;
+        }
+
+        public void setMimeType(MimeTypeInfo mimeType) {
+            this.mimeType = mimeType;
+        }
+
+        public void setClass(Class<? extends MimeHandler> clazz) {
+            this.clazz = clazz;
+        }
+
+        public void setRealMimeType(String realMimeType) {
+            this.realMimeType = realMimeType;
         }
     }
 
@@ -249,4 +261,11 @@ public class MimeHandlerManager {
         return false;
     }
 
+    public static Map<String, HandlerInfo> getHandlers() {
+        return sHandlers;
+    }
+
+    public static void setHandlers(Map<String, HandlerInfo> sHandlers) {
+        MimeHandlerManager.sHandlers = sHandlers;
+    }
 }
