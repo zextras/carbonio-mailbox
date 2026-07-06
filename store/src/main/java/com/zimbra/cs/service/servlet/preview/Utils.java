@@ -1,8 +1,9 @@
 package com.zimbra.cs.service.servlet.preview;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zextras.carbonio.preview.queries.Query;
-import com.zextras.carbonio.preview.queries.Query.QueryBuilder;
+import com.zextras.carbonio.preview.sdk.PreviewResponse;
+import com.zextras.carbonio.preview.sdk.Query;
+import com.zextras.carbonio.preview.sdk.QueryBuilder;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.service.util.ItemId;
@@ -165,15 +166,15 @@ class Utils {
   }
 
   /**
-   * Maps preview service's {@link com.zextras.carbonio.preview.queries.BlobResponse} to {@link DataBlob}.
+   * Maps preview service's {@link PreviewResponse} to {@link DataBlob}.
    *
-   * @param response        preview service's {@link com.zextras.carbonio.preview.queries.BlobResponse}
+   * @param response        preview service's {@link PreviewResponse}
    * @param fileName        filename that we want to assign to our {@link DataBlob} object
    * @param dispositionType disposition will be: attachment or inline(default)
    * @return mapped {@link DataBlob} object
    */
   static Try<DataBlob> mapPreviewResponseToDataBlob(
-      com.zextras.carbonio.preview.queries.BlobResponse response, String fileName, String dispositionType) {
+      PreviewResponse response, String fileName, String dispositionType) {
     return Try.of(() -> new DataBlob(
         response.getContent(),
         fileName,
@@ -214,15 +215,15 @@ class Utils {
   static Query generateQuery(String optArea, PreviewQueryParameters queryParameters) {
     var parameterBuilder = new QueryBuilder();
     if (optArea != null) {
-      parameterBuilder.setPreviewArea(optArea);
+      parameterBuilder.area(optArea);
     }
-    queryParameters.getQuality().ifPresent(parameterBuilder::setQuality);
-    queryParameters.getOutputFormat().ifPresent(parameterBuilder::setOutputFormat);
-    queryParameters.getCrop().ifPresent(parameterBuilder::setCrop);
-    queryParameters.getShape().ifPresent(parameterBuilder::setShape);
-    queryParameters.getFirstPage().ifPresent(parameterBuilder::setFirstPage);
-    queryParameters.getLastPage().ifPresent(parameterBuilder::setLastPage);
-    queryParameters.getLangTag().ifPresent(parameterBuilder::setLangTag);
+    queryParameters.getQuality().ifPresent(parameterBuilder::quality);
+    queryParameters.getOutputFormat().ifPresent(parameterBuilder::outputFormat);
+    queryParameters.getCrop().ifPresent(parameterBuilder::crop);
+    queryParameters.getShape().ifPresent(parameterBuilder::shape);
+    queryParameters.getFirstPage().ifPresent(parameterBuilder::firstPage);
+    queryParameters.getLastPage().ifPresent(parameterBuilder::lastPage);
+    queryParameters.getLangTag().ifPresent(parameterBuilder::langTag);
     return parameterBuilder.build();
   }
 

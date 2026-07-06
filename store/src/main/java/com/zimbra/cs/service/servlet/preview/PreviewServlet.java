@@ -1,6 +1,6 @@
 package com.zimbra.cs.service.servlet.preview;
 
-import com.zextras.carbonio.preview.PreviewClient;
+import com.zextras.carbonio.preview.sdk.PreviewClient;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * <pre>
  *
- *   Based on Carbonio Preview SDK 1.0.2
+ *   Based on Carbonio Preview CE REST SDK 2.0.1-1
  *
  *   The API is the almost same as of preview service(https://zextras.atlassian.net/wiki/spaces/SW/pages/2353430753/Preview+API)
  *   with few modification that let us make it use as preview service for mailbox attachments.

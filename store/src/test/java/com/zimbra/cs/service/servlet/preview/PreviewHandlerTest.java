@@ -1,7 +1,6 @@
 package com.zimbra.cs.service.servlet.preview;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.spy;
@@ -9,10 +8,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.zextras.carbonio.preview.PreviewClient;
-import com.zextras.carbonio.preview.exceptions.InternalServerError;
-import com.zextras.carbonio.preview.exceptions.ItemNotFound;
-import com.zextras.carbonio.preview.queries.Query;
+import com.zextras.carbonio.preview.sdk.PreviewClient;
+import com.zextras.carbonio.preview.sdk.PreviewException;
+import com.zextras.carbonio.preview.sdk.PreviewResponse;
+import com.zextras.carbonio.preview.sdk.Query;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.AuthToken;
@@ -60,8 +59,8 @@ class PreviewHandlerTest {
   private MimePart mimePart;
   @Mock
   private ItemIdFactory itemIdFactory;
-  @Mock
-  private com.zextras.carbonio.preview.queries.BlobResponse blobResponse;
+  private final PreviewResponse blobResponse =
+      new PreviewResponse(InputStream.nullInputStream(), 0L, "image/jpeg");
   @InjectMocks
   private PreviewHandler previewHandler;
 
@@ -258,7 +257,7 @@ class PreviewHandlerTest {
     when(itemId.isLocal()).thenReturn(true);
     when(itemIdFactory.create("27310", "accountId")).thenReturn(itemId);
     when(attachmentService.getAttachmentByItemId(itemId.getAccountId(), authToken, itemId, "2"))
-        .thenReturn(Try.failure(new ItemNotFound()));
+        .thenReturn(Try.failure(new RuntimeException()));
 
     previewHandler.handle(request, response);
 
@@ -280,8 +279,8 @@ class PreviewHandlerTest {
     when(itemIdFactory.create("27310", "accountId")).thenReturn(itemId);
     when(attachmentService.getAttachmentByItemId(itemId.getAccountId(), authToken, itemId, "2"))
         .thenReturn(Try.success(mimePart));
-    when(previewClient.postPreviewOfImage(any(InputStream.class), any(Query.class), any(String.class)))
-        .thenReturn(Try.failure(new InternalServerError()));
+    when(previewClient.postPreviewOfImage(any(InputStream.class), any(Query.class)))
+        .thenThrow(new PreviewException(500, null));
 
     previewHandler.handle(request, response);
 
@@ -307,8 +306,7 @@ class PreviewHandlerTest {
     when(mimePart.getSize()).thenReturn(200);
     when(attachmentService.getAttachmentByItemId(itemId.getAccountId(), authToken, itemId, "2"))
         .thenReturn(Try.success(mimePart));
-    when(previewClient.postPreviewOfImage(any(InputStream.class), any(Query.class), anyString())).thenReturn(
-        Try.success(blobResponse));
+    when(previewClient.postPreviewOfImage(any(InputStream.class), any(Query.class))).thenReturn(blobResponse);
 
     var previewHandlerSpy = spy(previewHandler);
     previewHandlerSpy.handle(request, response);
@@ -335,8 +333,8 @@ class PreviewHandlerTest {
     when(mimePart.getSize()).thenReturn(200);
     when(attachmentService.getAttachmentByItemId(itemId.getAccountId(), authToken, itemId, "2"))
         .thenReturn(Try.success(mimePart));
-    when(previewClient.postPreviewOfImage(any(InputStream.class), any(Query.class), anyString())).thenReturn(
-        Try.failure(new InternalServerError()));
+    when(previewClient.postPreviewOfImage(any(InputStream.class), any(Query.class)))
+        .thenThrow(new PreviewException(500, null));
 
     previewHandler.handle(request, response);
 
