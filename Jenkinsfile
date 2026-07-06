@@ -1,5 +1,5 @@
 library(
-        identifier: 'jenkins-lib-common@v3.0.1',
+        identifier: 'jenkins-lib-common@v3.0.2',
         retriever: modernSCM([
                 $class: 'GitSCMSource',
                 credentialsId: 'jenkins-integration-with-github-account',
@@ -39,14 +39,6 @@ pipeline {
     }
 
     stages {
-
-        stage('Bump version and tag') {
-            steps {
-                script {
-                    dt2_semanticRelease()
-                }
-            }
-        }
 
         stage('Setup') {
             steps {
@@ -234,6 +226,15 @@ pipeline {
                 }
             }
 
+        }
+
+
+        stage('Bump version and tag') {
+            steps {
+                script {
+                    semanticRelease()
+                }
+            }
         }
     }
 }
