@@ -54,6 +54,27 @@
     </dependency>
 
     <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+      <version>5.1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.7.4</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <!-- checker-qual is compile-time annotations only; drop postgresql's 3.42.0 so it
+             converges on guava's 3.43.0 (dependency-convergence enforcer). -->
+        <exclusion>
+          <groupId>org.checkerframework</groupId>
+          <artifactId>checker-qual</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
       <artifactId>commons-io</artifactId>
       <groupId>commons-io</groupId>
     </dependency>

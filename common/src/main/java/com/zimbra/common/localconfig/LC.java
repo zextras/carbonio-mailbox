@@ -1359,6 +1359,13 @@ public final class LC {
 	public static final KnownKey mailbox_internal_api_bind_address = KnownKey.newKey("127.78.0.7");
 	public static final KnownKey support_timer = KnownKey.newKey(true);
 
+	// Postgres pool used by the account -> COS count projection. Empty jdbc url => projection disabled.
+	public static final KnownKey postgres_jdbc_url = KnownKey.newKey("");
+	public static final KnownKey postgres_user = KnownKey.newKey("");
+	public static final KnownKey postgres_password = KnownKey.newKey("");
+	public static final KnownKey postgres_pool_max = KnownKey.newKey(5);
+	public static final KnownKey postgres_pool_min_idle = KnownKey.newKey(1);
+
 	static {
     // Automatically set the key name with the variable name.
     for (Field field : LC.class.getFields()) {

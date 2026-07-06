@@ -10,6 +10,10 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.zextras.mailbox.account.cos.CosAccountRepository;
+import com.zextras.mailbox.account.cos.InMemoryCosAccountRepository;
+import com.zextras.mailbox.account.cos.PostgresCosAccountRepository;
+import com.zextras.mailbox.db.PostgresConnectionPool;
 import com.zimbra.common.account.ForgetPasswordEnums.CodeConstants;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
@@ -220,6 +224,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   private LdapCache cache;
 
   private final LdapClient ldapClient;
+  private final CosAccountRepository cosCounts;
   private final IAccountCache accountCache;
   private final INamedEntryCache<LdapCos> cosCache;
   private final IDomainCache domainCache;
@@ -242,9 +247,14 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   private String[] BASIC_DYNAMIC_GROUP_ATTRS;
   private String[] BASIC_GROUP_ATTRS;
 
-  public static LdapProvisioning create(CacheMode cacheMode) {
+  /**
+   * Production factory: wires the COS-count projection onto the given Postgres pool. The pool is
+   * lazy, so a disabled/unreachable Postgres does not block provisioning start-up.
+   */
+  public static LdapProvisioning create(CacheMode cacheMode, PostgresConnectionPool pool) {
     try {
-      return new LdapProvisioning(cacheMode);
+      return new LdapProvisioning(
+          cacheMode, LdapClient.createNew(), new PostgresCosAccountRepository(pool));
     } catch (LdapException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
@@ -268,7 +278,13 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   }
 
   protected LdapProvisioning(CacheMode cacheMode, LdapClient ldapClient) {
+    this(cacheMode, ldapClient, new InMemoryCosAccountRepository());
+  }
+
+  protected LdapProvisioning(
+      CacheMode cacheMode, LdapClient ldapClient, CosAccountRepository cosCounts) {
 		this.ldapClient = ldapClient;
+    this.cosCounts = cosCounts;
     useCache = cacheMode != CacheMode.OFF;
 
     if (this.useCache) {

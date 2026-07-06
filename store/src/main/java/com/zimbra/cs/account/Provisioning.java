@@ -8,6 +8,7 @@ package com.zimbra.cs.account;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
+import com.zextras.mailbox.db.PostgresConnectionPool;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.ProvisioningConstants;
@@ -346,7 +347,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
           }
 
           if (singleton == null) {
-            singleton = LdapProvisioning.create(cacheMode);
+            singleton = LdapProvisioning.create(cacheMode, PostgresConnectionPool.fromLocalConfig());
             ZimbraLog.account.error("defaulting to " + singleton.getClass().getCanonicalName());
           }
         }
