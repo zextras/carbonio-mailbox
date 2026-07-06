@@ -40,14 +40,6 @@ pipeline {
 
     stages {
 
-        stage('Bump version and tag') {
-            steps {
-                script {
-                    dt2_semanticRelease()
-                }
-            }
-        }
-
         stage('Setup') {
             steps {
                 checkout scm
@@ -230,6 +222,15 @@ pipeline {
                                         descriptionFile: 'docker/mariadb/description.md'
                                 ]
                         ])
+                    }
+                }
+            }
+
+
+            stage('Bump version and tag') {
+                steps {
+                    script {
+                        semanticRelease()
                     }
                 }
             }
