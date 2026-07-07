@@ -19,14 +19,18 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.eclipse.jetty.ee8.servlet.ServletContextHandler;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 
 public class MailboxServer {
 
+  private static Server singleton;
   private final Server server;
 
 	MailboxServer(Server server) {
 		this.server = server;
+    singleton = server;
 	}
 
 	public static class InstantiationException extends Exception {
@@ -135,5 +139,35 @@ public class MailboxServer {
       }
     };
     sOutputRotationTimer.scheduleAtFixedRate(tt, firstRotateInMillis, configMillis);
+  }
+
+  /**
+   * Registers an additional {@link ServletContextHandler} on the running server by adding its core
+   * context handler to the top-level handler collection (the {@code Handler.Sequence} assembled in
+   * {@link MailboxServerBuilder}).
+   *
+   * <p>Intended to be called during startup — e.g. from an extension's init, which runs inside
+   * {@code Zimbra.startup()} before {@link #start()} calls {@code server.start()} — so the new
+   * context is started as part of the normal server lifecycle. If the server is already started,
+   * the context is started explicitly.
+   *
+   * <p>The registered handler only serves requests matching its context path (and virtual hosts).
+   * Set {@code contextHandler.setVirtualHosts(...)} to pin it to a specific connector.
+   */
+  public static void register(ServletContextHandler contextHandler) throws Exception {
+    Handler current = singleton.getHandler();
+    while (current instanceof Handler.Wrapper wrapper) {
+      current = wrapper.getHandler();
+    }
+    if (!(current instanceof Handler.Collection collection)) {
+      throw new IllegalStateException(
+          "Cannot register context handler: expected a Handler.Collection at the root of the handler"
+              + " tree but found " + (current == null ? "null" : current.getClass().getName()));
+    }
+    final var coreContextHandler = contextHandler.getCoreContextHandler();
+    collection.addHandler(coreContextHandler);
+    if (singleton.isStarted() && !coreContextHandler.isStarted()) {
+      coreContextHandler.start();
+    }
   }
 }
