@@ -746,8 +746,7 @@
       <dependency>
         <groupId>javax.enterprise</groupId>
         <artifactId>cdi-api</artifactId>
-        <!-- CDI 2.0: required by Weld 3.x / resteasy-cdi 4.x (was 1.0-SP4, which collides with the
-             CDI 2.0 API bundled in weld-servlet-shaded). -->
+        <!-- CDI 2.0: matches the API bundled in weld-servlet-shaded. -->
         <version>2.0</version>
       </dependency>
       <dependency>

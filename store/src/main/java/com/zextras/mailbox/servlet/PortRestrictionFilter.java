@@ -12,14 +12,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Restricts a path to requests that arrived on a specific local port, mirroring the port check
- * {@code ZimbraServlet} does with its {@code allowed.ports} init-param, but <b>fail-closed</b>:
- * anything not on the allowed port gets a 404 (indistinguishable from "not mapped").
- *
- * <p>Used to keep the internal API reachable only via its dedicated (loopback) connector once both
- * APIs share a single CDI servlet context, replacing the previous per-context virtual-host binding.
- */
+/** Rejects (404, fail-closed) any request that did not arrive on {@code allowedPort}. */
 public class PortRestrictionFilter implements Filter {
 
   private final int allowedPort;

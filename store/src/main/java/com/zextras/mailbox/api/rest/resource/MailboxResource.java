@@ -30,8 +30,6 @@ import javax.ws.rs.core.Response;
 @Path("/accounts/mail")
 public class MailboxResource {
 
-  // Field injection (not constructor): RESTEasy's ResourceBuilder rejects a resource whose
-  // constructor has non-JAX-RS params; a no-arg (implicit) ctor + CDI field injection avoids that.
   @Inject
   private MailboxService mailboxService;
 

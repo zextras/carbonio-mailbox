@@ -16,11 +16,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
-/**
- * CDI producers for the internal API service layer. Replaces the hand-wired object graph that used
- * to live in {@code InternalApiApplication.getSingletons()}: the services are now CDI beans, so the
- * resources ({@code MailboxResource}, {@code AccountResource}) get them injected.
- */
+/** CDI producers for the internal API service layer. */
 @ApplicationScoped
 public class InternalApiCdiProducers {
 

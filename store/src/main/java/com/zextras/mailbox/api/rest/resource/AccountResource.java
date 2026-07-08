@@ -40,8 +40,6 @@ import javax.ws.rs.core.Response;
 @Path("/accounts")
 public class AccountResource {
 
-	// Field injection (not constructor): a no-arg (implicit) ctor + CDI field injection avoids
-	// RESTEasy's ResourceBuilder rejecting a constructor with non-JAX-RS parameters.
 	@Inject
 	private AccountService accountService;
 

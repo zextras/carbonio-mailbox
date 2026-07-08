@@ -60,16 +60,6 @@ import org.eclipse.jetty.ee8.servlet.ServletHolder;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.weld.environment.servlet.EnhancedListener;
 
-/**
- * Builds the single root ({@code "/"}) servlet context that hosts every HTTP endpoint. It bootstraps
- * one Weld/CDI container for the whole JVM (there can be only one per classloader), so both the
- * health endpoint and the internal API are CDI-managed.
- *
- * <p>Paths are declared with their full prefix ({@code /service/*} for the mailbox endpoints,
- * {@code /internal/*} for the internal API) so the public-facing filters (DoS, QoS, CSRF, …) — mapped
- * to {@code /service/*} — cover the mailbox endpoints but NOT {@code /internal}. The internal API is
- * additionally restricted to its loopback port by {@link PortRestrictionFilter}.
- */
 public class MailboxAPIs {
 
 	private final ZAttrServer server;
@@ -145,15 +135,14 @@ public class MailboxAPIs {
 		servletContextHandler.addFilter(csrfFilter,"/service/upload/*", EnumSet.of(DispatcherType.REQUEST));
 		servletContextHandler.addFilter(csrfFilter,"/service/extension/*", EnumSet.of(DispatcherType.REQUEST));
 
-		// Internal API is restricted to its loopback port (kept off the public filters above, which
-		// are all mapped to /service/*).
+		// Public filters above are scoped to /service/* so /internal stays off them; it is restricted
+		// to its loopback port instead.
 		servletContextHandler.addFilter(
 				new FilterHolder(new PortRestrictionFilter(LC.mailbox_internal_api_port.intValue())),
 				"/internal/*", EnumSet.of(DispatcherType.REQUEST));
 	}
 
 	private void addListeners(ServletContextHandler servletContextHandler) {
-		// Single Weld/CDI bootstrap for the whole context (health + internal API are CDI-managed).
 		servletContextHandler.setInitParameter(
 				CdiServletContainerInitializer.CDI_INTEGRATION_ATTRIBUTE, CdiDecoratingListener.MODE);
 		servletContextHandler.addServletContainerInitializer(new CdiServletContainerInitializer());
@@ -166,12 +155,9 @@ public class MailboxAPIs {
 		final String userOnlyPorts = server.getMailPort() + ", " + server.getMailSSLPort();
 		final String userAndAdminPorts = server.getMailPort() + ", " + server.getMailSSLPort() + ", " + adminPortOnly;
 
-		// CDI-managed JAX-RS endpoints (RESTEasy + resteasy-cdi). The mapping prefix tells RESTEasy
-		// to strip the servlet path before matching @Path.
 		servletContextHandler.addServlet(cdiJaxrsDispatcher(HealthApplication.class, "/service/health"), "/service/health/*");
 		servletContextHandler.addServlet(cdiJaxrsDispatcher(InternalApiApplication.class, "/internal"), "/internal/*");
 
-		// Prometheus metrics (previously wired via the Guice MetricsServletModule).
 		CarbonioMetricRegisterer.register(Metrics.COLLECTOR_REGISTRY);
 		final var metricsServlet =
 				new ServletHolder(new io.prometheus.client.exporter.MetricsServlet(Metrics.COLLECTOR_REGISTRY));

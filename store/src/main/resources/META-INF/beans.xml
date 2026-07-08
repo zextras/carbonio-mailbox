@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- CDI bean archive descriptor. "annotated" discovery: only classes with a bean-defining
-     annotation (e.g. @RequestScoped, @ApplicationScoped) are managed, so CDI stays scoped to the
-     new REST layer and does not try to manage the legacy Zimbra classes in this module. -->
+<!-- "annotated" discovery: only classes with a bean-defining annotation are CDI-managed,
+     keeping CDI off the legacy Zimbra classes in this module. -->
 <beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/beans_2_0.xsd"

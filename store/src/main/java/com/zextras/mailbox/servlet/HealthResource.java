@@ -14,13 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-/**
- * JAX-RS health endpoint managed by CDI. Routing is by annotation (no {@code switch}); the
- * {@link HealthUseCase} dependency is injected by CDI/Weld ({@code @Inject}), and RESTEasy obtains
- * the resource instance from the CDI {@code BeanManager} via {@code resteasy-cdi}. {@code @Dependent}
- * makes it a CDI bean (discovered because {@code beans.xml} uses {@code bean-discovery-mode=annotated})
- * without requiring a no-arg constructor for proxying.
- */
+/** JAX-RS health endpoint; CDI-managed with {@link HealthUseCase} injected by Weld. */
 @Dependent
 @Path("/")
 public class HealthResource {

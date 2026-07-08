@@ -12,11 +12,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
-/**
- * CDI producers for the health layer. Replaces the Guice {@code @Provides} in
- * {@code HealthServletModule}: {@link HealthUseCase} is now a CDI bean, built once from the global
- * {@link DbPool}, and injected into {@link HealthResource}.
- */
+/** CDI producers for the health layer. */
 @ApplicationScoped
 public class HealthCdiProducers {
 

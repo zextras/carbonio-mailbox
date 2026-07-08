@@ -79,8 +79,6 @@ public class MailboxServerBuilder {
 			server.addConnector(createExtensionsHttpsConnector(server));
 			server.addConnector(createInternalApiConnector(server, httpConfig));
 
-			// Single root ("/") context hosting every endpoint (mailbox /service/*, health, internal)
-			// with one Weld/CDI bootstrap. See MailboxAPIs.
 			final var mailboxHandler = new MailboxAPIs(localServer).createServletContextHandler();
 
 			final RewriteHandler mainHandler = createRewriteHandler();
