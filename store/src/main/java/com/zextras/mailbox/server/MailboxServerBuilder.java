@@ -2,6 +2,7 @@ package com.zextras.mailbox.server;
 
 import com.zextras.mailbox.MailboxAPIs;
 import com.zextras.mailbox.api.InternalApiContextHandler;
+import com.zextras.mailbox.servlet.HealthCdiContextHandler;
 import com.zextras.mailbox.server.MailboxServer.InstantiationException;
 import com.zimbra.common.jetty.JettyMonitor;
 import com.zimbra.common.localconfig.LC;
@@ -84,9 +85,14 @@ public class MailboxServerBuilder {
 			// NOTE: separate handler for internal APIs, not affected by DoS filter and other filters
 			final var internalApiHandler = InternalApiContextHandler.create();
 			final var mailboxHandler = new MailboxAPIs(localServer).createServletContextHandler();
+			// PILOT: CDI-managed JAX-RS health endpoint at /health (RESTEasy 4 + Weld via jetty-ee8-cdi)
+			final var healthCdiHandler = HealthCdiContextHandler.create();
 
 			final RewriteHandler mainHandler = createRewriteHandler();
-			mainHandler.setHandler(new Handler.Sequence(internalApiHandler.getCoreContextHandler(), mailboxHandler.getCoreContextHandler()));
+			mainHandler.setHandler(new Handler.Sequence(
+					internalApiHandler.getCoreContextHandler(),
+					mailboxHandler.getCoreContextHandler(),
+					healthCdiHandler.getCoreContextHandler()));
 			server.setRequestLog(createRequestLog());
 
 			if (localServer.isHttpCompressionEnabled()) {

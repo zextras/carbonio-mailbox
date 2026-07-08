@@ -522,6 +522,24 @@
       <artifactId>resteasy-jackson2-provider</artifactId>
       <scope>runtime</scope>
     </dependency>
+    <!-- CDI pilot: RESTEasy 4 (javax) resources managed by CDI/Weld, bootstrapped in embedded
+         Jetty ee8 via jetty-ee8-cdi. Stepping stone toward the Jakarta (ee10 + RESTEasy 6) move. -->
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-cdi</artifactId>
+      <version>${resteasy.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.ee8</groupId>
+      <artifactId>jetty-ee8-cdi</artifactId>
+      <version>${jetty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.weld.servlet</groupId>
+      <artifactId>weld-servlet-shaded</artifactId>
+      <version>3.1.9.Final</version>
+    </dependency>
     <!-- OpenAPI — compile: annotations used directly -->
     <dependency>
       <groupId>io.swagger.core.v3</groupId>
