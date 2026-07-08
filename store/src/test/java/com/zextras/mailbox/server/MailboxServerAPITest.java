@@ -6,7 +6,6 @@
 
 package com.zextras.mailbox.server;
 
-import com.zextras.mailbox.servlet.ApiCdiContextHandler;
 import com.zextras.mailbox.util.MailboxServerExtension;
 import com.zextras.mailbox.util.SoapClient;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
@@ -106,7 +105,7 @@ class MailboxServerAPITest {
 	@Test
 	void shouldNotExposeInternalEndpointWhenMatchingHost() throws Exception {
 		final Account account = server.getAccountFactory().create();
-		var headers = Map.of("Host", ApiCdiContextHandler.INTERNAL_CONNECTOR_NAME);
+		var headers = Map.of("Host", "internalApiConnector");
 		var response = server.getHttpClient().get("http://localhost:" + server.getUserHttpPort() + "/internal/accounts/" + account.getId() + "/info", headers);
 		Assertions.assertEquals(404, response.statusCode());
 	}
@@ -122,21 +121,21 @@ class MailboxServerAPITest {
 	@Test
 	void healthAnswersAtInternalPort() throws Exception {
 		var response = server.getHttpClient().get(
-				"http://localhost:" + server.getInternalApiPort() + "/health/ready");
+				"http://localhost:" + server.getInternalApiPort() + "/service/health/ready");
 		Assertions.assertEquals(200, response.statusCode());
 	}
 
 	@Test
 	void healthLiveOnInternalPort() throws Exception {
 		var response = server.getHttpClient().get(
-				"http://localhost:" + server.getInternalApiPort() + "/health/live");
+				"http://localhost:" + server.getInternalApiPort() + "/service/health/live");
 		Assertions.assertEquals(200, response.statusCode());
 	}
 
 	@Test
 	void healthOnInternalPortShouldReturnJson() throws Exception {
 		var response = server.getHttpClient().get(
-				"http://localhost:" + server.getInternalApiPort() + "/health");
+				"http://localhost:" + server.getInternalApiPort() + "/service/health");
 		Assertions.assertEquals(200, response.statusCode());
 		Assertions.assertTrue(response.body().contains("ready"));
 		Assertions.assertTrue(response.body().contains("dependencies"));
@@ -233,7 +232,7 @@ class MailboxServerAPITest {
 	@Test
 	void serviceHealthShouldBeReachableOnUserHttpPort() throws Exception {
 		var response = server.getHttpClient().get(
-				"http://localhost:" + server.getUserHttpPort() + "/health/");
+				"http://localhost:" + server.getUserHttpPort() + "/service/health/");
 		Assertions.assertEquals(200, response.statusCode());
 	}
 

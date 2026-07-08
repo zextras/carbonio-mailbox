@@ -6,10 +6,14 @@
 
 package com.zextras.mailbox;
 
+import com.zextras.mailbox.api.InternalApiApplication;
 import com.zextras.mailbox.metric.CarbonioMetricRegisterer;
 import com.zextras.mailbox.metric.Metrics;
+import com.zextras.mailbox.servlet.HealthApplication;
+import com.zextras.mailbox.servlet.PortRestrictionFilter;
 import com.zimbra.common.account.ZAttrProvisioning.MailMode;
 import com.zimbra.common.filters.Base64Filter;
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.account.ZAttrServer;
 import com.zimbra.cs.dav.service.DavServlet;
 import com.zimbra.cs.dav.service.DavWellKnownServlet;
@@ -45,18 +49,32 @@ import java.util.EnumSet;
 import java.util.List;
 import javax.servlet.DispatcherType;
 import javax.servlet.MultipartConfigElement;
+import org.eclipse.jetty.ee8.cdi.CdiDecoratingListener;
+import org.eclipse.jetty.ee8.cdi.CdiServletContainerInitializer;
 import org.eclipse.jetty.ee8.security.ConstraintMapping;
 import org.eclipse.jetty.ee8.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.ee8.nested.ServletConstraint;
 import org.eclipse.jetty.ee8.servlet.FilterHolder;
 import org.eclipse.jetty.ee8.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee8.servlet.ServletHolder;
+import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
+import org.jboss.weld.environment.servlet.EnhancedListener;
 
+/**
+ * Builds the single root ({@code "/"}) servlet context that hosts every HTTP endpoint. It bootstraps
+ * one Weld/CDI container for the whole JVM (there can be only one per classloader), so both the
+ * health endpoint and the internal API are CDI-managed.
+ *
+ * <p>Paths are declared with their full prefix ({@code /service/*} for the mailbox endpoints,
+ * {@code /internal/*} for the internal API) so the public-facing filters (DoS, QoS, CSRF, …) — mapped
+ * to {@code /service/*} — cover the mailbox endpoints but NOT {@code /internal}. The internal API is
+ * additionally restricted to its loopback port by {@link PortRestrictionFilter}.
+ */
 public class MailboxAPIs {
 
 	private final ZAttrServer server;
-	private static final String USER_PATH = "/user/*";
-	private static final String HOME_PATH = "/home/*";
+	private static final String USER_PATH = "/service/user/*";
+	private static final String HOME_PATH = "/service/home/*";
 
 	public MailboxAPIs(ZAttrServer server) {
 		this.server = server;
@@ -66,7 +84,7 @@ public class MailboxAPIs {
 		final FilterHolder tracingSpanFilter = new FilterHolder(TracingSpanFilter.class);
 		tracingSpanFilter.setName("TracingSpanFilter");
 		tracingSpanFilter.setAsyncSupported(true);
-		servletContextHandler.addFilter(tracingSpanFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
+		servletContextHandler.addFilter(tracingSpanFilter,"/service/*", EnumSet.of(DispatcherType.REQUEST));
 
 		final FilterHolder dosFilter = new FilterHolder(DoSFilter.class);
 		dosFilter.setName("DosFilter");
@@ -75,34 +93,34 @@ public class MailboxAPIs {
 		dosFilter.setInitParameter("maxRequestsPerSec", Integer.toString(server.getHttpDosFilterMaxRequestsPerSec()));
 		dosFilter.setInitParameter("remotePort", "false");
 		dosFilter.setInitParameter("maxRequestMs", "9223372036854775807");
-		servletContextHandler.addFilter(dosFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
+		servletContextHandler.addFilter(dosFilter,"/service/*", EnumSet.of(DispatcherType.REQUEST));
 
 		final FilterHolder invalidLoginFilter = new FilterHolder(ZimbraInvalidLoginFilter.class);
 		invalidLoginFilter.setName("ZimbraInvalidLoginFilter");
 		invalidLoginFilter.setAsyncSupported(true);
-		servletContextHandler.addFilter(invalidLoginFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
+		servletContextHandler.addFilter(invalidLoginFilter,"/service/*", EnumSet.of(DispatcherType.REQUEST));
 
 		final FilterHolder qosFilter = new FilterHolder(ZimbraQoSFilter.class);
 		qosFilter.setName("ZimbraQosFilter");
 		qosFilter.setAsyncSupported(true);
-		servletContextHandler.addFilter(qosFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
+		servletContextHandler.addFilter(qosFilter,"/service/*", EnumSet.of(DispatcherType.REQUEST));
 
 		final FilterHolder contextPathBasedThreadPoolBalancerFilter = new FilterHolder(ContextPathBasedThreadPoolBalancerFilter.class);
 		contextPathBasedThreadPoolBalancerFilter.setName("ContextPathBasedThreadPoolBalancerFilter");
 		contextPathBasedThreadPoolBalancerFilter.setAsyncSupported(true);
 		contextPathBasedThreadPoolBalancerFilter.setInitParameter("suspendMs", "1000");
 		contextPathBasedThreadPoolBalancerFilter.setInitParameter("Rules", String.join(",", server.getHttpContextPathBasedThreadPoolBalancingFilterRules()));
-		servletContextHandler.addFilter(contextPathBasedThreadPoolBalancerFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
+		servletContextHandler.addFilter(contextPathBasedThreadPoolBalancerFilter,"/service/*", EnumSet.of(DispatcherType.REQUEST));
 
 		final FilterHolder eTageFilter = new FilterHolder(ETagHeaderFilter.class);
 		eTageFilter.setName("ETagHeaderFilter");
 		eTageFilter.setAsyncSupported(true);
-		servletContextHandler.addFilter(eTageFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
+		servletContextHandler.addFilter(eTageFilter,"/service/*", EnumSet.of(DispatcherType.REQUEST));
 
 		final FilterHolder setHeaderFilter = new FilterHolder(SetHeaderFilter.class);
 		setHeaderFilter.setName("SetHeaderFilter");
 		setHeaderFilter.setAsyncSupported(true);
-		servletContextHandler.addFilter(setHeaderFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
+		servletContextHandler.addFilter(setHeaderFilter,"/service/*", EnumSet.of(DispatcherType.REQUEST));
 
 		final FilterHolder base64Filter = new FilterHolder(Base64Filter.class);
 		base64Filter.setName("Base64Filter");
@@ -113,23 +131,33 @@ public class MailboxAPIs {
 		final FilterHolder requestStringFilter = new FilterHolder(RequestStringFilter.class);
 		requestStringFilter.setName("RequestStringFilter");
 		requestStringFilter.setAsyncSupported(true);
-		servletContextHandler.addFilter(requestStringFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
+		servletContextHandler.addFilter(requestStringFilter,"/service/*", EnumSet.of(DispatcherType.REQUEST));
 
 		final FilterHolder csrfFilter = new FilterHolder(CsrfFilter.class);
 		csrfFilter.setName("CsrfFilter");
 		csrfFilter.setAsyncSupported(true);
 		csrfFilter.setInitParameter("csrf.req.check", "true");
 		csrfFilter.setInitParameter("allowed.referrer.host", "");
-		servletContextHandler.addFilter(csrfFilter,"/admin/soap/*", EnumSet.of(DispatcherType.REQUEST));
-		servletContextHandler.addFilter(csrfFilter,"/soap/*", EnumSet.of(DispatcherType.REQUEST));
+		servletContextHandler.addFilter(csrfFilter,"/service/admin/soap/*", EnumSet.of(DispatcherType.REQUEST));
+		servletContextHandler.addFilter(csrfFilter,"/service/soap/*", EnumSet.of(DispatcherType.REQUEST));
 		servletContextHandler.addFilter(csrfFilter, USER_PATH, EnumSet.of(DispatcherType.REQUEST));
 		servletContextHandler.addFilter(csrfFilter, HOME_PATH, EnumSet.of(DispatcherType.REQUEST));
-		servletContextHandler.addFilter(csrfFilter,"/upload/*", EnumSet.of(DispatcherType.REQUEST));
-		servletContextHandler.addFilter(csrfFilter,"/extension/*", EnumSet.of(DispatcherType.REQUEST));
+		servletContextHandler.addFilter(csrfFilter,"/service/upload/*", EnumSet.of(DispatcherType.REQUEST));
+		servletContextHandler.addFilter(csrfFilter,"/service/extension/*", EnumSet.of(DispatcherType.REQUEST));
 
+		// Internal API is restricted to its loopback port (kept off the public filters above, which
+		// are all mapped to /service/*).
+		servletContextHandler.addFilter(
+				new FilterHolder(new PortRestrictionFilter(LC.mailbox_internal_api_port.intValue())),
+				"/internal/*", EnumSet.of(DispatcherType.REQUEST));
 	}
+
 	private void addListeners(ServletContextHandler servletContextHandler) {
-		// CDI (Weld) is bootstrapped in the dedicated ApiCdiContextHandler, not in the /service context.
+		// Single Weld/CDI bootstrap for the whole context (health + internal API are CDI-managed).
+		servletContextHandler.setInitParameter(
+				CdiServletContainerInitializer.CDI_INTEGRATION_ATTRIBUTE, CdiDecoratingListener.MODE);
+		servletContextHandler.addServletContainerInitializer(new CdiServletContainerInitializer());
+		servletContextHandler.addServletContainerInitializer(new EnhancedListener());
 	}
 
 	private void addServlets(ServletContextHandler servletContextHandler) {
@@ -138,12 +166,17 @@ public class MailboxAPIs {
 		final String userOnlyPorts = server.getMailPort() + ", " + server.getMailSSLPort();
 		final String userAndAdminPorts = server.getMailPort() + ", " + server.getMailSSLPort() + ", " + adminPortOnly;
 
+		// CDI-managed JAX-RS endpoints (RESTEasy + resteasy-cdi). The mapping prefix tells RESTEasy
+		// to strip the servlet path before matching @Path.
+		servletContextHandler.addServlet(cdiJaxrsDispatcher(HealthApplication.class, "/service/health"), "/service/health/*");
+		servletContextHandler.addServlet(cdiJaxrsDispatcher(InternalApiApplication.class, "/internal"), "/internal/*");
+
 		// Prometheus metrics (previously wired via the Guice MetricsServletModule).
 		CarbonioMetricRegisterer.register(Metrics.COLLECTOR_REGISTRY);
 		final var metricsServlet =
 				new ServletHolder(new io.prometheus.client.exporter.MetricsServlet(Metrics.COLLECTOR_REGISTRY));
 		metricsServlet.setName("MetricsServlet");
-		servletContextHandler.addServlet(metricsServlet, "/metrics");
+		servletContextHandler.addServlet(metricsServlet, "/service/metrics");
 
 		final var extensionDispatcherServlet = new ServletHolder(ExtensionDispatcherServlet.class);
 		extensionDispatcherServlet.setName("ExtensionDispatcherServlet");
@@ -155,7 +188,7 @@ public class MailboxAPIs {
 		// Be careful about long to int conversion, however I just reported the old behavior
 		MultipartConfigElement multipartConfig = new MultipartConfigElement("/opt/zextras/data/tmp", server.getFileUploadMaxSize(), server.getMailContentMaxSize(), (int) server.getFileUploadMaxSize());
 		extensionDispatcherServlet.getRegistration().setMultipartConfig(multipartConfig);
-		servletContextHandler.addServlet(extensionDispatcherServlet, "/extension/*");
+		servletContextHandler.addServlet(extensionDispatcherServlet, "/service/extension/*");
 
 		final var soapServlet = new ServletHolder(SoapServlet.class);
 		soapServlet.setName("SoapServlet");
@@ -165,7 +198,7 @@ public class MailboxAPIs {
 				allowedPortsParameter, userOnlyPorts);
 		soapServlet.setInitParameter("engine.handler.0", AccountService.class.getName());
 		soapServlet.setInitParameter("engine.handler.1", MailService.class.getName());
-		servletContextHandler.addServlet(soapServlet, "/soap/*");
+		servletContextHandler.addServlet(soapServlet, "/service/soap/*");
 
 		final var adminServlet = new ServletHolder(SoapServlet.class);
 		adminServlet.setAsyncSupported(true);
@@ -176,14 +209,14 @@ public class MailboxAPIs {
 		adminServlet.setInitParameter("engine.handler.0", AdminService.class.getName());
 		adminServlet.setInitParameter("engine.handler.1", AccountService.class.getName());
 		adminServlet.setInitParameter("engine.handler.2", MailService.class.getName());
-		servletContextHandler.addServlet(adminServlet, "/admin/soap/*");
+		servletContextHandler.addServlet(adminServlet, "/service/admin/soap/*");
 
 		final var wsdlServlet = new ServletHolder(WsdlServlet.class);
 		wsdlServlet.setName("WsdlServlet");
 		wsdlServlet.setAsyncSupported(true);
 		wsdlServlet.setInitParameter(
 				allowedPortsParameter, userAndAdminPorts);
-		servletContextHandler.addServlet(wsdlServlet, "/wsdl/*");
+		servletContextHandler.addServlet(wsdlServlet, "/service/wsdl/*");
 
 		final var contentServlet = new ServletHolder(ContentServlet.class);
 		contentServlet.setName("ContentServlet");
@@ -192,7 +225,7 @@ public class MailboxAPIs {
 		contentServlet.setInitParameter(
 				allowedPortsParameter, userAndAdminPorts);
 		contentServlet.setInitParameter("errorpage.attachment.blocked",  "/error/attachment_blocked.jsp");
-		servletContextHandler.addServlet(contentServlet, "/content/*");
+		servletContextHandler.addServlet(contentServlet, "/service/content/*");
 
 		final var previewServlet = new ServletHolder(PreviewServlet.class);
 		previewServlet.setName("PreviewServlet");
@@ -200,7 +233,7 @@ public class MailboxAPIs {
 		previewServlet.setInitOrder(13);
 		previewServlet.setInitParameter(
 				allowedPortsParameter, userAndAdminPorts);
-		servletContextHandler.addServlet(previewServlet, "/preview/*");
+		servletContextHandler.addServlet(previewServlet, "/service/preview/*");
 
 		final var userServlet = new ServletHolder(UserServlet.class);
 		userServlet.setName("UserServlet");
@@ -218,8 +251,8 @@ public class MailboxAPIs {
 		preAuthServlet.setInitOrder(5);
 		preAuthServlet.setInitParameter(
 				allowedPortsParameter, userAndAdminPorts);
-		servletContextHandler.addServlet(preAuthServlet, "/preauth/*");
-		servletContextHandler.addServlet(preAuthServlet, "/preauth");
+		servletContextHandler.addServlet(preAuthServlet, "/service/preauth/*");
+		servletContextHandler.addServlet(preAuthServlet, "/service/preauth");
 
 		final var externalUserProvServlet = new ServletHolder(ExternalUserProvServlet.class);
 		externalUserProvServlet.setName("ExternalUserProvServlet");
@@ -227,7 +260,7 @@ public class MailboxAPIs {
 		externalUserProvServlet.setInitOrder(5);
 		externalUserProvServlet.setInitParameter(
 				allowedPortsParameter, userAndAdminPorts);
-		servletContextHandler.addServlet(externalUserProvServlet, "/extuserprov/*");
+		servletContextHandler.addServlet(externalUserProvServlet, "/service/extuserprov/*");
 
 		if (server.getMailSSLClientCertPort() > 0) {
 			final var certAuthServlet = new ServletHolder(CertAuthServlet.class);
@@ -236,8 +269,8 @@ public class MailboxAPIs {
 			certAuthServlet.setInitOrder(5);
 			certAuthServlet.setInitParameter(allowedPortsParameter,  server.getMailSSLClientCertPortAsString() + ", 9443");
 			certAuthServlet.setInitParameter("errorpage.forbidden",  "/error/403.jsp");
-			servletContextHandler.addServlet(certAuthServlet, "/certauth/*");
-			servletContextHandler.addServlet(certAuthServlet, "/certauth");
+			servletContextHandler.addServlet(certAuthServlet, "/service/certauth/*");
+			servletContextHandler.addServlet(certAuthServlet, "/service/certauth");
 		}
 
 		final var pubCalServlet = new ServletHolder(PublicICalServlet.class);
@@ -246,7 +279,7 @@ public class MailboxAPIs {
 		pubCalServlet.setInitOrder(5);
 		pubCalServlet.setInitParameter(
 				allowedPortsParameter, userAndAdminPorts);
-		servletContextHandler.addServlet(pubCalServlet, "/pubcal/*");
+		servletContextHandler.addServlet(pubCalServlet, "/service/pubcal/*");
 
 		final var fileUploadServlet = new ServletHolder(FileUploadServlet.class);
 		fileUploadServlet.setName("FileUploadServlet");
@@ -254,14 +287,14 @@ public class MailboxAPIs {
 		fileUploadServlet.setInitOrder(6);
 		fileUploadServlet.setInitParameter(
 				allowedPortsParameter, userAndAdminPorts);
-		servletContextHandler.addServlet(fileUploadServlet, "/upload");
+		servletContextHandler.addServlet(fileUploadServlet, "/service/upload");
 
 		final var statsImageServlet = new ServletHolder(StatsImageServlet.class);
 		statsImageServlet.setName("StatsImageServlet");
 		statsImageServlet.setAsyncSupported(true);
 		statsImageServlet.setInitOrder(7);
 		statsImageServlet.setInitParameter(allowedPortsParameter, adminPortOnly);
-		servletContextHandler.addServlet(statsImageServlet, "/statsimg/*");
+		servletContextHandler.addServlet(statsImageServlet, "/service/statsimg/*");
 
 		final var proxyServlet = new ServletHolder(ProxyServlet.class);
 		proxyServlet.setName("ProxyServlet");
@@ -269,7 +302,7 @@ public class MailboxAPIs {
 		proxyServlet.setInitOrder(8);
 		proxyServlet.setInitParameter(
 				allowedPortsParameter, userOnlyPorts);
-		servletContextHandler.addServlet(proxyServlet, "/proxy/*");
+		servletContextHandler.addServlet(proxyServlet, "/service/proxy/*");
 
 		final var davServlet = new ServletHolder(DavServlet.class);
 		davServlet.setName("DavServlet");
@@ -277,7 +310,7 @@ public class MailboxAPIs {
 		davServlet.setInitOrder(9);
 		davServlet.setInitParameter(
 				allowedPortsParameter, userOnlyPorts);
-		servletContextHandler.addServlet(davServlet, "/dav/*");
+		servletContextHandler.addServlet(davServlet, "/service/dav/*");
 
 		final var davWellKnownServlet = new ServletHolder(DavWellKnownServlet.class);
 		davWellKnownServlet.setName("DavWellKnownServlet");
@@ -285,19 +318,19 @@ public class MailboxAPIs {
 		davWellKnownServlet.setInitOrder(9);
 		davWellKnownServlet.setInitParameter(
 				allowedPortsParameter, userOnlyPorts);
-		servletContextHandler.addServlet(davWellKnownServlet, "/.well-known/*");
+		servletContextHandler.addServlet(davWellKnownServlet, "/service/.well-known/*");
 
 		final var collectLDAPConfigServlet = new ServletHolder(CollectLDAPConfigZimbra.class);
 		collectLDAPConfigServlet.setName("CollectLDAPConfigZimbra");
 		collectLDAPConfigServlet.setAsyncSupported(true);
 		collectLDAPConfigServlet.setInitParameter(allowedPortsParameter, adminPortOnly);
-		servletContextHandler.addServlet(collectLDAPConfigServlet, "/collectldapconfig/*");
+		servletContextHandler.addServlet(collectLDAPConfigServlet, "/service/collectldapconfig/*");
 
 		final var collectConfigFilesServlet = new ServletHolder(CollectConfigFiles.class);
 		collectConfigFilesServlet.setName("CollectConfigFiles");
 		collectConfigFilesServlet.setAsyncSupported(true);
 		collectConfigFilesServlet.setInitParameter(allowedPortsParameter, adminPortOnly);
-		servletContextHandler.addServlet(collectConfigFilesServlet, "/collectconfig/*");
+		servletContextHandler.addServlet(collectConfigFilesServlet, "/service/collectconfig/*");
 
 		final var autoDiscoverServlet = new ServletHolder(AutoDiscoverServlet.class);
 		autoDiscoverServlet.setName("AutoDiscoverServlet");
@@ -305,9 +338,17 @@ public class MailboxAPIs {
 		autoDiscoverServlet.setInitOrder(12);
 		autoDiscoverServlet.setInitParameter(
 				allowedPortsParameter, userAndAdminPorts);
-		servletContextHandler.addServlet(autoDiscoverServlet, "/autodiscover/*");
-		servletContextHandler.addServlet(autoDiscoverServlet, "/Autodiscover/*");
-		servletContextHandler.addServlet(autoDiscoverServlet, "/AutoDiscover/*");
+		servletContextHandler.addServlet(autoDiscoverServlet, "/service/autodiscover/*");
+		servletContextHandler.addServlet(autoDiscoverServlet, "/service/Autodiscover/*");
+		servletContextHandler.addServlet(autoDiscoverServlet, "/service/AutoDiscover/*");
+	}
+
+	private static ServletHolder cdiJaxrsDispatcher(Class<?> application, String mappingPrefix) {
+		final var holder = new ServletHolder(new HttpServletDispatcher());
+		holder.setInitParameter("javax.ws.rs.Application", application.getName());
+		holder.setInitParameter("resteasy.injector.factory", "org.jboss.resteasy.cdi.CdiInjectorFactory");
+		holder.setInitParameter("resteasy.servlet.mapping.prefix", mappingPrefix);
+		return holder;
 	}
 
 	private static ConstraintMapping buildSecurityMapping(String path, ServletConstraint constraint) {
@@ -324,18 +365,16 @@ public class MailboxAPIs {
 		constraint.setDataConstraint(ServletConstraint.DC_CONFIDENTIAL);
 		ConstraintSecurityHandler security = new ConstraintSecurityHandler();
 		security.setConstraintMappings(List.of(
-				buildSecurityMapping("/service/user/*", constraint),
 				buildSecurityMapping(USER_PATH, constraint),
-				buildSecurityMapping("/service/home/*", constraint),
 				buildSecurityMapping(HOME_PATH, constraint),
-				buildSecurityMapping("/dav/*", constraint)
+				buildSecurityMapping("/service/dav/*", constraint)
 		));
 		servletContextHandler.setSecurityHandler(security);
 	}
 
 	public ServletContextHandler createServletContextHandler() {
 		ServletContextHandler servletContextHandler = new ServletContextHandler();
-		servletContextHandler.setContextPath("/service");
+		servletContextHandler.setContextPath("/");
 		addListeners(servletContextHandler);
 		addFilters(servletContextHandler);
 		addServlets(servletContextHandler);
