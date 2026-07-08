@@ -1,8 +1,7 @@
 package com.zextras.mailbox.server;
 
 import com.zextras.mailbox.MailboxAPIs;
-import com.zextras.mailbox.api.InternalApiContextHandler;
-import com.zextras.mailbox.servlet.HealthCdiContextHandler;
+import com.zextras.mailbox.servlet.ApiCdiContextHandler;
 import com.zextras.mailbox.server.MailboxServer.InstantiationException;
 import com.zimbra.common.jetty.JettyMonitor;
 import com.zimbra.common.localconfig.LC;
@@ -82,17 +81,16 @@ public class MailboxServerBuilder {
 			server.addConnector(createExtensionsHttpsConnector(server));
 			server.addConnector(createInternalApiConnector(server, httpConfig));
 
-			// NOTE: separate handler for internal APIs, not affected by DoS filter and other filters
-			final var internalApiHandler = InternalApiContextHandler.create();
 			final var mailboxHandler = new MailboxAPIs(localServer).createServletContextHandler();
-			// PILOT: CDI-managed JAX-RS health endpoint at /health (RESTEasy 4 + Weld via jetty-ee8-cdi)
-			final var healthCdiHandler = HealthCdiContextHandler.create();
+			// Single CDI context hosting all JAX-RS APIs (/health, /internal) => one Weld bootstrap.
+			// Its "/" context path goes LAST in the sequence so it does not shadow the /service context;
+			// the internal API stays loopback-only via a port filter (see ApiCdiContextHandler).
+			final var apiHandler = ApiCdiContextHandler.create();
 
 			final RewriteHandler mainHandler = createRewriteHandler();
 			mainHandler.setHandler(new Handler.Sequence(
-					internalApiHandler.getCoreContextHandler(),
 					mailboxHandler.getCoreContextHandler(),
-					healthCdiHandler.getCoreContextHandler()));
+					apiHandler.getCoreContextHandler()));
 			server.setRequestLog(createRequestLog());
 
 			if (localServer.isHttpCompressionEnabled()) {
@@ -165,7 +163,7 @@ public class MailboxServerBuilder {
 				new HttpConnectionFactory(httpConfig));
 		connector.setPort(LC.mailbox_internal_api_port.intValue());
 		connector.setHost(LC.mailbox_internal_api_bind_address.value());
-		connector.setName(InternalApiContextHandler.CONNECTOR_NAME);
+		connector.setName(ApiCdiContextHandler.INTERNAL_CONNECTOR_NAME);
 		return connector;
 	}
 

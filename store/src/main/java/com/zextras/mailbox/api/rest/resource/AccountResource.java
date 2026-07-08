@@ -23,6 +23,8 @@ import io.vavr.control.Try;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
@@ -34,14 +36,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+@Dependent
 @Path("/accounts")
 public class AccountResource {
 
-	private final AccountService accountService;
-
-	public AccountResource(AccountService accountService) {
-		this.accountService = accountService;
-	}
+	// Field injection (not constructor): a no-arg (implicit) ctor + CDI field injection avoids
+	// RESTEasy's ResourceBuilder rejecting a constructor with non-JAX-RS parameters.
+	@Inject
+	private AccountService accountService;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

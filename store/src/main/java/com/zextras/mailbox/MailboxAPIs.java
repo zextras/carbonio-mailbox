@@ -6,8 +6,8 @@
 
 package com.zextras.mailbox;
 
-import com.google.inject.servlet.GuiceFilter;
-import com.zextras.mailbox.servlet.GuiceMailboxServletConfig;
+import com.zextras.mailbox.metric.CarbonioMetricRegisterer;
+import com.zextras.mailbox.metric.Metrics;
 import com.zimbra.common.account.ZAttrProvisioning.MailMode;
 import com.zimbra.common.filters.Base64Filter;
 import com.zimbra.cs.account.ZAttrServer;
@@ -67,12 +67,6 @@ public class MailboxAPIs {
 		tracingSpanFilter.setName("TracingSpanFilter");
 		tracingSpanFilter.setAsyncSupported(true);
 		servletContextHandler.addFilter(tracingSpanFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
-
-		final FilterHolder guiceFilter = new FilterHolder(GuiceFilter.class);
-		guiceFilter.setName("guiceFilter");
-		guiceFilter.setAsyncSupported(true);
-		servletContextHandler.addFilter(guiceFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
-
 
 		final FilterHolder dosFilter = new FilterHolder(DoSFilter.class);
 		dosFilter.setName("DosFilter");
@@ -135,7 +129,7 @@ public class MailboxAPIs {
 
 	}
 	private void addListeners(ServletContextHandler servletContextHandler) {
-		servletContextHandler.addEventListener(new GuiceMailboxServletConfig());
+		// CDI (Weld) is bootstrapped in the dedicated ApiCdiContextHandler, not in the /service context.
 	}
 
 	private void addServlets(ServletContextHandler servletContextHandler) {
@@ -143,6 +137,13 @@ public class MailboxAPIs {
 		final String adminAndMTAPort = adminPortOnly + ", " + server.getMtaAuthPort();
 		final String userOnlyPorts = server.getMailPort() + ", " + server.getMailSSLPort();
 		final String userAndAdminPorts = server.getMailPort() + ", " + server.getMailSSLPort() + ", " + adminPortOnly;
+
+		// Prometheus metrics (previously wired via the Guice MetricsServletModule).
+		CarbonioMetricRegisterer.register(Metrics.COLLECTOR_REGISTRY);
+		final var metricsServlet =
+				new ServletHolder(new io.prometheus.client.exporter.MetricsServlet(Metrics.COLLECTOR_REGISTRY));
+		metricsServlet.setName("MetricsServlet");
+		servletContextHandler.addServlet(metricsServlet, "/metrics");
 
 		final var extensionDispatcherServlet = new ServletHolder(ExtensionDispatcherServlet.class);
 		extensionDispatcherServlet.setName("ExtensionDispatcherServlet");

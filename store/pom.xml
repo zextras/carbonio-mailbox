@@ -529,16 +529,50 @@
       <artifactId>resteasy-cdi</artifactId>
       <version>${resteasy.version}</version>
       <scope>runtime</scope>
+      <!-- weld-servlet-shaded already bundles the CDI/inject spec APIs (javax.enterprise.*,
+           javax.inject.*). Exclude the SEPARATE jakarta-coordinate API jars pulled here via weld-api
+           so weld-servlet-shaded is the single provider of those javax classes; otherwise the
+           dependency analyzer credits the separate jars and demands they be declared. Excluding
+           cdi-api also drops its child jakarta.inject-api (both listed explicitly for clarity). -->
+      <exclusions>
+        <exclusion>
+          <groupId>jakarta.enterprise</groupId>
+          <artifactId>jakarta.enterprise.cdi-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>jakarta.inject</groupId>
+          <artifactId>jakarta.inject-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty.ee8</groupId>
       <artifactId>jetty-ee8-cdi</artifactId>
       <version>${jetty.version}</version>
+      <!-- We register the CDI SCI programmatically and don't use servlet annotation scanning, so
+           jetty-ee8-annotations is unneeded. Excluding it drops its transitive
+           jakarta.annotation-api:1.3.5 (javax.annotation.*), which otherwise clashes (enforcer
+           DependencyConvergence) with the preview SDK's jakarta.annotation-api:3.0.0. -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.jetty.ee8</groupId>
+          <artifactId>jetty-ee8-annotations</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.servlet</groupId>
       <artifactId>weld-servlet-shaded</artifactId>
       <version>3.1.9.Final</version>
+    </dependency>
+    <dependency>
+      <!-- EL implementation (javax.el namespace: API + com.sun.el impl) required by Weld's servlet
+           integration. weld-servlet-shaded does not bundle EL and embedded Jetty doesn't provide it,
+           so without this Weld fails at boot with NoClassDefFoundError javax.el.ELContextListener. -->
+      <groupId>org.glassfish</groupId>
+      <artifactId>jakarta.el</artifactId>
+      <version>3.0.4</version>
+      <scope>runtime</scope>
     </dependency>
     <!-- OpenAPI — compile: annotations used directly -->
     <dependency>
@@ -549,14 +583,11 @@
     <dependency>
       <artifactId>javax.inject</artifactId>
       <groupId>javax.inject</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>guice</artifactId>
-      <groupId>com.google.inject</groupId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.inject.extensions</groupId>
-      <artifactId>guice-servlet</artifactId>
+      <!-- provided: weld-servlet-shaded also bundles javax.inject.* (un-relocated spec classes), so
+           the analyzer non-deterministically credits either this or Weld for @Inject. provided scope
+           makes ignoreNonCompile skip it in the unused check, ending the "unused declared" flip;
+           still on the compile classpath for @Inject, and Weld supplies it at runtime. -->
+      <scope>provided</scope>
     </dependency>
     <!-- Metrics collector -->
     <dependency>

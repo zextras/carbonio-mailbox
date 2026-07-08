@@ -10,6 +10,7 @@ import com.zimbra.cs.db.DbPool;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.inject.Singleton;
 
 /**
  * CDI producers for the health layer. Replaces the Guice {@code @Provides} in
@@ -20,7 +21,7 @@ import javax.enterprise.inject.Produces;
 public class HealthCdiProducers {
 
   @Produces
-  @ApplicationScoped
+  @Singleton
   public HealthUseCase healthUseCase() {
     return new HealthUseCase(
         List.of(new DatabaseServiceDependency(DbPool.global(), System::currentTimeMillis)));

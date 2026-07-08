@@ -6,7 +6,7 @@ package com.zextras.mailbox.servlet;
 
 import com.zextras.mailbox.health.HealthUseCase;
 import com.zextras.mailbox.servlet.HealthResponse.HealthResponseBuilder;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -17,10 +17,11 @@ import javax.ws.rs.core.Response;
 /**
  * JAX-RS health endpoint managed by CDI. Routing is by annotation (no {@code switch}); the
  * {@link HealthUseCase} dependency is injected by CDI/Weld ({@code @Inject}), and RESTEasy obtains
- * the resource instance from the CDI {@code BeanManager} via {@code resteasy-cdi}. {@code @RequestScoped}
- * makes it a CDI bean (discovered because {@code beans.xml} uses {@code bean-discovery-mode=annotated}).
+ * the resource instance from the CDI {@code BeanManager} via {@code resteasy-cdi}. {@code @Dependent}
+ * makes it a CDI bean (discovered because {@code beans.xml} uses {@code bean-discovery-mode=annotated})
+ * without requiring a no-arg constructor for proxying.
  */
-@RequestScoped
+@Dependent
 @Path("/")
 public class HealthResource {
 
