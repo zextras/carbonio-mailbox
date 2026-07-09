@@ -29,14 +29,14 @@ public class InternalApiCdiProducers {
           try {
             return MailboxManager.getInstance();
           } catch (ServiceException e) {
-            throw new RuntimeException(e);
+            throw new InternalApiInitializationException(e);
           }
         },
         () -> {
           try {
             return SoapProvisioning.getAdminInstance();
           } catch (ServiceException e) {
-            throw new RuntimeException(e);
+            throw new InternalApiInitializationException(e);
           }
         });
   }
