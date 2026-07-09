@@ -94,11 +94,27 @@ public class MailboxServletContextBuilder {
 	}
 
 	private void addFilters(ServletContextHandler servletContextHandler) {
+		addTracingSpanFilter(servletContextHandler);
+		addDosFilter(servletContextHandler);
+		addInvalidLoginFilter(servletContextHandler);
+		addQosFilter(servletContextHandler);
+		addThreadPoolBalancerFilter(servletContextHandler);
+		addETagHeaderFilter(servletContextHandler);
+		addSetHeaderFilter(servletContextHandler);
+		addBase64Filter(servletContextHandler);
+		addRequestStringFilter(servletContextHandler);
+		addCsrfFilter(servletContextHandler);
+		addInternalApiPortFilter(servletContextHandler);
+	}
+
+	private void addTracingSpanFilter(ServletContextHandler servletContextHandler) {
 		final FilterHolder tracingSpanFilter = new FilterHolder(TracingSpanFilter.class);
 		tracingSpanFilter.setName("TracingSpanFilter");
 		tracingSpanFilter.setAsyncSupported(true);
 		servletContextHandler.addFilter(tracingSpanFilter,"/service/*", EnumSet.of(DispatcherType.REQUEST));
+	}
 
+	private void addDosFilter(ServletContextHandler servletContextHandler) {
 		final FilterHolder dosFilter = new FilterHolder(DoSFilter.class);
 		dosFilter.setName("DosFilter");
 		dosFilter.setAsyncSupported(true);
@@ -107,45 +123,61 @@ public class MailboxServletContextBuilder {
 		dosFilter.setInitParameter("remotePort", "false");
 		dosFilter.setInitParameter("maxRequestMs", "9223372036854775807");
 		servletContextHandler.addFilter(dosFilter,"/service/*", EnumSet.of(DispatcherType.REQUEST));
+	}
 
+	private void addInvalidLoginFilter(ServletContextHandler servletContextHandler) {
 		final FilterHolder invalidLoginFilter = new FilterHolder(ZimbraInvalidLoginFilter.class);
 		invalidLoginFilter.setName("ZimbraInvalidLoginFilter");
 		invalidLoginFilter.setAsyncSupported(true);
 		servletContextHandler.addFilter(invalidLoginFilter,"/service/*", EnumSet.of(DispatcherType.REQUEST));
+	}
 
+	private void addQosFilter(ServletContextHandler servletContextHandler) {
 		final FilterHolder qosFilter = new FilterHolder(ZimbraQoSFilter.class);
 		qosFilter.setName("ZimbraQosFilter");
 		qosFilter.setAsyncSupported(true);
 		servletContextHandler.addFilter(qosFilter,"/service/*", EnumSet.of(DispatcherType.REQUEST));
+	}
 
+	private void addThreadPoolBalancerFilter(ServletContextHandler servletContextHandler) {
 		final FilterHolder contextPathBasedThreadPoolBalancerFilter = new FilterHolder(ContextPathBasedThreadPoolBalancerFilter.class);
 		contextPathBasedThreadPoolBalancerFilter.setName("ContextPathBasedThreadPoolBalancerFilter");
 		contextPathBasedThreadPoolBalancerFilter.setAsyncSupported(true);
 		contextPathBasedThreadPoolBalancerFilter.setInitParameter("suspendMs", "1000");
 		contextPathBasedThreadPoolBalancerFilter.setInitParameter("Rules", String.join(",", server.getHttpContextPathBasedThreadPoolBalancingFilterRules()));
 		servletContextHandler.addFilter(contextPathBasedThreadPoolBalancerFilter,"/service/*", EnumSet.of(DispatcherType.REQUEST));
+	}
 
+	private void addETagHeaderFilter(ServletContextHandler servletContextHandler) {
 		final FilterHolder eTageFilter = new FilterHolder(ETagHeaderFilter.class);
 		eTageFilter.setName("ETagHeaderFilter");
 		eTageFilter.setAsyncSupported(true);
 		servletContextHandler.addFilter(eTageFilter,"/service/*", EnumSet.of(DispatcherType.REQUEST));
+	}
 
+	private void addSetHeaderFilter(ServletContextHandler servletContextHandler) {
 		final FilterHolder setHeaderFilter = new FilterHolder(SetHeaderFilter.class);
 		setHeaderFilter.setName("SetHeaderFilter");
 		setHeaderFilter.setAsyncSupported(true);
 		servletContextHandler.addFilter(setHeaderFilter,"/service/*", EnumSet.of(DispatcherType.REQUEST));
+	}
 
+	private void addBase64Filter(ServletContextHandler servletContextHandler) {
 		final FilterHolder base64Filter = new FilterHolder(Base64Filter.class);
 		base64Filter.setName("Base64Filter");
 		base64Filter.setAsyncSupported(true);
 		servletContextHandler.addFilter(base64Filter, USER_PATH, EnumSet.of(DispatcherType.REQUEST));
 		servletContextHandler.addFilter(base64Filter, HOME_PATH, EnumSet.of(DispatcherType.REQUEST));
+	}
 
+	private void addRequestStringFilter(ServletContextHandler servletContextHandler) {
 		final FilterHolder requestStringFilter = new FilterHolder(RequestStringFilter.class);
 		requestStringFilter.setName("RequestStringFilter");
 		requestStringFilter.setAsyncSupported(true);
 		servletContextHandler.addFilter(requestStringFilter,"/service/*", EnumSet.of(DispatcherType.REQUEST));
+	}
 
+	private void addCsrfFilter(ServletContextHandler servletContextHandler) {
 		final FilterHolder csrfFilter = new FilterHolder(CsrfFilter.class);
 		csrfFilter.setName("CsrfFilter");
 		csrfFilter.setAsyncSupported(true);
@@ -157,7 +189,9 @@ public class MailboxServletContextBuilder {
 		servletContextHandler.addFilter(csrfFilter, HOME_PATH, EnumSet.of(DispatcherType.REQUEST));
 		servletContextHandler.addFilter(csrfFilter,"/service/upload/*", EnumSet.of(DispatcherType.REQUEST));
 		servletContextHandler.addFilter(csrfFilter,"/service/extension/*", EnumSet.of(DispatcherType.REQUEST));
+	}
 
+	private void addInternalApiPortFilter(ServletContextHandler servletContextHandler) {
 		// Public filters above are scoped to /service/* so /internal stays off them; it is restricted
 		// to its loopback port instead.
 		servletContextHandler.addFilter(
