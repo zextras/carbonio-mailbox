@@ -60,14 +60,37 @@ import org.eclipse.jetty.ee8.servlet.ServletHolder;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.weld.environment.servlet.EnhancedListener;
 
-public class MailboxAPIs {
+public class MailboxServletContextBuilder {
 
-	private final ZAttrServer server;
 	private static final String USER_PATH = "/service/user/*";
 	private static final String HOME_PATH = "/service/home/*";
+	private static final String ALLOWED_PORTS = "allowed.ports";
 
-	public MailboxAPIs(ZAttrServer server) {
+	private final ZAttrServer server;
+
+	public MailboxServletContextBuilder(ZAttrServer server) {
 		this.server = server;
+	}
+
+	public ServletContextHandler createServletContextHandler() {
+		ServletContextHandler servletContextHandler = new ServletContextHandler();
+		servletContextHandler.setContextPath("/");
+		addListeners(servletContextHandler);
+		addFilters(servletContextHandler);
+		addServlets(servletContextHandler);
+
+		final String mailModeAsString = server.getMailModeAsString();
+		if (mailModeAsString.equals(MailMode.https.name()) || mailModeAsString.equals(MailMode.redirect.name())) {
+			addSecurityConstraints(servletContextHandler);
+		}
+		return servletContextHandler;
+	}
+
+	private void addListeners(ServletContextHandler servletContextHandler) {
+		servletContextHandler.setInitParameter(
+				CdiServletContainerInitializer.CDI_INTEGRATION_ATTRIBUTE, CdiDecoratingListener.MODE);
+		servletContextHandler.addServletContainerInitializer(new CdiServletContainerInitializer());
+		servletContextHandler.addServletContainerInitializer(new EnhancedListener());
 	}
 
 	private void addFilters(ServletContextHandler servletContextHandler) {
@@ -142,209 +165,235 @@ public class MailboxAPIs {
 				"/internal/*", EnumSet.of(DispatcherType.REQUEST));
 	}
 
-	private void addListeners(ServletContextHandler servletContextHandler) {
-		servletContextHandler.setInitParameter(
-				CdiServletContainerInitializer.CDI_INTEGRATION_ATTRIBUTE, CdiDecoratingListener.MODE);
-		servletContextHandler.addServletContainerInitializer(new CdiServletContainerInitializer());
-		servletContextHandler.addServletContainerInitializer(new EnhancedListener());
+	private void addServlets(ServletContextHandler servletContextHandler) {
+		addHealthServlet(servletContextHandler);
+		addInternalApiServlet(servletContextHandler);
+		addMetricsServlet(servletContextHandler);
+		addExtensionServlet(servletContextHandler);
+		addSoapServlet(servletContextHandler);
+		addAdminServlet(servletContextHandler);
+		addWsdlServlet(servletContextHandler);
+		addContentServlet(servletContextHandler);
+		addPreviewServlet(servletContextHandler);
+		addUserServlet(servletContextHandler);
+		addPreAuthServlet(servletContextHandler);
+		addExternalUserProvServlet(servletContextHandler);
+		addCertAuthServlet(servletContextHandler);
+		addPublicCalendarServlet(servletContextHandler);
+		addFileUploadServlet(servletContextHandler);
+		addStatsImageServlet(servletContextHandler);
+		addProxyServlet(servletContextHandler);
+		addDavServlet(servletContextHandler);
+		addDavWellKnownServlet(servletContextHandler);
+		addCollectLdapConfigServlet(servletContextHandler);
+		addCollectConfigFilesServlet(servletContextHandler);
+		addAutoDiscoverServlet(servletContextHandler);
 	}
 
-	private void addServlets(ServletContextHandler servletContextHandler) {
-		final String adminPortOnly = String.valueOf(server.getAdminPort());
-		final String adminAndMTAPort = adminPortOnly + ", " + server.getMtaAuthPort();
-		final String userOnlyPorts = server.getMailPort() + ", " + server.getMailSSLPort();
-		final String userAndAdminPorts = server.getMailPort() + ", " + server.getMailSSLPort() + ", " + adminPortOnly;
+	private void addHealthServlet(ServletContextHandler servletContextHandler) {
+		servletContextHandler.addServlet(
+				cdiJaxrsDispatcher(HealthApplication.class, "/service/health"), "/service/health/*");
+	}
 
-		servletContextHandler.addServlet(cdiJaxrsDispatcher(HealthApplication.class, "/service/health"), "/service/health/*");
-		servletContextHandler.addServlet(cdiJaxrsDispatcher(InternalApiApplication.class, "/internal"), "/internal/*");
+	private void addInternalApiServlet(ServletContextHandler servletContextHandler) {
+		servletContextHandler.addServlet(
+				cdiJaxrsDispatcher(InternalApiApplication.class, "/internal"), "/internal/*");
+	}
 
+	private void addMetricsServlet(ServletContextHandler servletContextHandler) {
 		CarbonioMetricRegisterer.register(Metrics.COLLECTOR_REGISTRY);
 		final var metricsServlet =
 				new ServletHolder(new io.prometheus.client.exporter.MetricsServlet(Metrics.COLLECTOR_REGISTRY));
 		metricsServlet.setName("MetricsServlet");
 		servletContextHandler.addServlet(metricsServlet, "/service/metrics");
+	}
 
+	private void addExtensionServlet(ServletContextHandler servletContextHandler) {
 		final var extensionDispatcherServlet = new ServletHolder(ExtensionDispatcherServlet.class);
 		extensionDispatcherServlet.setName("ExtensionDispatcherServlet");
 		extensionDispatcherServlet.setAsyncSupported(true);
 		extensionDispatcherServlet.setInitOrder(2);
-		final String allowedPortsParameter = "allowed.ports";
-		extensionDispatcherServlet.setInitParameter(allowedPortsParameter, userOnlyPorts);
-		extensionDispatcherServlet.setInitParameter(allowedPortsParameter, userOnlyPorts);
+		extensionDispatcherServlet.setInitParameter(ALLOWED_PORTS, userOnlyPorts());
 		// Be careful about long to int conversion, however I just reported the old behavior
 		MultipartConfigElement multipartConfig = new MultipartConfigElement("/opt/zextras/data/tmp", server.getFileUploadMaxSize(), server.getMailContentMaxSize(), (int) server.getFileUploadMaxSize());
 		extensionDispatcherServlet.getRegistration().setMultipartConfig(multipartConfig);
 		servletContextHandler.addServlet(extensionDispatcherServlet, "/service/extension/*");
+	}
 
+	private void addSoapServlet(ServletContextHandler servletContextHandler) {
 		final var soapServlet = new ServletHolder(SoapServlet.class);
 		soapServlet.setName("SoapServlet");
 		soapServlet.setAsyncSupported(true);
 		soapServlet.setInitOrder(2);
-		soapServlet.setInitParameter(
-				allowedPortsParameter, userOnlyPorts);
+		soapServlet.setInitParameter(ALLOWED_PORTS, userOnlyPorts());
 		soapServlet.setInitParameter("engine.handler.0", AccountService.class.getName());
 		soapServlet.setInitParameter("engine.handler.1", MailService.class.getName());
 		servletContextHandler.addServlet(soapServlet, "/service/soap/*");
+	}
 
+	private void addAdminServlet(ServletContextHandler servletContextHandler) {
 		final var adminServlet = new ServletHolder(SoapServlet.class);
 		adminServlet.setAsyncSupported(true);
 		adminServlet.setName("AdminServlet");
 		adminServlet.setInitOrder(3);
-		adminServlet.setInitParameter(
-				allowedPortsParameter, adminAndMTAPort);
+		adminServlet.setInitParameter(ALLOWED_PORTS, adminAndMtaPorts());
 		adminServlet.setInitParameter("engine.handler.0", AdminService.class.getName());
 		adminServlet.setInitParameter("engine.handler.1", AccountService.class.getName());
 		adminServlet.setInitParameter("engine.handler.2", MailService.class.getName());
 		servletContextHandler.addServlet(adminServlet, "/service/admin/soap/*");
+	}
 
+	private void addWsdlServlet(ServletContextHandler servletContextHandler) {
 		final var wsdlServlet = new ServletHolder(WsdlServlet.class);
 		wsdlServlet.setName("WsdlServlet");
 		wsdlServlet.setAsyncSupported(true);
-		wsdlServlet.setInitParameter(
-				allowedPortsParameter, userAndAdminPorts);
+		wsdlServlet.setInitParameter(ALLOWED_PORTS, userAndAdminPorts());
 		servletContextHandler.addServlet(wsdlServlet, "/service/wsdl/*");
+	}
 
+	private void addContentServlet(ServletContextHandler servletContextHandler) {
 		final var contentServlet = new ServletHolder(ContentServlet.class);
 		contentServlet.setName("ContentServlet");
 		contentServlet.setAsyncSupported(true);
 		contentServlet.setInitOrder(5);
-		contentServlet.setInitParameter(
-				allowedPortsParameter, userAndAdminPorts);
+		contentServlet.setInitParameter(ALLOWED_PORTS, userAndAdminPorts());
 		contentServlet.setInitParameter("errorpage.attachment.blocked",  "/error/attachment_blocked.jsp");
 		servletContextHandler.addServlet(contentServlet, "/service/content/*");
+	}
 
+	private void addPreviewServlet(ServletContextHandler servletContextHandler) {
 		final var previewServlet = new ServletHolder(PreviewServlet.class);
 		previewServlet.setName("PreviewServlet");
 		previewServlet.setAsyncSupported(true);
 		previewServlet.setInitOrder(13);
-		previewServlet.setInitParameter(
-				allowedPortsParameter, userAndAdminPorts);
+		previewServlet.setInitParameter(ALLOWED_PORTS, userAndAdminPorts());
 		servletContextHandler.addServlet(previewServlet, "/service/preview/*");
+	}
 
+	private void addUserServlet(ServletContextHandler servletContextHandler) {
 		final var userServlet = new ServletHolder(UserServlet.class);
 		userServlet.setName("UserServlet");
 		userServlet.setAsyncSupported(true);
 		userServlet.setInitOrder(5);
-		userServlet.setInitParameter(
-				allowedPortsParameter, userAndAdminPorts);
+		userServlet.setInitParameter(ALLOWED_PORTS, userAndAdminPorts());
 		userServlet.setInitParameter("errorpage.attachment.blocked",  "/error/attachment_blocked.jsp");
 		servletContextHandler.addServlet(userServlet, USER_PATH);
 		servletContextHandler.addServlet(userServlet, HOME_PATH);
+	}
 
+	private void addPreAuthServlet(ServletContextHandler servletContextHandler) {
 		final var preAuthServlet = new ServletHolder(PreAuthServlet.class);
 		preAuthServlet.setName("PreAuthServlet");
 		preAuthServlet.setAsyncSupported(true);
 		preAuthServlet.setInitOrder(5);
-		preAuthServlet.setInitParameter(
-				allowedPortsParameter, userAndAdminPorts);
+		preAuthServlet.setInitParameter(ALLOWED_PORTS, userAndAdminPorts());
 		servletContextHandler.addServlet(preAuthServlet, "/service/preauth/*");
 		servletContextHandler.addServlet(preAuthServlet, "/service/preauth");
+	}
 
+	private void addExternalUserProvServlet(ServletContextHandler servletContextHandler) {
 		final var externalUserProvServlet = new ServletHolder(ExternalUserProvServlet.class);
 		externalUserProvServlet.setName("ExternalUserProvServlet");
 		externalUserProvServlet.setAsyncSupported(true);
 		externalUserProvServlet.setInitOrder(5);
-		externalUserProvServlet.setInitParameter(
-				allowedPortsParameter, userAndAdminPorts);
+		externalUserProvServlet.setInitParameter(ALLOWED_PORTS, userAndAdminPorts());
 		servletContextHandler.addServlet(externalUserProvServlet, "/service/extuserprov/*");
+	}
 
-		if (server.getMailSSLClientCertPort() > 0) {
-			final var certAuthServlet = new ServletHolder(CertAuthServlet.class);
-			certAuthServlet.setName("CertAuthServlet");
-			certAuthServlet.setAsyncSupported(true);
-			certAuthServlet.setInitOrder(5);
-			certAuthServlet.setInitParameter(allowedPortsParameter,  server.getMailSSLClientCertPortAsString() + ", 9443");
-			certAuthServlet.setInitParameter("errorpage.forbidden",  "/error/403.jsp");
-			servletContextHandler.addServlet(certAuthServlet, "/service/certauth/*");
-			servletContextHandler.addServlet(certAuthServlet, "/service/certauth");
+	private void addCertAuthServlet(ServletContextHandler servletContextHandler) {
+		if (server.getMailSSLClientCertPort() <= 0) {
+			return;
 		}
+		final var certAuthServlet = new ServletHolder(CertAuthServlet.class);
+		certAuthServlet.setName("CertAuthServlet");
+		certAuthServlet.setAsyncSupported(true);
+		certAuthServlet.setInitOrder(5);
+		certAuthServlet.setInitParameter(ALLOWED_PORTS, server.getMailSSLClientCertPortAsString() + ", 9443");
+		certAuthServlet.setInitParameter("errorpage.forbidden",  "/error/403.jsp");
+		servletContextHandler.addServlet(certAuthServlet, "/service/certauth/*");
+		servletContextHandler.addServlet(certAuthServlet, "/service/certauth");
+	}
 
+	private void addPublicCalendarServlet(ServletContextHandler servletContextHandler) {
 		final var pubCalServlet = new ServletHolder(PublicICalServlet.class);
 		pubCalServlet.setName("PubCalServlet");
 		pubCalServlet.setAsyncSupported(true);
 		pubCalServlet.setInitOrder(5);
-		pubCalServlet.setInitParameter(
-				allowedPortsParameter, userAndAdminPorts);
+		pubCalServlet.setInitParameter(ALLOWED_PORTS, userAndAdminPorts());
 		servletContextHandler.addServlet(pubCalServlet, "/service/pubcal/*");
+	}
 
+	private void addFileUploadServlet(ServletContextHandler servletContextHandler) {
 		final var fileUploadServlet = new ServletHolder(FileUploadServlet.class);
 		fileUploadServlet.setName("FileUploadServlet");
 		fileUploadServlet.setAsyncSupported(true);
 		fileUploadServlet.setInitOrder(6);
-		fileUploadServlet.setInitParameter(
-				allowedPortsParameter, userAndAdminPorts);
+		fileUploadServlet.setInitParameter(ALLOWED_PORTS, userAndAdminPorts());
 		servletContextHandler.addServlet(fileUploadServlet, "/service/upload");
+	}
 
+	private void addStatsImageServlet(ServletContextHandler servletContextHandler) {
 		final var statsImageServlet = new ServletHolder(StatsImageServlet.class);
 		statsImageServlet.setName("StatsImageServlet");
 		statsImageServlet.setAsyncSupported(true);
 		statsImageServlet.setInitOrder(7);
-		statsImageServlet.setInitParameter(allowedPortsParameter, adminPortOnly);
+		statsImageServlet.setInitParameter(ALLOWED_PORTS, adminPortOnly());
 		servletContextHandler.addServlet(statsImageServlet, "/service/statsimg/*");
+	}
 
+	private void addProxyServlet(ServletContextHandler servletContextHandler) {
 		final var proxyServlet = new ServletHolder(ProxyServlet.class);
 		proxyServlet.setName("ProxyServlet");
 		proxyServlet.setAsyncSupported(true);
 		proxyServlet.setInitOrder(8);
-		proxyServlet.setInitParameter(
-				allowedPortsParameter, userOnlyPorts);
+		proxyServlet.setInitParameter(ALLOWED_PORTS, userOnlyPorts());
 		servletContextHandler.addServlet(proxyServlet, "/service/proxy/*");
+	}
 
+	private void addDavServlet(ServletContextHandler servletContextHandler) {
 		final var davServlet = new ServletHolder(DavServlet.class);
 		davServlet.setName("DavServlet");
 		davServlet.setAsyncSupported(true);
 		davServlet.setInitOrder(9);
-		davServlet.setInitParameter(
-				allowedPortsParameter, userOnlyPorts);
+		davServlet.setInitParameter(ALLOWED_PORTS, userOnlyPorts());
 		servletContextHandler.addServlet(davServlet, "/service/dav/*");
+	}
 
+	private void addDavWellKnownServlet(ServletContextHandler servletContextHandler) {
 		final var davWellKnownServlet = new ServletHolder(DavWellKnownServlet.class);
 		davWellKnownServlet.setName("DavWellKnownServlet");
 		davWellKnownServlet.setAsyncSupported(true);
 		davWellKnownServlet.setInitOrder(9);
-		davWellKnownServlet.setInitParameter(
-				allowedPortsParameter, userOnlyPorts);
+		davWellKnownServlet.setInitParameter(ALLOWED_PORTS, userOnlyPorts());
 		servletContextHandler.addServlet(davWellKnownServlet, "/service/.well-known/*");
+	}
 
+	private void addCollectLdapConfigServlet(ServletContextHandler servletContextHandler) {
 		final var collectLDAPConfigServlet = new ServletHolder(CollectLDAPConfigZimbra.class);
 		collectLDAPConfigServlet.setName("CollectLDAPConfigZimbra");
 		collectLDAPConfigServlet.setAsyncSupported(true);
-		collectLDAPConfigServlet.setInitParameter(allowedPortsParameter, adminPortOnly);
+		collectLDAPConfigServlet.setInitParameter(ALLOWED_PORTS, adminPortOnly());
 		servletContextHandler.addServlet(collectLDAPConfigServlet, "/service/collectldapconfig/*");
+	}
 
+	private void addCollectConfigFilesServlet(ServletContextHandler servletContextHandler) {
 		final var collectConfigFilesServlet = new ServletHolder(CollectConfigFiles.class);
 		collectConfigFilesServlet.setName("CollectConfigFiles");
 		collectConfigFilesServlet.setAsyncSupported(true);
-		collectConfigFilesServlet.setInitParameter(allowedPortsParameter, adminPortOnly);
+		collectConfigFilesServlet.setInitParameter(ALLOWED_PORTS, adminPortOnly());
 		servletContextHandler.addServlet(collectConfigFilesServlet, "/service/collectconfig/*");
+	}
 
+	private void addAutoDiscoverServlet(ServletContextHandler servletContextHandler) {
 		final var autoDiscoverServlet = new ServletHolder(AutoDiscoverServlet.class);
 		autoDiscoverServlet.setName("AutoDiscoverServlet");
 		autoDiscoverServlet.setAsyncSupported(true);
 		autoDiscoverServlet.setInitOrder(12);
-		autoDiscoverServlet.setInitParameter(
-				allowedPortsParameter, userAndAdminPorts);
+		autoDiscoverServlet.setInitParameter(ALLOWED_PORTS, userAndAdminPorts());
 		servletContextHandler.addServlet(autoDiscoverServlet, "/service/autodiscover/*");
 		servletContextHandler.addServlet(autoDiscoverServlet, "/service/Autodiscover/*");
 		servletContextHandler.addServlet(autoDiscoverServlet, "/service/AutoDiscover/*");
 	}
-
-	private static ServletHolder cdiJaxrsDispatcher(Class<?> application, String mappingPrefix) {
-		final var holder = new ServletHolder(new HttpServletDispatcher());
-		holder.setInitParameter("javax.ws.rs.Application", application.getName());
-		holder.setInitParameter("resteasy.injector.factory", "org.jboss.resteasy.cdi.CdiInjectorFactory");
-		holder.setInitParameter("resteasy.servlet.mapping.prefix", mappingPrefix);
-		return holder;
-	}
-
-	private static ConstraintMapping buildSecurityMapping(String path, ServletConstraint constraint) {
-		// this configures jetty to require HTTPS for all requests
-		ConstraintMapping mapping = new ConstraintMapping();
-		mapping.setPathSpec(path);
-		mapping.setConstraint(constraint);
-		return mapping;
-	}
-
 
 	private void addSecurityConstraints(ServletContextHandler servletContextHandler) {
 		ServletConstraint constraint = new ServletConstraint();
@@ -358,19 +407,35 @@ public class MailboxAPIs {
 		servletContextHandler.setSecurityHandler(security);
 	}
 
-	public ServletContextHandler createServletContextHandler() {
-		ServletContextHandler servletContextHandler = new ServletContextHandler();
-		servletContextHandler.setContextPath("/");
-		addListeners(servletContextHandler);
-		addFilters(servletContextHandler);
-		addServlets(servletContextHandler);
-
-		final String mailModeAsString = server.getMailModeAsString();
-		if(mailModeAsString.equals(MailMode.https.name()) ||  mailModeAsString.equals(MailMode.redirect.name())) {
-			addSecurityConstraints(servletContextHandler);
-		}
-		return servletContextHandler;
+	private static ConstraintMapping buildSecurityMapping(String path, ServletConstraint constraint) {
+		// this configures jetty to require HTTPS for all requests
+		ConstraintMapping mapping = new ConstraintMapping();
+		mapping.setPathSpec(path);
+		mapping.setConstraint(constraint);
+		return mapping;
 	}
 
+	private static ServletHolder cdiJaxrsDispatcher(Class<?> application, String mappingPrefix) {
+		final var holder = new ServletHolder(new HttpServletDispatcher());
+		holder.setInitParameter("javax.ws.rs.Application", application.getName());
+		holder.setInitParameter("resteasy.injector.factory", "org.jboss.resteasy.cdi.CdiInjectorFactory");
+		holder.setInitParameter("resteasy.servlet.mapping.prefix", mappingPrefix);
+		return holder;
+	}
 
+	private String adminPortOnly() {
+		return String.valueOf(server.getAdminPort());
+	}
+
+	private String adminAndMtaPorts() {
+		return adminPortOnly() + ", " + server.getMtaAuthPort();
+	}
+
+	private String userOnlyPorts() {
+		return server.getMailPort() + ", " + server.getMailSSLPort();
+	}
+
+	private String userAndAdminPorts() {
+		return userOnlyPorts() + ", " + adminPortOnly();
+	}
 }

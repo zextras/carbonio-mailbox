@@ -1,6 +1,6 @@
 package com.zextras.mailbox.server;
 
-import com.zextras.mailbox.MailboxAPIs;
+import com.zextras.mailbox.MailboxServletContextBuilder;
 import com.zextras.mailbox.server.MailboxServer.InstantiationException;
 import com.zimbra.common.jetty.JettyMonitor;
 import com.zimbra.common.localconfig.LC;
@@ -79,7 +79,7 @@ public class MailboxServerBuilder {
 			server.addConnector(createExtensionsHttpsConnector(server));
 			server.addConnector(createInternalApiConnector(server, httpConfig));
 
-			final var mailboxHandler = new MailboxAPIs(localServer).createServletContextHandler();
+			final var mailboxHandler = new MailboxServletContextBuilder(localServer).createServletContextHandler();
 
 			final RewriteHandler mainHandler = createRewriteHandler();
 			mainHandler.setHandler(mailboxHandler.getCoreContextHandler());
