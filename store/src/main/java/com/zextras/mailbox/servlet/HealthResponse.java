@@ -10,7 +10,7 @@ import com.zextras.mailbox.health.ServiceDependency;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Represents response body of {@link HealthServlet} */
+/** Represents response body of {@link HealthResource} */
 public class HealthResponse {
 
   @SuppressWarnings("unused")

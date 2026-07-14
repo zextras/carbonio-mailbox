@@ -6,7 +6,6 @@
 
 package com.zextras.mailbox.server;
 
-import com.zextras.mailbox.api.InternalApiContextHandler;
 import com.zextras.mailbox.util.MailboxServerExtension;
 import com.zextras.mailbox.util.SoapClient;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
@@ -106,7 +105,7 @@ class MailboxServerAPITest {
 	@Test
 	void shouldNotExposeInternalEndpointWhenMatchingHost() throws Exception {
 		final Account account = server.getAccountFactory().create();
-		var headers = Map.of("Host", InternalApiContextHandler.CONNECTOR_NAME);
+		var headers = Map.of("Host", "internalApiConnector");
 		var response = server.getHttpClient().get("http://localhost:" + server.getUserHttpPort() + "/internal/accounts/" + account.getId() + "/info", headers);
 		Assertions.assertEquals(404, response.statusCode());
 	}

@@ -746,7 +746,8 @@
       <dependency>
         <groupId>javax.enterprise</groupId>
         <artifactId>cdi-api</artifactId>
-        <version>1.0-SP4</version>
+        <!-- CDI 2.0: matches the API bundled in weld-servlet-shaded. -->
+        <version>2.0</version>
       </dependency>
       <dependency>
         <groupId>javax.xml.stream</groupId>

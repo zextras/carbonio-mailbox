@@ -1,7 +1,6 @@
 package com.zextras.mailbox.server;
 
-import com.zextras.mailbox.MailboxAPIs;
-import com.zextras.mailbox.api.InternalApiContextHandler;
+import com.zextras.mailbox.MailboxServletContextBuilder;
 import com.zextras.mailbox.server.MailboxServer.InstantiationException;
 import com.zimbra.common.jetty.JettyMonitor;
 import com.zimbra.common.localconfig.LC;
@@ -13,7 +12,6 @@ import org.eclipse.jetty.rewrite.handler.RewritePatternRule;
 import org.eclipse.jetty.rewrite.handler.RewriteRegexRule;
 import org.eclipse.jetty.server.CustomRequestLog;
 import org.eclipse.jetty.server.ForwardedRequestCustomizer;
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HostHeaderCustomizer;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -81,12 +79,10 @@ public class MailboxServerBuilder {
 			server.addConnector(createExtensionsHttpsConnector(server));
 			server.addConnector(createInternalApiConnector(server, httpConfig));
 
-			// NOTE: separate handler for internal APIs, not affected by DoS filter and other filters
-			final var internalApiHandler = InternalApiContextHandler.create();
-			final var mailboxHandler = new MailboxAPIs(localServer).createServletContextHandler();
+			final var mailboxHandler = new MailboxServletContextBuilder(localServer).createServletContextHandler();
 
 			final RewriteHandler mainHandler = createRewriteHandler();
-			mainHandler.setHandler(new Handler.Sequence(internalApiHandler.getCoreContextHandler(), mailboxHandler.getCoreContextHandler()));
+			mainHandler.setHandler(mailboxHandler.getCoreContextHandler());
 			server.setRequestLog(createRequestLog());
 
 			if (localServer.isHttpCompressionEnabled()) {
@@ -159,7 +155,7 @@ public class MailboxServerBuilder {
 				new HttpConnectionFactory(httpConfig));
 		connector.setPort(LC.mailbox_internal_api_port.intValue());
 		connector.setHost(LC.mailbox_internal_api_bind_address.value());
-		connector.setName(InternalApiContextHandler.CONNECTOR_NAME);
+		connector.setName("internalApiConnector");
 		return connector;
 	}
 
