@@ -1,6 +1,6 @@
 pkgname="carbonio-appserver-service"
 pkgver="4.27.13"
-pkgrel="3"
+pkgrel="4"
 pkgdesc="Carbonio Mailbox Service"
 arch=('any')
 maintainer="Zextras <packages@zextras.com>"
@@ -94,6 +94,10 @@ _package() {
   # systemd sysusers.d
   install -Dm644 packages/appserver-service/systemd-sysuser.conf \
     "${pkgdir}/usr/lib/sysusers.d/carbonio-appserver-service.conf"
+
+  # needrestart false-positive fix (CO-3996)
+  install -Dm644 packages/appserver-service/needrestart-carbonio-appserver.conf \
+    "${pkgdir}/etc/needrestart/conf.d/carbonio-appserver.conf"
 }
 
 _package_legacy() {
