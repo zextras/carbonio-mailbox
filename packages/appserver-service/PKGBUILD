@@ -94,6 +94,10 @@ _package() {
   # systemd sysusers.d
   install -Dm644 packages/appserver-service/systemd-sysuser.conf \
     "${pkgdir}/usr/lib/sysusers.d/carbonio-appserver-service.conf"
+
+  # needrestart false-positive fix (CO-3996)
+  install -Dm644 packages/appserver-service/needrestart-carbonio-appserver.conf \
+    "${pkgdir}/etc/needrestart/conf.d/carbonio-appserver.conf"
 }
 
 _package_legacy() {
