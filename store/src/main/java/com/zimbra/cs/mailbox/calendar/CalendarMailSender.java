@@ -428,7 +428,13 @@ public class CalendarMailSender {
       throws MailServiceException {
     List<Address> toList = new ArrayList<>(list.size());
     for (ZAttendee attendee : list) {
-      toList.add(attendee.getFriendlyAddress());
+      try {
+        toList.add(attendee.getFriendlyAddress());
+      } catch (MailServiceException e) {
+        ZimbraLog.calendar.warn(
+            "Skipping attendee with unusable address while building recipient list: %s",
+            attendee.getAddress(), e);
+      }
     }
     return toList;
   }
