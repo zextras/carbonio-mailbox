@@ -6,8 +6,8 @@
 
 package com.zextras.mailbox.store.ephemeral;
 
-import com.redis.testcontainers.RedisContainer;
 import com.zextras.mailbox.MailboxTestSuite;
+import com.zextras.mailbox.testcontainers.RedisExtension;
 import com.zextras.mailbox.store.ephemeral.RedisEphemeralStore.RedisEphemeralStoreFactory;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
@@ -20,22 +20,20 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.utility.DockerImageName;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import redis.clients.jedis.Jedis;
 
 class RedisEphemeralStoreFactoryTest extends MailboxTestSuite {
 
-	@Container
-	static RedisContainer redisContainer = new RedisContainer(DockerImageName.parse("redis:6.2.6"));
+	@RegisterExtension
+	static final RedisExtension redis = new RedisExtension();
 
 	private static Provisioning provisioning;
 	private static Jedis jedisClient;
 
 	@BeforeAll
 	static void setup() {
-		redisContainer.start();
-		jedisClient = new Jedis("redis://localhost:" + redisContainer.getRedisPort());
+		jedisClient = new Jedis(redis.getHost(), redis.getPort());
 		provisioning = Provisioning.getInstance();
 	}
 
@@ -45,7 +43,7 @@ class RedisEphemeralStoreFactoryTest extends MailboxTestSuite {
 				createAccount().create();
 		provisioning
 				.getConfig()
-				.setEphemeralBackendURL("redis://localhost:" + redisContainer.getRedisPort());
+				.setEphemeralBackendURL("redis://" + redis.getHost() + ":" + redis.getPort());
 		final RedisEphemeralStoreFactory redisEphemeralStoreFactory = new RedisEphemeralStoreFactory();
 
 		final EphemeralStore store = redisEphemeralStoreFactory.getStore();
@@ -58,7 +56,7 @@ class RedisEphemeralStoreFactoryTest extends MailboxTestSuite {
 	void shouldReturnANonWorkingStore_WhenURLInvalid(String prefix) throws ServiceException {
 		final Account account =
 				createAccount().create();
-		provisioning.getConfig().setEphemeralBackendURL(prefix + redisContainer.getRedisPort());
+		provisioning.getConfig().setEphemeralBackendURL(prefix + redis.getPort());
 		final RedisEphemeralStoreFactory redisEphemeralStoreFactory = new RedisEphemeralStoreFactory();
 
 		final EphemeralStore store = redisEphemeralStoreFactory.getStore();
@@ -71,7 +69,7 @@ class RedisEphemeralStoreFactoryTest extends MailboxTestSuite {
 	void shouldNotCreateAdditionalConnections() throws ServiceException {
 		final Account account = createAccount().create();
 		provisioning.getConfig()
-				.setEphemeralBackendURL("redis://localhost:" + redisContainer.getRedisPort());
+				.setEphemeralBackendURL("redis://" + redis.getHost() + ":" + redis.getPort());
 
 		final RedisEphemeralStoreFactory redisEphemeralStoreFactory = new RedisEphemeralStoreFactory();
 

@@ -71,6 +71,12 @@ pipeline {
         }
 
         stage('UT, IT') {
+            // Container-backed tests (e.g. Redis) spin up real pods through the in-cluster
+            // Kubernetes API (see com.zextras.mailbox.testcontainers.KubernetesPods); the pull
+            // secret lets those pods pull images from the private registry.
+            environment {
+                K8S_IMAGE_PULL_SECRET = 'private-registry-secret'
+            }
             steps {
                 container('jdk-21') {
                     sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,flaky,e2e"

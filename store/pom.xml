@@ -136,19 +136,24 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>testcontainers-mariadb</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>testcontainers-rabbitmq</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>com.redis</groupId>
       <artifactId>testcontainers-redis</artifactId>
       <version>2.2.4</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- Launches sibling pods via the in-cluster Kubernetes API when tests run inside a
+         k3s/crun cluster (no Docker daemon). See com.zextras.mailbox.testcontainers.
+         client-java provides ClientBuilder; client-java-api the openapi models/apis. -->
+    <dependency>
+      <groupId>io.kubernetes</groupId>
+      <artifactId>client-java</artifactId>
+      <version>26.0.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.kubernetes</groupId>
+      <artifactId>client-java-api</artifactId>
+      <version>26.0.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
