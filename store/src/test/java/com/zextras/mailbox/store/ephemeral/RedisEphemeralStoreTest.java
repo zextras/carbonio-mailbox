@@ -6,7 +6,7 @@
 
 package com.zextras.mailbox.store.ephemeral;
 
-import com.redis.testcontainers.RedisContainer;
+import com.zextras.mailbox.testcontainers.RedisExtension;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.ephemeral.EphemeralInput;
 import com.zimbra.cs.ephemeral.EphemeralInput.AbsoluteExpiration;
@@ -26,14 +26,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.utility.DockerImageName;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import redis.clients.jedis.Jedis;
 
 class RedisEphemeralStoreTest {
 
-  @Container
-  static RedisContainer redisContainer = new RedisContainer(DockerImageName.parse("redis:6.2.6"));
+  @RegisterExtension
+  static final RedisExtension redis = new RedisExtension();
 
   static Jedis jedisClient;
   private TestLocation location;
@@ -41,13 +40,12 @@ class RedisEphemeralStoreTest {
 
   @BeforeAll
   static void setUp() {
-    redisContainer.start();
-    jedisClient = new Jedis("redis://localhost:" + redisContainer.getRedisPort());
+    jedisClient = new Jedis(redis.getHost(), redis.getPort());
   }
 
   @AfterAll
   static void tearDown() {
-    redisContainer.stop();
+    jedisClient.close();
   }
 
   private static EphemeralInput[] generateInput() {
@@ -64,7 +62,7 @@ class RedisEphemeralStoreTest {
     jedisClient.flushAll();
     location = new TestLocation(new String[] {UUID.randomUUID().toString()});
     redisEphemeralStore = RedisEphemeralStore.create(
-        redisContainer.getRedisHost(), redisContainer.getRedisPort(), new GenericObjectPoolConfig<>());
+        redis.getHost(), redis.getPort(), new GenericObjectPoolConfig<>());
   }
   @AfterEach
   void afterEach() {

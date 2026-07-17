@@ -71,6 +71,9 @@ pipeline {
         }
 
         stage('UT, IT') {
+            environment {
+                K8S_IMAGE_PULL_SECRET = 'private-registry-secret'
+            }
             steps {
                 container('jdk-21') {
                     sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,flaky,e2e"
