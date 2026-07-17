@@ -7,20 +7,6 @@ package com.zextras.mailbox.testcontainers;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-/**
- * JUnit 5 extension providing a shared Redis instance for the whole JVM. It selects a Kubernetes
- * pod when running inside a cluster ({@link ContainerRuntime#isKubernetes()}) and a Docker
- * container (testcontainers) otherwise.
- *
- * <p>Register it as a static field so tests keep calling {@code getHost()/getPort()}:
- *
- * <pre>{@code
- * @RegisterExtension
- * static final RedisExtension redis = new RedisExtension();
- * }</pre>
- *
- * <p>The instance is a JVM-wide singleton so it starts once and is torn down on JVM shutdown.
- */
 public class RedisExtension implements BeforeAllCallback {
 
   private static final String IMAGE = "redis:6.2.6";
