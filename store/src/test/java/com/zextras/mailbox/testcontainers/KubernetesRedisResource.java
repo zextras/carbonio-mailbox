@@ -8,7 +8,6 @@ import com.zextras.mailbox.testcontainers.KubernetesPods.LaunchedPod;
 import java.util.List;
 import java.util.Map;
 
-/** Kubernetes-pod-backed {@link RedisResource}. Used when running inside a k3s/crun cluster. */
 public class KubernetesRedisResource implements RedisResource {
 
   private static final int PORT = 6379;

@@ -7,7 +7,6 @@ package com.zextras.mailbox.testcontainers;
 import com.redis.testcontainers.RedisContainer;
 import org.testcontainers.utility.DockerImageName;
 
-/** Docker-backed {@link RedisResource} using testcontainers. Used for local runs. */
 public class DockerRedisResource implements RedisResource {
 
   private final RedisContainer container;
