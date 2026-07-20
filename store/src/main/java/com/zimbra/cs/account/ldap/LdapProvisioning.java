@@ -3878,17 +3878,11 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     SearchAccountsOptions opts = new SearchAccountsOptions();
     opts.setOnMaster(true);
     opts.setIncludeType(IncludeType.ACCOUNTS_ONLY);
-    opts.setFilter(filterFactory.allAccountsOnlyByCos(cosId));
-
-    for (Object obj : searchDirectoryInternal(opts)) {
-      Account acct = (Account) obj;
-      Cos cos = getCOS(acct);
-      if (cos != null && cosId.equals(cos.getId())) {
-        return true;
-      }
-    }
-
-    return false;
+    opts.setMaxResults(1);
+    opts.setFilterString(
+            FilterId.TODO,
+            filterFactory.equalityFilter(Provisioning.A_zimbraCOSId, cosId, true));
+    return !searchDirectoryInternal(opts).isEmpty();
   }
 
   @Override
