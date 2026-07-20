@@ -15,6 +15,7 @@ import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.Key.DistributionListBy;
 import com.zimbra.common.account.ProvisioningConstants;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.service.ServiceException.Argument;
@@ -3888,16 +3889,16 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     opts.setIncludeType(IncludeType.ACCOUNTS_AND_CALENDAR_RESOURCES);
     opts.setMaxResults(1);
     opts.setFilterString(
-        FilterId.TODO, filterFactory.equalityFilter(Provisioning.A_zimbraCOSId, cosId, true));
+        FilterId.TODO, filterFactory.equalityFilter(ZAttrProvisioning.A_zimbraCOSId, cosId, true));
     return !searchDirectoryInternal(opts).isEmpty();
   }
 
   private boolean isCosDefaultForAnyDomain(String cosId) throws ServiceException {
     String filter =
         "(|"
-            + filterFactory.equalityFilter(Provisioning.A_zimbraDomainDefaultCOSId, cosId, true)
+            + filterFactory.equalityFilter(ZAttrProvisioning.A_zimbraDomainDefaultCOSId, cosId, true)
             + filterFactory.equalityFilter(
-                Provisioning.A_zimbraDomainDefaultExternalUserCOSId, cosId, true)
+                ZAttrProvisioning.A_zimbraDomainDefaultExternalUserCOSId, cosId, true)
             + ")";
     SearchDirectoryOptions opts = new SearchDirectoryOptions();
     opts.setOnMaster(true);
