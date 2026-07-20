@@ -189,6 +189,10 @@ public class SoapServlet extends ZimbraServlet {
     }
   }
 
+  public static void invalidateServiceCache(String serviceName) {
+    sExtraServices.invalidate(serviceName);
+  }
+
   private void addService(DocumentService service) throws ServiceException {
     ZimbraLog.soap.info(
         "Adding service %s to %s", service.getClass().getSimpleName(), getServletName());

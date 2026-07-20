@@ -826,8 +826,7 @@ public class Contact extends MailItem {
         }
     }
 
-    @Override
-    Metadata encodeMetadata(Metadata meta) {
+    @Override public Metadata encodeMetadata(Metadata meta) {
         return encodeMetadata(meta, mRGBColor, mMetaVersion, mVersion, mExtendedData, fields, attachments);
     }
 

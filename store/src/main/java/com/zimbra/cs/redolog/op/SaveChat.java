@@ -41,8 +41,7 @@ public class SaveChat extends CreateChat {
         return super.getPrintableData() + ",imap=" + mImapId;
     }
     
-    @Override
-    protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         out.writeInt(mImapId);
         super.serializeData(out);
     }

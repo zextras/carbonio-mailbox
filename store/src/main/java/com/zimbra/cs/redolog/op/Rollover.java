@@ -68,7 +68,7 @@ public class Rollover extends RedoableOp {
 	/* (non-Javadoc)
 	 * @see com.zimbra.cs.redolog.op.RedoableOp#serializeData(java.io.RedoLogOutput)
 	 */
-	protected void serializeData(RedoLogOutput out) throws IOException {
+  public void serializeData(RedoLogOutput out) throws IOException {
         out.writeLong(mSeq);
         out.writeUTF(mFilename);
 	}

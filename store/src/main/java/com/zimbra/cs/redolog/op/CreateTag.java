@@ -52,7 +52,7 @@ public class CreateTag extends RedoableOp {
         return sb.toString();
     }
 
-    @Override protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         out.writeInt(mTagId);
         out.writeUTF(mName);
         // mColor from byte to long in Version 1.27

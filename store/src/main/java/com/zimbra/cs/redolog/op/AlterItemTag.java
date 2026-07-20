@@ -60,8 +60,7 @@ public class AlterItemTag extends RedoableOp {
         return sb.toString();
     }
 
-    @Override
-    protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         boolean hasConstraint = mConstraint != null;
         out.writeInt(-1);
         out.writeByte(type.toByte());

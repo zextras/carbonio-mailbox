@@ -46,7 +46,7 @@ public final class VolumeManager {
         return SINGLETON;
     }
 
-    private void load() throws ServiceException {
+    public void load() throws ServiceException {
         DbConnection conn = DbPool.getConnection();
         try {
             id2volume.putAll(DbVolume.getAll(conn));

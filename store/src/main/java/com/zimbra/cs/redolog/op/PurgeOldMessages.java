@@ -35,7 +35,7 @@ public class PurgeOldMessages extends RedoableOp {
         return null;
     }
 
-    @Override protected void serializeData(RedoLogOutput out) {
+    @Override public void serializeData(RedoLogOutput out) {
         // no members to serialize
     }
 

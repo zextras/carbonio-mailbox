@@ -114,7 +114,7 @@ public class SetCalendarItem extends RedoableOp implements CreateCalendarItemRec
         return toRet;
     }
 
-    @Override protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         assert(getMailboxId() != 0);
         out.writeInt(mFolderId);
         if (getVersion().atLeast(1, 0)) {

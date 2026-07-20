@@ -25,8 +25,7 @@ public abstract class GalDocumentHandler extends AccountDocumentHandler {
     return TARGET_ACCOUNT_PATH;
   }
 
-  @Override
-  protected Element proxyIfNecessary(Element request, Map<String, Object> context)
+  @Override public Element proxyIfNecessary(Element request, Map<String, Object> context)
       throws ServiceException {
     try {
       ZimbraSoapContext zsc = getZimbraSoapContext(context);

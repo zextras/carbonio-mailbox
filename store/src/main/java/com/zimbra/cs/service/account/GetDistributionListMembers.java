@@ -33,8 +33,7 @@ import java.util.Map;
 public class GetDistributionListMembers extends GalDocumentHandler {
     private static final String A_PROXIED_TO_HOME_OF_GROUP = "__proxied__";
 
-    @Override
-    protected Element proxyIfNecessary(Element request, Map<String, Object> context)
+    @Override public Element proxyIfNecessary(Element request, Map<String, Object> context)
     throws ServiceException {
 
         boolean proxiedToHomeOfInternalGroup = request.getAttributeBool(A_PROXIED_TO_HOME_OF_GROUP, false);

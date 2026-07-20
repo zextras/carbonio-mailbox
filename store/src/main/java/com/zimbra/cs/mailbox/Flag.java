@@ -124,7 +124,7 @@ public final class Flag extends Tag {
             return NAME2FLAG.get(fname.toLowerCase());
         }
 
-        static FlagInfo of(int id) {
+        public static FlagInfo of(int id) {
             int index = getIndex(id);
             return index < 0 || index >= INDEX2FLAG.length ? null : INDEX2FLAG[index];
         }
@@ -322,7 +322,7 @@ public final class Flag extends Tag {
     /**
      * Returns all the possible {@link Flag} objects for the given {@link Mailbox}.
      */
-    static List<Flag> allOf(Mailbox mbox) throws ServiceException {
+    public static List<Flag> allOf(Mailbox mbox) throws ServiceException {
         FlagInfo[] flags = FlagInfo.values();
         List<Flag> result = new ArrayList<>(flags.length);
         for (FlagInfo flag : flags) {
@@ -376,8 +376,7 @@ public final class Flag extends Tag {
     void decodeMetadata(Metadata meta) {
     }
 
-    @Override
-    Metadata encodeMetadata(Metadata meta) {
+    @Override public Metadata encodeMetadata(Metadata meta) {
         return meta;
     }
 

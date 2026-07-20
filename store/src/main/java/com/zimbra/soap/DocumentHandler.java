@@ -491,7 +491,7 @@ public abstract class DocumentHandler {
     request.addAttribute(xpath[depth], value);
   }
 
-  protected Element proxyIfNecessary(Element request, Map<String, Object> context)
+  public Element proxyIfNecessary(Element request, Map<String, Object> context)
       throws ServiceException {
     // if the "target account" is remote and the command is non-admin, proxy.
     ZimbraSoapContext zsc = getZimbraSoapContext(context);

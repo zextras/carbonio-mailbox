@@ -739,11 +739,15 @@ public final class LuceneIndex extends IndexStore {
     }
   }
 
-  private static final class LuceneIndexerImpl implements Indexer {
+  public static final class LuceneIndexerImpl implements Indexer {
     private final IndexWriterRef writer;
 
     LuceneIndexerImpl(IndexWriterRef writer) {
       this.writer = writer;
+    }
+
+    public IndexWriterRef getWriter() {
+      return writer;
     }
 
     @Override
@@ -861,7 +865,7 @@ public final class LuceneIndex extends IndexStore {
   }
 
   /** {@link IndexWriter} wrapper that supports a reference counter. */
-  private static final class IndexWriterRef {
+  public static final class IndexWriterRef {
     private final LuceneIndex index;
     private final IndexWriter writer;
     private final AtomicInteger count = new AtomicInteger(1); // ref counter
@@ -871,7 +875,7 @@ public final class LuceneIndex extends IndexStore {
       this.writer = writer;
     }
 
-    IndexWriter get() {
+    public IndexWriter get() {
       return writer;
     }
 

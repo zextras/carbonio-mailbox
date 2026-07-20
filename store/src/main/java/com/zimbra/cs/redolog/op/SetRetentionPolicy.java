@@ -42,8 +42,7 @@ public class SetRetentionPolicy extends RedoableOp {
     return "retentionPolicy=" + retentionPolicy;
   }
 
-  @Override
-  protected void serializeData(RedoLogOutput out) throws IOException {
+  @Override public void serializeData(RedoLogOutput out) throws IOException {
     List<Policy> purgePolicy = retentionPolicy.getPurgePolicy();
 
     out.writeByte(type.toByte());

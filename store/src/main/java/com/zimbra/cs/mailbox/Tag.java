@@ -389,8 +389,7 @@ public class Tag extends MailItem implements ZimbraTag {
         }
     }
 
-    @Override
-    Metadata encodeMetadata(Metadata meta) {
+    @Override public Metadata encodeMetadata(Metadata meta) {
         return encodeMetadata(meta, mRGBColor, mMetaVersion, mVersion, retentionPolicy, isListed);
     }
 

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ExtensionUtil {
 
@@ -306,5 +307,13 @@ public class ExtensionUtil {
 
   public interface ExtensionMatcher {
     boolean matches(ZimbraExtension ext);
+  }
+
+  public static void clearExtensions() {
+    sInitializedExtensions = new ConcurrentHashMap<>();
+  }
+
+  public static boolean removeExtension(String extensionName) {
+    return sInitializedExtensions.remove(extensionName) != null;
   }
 }

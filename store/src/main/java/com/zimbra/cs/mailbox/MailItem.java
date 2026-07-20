@@ -428,7 +428,7 @@ public abstract class MailItem
     private static final String FN_MOD_CONTENT = "modc";
     private static final String FN_DATE_CHANGED = "dc";
 
-    Metadata serialize() {
+    public Metadata serialize() {
       Metadata meta = new Metadata();
       meta.put(FN_ID, id);
       meta.put(FN_TYPE, type);
@@ -2174,7 +2174,7 @@ public abstract class MailItem
     return 1;
   }
 
-  List<MailItem> loadRevisions() throws ServiceException {
+  public List<MailItem> loadRevisions() throws ServiceException {
     if (mRevisions == null) {
       mRevisions = new ArrayList<>();
 
@@ -3584,7 +3584,7 @@ public abstract class MailItem
     return meta;
   }
 
-  abstract Metadata encodeMetadata(Metadata meta);
+  public abstract Metadata encodeMetadata(Metadata meta);
 
   static Metadata encodeMetadata(
       Metadata meta,

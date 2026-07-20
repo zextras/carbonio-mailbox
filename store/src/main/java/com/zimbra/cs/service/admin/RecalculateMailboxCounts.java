@@ -32,7 +32,7 @@ public final class RecalculateMailboxCounts extends AdminDocumentHandler {
   }
 
   @Override
-  protected Element proxyIfNecessary(Element request, Map<String, Object> context)
+  public Element proxyIfNecessary(Element request, Map<String, Object> context)
       throws ServiceException {
     // if we've explicitly been told to execute here, don't proxy
     ZimbraSoapContext zsc = getZimbraSoapContext(context);

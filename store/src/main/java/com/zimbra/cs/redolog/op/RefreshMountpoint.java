@@ -46,8 +46,7 @@ public class RefreshMountpoint extends RedoableOp {
         return sb.toString();
     }
 
-    @Override
-    protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         out.writeInt(mId);
         out.writeUTF(mOwnerId);
         out.writeInt(mRemoteId);

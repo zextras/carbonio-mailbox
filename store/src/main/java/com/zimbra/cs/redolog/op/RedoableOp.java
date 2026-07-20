@@ -76,7 +76,7 @@ public abstract class RedoableOp {
         this(op, RedoLogProvider.getInstance().getRedoLogManager());
     }
 
-    protected Version getVersion()      { return mVersion; }
+    public Version getVersion()      { return mVersion; }
     private void setVersion(Version v)  { mVersion = v; }
 
     public boolean getUnloggedReplay()        { return mUnloggedReplay; }
@@ -317,7 +317,7 @@ public abstract class RedoableOp {
     protected abstract String getPrintableData();
 
     // Used by serialize() and deserialize().
-    protected abstract void serializeData(RedoLogOutput out) throws IOException;
+    public abstract void serializeData(RedoLogOutput out) throws IOException;
     protected abstract void deserializeData(RedoLogInput in) throws IOException;
 
     /**

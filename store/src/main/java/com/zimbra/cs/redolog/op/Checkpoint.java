@@ -69,7 +69,7 @@ public class Checkpoint extends ControlOp {
 			return null;
 	}
 
-	protected void serializeData(RedoLogOutput out) throws IOException {
+	public void serializeData(RedoLogOutput out) throws IOException {
 		out.writeInt(mTxnSet.size());
     for (TransactionId txn : mTxnSet) {
       txn.serialize(out);

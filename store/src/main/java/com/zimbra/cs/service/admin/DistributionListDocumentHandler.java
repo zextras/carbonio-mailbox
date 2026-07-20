@@ -34,8 +34,7 @@ public abstract class DistributionListDocumentHandler extends AdminDocumentHandl
         return (Group) context.get(GROUP);
     }
 
-    @Override
-    protected Element proxyIfNecessary(Element request, Map<String, Object> context)
+    @Override public Element proxyIfNecessary(Element request, Map<String, Object> context)
     throws ServiceException {
         // if we've explicitly been told to execute here, don't proxy
         ZimbraSoapContext zsc = getZimbraSoapContext(context);

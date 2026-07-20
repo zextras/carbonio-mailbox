@@ -58,8 +58,7 @@ public final class ModifyVolume extends RedoableOp {
                 .toString();
     }
 
-    @Override
-    protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         out.writeShort(id);
         out.writeShort(type);
         out.writeUTF(name);

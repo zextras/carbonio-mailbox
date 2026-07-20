@@ -175,6 +175,11 @@ public class MailServiceException extends ServiceException {
     super(message, code, isReceiversFault, cause, args);
   }
 
+  public static MailServiceException mailServiceException(
+          String message, String code, boolean isReceiversFault, Throwable cause, Argument... args) {
+    return new MailServiceException(message, code, isReceiversFault, cause, args);
+  }
+
   public static class MailboxInMaintenanceException extends MailServiceException {
     private static final long serialVersionUID = 2105634546355254491L;
 

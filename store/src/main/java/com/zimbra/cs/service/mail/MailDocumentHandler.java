@@ -34,8 +34,7 @@ public abstract class MailDocumentHandler extends DocumentHandler {
     return null;
   }
 
-  @Override
-  protected Element proxyIfNecessary(Element request, Map<String, Object> context)
+  @Override public Element proxyIfNecessary(Element request, Map<String, Object> context)
       throws ServiceException {
     // find the id of the item we're proxying on...
     String[] xpath = getProxiedIdPath(request);

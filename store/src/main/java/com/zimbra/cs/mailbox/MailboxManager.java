@@ -1039,6 +1039,18 @@ public class MailboxManager {
     }
   }
 
+  public void removeMailboxData(long mailboxId, String accountId) {
+    this.maintenanceLocks.remove(accountId);
+    this.mailboxIds.remove(accountId);
+    this.cache.remove(mailboxId);
+  }
+
+  public void setupMailboxWithSpecificId(long mailboxId, String accountId) {
+    this.maintenanceLocks.remove(accountId);
+    this.mailboxIds.put(accountId, (int) mailboxId);
+    this.cache.remove(mailboxId);
+  }
+
   protected static class MailboxMap implements Map<Integer, Object> {
     final int mHardSize;
     final LinkedHashMap<Integer, Object> mHardMap;

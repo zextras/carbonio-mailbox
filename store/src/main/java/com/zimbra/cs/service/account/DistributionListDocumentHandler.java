@@ -150,8 +150,7 @@ public abstract class DistributionListDocumentHandler extends AccountDocumentHan
     }
   }
 
-  @Override
-  protected Element proxyIfNecessary(Element request, Map<String, Object> context)
+  @Override public Element proxyIfNecessary(Element request, Map<String, Object> context)
       throws ServiceException {
     try {
       Group group = getGroupBasic(request, Provisioning.getInstance());

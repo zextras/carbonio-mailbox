@@ -26,8 +26,7 @@ public class CreateChat extends CreateMessage {
         mOperation = MailboxOperation.CreateChat;
     }
     
-    @Override
-    protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         super.serializeData(out);
     }
 

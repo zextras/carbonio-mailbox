@@ -40,8 +40,7 @@ public class LockItem extends RedoableOp {
         return sb.toString();
     }
 
-    @Override
-    protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         out.writeByte(type.toByte());
         out.writeUTF(accountId);
         out.writeInt(id);

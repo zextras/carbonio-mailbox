@@ -86,8 +86,7 @@ public class ReindexMailbox extends RedoableOp {
         }
     }
 
-    @Override
-    protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         if (getVersion().atLeast(1,9)) {
             // completion ID
             out.writeInt(mCompletionId);

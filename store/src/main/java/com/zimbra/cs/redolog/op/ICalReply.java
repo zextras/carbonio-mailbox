@@ -43,7 +43,7 @@ public class ICalReply extends RedoableOp {
         return sb.toString();
     }
 
-    @Override protected void serializeData(RedoLogOutput out) throws IOException {
+    @Override public void serializeData(RedoLogOutput out) throws IOException {
         ICalTimeZone localTz = mInvite.getTimeZoneMap().getLocalTimeZone();
         out.writeUTF(Util.encodeAsMetadata(localTz).toString());
         out.writeUTF(Invite.encodeMetadata(mInvite).toString());

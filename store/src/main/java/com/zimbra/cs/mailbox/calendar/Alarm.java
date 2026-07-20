@@ -829,4 +829,12 @@ public class Alarm {
     public ParsedDateTime getTriggerAbsolute() {
         return mTriggerAbsolute;
     }
+
+    public TriggerType getTriggerType() {
+        return mTriggerType;
+    }
+
+    public TriggerRelated getTriggerRelated() {
+        return mTriggerRelated;
+    }
 }
