@@ -257,8 +257,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     } finally {
       cleanUp(account1);
       cleanUp(account2);
-      cleanUp(cos);
       cleanUp(anotherDomain);
+      domain.setDomainDefaultCOSId("");
+      cleanUp(cos);
     }
   }
 
@@ -282,8 +283,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     } finally {
       cleanUp(account1);
       cleanUp(account2);
-      cleanUp(cos);
+      anotherDomain.setDomainDefaultCOSId("");
       cleanUp(anotherDomain);
+      cleanUp(cos);
     }
   }
 

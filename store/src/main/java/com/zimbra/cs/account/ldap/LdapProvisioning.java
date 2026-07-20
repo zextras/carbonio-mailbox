@@ -15,6 +15,7 @@ import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.Key.DistributionListBy;
 import com.zimbra.common.account.ProvisioningConstants;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.service.ServiceException.Argument;
@@ -3857,7 +3858,18 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     if (c.isDefaultCos())
       throw ServiceException.INVALID_REQUEST("unable to delete default cos", null);
 
-    // TODO: should we go through all accounts with this cos and remove the zimbraCOSId attr?
+    if (isCosAssignedToAnyAccountOrCalendarResource(zimbraId)) {
+      throw ServiceException.INVALID_REQUEST(
+          "unable to delete cos assigned to one or more accounts or calendar resources",
+          null);
+    }
+
+    if (isCosDefaultForAnyDomain(zimbraId)) {
+      throw ServiceException.INVALID_REQUEST(
+          "unable to delete cos in use by one or more domains",
+          null);
+    }
+
     ZLdapContext zlc = null;
     try {
       zlc = ldapClient.getContext(LdapServerType.MASTER, LdapUsage.DELETE_COS);
@@ -3868,6 +3880,32 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } finally {
       ldapClient.closeContext(zlc);
     }
+  }
+
+  private boolean isCosAssignedToAnyAccountOrCalendarResource(String cosId)
+      throws ServiceException {
+    SearchAccountsOptions opts = new SearchAccountsOptions();
+    opts.setOnMaster(true);
+    opts.setIncludeType(IncludeType.ACCOUNTS_AND_CALENDAR_RESOURCES);
+    opts.setMaxResults(1);
+    opts.setFilterString(
+        FilterId.TODO, filterFactory.equalityFilter(ZAttrProvisioning.A_zimbraCOSId, cosId, true));
+    return !searchDirectoryInternal(opts).isEmpty();
+  }
+
+  private boolean isCosDefaultForAnyDomain(String cosId) throws ServiceException {
+    String filter =
+        "(|"
+            + filterFactory.equalityFilter(ZAttrProvisioning.A_zimbraDomainDefaultCOSId, cosId, true)
+            + filterFactory.equalityFilter(
+                ZAttrProvisioning.A_zimbraDomainDefaultExternalUserCOSId, cosId, true)
+            + ")";
+    SearchDirectoryOptions opts = new SearchDirectoryOptions();
+    opts.setOnMaster(true);
+    opts.setMaxResults(1);
+    opts.setFilterString(FilterId.TODO, filter);
+    opts.setTypes(ObjectType.domains);
+    return !searchDirectoryInternal(opts).isEmpty();
   }
 
   @Override
