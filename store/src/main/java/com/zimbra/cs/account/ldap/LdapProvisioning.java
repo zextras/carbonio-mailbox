@@ -3857,9 +3857,16 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     if (c.isDefaultCos())
       throw ServiceException.INVALID_REQUEST("unable to delete default cos", null);
 
-    if (isCosAssignedToAnyAccount(zimbraId)) {
+    if (isCosAssignedToAnyAccountOrCalendarResource(zimbraId)) {
       throw ServiceException.INVALID_REQUEST(
-          "unable to delete cos assigned to one or more accounts", null);
+          "unable to delete cos assigned to one or more accounts or calendar resources",
+          null);
+    }
+
+    if (isCosDefaultForAnyDomain(zimbraId)) {
+      throw ServiceException.INVALID_REQUEST(
+          "unable to delete cos in use by one or more domains",
+          null);
     }
 
     ZLdapContext zlc = null;
@@ -3874,14 +3881,29 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     }
   }
 
-  private boolean isCosAssignedToAnyAccount(String cosId) throws ServiceException {
+  private boolean isCosAssignedToAnyAccountOrCalendarResource(String cosId)
+      throws ServiceException {
     SearchAccountsOptions opts = new SearchAccountsOptions();
     opts.setOnMaster(true);
-    opts.setIncludeType(IncludeType.ACCOUNTS_ONLY);
+    opts.setIncludeType(IncludeType.ACCOUNTS_AND_CALENDAR_RESOURCES);
     opts.setMaxResults(1);
     opts.setFilterString(
-            FilterId.TODO,
-            filterFactory.equalityFilter(Provisioning.A_zimbraCOSId, cosId, true));
+        FilterId.TODO, filterFactory.equalityFilter(Provisioning.A_zimbraCOSId, cosId, true));
+    return !searchDirectoryInternal(opts).isEmpty();
+  }
+
+  private boolean isCosDefaultForAnyDomain(String cosId) throws ServiceException {
+    String filter =
+        "(|"
+            + filterFactory.equalityFilter(Provisioning.A_zimbraDomainDefaultCOSId, cosId, true)
+            + filterFactory.equalityFilter(
+                Provisioning.A_zimbraDomainDefaultExternalUserCOSId, cosId, true)
+            + ")";
+    SearchDirectoryOptions opts = new SearchDirectoryOptions();
+    opts.setOnMaster(true);
+    opts.setMaxResults(1);
+    opts.setFilterString(FilterId.TODO, filter);
+    opts.setTypes(ObjectType.domains);
     return !searchDirectoryInternal(opts).isEmpty();
   }
 

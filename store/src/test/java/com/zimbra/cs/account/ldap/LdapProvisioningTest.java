@@ -254,6 +254,45 @@ public class LdapProvisioningTest extends MailboxTestSuite {
     assertEquals(ServiceException.INVALID_REQUEST, serviceException.getCode());
   }
 
+  @Test
+  void shouldNotDeleteCosAssignedToCalendarResource() throws ServiceException {
+    final Cos cos = provisioning.createCos(UUID.randomUUID().toString(), new HashMap<>());
+    final String domain = UUID.randomUUID() + ".com";
+    provisioning.createDomain(domain, new HashMap<>());
+
+    Map<String, Object> resourceAttrs = new HashMap<>();
+    resourceAttrs.put(Provisioning.A_zimbraCalResType, "Location");
+    resourceAttrs.put(Provisioning.A_displayName, "Room 1");
+    resourceAttrs.put(Provisioning.A_zimbraCOSId, cos.getId());
+    provisioning.createCalendarResource(
+        "room-" + UUID.randomUUID() + "@" + domain, "testPassword", resourceAttrs);
+
+    ServiceException serviceException =
+        assertThrows(ServiceException.class, () -> provisioning.deleteCos(cos.getId()));
+    assertEquals(ServiceException.INVALID_REQUEST, serviceException.getCode());
+  }
+
+  @Test
+  void shouldNotDeleteCosUsedAsDomainDefault() throws ServiceException {
+    final Cos cos = provisioning.createCos(UUID.randomUUID().toString(), new HashMap<>());
+
+    Map<String, Object> domainAttrs = new HashMap<>();
+    domainAttrs.put(Provisioning.A_zimbraDomainDefaultCOSId, cos.getId());
+    provisioning.createDomain(UUID.randomUUID() + ".com", domainAttrs);
+
+    ServiceException serviceException =
+        assertThrows(ServiceException.class, () -> provisioning.deleteCos(cos.getId()));
+    assertEquals(ServiceException.INVALID_REQUEST, serviceException.getCode());
+  }
+
+  @Test
+  void shouldDeleteCosNotInUse() throws ServiceException {
+    final Cos cos = provisioning.createCos(UUID.randomUUID().toString(), new HashMap<>());
+
+    assertDoesNotThrow(() -> provisioning.deleteCos(cos.getId()));
+    assertNull(provisioning.get(com.zimbra.common.account.Key.CosBy.id, cos.getId()));
+  }
+
   @SuppressWarnings("SameParameterValue")
   private Map<String, Object> createAuthContext(AuthMode authMode) {
     Map<String, Object> authContext = new HashMap<>();
