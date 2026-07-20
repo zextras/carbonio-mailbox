@@ -3857,7 +3857,11 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     if (c.isDefaultCos())
       throw ServiceException.INVALID_REQUEST("unable to delete default cos", null);
 
-    // TODO: should we go through all accounts with this cos and remove the zimbraCOSId attr?
+    if (isCosAssignedToAnyAccount(zimbraId)) {
+      throw ServiceException.INVALID_REQUEST(
+          "unable to delete cos assigned to one or more accounts", null);
+    }
+
     ZLdapContext zlc = null;
     try {
       zlc = ldapClient.getContext(LdapServerType.MASTER, LdapUsage.DELETE_COS);
@@ -3868,6 +3872,23 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } finally {
       ldapClient.closeContext(zlc);
     }
+  }
+
+  private boolean isCosAssignedToAnyAccount(String cosId) throws ServiceException {
+    SearchAccountsOptions opts = new SearchAccountsOptions();
+    opts.setOnMaster(true);
+    opts.setIncludeType(IncludeType.ACCOUNTS_ONLY);
+    opts.setFilter(filterFactory.allAccountsOnlyByCos(cosId));
+
+    for (Object obj : searchDirectoryInternal(opts)) {
+      Account acct = (Account) obj;
+      Cos cos = getCOS(acct);
+      if (cos != null && cosId.equals(cos.getId())) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   @Override

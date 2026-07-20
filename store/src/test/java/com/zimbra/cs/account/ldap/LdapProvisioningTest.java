@@ -9,6 +9,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.AccountServiceException.AuthFailedServiceException;
+import com.zimbra.cs.account.Cos;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Provisioning.AuthMode;
@@ -236,6 +237,21 @@ public class LdapProvisioningTest extends MailboxTestSuite {
         () -> provisioning.authAccount(account, wrongRecoveryCode, Protocol.http_basic, authContext
             ));
     assertEquals(AccountServiceException.AUTH_FAILED, authFailedServiceException.getCode());
+  }
+
+  @Test
+  void shouldNotDeleteCosAssignedToAccount() throws ServiceException {
+    final Cos cos = provisioning.createCos(UUID.randomUUID().toString(), new HashMap<>());
+    final String domain = UUID.randomUUID() + ".com";
+    provisioning.createDomain(domain, new HashMap<>());
+
+    Map<String, Object> accountAttrs = new HashMap<>();
+    accountAttrs.put(Provisioning.A_zimbraCOSId, cos.getId());
+    provisioning.createAccount(UUID.randomUUID() + "@" + domain, "testPassword", accountAttrs);
+
+    ServiceException serviceException =
+        assertThrows(ServiceException.class, () -> provisioning.deleteCos(cos.getId()));
+    assertEquals(ServiceException.INVALID_REQUEST, serviceException.getCode());
   }
 
   @SuppressWarnings("SameParameterValue")
