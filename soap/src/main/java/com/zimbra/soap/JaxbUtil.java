@@ -35,6 +35,7 @@ import com.zimbra.soap.mail.type.ModifyNotification;
 import com.zimbra.soap.mail.type.ModifyNotification.ModifyItemNotification;
 import com.zimbra.soap.mail.type.PendingFolderModifications;
 import com.zimbra.soap.util.JaxbInfo;
+import javax.xml.bind.annotation.XmlElement;
 import org.dom4j.Document;
 import org.dom4j.Namespace;
 import org.dom4j.io.DocumentResult;
@@ -401,6 +402,8 @@ public final class JaxbUtil {
           com.zimbra.soap.admin.message.GetMailboxVolumesResponse.class,
           com.zimbra.soap.admin.message.GetMemcachedClientConfigRequest.class,
           com.zimbra.soap.admin.message.GetMemcachedClientConfigResponse.class,
+          com.zimbra.soap.admin.message.GetQuotaUsageRequest.class,
+          com.zimbra.soap.admin.message.GetQuotaUsageResponse.class,
           com.zimbra.soap.admin.message.GetOutgoingFilterRulesRequest.class,
           com.zimbra.soap.admin.message.GetOutgoingFilterRulesResponse.class,
           com.zimbra.soap.admin.message.GetRightRequest.class,
