@@ -162,8 +162,6 @@ import com.zimbra.soap.admin.message.GetIndexStatsRequest;
 import com.zimbra.soap.admin.message.GetIndexStatsResponse;
 import com.zimbra.soap.admin.message.GetMailboxRequest;
 import com.zimbra.soap.admin.message.GetMailboxResponse;
-import com.zimbra.soap.admin.message.GetQuotaUsageRequest;
-import com.zimbra.soap.admin.message.GetQuotaUsageResponse;
 import com.zimbra.soap.admin.message.GetRightRequest;
 import com.zimbra.soap.admin.message.GetRightResponse;
 import com.zimbra.soap.admin.message.GetRightsDocRequest;
@@ -1175,15 +1173,6 @@ public class SoapProvisioning extends Provisioning {
       mUsed = quotaInfo.getQuotaUsed();
       mLimit = quotaInfo.getQuotaLimit();
     }
-  }
-
-  public List<QuotaUsage> getQuotaUsage(String server) throws ServiceException {
-    ArrayList<QuotaUsage> result = new ArrayList<>();
-    GetQuotaUsageResponse resp = invokeJaxb(new GetQuotaUsageRequest(), server);
-    for (AccountQuotaInfo quotaInfo : resp.getAccountQuotas()) {
-      result.add(new QuotaUsage(quotaInfo));
-    }
-    return result;
   }
 
   public List<AccountLogger> addAccountLogger(

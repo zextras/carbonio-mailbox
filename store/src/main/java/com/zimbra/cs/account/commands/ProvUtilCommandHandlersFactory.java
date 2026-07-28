@@ -88,7 +88,6 @@ public class ProvUtilCommandHandlersFactory {
     map.put(Command.GET_INDEX_STATS, new GetIndexStatsCommandHandler(provUtil));
     map.put(Command.GET_MAILBOX_INFO, new GetMailboxInfoCommandHandler(provUtil));
     map.put(Command.GET_MEMCACHED_CLIENT_CONFIG, new GetMemcachedClientConfigCommandHandler(provUtil));
-    map.put(Command.GET_QUOTA_USAGE, new GetQuotaUsageCommandHandler(provUtil));
     map.put(Command.GET_RIGHT, new GetRightCommandHandler(provUtil, dumper));
     map.put(Command.GET_RIGHTS_DOC, new GetRightsDocCommandHandler(provUtil));
     map.put(Command.GET_SERVER, new GetServerCommandHandler(provUtil, dumper));

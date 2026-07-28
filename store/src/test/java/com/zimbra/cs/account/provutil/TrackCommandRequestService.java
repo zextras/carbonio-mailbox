@@ -117,9 +117,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.GET_CALENDAR_RESOURCE_REQUEST
           , AdminConstants.GET_ALL_CALENDAR_RESOURCES_REQUEST
           , AdminConstants.SEARCH_CALENDAR_RESOURCES_REQUEST
-          , AdminConstants.GET_QUOTA_USAGE_REQUEST
-          , AdminConstants.COMPUTE_AGGR_QUOTA_USAGE_REQUEST
-          , AdminConstants.GET_AGGR_QUOTA_USAGE_ON_SERVER_REQUEST
           , AdminConstants.GET_ALL_MAILBOXES_REQUEST
           , AdminConstants.GET_MAILBOX_STATS_REQUEST
           , AdminConstants.GET_MAIL_QUEUE_INFO_REQUEST
