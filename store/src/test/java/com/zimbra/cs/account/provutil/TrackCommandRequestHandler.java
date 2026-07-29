@@ -47,6 +47,7 @@ import com.zimbra.soap.admin.message.GetDomainResponse;
 import com.zimbra.soap.admin.message.GetEffectiveRightsResponse;
 import com.zimbra.soap.admin.message.GetIndexStatsResponse;
 import com.zimbra.soap.admin.message.GetMailboxResponse;
+import com.zimbra.soap.admin.message.GetQuotaUsageResponse;
 import com.zimbra.soap.admin.message.GetRightResponse;
 import com.zimbra.soap.admin.message.GetRightsDocResponse;
 import com.zimbra.soap.admin.message.GetServerResponse;
@@ -65,6 +66,7 @@ import com.zimbra.soap.admin.message.UnregisterMailboxMoveOutResponse;
 import com.zimbra.soap.admin.message.VerifyIndexResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
 import com.zimbra.soap.admin.type.AccountLoggerInfo;
+import com.zimbra.soap.admin.type.AccountQuotaInfo;
 import com.zimbra.soap.admin.type.Attr;
 import com.zimbra.soap.admin.type.CalendarResourceInfo;
 import com.zimbra.soap.admin.type.CheckedRight;
@@ -289,6 +291,14 @@ public class TrackCommandRequestHandler extends DocumentHandler {
                       new EffectiveAttrsInfo(true),
                       new EffectiveAttrsInfo(true)
               )
+      );
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetQuotaUsageRequest", () -> {
+      var resp = new GetQuotaUsageResponse(false, 1,
+              List.of(new AccountQuotaInfo(
+                      ACCOUNT_UUID, ACCOUNT_NAME, 500, 1000
+              ))
       );
       return jaxbToElement(resp);
     });
