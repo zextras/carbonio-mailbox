@@ -877,21 +877,13 @@
   </dependencyManagement>
 
   <!--
-    DEPLOY: JFrog stays the deploy target during the parallel-run window (PR #1112): `mvn deploy`
-    publishes here, and jenkins-lib-common's nexusHelper.uploadMavenFromDeployLog() mirrors the
-    same artifacts to Nexus best-effort. At cutover this block flips to
+    JFrog stays the deploy target during the parallel-run window: `mvn deploy`
+    publishes here, and jenkins-lib-common's nexusHelper.uploadMavenFromDeployLog()
+    mirrors the same artifacts to Nexus best-effort. At cutover this block flips to
     https://repo.zextras.tools/repository/public-maven-repo/ (release) and
-    .../maven-snapshots/ (snapshot).
-    The <id>artifactory</id> below must match the <server> id in jenkins-maven-settings.xml.
-
-    RESOLUTION: <repositories> and <pluginRepositories> are intentionally absent. Dependency and
-    plugin resolution is supplied entirely by the Maven client settings.xml — the Jenkins file
-    credentials nexus-maven-settings.xml / jenkins-maven-settings.xml injected at Jenkinsfile
-    ~line 172 — via a single <mirror id="nexus-mirror"><mirrorOf>*</mirrorOf></mirror> pointing
-    at https://repo.zextras.tools/repository/java-sdk/ (a Nexus group that includes the
-    maven-central proxy). WARNING: a build run WITHOUT that settings.xml resolves straight from
-    Maven Central and silently bypasses Nexus. This change must NOT be merged until the
-    maven-central proxy repository exists inside the java-sdk group in Nexus.
+    .../maven-snapshots/ (snapshot), and the mirror call is dropped.
+    The <id>artifactory</id> below must match the <server> id configured in the
+    jenkins-maven-settings.xml credential.
   -->
   <distributionManagement>
     <repository>
@@ -903,6 +895,54 @@
       <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
     </snapshotRepository>
   </distributionManagement>
+
+
+  <repositories>
+    <repository>
+      <id>central</id>
+      <url>https://repo1.maven.org/maven2/</url>
+    </repository>
+    <repository>
+      <id>fuse</id>
+      <url>https://repo.fusesource.com/maven2/</url>
+    </repository>
+    <repository>
+      <id>zextras-java-sdk</id>
+      <name>Zextras Java SDK (Nexus group)</name>
+      <url>https://repo.zextras.tools/repository/java-sdk/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>zextras-public-snapshots</id>
+      <name>Zextras public maven snapshot repository</name>
+      <url>https://repo.zextras.tools/repository/maven-snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>central</id>
+      <url>https://repo1.maven.org/maven2/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>fuse</id>
+      <url>https://repo.fusesource.com/maven2/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>zextras-java-sdk</id>
+      <url>https://repo.zextras.tools/repository/java-sdk/</url>
+    </pluginRepository>
+  </pluginRepositories>
 
   <!-- Define common plugins used by each project -->
   <build>
