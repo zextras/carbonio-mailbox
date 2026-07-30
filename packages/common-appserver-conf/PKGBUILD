@@ -1,5 +1,5 @@
 pkgname="carbonio-common-appserver-conf"
-pkgver="4.30.0"
+pkgver="4.31.0"
 pkgrel="1"
 pkgdesc="Carbonio Core Mailbox Configuration"
 arch=('any')
