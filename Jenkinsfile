@@ -13,6 +13,17 @@ boolean isBuildingTag() {
     return env.TAG_NAME ? true : false
 }
 
+// Every mvn invocation must resolve through the Nexus mirror declared in these
+// settings files: pom.xml no longer declares <repositories>/<pluginRepositories>,
+// so a plain `mvn` would fall back to bare Maven Central and fail on the patched
+// ical4j artifact and the internal com.zextras artifacts.
+void withMavenSettings(Closure body) {
+    withCredentials([file(credentialsId: params.PLAYGROUND ? 'nexus-maven-settings.xml' : 'jenkins-maven-settings.xml',
+            variable: 'SETTINGS_PATH')]) {
+        body()
+    }
+}
+
 pipeline {
     agent {
         node {
@@ -54,8 +65,9 @@ pipeline {
                 stage('Maven build') {
                     steps {
                         container('jdk-21') {
-                            sh """
-                        mvn ${MVN_OPTS} \
+                            withMavenSettings {
+                                sh """
+                        mvn ${MVN_OPTS} -s \$SETTINGS_PATH \
                             -DskipTests=true \
                             clean install
                         mkdir staging
@@ -63,6 +75,7 @@ pipeline {
                                 client common packages soap jython-libs \
                                 staging/
                     """
+                            }
                             stash includes: 'staging/**', name: 'staging'
                         }
                     }
@@ -76,7 +89,9 @@ pipeline {
             }
             steps {
                 container('jdk-21') {
-                    sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,flaky,e2e"
+                    withMavenSettings {
+                        sh "mvn ${MVN_OPTS} -s \$SETTINGS_PATH verify -DexcludedGroups=api,flaky,e2e"
+                    }
                 }
                 junit allowEmptyResults: true,
                         testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
@@ -85,10 +100,12 @@ pipeline {
         stage('Flaky, API, E2E tests') {
                     steps {
                         container('jdk-21') {
-                            sh """
-                                mvn ${MVN_OPTS} verify -Dgroups=flaky,api
-                                mvn ${MVN_OPTS} verify -Dgroups=e2e
+                            withMavenSettings {
+                                sh """
+                                mvn ${MVN_OPTS} -s \$SETTINGS_PATH verify -Dgroups=flaky,api
+                                mvn ${MVN_OPTS} -s \$SETTINGS_PATH verify -Dgroups=e2e
                             """
+                            }
                         }
                         junit allowEmptyResults: true,
                                 testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
@@ -98,15 +115,17 @@ pipeline {
         stage('Build and Package API Docs') {
             steps {
                 container('jdk-21') {
-                    sh """
+                    withMavenSettings {
+                        sh """
                 (
                     cd soap || { echo "Directory soap does not exist"; exit 1; }
-                    mvn ${MVN_OPTS} antrun:run@generate-soap-docs
+                    mvn ${MVN_OPTS} -s \$SETTINGS_PATH antrun:run@generate-soap-docs
                 )
-                VERSION=\$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+                VERSION=\$(mvn -s \$SETTINGS_PATH help:evaluate -Dexpression=project.version -q -DforceStdout)
                 mkdir -p docs
                 tar -czf docs/carbonio-mailbox-api-docs-\${VERSION}.tar.gz -C soap/target/docs/soap .
             """
+                    }
                 }
                 archiveArtifacts artifacts: 'docs/carbonio-mailbox-api-docs-*.tar.gz', allowEmptyArchive: true
             }
@@ -116,14 +135,16 @@ pipeline {
             steps {
                 container('jdk-21') {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                        sh """
-                            mvn ${MVN_OPTS} \
+                        withMavenSettings {
+                            sh """
+                            mvn ${MVN_OPTS} -s \$SETTINGS_PATH \
                                 jacoco:report \
                                 sonar:sonar \
                                 -Dsonar.coverage.jacoco.xmlReportPaths=**/target/site/jacoco/jacoco.xml \
                                 -Dsonar.junit.reportPaths=target/surefire-reports,target/failsafe-reports \
                                 -Dsonar.exclusions=**/com/zimbra/soap/mail/type/*.java,**/com/zimbra/soap/mail/message/*.java,**/com/zimbra/cs/account/ZAttr*.java,**/com/zimbra/common/account/ZAttr*.java
                         """
+                        }
                     }
                 }
             }
@@ -169,7 +190,7 @@ pipeline {
                         container('jdk-21') {
                             script {
                                 boolean pg = params.PLAYGROUND
-                                withCredentials([file(credentialsId: pg ? 'nexus-maven-settings.xml' : 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
+                                withMavenSettings {
                                     sh """#!/bin/bash
                                         set -o pipefail
                                         mvn ${MVN_OPTS} -s \$SETTINGS_PATH deploy -DskipTests=true ${pg ? '-DaltDeploymentRepository=nexus-prod::https://repo.zextras.tools/repository/pg-public-maven-repo/' : ''} | tee mvn-deploy.log
