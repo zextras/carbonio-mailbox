@@ -3,7 +3,7 @@
   "description": "Zextras Suite",
   "name": "carbonio-mailbox",
   "output": "artifacts",
-  "skipDeps": ["pending-setups", "service-discover", "service-discover-base"],
+  "skipDeps": ["carbonio-core", "pending-setups", "service-discover", "service-discover-base"],
   "projects": [
     {
       "name": "appserver-conf"

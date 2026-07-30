@@ -1,5 +1,5 @@
 library(
-        identifier: 'jenkins-lib-common@v3.0.2',
+        identifier: 'jenkins-lib-common@v4.1.3',
         retriever: modernSCM([
                 $class: 'GitSCMSource',
                 credentialsId: 'jenkins-integration-with-github-account',
@@ -160,13 +160,23 @@ pipeline {
 
                 stage('Publish to maven') {
                     when {
-                        buildingTag()
+                        anyOf {
+                            buildingTag()
+                            expression { params.PLAYGROUND }
+                        }
                     }
                     steps {
                         container('jdk-21') {
-                            withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                                script {
-                                    sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -DskipTests=true"
+                            script {
+                                boolean pg = params.PLAYGROUND
+                                withCredentials([file(credentialsId: pg ? 'nexus-maven-settings.xml' : 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
+                                    sh """#!/bin/bash
+                                        set -o pipefail
+                                        mvn ${MVN_OPTS} -s \$SETTINGS_PATH deploy -DskipTests=true ${pg ? '-DaltDeploymentRepository=nexus-prod::https://repo.zextras.tools/repository/pg-public-maven-repo/' : ''} | tee mvn-deploy.log
+                                    """
+                                }
+                                if (!pg) {
+                                    nexusHelper.uploadMavenFromDeployLog(readFile('mvn-deploy.log'))
                                 }
                             }
                         }

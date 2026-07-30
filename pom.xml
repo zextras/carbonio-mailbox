@@ -876,15 +876,24 @@
     </dependencies>
   </dependencyManagement>
 
+  <!--
+    JFrog stays the deploy target during the parallel-run window: `mvn deploy`
+    publishes here, and jenkins-lib-common's nexusHelper.uploadMavenFromDeployLog()
+    mirrors the same artifacts to Nexus best-effort. At cutover this block flips to
+    https://repo.zextras.tools/repository/public-maven-repo/ (release) and
+    .../maven-snapshots/ (snapshot), and the mirror call is dropped.
+    The <id>artifactory</id> below must match the <server> id configured in the
+    jenkins-maven-settings.xml credential.
+  -->
   <distributionManagement>
     <repository>
       <id>artifactory</id>
       <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
     </repository>
-      <snapshotRepository>
-        <id>artifactory</id>
-        <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
-      </snapshotRepository>
+    <snapshotRepository>
+      <id>artifactory</id>
+      <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
+    </snapshotRepository>
   </distributionManagement>
 
 
@@ -899,12 +908,19 @@
     </repository>
     <repository>
       <id>zextras-java-sdk</id>
-      <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
+      <name>Zextras Java SDK (Nexus group)</name>
+      <url>https://repo.zextras.tools/repository/java-sdk/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
     <repository>
       <id>zextras-public-snapshots</id>
       <name>Zextras public maven snapshot repository</name>
-      <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
+      <url>https://repo.zextras.tools/repository/maven-snapshots/</url>
       <releases>
         <enabled>false</enabled>
       </releases>
@@ -924,7 +940,7 @@
     </pluginRepository>
     <pluginRepository>
       <id>zextras-java-sdk</id>
-      <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
+      <url>https://repo.zextras.tools/repository/java-sdk/</url>
     </pluginRepository>
   </pluginRepositories>
 
