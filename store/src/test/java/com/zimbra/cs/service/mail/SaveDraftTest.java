@@ -199,15 +199,6 @@ public class SaveDraftTest extends MailboxTestSuite {
 		assertEquals(-1, SaveDraft.getId(Element.JSONElement.parseJSON("{  }")));
 	}
 
-	@Test
-	void cannotSaveDraftWhenOverQuota() throws Exception {
-		final Account account = createAccount().create();
-		account.setMailQuota(1);
-
-		final Element request = saveDraftSoapRequest();
-		assertQuotaExceeded(() -> new SaveDraft().handle(request, ServiceTestUtil.getRequestContext(account)));
-	}
-
 	private static Element saveDraftSoapRequest() {
 		Element request = new Element.JSONElement(MailConstants.SAVE_DRAFT_REQUEST);
 		Element m =

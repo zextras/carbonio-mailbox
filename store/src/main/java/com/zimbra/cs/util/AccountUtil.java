@@ -82,33 +82,7 @@ public class AccountUtil {
    * quota and domain max mailbox quota. Returns zero for unlimited effective quota.
    */
   public static long getEffectiveQuota(Account acct) throws ServiceException {
-    long acctQuota = acct.getLongAttr(ZAttrProvisioning.A_zimbraMailQuota, 0);
-    Domain domain = Provisioning.getInstance().getDomain(acct);
-    long domainQuota = 0;
-    if (domain != null) {
-      domainQuota = domain.getLongAttr(ZAttrProvisioning.A_zimbraMailDomainQuota, 0);
-    }
-    if (acctQuota == 0) {
-      return domainQuota;
-    } else if (domainQuota == 0) {
-      return acctQuota;
-    } else {
-      return Math.min(acctQuota, domainQuota);
-    }
-  }
-
-  public static boolean isOverAggregateQuota(Domain domain) {
-    long quota = domain.getDomainAggregateQuota();
-    return quota != 0
-        && domain.getLongAttr(ZAttrProvisioning.A_zimbraAggregateQuotaLastUsage, 0) > quota;
-  }
-
-  public static boolean isSendAllowedOverAggregateQuota(Domain domain) {
-    return domain.getDomainAggregateQuotaPolicy().isALLOWSENDRECEIVE();
-  }
-
-  public static boolean isReceiveAllowedOverAggregateQuota(Domain domain) {
-    return !domain.getDomainAggregateQuotaPolicy().isBLOCKSENDRECEIVE();
+    return 0L;
   }
 
   /**

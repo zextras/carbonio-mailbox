@@ -35,6 +35,7 @@ import com.zimbra.soap.mail.type.ModifyNotification;
 import com.zimbra.soap.mail.type.ModifyNotification.ModifyItemNotification;
 import com.zimbra.soap.mail.type.PendingFolderModifications;
 import com.zimbra.soap.util.JaxbInfo;
+import javax.xml.bind.annotation.XmlElement;
 import org.dom4j.Document;
 import org.dom4j.Namespace;
 import org.dom4j.io.DocumentResult;
@@ -213,8 +214,6 @@ public final class JaxbUtil {
           com.zimbra.soap.admin.message.ClearCookieResponse.class,
           com.zimbra.soap.admin.message.CompactIndexRequest.class,
           com.zimbra.soap.admin.message.CompactIndexResponse.class,
-          com.zimbra.soap.admin.message.ComputeAggregateQuotaUsageRequest.class,
-          com.zimbra.soap.admin.message.ComputeAggregateQuotaUsageResponse.class,
           com.zimbra.soap.admin.message.ContactBackupRequest.class,
           com.zimbra.soap.admin.message.ContactBackupResponse.class,
           com.zimbra.soap.admin.message.CopyCosRequest.class,
@@ -311,8 +310,6 @@ public final class JaxbUtil {
           com.zimbra.soap.admin.message.GetAdminConsoleUICompResponse.class,
           com.zimbra.soap.admin.message.GetAdminSavedSearchesRequest.class,
           com.zimbra.soap.admin.message.GetAdminSavedSearchesResponse.class,
-          com.zimbra.soap.admin.message.GetAggregateQuotaUsageOnServerRequest.class,
-          com.zimbra.soap.admin.message.GetAggregateQuotaUsageOnServerResponse.class,
           com.zimbra.soap.admin.message.GetAllAccountLoggersRequest.class,
           com.zimbra.soap.admin.message.GetAllAccountLoggersResponse.class,
           com.zimbra.soap.admin.message.GetAllAccountsRequest.class,
@@ -405,10 +402,10 @@ public final class JaxbUtil {
           com.zimbra.soap.admin.message.GetMailboxVolumesResponse.class,
           com.zimbra.soap.admin.message.GetMemcachedClientConfigRequest.class,
           com.zimbra.soap.admin.message.GetMemcachedClientConfigResponse.class,
-          com.zimbra.soap.admin.message.GetOutgoingFilterRulesRequest.class,
-          com.zimbra.soap.admin.message.GetOutgoingFilterRulesResponse.class,
           com.zimbra.soap.admin.message.GetQuotaUsageRequest.class,
           com.zimbra.soap.admin.message.GetQuotaUsageResponse.class,
+          com.zimbra.soap.admin.message.GetOutgoingFilterRulesRequest.class,
+          com.zimbra.soap.admin.message.GetOutgoingFilterRulesResponse.class,
           com.zimbra.soap.admin.message.GetRightRequest.class,
           com.zimbra.soap.admin.message.GetRightResponse.class,
           com.zimbra.soap.admin.message.GetRightsDocRequest.class,

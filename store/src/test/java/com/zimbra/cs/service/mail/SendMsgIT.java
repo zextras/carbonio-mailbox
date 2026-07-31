@@ -12,7 +12,6 @@ import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.AccountAction;
 import com.zextras.mailbox.util.MailMessageBuilder;
-import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapParseException;
@@ -40,14 +39,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.function.Supplier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 class SendMsgIT extends MailboxTestSuite {
 
@@ -157,38 +152,6 @@ class SendMsgIT extends MailboxTestSuite {
     final Message draftStillThere = sharedMbox.getMessageById(null, draftOnSharedAccount.getId());
     assertEquals(draftOnSharedAccount, draftStillThere);
   }
-
-	@ParameterizedTest
-	@ValueSource(booleans = {true, false})
-	void denySendInOverQuota_WhenSavingToSent(Boolean allowMailReceiveButNotSend) throws Exception {
-		final Account account = createAccount().create();
-		final Message draft = saveDraftOnMailbox(account);
-		account.setMailQuota(1);
-		account.setMailAllowReceiveButNotSendWhenOverQuota(allowMailReceiveButNotSend);
-
-		var saveToSent = sendDraftRequest(draft, account.getName(), recipient.getName(), false);
-		assertQuotaExceeded(() -> new SendMsg().handle(saveToSent, as(account)));
-	}
-
-	@Test
-	void allowSendInOverQuota_WhenNotSavingToSent() throws Exception {
-		final Account account = createAccount().create();
-		final Message draft = saveDraftOnMailbox(account);
-		account.setMailQuota(1);
-		account.setMailAllowReceiveButNotSendWhenOverQuota(false);
-
-		var noSaveToSent = sendDraftRequest(draft, account.getName(), recipient.getName(), true);
-		new SendMsg().handle(noSaveToSent, as(account));
-
-		assertEquals(1, greenMail.getReceivedMessages().length);
-	}
-
-	private void assertQuotaExceeded(Callable<Element> soapCall) {
-		final MailServiceException mailServiceException = assertThrows(MailServiceException.class,
-				soapCall::call);
-		assertEquals(QUOTA_EXCEEDED, mailServiceException.getCode());
-	}
-
 
 	private static Element sendDraftRequest(Message draft, String sender, String recipient) throws SoapParseException {
 		return sendDraftRequest(draft, sender, recipient, false);

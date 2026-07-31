@@ -28,8 +28,6 @@ import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.httpclient.URLUtil;
 import com.zimbra.cs.listeners.AccountListener;
-import com.zimbra.cs.session.AdminSession;
-import com.zimbra.cs.session.Session;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.ModifyAccountRequest;
 import com.zimbra.soap.admin.type.CacheEntryType;
@@ -80,28 +78,11 @@ public class ModifyAccount extends AdminDocumentHandler {
     Map<String, Object> attrs = req.getAttrsAsOldMultimap();
     defendAgainstAccountHarvesting(account, AccountBy.id, id, zsc, attrs);
 
-    // check to see if quota is being changed
-    long curQuota = account.getLongAttr(Provisioning.A_zimbraMailQuota, 0);
-
     /*
      * // Note: isDomainAdminOnly *always* returns false for pure ACL based AccessManager // checkQuota is called
      * only for domain based access manager, remove when we // can totally deprecate domain based access manager if
      * (isDomainAdminOnly(zsc)) checkQuota(zsc, account, attrs);
      */
-
-    /*
-     * for bug 42896, the above is no longer true.
-     *
-     * For quota, we have to support the per admin limitation zimbraDomainAdminMaxMailQuota, until we come up with a
-     * framework to support constraints on a per admin basis.
-     *
-     * for now, always call checkQuota, which will check zimbraDomainAdminMaxMailQuota.
-     *
-     * If the access manager, and if we have come here, it has already passed the constraint checking, in the
-     * checkAccountRight call. If it had violated any constraint, it would have errored out. i.e. for
-     * zimbraMailQuota, both zimbraConstraint and zimbraDomainAdminMaxMailQuota are enforced.
-     */
-    checkQuota(zsc, account, attrs);
 
     // check to see if cos is being changed, need right on new cos
     checkCos(zsc, account, attrs);
@@ -134,15 +115,6 @@ public class ModifyAccount extends AdminDocumentHandler {
       checkNewServer(zsc, context, account, newServer);
     }
 
-    long newQuota = account.getLongAttr(Provisioning.A_zimbraMailQuota, 0);
-    if (newQuota != curQuota) {
-      // clear the quota cache
-      AdminSession session = (AdminSession) getSession(zsc, Session.Type.ADMIN);
-      if (session != null) {
-        GetQuotaUsage.clearCachedQuotaUsage(session);
-      }
-    }
-
     Element response = zsc.createElement(AdminConstants.MODIFY_ACCOUNT_RESPONSE);
     ToXML.encodeAccount(response, account);
     return response;
@@ -166,34 +138,6 @@ public class ModifyAccount extends AdminDocumentHandler {
           "can not modify " + attrName + "(single valued attribute)");
     }
     return (String) object;
-  }
-
-  private void checkQuota(ZimbraSoapContext zsc, Account account, Map<String, Object> attrs)
-      throws ServiceException {
-    String quotaAttr = getStringAttrNewValue(Provisioning.A_zimbraMailQuota, attrs);
-    if (quotaAttr == null) {
-      return; // not changing it
-    }
-    long quota;
-
-    if (quotaAttr.equals("")) {
-      // they are unsetting it, so check the COS
-      quota =
-          Provisioning.getInstance().getCOS(account).getIntAttr(Provisioning.A_zimbraMailQuota, 0);
-    } else {
-      try {
-        quota = Long.parseLong(quotaAttr);
-      } catch (NumberFormatException e) {
-        throw AccountServiceException.INVALID_ATTR_VALUE(
-            "can not modify mail quota (invalid format): " + quotaAttr, e);
-      }
-    }
-
-    if (!canModifyMailQuota(zsc, account, quota))
-      throw ServiceException.PERM_DENIED(
-          "can not modify mail quota, domain admin can only modify quota if"
-              + " zimbraDomainAdminMaxMailQuota is set to 0 or set to a certain value and quota is"
-              + " less than that value.");
   }
 
   private void checkCos(ZimbraSoapContext zsc, Account account, Map<String, Object> attrs)

@@ -43,7 +43,6 @@ import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.MessageCache;
 import com.zimbra.cs.mailbox.Notification;
-import com.zimbra.cs.mailbox.QuotaWarning;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.mime.ParsedMessageOptions;
 import com.zimbra.cs.service.util.ItemId;
@@ -97,7 +96,6 @@ public class ZimbraLmtpBackend implements LmtpBackend {
 
   static {
     addCallback(Notification.getInstance());
-    addCallback(QuotaWarning.getInstance());
   }
 
   private static LoadingCache<Integer, ReentrantLock> createMailboxDeliveryLocks() {

@@ -80,7 +80,7 @@ public class GetQuotaUsage extends AdminDocumentHandler {
       if (!executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS)) {
         throw ServiceException.FAILURE(
             "Time out waiting for "
-                + AdminConstants.E_GET_AGGR_QUOTA_USAGE_ON_SERVER_REQUEST
+                + AdminConstants.E_GET_QUOTA_USAGE_REQUEST
                 + " result",
             null);
       }
