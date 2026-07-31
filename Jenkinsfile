@@ -1,5 +1,5 @@
 library(
-        identifier: 'jenkins-lib-common@v4.1.4',
+        identifier: 'jenkins-lib-common@v4.3.0',
         retriever: modernSCM([
                 $class: 'GitSCMSource',
                 credentialsId: 'jenkins-integration-with-github-account',
@@ -166,19 +166,15 @@ pipeline {
                         }
                     }
                     steps {
-                        container('jdk-21') {
-                            script {
-                                boolean pg = params.PLAYGROUND
-                                withCredentials([file(credentialsId: pg ? 'nexus-maven-settings.xml' : 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                                    sh """#!/bin/bash
-                                        set -o pipefail
-                                        mvn ${MVN_OPTS} -s \$SETTINGS_PATH deploy -DskipTests=true ${pg ? '-DaltDeploymentRepository=nexus-prod::https://repo.zextras.tools/repository/pg-public-maven-repo/' : ''} | tee mvn-deploy.log
-                                    """
-                                }
-                                if (!pg) {
-                                    nexusHelper.uploadMavenFromDeployLog(readFile('mvn-deploy.log'))
-                                }
-                            }
+                        script {
+                            boolean pg = params.PLAYGROUND
+                            mavenDeploy(
+                                    container: 'jdk-21',
+                                    credentialsId: pg ? 'nexus-maven-settings.xml' : 'jenkins-maven-settings.xml',
+                                    mvnOpts: MVN_OPTS,
+                                    extraArgs: '-DskipTests=true' + (pg ? ' -DaltDeploymentRepository=nexus-prod::https://repo.zextras.tools/repository/pg-public-maven-repo/' : ''),
+                                    mirrorToNexus: !pg,
+                            )
                         }
                     }
                 }
