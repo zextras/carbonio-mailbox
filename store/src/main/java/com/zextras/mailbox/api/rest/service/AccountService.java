@@ -10,19 +10,13 @@ import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
-import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.Provisioning.CountAccountResult.CountAccountByCos;
 import com.zimbra.cs.account.ShareInfoData;
 import com.zimbra.cs.account.ZimbraAuthToken;
 import com.zimbra.cs.mailbox.Mailbox;
 import io.vavr.control.Try;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.function.Supplier;
 
 
@@ -97,45 +91,6 @@ public class AccountService {
         }
       }
       return result;
-    });
-  }
-
-  /**
-   * Counts the accounts in each of the given COSes, using the same per-domain tally the license
-   * counts with: an account that inherits the domain or default COS is attributed to that COS
-   * rather than dropped.
-   *
-   * @return a count for every requested COS, zero for those with no accounts. COS ids are matched
-   *         case-insensitively, and each key is returned as the caller spelled it.
-   */
-  public Try<Map<String, Long>> countAccountsByCos(Collection<String> cosIds) {
-    return Try.of(() -> {
-      final Map<String, String> requestedByLowercase = new LinkedHashMap<>();
-      for (final String cosId : cosIds) {
-        requestedByLowercase.put(cosId.toLowerCase(Locale.ROOT), cosId);
-      }
-
-      final Map<String, Long> counts = new LinkedHashMap<>();
-      cosIds.forEach(cosId -> counts.put(cosId, 0L));
-      if (requestedByLowercase.isEmpty()) {
-        return counts;
-      }
-
-      final Provisioning provisioning = provisioningSupplier.get();
-      for (final Domain domain : provisioning.getAllDomains()) {
-        for (final CountAccountByCos countByCos :
-            provisioning.countAccount(domain).getCountAccountByCos()) {
-          final String cosId = countByCos.getCosId();
-          if (cosId == null) {
-            continue;
-          }
-          final String requested = requestedByLowercase.get(cosId.toLowerCase(Locale.ROOT));
-          if (requested != null) {
-            counts.merge(requested, countByCos.getCount(), Long::sum);
-          }
-        }
-      }
-      return counts;
     });
   }
 

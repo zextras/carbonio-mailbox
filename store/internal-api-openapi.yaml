@@ -35,40 +35,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /accounts/count-by-cos:
-    get:
-      summary: Count Accounts by COS
-      description: "Counts the accounts in each of the given COSes. Uses the same\
-        \ per-domain tally the license counts with, so an account inheriting the domain\
-        \ or default COS is attributed to that COS."
-      operationId: countAccountsByCos
-      parameters:
-      - name: cosId
-        in: query
-        description: "The COS ids to count, repeated"
-        schema:
-          type: array
-          items:
-            type: string
-      responses:
-        "200":
-          description: Accounts per COS and their sum
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AccountCountByCosResponse"
-        "400":
-          description: "Missing cosId query parameter, or too many"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
   /accounts:
     get:
       summary: Get Account by Email
@@ -181,6 +147,40 @@ paths:
                 $ref: "#/components/schemas/SharedAccountResponse"
         "404":
           description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /cos/count:
+    get:
+      summary: Count accounts by COS
+      description: "Counts the accounts in each of the given COSes. Uses the same\
+        \ per-domain tally the license counts with, so an account inheriting the domain\
+        \ or default COS is attributed to that COS."
+      operationId: countCos
+      parameters:
+      - name: cosId
+        in: query
+        description: "The COS ids to count, repeated"
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "200":
+          description: Accounts per COS
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CosCountResponse"
+        "400":
+          description: "Missing cosId query parameter, or too many"
           content:
             application/json:
               schema:
@@ -315,17 +315,6 @@ components:
           type: array
           items:
             type: string
-    AccountCountByCosResponse:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-        byCos:
-          type: object
-          additionalProperties:
-            type: integer
-            format: int64
     SharedAccountResponse:
       type: object
       properties:
@@ -337,6 +326,17 @@ components:
           type: string
         cosId:
           type: string
+    CosCountResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        byCos:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int64
     CosInfoResponse:
       type: object
       properties:
