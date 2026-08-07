@@ -6,6 +6,7 @@
 
 package com.zextras.mailbox.api.rest.resource;
 
+import com.zextras.mailbox.api.rest.resource.dto.AccountCountByCosResponse;
 import com.zextras.mailbox.api.rest.resource.dto.AccountInfoResponse;
 import com.zextras.mailbox.api.rest.resource.dto.BatchRequest;
 import com.zextras.mailbox.api.rest.resource.dto.SharedAccountResponse;
@@ -153,6 +154,35 @@ public class AccountResource {
 			response.add(AccountInfoResponse.from(account));
 		}
 		return Response.ok(response).build();
+	}
+
+	@GET
+	@Path("/count-by-cos")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Operation(summary = "Count Accounts by COS", description = "Counts the accounts in each of the given COSes. Uses the same per-domain tally the license counts with, so an account inheriting the domain or default COS is attributed to that COS.")
+	@ApiResponse(responseCode = "200", description = "Accounts per COS and their sum",
+			content = @Content(schema = @Schema(implementation = AccountCountByCosResponse.class)))
+	@ApiResponse(responseCode = "400", description = "Missing cosId query parameter, or too many",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	@ApiResponse(responseCode = "500", description = "Internal server error",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	public Response countAccountsByCos(
+			@Parameter(description = "The COS ids to count, repeated") @QueryParam("cosId") List<String> cosIds) {
+		if (cosIds == null || cosIds.isEmpty()) {
+			return Response.status(Response.Status.BAD_REQUEST)
+					.entity(new ErrorResponse("Missing required query parameter: cosId"))
+					.build();
+		}
+		if (cosIds.size() > 100) {
+			return Response.status(Response.Status.BAD_REQUEST)
+					.entity(new ErrorResponse("Too many entries: max 100 allowed"))
+					.build();
+		}
+		return accountService.countAccountsByCos(cosIds)
+				.map(counts -> Response.ok(new AccountCountByCosResponse(
+						counts.values().stream().mapToLong(Long::longValue).sum(), counts)).build())
+				.recover(AccountResource::toErrorResponse)
+				.get();
 	}
 
 	@GET

@@ -7,6 +7,7 @@
 package com.zextras.mailbox.api;
 
 import com.zextras.mailbox.api.rest.service.AccountService;
+import com.zextras.mailbox.api.rest.service.CosService;
 import com.zextras.mailbox.api.rest.service.MailboxService;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
@@ -45,5 +46,11 @@ public class InternalApiCdiProducers {
   @Singleton
   public AccountService accountService(MailboxService mailboxService) {
     return new AccountService(Provisioning::getInstance, mailboxService);
+  }
+
+  @Produces
+  @Singleton
+  public CosService cosService() {
+    return new CosService(Provisioning::getInstance);
   }
 }
