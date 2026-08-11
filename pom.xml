@@ -40,7 +40,7 @@
     <jetty.version>12.1.10</jetty.version>
     <jetty.servlet-api.version>4.0.9</jetty.servlet-api.version>
     <lucene.version>3.5.0</lucene.version>
-    <jackson.version>2.15.4</jackson.version>
+    <jackson.version>2.19.2</jackson.version>
     <bouncycastle.version>1.84</bouncycastle.version>
     <asm.version>8.0.1</asm.version>
     <guava.version>33.3.1-jre</guava.version>
