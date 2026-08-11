@@ -289,7 +289,7 @@
       <dependency>
         <groupId>com.zextras.carbonio.files</groupId>
         <artifactId>carbonio-files-ce-rest-sdk</artifactId>
-        <version>1.3.9-SNAPSHOT.383.7121cff9</version>
+        <version>1.3.9-SNAPSHOT.384.a4dd9899</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
