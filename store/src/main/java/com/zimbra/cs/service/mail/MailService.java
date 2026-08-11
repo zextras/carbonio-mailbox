@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
-import com.zextras.carbonio.files.FilesClient;
+import com.zextras.carbonio.files.sdk.FilesInternalClient;
 import com.zextras.mailbox.smartlinks.FilesSmartLinksGenerator;
 import com.zextras.mailbox.tracking.PostHogTracking;
 import com.zextras.mailbox.tracking.Tracking;
@@ -258,7 +258,7 @@ public class MailService implements DocumentService {
     return new PostHogTracking("https://eu.posthog.com", new HttpClientFactory());
   }
 
-  protected FilesClient getFilesClient() {
-    return FilesClient.atURL(LC.files_service_url.value());
+  protected FilesInternalClient getFilesClient() {
+    return FilesInternalClient.atURL(LC.files_service_url.value());
   }
 }

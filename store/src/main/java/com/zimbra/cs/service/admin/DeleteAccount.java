@@ -8,13 +8,12 @@
  */
 package com.zimbra.cs.service.admin;
 
-import com.zextras.carbonio.files.FilesClient;
+import com.zextras.carbonio.files.sdk.FilesInternalClient;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
-import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -23,7 +22,6 @@ import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.DeleteAccountResponse;
-import io.vavr.control.Try;
 
 import java.util.List;
 import java.util.Map;
@@ -37,9 +35,9 @@ public class DeleteAccount extends AdminDocumentHandler {
 
   private final DeleteUserUseCase deleteUserUseCase;
 
-  private final FilesClient filesClient;
+  private final FilesInternalClient filesClient;
 
-  public DeleteAccount(DeleteUserUseCase deleteUserUseCase, FilesClient filesClient) {
+  public DeleteAccount(DeleteUserUseCase deleteUserUseCase, FilesInternalClient filesClient) {
     this.deleteUserUseCase = deleteUserUseCase;
     this.filesClient = filesClient;
   }
@@ -81,7 +79,7 @@ public class DeleteAccount extends AdminDocumentHandler {
     Account account = prov.get(AccountBy.id, id, zsc.getAuthToken());
     defendAgainstAccountHarvesting(account, AccountBy.id, id, zsc, Admin.R_deleteAccount);
 
-    deleteFilesNodesAndBlob(zsc, account);
+    deleteFilesNodesAndBlob(account);
 
     /*
      * bug 69009
@@ -107,12 +105,11 @@ public class DeleteAccount extends AdminDocumentHandler {
     return zsc.jaxbToElement(new DeleteAccountResponse());
   }
 
-  private void deleteFilesNodesAndBlob(ZimbraSoapContext zsc, Account account) {
+  private void deleteFilesNodesAndBlob(Account account) {
     try {
-      final String cookie = ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + zsc.getAuthToken().getEncoded();
-      Try<Boolean> success = this.filesClient.deleteAllNodesAndBlobs(cookie, account.getId());
+      boolean success = this.filesClient.deleteAllNodesAndBlobs(account.getId());
 
-      if (success == null || !success.get() || success.isFailure()) {
+      if (!success) {
         ZimbraLog.security.info(
           ZimbraLog.encodeAttrs(
             new String[] {
@@ -126,7 +123,7 @@ public class DeleteAccount extends AdminDocumentHandler {
             }));
       }
 
-    } catch (Exception e) {
+    } catch (RuntimeException e) {
       ZimbraLog.security.info(
         ZimbraLog.encodeAttrs(
           new String[] {

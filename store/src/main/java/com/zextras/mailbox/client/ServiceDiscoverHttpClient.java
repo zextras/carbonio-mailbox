@@ -5,8 +5,6 @@
 package com.zextras.mailbox.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zextras.carbonio.files.exceptions.InternalServerError;
-import com.zextras.carbonio.files.exceptions.UnAuthorized;
 import io.vavr.control.Try;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -62,11 +60,11 @@ public class ServiceDiscoverHttpClient {
 
         logger.error("Service discover didn't respond with 200 when requesting a config (received {})",
             response.getStatusLine().getStatusCode());
-        return Try.failure(new UnAuthorized());
+        return Try.failure(new RuntimeException("Unauthorized"));
       }
     } catch (IOException exception) {
       logger.error("Exception trying to get config from service discover: ", exception);
-      return Try.failure(new InternalServerError(exception));
+      return Try.failure(new RuntimeException(exception));
     }
   }
 
@@ -78,14 +76,14 @@ public class ServiceDiscoverHttpClient {
       try (CloseableHttpResponse response = httpClient.execute(request)) {
         if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
           logger.error("Unexpected response status: {}", response.getStatusLine().getStatusCode());
-          return Try.failure(new InternalServerError(new Exception("Unexpected response status: " + response.getStatusLine().getStatusCode())));
+          return Try.failure(new RuntimeException("Unexpected response status: " + response.getStatusLine().getStatusCode()));
         }
         String bodyResponse = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
         return Try.success(!"[]".equals(bodyResponse));
       }
     } catch (IOException exception) {
       logger.error("Exception trying to check if service is installed: ", exception);
-      return Try.failure(new InternalServerError(exception));
+      return Try.failure(new RuntimeException(exception));
     }
   }
 }

@@ -1,11 +1,8 @@
 package com.zextras.mailbox.smartlinks;
 
-import com.zextras.carbonio.files.FilesClient;
+import com.zextras.carbonio.files.sdk.FilesInternalClient;
 import com.zextras.mailbox.AuthenticationInfo;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ZimbraCookie;
-import com.zimbra.cs.account.AuthToken;
-import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.service.mail.FilesCopyHandler;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
@@ -15,11 +12,11 @@ import java.util.List;
 
 public class FilesSmartLinksGenerator implements SmartLinksGenerator {
 
-  private final FilesClient filesClient;
+  private final FilesInternalClient filesInternalClient;
   private final FilesCopyHandler filesCopyHandler;
 
-  public FilesSmartLinksGenerator(FilesClient filesClient, FilesCopyHandler filesCopyHandler) {
-    this.filesClient = filesClient;
+  public FilesSmartLinksGenerator(FilesInternalClient filesInternalClient, FilesCopyHandler filesCopyHandler) {
+    this.filesInternalClient = filesInternalClient;
     this.filesCopyHandler = filesCopyHandler;
   }
 
@@ -27,28 +24,17 @@ public class FilesSmartLinksGenerator implements SmartLinksGenerator {
   public List<SmartLink> smartLinksFrom(List<Attachment> attachments,
       AuthenticationInfo authenticationInfo) throws ServiceException {
     List<SmartLink> smartLinks = new ArrayList<>();
-    try {
-      final String cookie = getZmCookie(authenticationInfo.getAuthToken());
-      for (var attachment : attachments) {
-        String nodeId = uploadToFiles(attachment, authenticationInfo);
-        final Try<SmartLink> smartLinkTry = filesClient.createPublicLink(cookie, nodeId).mapTry(
-            createLink -> new SmartLink(createLink.getUrl())
-        );
-        if (smartLinkTry.isSuccess()) {
-          smartLinks.add(smartLinkTry.get());
-        } else {
-          throw ServiceException.FAILURE("Files CreateLink failed", smartLinkTry.getCause());
-        }
+    final String userId = authenticationInfo.getAuthenticatedAccount().getId();
+    for (var attachment : attachments) {
+      String nodeId = uploadToFiles(attachment, authenticationInfo);
+      try {
+        String publicUrl = filesInternalClient.createPublicLink(userId, nodeId);
+        smartLinks.add(new SmartLink(publicUrl));
+      } catch (RuntimeException e) {
+        throw ServiceException.FAILURE("Files CreateLink failed", e);
       }
-      return smartLinks;
-    } catch (AuthTokenException e) {
-      throw ServiceException.FAILURE(e.getMessage());
     }
-
-  }
-
-  private String getZmCookie(AuthToken authToken) throws AuthTokenException {
-      return ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + authToken.getEncoded();
+    return smartLinks;
   }
 
   private String uploadToFiles(Attachment attachment, AuthenticationInfo authenticationInfo)

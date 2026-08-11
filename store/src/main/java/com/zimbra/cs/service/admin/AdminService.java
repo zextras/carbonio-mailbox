@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.service.admin;
 
-import com.zextras.carbonio.files.FilesClient;
+import com.zextras.carbonio.files.sdk.FilesInternalClient;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
 import com.zimbra.common.localconfig.LC;
@@ -392,8 +392,8 @@ public class AdminService implements DocumentService {
     return result;
   }
 
-  protected FilesClient getFilesClient() {
-    return FilesClient.atURL(LC.files_service_url.value());
+  protected FilesInternalClient getFilesClient() {
+    return FilesInternalClient.atURL(LC.files_service_url.value());
   }
 
 }

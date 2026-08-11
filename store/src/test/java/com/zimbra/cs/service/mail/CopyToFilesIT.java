@@ -3,16 +3,13 @@ package com.zimbra.cs.service.mail;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zextras.carbonio.files.FilesClient;
-import com.zextras.carbonio.files.entities.NodeId;
+import com.zextras.carbonio.files.sdk.FilesInternalClient;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.AccountAction;
 import com.zextras.mailbox.util.MailMessageBuilder;
@@ -68,7 +65,6 @@ class CopyToFilesIT extends MailboxTestSuite {
 
   private static final String FILES_SERVER_URL = "http://127.0.0.1:20002";
   private static ClientAndServer filesServer;
-  private FilesClient mockFilesClient;
   private AttachmentService mockAttachmentService;
 
   @BeforeAll
@@ -84,7 +80,6 @@ class CopyToFilesIT extends MailboxTestSuite {
   @BeforeEach
   void setUp() {
     filesServer.reset();
-    mockFilesClient = mock(FilesClient.class);
     mockAttachmentService = mock(AttachmentService.class);
   }
 
@@ -97,8 +92,8 @@ class CopyToFilesIT extends MailboxTestSuite {
     return Stream.of(Arguments.of("AAAA"), Arguments.of(UUID.randomUUID() + ":" + "Hello"));
   }
 
-  private static CopyToFiles copyToFiles(AttachmentService attachmentService, FilesClient filesClient) {
-    return new CopyToFiles(new FilesCopyHandlerImpl(attachmentService, filesClient));
+  private static CopyToFiles copyToFiles(AttachmentService attachmentService, FilesInternalClient filesInternalClient) {
+    return new CopyToFiles(new FilesCopyHandlerImpl(attachmentService, filesInternalClient));
   }
 
   /**
@@ -145,12 +140,11 @@ class CopyToFilesIT extends MailboxTestSuite {
     final String email = testAccount.getName();
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, email);
     final Message message = this.createDraftWithFileAttachment(email, attachment);
-    final NodeId nodeId = new NodeId();
-    nodeId.setNodeId("1000");
     filesServer
-        .when(request().withPath("/upload/"))
+        .when(request().withMethod("POST")
+            .withPath("/internal/accounts/" + acct.getId() + "/upload"))
         .respond(
-            HttpResponse.response(new ObjectMapper().writeValueAsString(nodeId))
+            HttpResponse.response("{\"nodeId\":\"1000\",\"version\":1}")
                 .withStatusCode(200));
     // prepare request
     Map<String, Object> context = new HashMap<String, Object>();
@@ -163,7 +157,7 @@ class CopyToFilesIT extends MailboxTestSuite {
     context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
     CopyToFiles copyToFiles =
         copyToFiles(
-            new MailboxAttachmentService(), FilesClient.atURL(FILES_SERVER_URL));
+            new MailboxAttachmentService(), FilesInternalClient.atURL(FILES_SERVER_URL));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId(String.valueOf(message.getId()));
     up.setPart("2");
@@ -172,20 +166,19 @@ class CopyToFilesIT extends MailboxTestSuite {
 
     Element el = copyToFiles.handle(element, context);
     CopyToFilesResponse response = zsc.elementToJaxb(el);
-    // return should be equal to Files response
-    assertEquals(nodeId.getNodeId(), response.getNodeId());
+    assertEquals("1000", response.getNodeId());
   }
 
   @ParameterizedTest
   @MethodSource("getAttachmentToUpload")
   void shouldReturnNodeIdWhenUploadingSharedMailboxAttachment(String attachment) throws Exception {
     SharedMailboxAccounts accounts = createSharedMailboxAccounts();
-    final NodeId nodeId = new NodeId();
-    nodeId.setNodeId("1000");
+    // Upload goes to the delegated (authenticated) account's Files space
     filesServer
-        .when(request().withPath("/upload/"))
+        .when(request().withMethod("POST")
+            .withPath("/internal/accounts/" + accounts.delegatedAccount().getId() + "/upload"))
         .respond(
-            HttpResponse.response(new ObjectMapper().writeValueAsString(nodeId))
+            HttpResponse.response("{\"nodeId\":\"1000\",\"version\":1}")
                 .withStatusCode(200));
     final String sharedEmail = accounts.sharedAccount().getName();
     final Message draftWithFileAttachment =
@@ -200,7 +193,7 @@ class CopyToFilesIT extends MailboxTestSuite {
             SoapProtocol.Soap12,
             SoapProtocol.Soap12);
     context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
-    CopyToFiles copyToFiles = copyToFiles(new MailboxAttachmentService(), FilesClient.atURL(FILES_SERVER_URL));
+    CopyToFiles copyToFiles = copyToFiles(new MailboxAttachmentService(), FilesInternalClient.atURL(FILES_SERVER_URL));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId(sharedAcctUUID + ":" + draftWithFileAttachment.getId());
     up.setPart("2");
@@ -208,15 +201,15 @@ class CopyToFilesIT extends MailboxTestSuite {
     Element element = JaxbUtil.jaxbToElement(up);
     Element el = copyToFiles.handle(element, context);
     final CopyToFilesResponse response = zsc.elementToJaxb(el);
-    assertEquals(nodeId.getNodeId(), response.getNodeId());
+    assertEquals("1000", response.getNodeId());
   }
 
   @Test
   void shouldThrowFileNotFoundWhenFileNotFound() throws Exception {
     Account testAccount = createAccount().create();
     final Map<String, Object> context = this.getRequestContext(testAccount.getName());
-    // request unknown attachment -> SoapFault
-    CopyToFiles copyToFiles = copyToFiles(new MailboxAttachmentService(), mockFilesClient);
+    // request unknown attachment -> SoapFault; Files is never reached
+    CopyToFiles copyToFiles = copyToFiles(new MailboxAttachmentService(), FilesInternalClient.atURL(FILES_SERVER_URL));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("1");
     up.setPart("2");
@@ -230,7 +223,6 @@ class CopyToFilesIT extends MailboxTestSuite {
   void shouldThrowServiceExceptionWhenFilesClientReturnsFailure() throws Exception {
     Account testAccount = createAccount().create();
     final Map<String, Object> context = this.getRequestContext(testAccount.getName());
-    // have to mock because even the Upload object has some logic in it
     MimePart mockAttachment = mock(MimePart.class);
     InputStream uploadContent =
         new ByteArrayInputStream("Hi, how, are, ye, ?".getBytes(StandardCharsets.UTF_8));
@@ -239,10 +231,11 @@ class CopyToFilesIT extends MailboxTestSuite {
     when(mockAttachment.getInputStream()).thenReturn(uploadContent);
     when(mockAttachmentService.getAttachment(anyString(), any(), anyInt(), anyString()))
         .thenReturn(Try.success(mockAttachment));
-    CopyToFiles copyToFiles = copyToFiles(mockAttachmentService, mockFilesClient);
-    when(mockFilesClient.uploadFile(
-            anyString(), anyString(), anyString(), anyString(), any(), anyLong()))
-        .thenReturn(Try.failure(new RuntimeException("Files upload failed")));
+    // configure Files to return 500 → FilesInternalClientException → mapped to Files upload failed
+    filesServer
+        .when(request().withMethod("POST"))
+        .respond(HttpResponse.response().withStatusCode(500));
+    CopyToFiles copyToFiles = copyToFiles(mockAttachmentService, FilesInternalClient.atURL(FILES_SERVER_URL));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("1");
     up.setPart("2");
@@ -264,10 +257,11 @@ class CopyToFilesIT extends MailboxTestSuite {
     when(mockUpload.getInputStream()).thenReturn(uploadContent);
     when(mockAttachmentService.getAttachment(anyString(), any(), anyInt(), anyString()))
         .thenReturn(Try.success(mockUpload));
-    CopyToFiles copyToFiles = copyToFiles(mockAttachmentService, mockFilesClient);
-    when(mockFilesClient.uploadFile(
-            anyString(), anyString(), anyString(), anyString(), any(), anyLong()))
-        .thenReturn(Try.of(() -> null));
+    // respond with empty JSON body so readNodeId() returns null → NOT_FOUND
+    filesServer
+        .when(request().withMethod("POST"))
+        .respond(HttpResponse.response("{}").withStatusCode(200));
+    CopyToFiles copyToFiles = copyToFiles(mockAttachmentService, FilesInternalClient.atURL(FILES_SERVER_URL));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("123");
     up.setPart("2");
@@ -283,7 +277,7 @@ class CopyToFilesIT extends MailboxTestSuite {
   void shouldThrowMidMustBeAnIntegerWhenMidNotInteger() throws Exception {
     Account testAccount = createAccount().create();
     final Map<String, Object> context = this.getRequestContext(testAccount.getName());
-    CopyToFiles copyToFiles = copyToFiles(mockAttachmentService, mockFilesClient);
+    CopyToFiles copyToFiles = copyToFiles(mockAttachmentService, FilesInternalClient.atURL(FILES_SERVER_URL));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("AAAA");
     up.setPart("2");
@@ -308,7 +302,7 @@ class CopyToFilesIT extends MailboxTestSuite {
     final ServiceException receivedException =
         assertThrows(
             ServiceException.class,
-            () -> copyToFiles(mockAttachmentService, mockFilesClient).handle(element, context));
+            () -> copyToFiles(mockAttachmentService, FilesInternalClient.atURL(FILES_SERVER_URL)).handle(element, context));
     assertEquals("system failure: internal error", receivedException.getMessage());
   }
 
@@ -321,7 +315,7 @@ class CopyToFilesIT extends MailboxTestSuite {
     ServiceException receivedException =
         assertThrows(
             ServiceException.class,
-            () -> copyToFiles(mockAttachmentService, mockFilesClient).handle(element, context));
+            () -> copyToFiles(mockAttachmentService, FilesInternalClient.atURL(FILES_SERVER_URL)).handle(element, context));
     assertEquals("parse error: Malformed request.", receivedException.getMessage());
   }
 
