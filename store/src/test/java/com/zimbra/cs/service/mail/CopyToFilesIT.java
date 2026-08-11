@@ -250,11 +250,13 @@ class CopyToFilesIT extends MailboxTestSuite {
     Account testAccount = createAccount().create();
     final Map<String, Object> context = this.getRequestContext(testAccount.getName());
     MimePart mockUpload = mock(MimePart.class);
-    InputStream uploadContent =
-        new ByteArrayInputStream("Hi, how, are, ye, ?".getBytes(StandardCharsets.UTF_8));
     when(mockUpload.getFileName()).thenReturn("My_file.csv");
     when(mockUpload.getContentType()).thenReturn("text/csv");
-    when(mockUpload.getInputStream()).thenReturn(uploadContent);
+    // fresh stream per call: size probing consumes one, the upload supplier reads another
+    when(mockUpload.getInputStream())
+        .thenAnswer(
+            invocation ->
+                new ByteArrayInputStream("Hi, how, are, ye, ?".getBytes(StandardCharsets.UTF_8)));
     when(mockAttachmentService.getAttachment(anyString(), any(), anyInt(), anyString()))
         .thenReturn(Try.success(mockUpload));
     // respond with empty JSON body so readNodeId() returns null → NOT_FOUND
