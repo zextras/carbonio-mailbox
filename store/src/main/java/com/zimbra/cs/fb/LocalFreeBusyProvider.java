@@ -14,6 +14,9 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Domain;
+import com.zimbra.cs.account.GuestAccount;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.Rights.User;
 import com.zimbra.cs.fb.FreeBusy.FBInstance;
 import com.zimbra.cs.fb.FreeBusy.Interval;
@@ -49,6 +52,26 @@ public class LocalFreeBusyProvider {
     throws ServiceException {
         AccessManager accessMgr = AccessManager.getInstance();
         boolean accountAceAllowed = accessMgr.canDo(authAcct, mbox.getAccount(), User.R_viewFreeBusy, asAdmin);
+         
+        // Check effective domain/global setting for public (unauthenticated) access
+        if (accountAceAllowed && authAcct instanceof GuestAccount) {
+            try {
+                Provisioning provisioning = Provisioning.getInstance();
+                Account targetAccount = mbox.getAccount();
+                Domain targetDomain = provisioning.getDomain(targetAccount);
+                boolean publicFreeBusyAllowed = targetDomain != null
+                        ? targetDomain.getBooleanAttr(Provisioning.A_carbonioPublicFreeBusyAllowed, false)
+                        : provisioning.getConfig().getBooleanAttr(Provisioning.A_carbonioPublicFreeBusyAllowed, false);
+
+                if (!publicFreeBusyAllowed) {
+                    accountAceAllowed = false;
+                    ZimbraLog.fb.debug("Public free/busy access denied - carbonioPublicFreeBusyAllowed=false");
+                }
+            } catch (ServiceException e) {
+                ZimbraLog.fb.debug("Error checking public free/busy access configuration", e);
+            }
+        }
+         
         int numAllowedFolders = 0;
 
         int exApptId = exAppt == null ? -1 : exAppt.getId();
