@@ -59,14 +59,14 @@ class CosServiceCountIT extends MailboxTestSuite {
   }
 
   @Test
-  void matchesCosIdsRegardlessOfCase() throws Exception {
+  void matchesCosIdsExactly() throws Exception {
     final Cos cos = createCos();
     createAccountOn(cos, DEFAULT_DOMAIN_NAME);
     final String upperCaseId = cos.getId().toUpperCase(Locale.ROOT);
 
     final Map<String, Long> counts = cosService.countCos(List.of(upperCaseId)).get();
 
-    assertEquals(1L, counts.get(upperCaseId));
+    assertEquals(0L, counts.get(upperCaseId));
   }
 
   @Test
