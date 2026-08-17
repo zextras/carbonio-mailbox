@@ -65,8 +65,33 @@ class CosResourceIT {
 				.isEqualTo("Too many entries: max 100 allowed");
 	}
 
+	@Test
+	void returnsTheCos() throws Exception {
+		final Cos cos = createCos();
+
+		final Response response = getCos(cos.getId());
+
+		assertEquals(200, response.statusCode());
+		assertThatJson(response.body())
+				.isEqualTo(String.format("{\"id\": \"%s\", \"name\": \"%s\"}", cos.getId(), cos.getName()));
+	}
+
+	@Test
+	void isNotFoundWhenTheCosDoesNotExist() throws Exception {
+		final String unknownCosId = UUID.randomUUID().toString();
+
+		final Response response = getCos(unknownCosId);
+
+		assertEquals(404, response.statusCode());
+		assertThatJson(response.body()).node("error").asString().contains(unknownCosId);
+	}
+
 	private static Response countCos(String query) throws Exception {
 		return server.getHttpClient().get(server.getInternalApiEndpoint() + "/cos/count" + query);
+	}
+
+	private static Response getCos(String cosId) throws Exception {
+		return server.getHttpClient().get(server.getInternalApiEndpoint() + "/cos/" + cosId);
 	}
 
 	private static Cos createCos() throws ServiceException {
