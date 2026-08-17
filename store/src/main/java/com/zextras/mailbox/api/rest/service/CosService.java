@@ -14,6 +14,7 @@ import com.zimbra.cs.account.Provisioning.CountAccountResult.CountAccountByCos;
 import io.vavr.control.Try;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -38,18 +39,17 @@ public class CosService {
 
   public Try<Map<String, Long>> countCos(Collection<String> cosIds) {
     return Try.of(() -> {
-      final Map<String, String> requestedByLowercase = new LinkedHashMap<>();
-      for (final String cosId : cosIds) {
-        requestedByLowercase.put(cosId.toLowerCase(Locale.ROOT), cosId);
-      }
-
-      final Map<String, Long> counts = new LinkedHashMap<>();
-      cosIds.forEach(cosId -> counts.put(cosId, 0L));
-      if (requestedByLowercase.isEmpty()) {
-        return counts;
-      }
-
       final Provisioning provisioning = provisioningSupplier.get();
+      final Collection<String> requestedIds =
+          cosIds == null || cosIds.isEmpty() ? allCosIds(provisioning) : cosIds;
+
+      final Map<String, String> requestedByLowercase = new LinkedHashMap<>();
+      final Map<String, Long> counts = new LinkedHashMap<>();
+      for (final String cosId : requestedIds) {
+        requestedByLowercase.put(cosId.toLowerCase(Locale.ROOT), cosId);
+        counts.put(cosId, 0L);
+      }
+
       for (final Domain domain : provisioning.getAllDomains()) {
         for (final CountAccountByCos countByCos :
             provisioning.countAccount(domain).getCountAccountByCos()) {
@@ -65,5 +65,9 @@ public class CosService {
       }
       return counts;
     });
+  }
+
+  private static List<String> allCosIds(Provisioning provisioning) throws ServiceException {
+    return provisioning.getAllCos().stream().map(Cos::getId).toList();
   }
 }

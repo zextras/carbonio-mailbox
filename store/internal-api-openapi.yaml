@@ -160,14 +160,15 @@ paths:
   /cos/count:
     get:
       summary: Count accounts by COS
-      description: "Counts the accounts in each of the given COSes. Uses the same\
-        \ per-domain tally the license counts with, so an account inheriting the domain\
-        \ or default COS is attributed to that COS."
+      description: "Counts the accounts in each of the given COSes, or in every COS\
+        \ when no cosId is given. Uses the same per-domain tally the license counts\
+        \ with, so an account inheriting the domain or default COS is attributed to\
+        \ that COS."
       operationId: countCos
       parameters:
       - name: cosId
         in: query
-        description: "The COS ids to count, repeated"
+        description: "The COS ids to count, repeated; omit to count every COS"
         schema:
           type: array
           items:
@@ -180,7 +181,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/CosCountResponse"
         "400":
-          description: "Missing cosId query parameter, or too many"
+          description: Too many cosId query parameters
           content:
             application/json:
               schema:
