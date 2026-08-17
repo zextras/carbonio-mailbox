@@ -36,6 +36,8 @@ class NginxLookupExtensionTest extends MailboxTestSuite {
 
 	@BeforeAll
 	static void setup() throws Exception {
+		// TODO: when this test runs and extension is already registered it fails, make ExtensionUtil bootstrap not a static bloc
+		ExtensionUtil.destroyAll();
 		ExtensionUtil.initAllForTests();
 		final var extensionDispatcherServlet = new ServletHolder(ExtensionDispatcherServlet.class);
 		extensionDispatcherServlet.setName("ExtensionDispatcherServlet");
