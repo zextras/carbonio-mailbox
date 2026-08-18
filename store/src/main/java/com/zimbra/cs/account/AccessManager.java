@@ -93,9 +93,6 @@ public abstract class AccessManager {
 
   public abstract boolean canAccessEmail(AuthToken at, String email) throws ServiceException;
 
-  public abstract boolean canModifyMailQuota(AuthToken at, Account targetAccount, long mailQuota)
-      throws ServiceException;
-
   /**
    * Returns true if authAccount should be allowed access to private data in appointments owned by
    * targetAccount. Returns true if authAccount and targetAccount are the same account or if
