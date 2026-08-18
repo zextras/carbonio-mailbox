@@ -169,41 +169,6 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
   }
 
   @Override
-  public boolean canModifyMailQuota(AuthToken at, Account targetAccount, long mailQuota)
-      throws ServiceException {
-    // throw ServiceException.FAILURE("internal error", null);  // should never be called
-
-    // for bug 42896, we now have to do the same check on zimbraDomainAdminMaxMailQuota
-    // until we come up with a framework to support constraints on a per admin basis.
-    // the following call is ugly!
-    if (at.isAdmin()) return true;
-
-    Account adminAccount = Provisioning.getInstance().get(Key.AccountBy.id, at.getAccountId(), at);
-    if (adminAccount == null) return false;
-
-    // 0 is unlimited
-    long maxQuota = adminAccount.getLongAttr(Provisioning.A_zimbraDomainAdminMaxMailQuota, -1);
-
-    // return true if they can set quotas to anything
-    if (maxQuota == 0) return true;
-
-    if ((maxQuota == -1)
-        || // they don't permsission to change any quotas
-        (mailQuota == 0)
-        || // they don't have permission to assign unlimited quota
-        (mailQuota > maxQuota) // the quota they are tying to assign is too big
-    ) {
-      ZimbraLog.account.warn(
-          String.format(
-              "invalid attempt to change quota: admin(%s) account(%s) quota(%d) max(%d)",
-              adminAccount.getName(), targetAccount.getName(), mailQuota, maxQuota));
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  @Override
   /** User right entrance - do not throw */
   public boolean canDo(MailTarget grantee, Entry target, Right rightNeeded, boolean asAdmin) {
     try {

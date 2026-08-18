@@ -782,11 +782,6 @@ public abstract class AdminDocumentHandler extends DocumentHandler implements Ad
     return canAccessDomain(zsc, domain.getName());
   }
 
-  protected boolean canModifyMailQuota(ZimbraSoapContext zsc, Account target, long mailQuota)
-      throws ServiceException {
-    return AccessManager.getInstance().canModifyMailQuota(zsc.getAuthToken(), target, mailQuota);
-  }
-
   /*
    * TODO: can't be private yet, still called from ZimbraAdminExt and ZimbraCustomerServices/hosted Need to fix those
    * callsite to call one of the check*** methods.
