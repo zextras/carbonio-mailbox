@@ -42,7 +42,6 @@ import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
 import io.vavr.control.Try;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -92,13 +91,14 @@ class CopyToFilesIT extends MailboxTestSuite {
     return Stream.of(Arguments.of("AAAA"), Arguments.of(UUID.randomUUID() + ":" + "Hello"));
   }
 
-  private static CopyToFiles copyToFiles(AttachmentService attachmentService, FilesInternalClient filesInternalClient) {
+  private static CopyToFiles copyToFiles(
+      AttachmentService attachmentService, FilesInternalClient filesInternalClient) {
     return new CopyToFiles(new FilesCopyHandlerImpl(attachmentService, filesInternalClient));
   }
 
   /**
-   * Sets up a shared mailbox scenario: creates a shared account and a delegated account
-   * with sendAs rights and rwidx folder access.
+   * Sets up a shared mailbox scenario: creates a shared account and a delegated account with sendAs
+   * rights and rwidx folder access.
    */
   private record SharedMailboxAccounts(Account sharedAccount, Account delegatedAccount) {}
 
@@ -121,7 +121,8 @@ class CopyToFilesIT extends MailboxTestSuite {
     ACLUtil.grantRight(Provisioning.getInstance(), sharedAccount, aces);
     // Grant shared@ root folder access to delegated@
     final short rwidx = ACL.stringToRights("rwidx");
-    final Mailbox sharedAcctMailbox = MailboxManager.getInstance().getMailboxByAccount(sharedAccount);
+    final Mailbox sharedAcctMailbox =
+        MailboxManager.getInstance().getMailboxByAccount(sharedAccount);
     final Folder rootSharedAcctFolder = sharedAcctMailbox.getFolderByPath(null, "/");
     sharedAcctMailbox.grantAccess(
         null,
@@ -141,11 +142,9 @@ class CopyToFilesIT extends MailboxTestSuite {
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, email);
     final Message message = this.createDraftWithFileAttachment(email, attachment);
     filesServer
-        .when(request().withMethod("POST")
-            .withPath("/internal/accounts/" + acct.getId() + "/upload"))
-        .respond(
-            HttpResponse.response("{\"nodeId\":\"1000\",\"version\":1}")
-                .withStatusCode(200));
+        .when(
+            request().withMethod("POST").withPath("/internal/accounts/" + acct.getId() + "/upload"))
+        .respond(HttpResponse.response("{\"nodeId\":\"1000\",\"version\":1}").withStatusCode(200));
     // prepare request
     Map<String, Object> context = new HashMap<String, Object>();
     ZimbraSoapContext zsc =
@@ -156,8 +155,7 @@ class CopyToFilesIT extends MailboxTestSuite {
             SoapProtocol.Soap12);
     context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
     CopyToFiles copyToFiles =
-        copyToFiles(
-            new MailboxAttachmentService(), FilesInternalClient.atURL(FILES_SERVER_URL));
+        copyToFiles(new MailboxAttachmentService(), FilesInternalClient.atURL(FILES_SERVER_URL));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId(String.valueOf(message.getId()));
     up.setPart("2");
@@ -175,11 +173,11 @@ class CopyToFilesIT extends MailboxTestSuite {
     SharedMailboxAccounts accounts = createSharedMailboxAccounts();
     // Upload goes to the delegated (authenticated) account's Files space
     filesServer
-        .when(request().withMethod("POST")
-            .withPath("/internal/accounts/" + accounts.delegatedAccount().getId() + "/upload"))
-        .respond(
-            HttpResponse.response("{\"nodeId\":\"1000\",\"version\":1}")
-                .withStatusCode(200));
+        .when(
+            request()
+                .withMethod("POST")
+                .withPath("/internal/accounts/" + accounts.delegatedAccount().getId() + "/upload"))
+        .respond(HttpResponse.response("{\"nodeId\":\"1000\",\"version\":1}").withStatusCode(200));
     final String sharedEmail = accounts.sharedAccount().getName();
     final Message draftWithFileAttachment =
         this.createDraftWithFileAttachment(sharedEmail, attachment);
@@ -193,7 +191,8 @@ class CopyToFilesIT extends MailboxTestSuite {
             SoapProtocol.Soap12,
             SoapProtocol.Soap12);
     context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
-    CopyToFiles copyToFiles = copyToFiles(new MailboxAttachmentService(), FilesInternalClient.atURL(FILES_SERVER_URL));
+    CopyToFiles copyToFiles =
+        copyToFiles(new MailboxAttachmentService(), FilesInternalClient.atURL(FILES_SERVER_URL));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId(sharedAcctUUID + ":" + draftWithFileAttachment.getId());
     up.setPart("2");
@@ -209,7 +208,8 @@ class CopyToFilesIT extends MailboxTestSuite {
     Account testAccount = createAccount().create();
     final Map<String, Object> context = this.getRequestContext(testAccount.getName());
     // request unknown attachment -> SoapFault; Files is never reached
-    CopyToFiles copyToFiles = copyToFiles(new MailboxAttachmentService(), FilesInternalClient.atURL(FILES_SERVER_URL));
+    CopyToFiles copyToFiles =
+        copyToFiles(new MailboxAttachmentService(), FilesInternalClient.atURL(FILES_SERVER_URL));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("1");
     up.setPart("2");
@@ -224,18 +224,20 @@ class CopyToFilesIT extends MailboxTestSuite {
     Account testAccount = createAccount().create();
     final Map<String, Object> context = this.getRequestContext(testAccount.getName());
     MimePart mockAttachment = mock(MimePart.class);
-    InputStream uploadContent =
-        new ByteArrayInputStream("Hi, how, are, ye, ?".getBytes(StandardCharsets.UTF_8));
     when(mockAttachment.getFileName()).thenReturn("My_file.csv");
     when(mockAttachment.getContentType()).thenReturn("text/csv");
-    when(mockAttachment.getInputStream()).thenReturn(uploadContent);
+    when(mockAttachment.getInputStream())
+        .thenAnswer(
+            invocation ->
+                new ByteArrayInputStream("Hi, how, are, ye, ?".getBytes(StandardCharsets.UTF_8)));
     when(mockAttachmentService.getAttachment(anyString(), any(), anyInt(), anyString()))
         .thenReturn(Try.success(mockAttachment));
     // configure Files to return 500 → FilesInternalClientException → mapped to Files upload failed
     filesServer
         .when(request().withMethod("POST"))
         .respond(HttpResponse.response().withStatusCode(500));
-    CopyToFiles copyToFiles = copyToFiles(mockAttachmentService, FilesInternalClient.atURL(FILES_SERVER_URL));
+    CopyToFiles copyToFiles =
+        copyToFiles(mockAttachmentService, FilesInternalClient.atURL(FILES_SERVER_URL));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("1");
     up.setPart("2");
@@ -263,15 +265,16 @@ class CopyToFilesIT extends MailboxTestSuite {
     filesServer
         .when(request().withMethod("POST"))
         .respond(HttpResponse.response("{}").withStatusCode(200));
-    CopyToFiles copyToFiles = copyToFiles(mockAttachmentService, FilesInternalClient.atURL(FILES_SERVER_URL));
+    CopyToFiles copyToFiles =
+        copyToFiles(mockAttachmentService, FilesInternalClient.atURL(FILES_SERVER_URL));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("123");
     up.setPart("2");
     Element element = JaxbUtil.jaxbToElement(up);
-    final ServiceException receivedException = assertThrows(
-        ServiceException.class,
-        () -> copyToFiles.handle(element, context));
-    assertEquals("system failure: got null response from Files server.", receivedException.getMessage());
+    final ServiceException receivedException =
+        assertThrows(ServiceException.class, () -> copyToFiles.handle(element, context));
+    assertEquals(
+        "system failure: got null response from Files server.", receivedException.getMessage());
   }
 
   @ParameterizedTest
@@ -279,7 +282,8 @@ class CopyToFilesIT extends MailboxTestSuite {
   void shouldThrowMidMustBeAnIntegerWhenMidNotInteger() throws Exception {
     Account testAccount = createAccount().create();
     final Map<String, Object> context = this.getRequestContext(testAccount.getName());
-    CopyToFiles copyToFiles = copyToFiles(mockAttachmentService, FilesInternalClient.atURL(FILES_SERVER_URL));
+    CopyToFiles copyToFiles =
+        copyToFiles(mockAttachmentService, FilesInternalClient.atURL(FILES_SERVER_URL));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("AAAA");
     up.setPart("2");
@@ -304,7 +308,9 @@ class CopyToFilesIT extends MailboxTestSuite {
     final ServiceException receivedException =
         assertThrows(
             ServiceException.class,
-            () -> copyToFiles(mockAttachmentService, FilesInternalClient.atURL(FILES_SERVER_URL)).handle(element, context));
+            () ->
+                copyToFiles(mockAttachmentService, FilesInternalClient.atURL(FILES_SERVER_URL))
+                    .handle(element, context));
     assertEquals("system failure: internal error", receivedException.getMessage());
   }
 
@@ -317,20 +323,23 @@ class CopyToFilesIT extends MailboxTestSuite {
     ServiceException receivedException =
         assertThrows(
             ServiceException.class,
-            () -> copyToFiles(mockAttachmentService, FilesInternalClient.atURL(FILES_SERVER_URL)).handle(element, context));
+            () ->
+                copyToFiles(mockAttachmentService, FilesInternalClient.atURL(FILES_SERVER_URL))
+                    .handle(element, context));
     assertEquals("parse error: Malformed request.", receivedException.getMessage());
   }
 
   private Message createDraftWithFileAttachment(String sender, String attachment) throws Exception {
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, sender);
 
-    final ParsedMessage message = new MailMessageBuilder()
-        .from(acct.getName())
-        .addRecipient(acct.getName())
-        .subject("Test email")
-        .body("Hello there")
-        .addAttachmentFromResources("/" + attachment)
-        .build();
+    final ParsedMessage message =
+        new MailMessageBuilder()
+            .from(acct.getName())
+            .addRecipient(acct.getName())
+            .subject("Test email")
+            .body("Hello there")
+            .addAttachmentFromResources("/" + attachment)
+            .build();
 
     return AccountAction.Factory.getDefault().forAccount(acct).saveDraft(message);
   }
