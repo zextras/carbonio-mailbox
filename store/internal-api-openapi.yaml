@@ -157,6 +157,73 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /cos/count:
+    get:
+      summary: Count accounts by COS
+      description: "Counts the accounts in each of the given COSes, or in every COS\
+        \ when no cosId is given. Uses the same per-domain tally the license counts\
+        \ with, so an account inheriting the domain or default COS is attributed to\
+        \ that COS."
+      operationId: countCos
+      parameters:
+      - name: cosId
+        in: query
+        description: "The COS ids to count, repeated; omit to count every COS"
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "200":
+          description: Accounts per COS
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CosCountResponse"
+        "400":
+          description: Too many cosId query parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /cos/{id}:
+    get:
+      summary: Get COS
+      description: "Returns a class of service by ID. A 404 means no COS carries that\
+        \ ID, which callers can read as non-existence."
+      operationId: getCos
+      parameters:
+      - name: id
+        in: path
+        description: The COS ID
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: COS info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CosInfoResponse"
+        "404":
+          description: COS not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /accounts/mail/usage/{accountId}:
     get:
       summary: Get Mailbox usage
@@ -259,6 +326,24 @@ components:
         domainId:
           type: string
         cosId:
+          type: string
+    CosCountResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        byCos:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int64
+    CosInfoResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
           type: string
     MailUsageResponse:
       type: object

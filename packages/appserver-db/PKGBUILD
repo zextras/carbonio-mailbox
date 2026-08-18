@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver-db"
-pkgver="4.31.3"
+pkgver="4.33.0"
 pkgrel="1"
 pkgdesc="Carbonio Appserver DB Files"
 arch=('any')
