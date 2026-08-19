@@ -30,6 +30,7 @@ RUN cp /build/store/target/zm-store.jar /staging/opt/zextras/mailbox/jars/mailbo
     cp /build/store/conf/globs2.zimbra /staging/opt/zextras/conf/msgs/globs2.zimbra && \
     cp /build/store/conf/owasp_policy.xml /staging/opt/zextras/conf/owasp_policy.xml && \
     cp /build/store/conf/datasource.xml /staging/opt/zextras/conf/ && \
+    cp /build/store/conf/contacts/contact-fields.xml /staging/opt/zextras/conf/contact-fields.xml && \
     cp /build/store/db/create_database.sql /staging/opt/zextras/db/
 
 # Generate CLI scripts in build stage
