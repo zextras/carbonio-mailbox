@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service;
 
+import com.zextras.mailbox.audit.SizeTrackingHttpServletResponse;
 import com.zimbra.client.ZFolder;
 import com.zimbra.client.ZMailbox;
 import com.zimbra.common.account.Key.AccountBy;
@@ -328,7 +329,7 @@ public class UserServlet extends ZimbraServlet {
     ZimbraLog.clearContext();
     addRemoteIpToLoggingContext(req);
     try {
-      context = createContext(req, resp, this);
+      context = createContext(req, new SizeTrackingHttpServletResponse(resp), this);
       if (!checkAuthentication(context)) {
         sendError(context, req, resp, L10nUtil.getMessage(MsgKey.errMustAuthenticate, req));
         return;

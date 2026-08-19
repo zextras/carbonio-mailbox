@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.service.formatter;
 
+import com.zextras.mailbox.audit.ImportExportAuditLog;
+import com.zextras.mailbox.audit.SizeTrackingHttpServletResponse;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.SoapProtocol;
@@ -54,6 +56,8 @@ public abstract class Formatter {
   private final Pattern ALLOWED_CALLBACK_CHARS = Pattern.compile("^[a-zA-Z0-9_.-]+$");
 
   private static String PROGRESS = "-progress";
+
+  private static final ImportExportAuditLog auditLog = new ImportExportAuditLog(ZimbraLog.mailbox);
 
   public String[] getDefaultMimeTypes() {
     return new String[0];
@@ -123,13 +127,19 @@ public abstract class Formatter {
   public final void format(UserServletContext context)
       throws UserServletException, IOException, ServletException, ServiceException {
 
+    boolean failed = false;
     try {
       formatStarted(context);
       formatCallback(context);
       updateClient(context, null);
     } catch (Exception e) {
+      failed = true;
       updateClient(context, e);
     } finally {
+      if (auditLog.isAuditable(context)
+          && context.resp instanceof SizeTrackingHttpServletResponse sizeTrackingResponse) {
+        auditLog.logExport(context, failed, sizeTrackingResponse.getSize());
+      }
       formatEnded(context);
     }
   }
@@ -138,6 +148,7 @@ public abstract class Formatter {
       UserServletContext context, String contentType, Folder folder, String filename)
       throws UserServletException, IOException, ServletException, ServiceException, HttpException {
 
+    boolean failed = false;
     try {
       saveStarted(context);
       if (context.targetMailbox != null) {
@@ -146,11 +157,16 @@ public abstract class Formatter {
       saveCallback(context, contentType, folder, filename);
       updateClient(context, null);
     } catch (UserServletException e) {
+      failed = true;
       throw new UserServletException(e.getHttpStatusCode(), e.getMessage(), e);
     } catch (Exception e) {
+      failed = true;
       updateClient(context, e);
       saveEnded(context);
     } finally {
+      if (auditLog.isAuditable(context)) {
+        auditLog.logImport(context, failed, context.getRequestBodySize());
+      }
       if (context.targetMailbox != null) {
         try {
           context.targetMailbox.resumeIndexingAndDrainDeferred();
@@ -335,6 +351,9 @@ public abstract class Formatter {
 
   protected void updateClient(UserServletContext context, Exception e, List<ServiceException> w)
       throws UserServletException, IOException, ServletException, ServiceException {
+    if (w != null && !w.isEmpty()) {
+      context.recordPartialResults();
+    }
     String callback = context.params.get(QP_CALLBACK);
     Throwable exception = null;
     PrintWriter out = null;

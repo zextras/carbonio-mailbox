@@ -86,6 +86,8 @@ public class UserServletContext {
     private long mEndTime = -2;
     private Throwable error;
     private boolean csrfAuthSucceeded;
+    private UploadInputStream uploadInputStream;
+    private boolean partialResults;
 
 
 
@@ -707,6 +709,10 @@ public class UserServletContext {
             }
             return in;
         }
+
+        long getBytesRead() {
+            return curSize;
+        }
     }
 
     public InputStream getRequestInputStream()
@@ -775,7 +781,8 @@ public class UserServletContext {
                         is.close();
                         is = null;
                     } else {
-                        is = new UploadInputStream(fis.openStream(), limit);
+                        uploadInputStream = new UploadInputStream(fis.openStream(), limit);
+                        is = uploadInputStream;
                         break;
                     }
                 }
@@ -794,10 +801,11 @@ public class UserServletContext {
             filename = ctype.getParameter("name");
             if (filename == null || filename.trim().equals(""))
                 filename = new ContentDisposition(req.getHeader("Content-Disposition")).getParameter("filename");
-            is = new UploadInputStream(contentEncoding != null &&
+            uploadInputStream = new UploadInputStream(contentEncoding != null &&
                 contentEncoding.contains("gzip") ?
                 new GZIPInputStream(req.getInputStream()) :
                     req.getInputStream(), limit);
+            is = uploadInputStream;
         }
         if (filename == null || filename.trim().equals(""))
             filename = "unknown";
@@ -815,6 +823,21 @@ public class UserServletContext {
 
     public Throwable getLoggedError() {
         return error;
+    }
+
+    public long getRequestBodySize() {
+        if (uploadInputStream != null) {
+            return uploadInputStream.getBytesRead();
+        }
+        return Math.max(req.getContentLength(), 0);
+    }
+
+    public void recordPartialResults() {
+        partialResults = true;
+    }
+
+    public boolean hasPartialResults() {
+        return partialResults;
     }
 
     @Override
