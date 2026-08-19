@@ -12,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.common.util.tar.TarEntry;
+import com.zimbra.common.util.tar.TarOutputStream;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -19,7 +21,9 @@ import com.zimbra.cs.mailbox.MailboxTest;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.UserServlet;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.zip.GZIPOutputStream;
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
@@ -108,6 +112,30 @@ class ImportExportAuditLogIT extends MailboxTestSuite {
   }
 
   @Test
+  void shouldLogSuccessfulIcsExportWrittenThroughWriter() throws Exception {
+    final HttpResponse response = get("~/Calendar?fmt=ics&auth=co");
+
+    assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    final String line = auditAppender.findLineContaining("cmd=FolderExport;");
+    assertTrue(line.contains("folder=/Calendar;"));
+    assertTrue(line.contains("fmt=ics;"));
+    assertTrue(line.contains("outcome=success;"));
+    assertTrue(exportedSize(line) > 0);
+  }
+
+  @Test
+  void shouldLogPartialOutcomeWhenSomeImportEntriesFail() throws Exception {
+    final HttpResponse response =
+        post("~/Inbox?fmt=tgz&auth=co", new ByteArrayEntity(tgzWithBrokenEntry()));
+
+    assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    final String line = auditAppender.findLineContaining("cmd=FolderImport;");
+    assertTrue(line.contains("folder=/Inbox;"));
+    assertTrue(line.contains("fmt=tgz;"));
+    assertTrue(line.contains("outcome=partial;"));
+  }
+
+  @Test
   void shouldLogErrorOutcomeWhenImportFails() throws Exception {
     post("~/Calendar?fmt=ics&auth=co", new ByteArrayEntity("not an ics file".getBytes()));
 
@@ -135,6 +163,20 @@ class ImportExportAuditLogIT extends MailboxTestSuite {
             MailboxTest.STANDARD_DELIVERY_OPTIONS,
             null)
         .getId();
+  }
+
+  private byte[] tgzWithBrokenEntry() throws Exception {
+    final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+    final GZIPOutputStream gzip = new GZIPOutputStream(bytes);
+    try (TarOutputStream tar = new TarOutputStream(gzip, "UTF-8")) {
+      final byte[] content = "broken".getBytes();
+      final TarEntry entry = new TarEntry("broken.err");
+      entry.setSize(content.length);
+      tar.putNextEntry(entry);
+      tar.write(content);
+      tar.closeEntry();
+    }
+    return bytes.toByteArray();
   }
 
   private long exportedSize(String line) {
