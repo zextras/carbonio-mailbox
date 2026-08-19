@@ -127,11 +127,6 @@ public abstract class Formatter {
   public final void format(UserServletContext context)
       throws UserServletException, IOException, ServletException, ServiceException {
 
-    SizeTrackingHttpServletResponse sizeTrackingResponse = null;
-    if (auditLog.isAuditable(context)) {
-      sizeTrackingResponse = new SizeTrackingHttpServletResponse(context.resp);
-      context.resp = sizeTrackingResponse;
-    }
     boolean failed = false;
     try {
       formatStarted(context);
@@ -141,7 +136,8 @@ public abstract class Formatter {
       failed = true;
       updateClient(context, e);
     } finally {
-      if (sizeTrackingResponse != null) {
+      if (auditLog.isAuditable(context)
+          && context.resp instanceof SizeTrackingHttpServletResponse sizeTrackingResponse) {
         auditLog.logExport(context, failed, sizeTrackingResponse.getSize());
       }
       formatEnded(context);

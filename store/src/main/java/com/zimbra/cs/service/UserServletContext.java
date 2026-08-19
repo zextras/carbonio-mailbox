@@ -54,7 +54,7 @@ import com.zimbra.cs.servlet.util.CsrfUtil;
 
 public class UserServletContext {
     public final HttpServletRequest req;
-    public HttpServletResponse resp;
+    public final HttpServletResponse resp;
     public final UserServlet servlet;
     public final Map<String, String> params;
     public FormatType format;
