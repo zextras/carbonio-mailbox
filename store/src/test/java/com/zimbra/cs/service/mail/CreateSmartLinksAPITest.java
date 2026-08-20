@@ -6,8 +6,6 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zextras.carbonio.files.entities.NodeId;
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.AccountAction;
 import com.zextras.mailbox.util.MailMessageBuilder;
@@ -201,48 +199,31 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
 
   private void mockCreateLinkOnFilesResponse(String publicUrl) {
     filesServer
-        .when(request().withPath("/graphql/"))
+        .when(request().withMethod("POST").withPath("/internal/links"))
         .respond(
-            response("{"
-                    + "    \"data\": {"
-                    + "        \"createLink\": {"
-                    + "            \"id\": \"a4bbe479-1f42-49e4-8619-b6a068015dd5\","
-                    + "            \"url\": \"" + publicUrl + "\","
-                    + "            \"description\": \"ef196081-0330-43e3-93a3-e8241e3c7fb2\","
-                    + "            \"expires_at\": null,"
-                    + "            \"created_at\": 1709906611074,"
-                    + "            \"node\": {"
-                    + "                \"id\": \"ef196081-0330-43e3-93a3-e8241e3c7fb2\","
-                    + "                \"__typename\": \"File\""
-                    + "            },\n"
-                    + "            \"__typename\": \"Link\""
-                    + "        }"
-                    + "    }"
-                    + "}")
+            response("{\"url\":\"" + publicUrl + "\"}")
                 .withStatusCode(200));
   }
 
-  private void mockAttachmentUploadOnFilesResponse(String nodeId) throws Exception {
-    final NodeId nodeIdObject = new NodeId();
-    nodeIdObject.setNodeId(nodeId);
+  private void mockAttachmentUploadOnFilesResponse(String nodeId) {
     filesServer
-        .when(request().withMethod("POST").withPath("/upload/"))
+        .when(request().withMethod("POST")
+            .withPath("/internal/accounts/" + account.getId() + "/upload"))
         .respond(
-            response(new ObjectMapper().writeValueAsString(nodeIdObject))
+            response("{\"nodeId\":\"" + nodeId + "\",\"version\":1}")
                 .withStatusCode(200));
   }
 
   private void mockFailingCreateLinkOnFilesResponse(String publicUrl) {
     filesServer
-        .when(request().withPath("/graphql/"))
+        .when(request().withMethod("POST").withPath("/internal/links"))
         .respond(response().withStatusCode(500));
   }
 
-  private void mockFailingAttachmentUploadOnFilesResponse(String nodeId) throws Exception {
-    final NodeId nodeIdObject = new NodeId();
-    nodeIdObject.setNodeId(nodeId);
+  private void mockFailingAttachmentUploadOnFilesResponse(String nodeId) {
     filesServer
-        .when(request().withMethod("POST").withPath("/upload/"))
+        .when(request().withMethod("POST")
+            .withPath("/internal/accounts/" + account.getId() + "/upload"))
         .respond(response().withStatusCode(500));
   }
 

@@ -288,8 +288,8 @@
       </dependency>
       <dependency>
         <groupId>com.zextras.carbonio.files</groupId>
-        <artifactId>carbonio-files-sdk</artifactId>
-        <version>0.0.7</version>
+        <artifactId>carbonio-files-ce-rest-sdk</artifactId>
+        <version>2.1.0-1</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -600,6 +600,11 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jsr310</artifactId>
         <version>${jackson.version}</version>
       </dependency>
       <dependency>

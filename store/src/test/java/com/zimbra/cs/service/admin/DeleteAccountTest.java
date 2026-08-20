@@ -5,21 +5,18 @@
 package com.zimbra.cs.service.admin;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-import com.zextras.carbonio.files.FilesClient;
+import com.zextras.carbonio.files.sdk.FilesInternalClient;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
 import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -31,7 +28,6 @@ import com.zimbra.cs.account.accesscontrol.ZimbraACE;
 import com.zimbra.cs.account.accesscontrol.generated.AdminRights;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
-import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import io.vavr.control.Try;
@@ -56,9 +52,10 @@ class DeleteAccountTest extends MailboxTestSuite {
 	private static final String MAIN_DOMAIN = UUID.randomUUID() + ".com";
 	private static Provisioning provisioning;
 	private static MailboxManager mailboxManager;
-	
+
 	private static ClientAndServer consulServer;
-  private static FilesClient filesClientMock;
+	private static ClientAndServer filesServer;
+	private static int filesServerPort;
 
 
 	private static void addGrantToUserForDomain(Account account, String domainName, Right right)
@@ -94,8 +91,9 @@ class DeleteAccountTest extends MailboxTestSuite {
 	static void setUp() throws Exception {
 		mailboxManager = MailboxManager.getInstance();
 		provisioning = Provisioning.getInstance();
-		
-    filesClientMock = Mockito.mock(FilesClient.class);
+
+		filesServerPort = PortUtil.findFreePort();
+		filesServer = startClientAndServer(filesServerPort);
 		provisioning.createDomain(OTHER_DOMAIN, new HashMap<>());
 		provisioning.createDomain(MAIN_DOMAIN, new HashMap<>());
 
@@ -119,11 +117,17 @@ class DeleteAccountTest extends MailboxTestSuite {
 	@AfterAll
 	static void tearDown() {
 		consulServer.stop();
+		filesServer.stop();
 	}
 
 	@BeforeEach
 	void setUpTest() {
-		Mockito.reset(filesClientMock);
+		filesServer.reset();
+	}
+
+	private DeleteAccount getDeleteAccountHandler() {
+		return new DeleteAccount(getDefaultUseCase(),
+				FilesInternalClient.atURL("http://127.0.0.1:" + filesServerPort));
 	}
 
 	private static Stream<Arguments> getHappyPathCases() throws ServiceException {
@@ -243,55 +247,59 @@ class DeleteAccountTest extends MailboxTestSuite {
 	@ParameterizedTest(name = "{0}")
 	@MethodSource("getHappyPathCases")
 	void shouldDeleteUser(String testCaseName, Account caller, Account toDelete) throws Exception {
-    final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(), filesClientMock);
+		final DeleteAccount deleteAccount = getDeleteAccountHandler();
 
-    final String toDeleteId = toDelete.getId();
-    this.doDeleteAccount(deleteAccount, caller, toDeleteId);
-    assertNull(provisioning.getAccountById(toDeleteId));
+		final String toDeleteId = toDelete.getId();
+		this.doDeleteAccount(deleteAccount, caller, toDeleteId);
+		assertNull(provisioning.getAccountById(toDeleteId));
 	}
 
-  @ParameterizedTest(name = "{0}")
+	@ParameterizedTest(name = "{0}")
 	@MethodSource("getHappyPathCases")
 	void shouldDeleteUserWhenFilesReturnsOk(String testCaseName, Account caller, Account toDelete) throws Exception {
-    Mockito.when(filesClientMock.deleteAllNodesAndBlobs(any(), any())).thenReturn(Try.success(true));
-    final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(), filesClientMock);
+		filesServer.when(request().withMethod("DELETE").withPath("/internal/nodes"))
+				.respond(response("{\"deleted\":true}").withStatusCode(200));
+		final DeleteAccount deleteAccount = getDeleteAccountHandler();
 
-    final String toDeleteId = toDelete.getId();
-    this.doDeleteAccount(deleteAccount, caller, toDeleteId);
-    assertNull(provisioning.getAccountById(toDeleteId));
+		final String toDeleteId = toDelete.getId();
+		this.doDeleteAccount(deleteAccount, caller, toDeleteId);
+		assertNull(provisioning.getAccountById(toDeleteId));
 	}
 
-  @ParameterizedTest(name = "{0}")
+	@ParameterizedTest(name = "{0}")
 	@MethodSource("getHappyPathCases")
 	void shouldDeleteUserWhenFilesReturnsFalse(String testCaseName, Account caller, Account toDelete) throws Exception {
-    Mockito.when(filesClientMock.deleteAllNodesAndBlobs(any(), any())).thenReturn(Try.success(false));
-    final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(), filesClientMock);
+		filesServer.when(request().withMethod("DELETE").withPath("/internal/nodes"))
+				.respond(response("{\"deleted\":false}").withStatusCode(200));
+		final DeleteAccount deleteAccount = getDeleteAccountHandler();
 
-    final String toDeleteId = toDelete.getId();
-    this.doDeleteAccount(deleteAccount, caller, toDeleteId);
-    assertNull(provisioning.getAccountById(toDeleteId));
+		final String toDeleteId = toDelete.getId();
+		this.doDeleteAccount(deleteAccount, caller, toDeleteId);
+		assertNull(provisioning.getAccountById(toDeleteId));
 	}
 
 	@ParameterizedTest(name = "{0}")
 	@MethodSource("getHappyPathCases")
 	void shouldDeleteUserWhenFilesThrows(String testCaseName, Account caller, Account toDelete) throws Exception {
-    Mockito.when(filesClientMock.deleteAllNodesAndBlobs(any(), any())).thenThrow(new RuntimeException("Fake exception"));
-    final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(), filesClientMock);
+		filesServer.when(request().withMethod("DELETE").withPath("/internal/nodes"))
+				.respond(response().withStatusCode(500));
+		final DeleteAccount deleteAccount = getDeleteAccountHandler();
 
-    final String toDeleteId = toDelete.getId();
-    this.doDeleteAccount(deleteAccount, caller, toDeleteId);
-    assertNull(provisioning.getAccountById(toDeleteId));
+		final String toDeleteId = toDelete.getId();
+		this.doDeleteAccount(deleteAccount, caller, toDeleteId);
+		assertNull(provisioning.getAccountById(toDeleteId));
 	}
 
 	@ParameterizedTest(name = "{0}")
 	@MethodSource("getHappyPathCases")
 	void shouldDeleteUserWhenFilesReturnsFailure(String testCaseName, Account caller, Account toDelete) throws Exception {
-    Mockito.when(filesClientMock.deleteAllNodesAndBlobs(any(), any())).thenReturn(Try.failure(new RuntimeException("Fake exception")));
-    final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(), filesClientMock);
+		filesServer.when(request().withMethod("DELETE").withPath("/internal/nodes"))
+				.respond(response().withStatusCode(500));
+		final DeleteAccount deleteAccount = getDeleteAccountHandler();
 
-    final String toDeleteId = toDelete.getId();
-    this.doDeleteAccount(deleteAccount, caller, toDeleteId);
-    assertNull(provisioning.getAccountById(toDeleteId));
+		final String toDeleteId = toDelete.getId();
+		this.doDeleteAccount(deleteAccount, caller, toDeleteId);
+		assertNull(provisioning.getAccountById(toDeleteId));
 	}
 
 	private static Stream<Arguments> getPermissionDeniedCases() throws ServiceException {
@@ -330,7 +338,7 @@ class DeleteAccountTest extends MailboxTestSuite {
 	@MethodSource("getPermissionDeniedCases")
 	void shouldGetPermissionDenied(String testCaseName, Account caller, Account toDelete)
 			throws ServiceException {
-		final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(), filesClientMock);
+		final DeleteAccount deleteAccount = getDeleteAccountHandler();
 		final String toDeleteId = toDelete.getId();
 
 		final ServiceException serviceException =
@@ -351,7 +359,8 @@ class DeleteAccountTest extends MailboxTestSuite {
 				.thenReturn(Try.failure(new RuntimeException("message")));
 		DeleteAccount deleteAccountHandler =
 				new DeleteAccount(
-						deleteUserUseCase, filesClientMock);
+						deleteUserUseCase,
+						FilesInternalClient.atURL("http://127.0.0.1:" + filesServerPort));
 
 		final ServiceException serviceException =
 				assertThrows(ServiceException.class,

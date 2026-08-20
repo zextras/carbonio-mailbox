@@ -7,14 +7,12 @@ import static io.vavr.API.For;
 import static java.util.function.Function.identity;
 
 import com.sun.mail.util.MimeUtil;
-import com.zextras.carbonio.files.FilesClient;
-import com.zextras.carbonio.files.entities.NodeId;
+import com.zextras.carbonio.files.sdk.FilesInternalClient;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.StringUtil;
-import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.service.AttachmentService;
 import com.zimbra.cs.service.util.ContentDispositionParser;
@@ -22,7 +20,8 @@ import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
 import io.vavr.API.Match.Pattern0;
 import io.vavr.control.Try;
-import java.io.InputStream;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 import java.util.Optional;
@@ -36,11 +35,11 @@ public class FilesCopyHandlerImpl implements FilesCopyHandler {
 
   private static final Log mLog = LogFactory.getLog(FilesCopyHandlerImpl.class);
   private final AttachmentService attachmentService;
-  private final FilesClient filesClient;
+  private final FilesInternalClient filesInternalClient;
 
-  public FilesCopyHandlerImpl(AttachmentService attachmentService, FilesClient filesClient) {
+  public FilesCopyHandlerImpl(AttachmentService attachmentService, FilesInternalClient filesInternalClient) {
     this.attachmentService = attachmentService;
-    this.filesClient = filesClient;
+    this.filesInternalClient = filesInternalClient;
   }
 
   @Override
@@ -48,36 +47,51 @@ public class FilesCopyHandlerImpl implements FilesCopyHandler {
     return this.getAttachmentToCopy(copyToFilesRequest, accountId, authToken)
         .flatMap(
             attachment ->
-                Try.withResources(attachment::getInputStream)
-                    .of(
-                        inputStream ->
-                            For(
-                                this.getCookie(authToken),
-                                this.getDestinationFolderId(copyToFilesRequest),
-                                this.getAttachmentName(attachment),
-                                this.getAttachmentContentType(attachment),
-                                Try.of(() -> inputStream),
-                                this.getAttachmentSize(attachment))
-                                .yield(this::uploadFile))
-                    .flatMap(identity())
+                For(
+                    this.getDestinationFolderId(copyToFilesRequest),
+                    this.getAttachmentName(attachment),
+                    this.getAttachmentContentType(attachment),
+                    this.getAttachmentSize(attachment))
+                    .yield(
+                        (destFolderId, filename, mimeType, length) ->
+                            uploadFile(accountId, destFolderId, filename, mimeType, attachment, length))
                     .flatMap(identity()))
-        .flatMap( nodeId -> {
+        .flatMap(nodeId -> {
           if (nodeId == null) return Try.failure(ServiceException.NOT_FOUND("system failure: got null response from Files server."));
           else {
             CopyToFilesResponse copyToFilesResponse = new CopyToFilesResponse();
-            copyToFilesResponse.setNodeId(nodeId.getNodeId());
+            copyToFilesResponse.setNodeId(nodeId);
             return Try.success(copyToFilesResponse);
           }
         });
   }
 
-  public Try<NodeId> uploadFile(String cookie, String destinationFolderId, String filename, String mimeType, InputStream file, long fileLength) {
-    return filesClient.uploadFile(cookie, destinationFolderId, filename, mimeType, file, fileLength)
-        .recoverWith( __ -> Try.failure(ServiceException.FAILURE("Files upload failed")));
-  }
-
-  private Try<String> getCookie(AuthToken authToken) {
-    return Try.of(() -> ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + authToken.getEncoded());
+  /**
+   * Uploads a file to Files as {@code userId} (the authenticated account whose Files space receives
+   * the upload). Any {@link FilesInternalClientException} or runtime failure is mapped to
+   * {@code ServiceException.FAILURE("Files upload failed")} to preserve existing error-handling behaviour.
+   */
+  private Try<String> uploadFile(String userId, String destinationFolderId, String filename, String mimeType, MimePart attachment, long fileLength) {
+    try {
+      String nodeId = filesInternalClient.uploadFile(
+          userId,
+          destinationFolderId,
+          filename,
+          mimeType,
+          () -> {
+            try {
+              return attachment.getInputStream();
+            } catch (IOException e) {
+              throw new UncheckedIOException(e);
+            } catch (MessagingException e) {
+              throw new RuntimeException(e);
+            }
+          },
+          fileLength);
+      return Try.success(nodeId);
+    } catch (RuntimeException e) {
+      return Try.failure(ServiceException.FAILURE("Files upload failed"));
+    }
   }
 
   /**
