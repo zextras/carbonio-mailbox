@@ -57,7 +57,10 @@ public class CosResource {
 	@GET
 	@Path("/count")
 	@Produces(MediaType.APPLICATION_JSON)
-	@Operation(summary = "Count accounts by COS", description = "Counts the accounts in each of the given COSes, or in every COS when no cosId is given. An account inheriting the domain or default COS is attributed to that COS. Only the accounts a licence counts are ever considered: calendar resources, system resources and external virtual accounts are always left out. Accounts can be excluded further by property; a property given more than once excludes any of its values, and a property left out excludes nothing.")
+	@Operation(summary = "Count accounts by COS", description = "Counts the accounts in each of the given COSes, or in every COS when no cosId is given. "
+			+ "An account inheriting the domain or default COS is attributed to that COS. "
+			+ "Calendar resources, system resources and external virtual accounts are always left out. "
+			+ "Accounts can also be further excluded by property.")
 	@ApiResponse(responseCode = "200", description = "Accounts per COS",
 			content = @Content(schema = @Schema(implementation = CosCountResponse.class)))
 	@ApiResponse(responseCode = "400", description = "Too many cosId query parameters, or an unknown excludeAccountStatus",
