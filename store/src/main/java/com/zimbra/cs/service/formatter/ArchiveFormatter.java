@@ -278,9 +278,31 @@ public abstract class ArchiveFormatter extends Formatter {
   protected abstract ArchiveOutputStream getOutputStream(UserServletContext context, String charset)
       throws IOException;
 
+  private static void checkExportFolderFeatureEnabled(UserServletContext context)
+      throws UserServletException {
+    if (context.targetAccount != null && !context.targetAccount.isFeatureExportFolderEnabled()) {
+      throw new UserServletException(
+          HttpServletResponse.SC_FORBIDDEN,
+          "export folder feature is disabled (zimbraFeatureExportFolderEnabled)");
+    }
+  }
+
+  private static void checkImportFolderFeatureEnabled(UserServletContext context)
+      throws UserServletException {
+    if (context.targetAccount != null && !context.targetAccount.isFeatureImportFolderEnabled()) {
+      throw new UserServletException(
+          HttpServletResponse.SC_FORBIDDEN,
+          "import folder feature is disabled (zimbraFeatureImportFolderEnabled)");
+    }
+  }
+
   @Override
   public void formatCallback(UserServletContext context)
       throws IOException, ServiceException, UserServletException {
+    // part-based archives bundle attachments of a single message; they are not a folder export
+    if (!context.hasPart()) {
+      checkExportFolderFeatureEnabled(context);
+    }
     // Disable the jetty timeout
     disableJettyTimeout(context);
 
@@ -977,7 +999,9 @@ public abstract class ArchiveFormatter extends Formatter {
 
   @Override
   public void saveCallback(UserServletContext context, String contentType, Folder fldr, String file)
-      throws IOException, ServiceException {
+      throws IOException, ServiceException, UserServletException {
+
+    checkImportFolderFeatureEnabled(context);
 
     // Disable the jetty timeout
     disableJettyTimeout(context);
