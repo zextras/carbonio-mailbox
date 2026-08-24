@@ -161,14 +161,26 @@ paths:
     get:
       summary: Count accounts by COS
       description: "Counts the accounts in each of the given COSes, or in every COS\
-        \ when no cosId is given. Uses the same per-domain tally the license counts\
-        \ with, so an account inheriting the domain or default COS is attributed to\
-        \ that COS."
+        \ when no cosId is given. An account inheriting the domain or default COS\
+        \ is attributed to that COS. Only the accounts a licence counts are ever considered:\
+        \ calendar resources, system resources and external virtual accounts are always\
+        \ left out. Accounts can be excluded further by property; a property given\
+        \ more than once excludes any of its values, and a property left out excludes\
+        \ nothing."
       operationId: countCos
       parameters:
       - name: cosId
         in: query
         description: "The COS ids to count, repeated; omit to count every COS"
+        schema:
+          type: array
+          items:
+            type: string
+      - name: excludeAccountStatus
+        in: query
+        description: "The account statuses to leave out, repeated; omit to count every\
+          \ status. Matches the status an admin sees, so the domain status overrides\
+          \ the account's own."
         schema:
           type: array
           items:
@@ -181,7 +193,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/CosCountResponse"
         "400":
-          description: Too many cosId query parameters
+          description: "Too many cosId query parameters, or an unknown excludeAccountStatus"
           content:
             application/json:
               schema:

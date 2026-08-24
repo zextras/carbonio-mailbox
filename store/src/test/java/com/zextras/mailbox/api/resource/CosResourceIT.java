@@ -53,6 +53,27 @@ class CosResourceIT {
 	}
 
 	@Test
+	void skipsAccountsWithAnExcludedStatus() throws Exception {
+		final Cos cos = createCos();
+		createAccountOn(cos);
+		createClosedAccountOn(cos);
+
+		final Response response = countCos("?cosId=" + cos.getId() + "&excludeAccountStatus=closed");
+
+		assertEquals(200, response.statusCode());
+		assertThatJson(response.body())
+				.isEqualTo(String.format("{\"total\": 1, \"byCos\": {\"%s\": 1}}", cos.getId()));
+	}
+
+	@Test
+	void rejectsAnUnknownAccountStatus() throws Exception {
+		final Response response = countCos("?excludeAccountStatus=nonesuch");
+
+		assertEquals(400, response.statusCode());
+		assertThatJson(response.body()).node("error").asString().contains("nonesuch");
+	}
+
+	@Test
 	void rejectsMoreThanOneHundredCosIds() throws Exception {
 		final String cosIds = IntStream.rangeClosed(1, 101)
 				.mapToObj(i -> "cosId=" + UUID.randomUUID())
@@ -101,6 +122,13 @@ class CosResourceIT {
 	private static void createAccountOn(Cos cos) throws ServiceException {
 		server.getAccountFactory()
 				.withAttribute(Provisioning.A_zimbraCOSId, cos.getId())
+				.create();
+	}
+
+	private static void createClosedAccountOn(Cos cos) throws ServiceException {
+		server.getAccountFactory()
+				.withAttribute(Provisioning.A_zimbraCOSId, cos.getId())
+				.withAttribute(Provisioning.A_zimbraAccountStatus, Provisioning.ACCOUNT_STATUS_CLOSED)
 				.create();
 	}
 }
