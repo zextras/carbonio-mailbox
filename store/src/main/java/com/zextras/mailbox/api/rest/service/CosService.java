@@ -6,6 +6,7 @@
 
 package com.zextras.mailbox.api.rest.service;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Cos;
@@ -24,15 +25,14 @@ import java.util.function.Supplier;
 
 public class CosService {
 
-  /** Mirrors the exclusions carbonio-advanced CountAccountFromLdapImpl counts a licence with. */
   private static final String COUNTABLE_ACCOUNTS =
       "(&"
-          + isNot(Provisioning.A_zimbraIsSystemAccount, LdapConstants.LDAP_TRUE)
-          + isNot(Provisioning.A_zimbraIsSystemResource, LdapConstants.LDAP_TRUE)
-          + isNot(Provisioning.A_zimbraIsExternalVirtualAccount, LdapConstants.LDAP_TRUE)
-          + isNot(Provisioning.A_zimbraCalResType, "*")
-          + isNot(Provisioning.A_zimbraAccountStatus, Provisioning.ACCOUNT_STATUS_CLOSED)
-          + isNot(Provisioning.A_zimbraAccountStatus, Provisioning.ACCOUNT_STATUS_MAINTENANCE)
+          + isNot(ZAttrProvisioning.A_zimbraIsSystemAccount, LdapConstants.LDAP_TRUE)
+          + isNot(ZAttrProvisioning.A_zimbraIsSystemResource, LdapConstants.LDAP_TRUE)
+          + isNot(ZAttrProvisioning.A_zimbraIsExternalVirtualAccount, LdapConstants.LDAP_TRUE)
+          + isNot(ZAttrProvisioning.A_zimbraCalResType, "*")
+          + isNot(ZAttrProvisioning.A_zimbraAccountStatus, Provisioning.ACCOUNT_STATUS_CLOSED)
+          + isNot(ZAttrProvisioning.A_zimbraAccountStatus, Provisioning.ACCOUNT_STATUS_MAINTENANCE)
           + ")";
 
   private static final String[] COUNT_ATTRS = {Provisioning.A_zimbraCOSId};
