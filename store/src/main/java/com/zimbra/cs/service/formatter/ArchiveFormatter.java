@@ -283,7 +283,7 @@ public abstract class ArchiveFormatter extends Formatter {
     if (context.targetAccount != null && !context.targetAccount.isFeatureExportFolderEnabled()) {
       throw new UserServletException(
           HttpServletResponse.SC_FORBIDDEN,
-          "export folder feature is disabled (zimbraFeatureExportFolderEnabled)");
+          "export folder feature is disabled");
     }
   }
 
@@ -292,7 +292,7 @@ public abstract class ArchiveFormatter extends Formatter {
     if (context.targetAccount != null && !context.targetAccount.isFeatureImportFolderEnabled()) {
       throw new UserServletException(
           HttpServletResponse.SC_FORBIDDEN,
-          "import folder feature is disabled (zimbraFeatureImportFolderEnabled)");
+          "import folder feature is disabled");
     }
   }
 
