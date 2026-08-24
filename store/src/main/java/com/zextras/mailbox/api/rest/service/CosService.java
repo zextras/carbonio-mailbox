@@ -13,7 +13,8 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.SearchAccountsOptions;
 import com.zimbra.cs.account.SearchAccountsOptions.IncludeType;
-import com.zimbra.cs.ldap.ZLdapFilterFactory;
+import com.zimbra.cs.ldap.LdapConstants;
+import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 import io.vavr.control.Try;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -23,12 +24,18 @@ import java.util.function.Supplier;
 
 public class CosService {
 
-  private static final String[] COUNT_ATTRS = {
-    Provisioning.A_zimbraCOSId,
-    Provisioning.A_zimbraAccountStatus,
-    Provisioning.A_zimbraIsAdminAccount,
-    Provisioning.A_zimbraIsDomainAdminAccount
-  };
+  /** Mirrors the exclusions carbonio-advanced CountAccountFromLdapImpl counts a licence with. */
+  private static final String COUNTABLE_ACCOUNTS =
+      "(&"
+          + isNot(Provisioning.A_zimbraIsSystemAccount, LdapConstants.LDAP_TRUE)
+          + isNot(Provisioning.A_zimbraIsSystemResource, LdapConstants.LDAP_TRUE)
+          + isNot(Provisioning.A_zimbraIsExternalVirtualAccount, LdapConstants.LDAP_TRUE)
+          + isNot(Provisioning.A_zimbraCalResType, "*")
+          + isNot(Provisioning.A_zimbraAccountStatus, Provisioning.ACCOUNT_STATUS_CLOSED)
+          + isNot(Provisioning.A_zimbraAccountStatus, Provisioning.ACCOUNT_STATUS_MAINTENANCE)
+          + ")";
+
+  private static final String[] COUNT_ATTRS = {Provisioning.A_zimbraCOSId};
 
   private final Supplier<Provisioning> provisioningSupplier;
 
@@ -46,7 +53,7 @@ public class CosService {
     });
   }
 
-  public Try<Map<String, Long>> countCos(Collection<String> cosIds, AccountFilter accountFilter) {
+  public Try<Map<String, Long>> countCos(Collection<String> cosIds) {
     return Try.of(() -> {
       final Provisioning provisioning = provisioningSupplier.get();
       final Map<String, Long> counts = new LinkedHashMap<>();
@@ -56,29 +63,31 @@ public class CosService {
       }
 
       for (final Domain domain : provisioning.getAllDomains()) {
-        countAccountsIn(domain, provisioning, accountFilter, counts);
+        countAccountsIn(domain, provisioning, counts);
       }
       return counts;
     });
   }
 
   private static void countAccountsIn(
-      Domain domain, Provisioning provisioning, AccountFilter accountFilter,
-      Map<String, Long> counts) throws ServiceException {
+      Domain domain, Provisioning provisioning, Map<String, Long> counts)
+      throws ServiceException {
     provisioning.searchDirectory(countableAccountsIn(domain), entry -> {
-      if (!(entry instanceof Account account) || !accountFilter.matches(account, provisioning)) {
-        return;
+      if (entry instanceof Account account) {
+        counts.computeIfPresent(provisioning.getCOS(account).getId(), (id, count) -> count + 1);
       }
-      counts.computeIfPresent(provisioning.getCOS(account).getId(), (id, count) -> count + 1);
     });
   }
 
-  /** The accounts a licence counts: no calendar resources, system resources or external guests. */
   private static SearchAccountsOptions countableAccountsIn(Domain domain) {
     final SearchAccountsOptions options = new SearchAccountsOptions(domain, COUNT_ATTRS);
     options.setIncludeType(IncludeType.ACCOUNTS_ONLY);
-    options.setFilter(ZLdapFilterFactory.getInstance().allNonSystemInternalAccounts());
+    options.setFilterString(FilterId.ALL_NON_SYSTEM_INTERNAL_ACCOUNTS, COUNTABLE_ACCOUNTS);
     return options;
+  }
+
+  private static String isNot(String attribute, String value) {
+    return "(!(" + attribute + "=" + value + "))";
   }
 
   private static List<String> allCosIds(Provisioning provisioning) throws ServiceException {

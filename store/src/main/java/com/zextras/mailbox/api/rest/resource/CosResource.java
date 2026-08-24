@@ -9,10 +9,8 @@ package com.zextras.mailbox.api.rest.resource;
 import com.zextras.mailbox.api.rest.resource.dto.CosCountResponse;
 import com.zextras.mailbox.api.rest.resource.dto.CosInfoResponse;
 import com.zextras.mailbox.api.rest.response.ErrorResponse;
-import com.zextras.mailbox.api.rest.service.AccountFilter;
 import com.zextras.mailbox.api.rest.service.CosService;
 import com.zimbra.common.service.ServiceException;
-import io.vavr.control.Try;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -59,24 +57,22 @@ public class CosResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Operation(summary = "Count accounts by COS", description = "Counts the accounts in each of the given COSes, or in every COS when no cosId is given. "
 			+ "An account inheriting the domain or default COS is attributed to that COS. "
-			+ "Calendar resources, system resources and external virtual accounts are always left out. "
-			+ "Accounts can also be further excluded by property.")
+			+ "Counts what a licence counts: calendar resources, system accounts, system resources and external virtual accounts are left out, "
+			+ "as are accounts whose status is closed or maintenance.")
 	@ApiResponse(responseCode = "200", description = "Accounts per COS",
 			content = @Content(schema = @Schema(implementation = CosCountResponse.class)))
-	@ApiResponse(responseCode = "400", description = "Too many cosId query parameters, or an unknown excludeAccountStatus",
+	@ApiResponse(responseCode = "400", description = "Too many cosId query parameters",
 			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 	@ApiResponse(responseCode = "500", description = "Internal server error",
 			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 	public Response countCos(
-			@Parameter(description = "The COS ids to count, repeated; omit to count every COS") @QueryParam("cosId") List<String> cosIds,
-			@Parameter(description = "The account statuses to leave out, repeated; omit to count every status. Matches the status an admin sees, so the domain status overrides the account's own.") @QueryParam("excludeAccountStatus") List<String> excludedAccountStatuses) {
+			@Parameter(description = "The COS ids to count, repeated; omit to count every COS") @QueryParam("cosId") List<String> cosIds) {
 		if (cosIds != null && cosIds.size() > 100) {
 			return Response.status(Response.Status.BAD_REQUEST)
 					.entity(new ErrorResponse("Too many entries: max 100 allowed"))
 					.build();
 		}
-		return Try.of(() -> AccountFilter.excluding(excludedAccountStatuses))
-				.flatMap(accountFilter -> cosService.countCos(cosIds, accountFilter))
+		return cosService.countCos(cosIds)
 				.map(counts -> Response.ok(new CosCountResponse(
 						counts.values().stream().mapToLong(Long::longValue).sum(), counts)).build())
 				.recover(CosResource::toErrorResponse)
@@ -84,17 +80,10 @@ public class CosResource {
 	}
 
 	private static Response toErrorResponse(Throwable e) {
-		if (e instanceof ServiceException se) {
-			if (se.getCode().equals(ServiceException.NOT_FOUND)) {
-				return Response.status(Response.Status.NOT_FOUND)
-						.entity(new ErrorResponse(e.getMessage()))
-						.build();
-			}
-			if (se.getCode().equals(ServiceException.INVALID_REQUEST)) {
-				return Response.status(Response.Status.BAD_REQUEST)
-						.entity(new ErrorResponse(e.getMessage()))
-						.build();
-			}
+		if (e instanceof ServiceException se && se.getCode().equals(ServiceException.NOT_FOUND)) {
+			return Response.status(Response.Status.NOT_FOUND)
+					.entity(new ErrorResponse(e.getMessage()))
+					.build();
 		}
 		return Response.serverError().entity(new ErrorResponse(e.getMessage())).build();
 	}

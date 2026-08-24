@@ -65,8 +65,7 @@ class CosServiceCountIT extends MailboxTestSuite {
     createAccountOn(cos, DEFAULT_DOMAIN_NAME);
     final String upperCaseId = cos.getId().toUpperCase(Locale.ROOT);
 
-    final Map<String, Long> counts =
-        cosService.countCos(List.of(upperCaseId), AccountFilter.ANY).get();
+    final Map<String, Long> counts = cosService.countCos(List.of(upperCaseId)).get();
 
     assertEquals(0L, counts.get(upperCaseId));
   }
@@ -76,7 +75,7 @@ class CosServiceCountIT extends MailboxTestSuite {
     final Cos cos = createCos();
     createAccountOn(cos, DEFAULT_DOMAIN_NAME);
 
-    final Map<String, Long> counts = cosService.countCos(List.of(), AccountFilter.ANY).get();
+    final Map<String, Long> counts = cosService.countCos(List.of()).get();
 
     assertEquals(everyCosId(), counts.keySet());
     assertEquals(1L, counts.get(cos.getId()));
@@ -86,32 +85,51 @@ class CosServiceCountIT extends MailboxTestSuite {
   void reportsZeroForAnUnusedCosWhenNoneIsRequested() throws Exception {
     final Cos unused = createCos();
 
-    final Map<String, Long> counts = cosService.countCos(List.of(), AccountFilter.ANY).get();
+    final Map<String, Long> counts = cosService.countCos(List.of()).get();
 
     assertEquals(0L, counts.get(unused.getId()));
   }
 
   @Test
+  void skipsSystemAccounts() throws Exception {
+    assertOnlyTheOrdinaryAccountCounts(Provisioning.A_zimbraIsSystemAccount, "TRUE");
+  }
+
+  @Test
   void skipsSystemResources() throws Exception {
-    final Cos cos = createCos();
-    createAccountOn(cos, DEFAULT_DOMAIN_NAME);
-    createAccountWith(cos, DEFAULT_DOMAIN_NAME, Provisioning.A_zimbraIsSystemResource, "TRUE");
-
-    final Map<String, Long> counts = countCos(cos);
-
-    assertEquals(1L, counts.get(cos.getId()));
+    assertOnlyTheOrdinaryAccountCounts(Provisioning.A_zimbraIsSystemResource, "TRUE");
   }
 
   @Test
   void skipsExternalVirtualAccounts() throws Exception {
+    assertOnlyTheOrdinaryAccountCounts(Provisioning.A_zimbraIsExternalVirtualAccount, "TRUE");
+  }
+
+  @Test
+  void skipsClosedAccounts() throws Exception {
+    assertOnlyTheOrdinaryAccountCounts(
+        Provisioning.A_zimbraAccountStatus, Provisioning.ACCOUNT_STATUS_CLOSED);
+  }
+
+  @Test
+  void skipsAccountsUnderMaintenance() throws Exception {
+    assertOnlyTheOrdinaryAccountCounts(
+        Provisioning.A_zimbraAccountStatus, Provisioning.ACCOUNT_STATUS_MAINTENANCE);
+  }
+
+  @Test
+  void countsLockedAndPendingAccounts() throws Exception {
     final Cos cos = createCos();
-    createAccountOn(cos, DEFAULT_DOMAIN_NAME);
     createAccountWith(
-        cos, DEFAULT_DOMAIN_NAME, Provisioning.A_zimbraIsExternalVirtualAccount, "TRUE");
+        cos, DEFAULT_DOMAIN_NAME, Provisioning.A_zimbraAccountStatus,
+        Provisioning.ACCOUNT_STATUS_LOCKED);
+    createAccountWith(
+        cos, DEFAULT_DOMAIN_NAME, Provisioning.A_zimbraAccountStatus,
+        Provisioning.ACCOUNT_STATUS_PENDING);
 
     final Map<String, Long> counts = countCos(cos);
 
-    assertEquals(1L, counts.get(cos.getId()));
+    assertEquals(2L, counts.get(cos.getId()));
   }
 
   @Test
@@ -126,70 +144,30 @@ class CosServiceCountIT extends MailboxTestSuite {
   }
 
   @Test
-  void countsEveryStatusWhenNoneIsExcluded() throws Exception {
-    final Cos cos = createCos();
-    createAccountOn(cos, DEFAULT_DOMAIN_NAME);
-    createClosedAccountOn(cos, DEFAULT_DOMAIN_NAME);
-
-    final Map<String, Long> counts = countCos(cos);
-
-    assertEquals(2L, counts.get(cos.getId()));
-  }
-
-  @Test
-  void skipsAccountsWithAnExcludedStatus() throws Exception {
-    final Cos cos = createCos();
-    createAccountOn(cos, DEFAULT_DOMAIN_NAME);
-    createClosedAccountOn(cos, DEFAULT_DOMAIN_NAME);
-
-    final Map<String, Long> counts = countCos(cos, Provisioning.ACCOUNT_STATUS_CLOSED);
-
-    assertEquals(1L, counts.get(cos.getId()));
-  }
-
-  @Test
-  void skipsEveryExcludedStatus() throws Exception {
-    final Cos cos = createCos();
-    createAccountOn(cos, DEFAULT_DOMAIN_NAME);
-    createClosedAccountOn(cos, DEFAULT_DOMAIN_NAME);
-    createAccountWith(
-        cos,
-        DEFAULT_DOMAIN_NAME,
-        Provisioning.A_zimbraAccountStatus,
-        Provisioning.ACCOUNT_STATUS_MAINTENANCE);
-
-    final Map<String, Long> counts =
-        countCos(cos, Provisioning.ACCOUNT_STATUS_CLOSED, Provisioning.ACCOUNT_STATUS_MAINTENANCE);
-
-    assertEquals(1L, counts.get(cos.getId()));
-  }
-
-  @Test
-  void readsAnAccountInAClosedDomainAsClosed() throws Exception {
+  void readsTheAccountStatusWithoutTheDomainOverride() throws Exception {
     final Cos cos = createCos();
     final Domain domain = createDomain();
     createAccountOn(cos, domain.getName());
     close(domain);
 
-    assertEquals(1L, countCos(cos).get(cos.getId()));
-    assertEquals(0L, countCos(cos, Provisioning.ACCOUNT_STATUS_CLOSED).get(cos.getId()));
+    final Map<String, Long> counts = countCos(cos);
+
+    assertEquals(1L, counts.get(cos.getId()));
   }
 
-  @Test
-  void keepsTheOwnStatusOfAnAdminAccountInAClosedDomain() throws Exception {
+  private void assertOnlyTheOrdinaryAccountCounts(String attribute, String value)
+      throws Exception {
     final Cos cos = createCos();
-    final Domain domain = createDomain();
-    createAccountWith(cos, domain.getName(), Provisioning.A_zimbraIsAdminAccount, "TRUE");
-    close(domain);
+    createAccountOn(cos, DEFAULT_DOMAIN_NAME);
+    createAccountWith(cos, DEFAULT_DOMAIN_NAME, attribute, value);
 
-    assertEquals(1L, countCos(cos, Provisioning.ACCOUNT_STATUS_CLOSED).get(cos.getId()));
-    assertEquals(0L, countCos(cos, Provisioning.ACCOUNT_STATUS_ACTIVE).get(cos.getId()));
+    final Map<String, Long> counts = countCos(cos);
+
+    assertEquals(1L, counts.get(cos.getId()));
   }
 
-  private Map<String, Long> countCos(Cos cos, String... excludedAccountStatuses) throws Exception {
-    return cosService
-        .countCos(List.of(cos.getId()), AccountFilter.excluding(List.of(excludedAccountStatuses)))
-        .get();
+  private Map<String, Long> countCos(Cos cos) throws Exception {
+    return cosService.countCos(List.of(cos.getId())).get();
   }
 
   private static Cos createCos() throws ServiceException {
@@ -211,12 +189,6 @@ class CosServiceCountIT extends MailboxTestSuite {
         .withDomain(domainName)
         .withAttribute(Provisioning.A_zimbraCOSId, cos.getId())
         .create();
-  }
-
-  private static Account createClosedAccountOn(Cos cos, String domainName)
-      throws ServiceException {
-    return createAccountWith(
-        cos, domainName, Provisioning.A_zimbraAccountStatus, Provisioning.ACCOUNT_STATUS_CLOSED);
   }
 
   private static void createCalendarResourceOn(Cos cos) throws ServiceException {
