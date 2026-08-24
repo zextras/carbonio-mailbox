@@ -254,6 +254,52 @@ class UserServletTest extends MailboxTestSuite {
 	}
 
 	@Test
+	void shouldExportFolderAsTgzWhenExportFolderFeatureEnabled() throws Exception {
+		addMessageToTestAccountInbox();
+
+		final HttpResponse response =
+				getUserServletRequest(server.getURI().toString() + "~/Inbox?auth=co&fmt=tgz");
+
+		assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+	}
+
+	@Test
+	void shouldRejectFolderExportWhenExportFolderFeatureDisabled() throws Exception {
+		addMessageToTestAccountInbox();
+		testAccount.setFeatureExportFolderEnabled(false);
+
+		final HttpResponse response =
+				getUserServletRequest(server.getURI().toString() + "~/Inbox?auth=co&fmt=tgz");
+
+		assertEquals(HttpStatus.SC_FORBIDDEN, response.getStatusLine().getStatusCode());
+		final String body = new String(response.getEntity().getContent().readAllBytes());
+		assertTrue(body.contains("export folder feature is disabled"));
+	}
+
+	@Test
+	void shouldRejectArchiveImportWhenImportFolderFeatureDisabled() throws Exception {
+		testAccount.setFeatureImportFolderEnabled(false);
+
+		final HttpResponse response =
+				postUserServletRequest(
+						server.getURI().toString() + "~/calendar?auth=co&fmt=zip", "UploadCalendar.zip");
+
+		assertEquals(HttpStatus.SC_FORBIDDEN, response.getStatusLine().getStatusCode());
+
+		final HttpResponse getCalendarsResponse = this.defaultUserCalendarRequest();
+		final String calendarResponse =
+				new String(getCalendarsResponse.getEntity().getContent().readAllBytes());
+		assertEquals("{}", calendarResponse);
+	}
+
+	private void addMessageToTestAccountInbox() throws Exception {
+		var testAccountMailbox = MailboxManager.getInstance().getMailboxByAccount(testAccount);
+		testAccountMailbox.addMessage(null,
+				MailboxTestUtil.generateMessageWithAttachment("message to export"),
+				MailboxTest.STANDARD_DELIVERY_OPTIONS, null);
+	}
+
+	@Test
 	void should_return404_when_asked_attachment_does_not_exits() throws Exception {
 		var testAccountMailbox = MailboxManager.getInstance().getMailboxByAccount(testAccount);
 
