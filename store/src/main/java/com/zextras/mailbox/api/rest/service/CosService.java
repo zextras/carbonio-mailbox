@@ -35,7 +35,7 @@ public class CosService {
           + isNot(ZAttrProvisioning.A_zimbraAccountStatus, Provisioning.ACCOUNT_STATUS_MAINTENANCE)
           + ")";
 
-  private static final String[] COUNT_ATTRS = {Provisioning.A_zimbraCOSId};
+  private static final String[] COUNT_ATTRS = {ZAttrProvisioning.A_zimbraCOSId};
 
   private final Supplier<Provisioning> provisioningSupplier;
 
