@@ -107,10 +107,6 @@ public class MailboxSetupHelper {
 		}
 		LC.zimbra_home.setDefault(mailboxHome.toAbsolutePath().toString());
 		LC.zimbra_tmp_directory.setDefault(mailboxTmpDirectory.toAbsolutePath().toString());
-		// setDefault only invalidates the key it is called on, so keys interpolating ${zimbra_home}
-		// keep whatever an earlier test in this JVM expanded them to, and Zimbra halts the JVM on the
-		// first of those paths it cannot create
-		LC.reload();
 
 		// substitute test TZ file
 		LC.timezone_file.setDefault(timezoneFilePath);
@@ -132,8 +128,8 @@ public class MailboxSetupHelper {
 		HSQLDB.createDatabase(getVolumeDirectory());
 		DbPool.global();
 		MailboxManager.setInstance(new MailboxManager());
-		// RedoConfig froze its paths against the old zimbra_home when an earlier test in this JVM
-		// first touched it, and LC.reload() cannot reach a Zimbra singleton
+		// RedoConfig caches the redolog paths in a singleton built from a static block, against the
+		// zimbra_home in force when an earlier test in this JVM first touched it
 		RedoConfig.reload();
 		RedoLogProvider.setInstance(new DefaultRedoLogProvider());
 		RedoLogProvider.getInstance().startup();
