@@ -26,6 +26,7 @@ import com.zimbra.cs.ldap.unboundid.UBIDLdapPoolConfig;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.ScheduledTaskManager;
 import com.zimbra.cs.redolog.DefaultRedoLogProvider;
+import com.zimbra.cs.redolog.RedoConfig;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.store.StoreManager;
 import java.io.File;
@@ -62,8 +63,8 @@ public class MailboxSetupHelper {
       var inMemoryLdapServer = new Builder().withLdapPort(ldapPort).build();
       final Path mailboxHome1 = Files.createTempDirectory("mailbox_home");
       final Path mailboxTmp = Files.createTempDirectory("mailbox_tmp");
-      final String timezoneFilePath = "src/test/resources/timezones-test.ics";
-      final String datasourceFilePath = "src/test/resources/datasource-test.xml";
+      final String timezoneFilePath = resourceAsFile("/timezones-test.ics").getAbsolutePath();
+      final String datasourceFilePath = resourceAsFile("/datasource-test.xml").getAbsolutePath();
       return new MailboxSetupHelper(
           mailboxHome1,
           mailboxTmp,
@@ -75,6 +76,16 @@ public class MailboxSetupHelper {
       throw new RuntimeException(e);
     }
   }
+
+	private static File resourceAsFile(String resource) throws Exception {
+		final Path target = Files.createTempFile("mailbox_setup", resource.replace('/', '_'));
+		try (var in = MailboxSetupHelper.class.getResourceAsStream(resource)) {
+			Objects.requireNonNull(in, "missing test resource " + resource);
+			Files.copy(in, target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+		}
+		target.toFile().deleteOnExit();
+		return target.toFile();
+	}
 
 	private String getVolumeDirectory() {
 		return LC.zimbra_home.value() + "/build/test";
@@ -96,6 +107,10 @@ public class MailboxSetupHelper {
 		}
 		LC.zimbra_home.setDefault(mailboxHome.toAbsolutePath().toString());
 		LC.zimbra_tmp_directory.setDefault(mailboxTmpDirectory.toAbsolutePath().toString());
+		// setDefault only invalidates the key it is called on, so keys interpolating ${zimbra_home}
+		// keep whatever an earlier test in this JVM expanded them to, and Zimbra halts the JVM on the
+		// first of those paths it cannot create
+		LC.reload();
 
 		// substitute test TZ file
 		LC.timezone_file.setDefault(timezoneFilePath);
@@ -117,6 +132,9 @@ public class MailboxSetupHelper {
 		HSQLDB.createDatabase(getVolumeDirectory());
 		DbPool.global();
 		MailboxManager.setInstance(new MailboxManager());
+		// RedoConfig froze its paths against the old zimbra_home when an earlier test in this JVM
+		// first touched it, and LC.reload() cannot reach a Zimbra singleton
+		RedoConfig.reload();
 		RedoLogProvider.setInstance(new DefaultRedoLogProvider());
 		RedoLogProvider.getInstance().startup();
 		StoreManager.getInstance().startup();
