@@ -9,10 +9,10 @@ jobs:
   create_pr_repo_sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3
       - name: Create pull request
         id: back-merge
-        uses: repo-sync/pull-request@v2
+        uses: repo-sync/pull-request@7e79a9f5dc3ad0ce53138f01df2fad14a04831c5 # v2
         with:
           destination_branch: "devel"
           pr_title: "chore: main -> devel"
