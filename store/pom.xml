@@ -1062,11 +1062,25 @@ EOF
               <goal>test-jar</goal>
             </goals>
             <configuration>
+              <!-- Listed class by class on purpose: these packages also hold test suites and
+                   fixtures, and anything published here becomes a surface consumers depend on. -->
               <includes>
                 <include>com/zimbra/cs/db/HSQLDB*</include>
                 <include>com/zextras/mailbox/util/InMemoryLdapServer*</include>
+                <include>com/zextras/mailbox/util/MailboxSetupHelper*</include>
+                <include>com/zextras/mailbox/util/MailboxTestData*</include>
+                <include>com/zextras/mailbox/util/LdapProvisioningWithMockMime*</include>
+                <include>com/zextras/mailbox/util/JettyServerFactory*</include>
+                <include>com/zextras/mailbox/util/SoapClient*</include>
+                <include>com/zextras/mailbox/util/PortUtil*</include>
+                <include>com/zextras/mailbox/soap/SoapUtils*</include>
+                <include>com/zimbra/cs/mime/MockMimeTypeInfo*</include>
+                <include>com/zimbra/cs/service/admin/TestableAdminService*</include>
                 <include>**/*.ldif</include>
                 <include>com/zimbra/cs/db/*.sql</include>
+                <include>timezones-test.ics</include>
+                <include>datasource-test.xml</include>
+                <include>localconfig-api-test.xml</include>
               </includes>
             </configuration>
           </execution>
