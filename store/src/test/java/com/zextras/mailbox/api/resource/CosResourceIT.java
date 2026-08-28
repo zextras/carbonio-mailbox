@@ -29,43 +29,6 @@ class CosResourceIT {
 	static final MailboxServerExtension server = new MailboxServerExtension();
 
 	@Test
-	void countsTheRequestedCos() throws Exception {
-		final Cos cos = createCos();
-		createAccountOn(cos);
-		createAccountOn(cos);
-
-		final Response response = countCos("?cosId=" + cos.getId());
-
-		assertEquals(200, response.statusCode());
-		assertThatJson(response.body())
-				.isEqualTo(String.format("{\"total\": 2, \"byCos\": {\"%s\": 2}}", cos.getId()));
-	}
-
-	@Test
-	void countsEveryCosWhenNoCosIdIsGiven() throws Exception {
-		final Cos cos = createCos();
-		createAccountOn(cos);
-
-		final Response response = countCos("");
-
-		assertEquals(200, response.statusCode());
-		assertThatJson(response.body()).node("byCos." + cos.getId()).isEqualTo(1);
-	}
-
-	@Test
-	void rejectsMoreThanOneHundredCosIds() throws Exception {
-		final String cosIds = IntStream.rangeClosed(1, 101)
-				.mapToObj(i -> "cosId=" + UUID.randomUUID())
-				.collect(Collectors.joining("&"));
-
-		final Response response = countCos("?" + cosIds);
-
-		assertEquals(400, response.statusCode());
-		assertThatJson(response.body()).node("error")
-				.isEqualTo("Too many entries: max 100 allowed");
-	}
-
-	@Test
 	void returnsTheCos() throws Exception {
 		final Cos cos = createCos();
 
@@ -86,21 +49,11 @@ class CosResourceIT {
 		assertThatJson(response.body()).node("error").asString().contains(unknownCosId);
 	}
 
-	private static Response countCos(String query) throws Exception {
-		return server.getHttpClient().get(server.getInternalApiEndpoint() + "/cos/count" + query);
-	}
-
 	private static Response getCos(String cosId) throws Exception {
 		return server.getHttpClient().get(server.getInternalApiEndpoint() + "/cos/" + cosId);
 	}
 
 	private static Cos createCos() throws ServiceException {
 		return Provisioning.getInstance().createCos("cos-" + UUID.randomUUID(), new HashMap<>());
-	}
-
-	private static void createAccountOn(Cos cos) throws ServiceException {
-		server.getAccountFactory()
-				.withAttribute(Provisioning.A_zimbraCOSId, cos.getId())
-				.create();
 	}
 }
