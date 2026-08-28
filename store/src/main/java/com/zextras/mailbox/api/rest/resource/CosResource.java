@@ -6,7 +6,6 @@
 
 package com.zextras.mailbox.api.rest.resource;
 
-import com.zextras.mailbox.api.rest.resource.dto.CosCountResponse;
 import com.zextras.mailbox.api.rest.resource.dto.CosInfoResponse;
 import com.zextras.mailbox.api.rest.response.ErrorResponse;
 import com.zextras.mailbox.api.rest.service.CosService;
@@ -22,9 +21,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 import javax.ws.rs.core.Response;
 
 @Dependent
@@ -48,30 +45,6 @@ public class CosResource {
 			@Parameter(description = "The COS ID") @PathParam("id") String id) {
 		return cosService.getCos(id)
 				.map(cos -> Response.ok(CosInfoResponse.from(cos)).build())
-				.recover(CosResource::toErrorResponse)
-				.get();
-	}
-
-	@GET
-	@Path("/count")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Operation(summary = "Count accounts by COS", description = "Counts the accounts in each of the given COSes, or in every COS when no cosId is given. Uses the same per-domain tally the license counts with, so an account inheriting the domain or default COS is attributed to that COS.")
-	@ApiResponse(responseCode = "200", description = "Accounts per COS",
-			content = @Content(schema = @Schema(implementation = CosCountResponse.class)))
-	@ApiResponse(responseCode = "400", description = "Too many cosId query parameters",
-			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-	@ApiResponse(responseCode = "500", description = "Internal server error",
-			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-	public Response countCos(
-			@Parameter(description = "The COS ids to count, repeated; omit to count every COS") @QueryParam("cosId") List<String> cosIds) {
-		if (cosIds != null && cosIds.size() > 100) {
-			return Response.status(Response.Status.BAD_REQUEST)
-					.entity(new ErrorResponse("Too many entries: max 100 allowed"))
-					.build();
-		}
-		return cosService.countCos(cosIds)
-				.map(counts -> Response.ok(new CosCountResponse(
-						counts.values().stream().mapToLong(Long::longValue).sum(), counts)).build())
 				.recover(CosResource::toErrorResponse)
 				.get();
 	}
