@@ -6988,11 +6988,6 @@ public class Mailbox implements MailboxStore {
 
       Folder folder = getFolderById(folderId);
 
-      // step 0: preemptively check for quota issues (actual update is done in Message.create)
-      if (!getAccount().isMailAllowReceiveButNotSendWhenOverQuota()) {
-        checkSizeChangeOnAddOperation(getSize() + staged.getSize());
-      }
-
       // step 1: get an ID assigned for the new message
       int messageId = getNextItemId(!isRedo ? ID_AUTO_INCREMENT : redoPlayer.getMessageId());
 
