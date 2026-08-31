@@ -14,7 +14,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.zextras.mailbox.quota.QuotaCheckSingleton;
 import com.zimbra.common.mailbox.Color;
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.common.mailbox.MailItemType;
@@ -2000,9 +1999,7 @@ public abstract class MailItem
     if (isLeafNode()) {
       boolean isDeleted = isTagged(Flag.FlagInfo.DELETED);
 
-      // check quota only on finalizing message
-      checkQuota(mData.size);
-      mMailbox.updateSize(mData.size);
+      mMailbox.updateSize(mData.size, isQuotaCheckRequired());
       folder.updateSize(1, isDeleted ? 1 : 0, mData.size);
       updateTagSizes(1, isDeleted ? 1 : 0, mData.size);
 
@@ -2011,21 +2008,6 @@ public abstract class MailItem
       updateTagUnread(mData.unreadCount, isDeleted ? mData.unreadCount : 0);
     }
   }
-
-  private void checkQuota(long delta) throws ServiceException {
-      if (delta == 0) {
-        return;
-      }
-      long size = mMailbox.getEffectiveSize(delta);
-      final boolean addingMessage = delta > 0;
-      if (addingMessage) {
-        mMailbox.checkSizeChangeOnAddOperation(size);
-      }
-      if (!addingMessage) {
-        var acct = getAccount();
-        QuotaCheckSingleton.getInstance().onDeleteMessage(acct, size);
-      }
-    }
 
   /** Returns {@code true} if a quota check is required when creating this item. See bug 15666. */
   @SuppressWarnings("unused")
@@ -2159,7 +2141,7 @@ public abstract class MailItem
     // update the object to reflect its new contents
     long size = staged == null ? 0 : staged.getSize();
     if (mData.size != size) {
-      mMailbox.updateSize(size - mData.size);
+      mMailbox.updateSize(size - mData.size, isQuotaCheckRequired());
       mData.size = size;
     }
     getFolder().updateSize(0, 0, size - mData.size);
@@ -2197,7 +2179,7 @@ public abstract class MailItem
       mRevisions = new ArrayList<>();
 
       if (isTagged(Flag.FlagInfo.VERSIONED)) {
-        for (MailItem.UnderlyingData data : DbMailItem.getRevisionInfo(this, inDumpster()))
+        for (UnderlyingData data : DbMailItem.getRevisionInfo(this, inDumpster()))
           mRevisions.add(constructItem(mMailbox, data));
       }
     }
@@ -2246,7 +2228,7 @@ public abstract class MailItem
       data.setFlag(Flag.FlagInfo.UNCACHED);
       mRevisions.add(constructItem(mMailbox, data));
 
-      mMailbox.updateSize(mData.size);
+      mMailbox.updateSize(mData.size, isQuotaCheckRequired());
       folder.updateSize(0, 0, mData.size);
 
       ZimbraLog.mailop.debug("saving revision %d for %s", mVersion, getMailopContext(this));
