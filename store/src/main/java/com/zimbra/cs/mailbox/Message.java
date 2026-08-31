@@ -1437,7 +1437,7 @@ public class Message extends MailItem {
         && StringUtil.equal(getDigest(), mblob.getDigest())
         && StringUtil.equal(getLocator(), mblob.getLocator())) return;
 
-    mMailbox.updateSize(size - mData.size, true);
+    mMailbox.updateSize(size - mData.size);
     getFolder().updateSize(0, 0, size - mData.size);
 
     mData.size = size;
@@ -1642,7 +1642,7 @@ public class Message extends MailItem {
     // update the SIZE and METADATA
     if (mData.size != newSize) {
       markItemModified(Change.SIZE);
-      mMailbox.updateSize(newSize - mData.size, false);
+      mMailbox.updateSize(newSize - mData.size);
       getFolder().updateSize(0, 0, newSize - mData.size);
       mData.size = newSize;
     }

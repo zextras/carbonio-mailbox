@@ -1309,25 +1309,11 @@ public class Mailbox implements MailboxStore {
 
   /** change the current size of the mailbox */
   void updateSize(long delta) throws ServiceException {
-    updateSize(delta, true);
-  }
-
-  void updateSize(long delta, boolean checkQuota) throws ServiceException {
     if (delta == 0) {
       return;
     }
 
     long size = getEffectiveSize(delta);
-    final boolean addingMessage = delta > 0;
-    if (addingMessage && checkQuota) {
-      checkSizeChangeOnAddOperation(size);
-    }
-
-    if (!addingMessage) {
-      var acct = getAccount();
-      QuotaCheckSingleton.getInstance().onDeleteMessage(acct, size);
-    }
-
     currentChange().dirty.recordModified(this, Change.SIZE);
     currentChange().size = size;
   }
