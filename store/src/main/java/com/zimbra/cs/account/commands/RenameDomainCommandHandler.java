@@ -37,7 +37,7 @@ class RenameDomainCommandHandler implements CommandHandler {
     lp.renameDomain(domain.getId(), args[2]);
     console.printOutput("domain " + args[1] + " renamed to " + args[2]);
     console.printOutput(
-            "Note: use zmlocalconfig to check and update any localconfig settings referencing"
+            "Note: use configd localconfig to check and update any localconfig settings referencing"
                     + " domain '"
                     + args[1]
                     + "' on all servers.");

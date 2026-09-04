@@ -16,7 +16,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.python.google.common.base.Strings;
+import com.google.common.base.Strings;
 
 public class LocalConfigTest {
 
