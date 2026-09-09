@@ -8,14 +8,12 @@ package com.zimbra.cs.mailbox;
 import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.mailbox.lock.DebugZLock;
 import com.zimbra.cs.mailbox.lock.ZLock;
 import java.util.EmptyStackException;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
-import org.apache.curator.framework.recipes.locks.InterProcessSemaphoreMutex;
 
 /**
  * {@link MailboxLock} is a replacement of the implicit monitor lock using {@code synchronized}
@@ -28,34 +26,11 @@ import org.apache.curator.framework.recipes.locks.InterProcessSemaphoreMutex;
  */
 public final class MailboxLock {
   private final ZLock zLock = DebugConfig.debugMailboxLock ? new DebugZLock() : new ZLock();
-  private InterProcessSemaphoreMutex dLock = null;
   private final Stack<Boolean> lockStack = new Stack<>();
   private Mailbox mbox;
 
   public MailboxLock(String id, Mailbox mbox) {
     this.mbox = mbox;
-  }
-
-  private void acquireDistributedLock(boolean write) throws ServiceException {
-    // TODO: consider read/write distributed lock
-    if (dLock != null && getHoldCount() == 1) {
-      try {
-        dLock.acquire(LC.zimbra_mailbox_lock_timeout.intValue(), TimeUnit.SECONDS);
-      } catch (Exception e) {
-        throw new LockFailedException("could not acquire distributed lock", e);
-      }
-    }
-  }
-
-  private void releaseDistributedLock(boolean write) {
-    // TODO: consider read/write distributed lock
-    if (dLock != null && getHoldCount() == 1) {
-      try {
-        dLock.release();
-      } catch (Exception e) {
-        ZimbraLog.mailbox.warn("error while releasing distributed lock", e);
-      }
-    }
   }
 
   int getHoldCount() {
@@ -148,14 +123,6 @@ public final class MailboxLock {
           return;
         }
         lockStack.push(write);
-        try {
-          acquireDistributedLock(write);
-        } catch (ServiceException e) {
-          release();
-          LockFailedException lfe = new LockFailedException("lockdb");
-          lfe.logStackTrace();
-          throw lfe;
-        }
         return;
       }
       int queueLength = zLock.getQueueLength();
@@ -179,14 +146,6 @@ public final class MailboxLock {
           return;
         }
         lockStack.push(write);
-        try {
-          acquireDistributedLock(write);
-        } catch (ServiceException e) {
-          release();
-          LockFailedException lfe = new LockFailedException("lockdb");
-          lfe.logStackTrace();
-          throw lfe;
-        }
         return;
       }
       LockFailedException e = new LockFailedException("timeout");
@@ -214,7 +173,6 @@ public final class MailboxLock {
     // keep release in order so caller doesn't have to manage write/read flag
     ZimbraLog.mailbox.trace("RELEASE %s", (write ? "WRITE" : "READ"));
 
-    releaseDistributedLock(write);
     if (write) {
       assert (zLock.getWriteHoldCount() > 0);
       zLock.writeLock().unlock();
