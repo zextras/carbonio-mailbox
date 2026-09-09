@@ -229,7 +229,9 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
         routes.add("alias:user=" + uid + ";ip=" + domain);
 
         Domain d = prov.get(Key.DomainBy.name, domain);
-        String[] vips = d.getVirtualIPAddress();
+        // zimbraVirtualIPAddress is deprecated (CO-3691), so no getter is generated for it.
+        // Keep purging IP-keyed routes for domains that still carry legacy Virtual IPs.
+        String[] vips = d.getMultiAttr("zimbraVirtualIPAddress");
         for (String vip : vips) {
           // for each virtual ip add the routes to the list.
           routes.add("route:proto=http;user=" + uid + "@" + vip);
