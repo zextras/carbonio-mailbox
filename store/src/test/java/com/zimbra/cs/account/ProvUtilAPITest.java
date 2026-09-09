@@ -354,7 +354,7 @@ class ProvUtilAPITest {
     runCommand(new String[]{"ca", accountName, "password"});
 
     final String result = runCommand(new String[]{"gmi", accountName});
-    final String expected = "mailboxId: 1\nquotaUsed: 0\n";
+    final String expected = "mailboxId: 1\nquotaUsed: 0 (Mails/Calendars/Contacts only)\n";
 
     Assertions.assertEquals(expected, result);
   }
@@ -365,7 +365,7 @@ class ProvUtilAPITest {
     runCommand(new String[]{"ca", accountName, "password"});
 
     final String result = runCommand(new String[]{"gqu", "localhost"});
-    final String expected = String.format("%s 0 0%n", accountName);
+    final String expected = String.format("%s 0 (Mails/Calendars/Contacts only)%n", accountName);
 
     Assertions.assertEquals(expected, result);
   }

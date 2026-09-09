@@ -1,5 +1,7 @@
 package com.zimbra.cs.account.commands;
 
+import static com.zextras.mailbox.quota.QuotaUsageMessages.USAGE_SCOPE_NOTE;
+
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.ArgException;
@@ -29,6 +31,6 @@ class RecalculateMailboxCountsCommandHandler implements CommandHandler {
     SoapProvisioning sp = (SoapProvisioning) prov;
     Account account = provUtil.lookupAccount(args[1]);
     long quotaUsed = sp.recalculateMailboxCounts(account);
-    provUtil.getConsole().print("account: " + account.getName() + "\nquotaUsed: " + quotaUsed + "\n");
+    provUtil.getConsole().print("account: " + account.getName() + "\nquotaUsed: " + quotaUsed + " " + USAGE_SCOPE_NOTE + "\n");
   }
 }

@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.zclient;
 
+import static com.zextras.mailbox.quota.QuotaUsageMessages.USAGE_SCOPE_NOTE;
+
 import com.zimbra.client.ZAce;
 import com.zimbra.client.ZAppointmentHit;
 import com.zimbra.client.ZAutoCompleteMatch;
@@ -1427,8 +1429,12 @@ public class ZMailboxUtil implements DebugListener {
     Stats s = new Stats();
     computeStats(mMbox.getUserRoot(), s);
     stdout.format(
-        "mailbox: %s, size: %s, messages: %d, unread: %d%n",
-        mMbox.getName(), formatSize(mMbox.getSize()), s.numMessages, s.numUnread);
+        "mailbox: %s, size: %s %s, messages: %d, unread: %d%n",
+        mMbox.getName(),
+        formatSize(mMbox.getSize()),
+        USAGE_SCOPE_NOTE,
+        s.numMessages,
+        s.numUnread);
     if (StringUtil.equalIgnoreCase(mTargetAccountName, mAuthAccountName)
         || !StringUtil.isNullOrEmpty(mAuthAccountName)) {
       stdout.format("authenticated as %s%n", mAuthAccountName);
@@ -1891,8 +1897,8 @@ public class ZMailboxUtil implements DebugListener {
         doGetFolderGrant(args);
         break;
       case GET_MAILBOX_SIZE:
-        if (verboseOpt()) stdout.format("%d%n", mMbox.getSize());
-        else stdout.format("%s%n", formatSize(mMbox.getSize()));
+        if (verboseOpt()) stdout.format("%d %s%n", mMbox.getSize(), USAGE_SCOPE_NOTE);
+        else stdout.format("%s %s%n", formatSize(mMbox.getSize()), USAGE_SCOPE_NOTE);
         break;
       case GET_MESSAGE:
         doGetMessage(args);

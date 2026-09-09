@@ -78,8 +78,8 @@ public class AccountUtil {
   }
 
   /**
-   * Returns effective quota for an account which is calculated as the minimum of account level
-   * quota and domain max mailbox quota. Returns zero for unlimited effective quota.
+   * Returns the effective quota for an account. Always zero, meaning unlimited: quota limits are no
+   * longer enforced here.
    */
   public static long getEffectiveQuota(Account acct) throws ServiceException {
     return 0L;
