@@ -238,13 +238,13 @@ $ /opt/zextras/bin/zmcertmgr addcacert <certfile>
     
     Other related info:
         - Trust store:
-        zmlocalconfig -x client_ssl_truststore
+        configd localconfig -x client_ssl_truststore
         
         - Trust store password:
-        zmlocalconfig -s client_ssl_truststore_password
+        configd localconfig -s client_ssl_truststore_password
 
     To verify that the CA is added:
-    keytool -list -keystore `zmlocalconfig -x -m nokey client_ssl_truststore` -v -alias {alias-of-the-CA}
+    keytool -list -keystore `configd localconfig -x -m nokey client_ssl_truststore` -v -alias {alias-of-the-CA}
     
 
 [========== Begin For dev env only ==========]
@@ -255,7 +255,7 @@ $ sudo keytool -import -keystore /System/Library/Frameworks/JavaVM.framework/Ver
 To verify that the CA is added:
 $ keytool -list -keystore /System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home/lib/security/cacerts -v -alias myca
 or 
-$ keytool -list -keystore `zmlocalconfig -x -m nokey mailboxd_truststore` -v -alias myca
+$ keytool -list -keystore `configd localconfig -x -m nokey mailboxd_truststore` -v -alias myca
 
 
 For dev env on mac, to test providing CA certs from the trust manager, uncomment:
@@ -290,10 +290,10 @@ $ keytool -list -keystore <client_ssl_truststore> -v -alias myca
 
 Other related info:
 - Trust store:
-  zmlocalconfig -x client_ssl_truststore
+  configd localconfig -x client_ssl_truststore
         
 - Trust store password:
-  zmlocalconfig -s client_ssl_truststore_password
+  configd localconfig -s client_ssl_truststore_password
         
 
 ----------------

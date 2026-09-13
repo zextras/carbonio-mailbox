@@ -126,7 +126,7 @@ public final class KnownKey {
     private boolean forceToEdit;
     private boolean reloadable = false;
     /*
-     * whether or not this is a 'supported' key (printing with zmlocalconfig -i)
+     * whether or not this is a 'supported' key (printing with configd localconfig -i)
      */
     private boolean supported = false;
 

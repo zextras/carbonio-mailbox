@@ -23,4 +23,4 @@ time the status of a service changes.
 Snmp configuration:
 	- install the snmp package.
 	- run the createsnmp script, provide requested information (trap host)
-	- start services (zmcontrol startup)
+	- start services (configd control startup)
