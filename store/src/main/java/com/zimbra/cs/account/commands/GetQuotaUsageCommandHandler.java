@@ -30,8 +30,10 @@ class GetQuotaUsageCommandHandler implements CommandHandler {
     }
     SoapProvisioning sp = (SoapProvisioning) prov;
     List<SoapProvisioning.QuotaUsage> result = sp.getQuotaUsage(args[1]);
+    provUtil.getConsole().println(USAGE_SCOPE_NOTE);
     for (SoapProvisioning.QuotaUsage u : result) {
-      provUtil.getConsole().println(String.format("%s %d %s", u.getName(), u.getUsed(), USAGE_SCOPE_NOTE));
+      provUtil.getConsole().println(String.format("%s %d", u.getName(), u.getUsed()));
     }
+    provUtil.getConsole().println(USAGE_SCOPE_NOTE);
   }
 }
