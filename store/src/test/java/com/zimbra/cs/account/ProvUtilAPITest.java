@@ -355,10 +355,12 @@ class ProvUtilAPITest {
 
     final String result = runCommand(new String[]{"gmi", accountName});
     final String expected =
-        "WARNING: This size refers to Mails/Calendars/Contacts only\n"
-            + "mailboxId: 1\n"
-            + "quotaUsed: 0 B\n"
-            + "WARNING: This size refers to Mails/Calendars/Contacts only\n";
+        """
+        WARNING: This size refers to Mails/Calendars/Contacts only
+        mailboxId: 1
+        quotaUsed: 0 B
+        WARNING: This size refers to Mails/Calendars/Contacts only
+        """;
 
     Assertions.assertEquals(expected, result);
   }
