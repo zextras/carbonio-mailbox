@@ -8,7 +8,7 @@ public final class QuotaUsageMessages {
    * above single line outputs and both above and below multi line ones.
    */
   public static final String USAGE_SCOPE_NOTE =
-      "WARNING: This size refeers to Mails/Calendars/Contacts only";
+      "WARNING: This size refers to Mails/Calendars/Contacts only";
 
   private QuotaUsageMessages() {
     throw new UnsupportedOperationException("Utility class and cannot be instantiated");
