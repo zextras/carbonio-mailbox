@@ -7,6 +7,7 @@ package com.zimbra.cs.zclient;
 
 import static com.zextras.mailbox.quota.QuotaUsageMessages.USAGE_SCOPE_NOTE;
 
+import com.zextras.mailbox.util.ByteSizeFormatter;
 import com.zimbra.client.ZAce;
 import com.zimbra.client.ZAppointmentHit;
 import com.zimbra.client.ZAutoCompleteMatch;
@@ -1229,22 +1230,6 @@ public class ZMailboxUtil implements DebugListener {
     }
   }
 
-  private static final long KBYTES = 1024;
-  private static final long MBYTES = 1024 * 1024;
-  private static final long GBYTES = 1024 * 1024 * 1024;
-
-  private String formatSize(long size) {
-    if (size > GBYTES) {
-      return String.format("%.2f GB", (((double) size) / GBYTES));
-    } else if (size > MBYTES) {
-      return String.format("%.2f MB", (((double) size) / MBYTES));
-    } else if (size > KBYTES) {
-      return String.format("%.2f KB", (((double) size) / KBYTES));
-    } else {
-      return String.format("%d B", size);
-    }
-  }
-
   private void addCommand(Command command) {
     String name = command.getName().toLowerCase();
     if (mCommandIndex.get(name) != null) {
@@ -1428,19 +1413,17 @@ public class ZMailboxUtil implements DebugListener {
     }
     Stats s = new Stats();
     computeStats(mMbox.getUserRoot(), s);
+    stdout.format("%s%n", USAGE_SCOPE_NOTE);
     stdout.format(
-        "mailbox: %s, size: %s %s, messages: %d, unread: %d%n",
-        mMbox.getName(),
-        formatSize(mMbox.getSize()),
-        USAGE_SCOPE_NOTE,
-        s.numMessages,
-        s.numUnread);
+        "mailbox: %s, size: %s, messages: %d, unread: %d%n",
+        mMbox.getName(), ByteSizeFormatter.format(mMbox.getSize()), s.numMessages, s.numUnread);
     if (StringUtil.equalIgnoreCase(mTargetAccountName, mAuthAccountName)
         || !StringUtil.isNullOrEmpty(mAuthAccountName)) {
       stdout.format("authenticated as %s%n", mAuthAccountName);
     } else {
       stdout.format("authenticated as %s (admin)%n", mAdminAccountName);
     }
+    stdout.format("%s%n", USAGE_SCOPE_NOTE);
   }
 
   public void initMailbox() throws ServiceException {
@@ -1897,8 +1880,9 @@ public class ZMailboxUtil implements DebugListener {
         doGetFolderGrant(args);
         break;
       case GET_MAILBOX_SIZE:
-        if (verboseOpt()) stdout.format("%d %s%n", mMbox.getSize(), USAGE_SCOPE_NOTE);
-        else stdout.format("%s %s%n", formatSize(mMbox.getSize()), USAGE_SCOPE_NOTE);
+        stdout.format("%s%n", USAGE_SCOPE_NOTE);
+        if (verboseOpt()) stdout.format("%d%n", mMbox.getSize());
+        else stdout.format("%s%n", ByteSizeFormatter.format(mMbox.getSize()));
         break;
       case GET_MESSAGE:
         doGetMessage(args);
@@ -3442,7 +3426,7 @@ public class ZMailboxUtil implements DebugListener {
     stdout.format("Date: %s\n", DateUtil.toRFC822Date(new Date(msg.getReceivedDate())));
     if (msg.hasTags()) stdout.format("Tags: %s%n", lookupTagNames(msg.getTagIds()));
     if (msg.hasFlags()) stdout.format("Flags: %s%n", ZMessage.Flag.toNameList(msg.getFlags()));
-    stdout.format("Size: %s%n", formatSize(msg.getSize()));
+    stdout.format("Size: %s%n", ByteSizeFormatter.format(msg.getSize()));
     stdout.println();
     if (dumpBody(msg.getMimeStructure())) stdout.println();
   }

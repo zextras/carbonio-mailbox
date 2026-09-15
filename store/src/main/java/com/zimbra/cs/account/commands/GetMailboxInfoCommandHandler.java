@@ -2,6 +2,7 @@ package com.zimbra.cs.account.commands;
 
 import static com.zextras.mailbox.quota.QuotaUsageMessages.USAGE_SCOPE_NOTE;
 
+import com.zextras.mailbox.util.ByteSizeFormatter;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.ArgException;
@@ -31,6 +32,14 @@ class GetMailboxInfoCommandHandler implements CommandHandler {
     SoapProvisioning sp = (SoapProvisioning) prov;
     Account acct = provUtil.lookupAccount(args[1]);
     SoapProvisioning.MailboxInfo info = sp.getMailbox(acct);
-    provUtil.getConsole().println(String.format("mailboxId: %s%nquotaUsed: %d %s", info.getMailboxId(), info.getUsed(), USAGE_SCOPE_NOTE));
+    provUtil
+        .getConsole()
+        .println(
+            String.format(
+                "%s%nmailboxId: %s%nquotaUsed: %s%n%s",
+                USAGE_SCOPE_NOTE,
+                info.getMailboxId(),
+                ByteSizeFormatter.format(info.getUsed()),
+                USAGE_SCOPE_NOTE));
   }
 }
