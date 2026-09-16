@@ -585,6 +585,7 @@ public class ShareInfo {
             genPart(
                 sid,
                 action == Action.edit,
+                null,
                 extUserShareAcceptUrl,
                 extUserLoginUrl,
                 locale,
@@ -605,6 +606,7 @@ public class ShareInfo {
             genPart(
                 sid,
                 action == Action.edit,
+                null,
                 extUserShareAcceptUrl,
                 extUserLoginUrl,
                 locale,
@@ -628,6 +630,7 @@ public class ShareInfo {
 
     public static String getMimePartHtml(
         ShareInfoData sid,
+        String notes,
         Locale locale,
         Action action,
         String extUserShareAcceptUrl,
@@ -644,6 +647,7 @@ public class ShareInfo {
             genPart(
                 sid,
                 action == Action.edit,
+                notes,
                 extUserShareAcceptUrl,
                 extUserLoginUrl,
                 locale,
@@ -656,6 +660,7 @@ public class ShareInfo {
 
     public static String getMimePartText(
         ShareInfoData sid,
+        String notes,
         Locale locale,
         Action action,
         String extUserShareAcceptUrl,
@@ -671,6 +676,7 @@ public class ShareInfo {
             genPart(
                 sid,
                 action == Action.edit,
+                notes,
                 extUserShareAcceptUrl,
                 extUserLoginUrl,
                 locale,
@@ -683,6 +689,7 @@ public class ShareInfo {
     private static String genPart(
         ShareInfoData sid,
         boolean shareModified,
+        String senderNotes,
         String extUserShareAcceptUrl,
         String extUserLoginUrl,
         Locale locale,
@@ -703,6 +710,14 @@ public class ShareInfo {
                 extUserShareAcceptUrl,
                 extUserLoginUrl);
       }
+      if (!Strings.isNullOrEmpty(senderNotes)) {
+        if (!html) {
+          senderNotes = L10nUtil.getMessage(MsgKey.shareNotifBodyNotesText, locale, senderNotes);
+        } else {
+          senderNotes = senderNotes.replaceAll(NEWLINE, HTML_LINE_BREAK);
+          senderNotes = L10nUtil.getMessage(MsgKey.shareNotifBodyNotesHtml, locale, senderNotes);
+        }
+      }
       MsgKey msgKey;
       if (shareModified) {
         msgKey = html ? MsgKey.shareModifyBodyHtml : MsgKey.shareModifyBodyText;
@@ -719,7 +734,8 @@ public class ShareInfo {
                   sid.getGranteeNotifName(),
                   getRoleFromRights(sid, locale),
                   getRightsText(sid, locale),
-                  Strings.nullToEmpty(externalShareInfo)))
+                  Strings.nullToEmpty(externalShareInfo),
+                  Strings.nullToEmpty(senderNotes)))
           .toString();
     }
 
@@ -866,9 +882,9 @@ public class ShareInfo {
 
         if (idx == null) {
           for (ShareInfoData sid : mShares) {
-            genPart(sid, false, null, null, locale, sb, false);
+            genPart(sid, false, null, null, null, locale, sb, false);
           }
-        } else genPart(mShares.get(idx), false, null, null, locale, sb, false);
+        } else genPart(mShares.get(idx), false, null, null, null, locale, sb, false);
 
         sb.append("\n\n");
         return sb.toString();
@@ -889,9 +905,9 @@ public class ShareInfo {
 
         if (idx == null) {
           for (ShareInfoData sid : mShares) {
-            genPart(sid, false, null, null, locale, sb, true);
+            genPart(sid, false, null, null, null, locale, sb, true);
           }
-        } else genPart(mShares.get(idx), false, null, null, locale, sb, true);
+        } else genPart(mShares.get(idx), false, null, null, null, locale, sb, true);
 
         return sb.toString();
       }
