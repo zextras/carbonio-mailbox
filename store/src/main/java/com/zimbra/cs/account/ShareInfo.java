@@ -714,7 +714,7 @@ public class ShareInfo {
         if (!html) {
           senderNotes = L10nUtil.getMessage(MsgKey.shareNotifBodyNotesText, locale, senderNotes);
         } else {
-          senderNotes = senderNotes.replaceAll(NEWLINE, HTML_LINE_BREAK);
+          senderNotes = senderNotes.replace(NEWLINE, HTML_LINE_BREAK);
           senderNotes = L10nUtil.getMessage(MsgKey.shareNotifBodyNotesHtml, locale, senderNotes);
         }
       }
