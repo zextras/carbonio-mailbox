@@ -21,7 +21,7 @@
 
   <properties>
     <!-- Mailbox version -->
-    <revision>4.35.5</revision>
+    <revision>4.36.1</revision>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
 
@@ -498,7 +498,7 @@
       <dependency>
         <groupId>com.zextras</groupId>
         <artifactId>mailbox-attribute-manager</artifactId>
-        <version>5.4.0</version>
+        <version>5.5.0</version>
       </dependency>
       <dependency>
         <groupId>com.zextras</groupId>

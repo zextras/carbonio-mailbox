@@ -8,20 +8,20 @@ OS=${1:-"ubuntu-jammy"}
 
 echo "Building for OS: $OS"
 
-# Inject the Carbonio public repo (area51/devel) to resolve runtime depends
+# Inject the Carbonio Nexus repo (repo.zextras.tools) to resolve runtime depends
 # (carbonio-core, service-discover, service-discover-base, pending-setups).
-BASE_URL="https://repo.area51-zextras.com/devel"
+BASE_URL="https://repo.zextras.tools/repository"
 GPG_KEY_URL="https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x5dc7680bc4378c471a7fa80f52fd40243e584a21"
 case "${OS}" in
     ubuntu-*)
         SUITE="${OS#ubuntu-}"  # e.g. "jammy" from "ubuntu-jammy"
-        REPO_FLAG="--repo name=carbonio,url=${BASE_URL}/ubuntu,suite=${SUITE},components=main,format=deb,keyURL=${GPG_KEY_URL}"
+        REPO_FLAG="--repo name=carbonio,url=${BASE_URL}/ubuntu-devel-${SUITE},suite=${SUITE},components=main,format=deb,keyURL=${GPG_KEY_URL}"
         ;;
     rocky-8*)
-        REPO_FLAG="--repo name=carbonio,url=${BASE_URL}/rhel8,format=rpm,keyURL=https://repo.zextras.io/repomd.xml.key"
+        REPO_FLAG="--repo name=carbonio,url=${BASE_URL}/rhel8-devel,format=rpm,keyURL=https://repo.zextras.io/repomd.xml.key"
         ;;
     rocky-9*)
-        REPO_FLAG="--repo name=carbonio,url=${BASE_URL}/rhel9,format=rpm,keyURL=https://repo.zextras.io/repomd.xml.key"
+        REPO_FLAG="--repo name=carbonio,url=${BASE_URL}/rhel9-devel,format=rpm,keyURL=https://repo.zextras.io/repomd.xml.key"
         ;;
     *)
         REPO_FLAG=""
