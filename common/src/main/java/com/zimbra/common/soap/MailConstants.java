@@ -839,6 +839,7 @@ public final class MailConstants {
   public static final String A_INTERNAL_GRANT_EXPIRY = "internalGrantExpiry";
   public static final String A_GUEST_GRANT_EXPIRY = "guestGrantExpiry";
   public static final String E_GRANT = "grant";
+  public static final String E_NOTES = "notes";
   public static final String E_SHARE = "share";
   public static final String E_REVOKE = "revoke";
   public static final String A_EXPIRE = "expire";
