@@ -31,6 +31,6 @@ class RecalculateMailboxCountsCommandHandler implements CommandHandler {
     SoapProvisioning sp = (SoapProvisioning) prov;
     Account account = provUtil.lookupAccount(args[1]);
     long quotaUsed = sp.recalculateMailboxCounts(account);
-    provUtil.getConsole().print("account: " + account.getName() + "\nquotaUsed: " + quotaUsed + " " + USAGE_SCOPE_NOTE + "\n");
+    provUtil.getConsole().print(USAGE_SCOPE_NOTE + "\naccount: " + account.getName() + "\nquotaUsed: " + quotaUsed + "\n" + USAGE_SCOPE_NOTE + "\n");
   }
 }
