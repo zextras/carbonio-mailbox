@@ -2,6 +2,7 @@ package com.zimbra.cs.account.commands;
 
 import static com.zextras.mailbox.quota.QuotaUsageMessages.USAGE_SCOPE_NOTE;
 
+import com.zextras.mailbox.util.ByteSizeFormatter;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
@@ -32,7 +33,8 @@ class GetQuotaUsageCommandHandler implements CommandHandler {
     List<SoapProvisioning.QuotaUsage> result = sp.getQuotaUsage(args[1]);
     provUtil.getConsole().println(USAGE_SCOPE_NOTE);
     for (SoapProvisioning.QuotaUsage u : result) {
-      provUtil.getConsole().println(String.format("%s %d", u.getName(), u.getUsed()));
+      provUtil.getConsole().println(
+          String.format("%s %s", u.getName(), ByteSizeFormatter.format(u.getUsed())));
     }
     provUtil.getConsole().println(USAGE_SCOPE_NOTE);
   }
