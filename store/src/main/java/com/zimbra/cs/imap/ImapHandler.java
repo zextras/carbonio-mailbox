@@ -112,7 +112,6 @@ import com.zimbra.cs.service.admin.AdminAccessControl;
 import com.zimbra.cs.service.admin.FlushCache;
 import com.zimbra.cs.service.mail.FolderAction;
 import com.zimbra.cs.service.util.ItemId;
-import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.cs.util.BuildInfo;
 import com.zimbra.soap.admin.type.CacheEntrySelector;
 import com.zimbra.soap.admin.type.CacheEntryType;
@@ -126,7 +125,7 @@ public abstract class ImapHandler {
     private static final Set<String> SUPPORTED_EXTENSIONS = new LinkedHashSet<>(Arrays.asList(
         "ACL", "BINARY", "CATENATE", "CHILDREN", "CONDSTORE", "ENABLE", "ESEARCH", "ESORT",
         "I18NLEVEL=1", "ID", "IDLE", "LIST-EXTENDED", "LIST-STATUS", "LITERAL+", "LOGIN-REFERRALS",
-        "MULTIAPPEND", "NAMESPACE", "QRESYNC", "QUOTA", "RIGHTS=ektx", "SASL-IR", "SEARCHRES",
+        "MULTIAPPEND", "NAMESPACE", "QRESYNC", "RIGHTS=ektx", "SASL-IR", "SEARCHRES",
         "SORT", "SPECIAL-USE", "THREAD=ORDEREDSUBJECT", "UIDPLUS", "UNSELECT", "WITHIN", "XLIST"
     ));
 
@@ -619,21 +618,11 @@ public abstract class ImapHandler {
                 }
                 break;
             case 'G':
-                if (command.equals("GETQUOTA") && extensionEnabled("QUOTA")) {
-                    req.skipSpace();
-                    ImapPath qroot = new ImapPath(req.readAstring(), credentials);
-                    checkEOF(tag, req);
-                    return doGETQUOTA(tag, qroot);
-                } else if (command.equals("GETACL") && extensionEnabled("ACL")) {
+                if (command.equals("GETACL") && extensionEnabled("ACL")) {
                     req.skipSpace();
                     ImapPath path = new ImapPath(req.readFolder(), credentials);
                     checkEOF(tag, req);
                     return doGETACL(tag, path);
-                } else if (command.equals("GETQUOTAROOT") && extensionEnabled("QUOTA")) {
-                    req.skipSpace();
-                    ImapPath path = new ImapPath(req.readFolder(), credentials);
-                    checkEOF(tag, req);
-                    return doGETQUOTAROOT(tag, path);
                 }
                 break;
             case 'I':
@@ -928,23 +917,6 @@ public abstract class ImapHandler {
                         i4rights = i4rights.substring(1);
                     }
                     return doSETACL(tag, path, principal, i4rights, action);
-                } else if (command.equals("SETQUOTA") && extensionEnabled("QUOTA")) {
-                    Map<String, String> limits = new HashMap<>();
-                    req.skipSpace();
-                    req.readAstring(); // qroot
-                    req.skipSpace();
-                    req.skipChar('(');
-                    while (req.peekChar() != ')') {
-                        if (!limits.isEmpty()) {
-                            req.skipSpace();
-                        }
-                        String resource = req.readATOM();
-                        req.skipSpace();
-                        limits.put(resource, req.readNumber());
-                    }
-                    req.skipChar(')');
-                    checkEOF(tag, req);
-                    return doSETQUOTA(tag);
                 }
                 break;
             case 'T':
@@ -1256,7 +1228,6 @@ public abstract class ImapHandler {
         // [MULTIAPPEND]      RFC 3502: Internet Message Access Protocol (IMAP) - MULTIAPPEND Extension
         // [NAMESPACE]        RFC 2342: IMAP4 Namespace
         // [QRESYNC]          RFC 5162: IMAP4 Extensions for Quick Mailbox Resynchronization
-        // [QUOTA]            RFC 2087: IMAP4 QUOTA extension
         // [RIGHTS=ektx]      RFC 4314: IMAP4 Access Control List (ACL) Extension
         // [SASL-IR]          RFC 4959: IMAP Extension for Simple Authentication and Security Layer (SASL) Initial Client Response
         // [SEARCHRES]        RFC 5182: IMAP Extension for Referencing the Last SEARCH Result
@@ -2986,84 +2957,6 @@ public abstract class ImapHandler {
                 }
             }
         }
-        return true;
-    }
-
-    private boolean doSETQUOTA(String tag) throws IOException {
-        if (!checkState(tag, State.AUTHENTICATED)) {
-            return true;
-        }
-        // cannot set quota from IMAP at present
-        sendNO(tag, "SETQUOTA failed");
-        return true;
-    }
-
-    private boolean doGETQUOTA(String tag, ImapPath qroot) throws IOException {
-        if (!checkState(tag, State.AUTHENTICATED))
-            return true;
-
-        try {
-            if (!qroot.belongsTo(credentials)) {
-                ZimbraLog.imap.info("GETQUOTA failed: cannot get quota for other user's mailbox: " + qroot);
-                sendNO(tag, "GETQUOTA failed: permission denied");
-                return true;
-            }
-
-            long quota = AccountUtil.getEffectiveQuota(credentials.getAccount());
-            if (!qroot.asImapPath().equals("") || quota <= 0) {
-                ZimbraLog.imap.info("GETQUOTA failed: unknown quota root: '" + qroot + "'");
-                sendNO(tag, "GETQUOTA failed: unknown quota root");
-                return true;
-            }
-            // RFC 2087 3: "STORAGE  Sum of messages' RFC822.SIZE, in units of 1024 octets"
-            sendUntagged("QUOTA \"\" (STORAGE " + (credentials.getMailbox().getSize() / 1024) + ' ' + (quota / 1024) + ')');
-        } catch (ServiceException e) {
-            ZimbraLog.imap.warn("GETQUOTA failed", e);
-            sendNO(tag, "GETQUOTA failed");
-            return canContinue(e);
-        }
-
-        sendNotifications(true, false);
-        sendOK(tag, "GETQUOTA completed");
-        return true;
-    }
-
-    private boolean doGETQUOTAROOT(String tag, ImapPath qroot) throws IOException {
-        if (!checkState(tag, State.AUTHENTICATED))
-            return true;
-
-        try {
-            if (!qroot.belongsTo(credentials)) {
-                ZimbraLog.imap.info("GETQUOTAROOT failed: cannot get quota root for other user's mailbox: " + qroot);
-                sendNO(tag, "GETQUOTAROOT failed: permission denied");
-                return true;
-            }
-
-            // make sure the folder exists and is visible
-            if (!qroot.isVisible()) {
-                ZimbraLog.imap.info("GETQUOTAROOT failed: folder not visible: '" + qroot + "'");
-                sendNO(tag, "GETQUOTAROOT failed");
-                return true;
-            }
-
-            // see if there's any quota on the account
-            long quota = AccountUtil.getEffectiveQuota(credentials.getAccount());
-            sendUntagged("QUOTAROOT " + qroot.asUtf7String() + (quota > 0 ? " \"\"" : ""));
-            if (quota > 0) {
-                sendUntagged("QUOTA \"\" (STORAGE " + (credentials.getMailbox().getSize() / 1024) + ' ' + (quota / 1024) + ')');
-            }
-        } catch (ServiceException e) {
-            if (e.getCode().equals(MailServiceException.NO_SUCH_FOLDER)) {
-                ZimbraLog.imap.info("GETQUOTAROOT failed: no such folder: %s", qroot);
-            } else {
-                ZimbraLog.imap.warn("GETQUOTAROOT failed", e);
-            }
-            sendNO(tag, "GETQUOTAROOT failed");
-            return canContinue(e);
-        }
-
-        sendNotifications(true, false);
-        sendOK(tag, "GETQUOTAROOT completed");
         return true;
     }
 
