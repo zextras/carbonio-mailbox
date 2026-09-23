@@ -217,6 +217,39 @@ class NioImapServerIT extends MailboxTestSuite {
   }
 
   @Test
+  void shouldNotAdvertiseQuotaCapability() throws IOException {
+    imapClient.login(account.getName(), account.getUserPassword());
+    imapClient.sendCommand("CAPABILITY");
+
+    var replyString = imapClient.getReplyString();
+
+    assertFalse(
+        replyString.contains(" QUOTA"),
+        "CAPABILITY response should not contain QUOTA: " + replyString);
+  }
+
+  @Test
+  void shouldRejectGetQuotaRoot() throws IOException {
+    imapClient.login(account.getName(), account.getUserPassword());
+    imapClient.sendCommand("GETQUOTAROOT INBOX");
+
+    var replyString = imapClient.getReplyString();
+
+    assertTrue(replyString.contains("BAD"), "GETQUOTAROOT should be rejected: " + replyString);
+    assertFalse(replyString.contains("QUOTAROOT"), "Unexpected QUOTAROOT response: " + replyString);
+  }
+
+  @Test
+  void shouldRejectGetQuota() throws IOException {
+    imapClient.login(account.getName(), account.getUserPassword());
+    imapClient.sendCommand("GETQUOTA \"\"");
+
+    var replyString = imapClient.getReplyString();
+
+    assertTrue(replyString.contains("BAD"), "GETQUOTA should be rejected: " + replyString);
+  }
+
+  @Test
   void shouldAppendMessage() throws IOException {
     imapClient.login(account.getName(), account.getUserPassword());
     imapClient.sendCommand("SELECT INBOX");
