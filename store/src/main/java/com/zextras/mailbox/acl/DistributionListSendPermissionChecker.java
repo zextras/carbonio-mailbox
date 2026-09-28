@@ -9,7 +9,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.accesscontrol.Rights;
+import com.zimbra.cs.account.accesscontrol.generated.UserRights;
 import com.zimbra.cs.mailbox.MailServiceException;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +86,7 @@ public class DistributionListSendPermissionChecker {
       return false;
     }
     boolean allowed =
-        accessManager.canDo(senderEmail, group, Rights.User.R_sendToDistList, false);
+        accessManager.canDo(senderEmail, group, UserRights.R_sendToDistList, false);
     if (!allowed) {
       logger.info("sender {} is not allowed to email distribution list {}", senderEmail, address);
     }
@@ -94,8 +94,8 @@ public class DistributionListSendPermissionChecker {
   }
 
   private static String emailOf(Address address) {
-    if (address instanceof InternetAddress) {
-      return ((InternetAddress) address).getAddress();
+    if (address instanceof InternetAddress internetAddress) {
+      return internetAddress.getAddress();
     }
     return address == null ? null : address.toString();
   }
