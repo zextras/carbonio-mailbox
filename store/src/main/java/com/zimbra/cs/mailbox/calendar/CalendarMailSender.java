@@ -1202,7 +1202,7 @@ public class CalendarMailSender {
       }
     } catch (MailServiceException e) {
       if (e.getCode().equals(MailServiceException.SEND_PARTIAL_ADDRESS_FAILURE)) {
-        ZimbraLog.calendar.info("Unable to send to some addresses: " + e);
+        ZimbraLog.calendar.warn("Unable to send to some addresses: " + e);
       } else {
         throw e;
       }

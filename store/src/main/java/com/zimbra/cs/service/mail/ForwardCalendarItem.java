@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zextras.mailbox.acl.DistributionListSendPermissionChecker;
 import com.zimbra.common.calendar.ICalTimeZone;
 import com.zimbra.common.calendar.ParsedDateTime;
 import com.zimbra.common.calendar.TimeZoneMap;
@@ -21,6 +22,7 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.Pair;
 import com.zimbra.common.zmime.ZMimeBodyPart;
 import com.zimbra.common.zmime.ZMimeMessage;
+import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.CalendarItem;
@@ -105,12 +107,24 @@ public class ForwardCalendarItem extends CalendarRequest {
       ParsedDateTime exceptDt = CalendarUtils.parseDateTime(exc, tzmap);
       rid = new RecurId(exceptDt, RecurId.RANGE_NONE);
     }
+    checkDistributionListSendPermission(senderAcct, mm);
     Pair<List<MimeMessage>, List<MimeMessage>> mimePair =
         forwardCalItem(mbox, octxt, calItem, rid, mm, senderAcct);
     MimeProcessor mimeProcessor = MimeProcessorUtil.getMimeProcessor(request, context);
     sendForwardMessages(mbox, octxt, mimePair, mimeProcessor);
     Element response = getResponseElement(zsc);
     return response;
+  }
+
+  private static void checkDistributionListSendPermission(Account senderAcct, MimeMessage mm)
+      throws ServiceException {
+    try {
+      new DistributionListSendPermissionChecker(
+              Provisioning.getInstance(), AccessManager.getInstance())
+          .assertCanSendTo(senderAcct.getName(), mm.getAllRecipients());
+    } catch (MessagingException e) {
+      throw ServiceException.FAILURE("Checking recipients of forwarded invite", e);
+    }
   }
 
   public static void sendForwardMessages(
