@@ -245,6 +245,11 @@ public class ModifyCalendarItem extends CalendarRequest {
                 dat.mInvite.setLastFullSeqNo(inv.getLastFullSeqNo());
             }
             if (inv.isRecurrence()) {
+                // Recipients are cleared below and notifications are queued later by notifyCalendarItem,
+                // so the distribution list check must run here while the recipients are still known.
+                if (hasRecipients) {
+                    checkDistributionListSendPermission(zsc, acct, mbox, dat.mMm);
+                }
                 // Clear to/cc/bcc from the MimeMessage, so that the sendCalendarMessage call only updates the organizer's
                 // own appointment without notifying any attendees.  Notifications will be sent later,
                 removeAllRecipients(dat.mMm);
