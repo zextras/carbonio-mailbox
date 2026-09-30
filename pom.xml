@@ -413,7 +413,7 @@
       <dependency>
         <groupId>ical4j</groupId>
         <artifactId>ical4j</artifactId>
-        <version>0.9.16-patched</version>
+        <version>0.9.19</version>
       </dependency>
       <dependency>
         <groupId>javax.activation</groupId>
