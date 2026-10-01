@@ -53,10 +53,15 @@ public class DistributionListSendPermissionChecker {
     }
     List<Address> unsent = allExcept(recipients, denied);
     throw MailServiceException.SEND_ABORTED_ADDRESS_FAILURE(
-        DENIED_MESSAGE + joinAddresses(denied),
+        deniedMessage(denied),
         null,
         denied.toArray(new Address[0]),
         unsent.toArray(new Address[0]));
+  }
+
+  /** Returns the error message reported to a sender for the given denied distribution lists. */
+  public static String deniedMessage(List<Address> denied) {
+    return DENIED_MESSAGE + joinAddresses(denied);
   }
 
   /** Returns the recipients that are distribution lists the sender is not allowed to email. */
