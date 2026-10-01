@@ -8,6 +8,7 @@ package com.zimbra.cs.mailbox;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
+import com.zextras.mailbox.acl.DistributionListSendPermissionChecker;
 import com.zimbra.client.ZMailbox;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
@@ -642,6 +643,9 @@ public class MailSender {
         }
       }
 
+      // Enforce distribution list send restrictions before anything is saved or sent.
+      List<Address> deniedDistributionLists = rejectOrExcludeDeniedDistributionLists(mm);
+
       // run any pre-send/pre-save MIME mutators
       try {
         for (Class<? extends MimeVisitor> vclass : MimeVisitor.getMutators()) {
@@ -878,6 +882,10 @@ public class MailSender {
         }
       }
 
+      if (!deniedDistributionLists.isEmpty()) {
+        throw distributionListPartialFailure(deniedDistributionLists);
+      }
+
       return returnItemId;
 
     } catch (SafeSendFailedException sfe) {
@@ -908,6 +916,64 @@ public class MailSender {
         throw ServiceException.FAILURE("Unable to send message", me);
       }
     }
+  }
+
+  /**
+   * Applies the {@code sendToDistList} restriction to the recipients, using the envelope sender,
+   * which is the address the MTA checks too. When partial send is off the send is aborted. When it
+   * is on, the denied lists are dropped from the SMTP recipients and returned, so the caller can
+   * report a partial failure once the message has been sent to the other recipients.
+   *
+   * <p>Calendar sends are checked earlier by the calendar handlers, and data source sends go
+   * through an external SMTP server, so both are skipped here.
+   */
+  private List<Address> rejectOrExcludeDeniedDistributionLists(MimeMessage mm)
+      throws ServiceException, MessagingException {
+    if (mCalendarMode || isDataSourceSender()) {
+      return Collections.emptyList();
+    }
+    Address[] recipients = getRecipients(mm);
+    DistributionListSendPermissionChecker checker = newDistributionListSendPermissionChecker();
+    if (!isSendPartial()) {
+      checker.assertCanSendTo(mEnvelopeFrom, recipients);
+      return Collections.emptyList();
+    }
+    List<Address> denied = checker.findDeniedDistributionLists(mEnvelopeFrom, recipients);
+    if (denied.isEmpty()) {
+      return denied;
+    }
+    List<String> allowed = addressesExcept(recipients, denied);
+    if (allowed.isEmpty()) {
+      throw distributionListPartialFailure(denied);
+    }
+    setRecipients(allowed.toArray(new String[0]));
+    return denied;
+  }
+
+  private static DistributionListSendPermissionChecker newDistributionListSendPermissionChecker() {
+    return new DistributionListSendPermissionChecker(
+        Provisioning.getInstance(), AccessManager.getInstance());
+  }
+
+  private static List<String> addressesExcept(Address[] recipients, List<Address> excluded) {
+    List<String> remaining = new ArrayList<>();
+    for (Address recipient : recipients) {
+      if (!excluded.contains(recipient)) {
+        remaining.add(
+            recipient instanceof InternetAddress internetAddress
+                ? internetAddress.getAddress()
+                : recipient.toString());
+      }
+    }
+    return remaining;
+  }
+
+  private static MailServiceException distributionListPartialFailure(List<Address> denied) {
+    return MailServiceException.SEND_PARTIAL_ADDRESS_FAILURE(
+        DistributionListSendPermissionChecker.deniedMessage(denied),
+        null,
+        denied.toArray(new Address[0]),
+        new Address[0]);
   }
 
   private boolean isDataSourceSender() {

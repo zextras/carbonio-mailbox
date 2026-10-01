@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zextras.mailbox.acl.DistributionListSendPermissionChecker;
 import com.zimbra.common.calendar.ParsedDateTime;
 import com.zimbra.common.calendar.ZCalendar.ICalTok;
 import com.zimbra.common.calendar.ZCalendar.ZComponent;
@@ -14,12 +15,15 @@ import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.L10nUtil;
 import com.zimbra.common.util.L10nUtil.MsgKey;
 import com.zimbra.common.util.MailUtil;
+import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.zmime.ZSharedFileInputStream;
+import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.CalendarItem;
@@ -418,6 +422,12 @@ public abstract class CalendarRequest extends MailDocumentHandler {
       }
     }
 
+    // Enforce distribution list send restrictions before anything is persisted, so the caller
+    // gets the same failure as a regular email instead of a silently undelivered invitation.
+    if (willNotify && !csd.mInvite.isCancel()) {
+      checkDistributionListSendPermission(zsc, acct, mbox, csd.mMm);
+    }
+
     // Validate the addresses first.
     if (!csd.mInvite.isCancel() && !forceSend && willNotify) {
       try {
@@ -506,6 +516,41 @@ public abstract class CalendarRequest extends MailDocumentHandler {
     }
 
     return response;
+  }
+
+  /**
+   * Fails with {@link MailServiceException#SEND_ABORTED_ADDRESS_FAILURE} when the envelope sender
+   * of the outgoing message is not allowed to email one of the invited distribution lists.
+   */
+  protected static void checkDistributionListSendPermission(
+      ZimbraSoapContext zsc, Account acct, Mailbox mbox, MimeMessage mm) throws ServiceException {
+    try {
+      new DistributionListSendPermissionChecker(
+              Provisioning.getInstance(), AccessManager.getInstance())
+          .assertCanSendTo(resolveEnvelopeSender(zsc, acct, mbox, mm), mm.getAllRecipients());
+    } catch (MessagingException e) {
+      throw ServiceException.FAILURE("Checking recipients of outgoing msg ", e);
+    }
+  }
+
+  /**
+   * Mirrors how {@link MailSender} picks the SMTP envelope sender, which is the address the MTA
+   * checks against the distribution list restrictions.
+   */
+  private static String resolveEnvelopeSender(
+      ZimbraSoapContext zsc, Account acct, Mailbox mbox, MimeMessage mm)
+      throws ServiceException, MessagingException {
+    if (acct.isSmtpRestrictEnvelopeFrom()) {
+      return mbox.getAccount().getName();
+    }
+    InternetAddress from = (InternetAddress) ArrayUtil.getFirstElement(mm.getFrom());
+    InternetAddress sender = (InternetAddress) mm.getSender();
+    Pair<InternetAddress, InternetAddress> headers =
+        CalendarMailSender.getCalendarMailSender(mbox)
+            .getSenderHeaders(
+                from, sender, acct, getAuthenticatedAccount(zsc), zsc.isUsingAdminPrivileges());
+    InternetAddress envelope = headers.getSecond() != null ? headers.getSecond() : headers.getFirst();
+    return envelope != null ? envelope.getAddress() : acct.getName();
   }
 
   protected static Element echoAddedInvite(
