@@ -5182,6 +5182,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       acctNameForLogging = acctValue;
     }
 
+    if (domain == null)
+      throw ServiceException.INVALID_REQUEST("domain is not configured for preauth", null);
+
     // see if domain is configured for preauth
     String domainPreAuthKey = domain.getAttr(Provisioning.A_zimbraPreAuthKey, null);
     if (domainPreAuthKey == null)
