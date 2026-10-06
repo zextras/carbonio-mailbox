@@ -119,6 +119,10 @@ public class MailboxServerExtension implements BeforeAllCallback, AfterAllCallba
 		return "http://localhost:" + internalApiPort + "/internal";
 	}
 
+	public String getPublicApiEndpoint() {
+		return "http://localhost:" + internalApiPort + "/public";
+	}
+
 	public String getAuthzApiEndpoint() {
 		return "http://localhost:" + authzApiPort + "/authz";
 	}

@@ -1,0 +1,13 @@
+{
+  "resourcePackages": [
+    "com.zextras.mailbox.publicapi.resource"
+  ],
+  "readAllResources": false,
+  "openAPI": {
+    "info": {
+      "title": "Carbonio Mailbox Public API",
+      "version": "1.0",
+      "description": "Service-to-service API acting on behalf of the user owning the forwarded auth token"
+    }
+  }
+}

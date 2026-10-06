@@ -119,6 +119,22 @@ class MailboxServerAPITest {
 	}
 
 	@Test
+	void publicApiShouldNotBeReachableOnUserHttpPort() throws Exception {
+		final Account account = server.getAccountFactory().create();
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getUserHttpPort() + "/public/accounts/" + account.getId() + "/info");
+		Assertions.assertEquals(404, response.statusCode());
+	}
+
+	@Test
+	void publicApiReachableOnInternalPort() throws Exception {
+		final Account account = server.getAccountFactory().create();
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getInternalApiPort() + "/public/accounts/" + account.getId() + "/info");
+		Assertions.assertEquals(401, response.statusCode());
+	}
+
+	@Test
 	void authzApiShouldNotBeReachableOnUserHttpPort() throws Exception {
 		var response = server.getHttpClient().get(
 				"http://localhost:" + server.getUserHttpPort() + "/authz/rights?targetType=account");

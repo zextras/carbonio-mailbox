@@ -1,0 +1,109 @@
+openapi: 3.0.1
+info:
+  title: Carbonio Mailbox Public API
+  description: Service-to-service API acting on behalf of the user owning the forwarded
+    auth token
+  version: "1.0"
+paths:
+  /accounts/{id}/info:
+    get:
+      summary: Get Account Info
+      description: "Returns account info by ID on behalf of the token owner, who must\
+        \ be the account itself or hold getAccountInfo on it"
+      operationId: getAccountInfo
+      parameters:
+      - name: id
+        in: path
+        description: The account ID
+        required: true
+        schema:
+          type: string
+      - name: ZM_AUTH_TOKEN
+        in: cookie
+        schema:
+          type: string
+      - name: ZM_ADMIN_AUTH_TOKEN
+        in: cookie
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Account Info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountInfoResponse"
+        "401":
+          description: "Missing, invalid or expired auth token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Token owner cannot read the account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    AccountInfoResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+        cosId:
+          type: string
+        domainId:
+          type: string
+        domain:
+          type: string
+        status:
+          type: string
+          enum:
+          - active
+          - maintenance
+          - locked
+          - closed
+          - lockout
+          - pending
+        isGlobalAdmin:
+          type: boolean
+        isExternal:
+          type: boolean
+        locale:
+          type: string
+        features:
+          type: object
+          additionalProperties:
+            type: boolean
+        capabilities:
+          type: object
+          additionalProperties:
+            type: string
+        sessionLifetimeMs:
+          type: integer
+          format: int64
+        isExternalVirtualAccount:
+          type: boolean
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
