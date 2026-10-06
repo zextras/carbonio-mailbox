@@ -43,7 +43,7 @@ class WaitSetRequestAsyncTest {
   private Map<String, Object> context;
 
   @BeforeEach
-  void setUp() throws Exception {
+  void setUp() {
     servletRequest = mock(HttpServletRequest.class);
     ZimbraSoapContext zsc = mock(ZimbraSoapContext.class);
     when(zsc.getRequestedAccountId()).thenReturn("acct");

@@ -90,6 +90,32 @@ class ZimbraSoapContextNotificationTest {
   }
 
   @Test
+  void suspendIfWaitingSuspendsOnlyWhileWaiting() throws Exception {
+    SoapSession session = sessionReturning(SoapSession.RegisterNotificationResult.BLOCKING);
+    try (MockedStatic<SessionCache> cache = mockStatic(SessionCache.class)) {
+      cache.when(() -> SessionCache.lookup("sid", "acct")).thenReturn(session);
+      assertTrue(zsc.beginWaitForNotifications(servletRequest, true));
+    }
+
+    assertTrue(zsc.suspendIfWaitingForNotifications(3000));
+    verify(servletRequest).startAsync();
+    verify(asyncContext).setTimeout(3000);
+  }
+
+  @Test
+  void suspendIfWaitingDoesNothingAfterSignal() throws Exception {
+    SoapSession session = sessionReturning(SoapSession.RegisterNotificationResult.BLOCKING);
+    try (MockedStatic<SessionCache> cache = mockStatic(SessionCache.class)) {
+      cache.when(() -> SessionCache.lookup("sid", "acct")).thenReturn(session);
+      assertTrue(zsc.beginWaitForNotifications(servletRequest, true));
+    }
+    zsc.signalNotification(false);
+
+    assertFalse(zsc.suspendIfWaitingForNotifications(3000));
+    verify(servletRequest, never()).startAsync();
+  }
+
+  @Test
   void nonBlockingResultsAreReportedAsNotBlocking() throws Exception {
     for (SoapSession.RegisterNotificationResult result :
         new SoapSession.RegisterNotificationResult[] {
