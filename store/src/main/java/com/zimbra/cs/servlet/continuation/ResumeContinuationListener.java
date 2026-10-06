@@ -75,13 +75,13 @@ public class ResumeContinuationListener implements AsyncListener {
     public void onError(AsyncEvent event) {
         ZimbraLog.session.trace("ResumeContinuationListener.onError");
         readyToResume.set(false);
-        if (dispatched.compareAndSet(false, true)) {
+        AsyncContext ctx = event != null && event.getAsyncContext() != null
+                ? event.getAsyncContext() : asyncContext.get();
+        // only consume the single-dispatch guard once there is a context to complete: a lazy
+        // listener that has not suspended yet must still be able to dispatch later
+        if (ctx != null && dispatched.compareAndSet(false, true)) {
             try {
-                AsyncContext ctx = event != null && event.getAsyncContext() != null
-                        ? event.getAsyncContext() : asyncContext.get();
-                if (ctx != null) {
-                    ctx.complete();
-                }
+                ctx.complete();
             } catch (IllegalStateException ise) {
                 ZimbraLog.session.debug(
                         "ignoring IllegalStateException during complete; context may be completed", ise);
