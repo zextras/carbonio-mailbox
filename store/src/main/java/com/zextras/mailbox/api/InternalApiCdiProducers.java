@@ -9,8 +9,11 @@ package com.zextras.mailbox.api;
 import com.zextras.mailbox.api.rest.service.AccountService;
 import com.zextras.mailbox.api.rest.service.CosService;
 import com.zextras.mailbox.api.rest.service.MailboxService;
+import com.zextras.mailbox.api.rest.service.RightsService;
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.mailbox.MailboxManager;
 import javax.enterprise.context.ApplicationScoped;
@@ -46,6 +49,22 @@ public class InternalApiCdiProducers {
   @Singleton
   public AccountService accountService(MailboxService mailboxService) {
     return new AccountService(Provisioning::getInstance, mailboxService);
+  }
+
+  @Produces
+  @Singleton
+  public RightsService rightsService(AccountService accountService) {
+    return new RightsService(
+        Provisioning::getInstance,
+        AccessManager::getInstance,
+        () -> {
+          try {
+            return RightManager.getInstance();
+          } catch (ServiceException e) {
+            throw new InternalApiInitializationException(e);
+          }
+        },
+        accountService);
   }
 
   @Produces

@@ -68,7 +68,7 @@ public class ComboRight extends AdminRight {
     }
 
     @Override
-    boolean executableOnTargetType(TargetType targetType) {
+    public boolean executableOnTargetType(TargetType targetType) {
         return true;
     }
 

@@ -9,6 +9,7 @@ package com.zextras.mailbox.api;
 import com.zextras.mailbox.api.rest.resource.AccountResource;
 import com.zextras.mailbox.api.rest.resource.CosResource;
 import com.zextras.mailbox.api.rest.resource.MailboxResource;
+import com.zextras.mailbox.api.rest.resource.RightsResource;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import java.util.Set;
@@ -25,6 +26,7 @@ public class InternalApiApplication extends Application {
 
 	@Override
 	public Set<Class<?>> getClasses() {
-		return Set.of(MailboxResource.class, AccountResource.class, CosResource.class);
+		return Set.of(MailboxResource.class, AccountResource.class, CosResource.class,
+				RightsResource.class);
 	}
 }
