@@ -196,7 +196,7 @@ class ResumeContinuationListenerDispatchTest {
   }
 
   @Test
-  void dispatchOnTimeoutListenerOnErrorCompletesOnce() throws Exception {
+  void dispatchOnTimeoutListenerOnErrorCompletesOnce() {
     AsyncContext ctx = mock(AsyncContext.class);
     DispatchOnTimeoutListener l = new DispatchOnTimeoutListener();
     l.onError(new AsyncEvent(ctx));
@@ -207,7 +207,7 @@ class ResumeContinuationListenerDispatchTest {
   }
 
   @Test
-  void dispatchOnTimeoutListenerOnErrorSwallowsIllegalState() throws Exception {
+  void dispatchOnTimeoutListenerOnErrorSwallowsIllegalState() {
     AsyncContext ctx = mock(AsyncContext.class);
     doThrow(new IllegalStateException()).when(ctx).complete();
     DispatchOnTimeoutListener l = new DispatchOnTimeoutListener();
@@ -215,7 +215,7 @@ class ResumeContinuationListenerDispatchTest {
   }
 
   @Test
-  void dispatchOnTimeoutListenerIgnoresCompleteAndStartAsync() throws Exception {
+  void dispatchOnTimeoutListenerIgnoresCompleteAndStartAsync() {
     AsyncContext ctx = mock(AsyncContext.class);
     DispatchOnTimeoutListener l = new DispatchOnTimeoutListener();
     l.onComplete(new AsyncEvent(ctx));

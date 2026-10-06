@@ -143,18 +143,15 @@ public class NoOp extends MailDocumentHandler  {
 
     private WaitOutcome suspendIfStillWaiting(Element request, ZimbraSoapContext zsc)
             throws ServiceException {
-        synchronized (zsc) {
-            if (zsc.waitingForNotifications()) {
-                long timeout = parseTimeout(request);
-                if (ZimbraLog.soap.isTraceEnabled()) {
-                    ZimbraLog.soap.trace("Suspending <NoOpRequest> for %dms", timeout);
-                }
-                zsc.suspendAndUndispatch(timeout);
-                return WaitOutcome.SUSPENDED;
+        long timeout = parseTimeout(request);
+        if (zsc.suspendIfWaitingForNotifications(timeout)) {
+            if (ZimbraLog.soap.isTraceEnabled()) {
+                ZimbraLog.soap.trace("Suspended <NoOpRequest> for %dms", timeout);
             }
-            return zsc.isCanceledWaitForNotifications()
-                    ? WaitOutcome.BLOCKING_UNSUPPORTED : WaitOutcome.DONE;
+            return WaitOutcome.SUSPENDED;
         }
+        return zsc.isCanceledWaitForNotifications()
+                ? WaitOutcome.BLOCKING_UNSUPPORTED : WaitOutcome.DONE;
     }
 
     /** Second pass (ASYNC re-dispatch after resume or timeout): just answer. */

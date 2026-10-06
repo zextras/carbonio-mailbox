@@ -61,14 +61,14 @@ class NoOpAsyncTest {
 
     assertSame(response, result);
     verify(servletRequest, never()).startAsync();
-    verify(zsc, never()).suspendAndUndispatch(anyLong());
+    verify(zsc, never()).suspendIfWaitingForNotifications(anyLong());
   }
 
   @Test
   void notificationArrivedBeforeSuspendReturnsResponseWithoutStartingAsync() throws Exception {
     when(zsc.beginWaitForNotifications(any(HttpServletRequest.class), anyBoolean()))
         .thenReturn(true);
-    when(zsc.waitingForNotifications()).thenReturn(false);
+    when(zsc.suspendIfWaitingForNotifications(anyLong())).thenReturn(false);
 
     Element result = new NoOp().handle(request, context);
 
@@ -81,12 +81,12 @@ class NoOpAsyncTest {
   void blockingOutcomeSuspendsAndReturnsNull() throws Exception {
     when(zsc.beginWaitForNotifications(any(HttpServletRequest.class), anyBoolean()))
         .thenReturn(true);
-    when(zsc.waitingForNotifications()).thenReturn(true);
+    when(zsc.suspendIfWaitingForNotifications(anyLong())).thenReturn(true);
 
     Element result = new NoOp().handle(request, context);
 
     assertNull(result);
-    verify(zsc).suspendAndUndispatch(anyLong());
+    verify(zsc).suspendIfWaitingForNotifications(anyLong());
   }
 
   @Test
@@ -121,7 +121,7 @@ class NoOpAsyncTest {
   void canceledWaitAfterRegistrationAnswersWaitDisallowed() throws Exception {
     when(zsc.beginWaitForNotifications(any(HttpServletRequest.class), anyBoolean()))
         .thenReturn(true);
-    when(zsc.waitingForNotifications()).thenReturn(false);
+    when(zsc.suspendIfWaitingForNotifications(anyLong())).thenReturn(false);
     when(zsc.isCanceledWaitForNotifications()).thenReturn(true);
 
     Element result = new NoOp().handle(request, context);
@@ -167,7 +167,7 @@ class NoOpAsyncTest {
     ZimbraSoapContext previous = mock(ZimbraSoapContext.class);
     when(zsc.beginWaitForNotifications(any(HttpServletRequest.class), anyBoolean()))
         .thenReturn(true);
-    when(zsc.waitingForNotifications()).thenReturn(true);
+    when(zsc.suspendIfWaitingForNotifications(anyLong())).thenReturn(true);
     NoOp noOp = new NoOp();
     noOp.sBlockedNops.put("acct", previous);
 
@@ -184,7 +184,7 @@ class NoOpAsyncTest {
     when(zsc.getAuthtokenAccountId()).thenReturn("acct");
     when(zsc.beginWaitForNotifications(any(HttpServletRequest.class), anyBoolean()))
         .thenReturn(true);
-    when(zsc.waitingForNotifications()).thenReturn(false);
+    when(zsc.suspendIfWaitingForNotifications(anyLong())).thenReturn(false);
     NoOp noOp = new NoOp();
 
     Element result = noOp.handle(request, context);

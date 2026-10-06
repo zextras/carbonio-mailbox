@@ -825,6 +825,21 @@ public final class ZimbraSoapContext {
     continuationResume.suspendAndUndispatch(timeout);
   }
 
+  /**
+   * Suspends the request if it is still waiting for notifications. Atomic with respect to
+   * {@link #signalNotification(boolean)} (both synchronize on this context), so a notification
+   * arriving concurrently either prevents the suspension or resumes it.
+   *
+   * @return true if the request has been suspended
+   */
+  public synchronized boolean suspendIfWaitingForNotifications(long timeout) {
+    if (!mWaitForNotifications) {
+      return false;
+    }
+    continuationResume.suspendAndUndispatch(timeout);
+    return true;
+  }
+
   /** Called by the Session object if a new notification comes in. */
   public synchronized void signalNotification(boolean canceled) {
     mWaitForNotifications = false;
