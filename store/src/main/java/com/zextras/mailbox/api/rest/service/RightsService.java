@@ -19,8 +19,11 @@ import com.zimbra.cs.account.accesscontrol.TargetType;
 import com.zimbra.cs.account.accesscontrol.TargetTypeLookup;
 import com.zimbra.soap.type.TargetBy;
 import io.vavr.control.Try;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class RightsService {
 
@@ -53,6 +56,19 @@ public class RightsService {
     return rightCheck(right, targetType, targetId)
         .mapTry(check -> hasRight(
             accountId, grantee -> accessManagerSupplier.get().isAdequateAdminAccount(grantee), check));
+  }
+
+  public Try<List<Right>> rightsOn(String targetTypeName) {
+    return Try.of(() -> {
+      final TargetType targetType = TargetType.fromCode(targetTypeName);
+      final RightManager rightManager = rightManagerSupplier.get();
+      return Stream.<Right>concat(
+              rightManager.getAllUserRights().values().stream(),
+              rightManager.getAllAdminRights().values().stream())
+          .filter(right -> !right.isComboRight() && right.executableOnTargetType(targetType))
+          .sorted(Comparator.comparing(Right::getName))
+          .toList();
+    });
   }
 
   private Try<RightCheck> rightCheck(String rightName, String targetTypeName, String targetId) {

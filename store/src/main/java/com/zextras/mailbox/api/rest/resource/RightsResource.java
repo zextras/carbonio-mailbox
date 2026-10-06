@@ -10,11 +10,14 @@ import com.zextras.mailbox.api.rest.resource.dto.RightCheckRequest;
 import com.zextras.mailbox.api.rest.resource.dto.RightCheckRequest.Subject;
 import com.zextras.mailbox.api.rest.resource.dto.RightCheckRequest.Target;
 import com.zextras.mailbox.api.rest.resource.dto.RightCheckResponse;
+import com.zextras.mailbox.api.rest.resource.dto.RightInfoResponse;
 import com.zextras.mailbox.api.rest.response.ErrorResponse;
 import com.zextras.mailbox.api.rest.service.RightsService;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.AuthTokenException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,9 +25,11 @@ import io.vavr.control.Try;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -34,6 +39,29 @@ public class RightsResource {
 
 	@Inject
 	private RightsService rightsService;
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Operation(summary = "List Rights", description = "Returns the rights from the rights catalogue that can be checked on the given target type. "
+			+ "Combo rights are not listed: they bundle rights for different target types and are meant to be granted, not checked.")
+	@ApiResponse(responseCode = "200", description = "Rights applicable to the target type",
+			content = @Content(array = @ArraySchema(schema = @Schema(implementation = RightInfoResponse.class))))
+	@ApiResponse(responseCode = "400", description = "Missing or unknown target type",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	@ApiResponse(responseCode = "500", description = "Internal server error",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	public Response listRights(
+			@Parameter(description = "The target type, e.g. account, domain, cos") @QueryParam("targetType") String targetType) {
+		if (!isPresent(targetType)) {
+			return Response.status(Response.Status.BAD_REQUEST)
+					.entity(new ErrorResponse("Missing required query parameter: targetType"))
+					.build();
+		}
+		return rightsService.rightsOn(targetType)
+				.map(rights -> Response.ok(rights.stream().map(RightInfoResponse::from).toList()).build())
+				.recover(RightsResource::toErrorResponse)
+				.get();
+	}
 
 	@POST
 	@Path("/check")

@@ -259,6 +259,40 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /rights:
+    get:
+      summary: List Rights
+      description: "Returns the rights from the rights catalogue that can be checked\
+        \ on the given target type. Combo rights are not listed: they bundle rights\
+        \ for different target types and are meant to be granted, not checked."
+      operationId: listRights
+      parameters:
+      - name: targetType
+        in: query
+        description: "The target type, e.g. account, domain, cos"
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Rights applicable to the target type
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RightInfoResponse"
+        "400":
+          description: Missing or unknown target type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     AccountInfoResponse:
@@ -375,4 +409,15 @@ components:
         type:
           type: string
         id:
+          type: string
+    RightInfoResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        userRight:
+          type: boolean
+        description:
           type: string

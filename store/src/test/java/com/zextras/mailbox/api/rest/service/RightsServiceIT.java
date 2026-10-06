@@ -30,6 +30,7 @@ import com.zimbra.cs.account.accesscontrol.Rights.User;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE;
 import io.vavr.control.Try;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -243,6 +244,36 @@ class RightsServiceIT {
 	@Test
 	void missingTargetIdIsInvalid() throws Exception {
 		assertInvalidRequest(globalAdminCheck("getAccountInfo", "account", null));
+	}
+
+	@Test
+	void listsUserAndAdminRightsApplicableToTargetType() {
+		final List<String> names = rightNamesOn("account");
+
+		assertTrue(names.containsAll(List.of("configureQuota", "getAccountInfo", "getMailboxInfo", "sendAs")));
+		assertFalse(names.contains("countAccount"));
+	}
+
+	@Test
+	void listsAttrRightsForEveryTargetTypeTheyApplyTo() {
+		assertTrue(rightNamesOn("cos").contains("configureQuota"));
+		assertFalse(rightNamesOn("domain").contains("configureQuota"));
+	}
+
+	@Test
+	void doesNotListComboRights() {
+		assertFalse(rightNamesOn("domain").contains("domainAdminRights"));
+	}
+
+	@Test
+	void listingUnknownTargetTypeIsInvalid() {
+		final ServiceException exception = assertInstanceOf(ServiceException.class,
+				rightsService.rightsOn("planet").getCause());
+		assertEquals(ServiceException.INVALID_REQUEST, exception.getCode());
+	}
+
+	private static List<String> rightNamesOn(String targetType) {
+		return rightsService.rightsOn(targetType).get().stream().map(Right::getName).toList();
 	}
 
 	private static Try<Boolean> globalAdminCheck(String right, String targetType, String targetId)

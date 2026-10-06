@@ -84,6 +84,31 @@ class RightsResourceIT {
 		assertEquals(400, response.statusCode());
 	}
 
+	@Test
+	void listsRightsOnTargetType() throws Exception {
+		final Response response = server.getHttpClient().get(server.getInternalApiEndpoint() + "/rights?targetType=cos");
+
+		assertEquals(200, response.statusCode());
+		assertThatJson(response.body()).isArray().anySatisfy(right -> assertThatJson(right).isObject()
+				.containsEntry("name", "configureQuota")
+				.containsEntry("type", "setAttrs")
+				.containsEntry("userRight", false));
+	}
+
+	@Test
+	void listingWithoutTargetTypeIsRejected() throws Exception {
+		final Response response = server.getHttpClient().get(server.getInternalApiEndpoint() + "/rights");
+
+		assertEquals(400, response.statusCode());
+	}
+
+	@Test
+	void listingUnknownTargetTypeIsRejected() throws Exception {
+		final Response response = server.getHttpClient().get(server.getInternalApiEndpoint() + "/rights?targetType=planet");
+
+		assertEquals(400, response.statusCode());
+	}
+
 	private static Response check(String subject, String right, String target) throws Exception {
 		final String body = "{\"subject\":" + subject + ",\"right\":\"" + right + "\",\"target\":" + target + "}";
 		return server.getHttpClient().post(server.getInternalApiEndpoint() + "/rights/check", body);
