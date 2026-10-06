@@ -12,7 +12,6 @@
     <module>client</module>
     <module>soap</module>
     <module>authz</module>
-    <module>mailbox-rest-client</module>
     <module>store</module>
     <module>store-extra-runtime-dependencies</module>
     <module>jython-libs</module>
@@ -510,11 +509,6 @@
       <dependency>
         <groupId>com.zextras</groupId>
         <artifactId>carbonio-authz</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.zextras</groupId>
-        <artifactId>mailbox-rest-client</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

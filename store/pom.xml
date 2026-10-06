@@ -519,11 +519,6 @@
     </dependency>
     <dependency>
       <groupId>com.zextras</groupId>
-      <artifactId>mailbox-rest-client</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.zextras</groupId>
       <artifactId>store-extra-runtime-dependencies</artifactId>
       <type>pom</type>
       <scope>runtime</scope>
@@ -1060,21 +1055,6 @@ EOF
                 <resourcePackage>com.zextras.mailbox.authz.resource</resourcePackage>
               </resourcePackages>
               <configurationFilePath>${project.basedir}/src/main/resources/authz-openapi-configuration.json</configurationFilePath>
-            </configuration>
-          </execution>
-          <execution>
-            <id>public-api</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>resolve</goal>
-            </goals>
-            <configuration>
-              <contextId>public-api</contextId>
-              <outputFileName>public-api-openapi</outputFileName>
-              <resourcePackages>
-                <resourcePackage>com.zextras.mailbox.publicapi.resource</resourcePackage>
-              </resourcePackages>
-              <configurationFilePath>${project.basedir}/src/main/resources/public-openapi-configuration.json</configurationFilePath>
             </configuration>
           </execution>
         </executions>

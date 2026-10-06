@@ -8,7 +8,6 @@ package com.zextras.mailbox;
 
 import com.zextras.mailbox.api.InternalApiApplication;
 import com.zextras.mailbox.authz.AuthzApiApplication;
-import com.zextras.mailbox.publicapi.PublicApiApplication;
 import com.zextras.mailbox.metric.CarbonioMetricRegisterer;
 import com.zextras.mailbox.metric.Metrics;
 import com.zextras.mailbox.servlet.HealthApplication;
@@ -197,10 +196,9 @@ public class MailboxServletContextBuilder {
 	private void addInternalApiPortFilter(ServletContextHandler servletContextHandler) {
 		// Public filters above are scoped to /service/* so /internal stays off them; it is restricted
 		// to its loopback port instead.
-		final var internalPortOnly =
-				new FilterHolder(new PortRestrictionFilter(LC.mailbox_internal_api_port.intValue()));
-		servletContextHandler.addFilter(internalPortOnly, "/internal/*", EnumSet.of(DispatcherType.REQUEST));
-		servletContextHandler.addFilter(internalPortOnly, "/public/*", EnumSet.of(DispatcherType.REQUEST));
+		servletContextHandler.addFilter(
+				new FilterHolder(new PortRestrictionFilter(LC.mailbox_internal_api_port.intValue())),
+				"/internal/*", EnumSet.of(DispatcherType.REQUEST));
 		servletContextHandler.addFilter(
 				new FilterHolder(new PortRestrictionFilter(LC.mailbox_authz_api_port.intValue())),
 				"/authz/*", EnumSet.of(DispatcherType.REQUEST));
@@ -210,7 +208,6 @@ public class MailboxServletContextBuilder {
 		addHealthServlet(servletContextHandler);
 		addInternalApiServlet(servletContextHandler);
 		addAuthzApiServlet(servletContextHandler);
-		addPublicApiServlet(servletContextHandler);
 		addMetricsServlet(servletContextHandler);
 		addExtensionServlet(servletContextHandler);
 		addSoapServlet(servletContextHandler);
@@ -246,11 +243,6 @@ public class MailboxServletContextBuilder {
 	private void addAuthzApiServlet(ServletContextHandler servletContextHandler) {
 		servletContextHandler.addServlet(
 				cdiJaxrsDispatcher(AuthzApiApplication.class, "/authz"), "/authz/*");
-	}
-
-	private void addPublicApiServlet(ServletContextHandler servletContextHandler) {
-		servletContextHandler.addServlet(
-				cdiJaxrsDispatcher(PublicApiApplication.class, "/public"), "/public/*");
 	}
 
 	private void addMetricsServlet(ServletContextHandler servletContextHandler) {
