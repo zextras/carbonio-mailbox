@@ -34,6 +34,29 @@ public class PublicAccountResource {
 	private PublicAccountService publicAccountService;
 
 	@GET
+	@Path("/myself")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Operation(summary = "Get Authenticated Account Info", description = "Returns account info of the token owner")
+	@ApiResponse(responseCode = "200", description = "Account Info",
+			content = @Content(schema = @Schema(implementation = AccountInfoResponse.class)))
+	@ApiResponse(responseCode = "401", description = "Missing, invalid or expired auth token",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	@ApiResponse(responseCode = "500", description = "Internal server error",
+			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+	public Response getMyAccountInfo(
+			@CookieParam("ZM_AUTH_TOKEN") String authTokenCookie,
+			@CookieParam("ZM_ADMIN_AUTH_TOKEN") String adminAuthTokenCookie) {
+		final String token = token(authTokenCookie, adminAuthTokenCookie);
+		if (token == null) {
+			return missingToken();
+		}
+		return publicAccountService.getMyAuthToken(token)
+				.mapTry(authToken -> Response.ok(AccountInfoResponse.from(authToken)).build())
+				.recover(PublicAccountResource::toErrorResponse)
+				.get();
+	}
+
+	@GET
 	@Path("/{id}/info")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Operation(summary = "Get Account Info", description = "Returns account info by ID on behalf of the token owner, "
@@ -52,16 +75,23 @@ public class PublicAccountResource {
 			@Parameter(description = "The account ID") @PathParam("id") String id,
 			@CookieParam("ZM_AUTH_TOKEN") String authTokenCookie,
 			@CookieParam("ZM_ADMIN_AUTH_TOKEN") String adminAuthTokenCookie) {
-		final String token = adminAuthTokenCookie != null ? adminAuthTokenCookie : authTokenCookie;
-		if (token == null || token.isEmpty()) {
-			return Response.status(Response.Status.UNAUTHORIZED)
-					.entity(new ErrorResponse("Missing auth token"))
-					.build();
+		final String token = token(authTokenCookie, adminAuthTokenCookie);
+		if (token == null) {
+			return missingToken();
 		}
 		return publicAccountService.getAccount(token, id)
 				.mapTry(account -> Response.ok(AccountInfoResponse.from(account)).build())
 				.recover(PublicAccountResource::toErrorResponse)
 				.get();
+	}
+
+	private static String token(String authTokenCookie, String adminAuthTokenCookie) {
+		final String token = adminAuthTokenCookie != null ? adminAuthTokenCookie : authTokenCookie;
+		return token == null || token.isEmpty() ? null : token;
+	}
+
+	private static Response missingToken() {
+		return error(Response.Status.UNAUTHORIZED, "Missing auth token");
 	}
 
 	private static Response toErrorResponse(Throwable e) {

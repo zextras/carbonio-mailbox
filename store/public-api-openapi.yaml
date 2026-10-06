@@ -57,6 +57,39 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /accounts/myself:
+    get:
+      summary: Get Authenticated Account Info
+      description: Returns account info of the token owner
+      operationId: getMyAccountInfo
+      parameters:
+      - name: ZM_AUTH_TOKEN
+        in: cookie
+        schema:
+          type: string
+      - name: ZM_ADMIN_AUTH_TOKEN
+        in: cookie
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Account Info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountInfoResponse"
+        "401":
+          description: "Missing, invalid or expired auth token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     AccountInfoResponse:

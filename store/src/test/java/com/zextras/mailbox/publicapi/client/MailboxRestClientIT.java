@@ -47,6 +47,21 @@ class MailboxRestClientIT {
 	}
 
 	@Test
+	void getsMyAccount() throws Exception {
+		final com.zimbra.cs.account.Account admin = server.getAccountFactory().asGlobalAdmin().create();
+
+		final Account result = client.getMyAccount(new ZimbraAuthToken(admin).getEncoded());
+
+		assertEquals(admin.getId(), result.id());
+		assertEquals(true, result.isGlobalAdmin());
+	}
+
+	@Test
+	void getMyAccountWithInvalidTokenIsUnauthorized() {
+		assertThrows(UnauthorizedException.class, () -> client.getMyAccount("invalid-token"));
+	}
+
+	@Test
 	void adminGetsAnotherAccount() throws Exception {
 		final com.zimbra.cs.account.Account admin = server.getAccountFactory().asGlobalAdmin().create();
 		final com.zimbra.cs.account.Account user = server.getAccountFactory().create();

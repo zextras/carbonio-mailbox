@@ -37,6 +37,24 @@ class PublicAccountResourceIT {
 	}
 
 	@Test
+	void readsMyAccount() throws Exception {
+		final Account user = server.getAccountFactory().create();
+
+		final Response response = server.getHttpClient().get(server.getPublicApiEndpoint() + "/accounts/myself",
+				Map.of("Cookie", "ZM_AUTH_TOKEN=" + new ZimbraAuthToken(user).getEncoded()));
+
+		assertEquals(200, response.statusCode());
+		assertThatJson(response.body()).isObject().containsEntry("id", user.getId());
+	}
+
+	@Test
+	void myAccountWithoutTokenIsUnauthorized() throws Exception {
+		final Response response = server.getHttpClient().get(server.getPublicApiEndpoint() + "/accounts/myself");
+
+		assertEquals(401, response.statusCode());
+	}
+
+	@Test
 	void adminReadsAccountWithAdminCookie() throws Exception {
 		final Account admin = server.getAccountFactory().asGlobalAdmin().create();
 		final Account user = server.getAccountFactory().create();

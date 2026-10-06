@@ -25,6 +25,10 @@ public class PublicAccountService {
     this.rightsService = rightsService;
   }
 
+  public Try<AuthToken> getMyAuthToken(String encodedToken) {
+    return accountService.getAuthToken(encodedToken);
+  }
+
   public Try<Account> getAccount(String encodedToken, String accountId) {
     return accountService.getAuthToken(encodedToken)
         .flatMap(authToken -> canRead(authToken, encodedToken, accountId))

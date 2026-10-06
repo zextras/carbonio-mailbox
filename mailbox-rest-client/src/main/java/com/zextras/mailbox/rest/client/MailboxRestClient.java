@@ -36,14 +36,20 @@ public class MailboxRestClient {
     return new Builder(baseUrl);
   }
 
+  public Account getMyAccount(String authToken) throws MailboxRestException {
+    return send(get("/accounts/myself", authToken), Account.class);
+  }
+
   public Account getAccount(String authToken, String accountId) throws MailboxRestException {
-    final HttpRequest request = HttpRequest.newBuilder(
-            URI.create(baseUrl + "/accounts/" + encode(accountId) + "/info"))
+    return send(get("/accounts/" + encode(accountId) + "/info", authToken), Account.class);
+  }
+
+  private HttpRequest get(String path, String authToken) {
+    return HttpRequest.newBuilder(URI.create(baseUrl + path))
         .timeout(timeout)
         .header("Cookie", "ZM_AUTH_TOKEN=" + authToken)
         .GET()
         .build();
-    return send(request, Account.class);
   }
 
   private <T> T send(HttpRequest request, Class<T> responseType) throws MailboxRestException {
