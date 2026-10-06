@@ -11,6 +11,7 @@
     <module>right-manager</module>
     <module>client</module>
     <module>soap</module>
+    <module>internal-api-client</module>
     <module>store</module>
     <module>store-extra-runtime-dependencies</module>
     <module>jython-libs</module>
@@ -503,6 +504,11 @@
       <dependency>
         <groupId>com.zextras</groupId>
         <artifactId>right-manager</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.zextras</groupId>
+        <artifactId>mailbox-internal-api-client</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

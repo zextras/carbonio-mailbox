@@ -514,6 +514,11 @@
     </dependency>
     <dependency>
       <groupId>com.zextras</groupId>
+      <artifactId>mailbox-internal-api-client</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.zextras</groupId>
       <artifactId>store-extra-runtime-dependencies</artifactId>
       <type>pom</type>
       <scope>runtime</scope>
