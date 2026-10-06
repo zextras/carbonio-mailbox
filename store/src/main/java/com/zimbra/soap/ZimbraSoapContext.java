@@ -791,7 +791,22 @@ public final class ZimbraSoapContext {
       throws ServiceException {
     mWaitForNotifications = true;
     continuationResume = new ResumeContinuationListener(asyncContext);
+    return registerForNotifications(includeDelegates);
+  }
 
+  /**
+   * Like {@link #beginWaitForNotifications(AsyncContext, boolean)} but does not start async mode:
+   * the request only becomes async when {@link #suspendAndUndispatch(long)} is called, so
+   * non-blocking outcomes are answered synchronously.
+   */
+  public boolean beginWaitForNotifications(
+      HttpServletRequest servletRequest, boolean includeDelegates) throws ServiceException {
+    mWaitForNotifications = true;
+    continuationResume = new ResumeContinuationListener(servletRequest);
+    return registerForNotifications(includeDelegates);
+  }
+
+  private boolean registerForNotifications(boolean includeDelegates) throws ServiceException {
     Session session = SessionCache.lookup(mSessionInfo.sessionId, mAuthTokenAccountId);
     if (!(session instanceof SoapSession)) return false;
 

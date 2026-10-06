@@ -13,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
-import javax.servlet.AsyncContext;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -86,8 +85,8 @@ public class NoOp extends MailDocumentHandler  {
             if (origContext == null) { // Initial
                 servletRequest.setAttribute("nop_origcontext", zsc);
                 // NOT a resumed request -- block if necessary
-                AsyncContext asyncContext = servletRequest.startAsync();
-                if (zsc.beginWaitForNotifications(asyncContext, includeDelegates)) {
+                // async mode is only entered by suspendAndUndispatch() below, i.e. when we really block
+                if (zsc.beginWaitForNotifications(servletRequest, includeDelegates)) {
                     if (enforceLimit) {
                         ZimbraSoapContext otherContext = sBlockedNops.put(zsc.getAuthtokenAccountId(), zsc);
                         if (otherContext != null) {
