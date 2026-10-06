@@ -23,6 +23,7 @@ public class DispatchOnTimeoutListener implements AsyncListener {
 
     @Override
     public void onComplete(AsyncEvent event) {
+        // intentionally empty: nothing to clean up, the request is already finished
     }
 
     @Override
@@ -51,6 +52,7 @@ public class DispatchOnTimeoutListener implements AsyncListener {
 
     @Override
     public void onStartAsync(AsyncEvent event) {
+        // intentionally empty: the delayed request is never re-suspended by this listener
     }
 
     /** Registers the listener and sets the delay on a freshly started async context. */
