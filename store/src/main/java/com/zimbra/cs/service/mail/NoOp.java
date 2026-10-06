@@ -104,8 +104,8 @@ public class NoOp extends MailDocumentHandler  {
             HttpServletRequest servletRequest, boolean includeDelegates, boolean enforceLimit)
             throws ServiceException {
         if (!zsc.hasSession()) {
-            throw ServiceException.INVALID_REQUEST("Cannot execute a NoOpRequest with wait=\"1\" without a session."+
-                                                   "  Set the <session> flag in the <context> of your request", null);
+            throw ServiceException.INVALID_REQUEST("Cannot execute a NoOpRequest with wait=\"1\" without a session. "
+                    + "Set the <session> flag in the <context> of your request", null);
         }
         ZimbraSoapContext origContext = (ZimbraSoapContext) servletRequest.getAttribute("nop_origcontext");
         if (origContext == null) {
@@ -134,7 +134,7 @@ public class NoOp extends MailDocumentHandler  {
             }
         }
         if (enforceLimit) {
-            // remove this soap context from the blocked-conext hash, but only
+            // remove this soap context from the blocked-context hash, but only
             // if it hasn't already been removed by someone else...
             sBlockedNops.remove(zsc.getAuthtokenAccountId(), zsc);
         }
@@ -157,7 +157,7 @@ public class NoOp extends MailDocumentHandler  {
     /** Second pass (ASYNC re-dispatch after resume or timeout): just answer. */
     private WaitOutcome resumedWait(ZimbraSoapContext origContext, boolean enforceLimit) {
         if (enforceLimit) {
-            // remove this soap context from the blocked-conext hash, but only
+            // remove this soap context from the blocked-context hash, but only
             // if it hasn't already been removed by someone else...
             sBlockedNops.remove(origContext.getAuthtokenAccountId(), origContext);
         }
