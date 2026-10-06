@@ -514,7 +514,7 @@
     </dependency>
     <dependency>
       <groupId>com.zextras</groupId>
-      <artifactId>mailbox-internal-api-client</artifactId>
+      <artifactId>carbonio-authz</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -1023,20 +1023,39 @@ EOF
         <artifactId>swagger-maven-plugin</artifactId>
         <version>${swagger.version}</version>
         <configuration>
-          <outputFileName>internal-api-openapi</outputFileName>
           <outputPath>${project.basedir}</outputPath>
           <outputFormat>YAML</outputFormat>
-          <resourcePackages>
-            <resourcePackage>com.zextras.mailbox.api.rest.resource</resourcePackage>
-          </resourcePackages>
-          <configurationFilePath>${project.basedir}/src/main/resources/openapi-configuration.json</configurationFilePath>
         </configuration>
         <executions>
           <execution>
+            <id>internal-api</id>
             <phase>compile</phase>
             <goals>
               <goal>resolve</goal>
             </goals>
+            <configuration>
+              <contextId>internal-api</contextId>
+              <outputFileName>internal-api-openapi</outputFileName>
+              <resourcePackages>
+                <resourcePackage>com.zextras.mailbox.api.rest.resource</resourcePackage>
+              </resourcePackages>
+              <configurationFilePath>${project.basedir}/src/main/resources/openapi-configuration.json</configurationFilePath>
+            </configuration>
+          </execution>
+          <execution>
+            <id>authz-api</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>resolve</goal>
+            </goals>
+            <configuration>
+              <contextId>authz-api</contextId>
+              <outputFileName>authz-api-openapi</outputFileName>
+              <resourcePackages>
+                <resourcePackage>com.zextras.mailbox.authz.resource</resourcePackage>
+              </resourcePackages>
+              <configurationFilePath>${project.basedir}/src/main/resources/authz-openapi-configuration.json</configurationFilePath>
+            </configuration>
           </execution>
         </executions>
       </plugin>

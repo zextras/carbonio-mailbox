@@ -11,7 +11,7 @@
     <module>right-manager</module>
     <module>client</module>
     <module>soap</module>
-    <module>internal-api-client</module>
+    <module>authz</module>
     <module>store</module>
     <module>store-extra-runtime-dependencies</module>
     <module>jython-libs</module>
@@ -508,7 +508,7 @@
       </dependency>
       <dependency>
         <groupId>com.zextras</groupId>
-        <artifactId>mailbox-internal-api-client</artifactId>
+        <artifactId>carbonio-authz</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

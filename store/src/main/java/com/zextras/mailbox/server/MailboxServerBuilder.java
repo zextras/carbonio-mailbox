@@ -78,6 +78,7 @@ public class MailboxServerBuilder {
 			server.addConnector(createMtaAdminHttpsConnector(server));
 			server.addConnector(createExtensionsHttpsConnector(server));
 			server.addConnector(createInternalApiConnector(server, httpConfig));
+			server.addConnector(createAuthzApiConnector(server, httpConfig));
 
 			final var mailboxHandler = new MailboxServletContextBuilder(localServer).createServletContextHandler();
 
@@ -156,6 +157,15 @@ public class MailboxServerBuilder {
 		connector.setPort(LC.mailbox_internal_api_port.intValue());
 		connector.setHost(LC.mailbox_internal_api_bind_address.value());
 		connector.setName("internalApiConnector");
+		return connector;
+	}
+
+	private ServerConnector createAuthzApiConnector(Server server, HttpConfiguration httpConfig) {
+		final ServerConnector connector = new ServerConnector(server,
+				new HttpConnectionFactory(httpConfig));
+		connector.setPort(LC.mailbox_authz_api_port.intValue());
+		connector.setHost(LC.mailbox_authz_api_bind_address.value());
+		connector.setName("authzApiConnector");
 		return connector;
 	}
 

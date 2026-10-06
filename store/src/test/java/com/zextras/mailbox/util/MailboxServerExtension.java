@@ -34,6 +34,7 @@ public class MailboxServerExtension implements BeforeAllCallback, AfterAllCallba
 	private final int userHttpsPort;
 	private final int adminPort;
 	private final int internalApiPort;
+	private final int authzApiPort;
 	private static final String DOMAIN = "test.com";
 
 	private MailboxServer mailboxServer;
@@ -45,6 +46,7 @@ public class MailboxServerExtension implements BeforeAllCallback, AfterAllCallba
 		this.userHttpsPort = PortUtil.findFreePort();
 		this.adminPort = PortUtil.findFreePort();
 		this.internalApiPort = PortUtil.findFreePort();
+		this.authzApiPort = PortUtil.findFreePort();
 	}
 
 	@Override
@@ -68,6 +70,8 @@ public class MailboxServerExtension implements BeforeAllCallback, AfterAllCallba
 		LC.zimbra_admin_service_port.setDefault(adminPort);
 		LC.mailbox_internal_api_port.setDefault(internalApiPort);
 		LC.mailbox_internal_api_bind_address.setDefault("localhost");
+		LC.mailbox_authz_api_port.setDefault(authzApiPort);
+		LC.mailbox_authz_api_bind_address.setDefault("localhost");
 		LC.support_timer.setDefault(false);
 
 		mailboxServer = new MailboxEnvironmentSetupHelper(mailboxHome, timezoneFile)
@@ -107,8 +111,16 @@ public class MailboxServerExtension implements BeforeAllCallback, AfterAllCallba
 		return internalApiPort;
 	}
 
+	public int getAuthzApiPort() {
+		return authzApiPort;
+	}
+
 	public String getInternalApiEndpoint() {
 		return "http://localhost:" + internalApiPort + "/internal";
+	}
+
+	public String getAuthzApiEndpoint() {
+		return "http://localhost:" + authzApiPort + "/authz";
 	}
 
 	public TestHttpClient getHttpClient() {
