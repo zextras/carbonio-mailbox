@@ -163,6 +163,21 @@ class ResumeContinuationListenerDispatchTest {
   }
 
   @Test
+  void onErrorWithoutContextDoesNotBlockLaterDispatch() {
+    ServletRequest request = mock(ServletRequest.class);
+    AsyncContext ctx = mock(AsyncContext.class);
+    when(request.startAsync()).thenReturn(ctx);
+    ResumeContinuationListener listener = new ResumeContinuationListener(request);
+
+    listener.onError(null);
+    listener.suspendAndUndispatch(1000);
+    listener.onTimeout(new AsyncEvent(ctx));
+
+    verify(ctx).dispatch();
+    verify(ctx, never()).complete();
+  }
+
+  @Test
   void onTimeoutWithoutContextDoesNotThrow() {
     ServletRequest request = mock(ServletRequest.class);
     ResumeContinuationListener listener = new ResumeContinuationListener(request);

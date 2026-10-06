@@ -60,24 +60,32 @@ class ZimbraQoSFilterTest {
     AsyncContext ctx = mock(AsyncContext.class);
     when(req.startAsync(req, resp)).thenReturn(ctx);
 
-    int max = LC.servlet_max_concurrent_http_requests_per_account.intValue();
-    AtomicInteger depth = new AtomicInteger();
-    FilterChain[] chain = new FilterChain[1];
-    chain[0] =
+    // limit of one concurrent request per account: while the first request holds its permit
+    // (we are inside its chain) a second one cannot get it and must be delayed
+    final String original = LC.servlet_max_concurrent_http_requests_per_account.value();
+    LC.servlet_max_concurrent_http_requests_per_account.setDefault(1);
+    AtomicInteger admitted = new AtomicInteger();
+    FilterChain admittedChain = (rq, rs) -> admitted.incrementAndGet();
+    FilterChain firstRequest =
         (rq, rs) -> {
-          // keep holding the permits until the limit is exhausted, then one more request
-          if (depth.incrementAndGet() <= max) {
-            filter.doFilter(req, resp, chain[0]);
+          admitted.incrementAndGet();
+          try {
+            filter.doFilter(req, resp, admittedChain);
+          } catch (Exception e) {
+            throw new IllegalStateException(e);
           }
         };
 
     try (MockedStatic<AuthUtil> authUtil = mockStatic(AuthUtil.class);
         MockedStatic<AuthProvider> authProvider = mockStatic(AuthProvider.class);
         MockedStatic<ZimbraServlet> servlet = mockStatic(ZimbraServlet.class)) {
-      filter.doFilter(req, resp, chain[0]);
+      filter.doFilter(req, resp, firstRequest);
+    } finally {
+      LC.servlet_max_concurrent_http_requests_per_account.setDefault(original);
     }
 
-    assertEquals(max, depth.get());
+    // only the first request was admitted, the second one was suspended
+    assertEquals(1, admitted.get());
     ArgumentCaptor<AsyncListener> captor = ArgumentCaptor.forClass(AsyncListener.class);
     verify(ctx).addListener(captor.capture());
     verify(ctx).setTimeout(anyLong());
