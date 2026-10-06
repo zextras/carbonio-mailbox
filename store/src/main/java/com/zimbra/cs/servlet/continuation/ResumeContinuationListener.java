@@ -6,6 +6,7 @@
 package com.zimbra.cs.servlet.continuation;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.AsyncEvent;
@@ -28,15 +29,15 @@ import com.zimbra.common.util.ZimbraLog;
  */
 public class ResumeContinuationListener implements AsyncListener {
 
-    private volatile AsyncContext asyncContext;
+    private final AtomicReference<AsyncContext> asyncContext = new AtomicReference<>();
     private final ServletRequest request;
     private final AtomicBoolean readyToResume;
     /** Whoever flips this owns the single dispatch/complete of the async context. */
     private final AtomicBoolean dispatched;
-    private volatile boolean expired;
+    private final AtomicBoolean expired = new AtomicBoolean(false);
 
     public ResumeContinuationListener(AsyncContext asyncContext) {
-        this.asyncContext = asyncContext;
+        this.asyncContext.set(asyncContext);
         this.request = null;
         this.readyToResume = new AtomicBoolean(false);
         this.dispatched = new AtomicBoolean(false);
@@ -45,7 +46,6 @@ public class ResumeContinuationListener implements AsyncListener {
 
     /** Lazy variant: async mode is only started by {@link #suspendAndUndispatch(long)}. */
     public ResumeContinuationListener(ServletRequest request) {
-        this.asyncContext = null;
         this.request = request;
         this.readyToResume = new AtomicBoolean(false);
         this.dispatched = new AtomicBoolean(false);
@@ -64,7 +64,7 @@ public class ResumeContinuationListener implements AsyncListener {
     @Override
     public void onTimeout(AsyncEvent event) {
         ZimbraLog.session.trace("ResumeContinuationListener.onTimeout");
-        expired = true;
+        expired.set(true);
         readyToResume.set(false);
         // Jetty 9 behaviour: on timeout the request is re-dispatched so the handler produces its
         // regular (empty) response. If nobody dispatches/completes, Jetty sends a 500.
@@ -78,7 +78,7 @@ public class ResumeContinuationListener implements AsyncListener {
         if (dispatched.compareAndSet(false, true)) {
             try {
                 AsyncContext ctx = event != null && event.getAsyncContext() != null
-                        ? event.getAsyncContext() : asyncContext;
+                        ? event.getAsyncContext() : asyncContext.get();
                 if (ctx != null) {
                     ctx.complete();
                 }
@@ -91,14 +91,15 @@ public class ResumeContinuationListener implements AsyncListener {
 
     @Override
     public void onStartAsync(AsyncEvent event) {
+        // intentionally empty: nothing to do when the context is restarted
     }
 
     public boolean isExpired() {
-        return expired;
+        return expired.get();
     }
 
     private void dispatchOnce() {
-        AsyncContext ctx = asyncContext;
+        AsyncContext ctx = asyncContext.get();
         if (ctx != null && dispatched.compareAndSet(false, true)) {
             try {
                 ctx.dispatch();
@@ -117,16 +118,17 @@ public class ResumeContinuationListener implements AsyncListener {
     }
 
     public synchronized void suspendAndUndispatch(long timeout) {
-        if (asyncContext == null) {
-            AsyncContext ctx = request.startAsync();
+        AsyncContext ctx = asyncContext.get();
+        if (ctx == null) {
+            ctx = request.startAsync();
             ctx.addListener(this);
-            asyncContext = ctx;
+            asyncContext.set(ctx);
         }
         readyToResume.set(true);
-        asyncContext.setTimeout(timeout);
+        ctx.setTimeout(timeout);
     }
 
     public AsyncContext getAsyncContext() {
-        return asyncContext;
+        return asyncContext.get();
     }
 }
