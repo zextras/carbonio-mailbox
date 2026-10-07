@@ -8,6 +8,10 @@ package com.zextras.carbonio.authz;
 
 public record RightTarget(String type, String id) {
 
+  public static RightTarget of(AuthzTargetType type, String id) {
+    return new RightTarget(type.code(), id);
+  }
+
   public static RightTarget account(String accountId) {
     return new RightTarget("account", accountId);
   }

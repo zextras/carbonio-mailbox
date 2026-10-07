@@ -6,11 +6,14 @@
 
 package com.zextras.mailbox.authz.client;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zextras.carbonio.authz.AuthzClient;
+import com.zextras.carbonio.authz.AuthzRight;
+import com.zextras.carbonio.authz.AuthzTargetType;
 import com.zextras.carbonio.authz.BadRequestException;
 import com.zextras.carbonio.authz.RightInfo;
 import com.zextras.carbonio.authz.RightSubject;
@@ -19,7 +22,13 @@ import com.zextras.carbonio.authz.UnauthorizedException;
 import com.zextras.mailbox.util.MailboxServerExtension;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.ZimbraAuthToken;
+import com.zimbra.cs.account.accesscontrol.Right;
+import com.zimbra.cs.account.accesscontrol.RightManager;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -63,6 +72,29 @@ class AuthzClientIT {
 
 		assertTrue(client.checkRight(RightSubject.token(adminToken), "getAccountInfo",
 				RightTarget.account(user.getId())));
+	}
+
+	@Test
+	void checksRightWithEnums() throws Exception {
+		final Account admin = server.getAccountFactory().asGlobalAdmin().create();
+		final Account user = server.getAccountFactory().create();
+
+		assertTrue(client.checkRight(RightSubject.account(admin.getId()), AuthzRight.CONFIGURE_QUOTA,
+				RightTarget.of(AuthzTargetType.ACCOUNT, user.getId())));
+	}
+
+	@Test
+	void authzRightsMatchTheCatalogue() throws Exception {
+		final RightManager rightManager = RightManager.getInstance();
+		final Set<String> catalogue = Stream.concat(
+						rightManager.getAllUserRights().values().stream(),
+						rightManager.getAllAdminRights().values().stream())
+				.filter(right -> !right.isComboRight())
+				.map(Right::getName)
+				.collect(Collectors.toSet());
+
+		assertEquals(catalogue,
+				Arrays.stream(AuthzRight.values()).map(AuthzRight::rightName).collect(Collectors.toSet()));
 	}
 
 	@Test

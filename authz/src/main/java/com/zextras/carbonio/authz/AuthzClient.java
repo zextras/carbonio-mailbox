@@ -48,6 +48,15 @@ public class AuthzClient {
     return response.path("allowed").asBoolean();
   }
 
+  public boolean checkRight(RightSubject subject, AuthzRight right, RightTarget target)
+      throws AuthzException {
+    return checkRight(subject, right.rightName(), target);
+  }
+
+  public List<RightInfo> listRights(AuthzTargetType targetType) throws AuthzException {
+    return listRights(targetType.code());
+  }
+
   public List<RightInfo> listRights(String targetType) throws AuthzException {
     final HttpRequest.Builder request = HttpRequest.newBuilder(
             URI.create(baseUrl + "/rights?targetType="
