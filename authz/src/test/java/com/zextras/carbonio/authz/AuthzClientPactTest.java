@@ -99,6 +99,16 @@ class AuthzClientPactTest {
 				.toPact(V4Pact.class);
 	}
 
+	@Pact(consumer = CONSUMER)
+	V4Pact listWithoutTargetType(PactDslWithProvider builder) {
+		return builder
+				.uponReceiving("a listing without target type")
+				.method("GET").path("/authz/rights").query("targetType=")
+				.willRespondWith().status(400)
+				.body(newJsonBody(body -> body.stringType("error", "Missing required query parameter: targetType")).build())
+				.toPact(V4Pact.class);
+	}
+
 	@Test
 	@PactTestFor(pactMethod = "adminHasRight")
 	void adminHasRight(MockServer mockServer) throws Exception {
@@ -131,6 +141,12 @@ class AuthzClientPactTest {
 		final List<RightInfo> rights = client(mockServer).listRights(AuthzTargetType.COS);
 
 		assertTrue(rights.stream().anyMatch(right -> right.name().equals("configureQuota")));
+	}
+
+	@Test
+	@PactTestFor(pactMethod = "listWithoutTargetType")
+	void listingWithoutTargetTypeIsBadRequest(MockServer mockServer) {
+		assertThrows(BadRequestException.class, () -> client(mockServer).listRights(""));
 	}
 
 	private static DslPart checkBody(String tokenKey, String right) {
