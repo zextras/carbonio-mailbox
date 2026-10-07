@@ -13,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
-import javax.servlet.AsyncContext;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -62,66 +61,36 @@ public class NoOp extends MailDocumentHandler  {
     ConcurrentHashMap<String /*AccountId*/, ZimbraSoapContext> sBlockedNops =
         new ConcurrentHashMap<>(5000, 0.75f, 50);
 
-	@Override
+    private enum WaitOutcome {
+        /** The request is suspended (async started); the response is written on re-dispatch. */
+        SUSPENDED,
+        /** Blocking was cancelled by the server: tell the client with waitDisallowed. */
+        BLOCKING_UNSUPPORTED,
+        /** Nothing to wait for (any more): answer right away. */
+        DONE
+    }
+
+    @Override
     public Element handle(Element request, Map<String, Object> context) throws ServiceException {
-	    ZimbraSoapContext zsc = getZimbraSoapContext(context);
+        ZimbraSoapContext zsc = getZimbraSoapContext(context);
         boolean wait = request.getAttributeBool(MailConstants.A_WAIT, false);
         boolean includeDelegates = request.getAttributeBool(MailConstants.A_DELEGATE, true);
         HttpServletRequest servletRequest = (HttpServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
-
         boolean enforceLimit = request.getAttributeBool(MailConstants.A_LIMIT_TO_ONE_BLOCKED, false);
         boolean blockingUnsupported = false;
 
         // See bug 16494 - if a session is new, we should return from the NoOp immediately so the client
         // gets the <refresh> block
-        if (zsc.hasCreatedSession())
+        if (zsc.hasCreatedSession()) {
             wait = false;
+        }
 
         if (wait) {
-            if (!zsc.hasSession()) {
-                throw ServiceException.INVALID_REQUEST("Cannot execute a NoOpRequest with wait=\"1\" without a session."+
-                                                       "  Set the <session> flag in the <context> of your request", null);
+            WaitOutcome outcome = waitForNotifications(request, zsc, servletRequest, includeDelegates, enforceLimit);
+            if (outcome == WaitOutcome.SUSPENDED) {
+                return null;
             }
-            ZimbraSoapContext origContext = (ZimbraSoapContext)(servletRequest.getAttribute("nop_origcontext"));
-            if (origContext == null) { // Initial
-                servletRequest.setAttribute("nop_origcontext", zsc);
-                // NOT a resumed request -- block if necessary
-                AsyncContext asyncContext = servletRequest.startAsync();
-                if (zsc.beginWaitForNotifications(asyncContext, includeDelegates)) {
-                    if (enforceLimit) {
-                        ZimbraSoapContext otherContext = sBlockedNops.put(zsc.getAuthtokenAccountId(), zsc);
-                        if (otherContext != null) {
-                            otherContext.signalNotification(true);
-                        }
-                    }
-
-                    synchronized (zsc) {
-                        if (zsc.waitingForNotifications()) {
-                            long timeout = parseTimeout(request);
-                            if (ZimbraLog.soap.isTraceEnabled())
-                                ZimbraLog.soap.trace("Suspending <NoOpRequest> for %dms", timeout);
-                            zsc.suspendAndUndispatch(timeout);
-                            return null;
-                        }
-
-                        if (zsc.isCanceledWaitForNotifications())
-                            blockingUnsupported = true;
-                    }
-                }
-                if (enforceLimit) {
-                    // remove this soap context from the blocked-conext hash, but only
-                    // if it hasn't already been removed by someone else...
-                    sBlockedNops.remove(zsc.getAuthtokenAccountId(), zsc);
-                }
-            } else { // Resumed
-                if (origContext.isCanceledWaitForNotifications())
-                    blockingUnsupported = true;
-                if (enforceLimit) {
-                    // remove this soap context from the blocked-conext hash, but only
-                    // if it hasn't already been removed by someone else...
-                    sBlockedNops.remove(origContext.getAuthtokenAccountId(), origContext);
-                }
-            }
+            blockingUnsupported = outcome == WaitOutcome.BLOCKING_UNSUPPORTED;
         }
         Element toRet = zsc.createElement(MailConstants.NO_OP_RESPONSE);
         if (blockingUnsupported) {
@@ -129,5 +98,70 @@ public class NoOp extends MailDocumentHandler  {
         }
 
         return toRet;
-	}
+    }
+
+    private WaitOutcome waitForNotifications(Element request, ZimbraSoapContext zsc,
+            HttpServletRequest servletRequest, boolean includeDelegates, boolean enforceLimit)
+            throws ServiceException {
+        if (!zsc.hasSession()) {
+            throw ServiceException.INVALID_REQUEST("Cannot execute a NoOpRequest with wait=\"1\" without a session. "
+                    + "Set the <session> flag in the <context> of your request", null);
+        }
+        ZimbraSoapContext origContext = (ZimbraSoapContext) servletRequest.getAttribute("nop_origcontext");
+        if (origContext == null) {
+            return initialWait(request, zsc, servletRequest, includeDelegates, enforceLimit);
+        }
+        return resumedWait(origContext, enforceLimit);
+    }
+
+    /** First pass: NOT a resumed request -- block if necessary. */
+    private WaitOutcome initialWait(Element request, ZimbraSoapContext zsc,
+            HttpServletRequest servletRequest, boolean includeDelegates, boolean enforceLimit)
+            throws ServiceException {
+        servletRequest.setAttribute("nop_origcontext", zsc);
+        WaitOutcome outcome = WaitOutcome.DONE;
+        // async mode is only entered by suspendAndUndispatch() below, i.e. when we really block
+        if (zsc.beginWaitForNotifications(servletRequest, includeDelegates)) {
+            if (enforceLimit) {
+                ZimbraSoapContext otherContext = sBlockedNops.put(zsc.getAuthtokenAccountId(), zsc);
+                if (otherContext != null) {
+                    otherContext.signalNotification(true);
+                }
+            }
+            outcome = suspendIfStillWaiting(request, zsc);
+            if (outcome == WaitOutcome.SUSPENDED) {
+                return outcome;
+            }
+        }
+        if (enforceLimit) {
+            // remove this soap context from the blocked-context hash, but only
+            // if it hasn't already been removed by someone else...
+            sBlockedNops.remove(zsc.getAuthtokenAccountId(), zsc);
+        }
+        return outcome;
+    }
+
+    private WaitOutcome suspendIfStillWaiting(Element request, ZimbraSoapContext zsc)
+            throws ServiceException {
+        long timeout = parseTimeout(request);
+        if (zsc.suspendIfWaitingForNotifications(timeout)) {
+            if (ZimbraLog.soap.isTraceEnabled()) {
+                ZimbraLog.soap.trace("Suspended <NoOpRequest> for %dms", timeout);
+            }
+            return WaitOutcome.SUSPENDED;
+        }
+        return zsc.isCanceledWaitForNotifications()
+                ? WaitOutcome.BLOCKING_UNSUPPORTED : WaitOutcome.DONE;
+    }
+
+    /** Second pass (ASYNC re-dispatch after resume or timeout): just answer. */
+    private WaitOutcome resumedWait(ZimbraSoapContext origContext, boolean enforceLimit) {
+        if (enforceLimit) {
+            // remove this soap context from the blocked-context hash, but only
+            // if it hasn't already been removed by someone else...
+            sBlockedNops.remove(origContext.getAuthtokenAccountId(), origContext);
+        }
+        return origContext.isCanceledWaitForNotifications()
+                ? WaitOutcome.BLOCKING_UNSUPPORTED : WaitOutcome.DONE;
+    }
 }
