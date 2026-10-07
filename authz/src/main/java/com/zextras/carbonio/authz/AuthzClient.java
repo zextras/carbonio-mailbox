@@ -6,6 +6,7 @@
 
 package com.zextras.carbonio.authz;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -28,8 +29,9 @@ public class AuthzClient {
   private final String baseUrl;
   private final HttpClient httpClient;
   private final Duration timeout;
-  private final ObjectMapper objectMapper =
-      new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+  private final ObjectMapper objectMapper = new ObjectMapper()
+      .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+      .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
   private AuthzClient(String baseUrl, HttpClient httpClient, Duration timeout) {
     this.baseUrl = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;

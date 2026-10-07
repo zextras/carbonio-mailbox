@@ -519,6 +519,22 @@
     </dependency>
     <dependency>
       <groupId>com.zextras</groupId>
+      <artifactId>carbonio-authz</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>au.com.dius.pact.provider</groupId>
+      <artifactId>junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>au.com.dius.pact</groupId>
+      <artifactId>provider</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.zextras</groupId>
       <artifactId>store-extra-runtime-dependencies</artifactId>
       <type>pom</type>
       <scope>runtime</scope>
@@ -1110,6 +1126,25 @@ EOF
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
+          <execution>
+            <id>unpack-authz-pacts</id>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.zextras</groupId>
+                  <artifactId>carbonio-authz</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>tests</classifier>
+                  <includes>pacts/**</includes>
+                  <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
           <execution>
             <id>copy-dependencies</id>
             <phase>package</phase>
