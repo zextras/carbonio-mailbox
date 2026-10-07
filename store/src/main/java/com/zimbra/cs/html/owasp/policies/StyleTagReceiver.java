@@ -83,7 +83,9 @@ public class StyleTagReceiver implements HtmlStreamEventReceiver {
                         .replace(STYLE_CLOSING_TAG, "");
                     sanitizedStyle = sanitizedStyle.replace("<![CDATA[", "/*<![CDATA[*/");
                     sanitizedStyle = sanitizedStyle.replace("]]>", "/*]]>*/");
-                } catch (ScanException | PolicyException e) {
+                } catch (ScanException | PolicyException | RuntimeException e) {
+                    // drop only this style element: an exception escaping here would make
+                    // OwaspDefang discard the whole HTML body
                     ZimbraLog.mailbox.debug("Failed to sanitize html style element", e);
                     ZimbraLog.mailbox.warn("Failed to sanitize html style element: %s", e.getMessage());
                     sanitizedStyle = "";
