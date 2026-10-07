@@ -1130,19 +1130,15 @@ EOF
             <id>unpack-authz-pacts</id>
             <phase>generate-test-resources</phase>
             <goals>
-              <goal>unpack</goal>
+              <goal>unpack-dependencies</goal>
             </goals>
             <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>com.zextras</groupId>
-                  <artifactId>carbonio-authz</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>tests</classifier>
-                  <includes>pacts/**</includes>
-                  <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
-                </artifactItem>
-              </artifactItems>
+              <includeGroupIds>com.zextras</includeGroupIds>
+              <includeArtifactIds>carbonio-authz</includeArtifactIds>
+              <includeClassifiers>tests</includeClassifiers>
+              <includes>pacts/**</includes>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
             </configuration>
           </execution>
           <execution>

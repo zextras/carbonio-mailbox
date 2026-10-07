@@ -1044,6 +1044,8 @@
             <consoleOutputReporter>
               <disable>true</disable>
             </consoleOutputReporter>
+            <!-- Tagged tests change JVM state: failsafe runs them after the unit tests, in separate forks. -->
+            <excludedGroups>e2e,api,flaky</excludedGroups>
           </configuration>
         </plugin>
         <plugin>
@@ -1060,12 +1062,63 @@
               <disable>true</disable>
             </consoleOutputReporter>
           </configuration>
+          <!-- One group per tag, in this order, each in fresh forks. -->
           <executions>
             <execution>
+              <id>it</id>
               <goals>
                 <goal>integration-test</goal>
                 <goal>verify</goal>
               </goals>
+              <configuration>
+                <excludedGroups>e2e,api,flaky</excludedGroups>
+                <summaryFile>${project.build.directory}/failsafe-reports/it-summary.xml</summaryFile>
+              </configuration>
+            </execution>
+            <execution>
+              <id>api</id>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+              <configuration>
+                <includes>
+                  <include>**/*Test.java</include>
+                  <include>**/*IT.java</include>
+                </includes>
+                <groups>api</groups>
+                <summaryFile>${project.build.directory}/failsafe-reports/api-summary.xml</summaryFile>
+              </configuration>
+            </execution>
+            <execution>
+              <id>e2e</id>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+              <configuration>
+                <includes>
+                  <include>**/*Test.java</include>
+                  <include>**/*IT.java</include>
+                </includes>
+                <groups>e2e</groups>
+                <summaryFile>${project.build.directory}/failsafe-reports/e2e-summary.xml</summaryFile>
+              </configuration>
+            </execution>
+            <execution>
+              <id>flaky</id>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+              <configuration>
+                <includes>
+                  <include>**/*Test.java</include>
+                  <include>**/*IT.java</include>
+                </includes>
+                <groups>flaky</groups>
+                <summaryFile>${project.build.directory}/failsafe-reports/flaky-summary.xml</summaryFile>
+              </configuration>
             </execution>
           </executions>
         </plugin>
