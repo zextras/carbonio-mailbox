@@ -791,7 +791,22 @@ public final class ZimbraSoapContext {
       throws ServiceException {
     mWaitForNotifications = true;
     continuationResume = new ResumeContinuationListener(asyncContext);
+    return registerForNotifications(includeDelegates);
+  }
 
+  /**
+   * Like {@link #beginWaitForNotifications(AsyncContext, boolean)} but does not start async mode:
+   * the request only becomes async when {@link #suspendAndUndispatch(long)} is called, so
+   * non-blocking outcomes are answered synchronously.
+   */
+  public boolean beginWaitForNotifications(
+      HttpServletRequest servletRequest, boolean includeDelegates) throws ServiceException {
+    mWaitForNotifications = true;
+    continuationResume = new ResumeContinuationListener(servletRequest);
+    return registerForNotifications(includeDelegates);
+  }
+
+  private boolean registerForNotifications(boolean includeDelegates) throws ServiceException {
     Session session = SessionCache.lookup(mSessionInfo.sessionId, mAuthTokenAccountId);
     if (!(session instanceof SoapSession)) return false;
 
@@ -808,6 +823,21 @@ public final class ZimbraSoapContext {
 
   public void suspendAndUndispatch(long timeout) {
     continuationResume.suspendAndUndispatch(timeout);
+  }
+
+  /**
+   * Suspends the request if it is still waiting for notifications. Atomic with respect to
+   * {@link #signalNotification(boolean)} (both synchronize on this context), so a notification
+   * arriving concurrently either prevents the suspension or resumes it.
+   *
+   * @return true if the request has been suspended
+   */
+  public synchronized boolean suspendIfWaitingForNotifications(long timeout) {
+    if (!mWaitForNotifications) {
+      return false;
+    }
+    continuationResume.suspendAndUndispatch(timeout);
+    return true;
   }
 
   /** Called by the Session object if a new notification comes in. */
