@@ -7,6 +7,7 @@
 package com.zextras.mailbox;
 
 import com.zextras.mailbox.api.InternalApiApplication;
+import com.zextras.mailbox.authz.AuthzApiApplication;
 import com.zextras.mailbox.metric.CarbonioMetricRegisterer;
 import com.zextras.mailbox.metric.Metrics;
 import com.zextras.mailbox.servlet.HealthApplication;
@@ -198,11 +199,15 @@ public class MailboxServletContextBuilder {
 		servletContextHandler.addFilter(
 				new FilterHolder(new PortRestrictionFilter(LC.mailbox_internal_api_port.intValue())),
 				"/internal/*", EnumSet.of(DispatcherType.REQUEST));
+		servletContextHandler.addFilter(
+				new FilterHolder(new PortRestrictionFilter(LC.mailbox_authz_api_port.intValue())),
+				"/authz/*", EnumSet.of(DispatcherType.REQUEST));
 	}
 
 	private void addServlets(ServletContextHandler servletContextHandler) {
 		addHealthServlet(servletContextHandler);
 		addInternalApiServlet(servletContextHandler);
+		addAuthzApiServlet(servletContextHandler);
 		addMetricsServlet(servletContextHandler);
 		addExtensionServlet(servletContextHandler);
 		addSoapServlet(servletContextHandler);
@@ -233,6 +238,11 @@ public class MailboxServletContextBuilder {
 	private void addInternalApiServlet(ServletContextHandler servletContextHandler) {
 		servletContextHandler.addServlet(
 				cdiJaxrsDispatcher(InternalApiApplication.class, "/internal"), "/internal/*");
+	}
+
+	private void addAuthzApiServlet(ServletContextHandler servletContextHandler) {
+		servletContextHandler.addServlet(
+				cdiJaxrsDispatcher(AuthzApiApplication.class, "/authz"), "/authz/*");
 	}
 
 	private void addMetricsServlet(ServletContextHandler servletContextHandler) {

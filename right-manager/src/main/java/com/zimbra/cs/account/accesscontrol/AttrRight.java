@@ -88,7 +88,7 @@ public class AttrRight extends AdminRight {
     }
 
     @Override
-    boolean executableOnTargetType(TargetType targetType) {
+    public boolean executableOnTargetType(TargetType targetType) {
         return mTargetTypes.contains(targetType);
     }
 

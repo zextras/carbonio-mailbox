@@ -119,6 +119,35 @@ class MailboxServerAPITest {
 	}
 
 	@Test
+	void authzApiShouldNotBeReachableOnUserHttpPort() throws Exception {
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getUserHttpPort() + "/authz/rights?targetType=account");
+		Assertions.assertEquals(404, response.statusCode());
+	}
+
+	@Test
+	void authzApiShouldNotBeReachableOnInternalApiPort() throws Exception {
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getInternalApiPort() + "/authz/rights?targetType=account");
+		Assertions.assertEquals(404, response.statusCode());
+	}
+
+	@Test
+	void internalApiShouldNotBeReachableOnAuthzPort() throws Exception {
+		final Account account = server.getAccountFactory().create();
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getAuthzApiPort() + "/internal/accounts/" + account.getId() + "/info");
+		Assertions.assertEquals(404, response.statusCode());
+	}
+
+	@Test
+	void authzApiReachableOnAuthzPort() throws Exception {
+		var response = server.getHttpClient().get(
+				"http://localhost:" + server.getAuthzApiPort() + "/authz/rights?targetType=account");
+		Assertions.assertEquals(200, response.statusCode());
+	}
+
+	@Test
 	void healthAnswersAtInternalPort() throws Exception {
 		var response = server.getHttpClient().get(
 				"http://localhost:" + server.getInternalApiPort() + "/service/health/ready");

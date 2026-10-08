@@ -18,6 +18,8 @@ sed -i -e "s#CARBONIO_FILES_SERVICE_URL#${CARBONIO_FILES_SERVICE_URL}#g" "${loca
 sed -i -e "s#CARBONIO_PREVIEW_SERVICE_URL#${CARBONIO_PREVIEW_SERVICE_URL}#g" "${localconfig_path}"
 sed -i -e "s#CARBONIO_MAILBOX_INTERNAL_API_HOST#${CARBONIO_MAILBOX_INTERNAL_API_HOST}#g" "${localconfig_path}"
 sed -i -e "s#CARBONIO_MAILBOX_INTERNAL_API_PORT#${CARBONIO_MAILBOX_INTERNAL_API_PORT}#g" "${localconfig_path}"
+sed -i -e "s#CARBONIO_AUTHZ_API_HOST#${CARBONIO_AUTHZ_API_HOST}#g" "${localconfig_path}"
+sed -i -e "s#CARBONIO_AUTHZ_API_PORT#${CARBONIO_AUTHZ_API_PORT}#g" "${localconfig_path}"
 
 SERVER_EXISTS=$(/usr/bin/zmprov -l gs "${HOSTNAME}" 2>&1)
 if [[ $SERVER_EXISTS == *"account.NO_SUCH_SERVER"* ]]; then
