@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import javax.servlet.AsyncContext;
+import com.zimbra.cs.servlet.continuation.DispatchOnTimeoutListener;
 
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import com.zimbra.common.localconfig.LC;
@@ -120,7 +121,7 @@ public class ZimbraQoSFilter implements Filter {
                 ZimbraServlet.addUAToLoggingContext(hreq);
                 ZimbraLog.misc.warn("Exceeded the max requests limit. Suspending request");
                 ZimbraLog.clearContext();
-                asyncContext.setTimeout(suspendMs);
+                DispatchOnTimeoutListener.delay(asyncContext, suspendMs);
             }
         } catch(InterruptedException e) {
             ((HttpServletResponse)response).sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);

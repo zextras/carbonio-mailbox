@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrTokenizer;
 import javax.servlet.AsyncContext;
+import com.zimbra.cs.servlet.continuation.DispatchOnTimeoutListener;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 
@@ -79,7 +80,7 @@ public class ContextPathBasedThreadPoolBalancerFilter implements Filter {
             ZimbraServlet.addRemoteIpToLoggingContext(hreq);
             ZimbraServlet.addUAToLoggingContext(hreq);
             ZimbraLog.clearContext();
-            asyncContext.setTimeout(suspendMs);
+            DispatchOnTimeoutListener.delay(asyncContext, suspendMs);
             return;
         }
 
