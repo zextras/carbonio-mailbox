@@ -80,7 +80,7 @@ http://www.w3.org/TR/html401/struct/global.html
 		<regexp name="cssPseudoElementSelector" value=":[a-zA-Z0-9\-_]+"/>
 
 		<!--  This is to list out any psuedo-element names that are *not* valid -->
-		<regexp name="cssPsuedoElementExclusion" value=""/>
+		<regexp name="cssPseudoElementExclusion" value=""/>
 
 		<!--  This is for attribute selectors (ex. foo[attr=value] { ... } -->
 		<regexp name="cssAttributeSelector" value="\[[a-zA-Z0-9\-_]+((=|~=|\|=){1}[a-zA-Z0-9\-_]+){1}\]"/>
