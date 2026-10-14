@@ -130,7 +130,7 @@ public class MailboxEnvironmentSetupHelper {
 		return sharedLdapServer;
 	}
 
-	private static void setupTestKeyStore() throws Exception {
+	public static void setupTestKeyStore() throws Exception {
 		final Path keystoreRoot = Files.createTempDirectory("keystore");
 		final Path keystorePath = Path.of(keystoreRoot.toAbsolutePath().toString(), "keystore");
 

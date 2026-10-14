@@ -184,6 +184,25 @@ public final class NioImapDecoderTest {
   assertEquals("recover", session.getDecoderOutputQueue().poll());
  }
 
+ // DIRMINA-1187: MINA 2.1.10-2.1.12 leave the consumed cumulative buffer on the session, so the
+ // next read re-decodes an already handled APPEND and its literal as new commands.
+ @Test
+ void shouldNotDecodeAgainAFragmentedCommandOnNextRead() throws Exception {
+  IN.clear().putString("A001 APPEND Sent {5}", CHARSET).flip();
+  decoder.decode(session, IN, session.getDecoderOutput());
+  assertEquals(0, session.getDecoderOutputQueue().size());
+
+  IN.clear().putString("\r\nhello", CHARSET).flip();
+  decoder.decode(session, IN, session.getDecoderOutput());
+  assertEquals("A001 APPEND Sent {5}", session.getDecoderOutputQueue().poll());
+  assertArrayEquals("hello".getBytes(Charsets.ISO_8859_1), (byte[]) session.getDecoderOutputQueue().poll());
+
+  IN.clear().putString("A002 NOOP\r\n", CHARSET).flip();
+  decoder.decode(session, IN, session.getDecoderOutput());
+  assertEquals("A002 NOOP", session.getDecoderOutputQueue().poll());
+  assertEquals(0, session.getDecoderOutputQueue().size());
+ }
+
  @Test
  void emptyLiteral() throws Exception {
   IN.clear().putString("A003 APPEND Drafts {0}\r\n", CHARSET).flip();
