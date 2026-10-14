@@ -42,9 +42,9 @@ public class DistributionListSendPermissionChecker {
   }
 
   /**
-   * Throws {@link MailServiceException#SEND_ABORTED_ADDRESS_FAILURE} when the sender is not allowed
-   * to email at least one of the distribution lists among the recipients. The denied lists are
-   * reported as invalid addresses, the other recipients as valid unsent addresses.
+   * Throws {@link MailServiceException#SEND_TO_DISTRIBUTION_LIST_DENIED} when the sender is not
+   * allowed to email at least one of the distribution lists among the recipients. The denied lists
+   * are reported as invalid addresses, the other recipients as valid unsent addresses.
    */
   public void assertCanSendTo(String senderEmail, Address[] recipients) throws ServiceException {
     List<Address> denied = findDeniedDistributionLists(senderEmail, recipients);
@@ -52,9 +52,8 @@ public class DistributionListSendPermissionChecker {
       return;
     }
     List<Address> unsent = allExcept(recipients, denied);
-    throw MailServiceException.SEND_ABORTED_ADDRESS_FAILURE(
+    throw MailServiceException.SEND_TO_DISTRIBUTION_LIST_DENIED(
         DENIED_MESSAGE + joinAddresses(denied),
-        null,
         denied.toArray(new Address[0]),
         unsent.toArray(new Address[0]));
   }

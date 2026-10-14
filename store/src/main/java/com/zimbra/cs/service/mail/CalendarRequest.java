@@ -519,8 +519,8 @@ public abstract class CalendarRequest extends MailDocumentHandler {
   }
 
   /**
-   * Fails with {@link MailServiceException#SEND_ABORTED_ADDRESS_FAILURE} when the envelope sender
-   * of the outgoing message is not allowed to email one of the invited distribution lists.
+   * Fails with {@link MailServiceException#SEND_TO_DISTRIBUTION_LIST_DENIED} when the envelope
+   * sender of the outgoing message is not allowed to email one of the invited distribution lists.
    */
   protected static void checkDistributionListSendPermission(
       ZimbraSoapContext zsc, Account acct, Mailbox mbox, MimeMessage mm) throws ServiceException {

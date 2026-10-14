@@ -90,7 +90,7 @@ class CreateAppointmentDistributionListTest extends SoapTestSuite {
 
     var response = createAppointmentInviting(organizer, dl.getName());
 
-    assertSendAbortedFault(response, dl);
+    assertSendToDistributionListDeniedFault(response, dl);
     assertTrue(appointmentsOf(organizer).isEmpty());
     assertEquals(0, greenMail.getReceivedMessages().length);
   }
@@ -132,7 +132,7 @@ class CreateAppointmentDistributionListTest extends SoapTestSuite {
 
     var response = modifyAppointmentInviting(organizer, created.getCalInvId(), dl.getName());
 
-    assertSendAbortedFault(response, dl);
+    assertSendToDistributionListDeniedFault(response, dl);
     assertEquals(0, greenMail.getReceivedMessages().length);
   }
 
@@ -154,13 +154,16 @@ class CreateAppointmentDistributionListTest extends SoapTestSuite {
     forwardRequest.setMsg(msg);
     var response = getSoapClient().executeSoap(organizer, forwardRequest);
 
-    assertSendAbortedFault(response, dl);
+    assertSendToDistributionListDeniedFault(response, dl);
     assertEquals(0, greenMail.getReceivedMessages().length);
   }
 
-  private static void assertSendAbortedFault(SoapResponse response, DistributionList dl) {
+  private static void assertSendToDistributionListDeniedFault(
+      SoapResponse response, DistributionList dl) {
     assertNotEquals(200, response.statusCode(), response.body());
-    assertTrue(response.body().contains(MailServiceException.SEND_ABORTED_ADDRESS_FAILURE), response.body());
+    assertTrue(
+        response.body().contains(MailServiceException.SEND_TO_DISTRIBUTION_LIST_DENIED),
+        response.body());
     assertTrue(response.body().contains(DENIED_MESSAGE), response.body());
     assertTrue(response.body().contains(dl.getName()), response.body());
   }

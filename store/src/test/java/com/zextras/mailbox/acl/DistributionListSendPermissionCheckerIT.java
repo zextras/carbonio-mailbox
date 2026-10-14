@@ -73,7 +73,7 @@ class DistributionListSendPermissionCheckerIT extends MailboxTestSuite {
             MailServiceException.class,
             () -> checker.assertCanSendTo(sender.getName(), addresses(dl.getName())));
 
-    assertSame(MailServiceException.SEND_ABORTED_ADDRESS_FAILURE, exception.getCode());
+    assertSame(MailServiceException.SEND_TO_DISTRIBUTION_LIST_DENIED, exception.getCode());
     assertTrue(exception.getMessage().contains(dl.getName()));
     assertEquals(dl.getName(), exception.getArgumentValue("invalid"));
   }
