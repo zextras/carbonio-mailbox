@@ -85,6 +85,9 @@ public class MailServiceException extends ServiceException {
   public static final String SEND_ABORTED_ADDRESS_FAILURE = "mail.SEND_ABORTED_ADDRESS_FAILURE";
   public static final String SEND_PARTIAL_ADDRESS_FAILURE = "mail.SEND_PARTIAL_ADDRESS_FAILURE";
   public static final String SEND_FAILURE = "mail.SEND_FAILURE";
+  // Sender lacks the sendToDistList right on a distribution list among the recipients
+  public static final String SEND_TO_DISTRIBUTION_LIST_DENIED =
+      "mail.SEND_TO_DISTRIBUTION_LIST_DENIED";
   public static final String TOO_MANY_QUERY_TERMS_EXPANDED = "mail.TOO_MANY_QUERY_TERMS_EXPANDED";
   public static final String MESSAGE_TOO_BIG = "mail.MESSAGE_TOO_BIG";
   public static final String CONTACT_TOO_BIG = "mail.CONTACT_TOO_BIG";
@@ -830,6 +833,11 @@ public class MailServiceException extends ServiceException {
   public static MailServiceException SEND_ABORTED_ADDRESS_FAILURE(
       String msg, Exception e, Address[] invalid, Address[] unsent) {
     return internal_SEND_FAILURE(SEND_ABORTED_ADDRESS_FAILURE, msg, e, invalid, unsent);
+  }
+
+  public static MailServiceException SEND_TO_DISTRIBUTION_LIST_DENIED(
+      String msg, Address[] invalid, Address[] unsent) {
+    return internal_SEND_FAILURE(SEND_TO_DISTRIBUTION_LIST_DENIED, msg, null, invalid, unsent);
   }
 
   public static MailServiceException SEND_PARTIAL_ADDRESS_FAILURE(
