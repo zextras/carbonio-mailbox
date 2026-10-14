@@ -49,51 +49,29 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            parallel {
-                stage('Maven build') {
-                    steps {
-                        container('jdk-21') {
-                            sh """
-                        mvn ${MVN_OPTS} \
-                            -DskipTests=true \
-                            clean install
-                        mkdir staging
-                        cp -a store* right-manager \
-                                client common packages soap jython-libs \
-                                staging/
-                    """
-                            stash includes: 'staging/**', name: 'staging'
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('UT, IT') {
+        stage('Build and test') {
             environment {
                 K8S_IMAGE_PULL_SECRET = 'private-registry-secret'
             }
             steps {
                 container('jdk-21') {
-                    sh "mvn ${MVN_OPTS} verify -DexcludedGroups=api,flaky,e2e"
+                    sh """
+                        mvn ${MVN_OPTS} clean install
+                        mkdir staging
+                        cp -a store* right-manager \
+                                client common packages soap jython-libs \
+                                staging/
+                    """
+                    stash includes: 'staging/**', name: 'staging'
                 }
-                junit allowEmptyResults: true,
-                        testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+            }
+            post {
+                always {
+                    junit allowEmptyResults: true,
+                            testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
+                }
             }
         }
-        stage('Flaky, API, E2E tests') {
-                    steps {
-                        container('jdk-21') {
-                            sh """
-                                mvn ${MVN_OPTS} verify -Dgroups=flaky,api
-                                mvn ${MVN_OPTS} verify -Dgroups=e2e
-                            """
-                        }
-                        junit allowEmptyResults: true,
-                                testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
-                    }
-                }
 
         stage('Build and Package API Docs') {
             steps {
