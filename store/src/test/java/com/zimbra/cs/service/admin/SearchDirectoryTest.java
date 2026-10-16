@@ -16,7 +16,7 @@ import com.zimbra.soap.admin.message.SearchDirectoryResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
 import java.util.HashMap;
 import java.util.List;
-import org.apache.http.HttpStatus;
+import org.apache.hc.core5.http.HttpStatus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

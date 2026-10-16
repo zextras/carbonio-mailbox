@@ -15,10 +15,10 @@ import java.util.LinkedList;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.ContentType;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -222,7 +222,7 @@ public class ExchangeMessage {
     	}
     }
     
-    public HttpRequestBase createMethod(String uri, FreeBusy fb) throws IOException {
+    public HttpUriRequestBase createMethod(String uri, FreeBusy fb) throws IOException {
     	// PROPPATCH
     	HttpPost method = new HttpPost(uri) {
     		private String PROPPATCH = "PROPPATCH";

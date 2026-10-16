@@ -21,13 +21,16 @@ import java.util.Objects;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 
 /**
  * A SoapClient that wraps the Body in an Envelope.
@@ -125,10 +128,14 @@ public class SoapClient {
 						new java.security.SecureRandom());
 				return HttpClients.custom()
 						.setDefaultCookieStore(cookieStore)
-						.setSSLContext(sslContext)
-						.setSSLHostnameVerifier((hostname, session) -> true)
-						.setMaxConnTotal(100)
-						.setMaxConnPerRoute(100)
+						.setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
+								.setSSLSocketFactory(SSLConnectionSocketFactoryBuilder.create()
+										.setSslContext(sslContext)
+										.setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+										.build())
+								.setMaxConnTotal(100)
+								.setMaxConnPerRoute(100)
+								.build())
 						.build();
 			} catch (Exception e) {
 				throw new RuntimeException(e);
@@ -142,12 +149,12 @@ public class SoapClient {
 				cookieStore.addCookie(createAuthCookie());
 			}
 
-			final HttpPost httpPost = new HttpPost();
-			httpPost.setURI(URI.create(this.url));
+			final HttpPost httpPost = new HttpPost("/");
+			httpPost.setUri(URI.create(this.url));
 			httpPost.setEntity(createEnvelope());
 			try (var client = getClient(cookieStore)) {
 				final CloseableHttpResponse response = client.execute(httpPost);
-				return new SoapResponse(response.getStatusLine().getStatusCode(), SoapUtils.getResponse(response));
+				return new SoapResponse(response.getCode(), SoapUtils.getResponse(response));
 			}
 
 		}

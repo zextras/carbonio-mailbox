@@ -33,23 +33,24 @@ import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.DefaultRedirectStrategy;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.impl.DefaultRedirectStrategy;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.core5.http.message.StatusLine;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.CredentialsStore;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpDelete;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpPut;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
 
 /**
  * @author jylee
@@ -192,7 +193,7 @@ public class ProxyServlet extends ZimbraServlet {
 
       HttpClientBuilder clientBuilder = HttpClients.custom();
       HttpProxyUtil.configureProxy(clientBuilder);
-      final HttpRequestBase method = configureHttpMethod(req, target, body);
+      final HttpUriRequestBase method = configureHttpMethod(req, target, body);
       if (method == null) {
         ZimbraLog.misc.info("unsupported request method");
         resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
@@ -217,13 +218,13 @@ public class ProxyServlet extends ZimbraServlet {
         resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         return;
       }
-      CredentialsProvider provider = new BasicCredentialsProvider();
-      provider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(user, pass));
+      CredentialsStore provider = new BasicCredentialsProvider();
+      provider.setCredentials(new AuthScope(null, -1), new UsernamePasswordCredentials(user, pass.toCharArray()));
       clientBuilder.setDefaultCredentialsProvider(provider);
     }
   }
 
-  private void proxyHeaders(HttpServletRequest req, HttpRequestBase method) {
+  private void proxyHeaders(HttpServletRequest req, HttpUriRequestBase method) {
     Enumeration<String> headers = req.getHeaderNames();
     while (headers.hasMoreElements()) {
       String hdr = headers.nextElement();
@@ -235,18 +236,18 @@ public class ProxyServlet extends ZimbraServlet {
     }
   }
 
-  private HttpRequestBase configureHttpMethod(HttpServletRequest req, String target, byte[] body) {
+  private HttpUriRequestBase configureHttpMethod(HttpServletRequest req, String target, byte[] body) {
     String reqMethod = req.getMethod();
-    HttpRequestBase method = null;
+    HttpUriRequestBase method = null;
     if ("GET".equalsIgnoreCase(reqMethod)) {
       method = new HttpGet(target);
     } else if ("POST".equalsIgnoreCase(reqMethod)) {
       HttpPost post = new HttpPost(target);
-      post.setEntity(new ByteArrayEntity(body, org.apache.http.entity.ContentType.create(req.getContentType())));
+      post.setEntity(new ByteArrayEntity(body, org.apache.hc.core5.http.ContentType.create(req.getContentType())));
       method = post;
     } else if ("PUT".equalsIgnoreCase(reqMethod)) {
       HttpPut put = new HttpPut(target);
-      put.setEntity(new ByteArrayEntity(body, org.apache.http.entity.ContentType.create(req.getContentType())));
+      put.setEntity(new ByteArrayEntity(body, org.apache.hc.core5.http.ContentType.create(req.getContentType())));
       method = put;
     } else if ("DELETE".equalsIgnoreCase(reqMethod)) {
       method = new HttpDelete(target);
@@ -289,9 +290,9 @@ public class ProxyServlet extends ZimbraServlet {
   }
 
 
-  private void handleHttpResponse(HttpServletRequest req, HttpServletResponse resp, HttpRequestBase method,
+  private void handleHttpResponse(HttpServletRequest req, HttpServletResponse resp, HttpUriRequestBase method,
       AuthToken authToken, String targetUrl) throws IOException {
-    HttpResponse httpResp;
+    ClassicHttpResponse httpResp;
     try {
       HttpClientBuilder clientBuilder = HttpClients.custom();
       HttpProxyUtil.configureProxy(clientBuilder);
@@ -307,8 +308,8 @@ public class ProxyServlet extends ZimbraServlet {
       return;
     }
 
-    int status = httpResp.getStatusLine() == null ? HttpServletResponse.SC_INTERNAL_SERVER_ERROR
-        : httpResp.getStatusLine().getStatusCode();
+    int status = new StatusLine(httpResp) == null ? HttpServletResponse.SC_INTERNAL_SERVER_ERROR
+        : httpResp.getCode();
 
     Header ctHeader = httpResp.getFirstHeader("Content-Type");
     String contentType =
@@ -331,7 +332,7 @@ public class ProxyServlet extends ZimbraServlet {
   }
 
   private void handleUploadResponse(HttpServletRequest req, HttpServletResponse resp, int status,
-      InputStream targetResponseBody, AuthToken authToken, String contentType, HttpResponse httpResp)
+      InputStream targetResponseBody, AuthToken authToken, String contentType, ClassicHttpResponse httpResp)
       throws IOException {
     String filename = req.getParameter(FILENAME_PARAM);
     if (filename == null || "".equals(filename)) {
@@ -365,10 +366,10 @@ public class ProxyServlet extends ZimbraServlet {
   }
 
   private void handleInlineResponse(HttpServletResponse resp, int status, InputStream targetResponseBody,
-      String contentType, HttpResponse httpResp) throws IOException {
+      String contentType, ClassicHttpResponse httpResp) throws IOException {
     resp.setStatus(status);
     resp.setContentType(contentType);
-    for (Header h : httpResp.getAllHeaders()) {
+    for (Header h : httpResp.getHeaders()) {
       if (canProxyHeader(h.getName())) {
         resp.addHeader(h.getName(), h.getValue());
       }

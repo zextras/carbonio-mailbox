@@ -8,11 +8,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Try;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +46,7 @@ public class ServiceDiscoverHttpClient {
       HttpGet request = new HttpGet(url);
       request.setHeader("X-Consul-Token", token);
       try(CloseableHttpResponse response = httpClient.execute(request)) {
-        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+        if (response.getCode() == HttpStatus.SC_OK) {
           String bodyResponse = IOUtils.toString(
               response.getEntity().getContent(),
               StandardCharsets.UTF_8
@@ -59,7 +59,7 @@ public class ServiceDiscoverHttpClient {
         }
 
         logger.error("Service discover didn't respond with 200 when requesting a config (received {})",
-            response.getStatusLine().getStatusCode());
+            response.getCode());
         return Try.failure(new RuntimeException("Unauthorized"));
       }
     } catch (IOException exception) {
@@ -74,9 +74,9 @@ public class ServiceDiscoverHttpClient {
       HttpGet request = new HttpGet(url);
       request.setHeader("X-Consul-Token", token);
       try (CloseableHttpResponse response = httpClient.execute(request)) {
-        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-          logger.error("Unexpected response status: {}", response.getStatusLine().getStatusCode());
-          return Try.failure(new RuntimeException("Unexpected response status: " + response.getStatusLine().getStatusCode()));
+        if (response.getCode() != HttpStatus.SC_OK) {
+          logger.error("Unexpected response status: {}", response.getCode());
+          return Try.failure(new RuntimeException("Unexpected response status: " + response.getCode()));
         }
         String bodyResponse = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
         return Try.success(!"[]".equals(bodyResponse));

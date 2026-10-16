@@ -21,8 +21,8 @@ import com.zimbra.cs.store.external.AbstractExternalStoreManagerTest;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,7 +61,7 @@ public class HttpStoreManagerTest extends AbstractExternalStoreManagerTest {
 
 		@Override
 		protected String getLocator(HttpPost post, String postDigest, long postSize, Mailbox mbox,
-				HttpResponse resp)
+				ClassicHttpResponse resp)
 				throws ServiceException {
 			String locator = resp.getFirstHeader("Location").getValue();
 			if (locator == null || locator.isEmpty()) {

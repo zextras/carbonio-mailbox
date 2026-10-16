@@ -12,12 +12,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.HttpVersion;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
 
 import com.zimbra.common.httpclient.HttpClientUtil;
 import com.zimbra.common.service.ServiceException;
@@ -185,22 +183,22 @@ public class ZimbraNginxLookUpClient {
                 method.addHeader("X-Proxy-Host", virtualHost);
                 HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient().build();
                 // currently we use default httpclient_internal_connmgr_connection_timeout instead of ngxConnectTimeout
-                method.setProtocolVersion(new ProtocolVersion("HTTP", 1, 1));
+                method.setVersion(HttpVersion.HTTP_1_1);
                 try {
-                    HttpResponse response = HttpClientUtil.executeMethod(client, method);
-                    int statusCode = response.getStatusLine().getStatusCode();
+                    ClassicHttpResponse response = HttpClientUtil.executeMethod(client, method);
+                    int statusCode = response.getCode();
                     if (statusCode == 200 && response.getFirstHeader("Auth-Status").getValue().equals("OK")) {
                         return new NginxAuthServer(response.getFirstHeader("Auth-Server").getValue(), response.getFirstHeader("Auth-Port").getValue(),
                             response.getFirstHeader("Auth-User").getValue());
                     } else {
-                        String result = EntityUtils.toString(response.getEntity());
+                        String result = HttpClientUtil.entityToString(response.getEntity());
                         ZimbraLog.misc.debug("unexpected return %d\r\n%s", statusCode, result);
                     }
                 } catch (IOException e) {
                     nginxLookUpHandler.failureTime = System.nanoTime();
                     ZimbraLog.misc.debug("IOException getting route", e);
                 } finally {
-                    method.releaseConnection();
+                    method.reset();
                 }
             }
         }

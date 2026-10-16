@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.imap;
 
+import java.io.ByteArrayInputStream;
+import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -18,10 +20,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.concurrent.FutureCallback;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.concurrent.FutureCallback;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.client.ZMailbox;
@@ -63,7 +63,7 @@ public class ImapServerListener {
             catchupToKnownLastChangeId = new ConcurrentHashMap<>();
     private final AtomicInteger lastSequence = new AtomicInteger(0);
     private final SoapProvisioning soapProv = new SoapProvisioning();
-    private Future<HttpResponse> pendingRequest;
+    private Future<SimpleHttpResponse> pendingRequest;
     private final Integer pendingRequestGuard = 1;
 
     ImapServerListener(String svr) throws ServiceException {
@@ -502,14 +502,14 @@ public class ImapServerListener {
         }
     }
 
-    private final FutureCallback<HttpResponse> cb = new FutureCallback<>() {
+    private final FutureCallback<SimpleHttpResponse> cb = new FutureCallback<>() {
       @Override
-      public void completed(final HttpResponse response) {
-        int respCode = response.getStatusLine().getStatusCode();
+      public void completed(final SimpleHttpResponse response) {
+        int respCode = response.getCode();
         if (respCode == HttpStatus.SC_OK) {
           Element envelope;
           try {
-            envelope = W3cDomUtil.parseXML(response.getEntity().getContent());
+            envelope = W3cDomUtil.parseXML(new ByteArrayInputStream(response.getBodyBytes()));
             SoapProtocol proto = SoapProtocol.determineProtocol(envelope);
             Element doc = proto.getBodyElement(envelope);
             AdminWaitSetResponse wsResp = JaxbUtil.elementToJaxb(doc);
@@ -520,7 +520,7 @@ public class ImapServerListener {
         } else if (respCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
           Element envelope;
           try {
-            envelope = W3cDomUtil.parseXML(response.getEntity().getContent());
+            envelope = W3cDomUtil.parseXML(new ByteArrayInputStream(response.getBodyBytes()));
             SoapProtocol proto = SoapProtocol.determineProtocol(envelope);
             if (proto.hasFault(envelope)) {
               Element doc = proto.getBodyElement(envelope);

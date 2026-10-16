@@ -10,11 +10,10 @@ import java.security.MessageDigest;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.classic.methods.HttpHead;
 
 import com.zimbra.common.httpclient.HttpClientUtil;
 import com.zimbra.common.service.ServiceException;
@@ -71,11 +70,11 @@ public class TritonIncomingBlob extends ExternalResumableIncomingBlob {
         outStream.flush();
         HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient().build();
         HttpHead head = new HttpHead(baseUrl + uploadUrl);
-        ZimbraLog.store.info("heading %s", head.getURI());
+        ZimbraLog.store.info("heading %s", HttpClientUtil.requestUri(head));
         try {
             head.addHeader(TritonHeaders.SERVER_TOKEN, serverToken.getToken());
-            HttpResponse httpResp = HttpClientUtil.executeMethod(client, head);
-            int statusCode = httpResp.getStatusLine().getStatusCode();
+            ClassicHttpResponse httpResp = HttpClientUtil.executeMethod(client, head);
+            int statusCode = httpResp.getCode();
             if (statusCode == HttpStatus.SC_OK) {
                 String contentLength = httpResp.getFirstHeader(TritonHeaders.CONTENT_LENGTH).getValue();
                 long remoteSize = -1;
@@ -86,11 +85,11 @@ public class TritonIncomingBlob extends ExternalResumableIncomingBlob {
                 }
                 return remoteSize;
             } else {
-                ZimbraLog.store.error("failed with code %d response: %s", statusCode, EntityUtils.toString(httpResp.getEntity()));
-                throw new IOException("unable to head blob "+statusCode + ":" + httpResp.getStatusLine().getReasonPhrase(), null);
+                ZimbraLog.store.error("failed with code %d response: %s", statusCode, HttpClientUtil.entityToString(httpResp.getEntity()));
+                throw new IOException("unable to head blob "+statusCode + ":" + httpResp.getReasonPhrase(), null);
             }
         } finally {
-            head.releaseConnection();
+            head.reset();
         }
     }
 }

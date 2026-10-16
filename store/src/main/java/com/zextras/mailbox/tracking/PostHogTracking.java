@@ -3,8 +3,8 @@ package com.zextras.mailbox.tracking;
 import com.zimbra.cs.httpclient.HttpClientFactory;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 
 public class PostHogTracking implements Tracking {
 
@@ -27,14 +27,13 @@ public class PostHogTracking implements Tracking {
     }
 
     private HttpPost generateRequest(Event event) throws UnsupportedEncodingException {
-        final HttpPost httpPost = new HttpPost();
         String url = endPoint + "/capture/";
+        final HttpPost httpPost = new HttpPost(url);
         httpPost.setEntity(new StringEntity("{\n" +
                 "        \"event\": \"" + event.getAction() + "\",\n" +
                 "        \"api_key\": \"" + SITE_KEY + "\",\n" +
                 "        \"distinct_id\": \"" + event.getUserId() + "\"\n" +
                 "        }"));
-        httpPost.setURI(URI.create(url));
         return httpPost;
     }
 }

@@ -7,34 +7,38 @@ package com.zimbra.common.httpclient;
 
 import java.io.IOException;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
-import org.apache.http.protocol.HttpContext;
+import org.apache.hc.client5.http.impl.DefaultHttpRequestRetryStrategy;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpEntityContainer;
+import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.util.TimeValue;
 
-public class InputStreamRequestHttpRetryHandler extends DefaultHttpRequestRetryHandler {
+public class InputStreamRequestHttpRetryHandler extends DefaultHttpRequestRetryStrategy {
+
+    public InputStreamRequestHttpRetryHandler() {
+        super(3, TimeValue.ZERO_MILLISECONDS);
+    }
 
     @Override
     /**
      * Same as default, but returns false if method is an unbuffered input stream request 
      * This avoids HttpMethodDirector masking real IO exception with bogus 'Unbuffered content cannot be retried' exception
      */
-    public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
-
-        boolean canRetry = super.retryRequest(exception, executionCount, context);
-
-        HttpClientContext clientContext = HttpClientContext.adapt(context);
-        HttpRequest request = clientContext.getRequest();
-        boolean idempotent = !(request instanceof HttpEntityEnclosingRequest);
-        if (canRetry && idempotent) {
-            HttpEntity reqEntity = ((HttpEntityEnclosingRequest) request).getEntity();
-            if (reqEntity.isRepeatable()) {
-                canRetry = true;
+    public boolean retryRequest(HttpRequest request, IOException exception, int executionCount, HttpContext context) {
+        boolean canRetry = super.retryRequest(request, exception, executionCount, context);
+        if (canRetry && request instanceof HttpEntityContainer) {
+            HttpEntity reqEntity = ((HttpEntityContainer) request).getEntity();
+            if (reqEntity != null && !reqEntity.isRepeatable()) {
+                return false;
             }
         }
         return canRetry;
+    }
 
+    @Override
+    public boolean retryRequest(HttpResponse response, int executionCount, HttpContext context) {
+        return false;
     }
 }

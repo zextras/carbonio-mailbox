@@ -67,23 +67,22 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.config.SocketConfig;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.cookie.StandardCookieSpec;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPut;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.entity.InputStreamEntity;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
+import org.apache.hc.core5.http.message.BasicHeader;
 
 /**
  *
@@ -903,9 +902,9 @@ public class UserServlet extends ZimbraServlet {
 
   public static Pair<Header[], byte[]> getRemoteResource(ZAuthToken authToken, String url)
       throws ServiceException {
-    HttpResponse response = null;
+    ClassicHttpResponse response = null;
     try {
-      Pair<Header[], HttpResponse> pair = doHttpOp(authToken, new HttpGet(url));
+      Pair<Header[], ClassicHttpResponse> pair = doHttpOp(authToken, new HttpGet(url));
       response = pair.getSecond();
       return new Pair<>(
           pair.getFirst(), EntityUtils.toByteArray(response.getEntity()));
@@ -946,9 +945,9 @@ public class UserServlet extends ZimbraServlet {
 
   /** Helper class so that we can close connection upon stream close */
   public static class HttpInputStream extends FilterInputStream {
-    private final HttpResponse response;
+    private final ClassicHttpResponse response;
 
-    public HttpInputStream(HttpResponse r) throws IOException {
+    public HttpInputStream(ClassicHttpResponse r) throws IOException {
       super(r.getEntity().getContent());
       this.response = r;
     }
@@ -966,7 +965,7 @@ public class UserServlet extends ZimbraServlet {
     }
 
     public int getStatusCode() {
-      return response.getStatusLine().getStatusCode();
+      return response.getCode();
     }
 
     @Override
@@ -993,7 +992,7 @@ public class UserServlet extends ZimbraServlet {
 
   public static Pair<Header[], HttpInputStream> getRemoteResourceAsStream(
       ZAuthToken authToken, String url) throws ServiceException, IOException {
-    Pair<Header[], HttpResponse> pair = doHttpOp(authToken, new HttpGet(url));
+    Pair<Header[], ClassicHttpResponse> pair = doHttpOp(authToken, new HttpGet(url));
     return new Pair<>(
         pair.getFirst(), new HttpInputStream(pair.getSecond()));
   }
@@ -1024,18 +1023,18 @@ public class UserServlet extends ZimbraServlet {
       }
     }
     method.setEntity(new InputStreamEntity(req, ContentType.create(contentType)));
-    Pair<Header[], HttpResponse> pair = doHttpOp(authToken, method);
+    Pair<Header[], ClassicHttpResponse> pair = doHttpOp(authToken, method);
     return new Pair<>(
         pair.getFirst(), new HttpInputStream(pair.getSecond()));
   }
 
-  private static Pair<Header[], HttpResponse> doHttpOp(ZAuthToken authToken, HttpRequestBase method)
+  private static Pair<Header[], ClassicHttpResponse> doHttpOp(ZAuthToken authToken, HttpUriRequestBase method)
       throws ServiceException {
     // create an HTTP client with the same cookies
     String url = "";
     String hostname = "";
-    url = method.getURI().toString();
-    hostname = method.getURI().getHost();
+    url = HttpClientUtil.requestUri(method).toString();
+    hostname = HttpClientUtil.requestUri(method).getHost();
 
     HttpClientBuilder clientBuilder =
         ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
@@ -1056,47 +1055,33 @@ public class UserServlet extends ZimbraServlet {
                   ZimbraHttpConnectionManager.getInternalHttpConnMgr()
                       .getZimbraConnMgrParams()
                       .getReqConfig())
-              .setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY)
+              .setCookieSpec(StandardCookieSpec.RELAXED)
               .build();
 
       clientBuilder.setDefaultRequestConfig(reqConfig);
       if (method.getMethod().equalsIgnoreCase("PUT")) {
-        clientBuilder.setRetryHandler(new InputStreamRequestHttpRetryHandler());
-      }
-    }
-
-    if (method instanceof HttpPut) {
-      long contentLength = ((HttpPut) method).getEntity().getContentLength();
-      if (contentLength > 0) {
-        int timeEstimate = Math.max(10000, (int) (contentLength / 100)); // 100kbps in millis
-        // cannot set connection time using our ZimbrahttpConnectionManager,
-        // see comments in ZimbrahttpConnectionManager.
-        // actually, length of the content to Put should not be a factor for
-        // establishing a connection, only read time out matter, which we set
-        // client.getHttpConnectionManager().getParams().setConnectionTimeout(timeEstimate);
-        SocketConfig config = SocketConfig.custom().setSoTimeout(timeEstimate).build();
-        clientBuilder.setDefaultSocketConfig(config);
+        clientBuilder.setRetryStrategy(new InputStreamRequestHttpRetryHandler());
       }
     }
 
     HttpClient client = clientBuilder.build();
     try {
-      HttpResponse response = HttpClientUtil.executeMethod(client, method);
-      int statusCode = response.getStatusLine().getStatusCode();
+      ClassicHttpResponse response = HttpClientUtil.executeMethod(client, method);
+      int statusCode = response.getCode();
       if (statusCode == HttpStatus.SC_NOT_FOUND || statusCode == HttpStatus.SC_FORBIDDEN)
         throw MailServiceException.NO_SUCH_ITEM(-1);
       else if (statusCode != HttpStatus.SC_OK
           && statusCode != HttpStatus.SC_CREATED
           && statusCode != HttpStatus.SC_NO_CONTENT)
         throw ServiceException.RESOURCE_UNREACHABLE(
-            response.getStatusLine().getReasonPhrase(),
+            response.getReasonPhrase(),
             null,
             new ServiceException.InternalArgument(
                 HTTP_URL, url, ServiceException.Argument.Type.STR),
             new ServiceException.InternalArgument(
                 HTTP_STATUS_CODE, statusCode, ServiceException.Argument.Type.NUM));
 
-      List<Header> headers = new ArrayList<>(Arrays.asList(response.getAllHeaders()));
+      List<Header> headers = new ArrayList<>(Arrays.asList(response.getHeaders()));
       headers.add(new BasicHeader("X-Zimbra-Http-Status", "" + statusCode));
       return new Pair<>(headers.toArray(new Header[0]), response);
     } catch (IOException e) {

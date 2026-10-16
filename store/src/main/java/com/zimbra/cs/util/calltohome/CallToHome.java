@@ -14,11 +14,13 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.httpclient.HttpClientFactory;
 import com.zimbra.cs.util.BuildInfo;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,14 +48,14 @@ public class CallToHome extends TimerTask {
   private void postDataToEndpoint(JSONObject data) throws IOException {
     var post = new HttpPost(UPDATE_URL);
     post.setHeader("Content-Type", "application/json; charset=UTF-8");
-    post.setEntity(new StringEntity(data.toString(), "UTF-8"));
+    post.setEntity(new StringEntity(data.toString(), StandardCharsets.UTF_8));
     ZimbraLog.misc.debug("CallToHome: Posting data: " + data);
 
     try (var client = httpClientFactory.createWithProxy();
         var httpResp = client.execute(post)) {
-      var statusCode = httpResp.getStatusLine().getStatusCode();
+      var statusCode = httpResp.getCode();
       if (statusCode != HttpStatus.SC_OK) {
-        var reason = httpResp.getStatusLine().getReasonPhrase();
+        var reason = httpResp.getReasonPhrase();
         ZimbraLog.misc.error("CallToHome: Request returned with status " + statusCode + ": " + reason);
         throw new IOException("Request failed with status " + statusCode + ": " + reason);
       }

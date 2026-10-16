@@ -28,17 +28,17 @@ import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.FileEntity;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.cookie.CookieStore;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.core5.http.io.entity.FileEntity;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -85,9 +85,9 @@ class ImportExportAuditLogIT extends MailboxTestSuite {
   void shouldLogSuccessfulFolderExport() throws Exception {
     addMessageToInbox("audit export test");
 
-    final HttpResponse response = get("~/Inbox?fmt=tgz&auth=co");
+    final ClassicHttpResponse response = get("~/Inbox?fmt=tgz&auth=co");
 
-    assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, response.getCode());
     final String line = auditAppender.findLineContaining("cmd=FolderExport;");
     assertTrue(line.contains("account=" + testAccount.getName() + ";"));
     assertTrue(line.contains("authAccount=" + testAccount.getName() + ";"));
@@ -99,10 +99,10 @@ class ImportExportAuditLogIT extends MailboxTestSuite {
 
   @Test
   void shouldLogSuccessfulFolderImport() throws Exception {
-    final HttpResponse response =
-        post("~/Calendar?fmt=ics&auth=co", new FileEntity(icsTestFile()));
+    final ClassicHttpResponse response =
+        post("~/Calendar?fmt=ics&auth=co", new FileEntity(icsTestFile(), (org.apache.hc.core5.http.ContentType) null));
 
-    assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, response.getCode());
     final String line = auditAppender.findLineContaining("cmd=FolderImport;");
     assertTrue(line.contains("account=" + testAccount.getName() + ";"));
     assertTrue(line.contains("folder=/Calendar;"));
@@ -113,9 +113,9 @@ class ImportExportAuditLogIT extends MailboxTestSuite {
 
   @Test
   void shouldLogSuccessfulIcsExportWrittenThroughWriter() throws Exception {
-    final HttpResponse response = get("~/Calendar?fmt=ics&auth=co");
+    final ClassicHttpResponse response = get("~/Calendar?fmt=ics&auth=co");
 
-    assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, response.getCode());
     final String line = auditAppender.findLineContaining("cmd=FolderExport;");
     assertTrue(line.contains("folder=/Calendar;"));
     assertTrue(line.contains("fmt=ics;"));
@@ -125,10 +125,10 @@ class ImportExportAuditLogIT extends MailboxTestSuite {
 
   @Test
   void shouldLogPartialOutcomeWhenSomeImportEntriesFail() throws Exception {
-    final HttpResponse response =
-        post("~/Inbox?fmt=tgz&auth=co", new ByteArrayEntity(tgzWithBrokenEntry()));
+    final ClassicHttpResponse response =
+        post("~/Inbox?fmt=tgz&auth=co", new ByteArrayEntity(tgzWithBrokenEntry(), null));
 
-    assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, response.getCode());
     final String line = auditAppender.findLineContaining("cmd=FolderImport;");
     assertTrue(line.contains("folder=/Inbox;"));
     assertTrue(line.contains("fmt=tgz;"));
@@ -137,7 +137,7 @@ class ImportExportAuditLogIT extends MailboxTestSuite {
 
   @Test
   void shouldLogErrorOutcomeWhenImportFails() throws Exception {
-    post("~/Calendar?fmt=ics&auth=co", new ByteArrayEntity("not an ics file".getBytes()));
+    post("~/Calendar?fmt=ics&auth=co", new ByteArrayEntity("not an ics file".getBytes(), null));
 
     final String line = auditAppender.findLineContaining("cmd=FolderImport;");
     assertTrue(line.contains("folder=/Calendar;"));
@@ -148,9 +148,9 @@ class ImportExportAuditLogIT extends MailboxTestSuite {
   void shouldNotAuditSingleItemDownload() throws Exception {
     final int messageId = addMessageToInbox("single message download");
 
-    final HttpResponse response = get("~/?id=" + messageId + "&auth=co");
+    final ClassicHttpResponse response = get("~/?id=" + messageId + "&auth=co");
 
-    assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, response.getCode());
     assertTrue(auditAppender.linesContaining("cmd=FolderExport;").isEmpty());
   }
 
@@ -191,19 +191,19 @@ class ImportExportAuditLogIT extends MailboxTestSuite {
             .getFile());
   }
 
-  private HttpResponse get(String path) throws Exception {
+  private ClassicHttpResponse get(String path) throws Exception {
     try (CloseableHttpClient client = authenticatedClient()) {
-      final HttpGet httpGet = new HttpGet();
-      httpGet.setURI(URI.create(server.getURI().toString() + path));
+      final HttpGet httpGet = new HttpGet("/");
+      httpGet.setUri(URI.create(server.getURI().toString() + path));
       return client.execute(httpGet);
     }
   }
 
-  private HttpResponse post(String path, org.apache.http.HttpEntity entity) throws Exception {
+  private ClassicHttpResponse post(String path, org.apache.hc.core5.http.HttpEntity entity) throws Exception {
     try (CloseableHttpClient client = authenticatedClient()) {
-      final HttpPost httpPost = new HttpPost();
+      final HttpPost httpPost = new HttpPost("/");
       httpPost.setEntity(entity);
-      httpPost.setURI(URI.create(server.getURI().toString() + path));
+      httpPost.setUri(URI.create(server.getURI().toString() + path));
       return client.execute(httpPost);
     }
   }

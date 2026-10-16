@@ -27,7 +27,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import org.apache.http.Header;
+import org.apache.hc.core5.http.Header;
 
 public class HtmlFormatter extends Formatter {
 

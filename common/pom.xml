@@ -22,8 +22,12 @@
       <artifactId>xml-apis</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpcore</artifactId>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.core5</groupId>
+      <artifactId>httpcore5</artifactId>
     </dependency>
     <dependency>
       <artifactId>mail</artifactId>
@@ -90,18 +94,8 @@
     </dependency>
 
     <dependency>
-      <artifactId>httpclient</artifactId>
-      <groupId>org.apache.httpcomponents</groupId>
-    </dependency>
-
-    <dependency>
       <artifactId>jaxb-api</artifactId>
       <groupId>javax.xml.bind</groupId>
-    </dependency>
-
-    <dependency>
-      <artifactId>httpasyncclient</artifactId>
-      <groupId>org.apache.httpcomponents</groupId>
     </dependency>
 
     <dependency>
