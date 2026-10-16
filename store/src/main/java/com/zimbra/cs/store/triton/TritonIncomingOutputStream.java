@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -110,8 +109,6 @@ public class TritonIncomingOutputStream extends ExternalResumableOutputStream {
             } else {
                 throw new IOException("Unable to append, bad response code "+statusCode);
             }
-        } catch (HttpException e) {
-            throw new IOException("unexpected error during sendHttpData() operation: " + e.getMessage());
         } finally {
             post.releaseConnection();
         }

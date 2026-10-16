@@ -8,7 +8,6 @@ import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.accesscontrol.RightCommand;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.soap.admin.type.GranteeSelector;
-import org.apache.http.HttpException;
 
 import java.io.IOException;
 

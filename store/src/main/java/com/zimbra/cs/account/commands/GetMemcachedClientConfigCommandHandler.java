@@ -9,7 +9,6 @@ import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import net.spy.memcached.DefaultHashAlgorithm;
-import org.apache.http.HttpException;
 
 import java.io.IOException;
 import java.util.List;

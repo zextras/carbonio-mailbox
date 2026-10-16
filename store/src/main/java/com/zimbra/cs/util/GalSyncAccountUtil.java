@@ -27,7 +27,6 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.http.HttpException;
 
 public class GalSyncAccountUtil {
   private static final int CREATE_ACCOUNT = 10;
@@ -136,8 +135,6 @@ public class GalSyncAccountUtil {
       if (mForceSync) ds.addAttribute(AdminConstants.A_RESET, "TRUE");
 
       mTransport.invoke(req);
-    } catch (HttpException e) {
-
     } finally {
       if (mTransport != null) mTransport.shutdown();
     }
@@ -172,8 +169,6 @@ public class GalSyncAccountUtil {
             .setText(pollingInterval);
 
       return mTransport.invokeWithoutSession(req);
-    } catch (HttpException e) {
-      throw new IOException("Unexpected error." + e);
     } finally {
       if (mTransport != null) mTransport.shutdown();
     }
@@ -206,8 +201,6 @@ public class GalSyncAccountUtil {
             .setText(pollingInterval);
 
       return mTransport.invokeWithoutSession(req);
-    } catch (HttpException e) {
-      throw new IOException("Unexpected error." + e);
     } finally {
       if (mTransport != null) mTransport.shutdown();
     }
@@ -234,8 +227,6 @@ public class GalSyncAccountUtil {
       acct.addAttribute(AdminConstants.A_BY, by.name());
       acct.setText(account);
       return mTransport.invokeWithoutSession(req);
-    } catch (HttpException e) {
-      throw new IOException("Unexpected error." + e);
     } finally {
       if (mTransport != null) mTransport.shutdown();
     }
@@ -265,7 +256,7 @@ public class GalSyncAccountUtil {
     mForceSync = true;
   }
 
-  private void auth() throws ServiceException, IOException, HttpException {
+  private void auth() throws ServiceException, IOException {
     XMLElement req = new XMLElement(AdminConstants.AUTH_REQUEST);
     req.addElement(AdminConstants.E_NAME).setText(mUsername);
     req.addElement(AdminConstants.E_PASSWORD).setText(mPassword);

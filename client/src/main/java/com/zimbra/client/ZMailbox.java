@@ -209,7 +209,6 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
@@ -2892,7 +2891,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       } else {
         throw ZClientException.UPLOAD_FAILED("Attachment post failed, status=" + statusCode, null);
       }
-    } catch (IOException | HttpException e) {
+    } catch (IOException e) {
       throw ZClientException.IO_ERROR(e.getMessage(), e);
     } finally {
       post.releaseConnection();
@@ -2950,7 +2949,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       } else {
         throw ZClientException.UPLOAD_FAILED("Attachment post failed, status=" + statusCode, null);
       }
-    } catch (IOException | HttpException e) {
+    } catch (IOException e) {
       throw ZClientException.IO_ERROR(e.getMessage(), e);
     } finally {
       post.releaseConnection();
@@ -3705,7 +3704,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
                 uri, statusCode, response.getStatusLine().getReasonPhrase());
         throw ServiceException.FAILURE(msg, null);
       }
-    } catch (IOException | HttpException e) {
+    } catch (IOException e) {
       String msg = String.format("Unable to get resource from '%s' : %s", uri, e.getMessage());
       throw ZClientException.IO_ERROR(msg, e);
     }
@@ -3885,7 +3884,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
             "POST failed, status=" + statusCode + " " + response.getStatusLine().getStatusCode(),
             null);
       }
-    } catch (IOException | HttpException e) {
+    } catch (IOException e) {
       throw ZClientException.IO_ERROR(e.getMessage(), e);
     } finally {
       if (closeIs) {

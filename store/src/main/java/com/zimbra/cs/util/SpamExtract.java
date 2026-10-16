@@ -36,7 +36,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -137,7 +136,7 @@ public class SpamExtract {
         return cl;
     }
 
-    public static void main(String[] args) throws ServiceException, HttpException, SoapFaultException, IOException {
+    public static void main(String[] args) throws ServiceException, SoapFaultException, IOException {
         CommandLine cl = parseArgs(args);
 
         if (cl.hasOption('D')) {
@@ -210,7 +209,7 @@ public class SpamExtract {
         extract(authToken, account, server, optQuery, outputDirectory, optDelete, optRaw);
     }
 
-    private static void extract(String authToken, Account account, Server server, String query, File outdir, boolean delete, boolean raw) throws ServiceException, HttpException, SoapFaultException, IOException {
+    private static void extract(String authToken, Account account, Server server, String query, File outdir, boolean delete, boolean raw) throws ServiceException, SoapFaultException, IOException {
         String soapURL = getSoapURL(server, false);
 
         URL restURL = getServerURL(server, false);
@@ -348,7 +347,7 @@ public class SpamExtract {
     private static int mExtractIndex;
     private static final int MAX_BUFFER_SIZE = 10 * 1024 * 1024;
 
-    private static List<String> extractMessages(HttpClientBuilder hc, HttpGet gm, String path, File outdir, boolean raw) throws HttpException, IOException {
+    private static List<String> extractMessages(HttpClientBuilder hc, HttpGet gm, String path, File outdir, boolean raw) throws IOException {
         List<String> extractedIds = new ArrayList<>();
         HttpClient client = hc.build();
       

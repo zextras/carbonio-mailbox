@@ -10,7 +10,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.soap.type.GalSearchType;
-import org.apache.http.HttpException;
 
 import java.io.IOException;
 

@@ -6,7 +6,6 @@ import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.fb.FbCli;
-import org.apache.http.HttpException;
 
 import java.io.IOException;
 
@@ -17,12 +16,12 @@ class PushFreebusyDomainCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException, IOException {
     doPushFreeBusyForDomain(args);
   }
 
   private void doPushFreeBusyForDomain(String[] args)
-          throws ServiceException, IOException, HttpException {
+          throws ServiceException, IOException {
     provUtil.lookupDomain(args[1]);
     var prov = provUtil.getProvisioning();
     FbCli fbcli = new FbCli();

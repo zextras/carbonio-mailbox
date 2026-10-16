@@ -8,7 +8,6 @@ package com.zimbra.common.httpclient;
 import java.io.IOException;
 import java.util.Map;
 
-import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -32,14 +31,14 @@ import com.zimbra.common.util.ZimbraHttpConnectionManager;
 
 public class HttpClientUtil {
 
-    public static HttpResponse executeMethod(HttpRequestBase method) throws HttpException, IOException {
+    public static HttpResponse executeMethod(HttpRequestBase method) throws IOException {
         return executeMethod(ZimbraHttpConnectionManager.getInternalHttpConnMgr().getDefaultHttpClient().build(), method, null);
     }
-    public static HttpResponse executeMethod(HttpClient client, HttpRequestBase method) throws HttpException, IOException {
+    public static HttpResponse executeMethod(HttpClient client, HttpRequestBase method) throws IOException {
         return executeMethod(client, method, null, null);
     }
 
-    public static HttpResponse executeMethod(HttpClient client, HttpRequestBase method, BasicCookieStore state, HttpClientContext context) throws HttpException, IOException {
+    public static HttpResponse executeMethod(HttpClient client, HttpRequestBase method, BasicCookieStore state, HttpClientContext context) throws IOException {
         ProxyHostConfiguration proxyConfig = HttpProxyConfig.getProxyConfig(method.getURI().toString());
         BasicCookieStore cookieStore = new  BasicCookieStore();
         if (state != null) {
@@ -62,7 +61,7 @@ public class HttpClientUtil {
         return client.execute(method);
     }
 
-    public static HttpResponse executeMethod(HttpClientBuilder clientBuilder, HttpRequestBase method, BasicCookieStore state, HttpClientContext context) throws HttpException, IOException {
+    public static HttpResponse executeMethod(HttpClientBuilder clientBuilder, HttpRequestBase method, BasicCookieStore state, HttpClientContext context) throws IOException {
         ProxyHostConfiguration proxyConfig = HttpProxyConfig.getProxyConfig(method.getURI().toString());
         BasicCookieStore cookieStore = new  BasicCookieStore();
         if (state != null) {
@@ -87,7 +86,7 @@ public class HttpClientUtil {
         return httpClient.execute(method);
     }
 
-    public static HttpResponse executeMethod(HttpClient client, HttpRequestBase method, HttpClientContext context) throws HttpException, IOException {
+    public static HttpResponse executeMethod(HttpClient client, HttpRequestBase method, HttpClientContext context) throws IOException {
         return client.execute(method, context);
     }
 

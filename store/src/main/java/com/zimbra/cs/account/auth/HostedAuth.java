@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -87,7 +86,7 @@ public class HostedAuth extends ZimbraCustomAuth {
 		HttpResponse response;
         try {
             response = HttpClientUtil.executeMethod(client, method);
-        } catch (HttpException | IOException ex) {
+        } catch (IOException ex) {
         	throw AuthFailedServiceException.AUTH_FAILED(acct.getName(),acct.getName(), "HTTP request to remote authentication server failed",ex); 
         } finally {
             if (method != null)

@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.http.HttpException;
 import org.apache.http.HttpHeaders;
 import org.apache.http.protocol.HTTP;
 import org.eclipse.jetty.http.HttpStatus;
@@ -182,10 +181,9 @@ public class PreviewHandler {
    * @param targetAccountId the ID of the target account whose mail host will receive the request
    * @throws IOException      if an I/O error occurs during the processing of the request or response
    * @throws ServiceException if a service-related error occurs while proxying the request
-   * @throws HttpException    if an HTTP error occurs during the proxying process
    */
   void proxyRequestToTargetMailHost(HttpServletRequest request, HttpServletResponse response, String targetAccountId)
-      throws IOException, ServiceException, HttpException {
+      throws IOException, ServiceException {
     var requestId = Utils.getRequestIdFromRequest(request);
     LOG.info("[" + requestId + "] Proxying request to target account(" + targetAccountId + ")'s mail host.");
     proxyServletRequest(request, response, targetAccountId,

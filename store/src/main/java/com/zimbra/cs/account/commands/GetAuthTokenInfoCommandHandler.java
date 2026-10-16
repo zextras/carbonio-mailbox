@@ -7,7 +7,6 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
-import org.apache.http.HttpException;
 
 import java.io.IOException;
 import java.util.ArrayList;

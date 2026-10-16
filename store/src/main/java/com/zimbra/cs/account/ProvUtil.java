@@ -62,7 +62,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.apache.http.Header;
-import org.apache.http.HttpException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicCookieStore;
 
@@ -304,7 +303,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   }
 
   private boolean execute(String[] args)
-			throws ServiceException, ArgException, IOException, HttpException, InvalidCommandException, CommandExitException {
+			throws ServiceException, ArgException, IOException, InvalidCommandException, CommandExitException {
     command = lookupCommand(args[0]);
     if (command == null) {
       return false;
@@ -708,7 +707,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
         if (verboseMode) {
           console.printStacktrace(e);
         }
-      } catch (ArgException | HttpException e) {
+      } catch (ArgException e) {
         usage();
 			}
     }
@@ -917,7 +916,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
             pu.usage();
           }
         }
-        catch (ArgException | HttpException e) {
+        catch (ArgException e) {
           pu.usage();
         }
       }

@@ -50,7 +50,6 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.http.HttpException;
 
 /**
  * The content servlet returns an attachment document in its original format. If attachment needs to
@@ -229,8 +228,6 @@ public class ContentServlet extends ZimbraServlet {
           HttpServletResponse.SC_NOT_FOUND, L10nUtil.getMessage(MsgKey.errNoSuchItem, req));
     } catch (ServiceException e) {
       returnError(resp, e);
-    } catch (HttpException e) {
-      throw new IOException("Unknown error", e);
     } finally {
       ZimbraLog.clearContext();
     }
@@ -293,8 +290,6 @@ public class ContentServlet extends ZimbraServlet {
       if (expunge) FileUploadServlet.deleteUpload(up);
     } catch (ServiceException e) {
       returnError(resp, e);
-    } catch (HttpException e) {
-      throw new IOException("Unknown error", e);
     }
   }
 
