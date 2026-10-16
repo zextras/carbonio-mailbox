@@ -30,6 +30,11 @@
       <artifactId>httpcore5</artifactId>
     </dependency>
     <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
       <artifactId>mail</artifactId>
       <groupId>javax.mail</groupId>
     </dependency>
