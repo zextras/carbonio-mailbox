@@ -6,7 +6,6 @@ import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.ldap.LdapProv;
-import org.apache.http.HttpException;
 
 import java.io.IOException;
 

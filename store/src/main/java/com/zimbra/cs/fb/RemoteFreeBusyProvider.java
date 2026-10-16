@@ -19,7 +19,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -128,7 +127,7 @@ public class RemoteFreeBusyProvider extends FreeBusyProvider {
                     HttpResponse response =  HttpClientUtil.executeMethod(clientBuilder.build(), method);
                     byte[] buf = ByteUtil.getContent(response.getEntity().getContent(), 0);
                     fbMsg = new String(buf, StandardCharsets.UTF_8);
-                } catch (IOException | HttpException ex) {
+                } catch (IOException ex) {
                     // ignore this recipient and go on
                     fbMsg = null;
                 }

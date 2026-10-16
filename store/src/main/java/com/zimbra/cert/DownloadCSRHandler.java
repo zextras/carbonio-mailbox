@@ -31,7 +31,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.Header;
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -73,7 +72,7 @@ public class DownloadCSRHandler extends ExtensionHttpHandler {
                 } else {
                     downloadViaRemoteMgr(server, resp);
                 }
-            } catch (ServiceException | HttpException e) {
+            } catch (ServiceException e) {
                 ZimbraLog.extensions.error("Admin user %s does not have permission %s to download CSR from server %s",
                         authToken.getAccount().getName(), Admin.R_getCSR.toString(), serverId);
                 resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
@@ -105,7 +104,7 @@ public class DownloadCSRHandler extends ExtensionHttpHandler {
     }
 
     private void proxyRequestWithAuth(AuthToken authToken, Server server, HttpServletResponse resp)
-            throws ServiceException, IOException, HttpException {
+            throws ServiceException, IOException {
         HttpClientBuilder httpClientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().getDefaultHttpClient();
         BasicCookieStore cookieStore = HttpClientUtil.newHttpState(authToken.toZAuthToken(), server.getServiceHostname(), true);
         String destURL = String.format("https://%s:%s/service/extension/%s/%s",

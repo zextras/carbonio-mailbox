@@ -7,7 +7,6 @@ import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.fb.FbCli;
-import org.apache.http.HttpException;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,11 +20,11 @@ class PushFreebusyCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException, IOException {
     doPushFreeBusy(args);
   }
 
-  private void doPushFreeBusy(String[] args) throws ServiceException, IOException, HttpException {
+  private void doPushFreeBusy(String[] args) throws ServiceException, IOException {
     FbCli fbcli = new FbCli();
     Map<String, HashSet<String>> accountMap = new HashMap<>();
     var prov = provUtil.getProvisioning();

@@ -21,7 +21,6 @@ import java.util.Set;
 
 import org.apache.http.Consts;
 import org.apache.http.Header;
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthSchemeProvider;
 import org.apache.http.auth.AuthScope;
@@ -356,7 +355,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
                 ZimbraLog.fb.error("cannot modify resource at %s : http error %d, buf (%s)", url, status, respStr);
                 return false;  // retry
             }
-        } catch (IOException | HttpException ioe) {
+        } catch (IOException ioe) {
             ZimbraLog.fb.error("error communicating with "+serverInfo.url, ioe);
             return false;  // retry
         } finally {
@@ -365,7 +364,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
         return true;
     }
 
-    private HttpResponse sendRequest(HttpRequestBase method, ServerInfo info) throws IOException, HttpException {
+    private HttpResponse sendRequest(HttpRequestBase method, ServerInfo info) throws IOException {
 
         method.addHeader(HEADER_USER_AGENT, USER_AGENT);
         HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getExternalHttpConnMgr().newHttpClient();
@@ -394,7 +393,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
         return true;
     }
 
-    private boolean formAuth(HttpClientBuilder clientBuilder, ServerInfo info) throws IOException, HttpException {
+    private boolean formAuth(HttpClientBuilder clientBuilder, ServerInfo info) throws IOException {
         StringBuilder buf = new StringBuilder();
         buf.append("destination=");
         buf.append(URLEncoder.encode(info.url, StandardCharsets.UTF_8));
@@ -464,7 +463,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
                 response = Element.parseXML(buf);
             } else
                 response = Element.parseXML(httpResponse.getEntity().getContent());
-        } catch (XmlParseException | IOException | HttpException e) {
+        } catch (XmlParseException | IOException e) {
             ZimbraLog.fb.warn("error parsing fb response from exchange", e);
             return getEmptyList(req);
         } finally {
@@ -524,7 +523,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
         return serverInfo;
     }
 
-    public static HttpResponse checkAuth(ServerInfo info, Account requestor) throws ServiceException, IOException, HttpException {
+    public static HttpResponse checkAuth(ServerInfo info, Account requestor) throws ServiceException, IOException {
         ExchangeFreeBusyProvider prov = new ExchangeFreeBusyProvider();
         ArrayList<Request> req = new ArrayList<>();
         req.add(new Request(

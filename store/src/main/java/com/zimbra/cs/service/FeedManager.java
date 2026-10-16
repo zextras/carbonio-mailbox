@@ -38,7 +38,6 @@ import javax.mail.internet.ParseException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.Header;
-import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -300,7 +299,7 @@ public class FeedManager {
     }
 
     private static RemoteDataInfo retrieveRemoteData(String url, Folder.SyncData fsd)
-    throws ServiceException, HttpException, IOException {
+    throws ServiceException, IOException {
         assert !Strings.isNullOrEmpty(url);
 
         HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getExternalHttpConnMgr().newHttpClient();
@@ -449,7 +448,7 @@ public class FeedManager {
                     break;
                 }
             } while (++redirects <= MAX_REDIRECTS);
-        } catch (ServiceException | IOException | HttpException ex) {
+        } catch (ServiceException | IOException ex) {
             if (get != null) {
                 get.releaseConnection();
             }
@@ -498,8 +497,6 @@ public class FeedManager {
                 throw ServiceException.TOO_MANY_PROXIES(url);
             }
             return retrieveRemoteDatasource(acct, rdi, fsd);
-        } catch (HttpException e) {
-            throw ServiceException.RESOURCE_UNREACHABLE("HttpException: " + e, e);
         } catch (IOException e) {
             throw ServiceException.RESOURCE_UNREACHABLE("IOException: " + e, e);
         } finally {

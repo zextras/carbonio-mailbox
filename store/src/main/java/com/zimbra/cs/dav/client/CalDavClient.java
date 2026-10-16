@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
@@ -96,7 +95,7 @@ public class CalDavClient extends WebDavClient {
         return null;
     }
 
-    public void login(String defaultPrincipalUrl) throws IOException, DavException, HttpException {
+    public void login(String defaultPrincipalUrl) throws IOException, DavException {
         String principalUrl = getCurrentUserPrincipal();
         if (principalUrl == null) {
             principalUrl = defaultPrincipalUrl;
@@ -144,7 +143,7 @@ public class CalDavClient extends WebDavClient {
         CALENDAR_PROPS.add(DavElements.E_RESOURCETYPE);
         CALENDAR_PROPS.add(DavElements.E_GETCTAG);
     }
-    public Map<String,DavObject> getCalendars() throws IOException, DavException, HttpException {
+    public Map<String,DavObject> getCalendars() throws IOException, DavException {
         HashMap<String,DavObject> calendars = new HashMap<>();
         for (String calHome : mCalendarHomeSet) {
             for (DavObject obj : listObjects(calHome, CALENDAR_PROPS)) {
@@ -157,7 +156,7 @@ public class CalDavClient extends WebDavClient {
         return calendars;
     }
 
-    public Collection<Appointment> getEtags(String calendarUri) throws IOException, DavException, HttpException {
+    public Collection<Appointment> getEtags(String calendarUri) throws IOException, DavException {
         ArrayList<Appointment> etags = new ArrayList<>();
         DavRequest propfind = DavRequest.PROPFIND(calendarUri);
         propfind.setDepth(Depth.one);
@@ -173,7 +172,7 @@ public class CalDavClient extends WebDavClient {
         return etags;
     }
 
-    public Appointment getCalendarData(Appointment appt) throws IOException, HttpException {
+    public Appointment getCalendarData(Appointment appt) throws IOException {
         HttpInputStream resp = sendGet(appt.href);
         appt.data = null;
         if (resp.getStatusCode() == 200) {
@@ -183,7 +182,7 @@ public class CalDavClient extends WebDavClient {
         return appt;
     }
 
-    public Appointment getEtag(String url) throws IOException, DavException, HttpException {
+    public Appointment getEtag(String url) throws IOException, DavException {
         Appointment appt = new Appointment(url, null);
         DavRequest propfind = DavRequest.PROPFIND(url);
         propfind.setDepth(Depth.zero);
@@ -200,7 +199,7 @@ public class CalDavClient extends WebDavClient {
         return appt;
     }
 
-    public String sendCalendarData(Appointment appt) throws IOException, DavException, HttpException {
+    public String sendCalendarData(Appointment appt) throws IOException, DavException {
         HttpInputStream resp = sendPut(appt.href, appt.data.getBytes(StandardCharsets.UTF_8), MimeConstants.CT_TEXT_CALENDAR, appt.etag, null);
         String etag = resp.getHeader(DavProtocol.HEADER_ETAG);
         ZimbraLog.dav.debug("ETags: "+appt.etag+", "+etag);
@@ -216,7 +215,7 @@ public class CalDavClient extends WebDavClient {
     private void sendSchedulingMessage(Appointment appt) throws IOException, DavException {
     }
 
-    public Collection<Appointment> getCalendarData(String url, Collection<Appointment> hrefs) throws IOException, DavException, HttpException {
+    public Collection<Appointment> getCalendarData(String url, Collection<Appointment> hrefs) throws IOException, DavException {
         ArrayList<Appointment> appts = new ArrayList<>();
 
         DavRequest multiget = DavRequest.CALENDARMULTIGET(url);
@@ -235,7 +234,7 @@ public class CalDavClient extends WebDavClient {
         return appts;
     }
 
-    public Collection<Appointment> getAllCalendarData(String url) throws IOException, DavException, HttpException {
+    public Collection<Appointment> getAllCalendarData(String url) throws IOException, DavException {
         ArrayList<Appointment> appts = new ArrayList<>();
 
         DavRequest query = DavRequest.CALENDARQUERY(url);

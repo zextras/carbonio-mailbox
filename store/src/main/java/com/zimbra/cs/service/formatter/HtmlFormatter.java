@@ -28,7 +28,6 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import org.apache.http.Header;
-import org.apache.http.HttpException;
 
 public class HtmlFormatter extends Formatter {
 
@@ -83,8 +82,7 @@ public class HtmlFormatter extends Formatter {
     private static final String ATTR_TARGET_ACCOUNT_PREF_CALENDAR_DAY_HOUR_END  = "zimbra_target_account_prefCalendarDayHourEnd";
 
     @Override
-    public void formatCallback(UserServletContext context) throws UserServletException,
-            ServiceException, IOException, ServletException, HttpException {
+    public void formatCallback(UserServletContext context) throws UserServletException, ServiceException, IOException, ServletException {
         dispatchJspRest(context.getServlet(), context);
     }
 

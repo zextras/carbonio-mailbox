@@ -5,7 +5,6 @@ import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.fb.FbCli;
-import org.apache.http.HttpException;
 
 import java.io.IOException;
 
@@ -16,11 +15,11 @@ class GetAllFbpCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException, IOException {
     doGetAllFreeBusyProviders();
   }
 
-  private void doGetAllFreeBusyProviders() throws ServiceException, IOException, HttpException {
+  private void doGetAllFreeBusyProviders() throws ServiceException, IOException {
     FbCli fbcli = new FbCli();
     for (FbCli.FbProvider fbprov : fbcli.getAllFreeBusyProviders()) {
       provUtil.getConsole().println(fbprov.toString());

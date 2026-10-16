@@ -68,7 +68,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.Header;
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -424,15 +423,11 @@ public class UserServlet extends ZimbraServlet {
 
     if (context.targetAccount != null
         && !Provisioning.getInstance().onLocalServer(context.targetAccount)) {
-      try {
-        proxyServletRequest(
-            req,
-            resp,
-            Provisioning.getInstance().getServer(context.targetAccount),
-            getProxyAuthToken(context), Map.of());
-      } catch (HttpException e) {
-        throw new IOException("Unknown error", e);
-      }
+      proxyServletRequest(
+          req,
+          resp,
+          Provisioning.getInstance().getServer(context.targetAccount),
+          getProxyAuthToken(context), Map.of());
       return true;
     }
 
@@ -752,8 +747,6 @@ public class UserServlet extends ZimbraServlet {
       } else {
         resp.sendError(e.getHttpStatusCode(), e.getMessage());
       }
-    } catch (HttpException e) {
-      throw new ServletException(e);
     } finally {
       ZimbraLog.clearContext();
     }
@@ -816,12 +809,8 @@ public class UserServlet extends ZimbraServlet {
     if (targetAccount == null)
       throw new UserServletException(
           HttpServletResponse.SC_BAD_REQUEST, L10nUtil.getMessage(MsgKey.errNoSuchAccount, req));
-    try {
-      proxyServletRequest(
-          req, resp, prov.getServer(targetAccount), uri.toString(), getProxyAuthToken(context));
-    } catch (HttpException e) {
-      throw new IOException("Unknown error", e);
-    }
+    proxyServletRequest(
+        req, resp, prov.getServer(targetAccount), uri.toString(), getProxyAuthToken(context));
     return true;
   }
 
@@ -1110,8 +1099,6 @@ public class UserServlet extends ZimbraServlet {
       List<Header> headers = new ArrayList<>(Arrays.asList(response.getAllHeaders()));
       headers.add(new BasicHeader("X-Zimbra-Http-Status", "" + statusCode));
       return new Pair<>(headers.toArray(new Header[0]), response);
-    } catch (HttpException e) {
-      throw ServiceException.RESOURCE_UNREACHABLE("HttpException while fetching " + url, e);
     } catch (IOException e) {
       throw ServiceException.RESOURCE_UNREACHABLE("IOException while fetching " + url, e);
     }

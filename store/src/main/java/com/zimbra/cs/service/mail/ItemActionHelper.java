@@ -66,7 +66,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import org.apache.http.HttpException;
 import org.dom4j.QName;
 
 public class ItemActionHelper {
@@ -585,7 +584,7 @@ public class ItemActionHelper {
     try {
       if (!targeted || mIidFolder.belongsTo(mMailbox)) mResult = executeLocal();
       else mResult = executeRemote();
-    } catch (IOException | HttpException ioe) {
+    } catch (IOException ioe) {
       throw ServiceException.FAILURE("exception reading item blob", ioe);
     }
   }
@@ -746,7 +745,7 @@ public class ItemActionHelper {
     return authToken;
   }
 
-  private ItemActionResult executeRemote() throws ServiceException, IOException, HttpException {
+  private ItemActionResult executeRemote() throws ServiceException, IOException {
     Account target = Provisioning.getInstance().get(Key.AccountBy.id, mIidFolder.getAccountId());
 
     AuthToken at = getAuthToken();

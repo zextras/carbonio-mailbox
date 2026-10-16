@@ -44,7 +44,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.apache.http.HttpException;
 
 public class CalDavDataImport extends MailItemImport {
 
@@ -107,7 +106,7 @@ public class CalDavDataImport extends MailItemImport {
         }
       }
       setLastSuccessfulSyncTimestamp(octxt, getRootFolderId(getDataSource()));
-    } catch (DavException | HttpException | IOException e) {
+    } catch (DavException | IOException e) {
       throw ServiceException.FAILURE("error importing CalDAV data", e);
     }
   }
@@ -171,7 +170,7 @@ public class CalDavDataImport extends MailItemImport {
   }
 
   protected CalDavClient getClient()
-      throws ServiceException, IOException, DavException, HttpException {
+      throws ServiceException, IOException, DavException {
     if (mClient == null) {
       mClient = new CalDavClient(getTargetUrl());
       mClient.setAppName(getAppName());
@@ -220,7 +219,7 @@ public class CalDavDataImport extends MailItemImport {
   }
 
   private ArrayList<CalendarFolder> syncFolders()
-      throws ServiceException, IOException, DavException, HttpException {
+      throws ServiceException, IOException, DavException {
     ArrayList<CalendarFolder> ret = new ArrayList<>();
     DataSource ds = getDataSource();
     OperationContext octxt = new OperationContext(mbox);
@@ -356,7 +355,7 @@ public class CalDavDataImport extends MailItemImport {
   }
 
   private void deleteRemoteFolder(String url)
-      throws ServiceException, IOException, DavException, HttpException {
+      throws ServiceException, IOException, DavException {
     ZimbraLog.datasource.debug("deleteRemoteFolder: deleting remote folder %s", url);
     getClient().sendRequest(DavRequest.DELETE(url));
   }
@@ -381,7 +380,7 @@ public class CalDavDataImport extends MailItemImport {
   }
 
   private void deleteRemoteItem(DataSourceItem item)
-      throws ServiceException, IOException, DavException, HttpException {
+      throws ServiceException, IOException, DavException {
     if (item.itemId <= 0 || item.md == null) {
       ZimbraLog.datasource.warn("pushDelete: empty item %d", item.itemId);
       return;
@@ -424,7 +423,7 @@ public class CalDavDataImport extends MailItemImport {
   }
 
   private void pushModify(MailItem mitem)
-      throws ServiceException, IOException, DavException, HttpException {
+      throws ServiceException, IOException, DavException {
     int itemId = mitem.getId();
     DataSource ds = getDataSource();
     DataSourceItem item = DbDataSource.getMapping(ds, itemId);
@@ -470,7 +469,7 @@ public class CalDavDataImport extends MailItemImport {
   }
 
   private String putAppointment(CalendarItem calItem, DataSourceItem dsItem)
-      throws ServiceException, IOException, DavException, HttpException {
+      throws ServiceException, IOException, DavException {
     StringBuilder buf = new StringBuilder();
     ArrayList<String> recipients = new ArrayList<>();
 
@@ -509,7 +508,7 @@ public class CalDavDataImport extends MailItemImport {
   }
 
   private List<RemoteItem> getRemoteItems(Folder folder)
-      throws ServiceException, IOException, DavException, HttpException {
+      throws ServiceException, IOException, DavException {
     ZimbraLog.datasource.debug("Refresh folder %s", folder.getPath());
     DataSource ds = getDataSource();
     DataSourceItem item = DbDataSource.getMapping(ds, folder.getId());
@@ -547,7 +546,7 @@ public class CalDavDataImport extends MailItemImport {
   }
 
   private MailItem applyRemoteItem(RemoteItem remoteItem, Folder where)
-      throws ServiceException, IOException, HttpException {
+      throws ServiceException, IOException {
     if (!(remoteItem instanceof RemoteCalendarItem)) {
       ZimbraLog.datasource.warn("applyRemoteItem: not a calendar item: %s", remoteItem);
       return null;
@@ -669,7 +668,7 @@ public class CalDavDataImport extends MailItemImport {
   }
 
   private void sync(OperationContext octxt, CalendarFolder cf)
-      throws ServiceException, IOException, DavException, HttpException {
+      throws ServiceException, IOException, DavException {
     Folder syncFolder = cf.folder;
     int lastSync =
         (int)

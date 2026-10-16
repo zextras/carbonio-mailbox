@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.client.HttpClient;
@@ -197,7 +196,7 @@ public class ZimbraNginxLookUpClient {
                         String result = EntityUtils.toString(response.getEntity());
                         ZimbraLog.misc.debug("unexpected return %d\r\n%s", statusCode, result);
                     }
-                } catch (IOException | HttpException e) {
+                } catch (IOException e) {
                     nginxLookUpHandler.failureTime = System.nanoTime();
                     ZimbraLog.misc.debug("IOException getting route", e);
                 } finally {

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -106,7 +105,7 @@ public class CheckSpelling extends MailDocumentHandler {
           if (spellResponse.statusCode == 200) {
             break; // Successful request.  No need to check the other servers.
           }
-        } catch (IOException | HttpException ex) {
+        } catch (IOException ex) {
           ZimbraLog.mailbox.warn("An error occurred while contacting " + url, ex);
         }
       }
@@ -169,7 +168,7 @@ public class CheckSpelling extends MailDocumentHandler {
     }
 
     private ServerResponse checkSpelling(String url, String dictionary, List<String> ignoreWords, String text, boolean ignoreAllCaps)
-    throws IOException, HttpException {
+    throws IOException {
         HttpPost post = new HttpPost(url);
         post.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
         List <NameValuePair> nvps = new ArrayList<>();

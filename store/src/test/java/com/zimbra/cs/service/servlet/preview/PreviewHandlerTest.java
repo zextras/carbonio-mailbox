@@ -26,7 +26,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimePart;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.http.HttpException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -223,7 +222,7 @@ class PreviewHandlerTest {
   }
 
   @Test
-  void should_proxy_request_when_attachment_is_not_local() throws IOException, ServiceException, HttpException {
+  void should_proxy_request_when_attachment_is_not_local() throws IOException, ServiceException {
     when(previewClient.healthReady()).thenReturn(true);
     when(authToken.getAccountId()).thenReturn("accountId");
     when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn("requestId");

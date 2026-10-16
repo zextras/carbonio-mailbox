@@ -7,7 +7,6 @@ import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.httpclient.URLUtil;
-import org.apache.http.HttpException;
 
 import java.io.IOException;
 import java.util.List;

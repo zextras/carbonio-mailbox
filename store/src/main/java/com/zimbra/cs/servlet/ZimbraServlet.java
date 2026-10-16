@@ -55,7 +55,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.Header;
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -297,13 +296,13 @@ public class ZimbraServlet extends HttpServlet {
   }
 
   public static void proxyServletRequest(HttpServletRequest req, HttpServletResponse resp, String accountId)
-      throws ServiceException, HttpException, IOException {
+      throws ServiceException, IOException {
     proxyServletRequest(req, resp, accountId, Map.of());
   }
 
   public static void proxyServletRequest(
       HttpServletRequest req, HttpServletResponse resp, String accountId, Map<String, Object> additionalQueryParams)
-      throws IOException, ServiceException, HttpException {
+      throws IOException, ServiceException {
     Provisioning prov = Provisioning.getInstance();
     Account acct = prov.get(AccountBy.id, accountId);
     if (acct == null) {
@@ -315,7 +314,7 @@ public class ZimbraServlet extends HttpServlet {
 
   public static void proxyServletRequest(
       HttpServletRequest req, HttpServletResponse resp, Server server, AuthToken authToken, Map<String, Object> additionalQueryParams)
-      throws IOException, ServiceException, HttpException {
+      throws IOException, ServiceException {
     String uri = req.getRequestURI();
     String qs = req.getQueryString();
     String additionalParamsQueryString = mapToQueryString(additionalQueryParams);
@@ -342,7 +341,7 @@ public class ZimbraServlet extends HttpServlet {
       Server server,
       String uri,
       AuthToken authToken)
-      throws IOException, ServiceException, HttpException {
+      throws IOException, ServiceException {
     if (server == null) {
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "cannot find remote server");
       return;
@@ -427,7 +426,7 @@ public class ZimbraServlet extends HttpServlet {
       HttpServletResponse resp,
       HttpRequestBase method,
       BasicCookieStore state)
-      throws IOException, ServiceException, HttpException {
+      throws IOException, ServiceException {
     // create an HTTP client with the same cookies
     javax.servlet.http.Cookie[] cookies = req.getCookies();
     String hostname = method.getURI().getHost();
