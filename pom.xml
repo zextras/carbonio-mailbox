@@ -1160,7 +1160,29 @@
                 </rules>
               </configuration>
             </execution>
+            <execution>
+              <id>ban-duplicate-classes</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <banDuplicateClasses>
+                    <findAllDuplicates>true</findAllDuplicates>
+                    <ignoreWhenIdentical>true</ignoreWhenIdentical>
+                  </banDuplicateClasses>
+                </rules>
+                <fail>false</fail>
+              </configuration>
+            </execution>
           </executions>
+          <dependencies>
+            <dependency>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>extra-enforcer-rules</artifactId>
+              <version>1.12.1</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <!-- Flatten plugin to manage revision -->
         <plugin>
