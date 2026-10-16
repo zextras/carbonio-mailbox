@@ -28,8 +28,8 @@
     </dependency>
 
     <dependency>
-      <artifactId>jaxb-api</artifactId>
-      <groupId>javax.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <groupId>jakarta.xml.bind</groupId>
     </dependency>
 
     <dependency>
@@ -85,11 +85,6 @@
     </dependency>
 
     <!-- Sun dependencies needed and removed from jdk 11, consider switching to Jakarta -->
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-core</artifactId>
-      <scope>runtime</scope>
-    </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>
