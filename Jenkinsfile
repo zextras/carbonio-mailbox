@@ -201,6 +201,14 @@ pipeline {
                                 ]
                         ])
                         dockerStage([
+                                dockerfile: 'docker/authz-sidecar/Dockerfile',
+                                imageName : 'carbonio-authz-sidecar',
+                                platforms : ['linux/amd64', 'linux/arm64'] as Set,
+                                ocLabels  : [
+                                        title : 'Carbonio Authz Sidecar',
+                                ]
+                        ])
+                        dockerStage([
                                 dockerfile: 'docker/mariadb/Dockerfile',
                                 imageName : 'carbonio-mariadb',
                                 platforms : ['linux/amd64', 'linux/arm64'] as Set,

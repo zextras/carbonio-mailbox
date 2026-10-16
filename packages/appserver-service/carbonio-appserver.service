@@ -3,7 +3,7 @@ Description=Carbonio Appserver Daemon
 # carbonio-mailbox-sidecar provides the outbound DB mesh path (carbonio-mailbox-db)
 # that mailboxd needs during its Zextras bootstrap; it must be up first.
 After=carbonio-appserver-db.service carbonio-configd.service carbonio-mailbox-sidecar.service
-Wants=carbonio-appserver-db.service carbonio-configd.service carbonio-mailbox-sidecar.service carbonio-mailbox-internal-api-sidecar.service
+Wants=carbonio-appserver-db.service carbonio-configd.service carbonio-mailbox-sidecar.service carbonio-mailbox-internal-api-sidecar.service carbonio-authz-sidecar.service
 PartOf=carbonio-appserver.target
 
 [Service]

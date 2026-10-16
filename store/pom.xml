@@ -514,6 +514,27 @@
     </dependency>
     <dependency>
       <groupId>com.zextras</groupId>
+      <artifactId>carbonio-authz</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.zextras</groupId>
+      <artifactId>carbonio-authz</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>au.com.dius.pact.provider</groupId>
+      <artifactId>junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>au.com.dius.pact</groupId>
+      <artifactId>provider</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.zextras</groupId>
       <artifactId>store-extra-runtime-dependencies</artifactId>
       <type>pom</type>
       <scope>runtime</scope>
@@ -1018,20 +1039,39 @@ EOF
         <artifactId>swagger-maven-plugin</artifactId>
         <version>${swagger.version}</version>
         <configuration>
-          <outputFileName>internal-api-openapi</outputFileName>
           <outputPath>${project.basedir}</outputPath>
           <outputFormat>YAML</outputFormat>
-          <resourcePackages>
-            <resourcePackage>com.zextras.mailbox.api.rest.resource</resourcePackage>
-          </resourcePackages>
-          <configurationFilePath>${project.basedir}/src/main/resources/openapi-configuration.json</configurationFilePath>
         </configuration>
         <executions>
           <execution>
+            <id>internal-api</id>
             <phase>compile</phase>
             <goals>
               <goal>resolve</goal>
             </goals>
+            <configuration>
+              <contextId>internal-api</contextId>
+              <outputFileName>internal-api-openapi</outputFileName>
+              <resourcePackages>
+                <resourcePackage>com.zextras.mailbox.api.rest.resource</resourcePackage>
+              </resourcePackages>
+              <configurationFilePath>${project.basedir}/src/main/resources/openapi-configuration.json</configurationFilePath>
+            </configuration>
+          </execution>
+          <execution>
+            <id>authz-api</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>resolve</goal>
+            </goals>
+            <configuration>
+              <contextId>authz-api</contextId>
+              <outputFileName>authz-api-openapi</outputFileName>
+              <resourcePackages>
+                <resourcePackage>com.zextras.mailbox.authz.resource</resourcePackage>
+              </resourcePackages>
+              <configurationFilePath>${project.basedir}/src/main/resources/authz-openapi-configuration.json</configurationFilePath>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -1086,6 +1126,21 @@ EOF
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
+          <execution>
+            <id>unpack-authz-pacts</id>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeGroupIds>com.zextras</includeGroupIds>
+              <includeArtifactIds>carbonio-authz</includeArtifactIds>
+              <includeClassifiers>tests</includeClassifiers>
+              <includes>pacts/**</includes>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
+            </configuration>
+          </execution>
           <execution>
             <id>copy-dependencies</id>
             <phase>package</phase>
