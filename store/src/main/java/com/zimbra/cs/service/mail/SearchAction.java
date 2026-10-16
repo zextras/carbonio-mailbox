@@ -31,7 +31,6 @@ import com.zimbra.soap.type.SearchHit;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import org.apache.http.HttpException;
 
 public class SearchAction extends MailDocumentHandler {
 
@@ -56,7 +55,7 @@ public class SearchAction extends MailDocumentHandler {
       List<SearchHit> searchHits = resp.getSearchHits();
       BulkAction action = req.getBulkAction();
       performAction(action, searchRequest, searchHits, mbox, octxt);
-    } catch (AuthTokenException | IOException | HttpException e) {
+    } catch (AuthTokenException | IOException e) {
       throw ServiceException.FAILURE("Failed to execute search request", e);
     }
     SearchActionResponse searchActionResponse = new SearchActionResponse();
@@ -69,7 +68,7 @@ public class SearchAction extends MailDocumentHandler {
       List<SearchHit> searchHits,
       Mailbox mbox,
       OperationContext octxt)
-      throws ServiceException, AuthTokenException, IOException, HttpException {
+      throws ServiceException, AuthTokenException, IOException {
     switch (action.getOp()) {
       case move:
         performMoveAction(action, searchRequest, searchHits, mbox, octxt);
@@ -131,7 +130,7 @@ public class SearchAction extends MailDocumentHandler {
 
   private static void performReadUnreadAction(
       SearchRequest searchRequest, List<SearchHit> searchHits, Mailbox mbox, String op)
-      throws ServiceException, AuthTokenException, IOException, HttpException {
+      throws ServiceException, AuthTokenException, IOException {
     Account acct = mbox.getAccount();
     Server server = Provisioning.getInstance().getServer(acct);
     String url = URLUtil.getSoapURL(server, false);

@@ -10,7 +10,6 @@ import java.security.MessageDigest;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -90,8 +89,6 @@ public class TritonIncomingBlob extends ExternalResumableIncomingBlob {
                 ZimbraLog.store.error("failed with code %d response: %s", statusCode, EntityUtils.toString(httpResp.getEntity()));
                 throw new IOException("unable to head blob "+statusCode + ":" + httpResp.getStatusLine().getReasonPhrase(), null);
             }
-        } catch (HttpException e) {
-            throw new IOException("unexpected error during getremotesize() operation: " + e.getMessage());
         } finally {
             head.releaseConnection();
         }

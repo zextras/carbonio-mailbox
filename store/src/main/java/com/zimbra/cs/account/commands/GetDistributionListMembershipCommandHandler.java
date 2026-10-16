@@ -6,7 +6,6 @@ import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.DynamicGroup;
 import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.ProvUtil;
-import org.apache.http.HttpException;
 
 import java.io.IOException;
 

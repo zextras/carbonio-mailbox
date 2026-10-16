@@ -14,7 +14,6 @@ import java.util.Map;
 
 import org.apache.http.Consts;
 import org.apache.http.Header;
-import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -77,7 +76,7 @@ public class WebDavClient {
         setAppName(app);
     }
 
-    public Collection<DavObject> listObjects(String path, Collection<QName> extraProps) throws IOException, DavException, HttpException {
+    public Collection<DavObject> listObjects(String path, Collection<QName> extraProps) throws IOException, DavException {
         DavRequest propfind = DavRequest.PROPFIND(path);
         propfind.setDepth(Depth.one);
         if (extraProps == null) {
@@ -96,7 +95,7 @@ public class WebDavClient {
         return sendMultiResponseRequest(propfind);
     }
 
-    public Collection<DavObject> sendMultiResponseRequest(DavRequest req) throws IOException, DavException, HttpException {
+    public Collection<DavObject> sendMultiResponseRequest(DavRequest req) throws IOException, DavException {
         ArrayList<DavObject> ret = new ArrayList<>();
 
         HttpResponse response = null;
@@ -124,23 +123,23 @@ public class WebDavClient {
         return ret;
     }
 
-    public HttpResponse  sendCustomRequest(DavRequest req) throws IOException, DavException, HttpException {
+    public HttpResponse  sendCustomRequest(DavRequest req) throws IOException, DavException {
         HttpResponse response = executeFollowRedirect(req);
         return response;
     }
 
-    public HttpInputStream sendRequest(DavRequest req) throws IOException, DavException, HttpException {
+    public HttpInputStream sendRequest(DavRequest req) throws IOException, DavException {
         HttpResponse response = executeFollowRedirect(req);
         return new HttpInputStream(response);
     }
 
-    public HttpInputStream sendGet(String href) throws IOException, HttpException {
+    public HttpInputStream sendGet(String href) throws IOException {
         HttpGet get = new HttpGet(mBaseUrl + href);
         HttpResponse response = executeMethod(get, Depth.zero);
         return new HttpInputStream(response);
     }
 
-    public HttpInputStream sendPut(String href, byte[] buf, String contentType, String etag, Collection<Pair<String,String>> headers) throws IOException, HttpException {
+    public HttpInputStream sendPut(String href, byte[] buf, String contentType, String etag, Collection<Pair<String,String>> headers) throws IOException {
         boolean done = false;
         HttpResponse response = null;
         while (!done) {
@@ -169,7 +168,7 @@ public class WebDavClient {
         return new HttpInputStream(response);
     }
 
-    protected HttpResponse executeFollowRedirect(DavRequest req) throws IOException, HttpException {
+    protected HttpResponse executeFollowRedirect(DavRequest req) throws IOException {
         HttpResponse response = null;
         boolean done = false;
         while (!done) {
@@ -242,7 +241,7 @@ public class WebDavClient {
         }
     }
 
-    protected HttpResponse execute(DavRequest req) throws IOException, HttpException {
+    protected HttpResponse execute(DavRequest req) throws IOException {
         HttpRequestBase m = req.getHttpMethod(mBaseUrl);
         for (Pair<String,String> header : req.getRequestHeaders()) {
             m.addHeader(header.getFirst(), header.getSecond());
@@ -250,7 +249,7 @@ public class WebDavClient {
         return executeMethod(m, req.getDepth(), req.getRequestMessageString());
     }
 
-    protected HttpResponse executeMethod(HttpRequestBase m, Depth d, String bodyForLogging) throws IOException, HttpException {
+    protected HttpResponse executeMethod(HttpRequestBase m, Depth d, String bodyForLogging) throws IOException {
         
           
         Registry<AuthSchemeProvider> authSchemeRegistry = RegistryBuilder.<AuthSchemeProvider>create()
@@ -277,7 +276,7 @@ public class WebDavClient {
         return response;
     }
 
-    protected HttpResponse executeMethod(HttpRequestBase m, Depth d) throws IOException, HttpException {
+    protected HttpResponse executeMethod(HttpRequestBase m, Depth d) throws IOException {
         return executeMethod(m, d, null);
     }
 

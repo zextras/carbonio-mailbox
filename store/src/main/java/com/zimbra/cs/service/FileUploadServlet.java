@@ -55,7 +55,6 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.http.Header;
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -233,8 +232,6 @@ public class FileUploadServlet extends ZimbraServlet {
         mProxiedUploadIds.put(uploadId, up.uuid);
       }
       return up;
-    } catch (HttpException e) {
-      throw ServiceException.PROXY_ERROR(e, url);
     } catch (IOException e) {
       throw ServiceException.RESOURCE_UNREACHABLE(
           "can't fetch remote upload",

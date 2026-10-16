@@ -19,7 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -121,7 +120,7 @@ public class StatsImageServlet extends ZimbraServlet {
 		            resp.setContentType("image/gif");
 		            ByteUtil.copy(httpResp.getEntity().getContent(), true, resp.getOutputStream(), false);
 		            return;
-		        } catch (HttpException | IOException e) {
+		        } catch (IOException e) {
 		            throw ServiceException.RESOURCE_UNREACHABLE(httpResp.getStatusLine().getReasonPhrase(), e);
 		        }  finally {
                     EntityUtils.consumeQuietly(httpResp.getEntity());

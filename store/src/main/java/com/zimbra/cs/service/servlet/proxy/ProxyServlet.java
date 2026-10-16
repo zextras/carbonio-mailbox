@@ -35,7 +35,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -302,7 +301,7 @@ public class ProxyServlet extends ZimbraServlet {
 
       HttpClient client = clientBuilder.build();
       httpResp = HttpClientUtil.executeMethod(client, method);
-    } catch (HttpException | IOException ex) {
+    } catch (IOException ex) {
       ZimbraLog.misc.info("exception while proxying " + targetUrl, ex);
       resp.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;

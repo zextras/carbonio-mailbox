@@ -26,7 +26,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.http.HttpException;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
 
@@ -334,7 +333,7 @@ public class SoapCommandUtil implements SoapTransport.DebugListener {
     }
 
     private void adminAuth()
-    throws ServiceException, IOException, HttpException {
+    throws ServiceException, IOException {
         // Create auth element
         Element auth = mFactory.createElement(AdminConstants.AUTH_REQUEST);
         auth.addElement(AdminConstants.E_NAME).setText(mAdminAccountName);
@@ -396,7 +395,7 @@ public class SoapCommandUtil implements SoapTransport.DebugListener {
     }
 
     private void mailboxAuth()
-    throws ServiceException, IOException, HttpException {
+    throws ServiceException, IOException {
         if (mVeryVerbose) {
             mOut.println("Sending auth request to " + mUrl);
         }
@@ -427,7 +426,7 @@ public class SoapCommandUtil implements SoapTransport.DebugListener {
     }
 
     private void run()
-    throws ServiceException, IOException, HttpException {
+    throws ServiceException, IOException {
         // Assemble SOAP request.
         Element element = null;
         InputStream in = null;

@@ -4,7 +4,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
-import org.apache.http.HttpException;
 
 import java.io.IOException;
 import java.util.HashSet;

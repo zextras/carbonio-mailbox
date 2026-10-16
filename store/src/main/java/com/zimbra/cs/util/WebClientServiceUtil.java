@@ -17,7 +17,6 @@ import com.zimbra.cs.httpclient.URLUtil;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.zimlet.ZimletUtil;
 import java.io.IOException;
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -53,7 +52,7 @@ public class WebClientServiceUtil {
         ZimbraLog.misc.debug("resp: %d", result);
         resp = EntityUtils.toString(httpResp.getEntity());
         ZimbraLog.misc.debug("got response from ui node: %s", resp);
-      } catch (IOException | HttpException e) {
+      } catch (IOException e) {
         ZimbraLog.misc.warn("failed to get response from ui node", e);
       } catch (AuthTokenException e) {
         ZimbraLog.misc.warn("failed to get authToken", e);

@@ -249,7 +249,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Future;
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.concurrent.FutureCallback;
 
@@ -606,7 +605,7 @@ public class SoapProvisioning extends Provisioning {
   }
 
   private Element invokeRequest(Element request)
-      throws ServiceException, IOException, HttpException {
+      throws ServiceException, IOException {
     if (mNeedSession) {
       return mTransport.invoke(request);
     } else {
@@ -661,7 +660,7 @@ public class SoapProvisioning extends Provisioning {
       return invokeRequest(request);
     } catch (SoapFaultException e) {
       throw e; // for now, later, try to map to more specific exception
-    } catch (IOException | HttpException e) {
+    } catch (IOException e) {
       throw ZClientException.IO_ERROR("invoke " + e.getMessage() + ", server: " + serverName(), e);
     }
   }
@@ -676,7 +675,7 @@ public class SoapProvisioning extends Provisioning {
       return invokeRequest(request);
     } catch (SoapFaultException e) {
       throw e; // for now, later, try to map to more specific exception
-    } catch (IOException | HttpException e) {
+    } catch (IOException e) {
       throw ZClientException.IO_ERROR("invoke " + e.getMessage() + ", server: " + serverName(), e);
     } finally {
       mTransport.setTargetAcctId(oldTarget);
@@ -696,7 +695,7 @@ public class SoapProvisioning extends Provisioning {
       return invokeRequest(request);
     } catch (SoapFaultException e) {
       throw e; // for now, later, try to map to more specific exception
-    } catch (IOException | HttpException e) {
+    } catch (IOException e) {
       throw ZClientException.IO_ERROR("invoke " + e.getMessage() + ", server: " + serverName, e);
     } finally {
       if (diff) {

@@ -41,7 +41,6 @@ import java.util.regex.Pattern;
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.http.HttpException;
 
 public abstract class Formatter {
 
@@ -146,7 +145,7 @@ public abstract class Formatter {
 
   public final void save(
       UserServletContext context, String contentType, Folder folder, String filename)
-      throws UserServletException, IOException, ServletException, ServiceException, HttpException {
+      throws UserServletException, IOException, ServletException, ServiceException {
 
     boolean failed = false;
     try {
@@ -178,12 +177,7 @@ public abstract class Formatter {
   }
 
   public abstract void formatCallback(UserServletContext context)
-      throws UserServletException,
-          ServiceException,
-          IOException,
-          ServletException,
-          MessagingException,
-          HttpException;
+      throws UserServletException, ServiceException, IOException, ServletException, MessagingException;
 
   public void saveCallback(
       UserServletContext context, String contentType, Folder folder, String filename)

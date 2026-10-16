@@ -15,7 +15,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
 import javax.net.ssl.SSLHandshakeException;
-import org.apache.http.HttpException;
 
 public class Check {
 
@@ -90,7 +89,7 @@ public class Check {
         case 403:
           return new Provisioning.Result(STATUS_AUTH_FAILED, "", null);
       }
-    } catch (IOException | HttpException e) {
+    } catch (IOException e) {
       return toResult(e, "");
     }
     return new Provisioning.Result(STATUS_OK, "", null);

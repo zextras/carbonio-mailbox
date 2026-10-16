@@ -11,7 +11,6 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -65,8 +64,6 @@ public abstract class HttpStoreManager extends ExternalStoreManager {
             } else {
                 throw ServiceException.FAILURE("error POSTing blob: " + httpResp.getStatusLine().getReasonPhrase(), null);
             }
-        } catch (HttpException e) {
-            throw new IOException("error POSTing blob: " + e.getMessage());
         } finally {
             post.releaseConnection();
         }
@@ -77,20 +74,14 @@ public abstract class HttpStoreManager extends ExternalStoreManager {
                     throws IOException {
         HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient().build();
         HttpGet get = new HttpGet(getGetUrl(mbox, locator));
-        HttpResponse httpResp;
-        try {
-            httpResp = HttpClientUtil.executeMethod(client, get);
-            int statusCode = httpResp.getStatusLine().getStatusCode();
-            if (statusCode == HttpStatus.SC_OK) {
-                return new UserServlet.HttpInputStream(httpResp);
-            } else {
-                get.releaseConnection();
-                throw new IOException("unexpected return code during blob GET: " + httpResp.getStatusLine().getReasonPhrase());
-            }
-        } catch (HttpException e) {
-             throw new IOException("unexpected return code during blob GET: " + e.getMessage());
+        HttpResponse httpResp = HttpClientUtil.executeMethod(client, get);
+        int statusCode = httpResp.getStatusLine().getStatusCode();
+        if (statusCode == HttpStatus.SC_OK) {
+            return new UserServlet.HttpInputStream(httpResp);
+        } else {
+            get.releaseConnection();
+            throw new IOException("unexpected return code during blob GET: " + httpResp.getStatusLine().getReasonPhrase());
         }
-
     }
 
     @Override
@@ -108,8 +99,6 @@ public abstract class HttpStoreManager extends ExternalStoreManager {
             } else {
                 throw new IOException("unexpected return code during blob DELETE: " + httpResp.getStatusLine().getReasonPhrase());
             }
-        } catch (HttpException e) {
-            throw new IOException("unexpected return code during blob GET: " + e.getMessage());
         }finally {
             delete.releaseConnection();
         }

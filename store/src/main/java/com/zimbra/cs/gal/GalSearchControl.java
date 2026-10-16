@@ -59,7 +59,6 @@ import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpException;
 
 public class GalSearchControl {
   private GalSearchParams mParams;
@@ -435,7 +434,7 @@ public class GalSearchControl {
     } else {
       try {
         if (!proxyGalAccountSearch(galAcct, false)) throw new GalAccountNotConfiguredException();
-      } catch (IOException | HttpException e) {
+      } catch (IOException e) {
         ZimbraLog.gal.warn("remote search on GalSync account failed for " + galAcct.getName(), e);
         // let the request fallback to ldap based search
         throw new GalAccountNotConfiguredException();
@@ -455,7 +454,7 @@ public class GalSearchControl {
     } else {
       try {
         if (!proxyGalAccountSearch(galAcct, true)) throw new GalAccountNotConfiguredException();
-      } catch (IOException | HttpException e) {
+      } catch (IOException e) {
         ZimbraLog.gal.warn("remote sync on GalSync account failed for " + galAcct.getName(), e);
         // remote server may be down, return the same sync token so that client can try again.
         mParams.getResultCallback().setNewToken(mParams.getGalSyncToken());
@@ -683,7 +682,7 @@ public class GalSearchControl {
   }
 
   private boolean proxyGalAccountSearch(Account galSyncAcct, boolean sync)
-      throws IOException, ServiceException, ContainerException, HttpException {
+      throws IOException, ServiceException, ContainerException {
     try {
       Provisioning prov = Provisioning.getInstance();
       String serverUrl = URLUtil.getAdminURL(prov.getServerByName(galSyncAcct.getMailHost()));

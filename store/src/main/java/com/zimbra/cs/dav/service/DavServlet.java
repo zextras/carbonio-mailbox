@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.Header;
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -648,7 +647,7 @@ public class DavServlet extends ZimbraServlet {
         }
     }
 
-    private boolean isProxyRequest(DavContext ctxt, DavMethod m) throws IOException, DavException, ServiceException, HttpException {
+    private boolean isProxyRequest(DavContext ctxt, DavMethod m) throws IOException, DavException, ServiceException {
         Provisioning prov = Provisioning.getInstance();
         ItemId target = null;
         String extraPath = null;
