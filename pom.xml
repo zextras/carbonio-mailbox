@@ -847,6 +847,28 @@
         <groupId>org.mock-server</groupId>
         <artifactId>mockserver-core</artifactId>
         <version>${mockserver.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcutil-jdk15on</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>mailapi</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.mock-server</groupId>
@@ -1215,9 +1237,55 @@
                   <banDuplicateClasses>
                     <findAllDuplicates>true</findAllDuplicates>
                     <ignoreWhenIdentical>true</ignoreWhenIdentical>
+                    <dependencies>
+                      <dependency>
+                        <groupId>org.jboss.weld.servlet</groupId>
+                        <artifactId>weld-servlet-shaded</artifactId>
+                        <ignoreClasses>
+                          <ignoreClass>javax.servlet.*</ignoreClass>
+                          <ignoreClass>javax.annotation.*</ignoreClass>
+                          <ignoreClass>org.jboss.logging.*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>jcl-over-slf4j</artifactId>
+                        <ignoreClasses>
+                          <ignoreClass>org.apache.commons.logging.*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.apache.xmlgraphics</groupId>
+                        <artifactId>batik-util</artifactId>
+                        <ignoreClasses>
+                          <ignoreClass>org.apache.batik.i18n.*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.apache.xmlgraphics</groupId>
+                        <artifactId>batik-ext</artifactId>
+                        <ignoreClasses>
+                          <ignoreClass>org.w3c.dom.*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>zimbra</groupId>
+                        <artifactId>zm-charset</artifactId>
+                        <ignoreClasses>
+                          <ignoreClass>com.zimbra.buildinfo.Version</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>com.sun.mail</groupId>
+                        <artifactId>jakarta.mail</artifactId>
+                        <ignoreClasses>
+                          <ignoreClass>javax.mail.*</ignoreClass>
+                          <ignoreClass>com.sun.mail.*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                    </dependencies>
                   </banDuplicateClasses>
                 </rules>
-                <fail>false</fail>
               </configuration>
             </execution>
           </executions>
