@@ -13,11 +13,11 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.extension.ExtensionDispatcherServlet;
 import com.zimbra.cs.extension.ExtensionUtil;
 import java.net.URI;
-import org.apache.http.Header;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.ee8.servlet.ServletHolder;
 import org.junit.jupiter.api.AfterAll;
@@ -112,8 +112,8 @@ class NginxLookupExtensionTest extends MailboxTestSuite {
 	}
 
 	private static HttpGet baseRequest() {
-		final HttpGet request = new HttpGet();
-		request.setURI(URI.create(endpoint));
+		final HttpGet request = new HttpGet("/");
+		request.setUri(URI.create(endpoint));
 		return request;
 	}
 

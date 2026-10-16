@@ -6,24 +6,30 @@
 package com.zimbra.common.httpclient;
 
 import java.io.IOException;
+import org.apache.hc.core5.http.HttpRequest;
+import java.net.URISyntaxException;
+import java.net.URI;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.HttpEntity;
+import java.nio.charset.Charset;
 import java.util.Map;
-
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.cookie.CookieStore;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.CredentialsStore;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.protocol.HttpClientContext;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 
 import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.net.ProxyHostConfiguration;
@@ -31,15 +37,15 @@ import com.zimbra.common.util.ZimbraHttpConnectionManager;
 
 public class HttpClientUtil {
 
-    public static HttpResponse executeMethod(HttpRequestBase method) throws IOException {
+    public static ClassicHttpResponse executeMethod(HttpUriRequestBase method) throws IOException {
         return executeMethod(ZimbraHttpConnectionManager.getInternalHttpConnMgr().getDefaultHttpClient().build(), method, null);
     }
-    public static HttpResponse executeMethod(HttpClient client, HttpRequestBase method) throws IOException {
+    public static ClassicHttpResponse executeMethod(HttpClient client, HttpUriRequestBase method) throws IOException {
         return executeMethod(client, method, null, null);
     }
 
-    public static HttpResponse executeMethod(HttpClient client, HttpRequestBase method, BasicCookieStore state, HttpClientContext context) throws IOException {
-        ProxyHostConfiguration proxyConfig = HttpProxyConfig.getProxyConfig(method.getURI().toString());
+    public static ClassicHttpResponse executeMethod(HttpClient client, HttpUriRequestBase method, BasicCookieStore state, HttpClientContext context) throws IOException {
+        ProxyHostConfiguration proxyConfig = HttpProxyConfig.getProxyConfig(HttpClientUtil.requestUri(method).toString());
         BasicCookieStore cookieStore = new  BasicCookieStore();
         if (state != null) {
             cookieStore = state;
@@ -47,8 +53,8 @@ public class HttpClientUtil {
         if (proxyConfig != null && proxyConfig.getUsername() != null && proxyConfig.getPassword() != null) {
             HttpHost proxy = new HttpHost(proxyConfig.getProxyHost(), proxyConfig.getProxyPort());
             RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
-            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(proxyConfig.getUsername(), proxyConfig.getPassword());
-            CredentialsProvider credsProvider = new BasicCredentialsProvider();
+            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(proxyConfig.getUsername(), proxyConfig.getPassword().toCharArray());
+            CredentialsStore credsProvider = new BasicCredentialsProvider();
             credsProvider.setCredentials(new AuthScope (proxy),credentials);
             CloseableHttpClient httpClient = HttpClients.custom ()
                 .setDefaultCredentialsProvider (credsProvider)
@@ -58,11 +64,11 @@ public class HttpClientUtil {
             return httpClient.execute(method);
 
         }
-        return client.execute(method);
+        return client.executeOpen(null, method, null);
     }
 
-    public static HttpResponse executeMethod(HttpClientBuilder clientBuilder, HttpRequestBase method, BasicCookieStore state, HttpClientContext context) throws IOException {
-        ProxyHostConfiguration proxyConfig = HttpProxyConfig.getProxyConfig(method.getURI().toString());
+    public static ClassicHttpResponse executeMethod(HttpClientBuilder clientBuilder, HttpUriRequestBase method, BasicCookieStore state, HttpClientContext context) throws IOException {
+        ProxyHostConfiguration proxyConfig = HttpProxyConfig.getProxyConfig(HttpClientUtil.requestUri(method).toString());
         BasicCookieStore cookieStore = new  BasicCookieStore();
         if (state != null) {
             cookieStore = state;
@@ -72,8 +78,8 @@ public class HttpClientUtil {
         if (proxyConfig != null && proxyConfig.getUsername() != null && proxyConfig.getPassword() != null) {
             HttpHost proxy = new HttpHost(proxyConfig.getProxyHost(), proxyConfig.getProxyPort());
             RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
-            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(proxyConfig.getUsername(), proxyConfig.getPassword());
-            CredentialsProvider credsProvider = new BasicCredentialsProvider();
+            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(proxyConfig.getUsername(), proxyConfig.getPassword().toCharArray());
+            CredentialsStore credsProvider = new BasicCredentialsProvider();
             credsProvider.setCredentials(new AuthScope(proxy),credentials);
             httpClient = clientBuilder
                 .setDefaultCredentialsProvider(credsProvider)
@@ -86,8 +92,8 @@ public class HttpClientUtil {
         return httpClient.execute(method);
     }
 
-    public static HttpResponse executeMethod(HttpClient client, HttpRequestBase method, HttpClientContext context) throws IOException {
-        return client.execute(method, context);
+    public static ClassicHttpResponse executeMethod(HttpClient client, HttpUriRequestBase method, HttpClientContext context) throws IOException {
+        return client.executeOpen(null, method, context);
     }
 
     public static BasicCookieStore newHttpState(ZAuthToken authToken, String host, boolean isAdmin) {
@@ -130,5 +136,36 @@ public class HttpClientUtil {
         }
         return cookieStore;
     }
-}
 
+    public static String entityToString(HttpEntity entity) throws IOException {
+        try {
+            return EntityUtils.toString(entity);
+        } catch (ParseException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public static String entityToString(HttpEntity entity, String charset) throws IOException {
+        try {
+            return EntityUtils.toString(entity, charset);
+        } catch (ParseException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public static String entityToString(HttpEntity entity, Charset charset) throws IOException {
+        try {
+            return EntityUtils.toString(entity, charset);
+        } catch (ParseException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public static URI requestUri(HttpRequest request) {
+        try {
+            return request.getUri();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+}

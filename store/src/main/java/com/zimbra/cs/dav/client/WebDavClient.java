@@ -5,44 +5,44 @@
 
 package com.zimbra.cs.dav.client;
 
+import com.zimbra.common.httpclient.HttpClientUtil;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-
-import org.apache.http.Consts;
-import org.apache.http.Header;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.auth.AuthSchemeProvider;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.AuthCache;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.AuthSchemes;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.auth.BasicScheme;
-import org.apache.http.impl.auth.BasicSchemeFactory;
-import org.apache.http.impl.client.BasicAuthCache;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.auth.AuthCache;
+import org.apache.hc.client5.http.auth.AuthSchemeFactory;
+import org.apache.hc.client5.http.auth.CredentialsStore;
+import org.apache.hc.client5.http.auth.StandardAuthScheme;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.impl.auth.BasicAuthCache;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.message.StatusLine;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.Credentials;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.cookie.StandardCookieSpec;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPut;
+import org.apache.hc.client5.http.protocol.HttpClientContext;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.config.Registry;
+import org.apache.hc.core5.http.config.RegistryBuilder;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.client5.http.impl.auth.BasicScheme;
+import org.apache.hc.client5.http.impl.auth.BasicSchemeFactory;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.QName;
@@ -98,10 +98,10 @@ public class WebDavClient {
     public Collection<DavObject> sendMultiResponseRequest(DavRequest req) throws IOException, DavException {
         ArrayList<DavObject> ret = new ArrayList<>();
 
-        HttpResponse response = null;
+        ClassicHttpResponse response = null;
         try {
             response = executeFollowRedirect(req);
-            int status = response.getStatusLine().getStatusCode();
+            int status = response.getCode();
             if (status >= 400) {
                 throw new DavException("DAV server returned an error: "+status, status);
             }
@@ -123,25 +123,25 @@ public class WebDavClient {
         return ret;
     }
 
-    public HttpResponse  sendCustomRequest(DavRequest req) throws IOException, DavException {
-        HttpResponse response = executeFollowRedirect(req);
+    public ClassicHttpResponse  sendCustomRequest(DavRequest req) throws IOException, DavException {
+        ClassicHttpResponse response = executeFollowRedirect(req);
         return response;
     }
 
     public HttpInputStream sendRequest(DavRequest req) throws IOException, DavException {
-        HttpResponse response = executeFollowRedirect(req);
+        ClassicHttpResponse response = executeFollowRedirect(req);
         return new HttpInputStream(response);
     }
 
     public HttpInputStream sendGet(String href) throws IOException {
         HttpGet get = new HttpGet(mBaseUrl + href);
-        HttpResponse response = executeMethod(get, Depth.zero);
+        ClassicHttpResponse response = executeMethod(get, Depth.zero);
         return new HttpInputStream(response);
     }
 
     public HttpInputStream sendPut(String href, byte[] buf, String contentType, String etag, Collection<Pair<String,String>> headers) throws IOException {
         boolean done = false;
-        HttpResponse response = null;
+        ClassicHttpResponse response = null;
         while (!done) {
             HttpPut put = new HttpPut(mBaseUrl + href);
             put.setEntity(new ByteArrayEntity(buf, ContentType.create(contentType)));
@@ -153,13 +153,13 @@ public class WebDavClient {
                 for (Pair<String,String> h : headers)
                     put.addHeader(h.getFirst(), h.getSecond());
             response = executeMethod(put, Depth.zero);
-            int ret = response.getStatusLine().getStatusCode();
+            int ret = response.getCode();
             if (ret == HttpStatus.SC_MOVED_PERMANENTLY || ret == HttpStatus.SC_MOVED_TEMPORARILY) {
                 Header newLocation = response.getFirstHeader("Location");
                 if (newLocation != null) {
                     href = newLocation.getValue();
                     ZimbraLog.dav.debug("redirect to new url = "+href);
-                    put.releaseConnection();
+                    put.reset();
                     continue;
                 }
             }
@@ -168,12 +168,12 @@ public class WebDavClient {
         return new HttpInputStream(response);
     }
 
-    protected HttpResponse executeFollowRedirect(DavRequest req) throws IOException {
-        HttpResponse response = null;
+    protected ClassicHttpResponse executeFollowRedirect(DavRequest req) throws IOException {
+        ClassicHttpResponse response = null;
         boolean done = false;
         while (!done) {
             response = execute(req);
-            int ret = response.getStatusLine().getStatusCode();
+            int ret = response.getCode();
             if (ret == HttpStatus.SC_MOVED_PERMANENTLY || ret == HttpStatus.SC_MOVED_TEMPORARILY) {
                 Header newLocation = response.getFirstHeader("Location");
                 if (newLocation != null) {
@@ -189,14 +189,14 @@ public class WebDavClient {
         return response;
     }
 
-    protected void logRequestInfo(HttpRequestBase method, String body) throws IOException {
+    protected void logRequestInfo(HttpUriRequestBase method, String body) throws IOException {
         if (!mDebugEnabled) {
             return;
         }
         StringBuilder reqLog = new StringBuilder();
-        reqLog.append("WebDAV request:\n").append(method.getMethod()).append(" ").append(method.getURI().toString());
+        reqLog.append("WebDAV request:\n").append(method.getMethod()).append(" ").append(HttpClientUtil.requestUri(method).toString());
         reqLog.append('\n');
-        Header[] headers = method.getAllHeaders();
+        Header[] headers = method.getHeaders();
         if (headers != null && headers.length > 0) {
             for (Header hdr : headers) {
                 String hdrName = hdr.getName();
@@ -215,13 +215,13 @@ public class WebDavClient {
         }
     }
 
-    protected void logResponseInfo(HttpResponse response) throws IOException {
+    protected void logResponseInfo(ClassicHttpResponse response) throws IOException {
         if (!mDebugEnabled) {
             return;
         }
         StringBuilder responseLog = new StringBuilder();
-        responseLog.append("WebDAV response:\n").append(response.getStatusLine()).append('\n');
-        Header[] headers = response.getAllHeaders();
+        responseLog.append("WebDAV response:\n").append(new StatusLine(response)).append('\n');
+        Header[] headers = response.getHeaders();
         if (headers != null && headers.length > 0) {
             for (Header hdr : headers) {
                 String hdrName = hdr.getName();
@@ -241,19 +241,19 @@ public class WebDavClient {
         }
     }
 
-    protected HttpResponse execute(DavRequest req) throws IOException {
-        HttpRequestBase m = req.getHttpMethod(mBaseUrl);
+    protected ClassicHttpResponse execute(DavRequest req) throws IOException {
+        HttpUriRequestBase m = req.getHttpMethod(mBaseUrl);
         for (Pair<String,String> header : req.getRequestHeaders()) {
             m.addHeader(header.getFirst(), header.getSecond());
         }
         return executeMethod(m, req.getDepth(), req.getRequestMessageString());
     }
 
-    protected HttpResponse executeMethod(HttpRequestBase m, Depth d, String bodyForLogging) throws IOException {
+    protected ClassicHttpResponse executeMethod(HttpUriRequestBase m, Depth d, String bodyForLogging) throws IOException {
         
           
-        Registry<AuthSchemeProvider> authSchemeRegistry = RegistryBuilder.<AuthSchemeProvider>create()
-            .register(AuthSchemes.BASIC, new BasicSchemeFactory(Consts.UTF_8)).build();
+        Registry<AuthSchemeFactory> authSchemeRegistry = RegistryBuilder.<AuthSchemeFactory>create()
+            .register(StandardAuthScheme.BASIC, new BasicSchemeFactory()).build();
        mClient.setDefaultAuthSchemeRegistry(authSchemeRegistry);
        HttpClient client = mClient.build();
         m.addHeader("User-Agent", mUserAgent);
@@ -270,22 +270,22 @@ public class WebDavClient {
         }
         m.addHeader("Depth", depth);
         logRequestInfo(m, bodyForLogging);
-        HttpResponse response = client.execute(m, context);
+        ClassicHttpResponse response = client.executeOpen(null, m, context);
 
         logResponseInfo(response);
         return response;
     }
 
-    protected HttpResponse executeMethod(HttpRequestBase m, Depth d) throws IOException {
+    protected ClassicHttpResponse executeMethod(HttpUriRequestBase m, Depth d) throws IOException {
         return executeMethod(m, d, null);
     }
 
     public void setCredential(String user, String pass, String targetUrl) {
         mUsername = user;
         mPassword = pass;
-        Credentials cred = new UsernamePasswordCredentials(mUsername, mPassword);
-        CredentialsProvider provider = new BasicCredentialsProvider();
-        provider.setCredentials(AuthScope.ANY, cred);
+        Credentials cred = new UsernamePasswordCredentials(mUsername, mPassword.toCharArray());
+        CredentialsStore provider = new BasicCredentialsProvider();
+        provider.setCredentials(new AuthScope(null, -1), cred);
         
         HttpHost targetHost = new HttpHost(targetUrl);
         AuthCache authCache = new BasicAuthCache();
@@ -318,7 +318,7 @@ public class WebDavClient {
             mClient.setDefaultCookieStore(cookieStore);
             RequestConfig reqConfig = RequestConfig.copy(
                 ZimbraHttpConnectionManager.getInternalHttpConnMgr().getZimbraConnMgrParams().getReqConfig())
-                .setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
+                .setCookieSpec(StandardCookieSpec.RELAXED).build();
 
             mClient.setDefaultRequestConfig(reqConfig);
         }

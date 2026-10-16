@@ -10,14 +10,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.util.concurrent.atomic.AtomicLong;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.io.entity.InputStreamEntity;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 
 import com.zimbra.common.httpclient.HttpClientUtil;
 import com.zimbra.common.httpclient.InputStreamRequestHttpRetryHandler;
@@ -78,7 +77,7 @@ public class TritonIncomingOutputStream extends ExternalResumableOutputStream {
 
     private void sendHttpData() throws IOException {
         HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
-        clientBuilder.setRetryHandler(new InputStreamRequestHttpRetryHandler());
+        clientBuilder.setRetryStrategy(new InputStreamRequestHttpRetryHandler());
         HttpClient client = clientBuilder.build();
         HttpPost post;
         boolean started = false;
@@ -89,7 +88,7 @@ public class TritonIncomingOutputStream extends ExternalResumableOutputStream {
             post = new HttpPost(baseUrl + "/blob");
         }
         try {
-            ZimbraLog.store.info("posting to %s",post.getURI());
+            ZimbraLog.store.info("posting to %s",HttpClientUtil.requestUri(post));
             InputStreamEntity entity = new InputStreamEntity(new ByteArrayInputStream(baos.toByteArray()), baos.size(), ContentType.APPLICATION_OCTET_STREAM);
             post.setEntity(entity);
             post.addHeader(TritonHeaders.CONTENT_LENGTH, baos.size()+"");
@@ -98,8 +97,8 @@ public class TritonIncomingOutputStream extends ExternalResumableOutputStream {
             if (serverToken.getToken() != null) {
                 post.addHeader(TritonHeaders.SERVER_TOKEN, serverToken.getToken());
             }
-            HttpResponse httpResp = HttpClientUtil.executeMethod(client, post);
-            int statusCode = httpResp.getStatusLine().getStatusCode();
+            ClassicHttpResponse httpResp = HttpClientUtil.executeMethod(client, post);
+            int statusCode = httpResp.getCode();
             if (statusCode == HttpStatus.SC_OK) {
                 handleResponse(httpResp);
             } else if (!started && statusCode == HttpStatus.SC_SEE_OTHER) {
@@ -110,12 +109,12 @@ public class TritonIncomingOutputStream extends ExternalResumableOutputStream {
                 throw new IOException("Unable to append, bad response code "+statusCode);
             }
         } finally {
-            post.releaseConnection();
+            post.reset();
         }
         baos = new ByteArrayOutputStream(LC.triton_upload_buffer_size.intValue());
     }
 
-  private void handleResponse(HttpResponse httpResp) throws IOException {
+  private void handleResponse(ClassicHttpResponse httpResp) throws IOException {
       serverToken.setToken(httpResp);
       written.set(written.longValue() + baos.size());
       digest.update(baos.toByteArray());

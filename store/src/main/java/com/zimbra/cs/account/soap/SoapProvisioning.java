@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.account.soap;
 
+import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import com.google.common.collect.Lists;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
@@ -249,8 +250,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Future;
-import org.apache.http.HttpResponse;
-import org.apache.http.concurrent.FutureCallback;
+import org.apache.hc.core5.concurrent.FutureCallback;
 
 public class SoapProvisioning extends Provisioning {
 
@@ -613,7 +613,7 @@ public class SoapProvisioning extends Provisioning {
     }
   }
 
-  private Future<HttpResponse> invokeRequestAsync(Element request, FutureCallback<HttpResponse> cb)
+  private Future<SimpleHttpResponse> invokeRequestAsync(Element request, FutureCallback<SimpleHttpResponse> cb)
       throws IOException {
     if (mNeedSession) {
       return mTransport.invokeAsync(request, cb);
@@ -622,7 +622,7 @@ public class SoapProvisioning extends Provisioning {
     }
   }
 
-  public Future<HttpResponse> invokeAsync(Element request, FutureCallback<HttpResponse> cb)
+  public Future<SimpleHttpResponse> invokeAsync(Element request, FutureCallback<SimpleHttpResponse> cb)
       throws ServiceException {
     checkTransport();
     try {
@@ -632,8 +632,8 @@ public class SoapProvisioning extends Provisioning {
     }
   }
 
-  public Future<HttpResponse> invokeAsync(
-      Element request, String serverName, FutureCallback<HttpResponse> cb) throws ServiceException {
+  public Future<SimpleHttpResponse> invokeAsync(
+      Element request, String serverName, FutureCallback<SimpleHttpResponse> cb) throws ServiceException {
     checkTransport();
 
     String oldUri = soapGetURI();
@@ -704,8 +704,8 @@ public class SoapProvisioning extends Provisioning {
     }
   }
 
-  public Future<HttpResponse> invokeJaxbAsync(
-      Object jaxbObject, String serverName, FutureCallback<HttpResponse> cb)
+  public Future<SimpleHttpResponse> invokeJaxbAsync(
+      Object jaxbObject, String serverName, FutureCallback<SimpleHttpResponse> cb)
       throws ServiceException {
     return invokeAsync(JaxbUtil.jaxbToElement(jaxbObject), serverName, cb);
   }

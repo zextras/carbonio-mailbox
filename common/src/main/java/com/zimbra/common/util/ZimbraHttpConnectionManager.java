@@ -12,18 +12,19 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
 
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.config.SocketConfig;
-import org.apache.http.conn.HttpClientConnectionManager;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContextBuilder;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.config.ConnectionConfig;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.core5.http.config.RegistryBuilder;
+import org.apache.hc.core5.http.io.SocketConfig;
+import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
+import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.core5.util.TimeValue;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.net.SocketFactories;
@@ -76,10 +77,10 @@ public class ZimbraHttpConnectionManager {
     private static class InternalConnMgrParams extends ZimbraConnMgrParams {
 
         private InternalConnMgrParams() {
-            this.socketConfig = SocketConfig.custom().setSoTimeout(LC.httpclient_external_connmgr_so_timeout.intValue())
+            this.socketConfig = SocketConfig.custom().setSoTimeout(LC.httpclient_external_connmgr_so_timeout.intValue(), TimeUnit.MILLISECONDS)
                 .setTcpNoDelay(LC.httpclient_external_connmgr_tcp_nodelay.booleanValue()).build();
-            this.reqConfig = RequestConfig.custom().setStaleConnectionCheckEnabled(LC.httpclient_external_connmgr_stale_connection_check.booleanValue())
-                .setConnectTimeout( LC.httpclient_internal_connmgr_connection_timeout.intValue())
+            this.reqConfig = RequestConfig.custom()
+                .setConnectTimeout( LC.httpclient_internal_connmgr_connection_timeout.intValue(), TimeUnit.MILLISECONDS)
                 .build();
         }
 
@@ -126,10 +127,9 @@ public class ZimbraHttpConnectionManager {
 private static class ExternalConnMgrParams extends ZimbraConnMgrParams {
 
         private ExternalConnMgrParams() {
-            this.socketConfig = SocketConfig.custom().setSoTimeout(LC.httpclient_external_connmgr_so_timeout.intValue())
+            this.socketConfig = SocketConfig.custom().setSoTimeout(LC.httpclient_external_connmgr_so_timeout.intValue(), TimeUnit.MILLISECONDS)
                 .setTcpNoDelay(LC.httpclient_external_connmgr_tcp_nodelay.booleanValue()).build();
-            this.reqConfig = RequestConfig.custom().setStaleConnectionCheckEnabled(LC.httpclient_external_connmgr_stale_connection_check.booleanValue())
-                .build();
+            this.reqConfig = RequestConfig.custom().build();
         }
 
         @Override
@@ -212,7 +212,11 @@ private static class ExternalConnMgrParams extends ZimbraConnMgrParams {
         this.httpConnMgr.setDefaultMaxPerRoute( zimbraConnMgrParams.getDefaultMaxConnectionsPerHost());
         this.httpConnMgr.setMaxTotal(zimbraConnMgrParams.getMaxTotalConnection());
 
-        this.httpConnMgr.setDefaultSocketConfig(SocketConfig.custom().setSoTimeout(LC.socket_so_timeout.intValue()).build());
+        this.httpConnMgr.setDefaultSocketConfig(SocketConfig.custom().setSoTimeout(LC.socket_so_timeout.intValue(), TimeUnit.MILLISECONDS).build());
+        this.httpConnMgr.setDefaultConnectionConfig(ConnectionConfig.custom()
+            .setValidateAfterInactivity(LC.httpclient_external_connmgr_stale_connection_check.booleanValue()
+                ? TimeValue.ZERO_MILLISECONDS : TimeValue.NEG_ONE_MILLISECOND)
+            .build());
 
         this.defaultHttpClient = createHttpClient();
 
@@ -268,7 +272,7 @@ private static class ExternalConnMgrParams extends ZimbraConnMgrParams {
     }
 
     public void closeIdleConnections () {
-        this.httpConnMgr.closeIdleConnections(0, TimeUnit.MILLISECONDS);
+        this.httpConnMgr.closeIdle(TimeValue.ZERO_MILLISECONDS);
     }
 
     private String getName() {
@@ -283,7 +287,7 @@ private static class ExternalConnMgrParams extends ZimbraConnMgrParams {
      *
      * @return
      */
-    public HttpClientConnectionManager getHttpConnMgr() {
+    public PoolingHttpClientConnectionManager getHttpConnMgr() {
         return httpConnMgr;
     }
 
@@ -314,8 +318,7 @@ private static class ExternalConnMgrParams extends ZimbraConnMgrParams {
     private HttpClientBuilder createHttpClient() {
         return HttpClients.custom()
             .setConnectionManager(this.httpConnMgr)
-            .setDefaultRequestConfig(this.zimbraConnMgrParams.reqConfig)
-            .setDefaultSocketConfig(this.zimbraConnMgrParams.socketConfig);
+            .setDefaultRequestConfig(this.zimbraConnMgrParams.reqConfig);
     }
 
 
@@ -408,10 +411,10 @@ private static class ExternalConnMgrParams extends ZimbraConnMgrParams {
 
         private long timeoutInterval = 1000;
         private long connectionTimeout = 3000;
-        private final HttpClientConnectionManager connMgr;
+        private final PoolingHttpClientConnectionManager connMgr;
         private volatile boolean shutdown;
 
-        public IdleConnectionMonitorThread(HttpClientConnectionManager connMgr) {
+        public IdleConnectionMonitorThread(PoolingHttpClientConnectionManager connMgr) {
             super();
             this.connMgr = connMgr;
         }
@@ -439,10 +442,10 @@ private static class ExternalConnMgrParams extends ZimbraConnMgrParams {
                     synchronized (this) {
                         wait(this.timeoutInterval);
                         // Close expired connections
-                        connMgr.closeExpiredConnections();
+                        connMgr.closeExpired();
                         // Optionally, close connections
                         // that have been idle longer than set sec
-                        connMgr.closeIdleConnections(this.connectionTimeout, TimeUnit.SECONDS);
+                        connMgr.closeIdle(TimeValue.ofSeconds(this.connectionTimeout));
                     }
                 }
             } catch (InterruptedException ex) {

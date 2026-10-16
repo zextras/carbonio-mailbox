@@ -6,20 +6,20 @@
 package com.zimbra.common.net;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import javax.net.ssl.SSLSocketFactory;
 
-import org.apache.http.HttpHost;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
-import org.apache.http.protocol.HttpContext;
+import org.apache.hc.client5.http.socket.LayeredConnectionSocketFactory;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.util.TimeValue;
 
 class SecureProtocolSocketFactoryWrapper extends ProtocolSocketFactoryWrapper
 implements LayeredConnectionSocketFactory {
 
-    private SSLSocketFactory factory;
+    private final SSLSocketFactory factory;
 
     SecureProtocolSocketFactoryWrapper(SSLSocketFactory factory) {
         super(factory);
@@ -30,37 +30,25 @@ implements LayeredConnectionSocketFactory {
         return factory.createSocket(socket, host, port, autoClose);
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.http.conn.socket.ConnectionSocketFactory#createSocket(org.apache.http.protocol.HttpContext)
-     */
     @Override
     public Socket createSocket(HttpContext context) throws IOException {
-        if (context != null) {
-            HttpClientContext clientContext = HttpClientContext.adapt(context);
-            HttpHost  host = clientContext.getTargetHost();
-            return createSocketFromHostInfo(host);
-        }
-        return factory.createSocket();
+        return new Socket();
     }
 
-
-
-    /* (non-Javadoc)
-     * @see org.apache.http.conn.socket.LayeredConnectionSocketFactory#createLayeredSocket(java.net.Socket, java.lang.String, int, org.apache.http.protocol.HttpContext)
-     */
     @Override
-    public Socket createLayeredSocket(Socket socket,  String target, int port, HttpContext context)
-        throws IOException, UnknownHostException {
+    public Socket connectSocket(TimeValue connectTimeout, Socket sock, HttpHost host,
+        InetSocketAddress remoteAddress, InetSocketAddress localAddress, HttpContext context)
+        throws IOException {
+        Socket plain = super.connectSocket(connectTimeout, sock, host, remoteAddress, localAddress, context);
+        return createLayeredSocket(plain, host.getHostName(), remoteAddress.getPort(), context);
+    }
+
+    @Override
+    public Socket createLayeredSocket(Socket socket, String target, int port, HttpContext context)
+        throws IOException {
         if (socket == null) {
-            if (context != null) {
-                HttpClientContext clientContext = HttpClientContext.adapt(context);
-                HttpHost  host = clientContext.getTargetHost();
-                return createSocketFromHostInfo(host);
-            } else {
-                return  factory.createSocket(target, port);
-            }
-        } else {
-            return  factory.createSocket(socket, target, port, true);
+            return factory.createSocket(target, port);
         }
+        return factory.createSocket(socket, target, port, true);
     }
 }

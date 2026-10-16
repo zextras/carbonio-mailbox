@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
 import javax.mail.BodyPart;
@@ -36,16 +37,18 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.config.SocketConfig;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.DefaultRedirectStrategy;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.io.SocketConfig;
+import org.apache.hc.core5.http.message.RequestLine;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.impl.DefaultRedirectStrategy;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 
 import com.google.common.base.Charsets;
 import com.zimbra.common.account.Key.AccountBy;
@@ -215,21 +218,21 @@ public class SpamExtract {
         URL restURL = getServerURL(server, false);
         HttpClientBuilder hc = HttpClientBuilder.create();   // CLI only, don't need conn mgr
         BasicCookieStore cookieStore = new BasicCookieStore();
-        HttpGet gm = new HttpGet();
+        HttpGet gm = new HttpGet("/");
         hc.setRedirectStrategy(new DefaultRedirectStrategy());
         
         BasicClientCookie cookie = new BasicClientCookie(ZimbraCookie.COOKIE_ZM_AUTH_TOKEN, authToken);
         cookie.setDomain(restURL.getHost());
         cookie.setPath("/");
         cookie.setSecure(false);
-        cookie.setExpiryDate(null);
+        cookie.setExpiryDate((java.time.Instant) null);
         cookieStore.addCookie(cookie);
         hc.setDefaultCookieStore(cookieStore);
 
-        HttpHost target = new HttpHost(restURL.getHost(), restURL.getPort(), null);
+        HttpHost target = new HttpHost(null, restURL.getHost(), restURL.getPort());
         
-        SocketConfig config = SocketConfig.custom().setSoTimeout(60000).build();
-        hc.setDefaultSocketConfig(config);
+        SocketConfig config = SocketConfig.custom().setSoTimeout(60000, TimeUnit.MILLISECONDS).build();
+        hc.setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create().setDefaultSocketConfig(config).build());
 
 
         if (verbose) {
@@ -326,7 +329,7 @@ public class SpamExtract {
                     offset = 0; //put offset back to 0 so we always get top N messages even after delete
                 }
             } finally {
-                gm.releaseConnection();
+                gm.reset();
             }
 
         }
@@ -357,13 +360,13 @@ public class SpamExtract {
 
         try {
             URI uri = new URI(path);
-            gm.setURI(uri);
+            gm.setUri(uri);
         } catch(URISyntaxException e) {
             LOG.warn("exception occurred in URI path", e);
         }
-        HttpResponse httpResp = HttpClientUtil.executeMethod(client, gm);
-        if (httpResp.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-            throw new IOException("HTTP GET failed: " + gm.getRequestLine().getUri() + ": " + httpResp.getStatusLine().getStatusCode() + ": " + httpResp.getStatusLine().getReasonPhrase());
+        ClassicHttpResponse httpResp = HttpClientUtil.executeMethod(client, gm);
+        if (httpResp.getCode() != HttpStatus.SC_OK) {
+            throw new IOException("HTTP GET failed: " + new RequestLine(gm).getUri() + ": " + httpResp.getCode() + ": " + httpResp.getReasonPhrase());
         }
         try (ArchiveInputStream tgzStream = new TarArchiveInputStream(
             new GZIPInputStream(httpResp.getEntity().getContent()), Charsets.UTF_8.name())) {

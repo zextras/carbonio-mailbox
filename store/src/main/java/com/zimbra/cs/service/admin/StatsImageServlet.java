@@ -18,15 +18,14 @@ import java.io.InputStream;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 
 import com.zimbra.common.httpclient.HttpClientUtil;
 import com.zimbra.common.localconfig.LC;
@@ -110,18 +109,18 @@ public class StatsImageServlet extends ZimbraServlet {
 		        clientBuilder.setDefaultCookieStore(cookieStore);
 		        HttpGet get = new HttpGet(url.toString());
 		        HttpClient client = clientBuilder.build();
-		        HttpResponse httpResp = null;
+		        ClassicHttpResponse httpResp = null;
 		        try {
 		            httpResp = HttpClientUtil.executeMethod(client, get);
-		            int statusCode = httpResp.getStatusLine().getStatusCode();
+		            int statusCode = httpResp.getCode();
 		            if (statusCode != HttpStatus.SC_OK)
-		                throw ServiceException.RESOURCE_UNREACHABLE(httpResp.getStatusLine().getReasonPhrase(), null);
+		                throw ServiceException.RESOURCE_UNREACHABLE(httpResp.getReasonPhrase(), null);
 		            
 		            resp.setContentType("image/gif");
 		            ByteUtil.copy(httpResp.getEntity().getContent(), true, resp.getOutputStream(), false);
 		            return;
 		        } catch (IOException e) {
-		            throw ServiceException.RESOURCE_UNREACHABLE(httpResp.getStatusLine().getReasonPhrase(), e);
+		            throw ServiceException.RESOURCE_UNREACHABLE(httpResp.getReasonPhrase(), e);
 		        }  finally {
                     EntityUtils.consumeQuietly(httpResp.getEntity());
                 }

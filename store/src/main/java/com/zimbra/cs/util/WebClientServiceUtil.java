@@ -17,13 +17,12 @@ import com.zimbra.cs.httpclient.URLUtil;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.zimlet.ZimletUtil;
 import java.io.IOException;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 
 /**
  * Util class for sending service related requests from service node to ui nodes
@@ -42,15 +41,15 @@ public class WebClientServiceUtil {
       AuthToken authToken = AuthProvider.getAdminAuthToken();
       ZimbraLog.misc.debug("got admin auth token");
       String resp = "";
-      HttpRequestBase method = null;
+      HttpUriRequestBase method = null;
       try {
         method = new HttpGet(URLUtil.getServiceURL(server, serviceUrl, false));
         ZimbraLog.misc.debug("connecting to ui node %s", server.getName());
         method.addHeader(PARAM_AUTHTOKEN, authToken.getEncoded());
-        HttpResponse httpResp = HttpClientUtil.executeMethod(clientBuilder.build(), method);
-        int result = httpResp.getStatusLine().getStatusCode();
+        ClassicHttpResponse httpResp = HttpClientUtil.executeMethod(clientBuilder.build(), method);
+        int result = httpResp.getCode();
         ZimbraLog.misc.debug("resp: %d", result);
-        resp = EntityUtils.toString(httpResp.getEntity());
+        resp = HttpClientUtil.entityToString(httpResp.getEntity());
         ZimbraLog.misc.debug("got response from ui node: %s", resp);
       } catch (IOException e) {
         ZimbraLog.misc.warn("failed to get response from ui node", e);
@@ -58,7 +57,7 @@ public class WebClientServiceUtil {
         ZimbraLog.misc.warn("failed to get authToken", e);
       } finally {
         if (method != null) {
-          method.releaseConnection();
+          method.reset();
         }
       }
       if (authToken != null && authToken.isRegistered()) {
@@ -87,8 +86,8 @@ public class WebClientServiceUtil {
     try {
       method.addHeader(PARAM_AUTHTOKEN, authToken);
       ZimbraLog.zimlet.debug("connecting to ui node %s", server.getName());
-      HttpResponse httpResp = HttpClientUtil.executeMethod(clientBuilder.build(), method);
-      int respCode = httpResp.getStatusLine().getStatusCode();
+      ClassicHttpResponse httpResp = HttpClientUtil.executeMethod(clientBuilder.build(), method);
+      int respCode = httpResp.getCode();
       if (respCode != 200) {
         ZimbraLog.zimlet.warn("operation failed, return code: %d", respCode);
       }
@@ -96,7 +95,7 @@ public class WebClientServiceUtil {
       ZimbraLog.zimlet.warn("operation failed for node %s", server.getName(), e);
     } finally {
       if (method != null) {
-        method.releaseConnection();
+        method.reset();
       }
     }
   }
@@ -114,7 +113,7 @@ public class WebClientServiceUtil {
       ZimbraLog.zimlet.info("connecting to ui node %s, data size %d", server.getName(),
           data.length);
 
-      method.setEntity(new ByteArrayEntity(data));
+      method.setEntity(new ByteArrayEntity(data, null));
       postToUiNode(server, method, authToken);
     }
   }

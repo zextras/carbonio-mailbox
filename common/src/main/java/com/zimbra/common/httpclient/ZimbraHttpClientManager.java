@@ -6,19 +6,22 @@ package com.zimbra.common.httpclient;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-
+import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
 import javax.net.ssl.SSLContext;
 
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.config.SocketConfig;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
-import org.apache.http.impl.nio.client.HttpAsyncClients;
-import org.apache.http.ssl.SSLContexts;
+import org.apache.hc.client5.http.config.ConnectionConfig;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.ClientTlsStrategyBuilder;
+import org.apache.hc.core5.util.TimeValue;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.ssl.TrustSelfSignedStrategy;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
+import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
+import org.apache.hc.core5.ssl.SSLContexts;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.net.CustomTrustManager;
@@ -48,47 +51,45 @@ public class ZimbraHttpClientManager {
         } catch (GeneralSecurityException e) {
             ZimbraLog.security.error("Failed to load local keystore");
         }
+        PoolingAsyncClientConnectionManagerBuilder asyncConnectionMgr = PoolingAsyncClientConnectionManagerBuilder.create()
+                .setMaxConnTotal(LC.httpclient_internal_connmgr_max_total_connections.intValue());
         if(sslcontext != null) {
-            internalAsyncClient = HttpAsyncClients.custom().setSSLContext(sslcontext)
-                    .setMaxConnTotal(LC.httpclient_internal_connmgr_max_total_connections.intValue()).build();
-        } else {
-            internalAsyncClient = HttpAsyncClients.custom()
-                    .setMaxConnTotal(LC.httpclient_internal_connmgr_max_total_connections.intValue())
-                    .build();
+            asyncConnectionMgr.setTlsStrategy(ClientTlsStrategyBuilder.create().setSslContext(sslcontext).build());
         }
+        internalAsyncClient = HttpAsyncClients.custom().setConnectionManager(asyncConnectionMgr.build()).build();
 
         internalAsyncClient.start();
 
         internalConnectionMgr = new PoolingHttpClientConnectionManager();
         internalConnectionMgr.setDefaultMaxPerRoute(LC.httpclient_internal_connmgr_max_host_connections.intValue());
         internalConnectionMgr.setMaxTotal(LC.httpclient_internal_connmgr_max_total_connections.intValue());
+        internalConnectionMgr.setDefaultConnectionConfig(staleCheck(LC.httpclient_internal_connmgr_stale_connection_check.booleanValue()));
         internalRequestConfig = RequestConfig.custom()
-                .setConnectTimeout(LC.httpclient_internal_connmgr_connection_timeout.intValue())
-                .setSocketTimeout(LC.httpclient_internal_connmgr_so_timeout.intValue())
-                .setStaleConnectionCheckEnabled(LC.httpclient_internal_connmgr_stale_connection_check.booleanValue())
+                .setConnectTimeout(LC.httpclient_internal_connmgr_connection_timeout.intValue(), TimeUnit.MILLISECONDS)
+                .setResponseTimeout(LC.httpclient_internal_connmgr_so_timeout.intValue(), TimeUnit.MILLISECONDS)
                     .build();
         internalClient = HttpClientBuilder.create()
                 .setConnectionManager(internalConnectionMgr)
                 .setDefaultRequestConfig(internalRequestConfig)
-                .setDefaultSocketConfig(SocketConfig.custom()
-                    .setTcpNoDelay(LC.httpclient_internal_connmgr_tcp_nodelay.booleanValue())
-                        .build())
                             .build();
         externallConnectionMgr = new PoolingHttpClientConnectionManager();
         externallConnectionMgr.setDefaultMaxPerRoute(LC.httpclient_external_connmgr_max_host_connections.intValue());
         externallConnectionMgr.setMaxTotal(LC.httpclient_external_connmgr_max_total_connections.intValue());
+        externallConnectionMgr.setDefaultConnectionConfig(staleCheck(LC.httpclient_external_connmgr_stale_connection_check.booleanValue()));
         externalRequestConfig = RequestConfig.custom().
-                setConnectTimeout(LC.httpclient_external_connmgr_connection_timeout.intValue())
-                .setSocketTimeout(LC.httpclient_external_connmgr_so_timeout.intValue())
-                .setStaleConnectionCheckEnabled(LC.httpclient_external_connmgr_stale_connection_check.booleanValue())
+                setConnectTimeout(LC.httpclient_external_connmgr_connection_timeout.intValue(), TimeUnit.MILLISECONDS)
+                .setResponseTimeout(LC.httpclient_external_connmgr_so_timeout.intValue(), TimeUnit.MILLISECONDS)
                     .build();
         externalClient = HttpClientBuilder.create()
                 .setConnectionManager(externallConnectionMgr)
                 .setDefaultRequestConfig(externalRequestConfig)
-                .setDefaultSocketConfig(SocketConfig.custom()
-                        .setTcpNoDelay(LC.httpclient_external_connmgr_tcp_nodelay.booleanValue())
-                            .build())
                                 .build();
+    }
+
+    private static ConnectionConfig staleCheck(boolean enabled) {
+        return ConnectionConfig.custom()
+                .setValidateAfterInactivity(enabled ? TimeValue.ZERO_MILLISECONDS : TimeValue.NEG_ONE_MILLISECOND)
+                .build();
     }
 
     public static synchronized ZimbraHttpClientManager getInstance() {

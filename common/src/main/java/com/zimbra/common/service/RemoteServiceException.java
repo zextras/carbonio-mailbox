@@ -15,9 +15,9 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLPeerUnverifiedException;
 
-import org.apache.http.NoHttpResponseException;
-import org.apache.http.ProtocolException;
-import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.hc.core5.http.NoHttpResponseException;
+import org.apache.hc.core5.http.ProtocolException;
+import org.apache.hc.client5.http.ConnectTimeoutException;
 
 
 

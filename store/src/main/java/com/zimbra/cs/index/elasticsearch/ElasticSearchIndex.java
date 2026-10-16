@@ -15,14 +15,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Queue;
-
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.StringEntity;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.classic.methods.HttpDelete;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpPut;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -103,8 +103,7 @@ public final class ElasticSearchIndex extends IndexStore {
                 ElasticSearchConnector connector = new ElasticSearchConnector();
                 JSONObject mappingInfo = createMappingInfo();
                 HttpPut putMethod = new HttpPut(ElasticSearchConnector.actualUrl(indexUrl));
-                putMethod.setEntity(new StringEntity(mappingInfo.toString(),
-                        MimeConstants.CT_APPLICATION_JSON, MimeConstants.P_CHARSET_UTF8));
+                putMethod.setEntity(new StringEntity(mappingInfo.toString(), ContentType.create(MimeConstants.CT_APPLICATION_JSON, MimeConstants.P_CHARSET_UTF8)));
                 int statusCode = connector.executeMethod(putMethod);
                 if (statusCode == HttpStatus.SC_OK) {
                     haveMappingInfo = true;
@@ -308,7 +307,7 @@ public final class ElasticSearchIndex extends IndexStore {
 
     @Override
     public void deleteIndex() {
-        HttpRequestBase method = new HttpDelete(ElasticSearchConnector.actualUrl(indexUrl));
+        HttpUriRequestBase method = new HttpDelete(ElasticSearchConnector.actualUrl(indexUrl));
         try {
             ElasticSearchConnector connector = new ElasticSearchConnector();
             int statusCode = connector.executeMethod(method);
@@ -567,8 +566,7 @@ public final class ElasticSearchIndex extends IndexStore {
                     }
                 }
                 try {
-                    method.setEntity(new StringEntity(jsonObj.toString(),
-                            MimeConstants.CT_APPLICATION_JSON, MimeConstants.P_CHARSET_UTF8));
+                    method.setEntity(new StringEntity(jsonObj.toString(), ContentType.create(MimeConstants.CT_APPLICATION_JSON, MimeConstants.P_CHARSET_UTF8)));
                     ElasticSearchConnector connector = new ElasticSearchConnector();
                     int statusCode = connector.executeMethod(method);
                     if (statusCode != HttpStatus.SC_CREATED) {
@@ -794,8 +792,7 @@ public final class ElasticSearchIndex extends IndexStore {
                 String url = String.format("%s%s/_count", indexUrl, indexType);
                 HttpPost method = new HttpPost(ElasticSearchConnector.actualUrl(url));
                 try {
-                    method.setEntity(new StringEntity(jsonobj.toString(),
-                                MimeConstants.CT_APPLICATION_JSON, MimeConstants.P_CHARSET_UTF8));
+                    method.setEntity(new StringEntity(jsonobj.toString(), ContentType.create(MimeConstants.CT_APPLICATION_JSON, MimeConstants.P_CHARSET_UTF8)));
                     ElasticSearchConnector connector = new ElasticSearchConnector();
                     refreshIndexIfNecessary();
                     int statusCode = connector.executeMethod(method);
@@ -848,8 +845,7 @@ public final class ElasticSearchIndex extends IndexStore {
                     // Both HTTP GET and HTTP POST can be used to execute search with body.
                     // Since not all clients support GET with body, POST is allowed as well.
                     HttpPost method = new HttpPost(ElasticSearchConnector.actualUrl(url));
-                    method.setEntity(new StringEntity(requestJson.toString(),
-                                MimeConstants.CT_APPLICATION_JSON, MimeConstants.P_CHARSET_UTF8));
+                    method.setEntity(new StringEntity(requestJson.toString(), ContentType.create(MimeConstants.CT_APPLICATION_JSON, MimeConstants.P_CHARSET_UTF8)));
                     ElasticSearchConnector connector = new ElasticSearchConnector();
                     int statusCode = connector.executeMethod(method);
                     if (statusCode == HttpStatus.SC_OK) {
@@ -907,8 +903,7 @@ public final class ElasticSearchIndex extends IndexStore {
                     // Both HTTP GET and HTTP POST can be used to execute search with body.
                     // Since not all clients support GET with body, POST is allowed as well.
                     HttpPost method = new HttpPost(ElasticSearchConnector.actualUrl(url));
-                    method.setEntity(new StringEntity(requestJson.toString(),
-                                MimeConstants.CT_APPLICATION_JSON, MimeConstants.P_CHARSET_UTF8));
+                    method.setEntity(new StringEntity(requestJson.toString(), ContentType.create(MimeConstants.CT_APPLICATION_JSON, MimeConstants.P_CHARSET_UTF8)));
                     ElasticSearchConnector connector = new ElasticSearchConnector();
                     int statusCode = connector.executeMethod(method);
                     if (statusCode == HttpStatus.SC_OK) {

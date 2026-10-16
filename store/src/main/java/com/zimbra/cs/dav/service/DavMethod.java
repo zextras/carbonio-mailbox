@@ -9,13 +9,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.InputStreamEntity;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.core5.http.io.entity.InputStreamEntity;
 import org.dom4j.io.XMLWriter;
 
 import com.zimbra.common.localconfig.LC;
@@ -87,7 +86,7 @@ public abstract class DavMethod {
         }
     }
 
-    public HttpRequestBase toHttpMethod(DavContext ctxt, String targetUrl) throws IOException, DavException {
+    public HttpUriRequestBase toHttpMethod(DavContext ctxt, String targetUrl) throws IOException, DavException {
         if (ctxt.getUpload() != null && ctxt.getUpload().getSize() > 0) {
             HttpPost method = new HttpPost(targetUrl) {
                 @Override
@@ -98,9 +97,9 @@ public abstract class DavMethod {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 XMLWriter writer = new XMLWriter(baos);
                 writer.write(ctxt.getRequestMessage());
-                reqEntry = new ByteArrayEntity(baos.toByteArray());
+                reqEntry = new ByteArrayEntity(baos.toByteArray(), null);
             } else { // this could be a huge upload
-                reqEntry = new InputStreamEntity(ctxt.getUpload().getInputStream(), ctxt.getUpload().getSize());
+                reqEntry = new InputStreamEntity(ctxt.getUpload().getInputStream(), ctxt.getUpload().getSize(), null);
             }
             method.setEntity(reqEntry);
             return method;

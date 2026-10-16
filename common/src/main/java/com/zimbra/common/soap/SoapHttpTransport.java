@@ -17,33 +17,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
-
+import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.concurrent.FutureCallback;
-import org.apache.http.config.SocketConfig;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
-import org.apache.http.message.BasicHeader;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpVersion;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.Credentials;
+import org.apache.hc.client5.http.auth.CredentialsStore;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.cookie.CookieStore;
+import org.apache.hc.client5.http.cookie.StandardCookieSpec;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.client5.http.protocol.HttpClientContext;
+import org.apache.hc.core5.concurrent.FutureCallback;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
+import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
+import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
+import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
+import org.apache.hc.core5.http.message.BasicHeader;
 import org.dom4j.DocumentException;
 import org.dom4j.ElementHandler;
 import org.dom4j.io.SAXReader;
@@ -269,7 +271,7 @@ public class SoapHttpTransport extends SoapTransport {
                     method.addHeader(entry.getKey(), entry.getValue());
             }
 
-            String host = method.getURI().getHost();
+            String host = HttpClientUtil.requestUri(method).getHost();
             ZAuthToken zToken = getAuthToken();
 
             BasicCookieStore cookieStore = HttpClientUtil.newHttpState(zToken, host, this.isAdmin());
@@ -288,30 +290,26 @@ public class SoapHttpTransport extends SoapTransport {
 
             ZimbraLog.soap.trace("Httpclient timeout: %s" , mTimeout);
             RequestConfig reqConfig = RequestConfig.custom().
-                setCookieSpec(cookieStore.getCookies().size() == 0 ? CookieSpecs.IGNORE_COOKIES:
-               CookieSpecs.BROWSER_COMPATIBILITY)
-                .setSocketTimeout(mTimeout)
+                setCookieSpec(cookieStore.getCookies().size() == 0 ? StandardCookieSpec.IGNORE:
+               StandardCookieSpec.RELAXED)
+                .setResponseTimeout(mTimeout, TimeUnit.MILLISECONDS)
                 .build();
-            SocketConfig socketConfig = SocketConfig.custom().setSoTimeout(mTimeout)
-                .setTcpNoDelay(LC.httpclient_external_connmgr_tcp_nodelay.booleanValue()).build();
-            method.setProtocolVersion(HttpVersion.HTTP_1_1);
+            method.setVersion(HttpVersion.HTTP_1_1);
             method.addHeader("Connection", mKeepAlive ? "Keep-alive" : "Close");
 
 
             client = mClientBuilder.setDefaultRequestConfig(reqConfig)
-               .setDefaultSocketConfig(socketConfig)
                .setDefaultCookieStore(cookieStore).build();
-            ZimbraLog.soap.trace("Httpclient request config timeout: %s" , reqConfig.getSocketTimeout());
+            ZimbraLog.soap.trace("Httpclient request config timeout: %s" , reqConfig.getResponseTimeout());
 
             if (mHostConfig != null && mHostConfig.getUsername() != null && mHostConfig.getPassword() != null) {
 
-                Credentials credentials = new UsernamePasswordCredentials(mHostConfig.getUsername(), mHostConfig.getPassword());
+                Credentials credentials = new UsernamePasswordCredentials(mHostConfig.getUsername(), mHostConfig.getPassword().toCharArray());
                 AuthScope authScope = new AuthScope(null, -1);
-                CredentialsProvider credsProvider = new BasicCredentialsProvider();
+                CredentialsStore credsProvider = new BasicCredentialsProvider();
                 credsProvider.setCredentials(authScope, credentials);
                 client = HttpClientBuilder.create().setDefaultCredentialsProvider(credsProvider)
                     .setDefaultRequestConfig(reqConfig)
-                    .setDefaultSocketConfig(socketConfig)
                     .setDefaultCookieStore(cookieStore)
                     .build();
             }
@@ -320,12 +318,12 @@ public class SoapHttpTransport extends SoapTransport {
                 mHttpDebugListener.sendSoapMessage(method, soapReq, cookieStore);
             }
 
-            HttpResponse response = client.execute(method);
-            int responseCode = response.getStatusLine().getStatusCode();
+            ClassicHttpResponse response = client.executeOpen(null, method, null);
+            int responseCode = response.getCode();
             // SOAP allows for "200" on success and "500" on failure;
             //   real server issues will probably be "503" or "404"
             if (responseCode != HttpServletResponse.SC_OK && responseCode != HttpServletResponse.SC_INTERNAL_SERVER_ERROR && responseCode != 422)
-                throw ServiceException.PROXY_ERROR(response.getStatusLine().getReasonPhrase(), uri);
+                throw ServiceException.PROXY_ERROR(response.getReasonPhrase(), uri);
 
             // Read the response body.  Use the stream API instead of the byte[]
             // version to avoid HTTPClient whining about a large response.
@@ -356,7 +354,7 @@ public class SoapHttpTransport extends SoapTransport {
         } finally {
             // Release the connection to the connection manager
             if (method != null)
-                method.releaseConnection();
+                method.reset();
 
             // really not necessary if running in the server because the reaper thread
             // of our connection manager will take care it.
@@ -424,9 +422,9 @@ public class SoapHttpTransport extends SoapTransport {
     }
 
     @Override
-    public Future<HttpResponse> invokeAsync(Element document, boolean raw, boolean noSession, String requestedAccountId,
-            String changeToken, String tokenType, NotificationFormat nFormat, String curWaitSetID, FutureCallback<HttpResponse> cb) throws IOException {
-        HttpPost post = new HttpPost(getUriWithPath(document));
+    public Future<SimpleHttpResponse> invokeAsync(Element document, boolean raw, boolean noSession, String requestedAccountId,
+            String changeToken, String tokenType, NotificationFormat nFormat, String curWaitSetID, FutureCallback<SimpleHttpResponse> cb) throws IOException {
+        SimpleHttpRequest post = SimpleRequestBuilder.post(getUriWithPath(document)).build();
         // Set user agent if it's specified.
         String agentName = getUserAgentName();
         if (agentName != null) {
@@ -455,14 +453,14 @@ public class SoapHttpTransport extends SoapTransport {
         //SOAP message
         Element soapReq = generateSoapMessage(document, raw, noSession, requestedAccountId, changeToken, tokenType, nFormat, curWaitSetID);
         String soapMessage = SoapProtocol.toString(soapReq, getPrettyPrint());
-        post.setEntity(new ByteArrayEntity(soapMessage.getBytes(StandardCharsets.UTF_8)));
+        post.setBody(soapMessage.getBytes(StandardCharsets.UTF_8), null);
         HttpClientContext context = HttpClientContext.create();
-        String host = post.getURI().getHost();
+        String host = HttpClientUtil.requestUri(post).getHost();
         CookieStore cookieStore = HttpClientUtil.newCookieStore(getAuthToken(), host, isAdmin());
         String trustedToken = getTrustedToken();
         if (trustedToken != null) {
             BasicClientCookie cookie = new BasicClientCookie(ZimbraCookie.COOKIE_ZM_TRUST_TOKEN, trustedToken);
-            cookie.setDomain(post.getURI().getHost());
+            cookie.setDomain(HttpClientUtil.requestUri(post).getHost());
             cookie.setPath("/");
             cookie.setSecure(false);
             cookieStore.addCookie(cookie);

@@ -18,28 +18,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.http.Consts;
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthSchemeProvider;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.config.AuthSchemes;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.auth.BasicSchemeFactory;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.auth.AuthSchemeFactory;
+import org.apache.hc.client5.http.auth.CredentialsStore;
+import org.apache.hc.client5.http.auth.StandardAuthScheme;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.Credentials;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.core5.http.config.Registry;
+import org.apache.hc.core5.http.config.RegistryBuilder;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.client5.http.impl.auth.BasicSchemeFactory;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.eclipse.jetty.http.HttpHeader;
 
 import com.zimbra.common.account.Key.AccountBy;
@@ -340,14 +338,14 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
         ExchangeMessage msg = new ExchangeMessage(serverInfo.org, serverInfo.cn, email);
         String url = serverInfo.url + msg.getUrl();
 
-        HttpRequestBase method = null;
-        HttpResponse response = null;
+        HttpUriRequestBase method = null;
+        ClassicHttpResponse response = null;
         try {
             ZimbraLog.fb.debug("POST "+url);
             method = msg.createMethod(url, fb);
             method.addHeader(HEADER_TRANSLATE, "f");
             response = sendRequest(method, serverInfo);
-            int status = response.getStatusLine().getStatusCode();
+            int status = response.getCode();
             if (status != MULTI_STATUS) {
                 InputStream resp = response.getEntity().getContent();
                 String respStr = (resp == null ? "" : new String(ByteUtil.readInput(resp, 1024, 1024),
@@ -359,12 +357,12 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
             ZimbraLog.fb.error("error communicating with "+serverInfo.url, ioe);
             return false;  // retry
         } finally {
-            method.releaseConnection();
+            method.reset();
         }
         return true;
     }
 
-    private HttpResponse sendRequest(HttpRequestBase method, ServerInfo info) throws IOException {
+    private ClassicHttpResponse sendRequest(HttpUriRequestBase method, ServerInfo info) throws IOException {
 
         method.addHeader(HEADER_USER_AGENT, USER_AGENT);
         HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getExternalHttpConnMgr().newHttpClient();
@@ -382,13 +380,13 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
 
     private boolean basicAuth(HttpClientBuilder clientBuilder, ServerInfo info) {
 
-        Credentials cred = new UsernamePasswordCredentials(info.authUsername, info.authPassword);
-        CredentialsProvider credsProvider = new BasicCredentialsProvider();
-        credsProvider .setCredentials(AuthScope.ANY, cred);
+        Credentials cred = new UsernamePasswordCredentials(info.authUsername, info.authPassword.toCharArray());
+        CredentialsStore credsProvider = new BasicCredentialsProvider();
+        credsProvider .setCredentials(new AuthScope(null, -1), cred);
         clientBuilder.setDefaultCredentialsProvider(credsProvider);
 
-        Registry<AuthSchemeProvider> authSchemeRegistry = RegistryBuilder.<AuthSchemeProvider>create()
-            .register(AuthSchemes.BASIC, new BasicSchemeFactory(Consts.UTF_8)).build();
+        Registry<AuthSchemeFactory> authSchemeRegistry = RegistryBuilder.<AuthSchemeFactory>create()
+            .register(StandardAuthScheme.BASIC, new BasicSchemeFactory()).build();
         clientBuilder.setDefaultAuthSchemeRegistry(authSchemeRegistry);
         return true;
     }
@@ -410,10 +408,10 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
         method.setEntity(re);
         BasicCookieStore state = new BasicCookieStore();
         clientBuilder.setDefaultCookieStore(state);
-        HttpResponse response = null;
+        ClassicHttpResponse response = null;
         try {
             response = HttpClientUtil.executeMethod(clientBuilder.build(), method);
-            int status = response.getStatusLine().getStatusCode();
+            int status = response.getCode();
             if (status >= 400) {
                 ZimbraLog.fb.error("form auth to Exchange returned an error: "+status);
                 return false;
@@ -442,14 +440,14 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
         }
         String url = constructGetUrl(serverInfo, req);
         ZimbraLog.fb.debug("fetching fb from url="+url);
-        HttpRequestBase method = new HttpGet(url);
+        HttpUriRequestBase method = new HttpGet(url);
 
 
         Element response = null;
-        HttpResponse httpResponse = null;
+        ClassicHttpResponse httpResponse = null;
         try {
             httpResponse = sendRequest(method, serverInfo);
-            int status = httpResponse.getStatusLine().getStatusCode();
+            int status = httpResponse.getCode();
             if (status != 200)
                 return getEmptyList(req);
             if (ZimbraLog.fb.isDebugEnabled()) {
@@ -523,7 +521,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
         return serverInfo;
     }
 
-    public static HttpResponse checkAuth(ServerInfo info, Account requestor) throws ServiceException, IOException {
+    public static ClassicHttpResponse checkAuth(ServerInfo info, Account requestor) throws ServiceException, IOException {
         ExchangeFreeBusyProvider prov = new ExchangeFreeBusyProvider();
         ArrayList<Request> req = new ArrayList<>();
         req.add(new Request(
@@ -534,8 +532,8 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
                 FreeBusyQuery.CALENDAR_FOLDER_ALL));
         String url = prov.constructGetUrl(info, req);
 
-        HttpRequestBase method = new HttpGet(url);
-        HttpResponse response = null;
+        HttpUriRequestBase method = new HttpGet(url);
+        ClassicHttpResponse response = null;
         try {
             response = prov.sendRequest(method, info);
             return response;
