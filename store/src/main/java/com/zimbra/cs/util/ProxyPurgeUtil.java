@@ -134,7 +134,7 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
     // Get single endpoint from the attribute then fallback on mailbox's upstream
     if (servers == null){
       servers = new ArrayList<>();
-      servers.add(getMailboxCacheServer(prov));
+      servers.add(prov.getConfig().getAttr(ZAttrProvisioning.A_carbonioMemcachedEndpoint, MEMCACHED_MESH_UPSTREAM_FOR_MAILBOX));
     }
 
     // Some sanity checks.
@@ -407,18 +407,14 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
     return servers;
   }
 
-  static List<String> getCacheServers(CommandLine commandLine, Server localServer) throws ServiceException {
+  static List<String> getCacheServers(CommandLine commandLine, Server localServer) {
     final var servers = getCacheServers(commandLine);
     if (servers.isEmpty()) {
       servers.add(localServer.hasProxyService()
           ? MEMCACHED_MESH_UPSTREAM_FOR_PROXY
-          : getMailboxCacheServer(Provisioning.getInstance()));
+          : MEMCACHED_MESH_UPSTREAM_FOR_MAILBOX);
     }
     return servers;
-  }
-
-  private static String getMailboxCacheServer(Provisioning prov) throws ServiceException {
-    return prov.getConfig().getAttr(ZAttrProvisioning.A_carbonioMemcachedEndpoint, MEMCACHED_MESH_UPSTREAM_FOR_MAILBOX);
   }
 
   /**

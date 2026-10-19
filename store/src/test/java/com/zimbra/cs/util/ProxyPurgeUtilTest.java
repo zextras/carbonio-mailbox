@@ -45,20 +45,6 @@ class ProxyPurgeUtilTest extends MailboxTestSuite {
   }
 
   @Test
-  void shouldUseMemcachedEndpointAttributeOnMailboxNode() throws Exception {
-    final var prov = Provisioning.getInstance();
-    final var config = prov.getConfig();
-    prov.modifyAttrs(config, new HashMap<>(Map.of(ZAttrProvisioning.A_carbonioMemcachedEndpoint, "memcached:11211")));
-    try {
-      final var servers = ProxyPurgeUtil.getCacheServers(
-          ProxyPurgeUtil.parseCommandLine(new String[] {"-a", "user@test.com"}), createMailboxServer());
-      Assertions.assertEquals(List.of("memcached:11211"), servers);
-    } finally {
-      prov.modifyAttrs(config, new HashMap<>(Map.of(ZAttrProvisioning.A_carbonioMemcachedEndpoint, "")));
-    }
-  }
-
-  @Test
   void shouldPreferServersFromCommandLine() throws Exception {
     final var servers = ProxyPurgeUtil.getCacheServers(
         ProxyPurgeUtil.parseCommandLine(new String[] {"-a", "user@test.com", "cache1:11211"}), createProxyServer());
