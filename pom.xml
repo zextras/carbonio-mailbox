@@ -929,36 +929,18 @@
     </dependencies>
   </dependencyManagement>
 
-  <!--
-    JFrog stays the deploy target during the parallel-run window: `mvn deploy`
-    publishes here, and jenkins-lib-common's nexusHelper.uploadMavenFromDeployLog()
-    mirrors the same artifacts to Nexus best-effort. At cutover this block flips to
-    https://repo.zextras.tools/repository/public-maven-repo/ (release) and
-    .../maven-snapshots/ (snapshot), and the mirror call is dropped.
-    The <id>artifactory</id> below must match the <server> id configured in the
-    jenkins-maven-settings.xml credential.
-  -->
   <distributionManagement>
     <repository>
-      <id>artifactory</id>
-      <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
+      <id>nexus-prod</id>
+      <url>https://repo.zextras.tools/repository/public-maven-repo/</url>
     </repository>
     <snapshotRepository>
-      <id>artifactory</id>
-      <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
+      <id>nexus-prod</id>
+      <url>https://repo.zextras.tools/repository/maven-snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
 
-
   <repositories>
-    <repository>
-      <id>central</id>
-      <url>https://repo1.maven.org/maven2/</url>
-    </repository>
-    <repository>
-      <id>fuse</id>
-      <url>https://repo.fusesource.com/maven2/</url>
-    </repository>
     <repository>
       <id>zextras-java-sdk</id>
       <name>Zextras Java SDK (Nexus group)</name>
@@ -983,14 +965,6 @@
     </repository>
   </repositories>
   <pluginRepositories>
-    <pluginRepository>
-      <id>central</id>
-      <url>https://repo1.maven.org/maven2/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>fuse</id>
-      <url>https://repo.fusesource.com/maven2/</url>
-    </pluginRepository>
     <pluginRepository>
       <id>zextras-java-sdk</id>
       <url>https://repo.zextras.tools/repository/java-sdk/</url>
