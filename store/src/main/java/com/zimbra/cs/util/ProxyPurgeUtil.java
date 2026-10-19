@@ -89,8 +89,6 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
       throw new CommandExitException(1);
     }
 
-  // First use case: code invoked by proxypurge.sh script.
-  // Get all servers form command line arguments then fallback on the upstream of the local node
     final var servers = getCacheServers(commandLine, prov.getLocalServer());
 
     /* Assume purge unless `-i' is specified */
