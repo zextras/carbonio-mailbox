@@ -53,7 +53,7 @@ ProxyPurgeUtil class is used in the following cases:
 public class ProxyPurgeUtil {
 
   private static final Logger LOG = LoggerFactory.getLogger(ProxyPurgeUtil.class);
-  private static final String MEMCACHED_MESH_UPSTREAM_FOR_MAILBOX = "127.78.0.7:20006";
+  private static final String MEMCACHED_MESH_UPSTREAM_FOR_MAILBOX = "127.78.0.7:20014";
   private static final String MEMCACHED_MESH_UPSTREAM_FOR_PROXY = "127.78.0.7:20014";
 
 
