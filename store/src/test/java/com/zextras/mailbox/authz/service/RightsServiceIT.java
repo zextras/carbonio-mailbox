@@ -29,6 +29,7 @@ import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.cs.account.accesscontrol.Rights.User;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE;
+import com.zimbra.soap.type.TargetBy;
 import io.vavr.control.Try;
 import java.util.HashMap;
 import java.util.List;
@@ -97,7 +98,7 @@ class RightsServiceIT {
 		final Account target = server.getAccountFactory().create();
 
 		final Try<Boolean> result = rightsService.tokenHasRight(
-				new ZimbraAuthToken(admin).getEncoded(), "getAccountInfo", "account", target.getId());
+				new ZimbraAuthToken(admin).getEncoded(), "getAccountInfo", "account", TargetBy.id, target.getId());
 
 		assertFalse(result.get());
 	}
@@ -129,6 +130,24 @@ class RightsServiceIT {
 	}
 
 	@Test
+	void delegatedAdminHasRightGrantedOnDomainCheckedByName() throws Exception {
+		final Domain domain = createDomain();
+		final Account delegatedAdmin = createDelegatedAdmin();
+		grant(delegatedAdmin, domain, Admin.R_getDomainQuotaUsage);
+
+		assertTrue(rightsService.accountHasRight(
+				delegatedAdmin.getId(), "getDomainQuotaUsage", "domain", TargetBy.name, domain.getName()).get());
+	}
+
+	@Test
+	void missingTargetByNameIsDenied() throws Exception {
+		final Account admin = server.getAccountFactory().asGlobalAdmin().create();
+
+		assertFalse(rightsService.accountHasRight(
+				admin.getId(), "getDomainQuotaUsage", "domain", TargetBy.name, "missing.example.com").get());
+	}
+
+	@Test
 	void globalAdminHasAttrRightOnCos() throws Exception {
 		final Account admin = server.getAccountFactory().asGlobalAdmin().create();
 		final Cos cos = createCos();
@@ -149,7 +168,7 @@ class RightsServiceIT {
 		final Account user = server.getAccountFactory().create();
 		final Domain domain = createDomain();
 
-		assertFalse(rightsService.accountHasRight(user.getId(), "getDomain", "domain", domain.getId()).get());
+		assertFalse(rightsService.accountHasRight(user.getId(), "getDomain", "domain", TargetBy.id, domain.getId()).get());
 	}
 
 	@Test
@@ -157,7 +176,7 @@ class RightsServiceIT {
 		final Account admin = server.getAccountFactory().asGlobalAdmin().create();
 		final Account target = server.getAccountFactory().create();
 
-		assertTrue(rightsService.accountHasRight(admin.getId(), "getAccountInfo", "account", target.getId()).get());
+		assertTrue(rightsService.accountHasRight(admin.getId(), "getAccountInfo", "account", TargetBy.id, target.getId()).get());
 	}
 
 	@Test
@@ -165,7 +184,7 @@ class RightsServiceIT {
 		final Account target = server.getAccountFactory().create();
 
 		assertFalse(rightsService.accountHasRight(
-				UUID.randomUUID().toString(), "getAccountInfo", "account", target.getId()).get());
+				UUID.randomUUID().toString(), "getAccountInfo", "account", TargetBy.id, target.getId()).get());
 	}
 
 	@Test
@@ -208,7 +227,7 @@ class RightsServiceIT {
 		grant(user, target, User.R_sendAs);
 
 		final Try<Boolean> result = rightsService.tokenHasRight(
-				new ZimbraAuthToken(user).getEncoded(), "sendAs", "account", target.getId());
+				new ZimbraAuthToken(user).getEncoded(), "sendAs", "account", TargetBy.id, target.getId());
 
 		assertTrue(result.get());
 	}
@@ -218,7 +237,7 @@ class RightsServiceIT {
 		final Account user = server.getAccountFactory().create();
 		final Account target = server.getAccountFactory().create();
 
-		assertFalse(rightsService.accountHasRight(user.getId(), "sendAs", "account", target.getId()).get());
+		assertFalse(rightsService.accountHasRight(user.getId(), "sendAs", "account", TargetBy.id, target.getId()).get());
 	}
 
 	@Test
@@ -227,14 +246,14 @@ class RightsServiceIT {
 		final Account target = server.getAccountFactory().create();
 		grant(user, target, User.R_viewFreeBusy);
 
-		assertTrue(rightsService.accountHasRight(user.getId(), "viewFreeBusy", "account", target.getId()).get());
+		assertTrue(rightsService.accountHasRight(user.getId(), "viewFreeBusy", "account", TargetBy.id, target.getId()).get());
 	}
 
 	@Test
 	void userRightOnWrongTargetTypeIsInvalid() throws Exception {
 		final Account user = server.getAccountFactory().create();
 
-		assertInvalidRequest(rightsService.accountHasRight(user.getId(), "sendToDistList", "account", user.getId()));
+		assertInvalidRequest(rightsService.accountHasRight(user.getId(), "sendToDistList", "account", TargetBy.id, user.getId()));
 	}
 
 	@Test
@@ -285,7 +304,7 @@ class RightsServiceIT {
 	private static Try<Boolean> tokenHasRight(Account subject, String right, String targetType, String targetId)
 			throws Exception {
 		final String token = new ZimbraAuthToken(subject, true, null).getEncoded();
-		return rightsService.tokenHasRight(token, right, targetType, targetId);
+		return rightsService.tokenHasRight(token, right, targetType, TargetBy.id, targetId);
 	}
 
 	private static void assertInvalidRequest(Try<Boolean> result) {

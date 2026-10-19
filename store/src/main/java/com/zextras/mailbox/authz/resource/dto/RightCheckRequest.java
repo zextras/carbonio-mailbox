@@ -12,7 +12,7 @@ public record RightCheckRequest(Subject subject, String right, Target target) {
 
 	}
 
-	public record Target(String type, String id) {
+	public record Target(String type, String id, String name) {
 
 	}
 }

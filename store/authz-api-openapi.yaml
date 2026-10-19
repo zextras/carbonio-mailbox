@@ -10,7 +10,8 @@ paths:
       description: "Tells whether the subject holds a right (user or admin, as defined\
         \ in the rights catalogue) on the target. The subject is identified by exactly\
         \ one of 'token' or 'accountId'; the target type is a right target type (e.g.\
-        \ account, domain, cos). A missing target or subject is reported as not allowed."
+        \ account, domain, cos), identified by at most one of 'id' or 'name'. A missing\
+        \ target or subject is reported as not allowed."
       operationId: check
       requestBody:
         content:
@@ -111,6 +112,8 @@ components:
         type:
           type: string
         id:
+          type: string
+        name:
           type: string
     RightInfoResponse:
       type: object

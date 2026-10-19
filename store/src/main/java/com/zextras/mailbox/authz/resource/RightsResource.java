@@ -15,6 +15,7 @@ import com.zextras.mailbox.api.rest.response.ErrorResponse;
 import com.zextras.mailbox.authz.service.RightsService;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.AuthTokenException;
+import com.zimbra.soap.type.TargetBy;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -69,7 +70,8 @@ public class RightsResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Operation(summary = "Check Right", description = "Tells whether the subject holds a right (user or admin, as defined in the rights catalogue) on the target. "
 			+ "The subject is identified by exactly one of 'token' or 'accountId'; the target type is a right target type "
-			+ "(e.g. account, domain, cos). A missing target or subject is reported as not allowed.")
+			+ "(e.g. account, domain, cos), identified by at most one of 'id' or 'name'. "
+			+ "A missing target or subject is reported as not allowed.")
 	@ApiResponse(responseCode = "200", description = "Authorization decision",
 			content = @Content(schema = @Schema(implementation = RightCheckResponse.class)))
 	@ApiResponse(responseCode = "400", description = "Invalid request, unknown right or target type, or right not applicable to the target type",
@@ -94,9 +96,11 @@ public class RightsResource {
 	private Try<Boolean> decide(RightCheckRequest request) {
 		final Subject subject = request.subject();
 		final Target target = request.target();
+		final TargetBy targetBy = isPresent(target.name()) ? TargetBy.name : TargetBy.id;
+		final String targetKey = targetBy == TargetBy.name ? target.name() : target.id();
 		return isPresent(subject.token())
-				? rightsService.tokenHasRight(subject.token(), request.right(), target.type(), target.id())
-				: rightsService.accountHasRight(subject.accountId(), request.right(), target.type(), target.id());
+				? rightsService.tokenHasRight(subject.token(), request.right(), target.type(), targetBy, targetKey)
+				: rightsService.accountHasRight(subject.accountId(), request.right(), target.type(), targetBy, targetKey);
 	}
 
 	private static String invalidReason(RightCheckRequest request) {
@@ -107,6 +111,9 @@ public class RightsResource {
 		final Subject subject = request.subject();
 		if (isPresent(subject.token()) == isPresent(subject.accountId())) {
 			return "Provide exactly one of 'token' or 'accountId' as subject";
+		}
+		if (isPresent(request.target().id()) && isPresent(request.target().name())) {
+			return "Provide at most one of 'id' or 'name' as target";
 		}
 		return null;
 	}

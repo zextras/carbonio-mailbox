@@ -12,7 +12,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.zextras.mailbox.util.MailboxServerExtension;
 import com.zextras.mailbox.util.TestHttpClient.Response;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Domain;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ZimbraAuthToken;
+import java.util.HashMap;
+import java.util.UUID;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -43,6 +47,29 @@ class RightsResourceIT {
 
 		assertEquals(200, response.statusCode());
 		assertThatJson(response.body()).isObject().containsEntry("allowed", false);
+	}
+
+	@Test
+	void allowsGlobalAdminOnTargetByName() throws Exception {
+		final Account admin = server.getAccountFactory().asGlobalAdmin().create();
+		final Domain domain = Provisioning.getInstance().createDomain(UUID.randomUUID() + ".com", new HashMap<>());
+
+		final Response response = check(accountIdSubject(admin), "getDomainQuotaUsage",
+				"{\"type\":\"domain\",\"name\":\"" + domain.getName() + "\"}");
+
+		assertEquals(200, response.statusCode());
+		assertThatJson(response.body()).isObject().containsEntry("allowed", true);
+	}
+
+	@Test
+	void targetWithBothIdAndNameIsRejected() throws Exception {
+		final Account admin = server.getAccountFactory().asGlobalAdmin().create();
+		final Account target = server.getAccountFactory().create();
+
+		final Response response = check(accountIdSubject(admin), "getAccountInfo",
+				"{\"type\":\"account\",\"id\":\"" + target.getId() + "\",\"name\":\"" + target.getName() + "\"}");
+
+		assertEquals(400, response.statusCode());
 	}
 
 	@Test

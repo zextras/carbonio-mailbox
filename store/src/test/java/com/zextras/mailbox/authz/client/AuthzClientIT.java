@@ -75,6 +75,14 @@ class AuthzClientIT {
 	}
 
 	@Test
+	void checksRightOnTargetByName() throws Exception {
+		final Account admin = server.getAccountFactory().asGlobalAdmin().create();
+
+		assertTrue(client.checkRight(RightSubject.account(admin.getId()), AuthzRight.GET_DOMAIN_QUOTA_USAGE,
+				RightTarget.ofName(AuthzTargetType.DOMAIN, admin.getDomainName())));
+	}
+
+	@Test
 	void checksRightWithEnums() throws Exception {
 		final Account admin = server.getAccountFactory().asGlobalAdmin().create();
 		final Account user = server.getAccountFactory().create();

@@ -45,16 +45,16 @@ public class RightsService {
   }
 
   public Try<Boolean> tokenHasRight(
-      String encodedToken, String right, String targetType, String targetId) {
-    return rightCheck(right, targetType, targetId)
+      String encodedToken, String right, String targetType, TargetBy targetBy, String target) {
+    return rightCheck(right, targetType, targetBy, target)
         .flatMap(check -> accountService.getAuthToken(encodedToken)
             .mapTry(authToken -> hasRight(
                 authToken.getAccountId(), grantee -> AuthToken.isAnyAdmin(authToken), check)));
   }
 
   public Try<Boolean> accountHasRight(
-      String accountId, String right, String targetType, String targetId) {
-    return rightCheck(right, targetType, targetId)
+      String accountId, String right, String targetType, TargetBy targetBy, String target) {
+    return rightCheck(right, targetType, targetBy, target)
         .mapTry(check -> hasRight(
             accountId, grantee -> accessManagerSupplier.get().isAdequateAdminAccount(grantee), check));
   }
@@ -72,18 +72,19 @@ public class RightsService {
     });
   }
 
-  private Try<RightCheck> rightCheck(String rightName, String targetTypeName, String targetId) {
+  private Try<RightCheck> rightCheck(
+      String rightName, String targetTypeName, TargetBy targetBy, String target) {
     return Try.of(() -> {
       final TargetType targetType = TargetType.fromCode(targetTypeName);
-      if (targetType.needsTargetIdentity() && (targetId == null || targetId.isEmpty())) {
-        throw ServiceException.INVALID_REQUEST("Missing target id for " + targetType, null);
+      if (targetType.needsTargetIdentity() && (target == null || target.isEmpty())) {
+        throw ServiceException.INVALID_REQUEST("Missing target " + targetBy + " for " + targetType, null);
       }
       final Right right = right(rightName);
       if (!right.executableOnTargetType(targetType)) {
         throw ServiceException.INVALID_REQUEST(
             "Right " + rightName + " cannot be checked on " + targetType, null);
       }
-      return new RightCheck(right, targetType, targetId);
+      return new RightCheck(right, targetType, targetBy, target);
     });
   }
 
@@ -100,7 +101,7 @@ public class RightsService {
     final Provisioning provisioning = provisioningSupplier.get();
     final Account grantee = provisioning.getAccountById(granteeId);
     final Entry target = TargetTypeLookup.lookupTarget(
-        provisioning, check.targetType(), TargetBy.id, check.targetId(), false);
+        provisioning, check.targetType(), check.targetBy(), check.target(), false);
     if (grantee == null || target == null) {
       return false;
     }
@@ -127,7 +128,7 @@ public class RightsService {
     return domain != null && (domain.isSuspended() || domain.isShutdown());
   }
 
-  private record RightCheck(Right right, TargetType targetType, String targetId) {
+  private record RightCheck(Right right, TargetType targetType, TargetBy targetBy, String target) {
 
   }
 }
