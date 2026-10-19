@@ -37,6 +37,10 @@ public class HttpProxyUtil {
       var uri = new URI(httpProxyUrl);
       var proxyHost = uri.getHost();
       var proxyPort = uri.getPort();
+      if (proxyHost == null) {
+        ZimbraLog.misc.warn("HttpProxyUtil.configureProxy 'zimbraHttpProxyURL' has no host, not using proxy.");
+        return;
+      }
 
       var userInfo = uri.getUserInfo();
       String username = null;

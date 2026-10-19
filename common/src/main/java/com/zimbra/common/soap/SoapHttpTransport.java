@@ -12,10 +12,12 @@ package com.zimbra.common.soap;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletResponse;
@@ -422,9 +424,10 @@ public class SoapHttpTransport extends SoapTransport {
     }
 
     @Override
-    public Future<SimpleHttpResponse> invokeAsync(Element document, boolean raw, boolean noSession, String requestedAccountId,
-            String changeToken, String tokenType, NotificationFormat nFormat, String curWaitSetID, FutureCallback<SimpleHttpResponse> cb) throws IOException {
-        SimpleHttpRequest post = SimpleRequestBuilder.post(getUriWithPath(document)).build();
+    public CompletableFuture<Element> invokeAsync(Element document, boolean raw, boolean noSession, String requestedAccountId,
+            String changeToken, String tokenType, NotificationFormat nFormat, String curWaitSetID) throws IOException {
+        String uri = getUriWithPath(document);
+        SimpleHttpRequest post = SimpleRequestBuilder.post(uri).build();
         // Set user agent if it's specified.
         String agentName = getUserAgentName();
         if (agentName != null) {
@@ -467,7 +470,43 @@ public class SoapHttpTransport extends SoapTransport {
         }
         context.setCookieStore(cookieStore);
         CloseableHttpAsyncClient httpClient = ZimbraHttpClientManager.getInstance().getInternalAsyncHttpClient();
-        return httpClient.execute(post, context, cb);
+        CompletableFuture<Element> result = new CompletableFuture<>();
+        Future<SimpleHttpResponse> request = httpClient.execute(post, context, new FutureCallback<>() {
+            @Override
+            public void completed(SimpleHttpResponse response) {
+                int responseCode = response.getCode();
+                if (responseCode != HttpServletResponse.SC_OK && responseCode != HttpServletResponse.SC_INTERNAL_SERVER_ERROR && responseCode != 422) {
+                    result.completeExceptionally(ServiceException.PROXY_ERROR(response.getReasonPhrase(), uri));
+                    return;
+                }
+                String responseStr = new String(response.getBodyBytes(), Charset.forName(SoapProtocol.getCharset()));
+                try {
+                    result.complete(parseSoapResponse(responseStr, raw));
+                } catch (SoapFaultException x) {
+                    x.setFaultRequest(soapMessage);
+                    x.setFaultResponse(responseStr.substring(0, Math.min(10240, responseStr.length())));
+                    result.completeExceptionally(x);
+                } catch (SoapParseException x) {
+                    result.completeExceptionally(x);
+                }
+            }
+
+            @Override
+            public void failed(Exception ex) {
+                result.completeExceptionally(ex);
+            }
+
+            @Override
+            public void cancelled() {
+                result.cancel(false);
+            }
+        });
+        result.whenComplete((body, error) -> {
+            if (result.isCancelled()) {
+                request.cancel(true);
+            }
+        });
+        return result;
     }
 
 }

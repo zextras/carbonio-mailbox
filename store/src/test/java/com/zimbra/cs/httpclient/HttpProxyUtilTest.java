@@ -71,7 +71,7 @@ class HttpProxyUtilTest extends MailboxTestSuite {
     UsernamePasswordCredentials creds = (UsernamePasswordCredentials) credentialsProvider.getCredentials(new AuthScope(null, -1), null);
     Assertions.assertNotNull(creds);
     assertEquals("user", creds.getUserName());
-    assertEquals("pass", creds.getPassword());
+    assertArrayEquals("pass".toCharArray(), creds.getPassword());
   }
 
   @Test
