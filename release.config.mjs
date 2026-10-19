@@ -12,7 +12,7 @@ export default {
     { name: 'release/v4.36.x', range: '4.36.x' },
     'main'
   ],
-  tagFormat: "${version}",
+  tagFormat: "v${version}",
   plugins: [
     [
       '@semantic-release/commit-analyzer',
