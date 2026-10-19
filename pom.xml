@@ -11,6 +11,7 @@
     <module>right-manager</module>
     <module>client</module>
     <module>soap</module>
+    <module>authz</module>
     <module>store</module>
     <module>store-extra-runtime-dependencies</module>
     <module>jython-libs</module>
@@ -58,6 +59,7 @@
     <javassist.version>3.30.2-GA</javassist.version>
     <carbonio-message-broker-sdk.version>0.1.2</carbonio-message-broker-sdk.version>
     <mockserver.version>5.13.0</mockserver.version>
+    <pact.version>4.6.17</pact.version>
     <json-unit.version>4.1.1</json-unit.version>
     <mariadb-java-client.version>2.7.14</mariadb-java-client.version>
   </properties>
@@ -513,12 +515,48 @@
       <dependency>
         <groupId>com.zextras</groupId>
         <artifactId>mailbox-attribute-manager</artifactId>
-        <version>5.5.0</version>
+        <version>5.6.0</version>
       </dependency>
       <dependency>
         <groupId>com.zextras</groupId>
         <artifactId>right-manager</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.zextras</groupId>
+        <artifactId>carbonio-authz</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.zextras</groupId>
+        <artifactId>carbonio-authz</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+      </dependency>
+      <dependency>
+        <groupId>au.com.dius.pact.consumer</groupId>
+        <artifactId>junit5</artifactId>
+        <version>${pact.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>au.com.dius.pact</groupId>
+        <artifactId>consumer</artifactId>
+        <version>${pact.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>au.com.dius.pact.core</groupId>
+        <artifactId>model</artifactId>
+        <version>${pact.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>au.com.dius.pact.provider</groupId>
+        <artifactId>junit5</artifactId>
+        <version>${pact.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>au.com.dius.pact</groupId>
+        <artifactId>provider</artifactId>
+        <version>${pact.version}</version>
       </dependency>
       <dependency>
         <groupId>com.zextras</groupId>

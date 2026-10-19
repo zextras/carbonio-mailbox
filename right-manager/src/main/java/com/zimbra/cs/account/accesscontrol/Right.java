@@ -162,7 +162,7 @@ public abstract class Right extends RightConsts implements Comparable<Right> {
         mFallbackClass = clazz;
     }
 
-    boolean executableOnTargetType(TargetType targetType) {
+    public boolean executableOnTargetType(TargetType targetType) {
         return (mTargetType == targetType);
     }
 

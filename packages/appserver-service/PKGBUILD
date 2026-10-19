@@ -91,6 +91,20 @@ _package() {
   install -Dm644 packages/appserver-service/carbonio-mailbox-internal-api-service-protocol.json \
     "${pkgdir}/etc/carbonio/mailbox-internal-api/service-discover/service-protocol.json"
 
+  # Authz
+  install -Dm755 packages/appserver-service/carbonio-authz \
+    "${pkgdir}/usr/bin/carbonio-authz"
+  install -Dm644 packages/appserver-service/411-carbonio-authz.sh \
+    "${pkgdir}/etc/zextras/pending-setups.d/411-carbonio-authz.sh"
+  install -Dm644 packages/appserver-service/carbonio-authz.hcl \
+    "${pkgdir}/etc/zextras/service-discover/carbonio-authz.hcl"
+  install -Dm644 packages/appserver-service/carbonio-authz-intentions.json \
+    "${pkgdir}/etc/carbonio/authz/service-discover/intentions.json"
+  install -Dm644 packages/appserver-service/carbonio-authz-policies.json \
+    "${pkgdir}/etc/carbonio/authz/service-discover/policies.json"
+  install -Dm644 packages/appserver-service/carbonio-authz-service-protocol.json \
+    "${pkgdir}/etc/carbonio/authz/service-discover/service-protocol.json"
+
   # systemd sysusers.d
   install -Dm644 packages/appserver-service/systemd-sysuser.conf \
     "${pkgdir}/usr/lib/sysusers.d/carbonio-appserver-service.conf"
@@ -112,6 +126,8 @@ _package_legacy() {
     "${pkgdir}/usr/lib/systemd/system/carbonio-mailbox-nslookup-sidecar.service"
   install -Dm644 packages/appserver-service/carbonio-mailbox-internal-api-sidecar-legacy.service \
     "${pkgdir}/usr/lib/systemd/system/carbonio-mailbox-internal-api-sidecar.service"
+  install -Dm644 packages/appserver-service/carbonio-authz-sidecar-legacy.service \
+    "${pkgdir}/usr/lib/systemd/system/carbonio-authz-sidecar.service"
 }
 
 _package_systemd() {
@@ -126,6 +142,8 @@ _package_systemd() {
     "${pkgdir}/usr/lib/systemd/system/carbonio-mailbox-nslookup-sidecar.service"
   install -Dm644 packages/appserver-service/carbonio-mailbox-internal-api-sidecar.service \
     "${pkgdir}/usr/lib/systemd/system/carbonio-mailbox-internal-api-sidecar.service"
+  install -Dm644 packages/appserver-service/carbonio-authz-sidecar.service \
+    "${pkgdir}/usr/lib/systemd/system/carbonio-authz-sidecar.service"
 }
 
 package() {
@@ -164,6 +182,7 @@ postinst() {
     systemctl enable carbonio-mailbox-admin-sidecar.service &>/dev/null || :
     systemctl enable carbonio-mailbox-nslookup-sidecar.service &>/dev/null || :
     systemctl enable carbonio-mailbox-internal-api-sidecar.service &>/dev/null || :
+    systemctl enable carbonio-authz-sidecar.service &>/dev/null || :
   fi
 
   echo "======================================================"
@@ -178,6 +197,7 @@ prerm() {
     systemctl --no-reload disable --now carbonio-mailbox-admin-sidecar.service &>/dev/null || :
     systemctl --no-reload disable --now carbonio-mailbox-nslookup-sidecar.service &>/dev/null || :
     systemctl --no-reload disable --now carbonio-mailbox-internal-api-sidecar.service &>/dev/null || :
+    systemctl --no-reload disable --now carbonio-authz-sidecar.service &>/dev/null || :
   fi
 }
 
@@ -186,6 +206,7 @@ postrm() {
   rm -f /etc/carbonio/mailbox-admin/service-discover/token
   rm -f /etc/carbonio/mailbox-nslookup/service-discover/token
   rm -f /etc/carbonio/mailbox-internal-api/service-discover/token
+  rm -f /etc/carbonio/authz/service-discover/token
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload &>/dev/null || :

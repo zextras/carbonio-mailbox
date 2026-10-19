@@ -67,4 +67,10 @@
   <key name="mailbox_internal_api_port">
     <value>CARBONIO_MAILBOX_INTERNAL_API_PORT</value>
   </key>
+  <key name="mailbox_authz_api_bind_address">
+    <value>CARBONIO_AUTHZ_API_HOST</value>
+  </key>
+  <key name="mailbox_authz_api_port">
+    <value>CARBONIO_AUTHZ_API_PORT</value>
+  </key>
 </localconfig>
