@@ -32,7 +32,7 @@ implements LayeredConnectionSocketFactory {
 
     @Override
     public Socket createSocket(HttpContext context) throws IOException {
-        return new Socket();
+        return SocketFactories.defaultSocketFactory().createSocket();
     }
 
     @Override
