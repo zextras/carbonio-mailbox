@@ -22,23 +22,10 @@
 
   <repositories>
     <repository>
-      <id>maven</id>
-      <url>https://repo.maven.apache.org/maven2</url>
-    </repository>
-    <repository>
-      <id>zextras-java-sdk</id>
-      <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
-    </repository>
-    <repository>
-      <id>artifactory</id>
-      <name>Zextras Snapshots Repo</name>
-      <url>https://zextras.jfrog.io/artifactory/maven-snapshot</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
+      <id>zextras-nexus</id>
+      <url>https://repo.zextras.tools/repository/java-sdk/</url>
+      <releases><enabled>true</enabled></releases>
+      <snapshots><enabled>true</enabled></snapshots>
     </repository>
   </repositories>
 
