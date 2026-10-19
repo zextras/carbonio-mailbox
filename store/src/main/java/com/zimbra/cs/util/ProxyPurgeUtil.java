@@ -14,6 +14,7 @@ import com.zimbra.common.util.memcached.ZimbraMemcachedClient;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.ldap.LdapServerType;
 import com.zimbra.cs.ldap.LdapUsage;
@@ -53,7 +54,7 @@ ProxyPurgeUtil class is used in the following cases:
 public class ProxyPurgeUtil {
 
   private static final Logger LOG = LoggerFactory.getLogger(ProxyPurgeUtil.class);
-  private static final String MEMCACHED_MESH_UPSTREAM_FOR_MAILBOX = "127.78.0.7:20014";
+  private static final String MEMCACHED_MESH_UPSTREAM_FOR_MAILBOX = "127.78.0.7:20006";
   private static final String MEMCACHED_MESH_UPSTREAM_FOR_PROXY = "127.78.0.1:20014";
 
 
@@ -82,18 +83,15 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
     /* Initialize the logging system and the zimbra environment */
     final var prov = Provisioning.getInstance();
 
-  // First use case: code invoked by proxypurge.sh script.
-  // Get all servers form command line arguments then fallback on proxy's upstream
-    final var servers = getCacheServers(commandLine);
-    if (servers.isEmpty()) {
-      servers.add(MEMCACHED_MESH_UPSTREAM_FOR_PROXY);
-    }
-
     final var accounts = getAccounts(commandLine);
     if (accounts.isEmpty()) {
       LOG.error("No accounts specified (--help for help)");
       throw new CommandExitException(1);
     }
+
+  // First use case: code invoked by proxypurge.sh script.
+  // Get all servers form command line arguments then fallback on the upstream of the local node
+    final var servers = getCacheServers(commandLine, prov.getLocalServer());
 
     /* Assume purge unless `-i' is specified */
         /* -i (info) indicates that account route info should be printed
@@ -138,7 +136,7 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
     // Get single endpoint from the attribute then fallback on mailbox's upstream
     if (servers == null){
       servers = new ArrayList<>();
-      servers.add(prov.getConfig().getAttr(ZAttrProvisioning.A_carbonioMemcachedEndpoint, MEMCACHED_MESH_UPSTREAM_FOR_MAILBOX));
+      servers.add(getMailboxCacheServer(prov));
     }
 
     // Some sanity checks.
@@ -411,6 +409,20 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
     return servers;
   }
 
+  static List<String> getCacheServers(CommandLine commandLine, Server localServer) throws ServiceException {
+    final var servers = getCacheServers(commandLine);
+    if (servers.isEmpty()) {
+      servers.add(localServer.hasProxyService()
+          ? MEMCACHED_MESH_UPSTREAM_FOR_PROXY
+          : getMailboxCacheServer(Provisioning.getInstance()));
+    }
+    return servers;
+  }
+
+  private static String getMailboxCacheServer(Provisioning prov) throws ServiceException {
+    return prov.getConfig().getAttr(ZAttrProvisioning.A_carbonioMemcachedEndpoint, MEMCACHED_MESH_UPSTREAM_FOR_MAILBOX);
+  }
+
   /**
    * Parse command line arguments
    *
@@ -444,9 +456,9 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
     System.out.println(" ");
     System.out.println(" Purges POP/IMAP routing information from one or more memcached servers");
     System.out.println(
-        " Available Memcached servers are discovered by the 'zmprov gamcs' function, others can be specified");
+        " Memcached is reached through the service mesh upstream of the local node (proxy or mailbox)");
     System.out.println(
-        " If necessary, please specify additional memcached servers in the form of server:port at the end of the command line");
+        " If necessary, please specify memcached servers in the form of server:port at the end of the command line");
     System.out.println(" ");
     System.out.println(
         " Usage: zmproxypurge [-v] [-i] -a account [-L accountlist] [cache1 [cache2 ... ]]");
