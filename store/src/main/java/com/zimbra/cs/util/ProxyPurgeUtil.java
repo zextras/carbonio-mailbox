@@ -14,7 +14,6 @@ import com.zimbra.common.util.memcached.ZimbraMemcachedClient;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.ldap.LdapServerType;
 import com.zimbra.cs.ldap.LdapUsage;
@@ -89,7 +88,7 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
       throw new CommandExitException(1);
     }
 
-    final var servers = getCacheServers(commandLine, prov.getLocalServer());
+    final var servers = getCacheServers(commandLine, prov);
 
     /* Assume purge unless `-i' is specified */
         /* -i (info) indicates that account route info should be printed
@@ -407,12 +406,19 @@ public static void run(String[] args) throws ServiceException, CommandExitExcept
     return servers;
   }
 
-  static List<String> getCacheServers(CommandLine commandLine, Server localServer) {
+  static List<String> getCacheServers(CommandLine commandLine, Provisioning prov)
+      throws ServiceException, CommandExitException {
     final var servers = getCacheServers(commandLine);
     if (servers.isEmpty()) {
-      servers.add(localServer.hasProxyService()
-          ? MEMCACHED_MESH_UPSTREAM_FOR_PROXY
-          : MEMCACHED_MESH_UPSTREAM_FOR_MAILBOX);
+      final var localServer = prov.getLocalServer();
+      if (localServer.hasProxyService()) {
+        servers.add(MEMCACHED_MESH_UPSTREAM_FOR_PROXY);
+      } else if (localServer.hasMailboxService()) {
+        servers.add(MEMCACHED_MESH_UPSTREAM_FOR_MAILBOX);
+      } else {
+        LOG.error("Neither Proxy nor Mailbox service is enabled on this node, specify memcached servers as server:port");
+        throw new CommandExitException(1);
+      }
     }
     return servers;
   }
