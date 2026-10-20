@@ -30,6 +30,17 @@ if [[ $SERVER_EXISTS == *"account.NO_SUCH_SERVER"* ]]; then
                                       zimbraReverseProxyLookupTarget TRUE
   echo "Server ${HOSTNAME} created"
 fi
+keystore=/opt/zextras/mailboxd/etc/keystore
+certificate=$(mktemp)
+rm -f "${keystore}"
+keytool -genkeypair -alias mykey -keyalg RSA -keysize 2048 -validity 3650 \
+  -dname "CN=${HOSTNAME}" -ext "SAN=dns:${HOSTNAME},dns:localhost" \
+  -keystore "${keystore}" -storepass teststore1 -keypass testkey1 -noprompt
+keytool -exportcert -alias mykey -keystore "${keystore}" -storepass teststore1 -rfc -file "${certificate}"
+keytool -delete -cacerts -alias carbonio-server -storepass changeit >/dev/null 2>&1 || true
+keytool -importcert -cacerts -alias carbonio-server -file "${certificate}" -storepass changeit -noprompt
+rm -f "${certificate}"
+
 JAVA_OPTS="-Dfile.encoding=UTF-8 -server \
                          -Dhttps.protocols=TLSv1.2,TLSv1.3 \
                          -Djdk.tls.client.protocols=TLSv1.2,TLSv1.3 \

@@ -68,21 +68,10 @@ RUN mkdir -p /staging/usr/bin && \
       > /staging/usr/bin/zmmailbox && \
     chmod +x /staging/usr/bin/zmmailbox
 
-# Generate keystore using Alpine-based builder stage
-FROM --platform=$BUILDPLATFORM docker.io/library/eclipse-temurin:21-jre-alpine AS keystore-builder
-RUN mkdir -p /keystore && \
-    keytool -genkey -keyalg RSA \
-    -dname "cn=Unknown, ou=Unknown, o=Unknown, c=Unknown" \
-    -keystore /keystore/keystore -keysize 2048 -validity 1461 \
-    -keypass testkey1 -storepass teststore1
-
 FROM docker.io/library/eclipse-temurin:21-jre-jammy
 
 # Copy entire staged directory structure
 COPY --from=build /staging /
-
-# Copy pre-generated keystore
-COPY --from=keystore-builder /keystore/keystore /opt/zextras/mailboxd/etc/keystore
 
 # Add OpenTelemetry agent
 ADD https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar \
