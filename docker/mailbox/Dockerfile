@@ -68,21 +68,10 @@ RUN mkdir -p /staging/usr/bin && \
       > /staging/usr/bin/zmmailbox && \
     chmod +x /staging/usr/bin/zmmailbox
 
-# Generate keystore using Alpine-based builder stage
-FROM --platform=$BUILDPLATFORM docker.io/library/eclipse-temurin:21-jre-alpine AS keystore-builder
-RUN mkdir -p /keystore && \
-    keytool -genkey -keyalg RSA \
-    -dname "cn=Unknown, ou=Unknown, o=Unknown, c=Unknown" \
-    -keystore /keystore/keystore -keysize 2048 -validity 1461 \
-    -keypass testkey1 -storepass teststore1
-
 FROM docker.io/library/eclipse-temurin:21-jre-jammy
 
 # Copy entire staged directory structure
 COPY --from=build /staging /
-
-# Copy pre-generated keystore
-COPY --from=keystore-builder /keystore/keystore /opt/zextras/mailboxd/etc/keystore
 
 # Add OpenTelemetry agent
 ADD https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar \
@@ -104,6 +93,8 @@ ENV LOCALCONFIG_PATH=/localconfig/localconfig.xml \
     CARBONIO_PREVIEW_SERVICE_URL="http://carbonio-preview:10000" \
     CARBONIO_MAILBOX_INTERNAL_API_HOST="0.0.0.0" \
     CARBONIO_MAILBOX_INTERNAL_API_PORT="10000" \
+    CARBONIO_AUTHZ_API_HOST="0.0.0.0" \
+    CARBONIO_AUTHZ_API_PORT="10001" \
     MAILBOXD_JAVA_OPTS="-Xss256k -Xms1996m -Xmx1996m" \
     OTEL_JAVAAGENT_CONFIGURATION_FILE="/etc/carbonio/mailbox/otel.properties"
 

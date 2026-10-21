@@ -1,0 +1,13 @@
+{
+  "resourcePackages": [
+    "com.zextras.mailbox.authz.resource"
+  ],
+  "readAllResources": false,
+  "openAPI": {
+    "info": {
+      "title": "Carbonio Authz API",
+      "version": "1.0",
+      "description": "Service-to-service authorization API backed by the mailbox rights catalogue"
+    }
+  }
+}

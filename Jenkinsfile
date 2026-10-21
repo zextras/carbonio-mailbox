@@ -1,5 +1,5 @@
 library(
-        identifier: 'jenkins-lib-common@v4.15.2',
+        identifier: 'jenkins-lib-common@v5.0.8',
         retriever: modernSCM([
                 $class: 'GitSCMSource',
                 credentialsId: 'jenkins-integration-with-github-account',
@@ -148,10 +148,8 @@ pipeline {
                             boolean pg = params.PLAYGROUND
                             mavenDeploy(
                                     container: 'jdk-21',
-                                    credentialsId: pg ? 'nexus-maven-settings.xml' : 'jenkins-maven-settings.xml',
                                     mvnOpts: MVN_OPTS,
                                     extraArgs: '-DskipTests=true' + (pg ? ' -DaltDeploymentRepository=nexus-prod::https://repo.zextras.tools/repository/pg-public-maven-repo/' : ''),
-                                    mirrorToNexus: !pg,
                             )
                         }
                     }
@@ -198,6 +196,14 @@ pipeline {
                                 platforms : ['linux/amd64', 'linux/arm64'] as Set,
                                 ocLabels  : [
                                         title : 'Carbonio Mailbox Internal API Sidecar',
+                                ]
+                        ])
+                        dockerStage([
+                                dockerfile: 'docker/authz-sidecar/Dockerfile',
+                                imageName : 'carbonio-authz-sidecar',
+                                platforms : ['linux/amd64', 'linux/arm64'] as Set,
+                                ocLabels  : [
+                                        title : 'Carbonio Authz Sidecar',
                                 ]
                         ])
                         dockerStage([

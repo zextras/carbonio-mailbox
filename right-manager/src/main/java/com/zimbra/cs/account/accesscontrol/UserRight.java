@@ -55,7 +55,7 @@ public class UserRight extends Right {
 
 
     @Override
-    boolean executableOnTargetType(TargetType targetType) {
+    public boolean executableOnTargetType(TargetType targetType) {
         targetType = disguiseTargetType(targetType);
         return super.executableOnTargetType(targetType);
     }
