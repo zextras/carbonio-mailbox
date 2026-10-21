@@ -835,7 +835,7 @@
       <dependency>
         <groupId>io.prometheus</groupId>
         <artifactId>simpleclient</artifactId>
-        <version>0.16.0</version>
+        <version>0.16.0.redhat-00008</version>
       </dependency>
       <dependency>
         <groupId>javax.inject</groupId>
