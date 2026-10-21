@@ -23,7 +23,9 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpRequest;
 import org.apache.hc.core5.http.HttpVersion;
+import org.apache.hc.client5.http.ClientProtocolException;
 import org.apache.hc.client5.http.auth.AuthScope;
 import org.apache.hc.client5.http.auth.Credentials;
 import org.apache.hc.client5.http.auth.CredentialsStore;
@@ -235,6 +237,7 @@ public class SoapHttpTransport extends SoapTransport {
             // type is written to the access log.
             String uri = getUriWithPath(document);
             method = new HttpPost(uri);
+            requireHost(method, uri);
 
             // Set user agent if it's specified.
             String agentName = getUserAgentName();
@@ -428,6 +431,7 @@ public class SoapHttpTransport extends SoapTransport {
             String changeToken, String tokenType, NotificationFormat nFormat, String curWaitSetID) throws IOException {
         String uri = getUriWithPath(document);
         SimpleHttpRequest post = SimpleRequestBuilder.post(uri).build();
+        requireHost(post, uri);
         // Set user agent if it's specified.
         String agentName = getUserAgentName();
         if (agentName != null) {
@@ -509,4 +513,9 @@ public class SoapHttpTransport extends SoapTransport {
         return result;
     }
 
+    private static void requireHost(HttpRequest request, String uri) throws ClientProtocolException {
+        if (request.getAuthority() == null) {
+            throw new ClientProtocolException("URI does not specify a valid host name: " + uri);
+        }
+    }
 }

@@ -366,10 +366,6 @@ public abstract class SoapTransport {
             return e;
     }
 
-    /**
-     * Completes with the response body, or exceptionally with the same exceptions the synchronous
-     * {@code invoke} throws. Cancelling the returned future aborts the HTTP request.
-     */
     public abstract CompletableFuture<Element> invokeAsync(Element document, boolean raw, boolean noSession, String requestedAccountId,
             String changeToken, String tokenType, NotificationFormat nFormat, String curWaitSetID) throws IOException;
 
