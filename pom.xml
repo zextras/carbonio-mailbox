@@ -221,22 +221,22 @@
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
-        <version>4.5.14</version>
+        <version>4.5.14.redhat-00016</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpmime</artifactId>
-        <version>4.5.14</version>
+        <version>4.5.14.redhat-00016</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
-        <version>4.4.16</version>
+        <version>4.4.16.redhat-00011</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpasyncclient</artifactId>
-        <version>4.1.5</version>
+        <version>4.1.5.redhat-00008</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents.client5</groupId>
