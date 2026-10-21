@@ -40,7 +40,7 @@ services {
           },
           {
             destination_name   = "carbonio-memcached"
-            local_bind_port    = 20014
+            local_bind_port    = 20006
             local_bind_address = "127.78.0.7"
           },
         ]
