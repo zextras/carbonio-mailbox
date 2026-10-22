@@ -13,17 +13,12 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.mailbox.MailboxManager;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Singleton;
 
-/** CDI producers for the internal API service layer. */
-@ApplicationScoped
-public class InternalApiCdiProducers {
+public final class InternalApiServices {
 
-  @Produces
-  @Singleton
-  public MailboxService mailboxService() {
+  private InternalApiServices() {}
+
+  public static MailboxService mailboxService() {
     return new MailboxService(
         Provisioning::getInstance,
         () -> {
@@ -42,15 +37,11 @@ public class InternalApiCdiProducers {
         });
   }
 
-  @Produces
-  @Singleton
-  public AccountService accountService(MailboxService mailboxService) {
+  public static AccountService accountService(MailboxService mailboxService) {
     return new AccountService(Provisioning::getInstance, mailboxService);
   }
 
-  @Produces
-  @Singleton
-  public CosService cosService() {
+  public static CosService cosService() {
     return new CosService(Provisioning::getInstance);
   }
 }

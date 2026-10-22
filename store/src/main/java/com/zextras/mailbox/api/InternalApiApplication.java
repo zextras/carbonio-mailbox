@@ -9,6 +9,8 @@ package com.zextras.mailbox.api;
 import com.zextras.mailbox.api.rest.resource.AccountResource;
 import com.zextras.mailbox.api.rest.resource.CosResource;
 import com.zextras.mailbox.api.rest.resource.MailboxResource;
+import com.zextras.mailbox.api.rest.service.AccountService;
+import com.zextras.mailbox.api.rest.service.MailboxService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import java.util.Set;
@@ -23,8 +25,19 @@ import javax.ws.rs.core.Application;
 )
 public class InternalApiApplication extends Application {
 
+	private final Set<Object> singletons;
+
+	public InternalApiApplication() {
+		final MailboxService mailboxService = InternalApiServices.mailboxService();
+		final AccountService accountService = InternalApiServices.accountService(mailboxService);
+		singletons = Set.of(
+				new MailboxResource(mailboxService, accountService),
+				new AccountResource(accountService),
+				new CosResource(InternalApiServices.cosService()));
+	}
+
 	@Override
-	public Set<Class<?>> getClasses() {
-		return Set.of(MailboxResource.class, AccountResource.class, CosResource.class);
+	public Set<Object> getSingletons() {
+		return singletons;
 	}
 }
