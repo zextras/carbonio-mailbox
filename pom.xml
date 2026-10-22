@@ -812,11 +812,6 @@
         <version>2.3.34</version>
       </dependency>
       <dependency>
-        <groupId>com.google.inject.extensions</groupId>
-        <artifactId>guice-servlet</artifactId>
-        <version>5.0.1</version>
-      </dependency>
-      <dependency>
         <groupId>com.google.inject</groupId>
         <artifactId>guice</artifactId>
         <version>5.0.1</version>
