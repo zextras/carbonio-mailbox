@@ -1,7 +1,7 @@
 package com.zimbra.cs.httpclient;
 
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 
 /**
  * Factory class for creating instances of {@link CloseableHttpClient}.

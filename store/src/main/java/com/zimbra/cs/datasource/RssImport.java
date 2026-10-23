@@ -7,10 +7,9 @@ package com.zimbra.cs.datasource;
 
 import java.util.List;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
-
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.ClassicHttpResponse;
 import com.zimbra.common.httpclient.HttpClientUtil;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;
@@ -61,12 +60,12 @@ public class RssImport implements DataImport {
         try {
             HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getExternalHttpConnMgr().newHttpClient();
             HttpProxyUtil.configureProxy(clientBuilder);
-            HttpResponse response = HttpClientUtil.executeMethod(clientBuilder.build(), get);
+            ClassicHttpResponse response = HttpClientUtil.executeMethod(clientBuilder.build(), get);
             response.getEntity().getContentLength();
         } catch (Exception e) {
             throw ServiceException.FAILURE("Data source test failed.", e);
         } finally {
-            get.releaseConnection();
+            get.reset();
         }
     }
 

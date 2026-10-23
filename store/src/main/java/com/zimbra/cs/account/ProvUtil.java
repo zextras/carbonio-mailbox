@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.account;
 
+import com.zimbra.common.httpclient.HttpClientUtil;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
@@ -61,9 +62,9 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
-import org.apache.http.Header;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
 
 /**
  * @author schemers
@@ -1091,7 +1092,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     console.print("======== SOAP RECEIVE =========\n");
 
     if (debugLevel == SoapDebugLevel.high) {
-      Header[] headers = postMethod.getAllHeaders();
+      Header[] headers = postMethod.getHeaders();
       for (Header header : headers) {
         console.println(header.toString().trim()); // trim the ending crlf
       }
@@ -1108,9 +1109,9 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
 
     if (debugLevel == SoapDebugLevel.high) {
 
-      URI uri = postMethod.getURI();
+      URI uri = HttpClientUtil.requestUri(postMethod);
       console.println(uri.toString());
-      Header[] headers = postMethod.getAllHeaders();
+      Header[] headers = postMethod.getHeaders();
       for (Header header : headers) {
         console.println(header.toString().trim()); // trim the ending crlf
       }

@@ -12,10 +12,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.HttpStatus;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.QName;
@@ -62,10 +61,10 @@ public class CalDavClient extends WebDavClient {
     private String getCurrentUserPrincipal() {
         DavRequest propfind = DavRequest.PROPFIND("/.well-known/caldav");
         propfind.addRequestProp(DavElements.E_CURRENT_USER_PRINCIPAL);
-        HttpResponse response = null;
+        ClassicHttpResponse response = null;
         try {
             response = executeFollowRedirect(propfind);
-            int status = response.getStatusLine().getStatusCode();
+            int status = response.getCode();
             if (status >= 400) {
                 return null;
             }

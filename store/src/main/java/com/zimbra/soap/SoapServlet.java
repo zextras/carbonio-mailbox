@@ -37,10 +37,10 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.http.HttpVersion;
-import org.apache.http.ParseException;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.message.BasicLineParser;
+import org.apache.hc.core5.http.HttpVersion;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.ProtocolVersion;
+import org.apache.hc.core5.http.message.BasicLineParser;
 
 /** The soap service servlet */
 public class SoapServlet extends ZimbraServlet {
@@ -365,10 +365,11 @@ public class SoapServlet extends ZimbraServlet {
       // disable chunking if proto < HTTP 1.1
       String proto = req.getProtocol();
       try {
+        String[] version = proto.substring(proto.indexOf('/') + 1).split("\\.");
         ProtocolVersion httpVer =
-            BasicLineParser.parseProtocolVersion(proto, new BasicLineParser());
+            HttpVersion.get(Integer.parseInt(version[0]), Integer.parseInt(version[1]));
         chunkingEnabled = !httpVer.lessEquals(HttpVersion.HTTP_1_0);
-      } catch (ParseException e) {
+      } catch (RuntimeException e) {
         ZimbraLog.soap.warn(
             "cannot parse http version in request: %s, http chunked transfer encoding disabled",
             proto, e);

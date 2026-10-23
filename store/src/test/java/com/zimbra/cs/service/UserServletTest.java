@@ -57,16 +57,16 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.FileEntity;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.cookie.CookieStore;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.io.entity.FileEntity;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.ee8.servlet.ServletContextHandler;
@@ -142,11 +142,11 @@ class UserServletTest extends MailboxTestSuite {
 	/**
 	 * Make a Calendar call to {@link UserServlet} endpoint using {@link #testAccount}
 	 **/
-	private HttpResponse defaultUserCalendarRequest() throws Exception {
+	private ClassicHttpResponse defaultUserCalendarRequest() throws Exception {
 		return getUserServletRequest(server.getURI().toString() + "~/Calendar.json?auth=co");
 	}
 
-	private HttpResponse getUserServletRequest(String userServletEndpoint) throws Exception {
+	private ClassicHttpResponse getUserServletRequest(String userServletEndpoint) throws Exception {
 		final AuthToken authToken = AuthProvider.getAuthToken(testAccount);
 		final CookieStore cookieStore = new BasicCookieStore();
 		final BasicClientCookie cookie =
@@ -156,14 +156,14 @@ class UserServletTest extends MailboxTestSuite {
 		cookieStore.addCookie(cookie);
 		try (CloseableHttpClient client =
 				HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build()) {
-			final HttpGet httpGet = new HttpGet();
-			httpGet.setURI(URI.create(userServletEndpoint));
+			final HttpGet httpGet = new HttpGet("/");
+			httpGet.setUri(URI.create(userServletEndpoint));
 			return client.execute(httpGet);
 		}
 	}
 
 	@SuppressWarnings({"UnusedReturnValue", "SameParameterValue"})
-	private HttpResponse postUserServletRequest(String userServletEndpoint, String fileToUpload)
+	private ClassicHttpResponse postUserServletRequest(String userServletEndpoint, String fileToUpload)
 			throws Exception {
 		final AuthToken authToken = AuthProvider.getAuthToken(testAccount);
 		final CookieStore cookieStore = new BasicCookieStore();
@@ -174,12 +174,12 @@ class UserServletTest extends MailboxTestSuite {
 		cookieStore.addCookie(cookie);
 		try (CloseableHttpClient client =
 				HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build()) {
-			final HttpPost httpPost = new HttpPost();
+			final HttpPost httpPost = new HttpPost("/");
 			httpPost.setEntity(
 					new FileEntity(
 							new File(
-									Objects.requireNonNull(this.getClass().getResource(fileToUpload)).getFile())));
-			httpPost.setURI(URI.create(userServletEndpoint));
+									Objects.requireNonNull(this.getClass().getResource(fileToUpload)).getFile()), (org.apache.hc.core5.http.ContentType) null));
+			httpPost.setUri(URI.create(userServletEndpoint));
 			return client.execute(httpPost);
 		}
 	}
@@ -210,8 +210,8 @@ class UserServletTest extends MailboxTestSuite {
 	@Test
 	@DisplayName("User has no appointments, UserServlet should return an empty JSON.")
 	void shouldReturnEmptyJsonIfUserHasNoItemsInCalendar() throws Exception {
-		final HttpResponse httpCalendarResponse = this.defaultUserCalendarRequest();
-		assertEquals(HttpStatus.SC_OK, httpCalendarResponse.getStatusLine().getStatusCode());
+		final ClassicHttpResponse httpCalendarResponse = this.defaultUserCalendarRequest();
+		assertEquals(HttpStatus.SC_OK, httpCalendarResponse.getCode());
 		final String calendarResponse =
 				new String(httpCalendarResponse.getEntity().getContent().readAllBytes());
 		assertEquals("{}", calendarResponse);
@@ -223,9 +223,9 @@ class UserServletTest extends MailboxTestSuite {
 		this.createDefaultCalendarAppointmentForTestUser();
 		this.createDefaultCalendarAppointmentForTestUser();
 
-		final HttpResponse httpUserServletCalResponse = this.defaultUserCalendarRequest();
+		final ClassicHttpResponse httpUserServletCalResponse = this.defaultUserCalendarRequest();
 		assertEquals(
-				HttpStatus.SC_OK, httpUserServletCalResponse.getStatusLine().getStatusCode());
+				HttpStatus.SC_OK, httpUserServletCalResponse.getCode());
 
 		final String calendarResponse =
 				new String(httpUserServletCalResponse.getEntity().getContent().readAllBytes());
@@ -242,8 +242,8 @@ class UserServletTest extends MailboxTestSuite {
 		this.postUserServletRequest(
 				server.getURI().toString() + "~/calendar?auth=co&fmt=zip", "UploadCalendar.zip");
 
-		final HttpResponse getCalendarsResponse = this.defaultUserCalendarRequest();
-		assertEquals(HttpStatus.SC_OK, getCalendarsResponse.getStatusLine().getStatusCode());
+		final ClassicHttpResponse getCalendarsResponse = this.defaultUserCalendarRequest();
+		assertEquals(HttpStatus.SC_OK, getCalendarsResponse.getCode());
 		final String calendarResponse =
 				new String(getCalendarsResponse.getEntity().getContent().readAllBytes());
 		Assertions.assertNotEquals("{}", calendarResponse);
@@ -257,10 +257,10 @@ class UserServletTest extends MailboxTestSuite {
 	void shouldExportFolderAsTgzWhenExportFolderFeatureEnabled() throws Exception {
 		addMessageToTestAccountInbox();
 
-		final HttpResponse response =
+		final ClassicHttpResponse response =
 				getUserServletRequest(server.getURI().toString() + "~/Inbox?auth=co&fmt=tgz");
 
-		assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+		assertEquals(HttpStatus.SC_OK, response.getCode());
 	}
 
 	@Test
@@ -268,10 +268,10 @@ class UserServletTest extends MailboxTestSuite {
 		addMessageToTestAccountInbox();
 		testAccount.setFeatureExportFolderEnabled(false);
 
-		final HttpResponse response =
+		final ClassicHttpResponse response =
 				getUserServletRequest(server.getURI().toString() + "~/Inbox?auth=co&fmt=tgz");
 
-		assertEquals(HttpStatus.SC_FORBIDDEN, response.getStatusLine().getStatusCode());
+		assertEquals(HttpStatus.SC_FORBIDDEN, response.getCode());
 		final String body = new String(response.getEntity().getContent().readAllBytes());
 		assertTrue(body.contains("export folder feature is disabled"));
 	}
@@ -280,13 +280,13 @@ class UserServletTest extends MailboxTestSuite {
 	void shouldRejectArchiveImportWhenImportFolderFeatureDisabled() throws Exception {
 		testAccount.setFeatureImportFolderEnabled(false);
 
-		final HttpResponse response =
+		final ClassicHttpResponse response =
 				postUserServletRequest(
 						server.getURI().toString() + "~/calendar?auth=co&fmt=zip", "UploadCalendar.zip");
 
-		assertEquals(HttpStatus.SC_FORBIDDEN, response.getStatusLine().getStatusCode());
+		assertEquals(HttpStatus.SC_FORBIDDEN, response.getCode());
 
-		final HttpResponse getCalendarsResponse = this.defaultUserCalendarRequest();
+		final ClassicHttpResponse getCalendarsResponse = this.defaultUserCalendarRequest();
 		final String calendarResponse =
 				new String(getCalendarsResponse.getEntity().getContent().readAllBytes());
 		assertEquals("{}", calendarResponse);
@@ -310,14 +310,14 @@ class UserServletTest extends MailboxTestSuite {
 
 		var part1TextAttachmentHttpResponse = getUserServletRequest(server.getURI()
 				.toString() + "~/?auth=co&id=" + textAttachmentMsgId + "&part=1");
-		assertEquals(HttpStatus.SC_OK, part1TextAttachmentHttpResponse.getStatusLine().getStatusCode());
+		assertEquals(HttpStatus.SC_OK, part1TextAttachmentHttpResponse.getCode());
 
 		// delete message
 		testAccountMailbox.delete(null, textAttachmentMsgId, Type.MESSAGE);
 		var httpResponse = getUserServletRequest(
 				server.getURI().toString() + "~/?auth=co&id=" + textAttachmentMsgId + "&part=1");
 
-		assertEquals(HttpStatus.SC_NOT_FOUND, httpResponse.getStatusLine().getStatusCode());
+		assertEquals(HttpStatus.SC_NOT_FOUND, httpResponse.getCode());
 	}
 
 	@Test
@@ -330,7 +330,7 @@ class UserServletTest extends MailboxTestSuite {
 
 		var part1TextAttachmentHttpResponse = getUserServletRequest(server.getURI()
 				.toString() + "~/?auth=co&id=" + textAttachmentMsgId + "&part=1");
-		assertEquals(HttpStatus.SC_OK, part1TextAttachmentHttpResponse.getStatusLine().getStatusCode());
+		assertEquals(HttpStatus.SC_OK, part1TextAttachmentHttpResponse.getCode());
 		assertEquals("Feeling attached.",
 				new String(part1TextAttachmentHttpResponse.getEntity().getContent().readAllBytes()));
 	}
@@ -347,7 +347,7 @@ class UserServletTest extends MailboxTestSuite {
 		var part1TextAttachmentHttpResponse = getUserServletRequest(server.getURI()
 				.toString() + "~/?auth=co&id=" + textAttachmentMsgId + "&part=1&disp=i");
 
-		assertEquals(HttpStatus.SC_OK, part1TextAttachmentHttpResponse.getStatusLine().getStatusCode());
+		assertEquals(HttpStatus.SC_OK, part1TextAttachmentHttpResponse.getCode());
 		assertEquals("Feeling attached.",
 				new String(part1TextAttachmentHttpResponse.getEntity().getContent().readAllBytes()));
 		assertEquals("inline; filename=\"fun.txt\"",
@@ -375,7 +375,7 @@ class UserServletTest extends MailboxTestSuite {
 		var part1XmlAttachmentHttpResponse = getUserServletRequest(server.getURI()
 				.toString() + "~/?auth=co&id=" + xmlAttachmentMsgId + "&part=1&disp=i");
 
-		assertEquals(HttpStatus.SC_OK, part1XmlAttachmentHttpResponse.getStatusLine().getStatusCode());
+		assertEquals(HttpStatus.SC_OK, part1XmlAttachmentHttpResponse.getCode());
 		assertEquals("<root><message>Feeling attached.</message></root>",
 				new String(part1XmlAttachmentHttpResponse.getEntity().getContent().readAllBytes()));
 		assertEquals("attachment; filename=\"data.xml\"",

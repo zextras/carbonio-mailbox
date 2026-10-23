@@ -18,12 +18,10 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.impl.client.HttpClientBuilder;
-
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.ClassicHttpResponse;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.calendar.ZCalendar.ICalTok;
@@ -97,7 +95,7 @@ public class RemoteFreeBusyProvider extends FreeBusyProvider {
     public List<FreeBusy> getResults() {
         ArrayList<FreeBusy> fbList = new ArrayList<>();
         for (Request req : mRequestList) {
-            HttpRequestBase method = null;
+            HttpUriRequestBase method = null;
             Account acct = (Account)req.data;
             try {
                 StringBuilder targetUrl = new StringBuilder();
@@ -124,7 +122,7 @@ public class RemoteFreeBusyProvider extends FreeBusyProvider {
                 method = new HttpGet(targetUrl.toString());
                 String fbMsg;
                 try {
-                    HttpResponse response =  HttpClientUtil.executeMethod(clientBuilder.build(), method);
+                    ClassicHttpResponse response =  HttpClientUtil.executeMethod(clientBuilder.build(), method);
                     byte[] buf = ByteUtil.getContent(response.getEntity().getContent(), 0);
                     fbMsg = new String(buf, StandardCharsets.UTF_8);
                 } catch (IOException ex) {
@@ -145,7 +143,7 @@ public class RemoteFreeBusyProvider extends FreeBusyProvider {
                 ZimbraLog.fb.warn("can't get free/busy information for "+req.email, e);
             } finally {
                 if (method != null)
-                    method.releaseConnection();
+                    method.reset();
             }
         }
         return fbList;

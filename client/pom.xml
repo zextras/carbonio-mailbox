@@ -13,10 +13,13 @@
       <artifactId>json</artifactId>
       <groupId>org.json</groupId>
     </dependency>
-
     <dependency>
-      <artifactId>httpmime</artifactId>
-      <groupId>org.apache.httpcomponents</groupId>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.core5</groupId>
+      <artifactId>httpcore5</artifactId>
     </dependency>
 
     <dependency>
@@ -33,14 +36,6 @@
     <dependency>
       <groupId>org.eclipse.jetty.toolchain</groupId>
       <artifactId>jetty-servlet-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpcore</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>

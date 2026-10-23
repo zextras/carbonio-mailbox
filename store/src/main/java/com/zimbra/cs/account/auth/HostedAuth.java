@@ -8,13 +8,12 @@ package com.zimbra.cs.account.auth;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
 
 import com.zimbra.common.httpclient.HttpClientUtil;
 import com.zimbra.common.util.ZimbraHttpConnectionManager;
@@ -46,7 +45,7 @@ public class HostedAuth extends ZimbraCustomAuth {
 	public void authenticate(Account acct, String password,
 			Map<String, Object> context, List<String> args) throws Exception {
 		HttpClient client = ZimbraHttpConnectionManager.getExternalHttpConnMgr().newHttpClient().build();
-		HttpRequestBase method = null;
+		HttpUriRequestBase method = null;
 		
 		String targetURL = args.get(0);
 		/*
@@ -83,17 +82,17 @@ public class HostedAuth extends ZimbraCustomAuth {
 		if (context.get(AuthContext.AC_USER_AGENT)!=null)
             method.addHeader(HEADER_AUTH_USER_AGENT, context.get(AuthContext.AC_USER_AGENT).toString());
 		
-		HttpResponse response;
+		ClassicHttpResponse response;
         try {
             response = HttpClientUtil.executeMethod(client, method);
         } catch (IOException ex) {
         	throw AuthFailedServiceException.AUTH_FAILED(acct.getName(),acct.getName(), "HTTP request to remote authentication server failed",ex); 
         } finally {
             if (method != null)
-                method.releaseConnection();    
+                method.reset();    
         }
         
-        int status = response.getStatusLine().getStatusCode();
+        int status = response.getCode();
         if(status != HttpStatus.SC_OK) {
         	throw AuthFailedServiceException.AUTH_FAILED(acct.getName(), "HTTP request to remote authentication server failed. Remote response code: " + status);
         }

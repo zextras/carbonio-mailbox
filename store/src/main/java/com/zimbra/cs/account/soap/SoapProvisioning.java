@@ -248,9 +248,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.concurrent.Future;
-import org.apache.http.HttpResponse;
-import org.apache.http.concurrent.FutureCallback;
+import java.util.concurrent.CompletableFuture;
 
 public class SoapProvisioning extends Provisioning {
 
@@ -613,27 +611,25 @@ public class SoapProvisioning extends Provisioning {
     }
   }
 
-  private Future<HttpResponse> invokeRequestAsync(Element request, FutureCallback<HttpResponse> cb)
-      throws IOException {
+  private CompletableFuture<Element> invokeRequestAsync(Element request) throws IOException {
     if (mNeedSession) {
-      return mTransport.invokeAsync(request, cb);
+      return mTransport.invokeAsync(request);
     } else {
-      return mTransport.invokeWithoutSessionAsync(request, cb);
+      return mTransport.invokeWithoutSessionAsync(request);
     }
   }
 
-  public Future<HttpResponse> invokeAsync(Element request, FutureCallback<HttpResponse> cb)
-      throws ServiceException {
+  public CompletableFuture<Element> invokeAsync(Element request) throws ServiceException {
     checkTransport();
     try {
-      return invokeRequestAsync(request, cb);
+      return invokeRequestAsync(request);
     } catch (IOException e) {
       throw ZClientException.IO_ERROR("invoke " + e.getMessage() + ", server: " + serverName(), e);
     }
   }
 
-  public Future<HttpResponse> invokeAsync(
-      Element request, String serverName, FutureCallback<HttpResponse> cb) throws ServiceException {
+  public CompletableFuture<Element> invokeAsync(Element request, String serverName)
+      throws ServiceException {
     checkTransport();
 
     String oldUri = soapGetURI();
@@ -643,7 +639,7 @@ public class SoapProvisioning extends Provisioning {
       if (diff) {
         soapSetURI(newUri);
       }
-      return invokeAsync(request, cb);
+      return invokeAsync(request);
     } catch (SoapFaultException e) {
       throw e; // for now, later, try to map to more specific exception
     } finally {
@@ -704,10 +700,9 @@ public class SoapProvisioning extends Provisioning {
     }
   }
 
-  public Future<HttpResponse> invokeJaxbAsync(
-      Object jaxbObject, String serverName, FutureCallback<HttpResponse> cb)
+  public CompletableFuture<Element> invokeJaxbAsync(Object jaxbObject, String serverName)
       throws ServiceException {
-    return invokeAsync(JaxbUtil.jaxbToElement(jaxbObject), serverName, cb);
+    return invokeAsync(JaxbUtil.jaxbToElement(jaxbObject), serverName);
   }
 
   @SuppressWarnings("unchecked")

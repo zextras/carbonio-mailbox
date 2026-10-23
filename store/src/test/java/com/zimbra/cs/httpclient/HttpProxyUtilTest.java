@@ -9,12 +9,12 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.CredentialsProvider;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -68,10 +68,10 @@ class HttpProxyUtilTest extends MailboxTestSuite {
     verify(httpClientBuilderSpy).setDefaultCredentialsProvider(credentialsCaptor.capture());
     CredentialsProvider credentialsProvider = credentialsCaptor.getValue();
 
-    UsernamePasswordCredentials creds = (UsernamePasswordCredentials) credentialsProvider.getCredentials(AuthScope.ANY);
+    UsernamePasswordCredentials creds = (UsernamePasswordCredentials) credentialsProvider.getCredentials(new AuthScope(null, -1), null);
     Assertions.assertNotNull(creds);
     assertEquals("user", creds.getUserName());
-    assertEquals("pass", creds.getPassword());
+    assertArrayEquals("pass".toCharArray(), creds.getPassword());
   }
 
   @Test

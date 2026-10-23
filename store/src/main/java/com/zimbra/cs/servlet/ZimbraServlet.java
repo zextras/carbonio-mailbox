@@ -54,17 +54,17 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.cookie.Cookie;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.cookie.Cookie;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.io.entity.InputStreamEntity;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 
 /**
  * Superclass for all Zimbra servlets. Supports port filtering and provides some utility methods to
@@ -346,7 +346,7 @@ public class ZimbraServlet extends HttpServlet {
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "cannot find remote server");
       return;
     }
-    HttpRequestBase method;
+    HttpUriRequestBase method;
     String url = getProxyUrl(req, server, uri);
     mLog.debug("Proxy URL = %s", url);
     if (req.getMethod().equalsIgnoreCase("GET")) {
@@ -354,7 +354,7 @@ public class ZimbraServlet extends HttpServlet {
     } else if (req.getMethod().equalsIgnoreCase("POST")
         || req.getMethod().equalsIgnoreCase("PUT")) {
       HttpPost post = new HttpPost(url);
-      post.setEntity(new InputStreamEntity(req.getInputStream()));
+      post.setEntity(new InputStreamEntity(req.getInputStream(), -1, null));
       method = post;
     } else {
       resp.sendError(
@@ -362,7 +362,7 @@ public class ZimbraServlet extends HttpServlet {
       return;
     }
     BasicCookieStore state = new BasicCookieStore();
-    String hostname = method.getURI().getHost();
+    String hostname = HttpClientUtil.requestUri(method).getHost();
     if (authToken != null) {
       authToken.encode(state, false, hostname);
       if (JWTUtil.isJWT(authToken)) {
@@ -376,7 +376,7 @@ public class ZimbraServlet extends HttpServlet {
     try {
       proxyServletRequest(req, resp, method, state);
     } finally {
-      method.releaseConnection();
+      method.reset();
     }
   }
 
@@ -424,12 +424,12 @@ public class ZimbraServlet extends HttpServlet {
   public static void proxyServletRequest(
       HttpServletRequest req,
       HttpServletResponse resp,
-      HttpRequestBase method,
+      HttpUriRequestBase method,
       BasicCookieStore state)
       throws IOException, ServiceException {
     // create an HTTP client with the same cookies
     javax.servlet.http.Cookie[] cookies = req.getCookies();
-    String hostname = method.getURI().getHost();
+    String hostname = HttpClientUtil.requestUri(method).getHost();
     boolean hasZMAuth = hasZimbraAuthCookie(state);
     boolean hasJwtSalt = hasJWTSaltCookie(state);
     if (cookies != null) {
@@ -471,20 +471,20 @@ public class ZimbraServlet extends HttpServlet {
     // dispatch the request and copy over the results
     int statusCode = -1;
     HttpClient client = clientBuilder.build();
-    HttpResponse httpResp = null;
+    ClassicHttpResponse httpResp = null;
     for (int retryCount = 3; statusCode == -1 && retryCount > 0; retryCount--) {
       httpResp = HttpClientUtil.executeMethod(client, method);
-      statusCode = httpResp.getStatusLine().getStatusCode();
+      statusCode = httpResp.getCode();
     }
     if (statusCode == -1) {
       resp.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "retry limit reached");
       return;
     } else if (statusCode >= 300) {
-      resp.sendError(statusCode, httpResp.getStatusLine().getReasonPhrase());
+      resp.sendError(statusCode, httpResp.getReasonPhrase());
       return;
     }
 
-    Header[] headers = httpResp.getAllHeaders();
+    Header[] headers = httpResp.getHeaders();
     for (Header header : headers) {
       String hname = header.getName(), hlc = hname.toLowerCase();
       if (hlc.startsWith("x-") || hlc.startsWith("content-") || hlc.startsWith("www-"))

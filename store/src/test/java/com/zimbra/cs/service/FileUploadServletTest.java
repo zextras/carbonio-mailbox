@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service;
 
+import com.zimbra.common.httpclient.HttpClientUtil;
 import static com.zimbra.common.util.ZimbraCookie.COOKIE_ZM_AUTH_TOKEN;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -45,21 +46,20 @@ import java.util.UUID;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.FormBodyPartBuilder;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MIME;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.cookie.CookieStore;
+import org.apache.hc.client5.http.entity.mime.HttpMultipartMode;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.client5.http.entity.mime.FormBodyPartBuilder;
+import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
+import org.apache.hc.client5.http.entity.mime.FileBody;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.ee8.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee8.servlet.ServletHolder;
@@ -472,8 +472,8 @@ public class FileUploadServletTest extends MailboxTestSuite {
         FormBodyPartBuilder.create()
             .setName("file")
             .setBody(new FileBody(filePath.toFile()))
-            .setField(MIME.CONTENT_DISPOSITION, contentDispositionForPart)
-            .setField(MIME.CONTENT_TYPE, ContentType.TEXT_PLAIN.toString())
+            .setField("Content-Disposition", contentDispositionForPart)
+            .setField("Content-Type", ContentType.TEXT_PLAIN.toString())
             .build();
 
     var contentDispositionForPart1 =
@@ -485,13 +485,13 @@ public class FileUploadServletTest extends MailboxTestSuite {
         FormBodyPartBuilder.create()
             .setName("file2")
             .setBody(new FileBody(filePath.toFile()))
-            .setField(MIME.CONTENT_DISPOSITION, contentDispositionForPart1)
-            .setField(MIME.CONTENT_TYPE, ContentType.TEXT_PLAIN.toString())
+            .setField("Content-Disposition", contentDispositionForPart1)
+            .setField("Content-Type", ContentType.TEXT_PLAIN.toString())
             .build();
 
     var multipartEntity =
         MultipartEntityBuilder.create()
-            .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+            .setMode(HttpMultipartMode.LEGACY)
             .addPart(part1)
             .addPart(part2)
             .build();
@@ -518,7 +518,7 @@ public class FileUploadServletTest extends MailboxTestSuite {
     var multipartEntity =
         MultipartEntityBuilder.create()
             .setCharset(StandardCharsets.UTF_8)
-            .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+            .setMode(HttpMultipartMode.LEGACY)
             .addBinaryBody("file", filePath.toFile(), ContentType.TEXT_PLAIN, fileName)
             .addBinaryBody("file2", filePath.toFile(), ContentType.TEXT_PLAIN, fileName)
             .build();
@@ -547,7 +547,7 @@ public class FileUploadServletTest extends MailboxTestSuite {
     var utf8EncodeFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
 
     var httpPost = new HttpPost(URI.create(server.getURI().toString() + "upload?fmt=extended,raw"));
-    httpPost.setEntity(new ByteArrayEntity(Files.readAllBytes(filePath)));
+    httpPost.setEntity(new ByteArrayEntity(Files.readAllBytes(filePath), null));
     httpPost.setHeader(
         "Content-Disposition",
         "attachment; filename=" + asciiFileName + "; filename*=utf-8''" + utf8EncodeFileName);
@@ -579,7 +579,7 @@ public class FileUploadServletTest extends MailboxTestSuite {
     var httpResponse =
         executeUploadRequestWithDummyData(
             authToken, fileSize, asciiFileName, utf8EncodeFileName, true);
-    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var responseContent = HttpClientUtil.entityToString(httpResponse.getEntity(), StandardCharsets.UTF_8);
     var jsonArray = new JSONArray("[" + responseContent + "]");
 
     assertEquals(HttpServletResponse.SC_OK, jsonArray.getInt(0));
@@ -612,7 +612,7 @@ public class FileUploadServletTest extends MailboxTestSuite {
     var httpResponse =
         executeUploadRequestWithDummyData(
             authToken, fileSize, asciiFileName, utf8EncodeFileName, false);
-    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var responseContent = HttpClientUtil.entityToString(httpResponse.getEntity(), StandardCharsets.UTF_8);
     var jsonArray = new JSONArray("[" + responseContent + "]");
 
     assertEquals(HttpServletResponse.SC_OK, jsonArray.getInt(0));
@@ -648,7 +648,7 @@ public class FileUploadServletTest extends MailboxTestSuite {
     var httpResponse =
         executeUploadRequestWithDummyData(
             authToken, fileSize, asciiFileName, utf8EncodeFileName, true);
-    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var responseContent = HttpClientUtil.entityToString(httpResponse.getEntity(), StandardCharsets.UTF_8);
     var jsonArray = new JSONArray("[" + responseContent + "]");
 
     assertEquals(HttpServletResponse.SC_OK, jsonArray.getInt(0));
@@ -681,7 +681,7 @@ public class FileUploadServletTest extends MailboxTestSuite {
     var httpResponse =
         executeUploadRequestWithDummyData(
             authToken, fileSize, asciiFileName, utf8EncodeFileName, false);
-    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var responseContent = HttpClientUtil.entityToString(httpResponse.getEntity(), StandardCharsets.UTF_8);
     var jsonArray = new JSONArray("[" + responseContent + "]");
 
     assertEquals(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, jsonArray.getInt(0));
@@ -711,7 +711,7 @@ public class FileUploadServletTest extends MailboxTestSuite {
     var httpResponse =
         executeUploadRequestWithDummyData(
             authToken, fileSize, asciiFileName, utf8EncodeFileName, true);
-    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var responseContent = HttpClientUtil.entityToString(httpResponse.getEntity(), StandardCharsets.UTF_8);
     var jsonArray = new JSONArray("[" + responseContent + "]");
 
     assertEquals(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, jsonArray.getInt(0));
@@ -738,7 +738,7 @@ public class FileUploadServletTest extends MailboxTestSuite {
     var httpResponse =
         executeUploadRequestWithDummyData(
             authToken, fileSize, asciiFileName, utf8EncodeFileName, false);
-    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var responseContent = HttpClientUtil.entityToString(httpResponse.getEntity(), StandardCharsets.UTF_8);
     var jsonArray = new JSONArray("[" + responseContent + "]");
 
     assertEquals(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, jsonArray.getInt(0));
@@ -748,11 +748,11 @@ public class FileUploadServletTest extends MailboxTestSuite {
 
   @SuppressWarnings("SameParameterValue")
   private void validateResponse(
-      HttpResponse httpResponse, int expectedStatusCode, String expectedFileName) throws Exception {
-    var statusCode = httpResponse.getStatusLine().getStatusCode();
+      ClassicHttpResponse httpResponse, int expectedStatusCode, String expectedFileName) throws Exception {
+    var statusCode = httpResponse.getCode();
     assertEquals(expectedStatusCode, statusCode);
 
-    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var responseContent = HttpClientUtil.entityToString(httpResponse.getEntity(), StandardCharsets.UTF_8);
     var jsonArray = new JSONArray("[" + responseContent + "]");
 
     assertEquals(HttpServletResponse.SC_OK, jsonArray.getInt(0));
@@ -779,7 +779,7 @@ public class FileUploadServletTest extends MailboxTestSuite {
     return syntheticData;
   }
 
-  private HttpResponse executeUploadRequestWithDummyData(
+  private ClassicHttpResponse executeUploadRequestWithDummyData(
       AuthToken authToken,
       int fileSize,
       String asciiFileName,
@@ -792,7 +792,7 @@ public class FileUploadServletTest extends MailboxTestSuite {
                 server.getURI().toString()
                     + "upload?fmt=extended,raw"
                     + (withLbfums ? "&lbfums" : "")));
-    httpPost.setEntity(new ByteArrayEntity(createSyntheticData(fileSize)));
+    httpPost.setEntity(new ByteArrayEntity(createSyntheticData(fileSize), null));
     httpPost.setHeader(
         "Content-Disposition",
         "attachment; filename=" + asciiFileName + "; filename*=utf-8''" + utf8EncodeFileName);
@@ -806,7 +806,7 @@ public class FileUploadServletTest extends MailboxTestSuite {
     }
   }
 
-  private HttpResponse executeUploadRequest(HttpEntity entity, AuthToken authToken)
+  private ClassicHttpResponse executeUploadRequest(HttpEntity entity, AuthToken authToken)
       throws Exception {
     var httpPost = new HttpPost(URI.create(server.getURI().toString() + "upload?fmt=extended,raw"));
     httpPost.setEntity(entity);

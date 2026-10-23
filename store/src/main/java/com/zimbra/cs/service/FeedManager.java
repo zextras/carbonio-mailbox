@@ -36,26 +36,24 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimePart;
 import javax.mail.internet.ParseException;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.http.Header;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.AuthCache;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.client.utils.DateUtils;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.config.ConnectionConfig;
-import org.apache.http.config.SocketConfig;
-import org.apache.http.impl.auth.BasicScheme;
-import org.apache.http.impl.client.BasicAuthCache;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.DefaultRedirectStrategy;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.hc.client5.http.utils.DateUtils;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.message.StatusLine;
+import org.apache.hc.core5.net.URIBuilder;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.client5.http.auth.AuthCache;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.CredentialsStore;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.DefaultRedirectStrategy;
+import org.apache.hc.client5.http.impl.auth.BasicAuthCache;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.client5.http.protocol.HttpClientContext;
+import org.apache.hc.client5.http.impl.auth.BasicScheme;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
@@ -185,7 +183,7 @@ public class FeedManager {
             Closeables.closeQuietly(content);
             content = null;
             if (getMethod != null) {
-                getMethod.releaseConnection();
+                getMethod.reset();
                 getMethod = null;
             }
         }
@@ -309,12 +307,6 @@ public class FeedManager {
         // see comments in ZimbraHttpConnectionManager
         // client.setConnectionTimeout(10000);
 
-        SocketConfig config = SocketConfig.custom().setSoTimeout(60000).build();
-        clientBuilder.setDefaultSocketConfig(config);
-
-        ConnectionConfig connConfig = ConnectionConfig.custom().setCharset(StandardCharsets.UTF_8).build();
-        clientBuilder.setDefaultConnectionConfig(connConfig);
-
         HttpGet get = null;
         BufferedInputStream content = null;
         long lastModified = 0;
@@ -366,10 +358,10 @@ public class FeedManager {
                         String password = user.substring(index + 1);
 
 
-                        CredentialsProvider provider = new BasicCredentialsProvider();
+                        CredentialsStore provider = new BasicCredentialsProvider();
                         UsernamePasswordCredentials credentials
-                         = new UsernamePasswordCredentials(userName, password);
-                        provider.setCredentials(AuthScope.ANY, credentials);
+                         = new UsernamePasswordCredentials(userName, password.toCharArray());
+                        provider.setCredentials(new AuthScope(null, -1), credentials);
                         clientBuilder.setDefaultCredentialsProvider(provider);
 
 
@@ -406,15 +398,15 @@ public class FeedManager {
                 }
 
                 HttpClient client = clientBuilder.build();
-                HttpResponse response = HttpClientUtil.executeMethod(client, get, context);
+                ClassicHttpResponse response = HttpClientUtil.executeMethod(client, get, context);
 
                 Header locationHeader = response.getFirstHeader("location");
                 if (locationHeader != null) {
                     // update our target URL and loop again to do another HTTP GET
                     url = locationHeader.getValue();
-                    get.releaseConnection();
+                    get.reset();
                 } else {
-                    statusCode = response.getStatusLine().getStatusCode();
+                    statusCode = response.getCode();
                     if (statusCode == HttpServletResponse.SC_OK) {
                         Header contentEncoding = response.getFirstHeader("Content-Encoding");
                         InputStream respInputStream = response.getEntity().getContent();
@@ -424,7 +416,7 @@ public class FeedManager {
                             }
                         }
                         content = new BufferedInputStream(respInputStream);
-                        org.apache.http.entity.ContentType contentType =  org.apache.http.entity.ContentType.getOrDefault(response.getEntity());
+                        org.apache.hc.core5.http.ContentType contentType =  response.getEntity().getContentType() != null ? org.apache.hc.core5.http.ContentType.parseLenient(response.getEntity().getContentType()) : org.apache.hc.core5.http.ContentType.DEFAULT_TEXT;
                         if (contentType != null && contentType.getCharset() != null) {
                             expectedCharset = contentType.getCharset().name();
                         }
@@ -443,14 +435,14 @@ public class FeedManager {
                         ZimbraLog.misc.debug("Remote data at " + url + " not modified since last sync");
                         return new RemoteDataInfo(statusCode, redirects, null, expectedCharset, lastModified);
                     } else {
-                        throw ServiceException.RESOURCE_UNREACHABLE(response.getStatusLine().toString(), null);
+                        throw ServiceException.RESOURCE_UNREACHABLE(new StatusLine(response).toString(), null);
                     }
                     break;
                 }
             } while (++redirects <= MAX_REDIRECTS);
         } catch (ServiceException | IOException ex) {
             if (get != null) {
-                get.releaseConnection();
+                get.reset();
             }
             throw ex;
         }

@@ -23,14 +23,13 @@ import java.util.zip.GZIPOutputStream;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicHeader;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.message.BasicHeader;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
@@ -744,7 +743,7 @@ public class DavServlet extends ZimbraServlet {
         clientBuilder.setDefaultCookieStore(state);
         HttpClient client = clientBuilder.build();
 
-        HttpRequestBase method = m.toHttpMethod(ctxt, url);
+        HttpUriRequestBase method = m.toHttpMethod(ctxt, url);
         method.addHeader(new BasicHeader(DavProtocol.HEADER_USER_AGENT, "Zimbra-DAV/" + BuildInfo.VERSION));
         if (ZimbraLog.dav.isDebugEnabled()) {
             Enumeration<String> headers = ctxt.getRequest().getHeaderNames();
@@ -763,10 +762,10 @@ public class DavServlet extends ZimbraServlet {
                 method.addHeader(h, hval);
             }
         }
-        HttpResponse httpResponse = HttpClientUtil.executeMethod(client, method);
-        int statusCode = httpResponse.getStatusLine().getStatusCode();
+        ClassicHttpResponse httpResponse = HttpClientUtil.executeMethod(client, method);
+        int statusCode = httpResponse.getCode();
         if (ZimbraLog.dav.isDebugEnabled()) {
-            for (Header hval : httpResponse.getAllHeaders()) {
+            for (Header hval : httpResponse.getHeaders()) {
                 String hdrName = hval.getName();
                 if (!PROXY_RESPONSE_HEADERS.contains(hdrName) && !IGNORABLE_PROXY_RESPONSE_HEADERS.contains(hdrName)) {
                     ZimbraLog.dav.debug(

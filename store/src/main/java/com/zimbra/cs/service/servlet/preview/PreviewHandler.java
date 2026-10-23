@@ -21,8 +21,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.http.HttpHeaders;
-import org.apache.http.protocol.HTTP;
+import org.apache.hc.core5.http.HttpHeaders;
 import org.eclipse.jetty.http.HttpStatus;
 
 /**
@@ -352,7 +351,7 @@ public class PreviewHandler {
    * @param dataBlob the {@link DataBlob} object
    */
   void respondWithSuccess(HttpServletResponse response, HttpServletRequest request, DataBlob dataBlob) {
-    response.addHeader(HttpHeaders.CONNECTION, HTTP.CONN_CLOSE);
+    response.addHeader(HttpHeaders.CONNECTION, org.apache.hc.core5.http.HeaderElements.CLOSE);
     response.addHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(dataBlob.getSize()));
     response.addHeader(HttpHeaders.CONTENT_TYPE, dataBlob.getMimeType());
     var dispositionType = dataBlob.getDispositionType();

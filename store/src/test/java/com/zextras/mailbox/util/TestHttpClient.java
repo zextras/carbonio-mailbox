@@ -6,23 +6,24 @@
 
 package com.zextras.mailbox.util;
 
+import com.zimbra.common.httpclient.HttpClientUtil;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.Map;
 import javax.net.ssl.SSLContext;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.client5.http.ssl.TrustSelfSignedStrategy;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
 
 /**
  * Lightweight HTTP client wrapper for tests. Supports both plain HTTP and HTTPS with
@@ -41,7 +42,9 @@ public class TestHttpClient implements AutoCloseable {
 			final SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(
 					sslContext, NoopHostnameVerifier.INSTANCE);
 			this.delegate = HttpClientBuilder.create()
-					.setSSLSocketFactory(socketFactory)
+					.setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
+							.setSSLSocketFactory(socketFactory)
+							.build())
 					.build();
 		} catch (GeneralSecurityException e) {
 			throw new RuntimeException("Failed to create trust-all SSL context", e);
@@ -51,8 +54,8 @@ public class TestHttpClient implements AutoCloseable {
 	private Response execute(HttpUriRequest request) throws IOException {
 		try (CloseableHttpResponse response = delegate.execute(request)) {
 			return new Response(
-					response.getStatusLine().getStatusCode(),
-					EntityUtils.toString(response.getEntity()));
+					response.getCode(),
+					HttpClientUtil.entityToString(response.getEntity()));
 		}
 	}
 
