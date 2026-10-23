@@ -5,20 +5,19 @@
 
 package com.zimbra.cs.service.mail;
 
+import java.nio.charset.StandardCharsets;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 
 import com.zimbra.common.httpclient.HttpClientUtil;
 import com.zimbra.common.service.ServiceException;
@@ -185,16 +184,16 @@ public class CheckSpelling extends MailDocumentHandler {
         if (ignoreAllCaps) {
             nvps.add(new BasicNameValuePair("ignoreAllCaps", "on"));
         }
-        post.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
+        post.setEntity(new UrlEncodedFormEntity(nvps, StandardCharsets.UTF_8));
         HttpClient http = ZimbraHttpConnectionManager.getExternalHttpConnMgr().newHttpClient().build();
         ServerResponse response = new ServerResponse();
-        HttpResponse httpResp = null;
+        ClassicHttpResponse httpResp = null;
         try {
             httpResp = HttpClientUtil.executeMethod(http, post);
-            response.statusCode = httpResp.getStatusLine().getStatusCode();
-            response.content = EntityUtils.toString(httpResp.getEntity());
+            response.statusCode = httpResp.getCode();
+            response.content = HttpClientUtil.entityToString(httpResp.getEntity());
         } finally {
-            post.releaseConnection();
+            post.reset();
         }
         return response;
     }

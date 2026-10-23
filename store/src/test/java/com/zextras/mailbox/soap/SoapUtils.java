@@ -4,17 +4,17 @@
 
 package com.zextras.mailbox.soap;
 
+import com.zimbra.common.httpclient.HttpClientUtil;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.HeaderConstants;
 import com.zimbra.soap.JaxbUtil;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.core5.http.ClassicHttpResponse;
 
 public class SoapUtils {
 
-  public static String getResponse(HttpResponse response) throws Exception {
-    return EntityUtils.toString(response.getEntity());
+  public static String getResponse(ClassicHttpResponse response) throws Exception {
+    return HttpClientUtil.entityToString(response.getEntity());
   }
 
   public static <T> T getSoapResponse(SoapResponse response, String bodyKey, Class<T> expected) throws Exception {

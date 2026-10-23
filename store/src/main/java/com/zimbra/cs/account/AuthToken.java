@@ -18,10 +18,10 @@ import com.zimbra.cs.account.auth.AuthMechanism.AuthMech;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 
 /**
  * @author schemers
@@ -154,7 +154,7 @@ public abstract class AuthToken {
    * @throws ServiceException
    */
   public abstract void encode(
-      HttpClient client, HttpRequestBase method, boolean isAdminReq, String cookieDomain)
+      HttpClient client, HttpUriRequestBase method, boolean isAdminReq, String cookieDomain)
       throws ServiceException;
 
   /**
@@ -225,7 +225,7 @@ public abstract class AuthToken {
    */
   public void encode(
       HttpClientBuilder clientBuilder,
-      HttpRequestBase method,
+      HttpUriRequestBase method,
       boolean isAdminReq,
       String cookieDomain)
       throws ServiceException {

@@ -54,12 +54,12 @@ import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.text.StringEscapeUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 
 import javax.mail.util.SharedByteArrayInputStream;
 import javax.servlet.ServletException;
@@ -211,8 +211,8 @@ public class FileUploadServlet extends ZimbraServlet {
     HttpClient client = clientBuilder.build();
     try {
       // fetch the remote item
-      HttpResponse httpResp = HttpClientUtil.executeMethod(client, get);
-      int statusCode = httpResp.getStatusLine().getStatusCode();
+      ClassicHttpResponse httpResp = HttpClientUtil.executeMethod(client, get);
+      int statusCode = httpResp.getCode();
       if (statusCode != HttpStatus.SC_OK) {
         return null;
       }
@@ -238,7 +238,7 @@ public class FileUploadServlet extends ZimbraServlet {
           e,
           new InternalArgument(ServiceException.URL, url, Argument.Type.STR));
     } finally {
-      get.releaseConnection();
+      get.reset();
     }
   }
 

@@ -7,10 +7,7 @@ package com.zimbra.common.soap;
 
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.concurrent.Future;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.concurrent.FutureCallback;
+import java.util.concurrent.CompletableFuture;
 
 import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.service.ServiceException;
@@ -369,21 +366,21 @@ public abstract class SoapTransport {
             return e;
     }
 
-    public abstract Future<HttpResponse> invokeAsync(Element document, boolean raw, boolean noSession, String requestedAccountId,
-            String changeToken, String tokenType, NotificationFormat nFormat, String curWaitSetID, FutureCallback<HttpResponse> cb) throws IOException;
+    public abstract CompletableFuture<Element> invokeAsync(Element document, boolean raw, boolean noSession, String requestedAccountId,
+            String changeToken, String tokenType, NotificationFormat nFormat, String curWaitSetID) throws IOException;
 
-    public final Future<HttpResponse> invokeAsync(Element document, boolean raw, boolean noSession, String requestedAccountId,
-            String changeToken, String tokenType, FutureCallback<HttpResponse> cb) throws IOException {
+    public final CompletableFuture<Element> invokeAsync(Element document, boolean raw, boolean noSession, String requestedAccountId,
+            String changeToken, String tokenType) throws IOException {
         return invokeAsync(document, raw, noSession, requestedAccountId,
-                changeToken, tokenType, null, null, cb);
+                changeToken, tokenType, null, null);
     }
 
-    public final Future<HttpResponse> invokeAsync(Element document, FutureCallback<HttpResponse> cb) throws IOException {
-        return invokeAsync(document, false, false, null, null, null, cb);
+    public final CompletableFuture<Element> invokeAsync(Element document) throws IOException {
+        return invokeAsync(document, false, false, null, null, null);
     }
 
-    public final Future<HttpResponse> invokeWithoutSessionAsync(Element document, FutureCallback<HttpResponse> cb) throws IOException {
-        return invokeAsync(document, false, true, null, null, null, cb);
+    public final CompletableFuture<Element> invokeWithoutSessionAsync(Element document) throws IOException {
+        return invokeAsync(document, false, true, null, null, null);
     }
 
     /**

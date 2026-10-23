@@ -203,25 +203,24 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.config.SocketConfig;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.client5.http.cookie.StandardCookieSpec;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
+import org.apache.hc.client5.http.entity.mime.ByteArrayBody;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.dom4j.QName;
 import org.json.JSONException;
 
@@ -2869,8 +2868,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     HttpPost post = new HttpPost(uri.toString());
 
     HttpClientBuilder clientBuilder = getHttpClientBuilder(uri);
-    SocketConfig config = SocketConfig.custom().setSoTimeout(msTimeout).build();
-    clientBuilder.setDefaultSocketConfig(config);
     HttpClient client = clientBuilder.build();
     int statusCode;
     try {
@@ -2879,12 +2876,12 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       }
       HttpEntity entity = builder.build();
       post.setEntity(entity);
-      HttpResponse response = HttpClientUtil.executeMethod(client, post);
-      statusCode = response.getStatusLine().getStatusCode();
+      ClassicHttpResponse response = HttpClientUtil.executeMethod(client, post);
+      statusCode = response.getCode();
 
       // parse the response
       if (statusCode == HttpServletResponse.SC_OK) {
-        String content = EntityUtils.toString(response.getEntity());
+        String content = HttpClientUtil.entityToString(response.getEntity());
         aid = getAttachmentId(content);
       } else if (statusCode == HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE) {
         throw ZClientException.UPLOAD_SIZE_LIMIT_EXCEEDED("upload size limit exceeded", null);
@@ -2894,7 +2891,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     } catch (IOException e) {
       throw ZClientException.IO_ERROR(e.getMessage(), e);
     } finally {
-      post.releaseConnection();
+      post.reset();
     }
     return aid;
   }
@@ -2922,9 +2919,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     // make the post
     HttpPost post = new HttpPost(uri.toString());
     HttpClientBuilder clientBuilder = getHttpClientBuilder(uri);
-    SocketConfig config = SocketConfig.custom().setSoTimeout(msTimeout).build();
-    clientBuilder.setDefaultSocketConfig(config);
-    clientBuilder.setRetryHandler(new InputStreamRequestHttpRetryHandler());
+    clientBuilder.setRetryStrategy(new InputStreamRequestHttpRetryHandler());
     HttpClient client = clientBuilder.build();
     int statusCode;
     try {
@@ -2937,12 +2932,12 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
         post.addHeader(Constants.CSRF_TOKEN, mCsrfToken);
       }
 
-      HttpResponse response = HttpClientUtil.executeMethod(client, post);
-      statusCode = response.getStatusLine().getStatusCode();
+      ClassicHttpResponse response = HttpClientUtil.executeMethod(client, post);
+      statusCode = response.getCode();
 
       // parse the response
       if (statusCode == HttpServletResponse.SC_OK) {
-        String content = EntityUtils.toString(response.getEntity());
+        String content = HttpClientUtil.entityToString(response.getEntity());
         aid = getAttachmentId(content);
       } else if (statusCode == HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE) {
         throw ZClientException.UPLOAD_SIZE_LIMIT_EXCEEDED("upload size limit exceeded", null);
@@ -2952,7 +2947,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     } catch (IOException e) {
       throw ZClientException.IO_ERROR(e.getMessage(), e);
     } finally {
-      post.releaseConnection();
+      post.reset();
     }
     return aid;
   }
@@ -2993,7 +2988,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
                 ZimbraHttpConnectionManager.getInternalHttpConnMgr()
                     .getZimbraConnMgrParams()
                     .getReqConfig())
-            .setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY)
+            .setCookieSpec(StandardCookieSpec.RELAXED)
             .build();
 
     clientBuilder.setDefaultRequestConfig(reqConfig);
@@ -3013,7 +3008,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
                 ZimbraHttpConnectionManager.getInternalHttpConnMgr()
                     .getZimbraConnMgrParams()
                     .getReqConfig())
-            .setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY)
+            .setCookieSpec(StandardCookieSpec.RELAXED)
             .build();
 
     clientBuilder.setDefaultRequestConfig(reqConfig);
@@ -3686,13 +3681,9 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
       get = new HttpGet(uri.toString());
       HttpClientBuilder clientBuilder = getHttpClientBuilder(uri);
-      if (msecTimeout > -1) {
-        SocketConfig config = SocketConfig.custom().setSoTimeout(msecTimeout).build();
-        clientBuilder.setDefaultSocketConfig(config);
-      }
       HttpClient client = clientBuilder.build();
-      HttpResponse response = HttpClientUtil.executeMethod(client, get);
-      int statusCode = response.getStatusLine().getStatusCode();
+      ClassicHttpResponse response = HttpClientUtil.executeMethod(client, get);
+      int statusCode = response.getCode();
 
       // parse the response
       if (statusCode == HttpServletResponse.SC_OK) {
@@ -3701,7 +3692,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
         String msg =
             String.format(
                 "GET from %s failed, status=%d.  %s",
-                uri, statusCode, response.getStatusLine().getReasonPhrase());
+                uri, statusCode, response.getReasonPhrase());
         throw ServiceException.FAILURE(msg, null);
       }
     } catch (IOException e) {
@@ -3863,11 +3854,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       URI uri = getRestURI(relativePath, alternateUrl);
       post = new HttpPost(uri.toString());
       HttpClientBuilder clientBuilder = getHttpClientBuilder(uri);
-      if (msecTimeout > -1) {
-        SocketConfig config = SocketConfig.custom().setSoTimeout(msecTimeout).build();
-        clientBuilder.setDefaultSocketConfig(config);
-      }
-      clientBuilder.setRetryHandler(new InputStreamRequestHttpRetryHandler());
+      clientBuilder.setRetryStrategy(new InputStreamRequestHttpRetryHandler());
       HttpClient client = clientBuilder.build();
       int statusCode;
 
@@ -3875,13 +3862,13 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       builder.addBinaryBody("upfile", is, ContentType.DEFAULT_BINARY, "file");
       HttpEntity httpEntity = builder.build();
       post.setEntity(httpEntity);
-      HttpResponse response = HttpClientUtil.executeMethod(client, post);
+      ClassicHttpResponse response = HttpClientUtil.executeMethod(client, post);
 
-      statusCode = response.getStatusLine().getStatusCode();
+      statusCode = response.getCode();
       // parse the response
       if (statusCode != HttpServletResponse.SC_OK) {
         throw ServiceException.FAILURE(
-            "POST failed, status=" + statusCode + " " + response.getStatusLine().getStatusCode(),
+            "POST failed, status=" + statusCode + " " + response.getCode(),
             null);
       }
     } catch (IOException e) {
@@ -3891,7 +3878,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
         ByteUtil.closeStream(is);
       }
       if (post != null) {
-        post.releaseConnection();
+        post.reset();
       }
     }
   }

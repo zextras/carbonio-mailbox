@@ -11,13 +11,13 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
 import java.net.URI;
 import java.net.URISyntaxException;
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.CredentialsStore;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 
 public class HttpProxyUtil {
 
@@ -37,6 +37,10 @@ public class HttpProxyUtil {
       var uri = new URI(httpProxyUrl);
       var proxyHost = uri.getHost();
       var proxyPort = uri.getPort();
+      if (proxyHost == null) {
+        ZimbraLog.misc.warn("HttpProxyUtil.configureProxy 'zimbraHttpProxyURL' has no host, not using proxy.");
+        return;
+      }
 
       var userInfo = uri.getUserInfo();
       String username = null;
@@ -50,10 +54,10 @@ public class HttpProxyUtil {
       }
 
       if (username != null && password != null) {
-        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        CredentialsStore credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(
             new AuthScope(proxyHost, proxyPort),
-            new UsernamePasswordCredentials(username, password)
+            new UsernamePasswordCredentials(username, password.toCharArray())
         );
         clientBuilder.setDefaultCredentialsProvider(credentialsProvider);
       }

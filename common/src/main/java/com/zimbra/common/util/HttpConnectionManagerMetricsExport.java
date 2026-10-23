@@ -7,8 +7,8 @@ package com.zimbra.common.util;
 
 import com.zimbra.common.metric.CarbonioCollector;
 import io.prometheus.client.GaugeMetricFamily;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.pool.PoolStats;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.core5.pool.PoolStats;
 
 import java.util.ArrayList;
 import java.util.Collections;

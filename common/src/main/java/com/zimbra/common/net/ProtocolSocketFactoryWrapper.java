@@ -8,14 +8,13 @@ package com.zimbra.common.net;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import javax.net.SocketFactory;
 
-import org.apache.http.HttpHost;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.protocol.HttpContext;
+import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.util.TimeValue;
 
 class ProtocolSocketFactoryWrapper implements ConnectionSocketFactory {
 
@@ -24,72 +23,21 @@ class ProtocolSocketFactoryWrapper implements ConnectionSocketFactory {
     ProtocolSocketFactoryWrapper(SocketFactory factory) {
         this.factory = factory;
     }
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.apache.http.conn.socket.ConnectionSocketFactory#createSocket(org.
-     * apache.http.protocol.HttpContext)
-     */
+
     @Override
     public Socket createSocket(HttpContext context) throws IOException {
-        if (context != null) {
-            HttpClientContext clientContext = HttpClientContext.adapt(context);
-            HttpHost  host = clientContext.getTargetHost();
-            return createSocketFromHostInfo(host);
-        }
         return factory.createSocket();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.apache.http.conn.socket.ConnectionSocketFactory#connectSocket(int,
-     * java.net.Socket, org.apache.http.HttpHost, java.net.InetSocketAddress,
-     * java.net.InetSocketAddress, org.apache.http.protocol.HttpContext)
-     */
     @Override
-    public Socket connectSocket(int connectTimeout, Socket sock, HttpHost host,
+    public Socket connectSocket(TimeValue connectTimeout, Socket sock, HttpHost host,
         InetSocketAddress remoteAddress, InetSocketAddress localAddress, HttpContext context)
         throws IOException {
-        int timeout = 0;
-        if (context != null) {
-            HttpClientContext clientContext = HttpClientContext.adapt(context);
-            timeout = clientContext.getConnection().getSocketTimeout();
+        Socket socket = sock != null ? sock : createSocket(context);
+        if (localAddress != null && !socket.isBound()) {
+            socket.bind(localAddress);
         }
-
-
-        if (timeout > 0) {
-            if (sock != null && !sock.isBound()) {
-                sock.bind(localAddress);
-                sock.connect(remoteAddress, timeout);
-            }
-            return sock;
-        } else {
-            sock.connect(remoteAddress, connectTimeout);
-            return sock;
-        }
+        socket.connect(remoteAddress, connectTimeout == null ? 0 : connectTimeout.toMillisecondsIntBound());
+        return socket;
     }
-
-    /**
-     * @param host
-     * @return
-     * @throws IOException
-     * @throws UnknownHostException
-     */
-    public Socket createSocketFromHostInfo(HttpHost host) throws IOException, UnknownHostException {
-        if(host.getPort() == -1) {
-            if (host.getSchemeName().equalsIgnoreCase("http")) {
-               return  factory.createSocket(host.getHostName(), 80);
-            } else if (host.getSchemeName().equalsIgnoreCase("https")) {
-               return  factory.createSocket(host.getHostName(), 443);
-            } else {
-                throw new IOException("Unknown scheme for connecting  to host, Received  +  host.toHostString()");
-            }
-        } else {
-           return  factory.createSocket(host.getHostName(), host.getPort());
-        }
-    }
-
 }

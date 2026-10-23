@@ -24,7 +24,7 @@ import java.io.Reader;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.util.List;
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.core5.net.URIBuilder;
 import org.dom4j.DocumentException;
 import org.eclipse.jetty.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;

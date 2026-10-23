@@ -24,7 +24,7 @@ import com.zimbra.soap.type.DistributionListBy;
 import com.zimbra.soap.type.DistributionListGranteeBy;
 import com.zimbra.soap.type.DistributionListSelector;
 import com.zimbra.soap.type.GranteeType;
-import org.apache.http.HttpStatus;
+import org.apache.hc.core5.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;

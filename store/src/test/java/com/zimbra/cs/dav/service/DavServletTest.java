@@ -26,17 +26,17 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
-import org.apache.http.HttpHeaders;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.classic.methods.HttpDelete;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpPut;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.ee8.servlet.ServletHolder;
 import org.junit.jupiter.api.AfterAll;
@@ -89,7 +89,7 @@ class DavServletTest extends MailboxTestSuite {
         .addAttendee(getRandomAccountForDefaultDomain())
         .addAttendee(getRandomAccountForDefaultDomain())
         .build();
-    HttpResponse response = createHttpClientWith(organizer).execute(request);
+    ClassicHttpResponse response = createHttpClientWith(organizer).executeOpen(null, request, null);
 
     assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(response));
     assertEquals(0, greenMail.getReceivedMessages().length);
@@ -110,7 +110,7 @@ class DavServletTest extends MailboxTestSuite {
         .addAttendee(getRandomAccountForDefaultDomain())
         .addAttendee(getRandomAccountForDefaultDomain())
         .build();
-    HttpResponse response = createHttpClientWith(organizer).execute(request);
+    ClassicHttpResponse response = createHttpClientWith(organizer).executeOpen(null, request, null);
 
     assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(response));
     assertEquals(3, greenMail.getReceivedMessages().length);
@@ -125,7 +125,7 @@ class DavServletTest extends MailboxTestSuite {
         .organizer(organizer)
         .build();
 
-    HttpResponse createAppointmentResponse = createHttpClientWith(organizer).execute(createAppointmentRequest);
+    ClassicHttpResponse createAppointmentResponse = createHttpClientWith(organizer).executeOpen(null, createAppointmentRequest, null);
 
     assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentResponse));
   }
@@ -136,7 +136,7 @@ class DavServletTest extends MailboxTestSuite {
     UUID calendarUUID = UUID.randomUUID();
     createAppointment(organizer, calendarUUID);
 
-    HttpResponse getAppointmentResponse = getAppointment(organizer, calendarUUID);
+    ClassicHttpResponse getAppointmentResponse = getAppointment(organizer, calendarUUID);
 
     assertEquals(HttpStatus.SC_OK, statusCodeFrom(getAppointmentResponse));
     assertTrue(readContentFrom(getAppointmentResponse).contains("UID:" + calendarUUID));
@@ -148,7 +148,7 @@ class DavServletTest extends MailboxTestSuite {
     UUID calendarUUID = UUID.randomUUID();
     createAppointment(organizer, calendarUUID);
 
-    HttpResponse deleteAppointmentResponse = deleteAppointment(organizer, calendarUUID);
+    ClassicHttpResponse deleteAppointmentResponse = deleteAppointment(organizer, calendarUUID);
 
     assertEquals(HttpStatus.SC_NO_CONTENT, statusCodeFrom(deleteAppointmentResponse));
     assertEquals(HttpStatus.SC_NOT_FOUND, statusCodeFrom(getAppointment(organizer, calendarUUID)));
@@ -173,7 +173,7 @@ class DavServletTest extends MailboxTestSuite {
         .recipientEmail(busyPerson.getName())
         .timeslot("20231206T114500Z", "20231208T154500Z")
         .build();
-    HttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).execute(freeBusyRequest);
+    ClassicHttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).executeOpen(null, freeBusyRequest, null);
 
     assertEquals(HttpStatus.SC_OK, statusCodeFrom(freeBusyResponse));
     String content = readContentFrom(freeBusyResponse);
@@ -198,7 +198,7 @@ class DavServletTest extends MailboxTestSuite {
         .recipientEmail(busyPerson.getName())
         .timeslot("20231206T114500Z", "20231208T154500Z")
         .build();
-    HttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).execute(freeBusyRequest);
+    ClassicHttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).executeOpen(null, freeBusyRequest, null);
 
     assertEquals(HttpStatus.SC_OK, statusCodeFrom(freeBusyResponse));
     assertTrue(readContentFrom(freeBusyResponse).contains("FREEBUSY;FBTYPE=BUSY:20231207T124500Z/20231207T144500Z"));
@@ -209,21 +209,21 @@ class DavServletTest extends MailboxTestSuite {
         .uuid(calendarUUID)
         .organizer(organizer)
         .build();
-    HttpResponse response = createHttpClientWith(organizer).execute(request);
+    ClassicHttpResponse response = createHttpClientWith(organizer).executeOpen(null, request, null);
     assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(response));
   }
 
-  private HttpResponse deleteAppointment(Account organizer, UUID calendarUUID) throws Exception {
+  private ClassicHttpResponse deleteAppointment(Account organizer, UUID calendarUUID) throws Exception {
     HttpClient client = createHttpClientWith(organizer);
     HttpDelete request = new HttpDelete(getAccountCalendarUrl(organizer, calendarUUID));
     request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
-    return client.execute(request);
+    return client.executeOpen(null, request, null);
   }
 
-  private HttpResponse getAppointment(Account organizer, UUID calendarUUID) throws Exception {
+  private ClassicHttpResponse getAppointment(Account organizer, UUID calendarUUID) throws Exception {
     HttpGet request = new HttpGet(getAccountCalendarUrl(organizer, calendarUUID));
     request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
-    return createHttpClientWith(organizer).execute(request);
+    return createHttpClientWith(organizer).executeOpen(null, request, null);
   }
 
   private String getAccountCalendarUrl(Account account, UUID calendarUUID) {
@@ -242,11 +242,11 @@ class DavServletTest extends MailboxTestSuite {
     return HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build();
   }
 
-  private static int statusCodeFrom(HttpResponse response) {
-    return response.getStatusLine().getStatusCode();
+  private static int statusCodeFrom(ClassicHttpResponse response) {
+    return response.getCode();
   }
 
-  private static String readContentFrom(HttpResponse response) throws IOException {
+  private static String readContentFrom(ClassicHttpResponse response) throws IOException {
     return new String(response.getEntity().getContent().readAllBytes());
   }
 }

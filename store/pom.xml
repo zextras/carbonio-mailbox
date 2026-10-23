@@ -15,21 +15,17 @@
   https://wiki.eclipse.org/Jetty/Reference/Dependencies -->
   <dependencies>
     <dependency>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.core5</groupId>
+      <artifactId>httpcore5</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.zextras.carbonio</groupId>
       <artifactId>carbonio-systemd-notify</artifactId>
       <version>1.0.1</version>
-    </dependency>
-    <!-- Must be provided to avoid collision -->
-    <dependency>
-      <artifactId>httpclient</artifactId>
-      <groupId>org.apache.httpcomponents</groupId>
-
-    </dependency>
-
-    <dependency>
-      <artifactId>httpmime</artifactId>
-      <groupId>org.apache.httpcomponents</groupId>
-      <scope>runtime</scope>
     </dependency>
 
     <dependency>
@@ -450,11 +446,6 @@
     <dependency>
       <groupId>net.sourceforge.nekohtml</groupId>
       <artifactId>nekohtml</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpcore</artifactId>
-
     </dependency>
     <dependency>
       <groupId>org.json</groupId>

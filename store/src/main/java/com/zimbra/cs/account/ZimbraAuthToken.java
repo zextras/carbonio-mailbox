@@ -34,13 +34,13 @@ import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.cookie.StandardCookieSpec;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 
 /**
  * @since May 30, 2004
@@ -431,7 +431,7 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
 
   @Override
   public void encode(
-      HttpClient client, HttpRequestBase method, boolean isAdminReq, String cookieDomain)
+      HttpClient client, HttpUriRequestBase method, boolean isAdminReq, String cookieDomain)
       throws ServiceException {
     String origAuthData = AuthTokenUtil.getOrigAuthData(this);
 
@@ -452,7 +452,7 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
                 ZimbraHttpConnectionManager.getInternalHttpConnMgr()
                     .getZimbraConnMgrParams()
                     .getReqConfig())
-            .setCookieSpec(CookieSpecs.DEFAULT)
+            .setCookieSpec(StandardCookieSpec.RELAXED)
             .build();
 
     clientBuilder.setDefaultRequestConfig(reqConfig);
@@ -461,7 +461,7 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
   @Override
   public void encode(
       HttpClientBuilder clientBuilder,
-      HttpRequestBase method,
+      HttpUriRequestBase method,
       boolean isAdminReq,
       String cookieDomain)
       throws ServiceException {
@@ -482,7 +482,7 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
                 ZimbraHttpConnectionManager.getInternalHttpConnMgr()
                     .getZimbraConnMgrParams()
                     .getReqConfig())
-            .setCookieSpec(CookieSpecs.DEFAULT)
+            .setCookieSpec(StandardCookieSpec.RELAXED)
             .build();
 
     clientBuilder.setDefaultRequestConfig(reqConfig);

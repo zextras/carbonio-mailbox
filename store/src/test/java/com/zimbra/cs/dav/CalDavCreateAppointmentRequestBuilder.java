@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import org.apache.http.HttpHeaders;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.StringEntity;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.client5.http.classic.methods.HttpPut;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 
 public class CalDavCreateAppointmentRequestBuilder {
   private UUID uuid = UUID.randomUUID();

@@ -80,7 +80,7 @@ public class Check {
   public static Provisioning.Result checkExchangeAuth(
       ExchangeFreeBusyProvider.ServerInfo sinfo, Account acct) throws ServiceException {
     try {
-      int code = ExchangeFreeBusyProvider.checkAuth(sinfo, acct).getStatusLine().getStatusCode();
+      int code = ExchangeFreeBusyProvider.checkAuth(sinfo, acct).getCode();
       switch (code) {
         case 400:
         case 404:

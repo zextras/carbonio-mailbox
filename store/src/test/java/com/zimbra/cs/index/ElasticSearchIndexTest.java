@@ -7,11 +7,10 @@ package com.zimbra.cs.index;
 
 import java.io.IOException;
 import java.util.List;
-
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.classic.methods.HttpDelete;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.junit.jupiter.api.Disabled;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.ZimbraLog;
@@ -49,7 +48,7 @@ public final class ElasticSearchIndexTest extends AbstractIndexStoreTest {
     protected void cleanupForIndexStore() {
         String key = testAcct.getId();
         String indexUrl = String.format("%s%s/", LC.zimbra_index_elasticsearch_url_base.value(), key);
-        HttpRequestBase method = new HttpDelete(indexUrl);
+        HttpUriRequestBase method = new HttpDelete(indexUrl);
         try {
             ElasticSearchConnector connector = new ElasticSearchConnector();
             int statusCode = connector.executeMethod(method);

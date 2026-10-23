@@ -30,11 +30,11 @@ import java.nio.charset.Charset;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 
 public class DownloadCSRHandler extends ExtensionHttpHandler {
     public static final String HANDLER_PATH_NAME = "downloadcsr";
@@ -113,10 +113,10 @@ public class DownloadCSRHandler extends ExtensionHttpHandler {
         HttpGet method = new HttpGet(destURL);
         httpClientBuilder.setDefaultCookieStore(cookieStore);
         ZimbraLog.extensions.debug("Proxying CSR download request to %s", destURL);
-        HttpResponse httpResponse = HttpClientUtil.executeMethod(httpClientBuilder.build(), method);
+        ClassicHttpResponse httpResponse = HttpClientUtil.executeMethod(httpClientBuilder.build(), method);
         InputStream responseBody = httpResponse.getEntity().getContent();
-        resp.setStatus(httpResponse.getStatusLine().getStatusCode());
-        for (Header h : httpResponse.getAllHeaders()) {
+        resp.setStatus(httpResponse.getCode());
+        for (Header h : httpResponse.getHeaders()) {
             resp.addHeader(h.getName(), h.getValue());
         }
         if (responseBody != null) {

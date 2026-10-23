@@ -14,13 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
 import org.apache.commons.text.RandomStringGenerator;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.cookie.StandardCookieSpec;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 
 import com.google.common.primitives.Bytes;
 import com.zimbra.common.auth.ZAuthToken;
@@ -228,7 +228,7 @@ public class ZimbraJWToken extends AuthToken {
 
 
     @Override
-    public void encode(HttpClient client, HttpRequestBase method, boolean isAdminReq, String cookieDomain)
+    public void encode(HttpClient client, HttpUriRequestBase method, boolean isAdminReq, String cookieDomain)
             throws ServiceException {
         String jwt = properties.getEncoded();
         method.addHeader(Constants.AUTH_HEADER, Constants.BEARER + " " + jwt);
@@ -244,7 +244,7 @@ public class ZimbraJWToken extends AuthToken {
 
         RequestConfig reqConfig = RequestConfig.copy(
             ZimbraHttpConnectionManager.getInternalHttpConnMgr().getZimbraConnMgrParams().getReqConfig())
-            .setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
+            .setCookieSpec(StandardCookieSpec.RELAXED).build();
 
         clientBuilder.setDefaultRequestConfig(reqConfig);
     }
@@ -339,10 +339,10 @@ public class ZimbraJWToken extends AuthToken {
     }
 
     /* (non-Javadoc)
-     * @see com.zimbra.cs.account.AuthToken#encode(org.apache.http.impl.client.HttpClientBuilder, boolean, java.lang.String)
+     * @see com.zimbra.cs.account.AuthToken#encode(org.apache.hc.client5.http.impl.classic.HttpClientBuilder, boolean, java.lang.String)
      */
     @Override
-    public void encode(HttpClientBuilder clientBuilder, HttpRequestBase method, boolean isAdminReq, String cookieDomain)
+    public void encode(HttpClientBuilder clientBuilder, HttpUriRequestBase method, boolean isAdminReq, String cookieDomain)
         throws ServiceException {
         String jwt = properties.getEncoded();
         method.addHeader(Constants.AUTH_HEADER, Constants.BEARER + " " + jwt);
@@ -357,7 +357,7 @@ public class ZimbraJWToken extends AuthToken {
 
         RequestConfig reqConfig = RequestConfig.copy(
             ZimbraHttpConnectionManager.getInternalHttpConnMgr().getZimbraConnMgrParams().getReqConfig())
-            .setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
+            .setCookieSpec(StandardCookieSpec.RELAXED).build();
 
         clientBuilder.setDefaultRequestConfig(reqConfig);
 
