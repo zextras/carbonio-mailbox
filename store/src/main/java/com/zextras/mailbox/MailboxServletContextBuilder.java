@@ -50,8 +50,6 @@ import java.util.EnumSet;
 import java.util.List;
 import javax.servlet.DispatcherType;
 import javax.servlet.MultipartConfigElement;
-import org.eclipse.jetty.ee8.cdi.CdiDecoratingListener;
-import org.eclipse.jetty.ee8.cdi.CdiServletContainerInitializer;
 import org.eclipse.jetty.ee8.security.ConstraintMapping;
 import org.eclipse.jetty.ee8.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.ee8.nested.ServletConstraint;
@@ -59,7 +57,6 @@ import org.eclipse.jetty.ee8.servlet.FilterHolder;
 import org.eclipse.jetty.ee8.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee8.servlet.ServletHolder;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
-import org.jboss.weld.environment.servlet.EnhancedListener;
 
 public class MailboxServletContextBuilder {
 
@@ -77,7 +74,6 @@ public class MailboxServletContextBuilder {
 	public ServletContextHandler createServletContextHandler() {
 		ServletContextHandler servletContextHandler = new ServletContextHandler();
 		servletContextHandler.setContextPath("/");
-		addListeners(servletContextHandler);
 		addFilters(servletContextHandler);
 		addServlets(servletContextHandler);
 
@@ -86,13 +82,6 @@ public class MailboxServletContextBuilder {
 			addSecurityConstraints(servletContextHandler);
 		}
 		return servletContextHandler;
-	}
-
-	private void addListeners(ServletContextHandler servletContextHandler) {
-		servletContextHandler.setInitParameter(
-				CdiServletContainerInitializer.CDI_INTEGRATION_ATTRIBUTE, CdiDecoratingListener.MODE);
-		servletContextHandler.addServletContainerInitializer(new CdiServletContainerInitializer());
-		servletContextHandler.addServletContainerInitializer(new EnhancedListener());
 	}
 
 	private void addFilters(ServletContextHandler servletContextHandler) {
@@ -232,17 +221,17 @@ public class MailboxServletContextBuilder {
 
 	private void addHealthServlet(ServletContextHandler servletContextHandler) {
 		servletContextHandler.addServlet(
-				cdiJaxrsDispatcher(HealthApplication.class, "/service/health"), "/service/health/*");
+				jaxrsDispatcher(HealthApplication.class, "/service/health"), "/service/health/*");
 	}
 
 	private void addInternalApiServlet(ServletContextHandler servletContextHandler) {
 		servletContextHandler.addServlet(
-				cdiJaxrsDispatcher(InternalApiApplication.class, "/internal"), "/internal/*");
+				jaxrsDispatcher(InternalApiApplication.class, "/internal"), "/internal/*");
 	}
 
 	private void addAuthzApiServlet(ServletContextHandler servletContextHandler) {
 		servletContextHandler.addServlet(
-				cdiJaxrsDispatcher(AuthzApiApplication.class, "/authz"), "/authz/*");
+				jaxrsDispatcher(AuthzApiApplication.class, "/authz"), "/authz/*");
 	}
 
 	private void addMetricsServlet(ServletContextHandler servletContextHandler) {
@@ -460,10 +449,9 @@ public class MailboxServletContextBuilder {
 		return mapping;
 	}
 
-	private static ServletHolder cdiJaxrsDispatcher(Class<?> application, String mappingPrefix) {
+	private static ServletHolder jaxrsDispatcher(Class<?> application, String mappingPrefix) {
 		final var holder = new ServletHolder(new HttpServletDispatcher());
 		holder.setInitParameter("javax.ws.rs.Application", application.getName());
-		holder.setInitParameter("resteasy.injector.factory", "org.jboss.resteasy.cdi.CdiInjectorFactory");
 		holder.setInitParameter("resteasy.servlet.mapping.prefix", mappingPrefix);
 		return holder;
 	}

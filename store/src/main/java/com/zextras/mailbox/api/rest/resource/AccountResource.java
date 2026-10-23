@@ -23,8 +23,6 @@ import io.vavr.control.Try;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
@@ -36,12 +34,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Dependent
 @Path("/accounts")
 public class AccountResource {
 
-	@Inject
-	private AccountService accountService;
+	private final AccountService accountService;
+
+	public AccountResource(AccountService accountService) {
+		this.accountService = accountService;
+	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

@@ -15,8 +15,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -24,12 +22,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Dependent
 @Path("/cos")
 public class CosResource {
 
-	@Inject
-	private CosService cosService;
+	private final CosService cosService;
+
+	public CosResource(CosService cosService) {
+		this.cosService = cosService;
+	}
 
 	@GET
 	@Path("/{id}")

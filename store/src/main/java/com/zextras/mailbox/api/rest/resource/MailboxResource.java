@@ -17,8 +17,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.vavr.control.Try;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -26,15 +24,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Dependent
 @Path("/accounts/mail")
 public class MailboxResource {
 
-  @Inject
-  private MailboxService mailboxService;
+  private final MailboxService mailboxService;
+  private final AccountService accountService;
 
-  @Inject
-  private AccountService accountService;
+  public MailboxResource(MailboxService mailboxService, AccountService accountService) {
+    this.mailboxService = mailboxService;
+    this.accountService = accountService;
+  }
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)

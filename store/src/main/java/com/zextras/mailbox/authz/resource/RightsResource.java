@@ -23,8 +23,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.vavr.control.Try;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -34,12 +32,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Dependent
 @Path("/rights")
 public class RightsResource {
 
-	@Inject
-	private RightsService rightsService;
+	private final RightsService rightsService;
+
+	public RightsResource(RightsService rightsService) {
+		this.rightsService = rightsService;
+	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

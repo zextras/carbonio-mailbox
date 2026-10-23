@@ -6,13 +6,11 @@ package com.zextras.mailbox.health;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.inject.Inject;
 
 public class HealthUseCase {
 
   private final List<ServiceDependency> serviceDependencies;
 
-  @Inject
   public HealthUseCase(List<ServiceDependency> serviceDependencies) {
     this.serviceDependencies = serviceDependencies;
   }

@@ -6,21 +6,20 @@ package com.zextras.mailbox.servlet;
 
 import com.zextras.mailbox.health.HealthUseCase;
 import com.zextras.mailbox.servlet.HealthResponse.HealthResponseBuilder;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-/** JAX-RS health endpoint; CDI-managed with {@link HealthUseCase} injected by Weld. */
-@Dependent
 @Path("/")
 public class HealthResource {
 
-  @Inject
-  private HealthUseCase healthUseCase;
+  private final HealthUseCase healthUseCase;
+
+  public HealthResource(HealthUseCase healthUseCase) {
+    this.healthUseCase = healthUseCase;
+  }
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
