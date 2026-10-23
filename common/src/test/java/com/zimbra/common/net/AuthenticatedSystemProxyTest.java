@@ -23,11 +23,11 @@ import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -80,9 +80,9 @@ class AuthenticatedSystemProxyTest {
   @Test
   void bug_authenticatedProxyConnectionStaysOpenAfterCallerClosesItsClient() throws Exception {
     try (CloseableHttpClient client = HttpClients.createDefault()) {
-      HttpResponse response = HttpClientUtil.executeMethod(
+      ClassicHttpResponse response = HttpClientUtil.executeMethod(
           client, new HttpGet("http://target.invalid/service/home"), null, null);
-      assertEquals(200, response.getStatusLine().getStatusCode());
+      assertEquals(200, response.getCode());
       EntityUtils.consume(response.getEntity());
     }
 
