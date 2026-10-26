@@ -8,7 +8,6 @@ package com.zimbra.cs.store.external;
 import java.io.File;
 import java.io.IOException;
 
-import com.ibm.icu.impl.Assert;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.store.Blob;
@@ -26,7 +25,7 @@ public class ExternalBlobInputStream extends BlobInputStream {
             locator = ((ExternalBlob) blob).getLocator();
             mbox = ((ExternalBlob) blob).getMbox();
         } else {
-            Assert.fail("ExternalBlobInputStream constructor Blob instance not ExternalBlob");
+            throw new IllegalStateException("ExternalBlobInputStream constructor Blob instance not ExternalBlob");
         }
     }
 
@@ -56,7 +55,7 @@ public class ExternalBlobInputStream extends BlobInputStream {
             this.locator = ((ExternalBlobInputStream) parent).getLocator();
             this.mbox = ((ExternalBlobInputStream) parent).getMbox();
         } else {
-            Assert.fail("Parent of ExternalBlobInputStream must always be ExternalBlobInputStream");
+            throw new IllegalStateException("Parent of ExternalBlobInputStream must always be ExternalBlobInputStream");
         }
     }
 
