@@ -1199,11 +1199,6 @@
             </execution>
           </executions>
         </plugin>
-        <plugin>
-          <groupId>org.openrewrite.maven</groupId>
-          <artifactId>rewrite-recipe-bom</artifactId>
-          <version>6.16.1</version>
-        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
