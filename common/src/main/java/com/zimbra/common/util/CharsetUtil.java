@@ -22,6 +22,7 @@ public class CharsetUtil {
     private static final Charset GBK          = CharsetUtil.toCharset(MimeConstants.P_CHARSET_GBK);
     private static final Charset WINDOWS_31J  = CharsetUtil.toCharset(MimeConstants.P_CHARSET_WINDOWS_31J);
     private static final Charset SHIFT_JIS    = CharsetUtil.toCharset(MimeConstants.P_CHARSET_SHIFT_JIS);
+    private static final Charset ISO_8859_8   = CharsetUtil.toCharset(MimeConstants.P_CHARSET_ISO_8859_8);
 
     /** Returns a {@link Charset} for the {@code name}, or {@code null} if the
      *  name is invalid or if the named charset is not supported in this JRE. */
@@ -34,6 +35,9 @@ public class CharsetUtil {
         if (name.equalsIgnoreCase("cp932") && WINDOWS_31J != null) {
             // "Windows-31J" is supported but "CP932" is not; force the mapping here...
             return WINDOWS_31J;
+        }
+        if (name.equalsIgnoreCase(MimeConstants.P_CHARSET_ISO_8859_8_I) && ISO_8859_8 != null) {
+            return ISO_8859_8;
         }
     
         try {

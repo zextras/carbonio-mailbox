@@ -20,11 +20,12 @@ import javax.mail.Part;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Charsets;
-import com.ibm.icu.text.CharsetDetector;
-import com.ibm.icu.text.CharsetMatch;
+import com.sigpwned.chardet4j.com.ibm.icu.text.CharsetDetector;
+import com.sigpwned.chardet4j.com.ibm.icu.text.CharsetMatch;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.util.CharsetUtil;
 import com.zimbra.common.util.HttpUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.mailbox.Folder;
@@ -116,15 +117,8 @@ public class CsvFormatter extends Formatter {
         CharsetDetector detector = new CharsetDetector();
         detector.setText(buf);
         CharsetMatch match = detector.detect();
-        String guess = match.getName();
-        Charset charset;
-        if (guess != null) {
-            try {
-                charset = Charset.forName(guess);
-            } catch (IllegalArgumentException e) {
-                charset = Charsets.UTF_8;
-            }
-        } else {
+        Charset charset = CharsetUtil.toCharset(match.getName());
+        if (charset == null) {
             charset = Charsets.UTF_8;
         }
         if (bytesRead > 0) {

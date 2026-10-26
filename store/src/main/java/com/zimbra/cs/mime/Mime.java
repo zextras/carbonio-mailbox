@@ -57,8 +57,8 @@ import org.apache.commons.io.IOUtils;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
-import com.ibm.icu.text.CharsetDetector;
-import com.ibm.icu.text.CharsetMatch;
+import com.sigpwned.chardet4j.com.ibm.icu.text.CharsetDetector;
+import com.sigpwned.chardet4j.com.ibm.icu.text.CharsetMatch;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mime.ContentDisposition;
 import com.zimbra.common.mime.ContentType;
@@ -1070,9 +1070,9 @@ public class Mime {
 
         for (CharsetMatch match : detector.detectAll()) { // matches are sorted by confidence
             if (match.getConfidence() > 50) { // only trust good match
-                try {
-                    return Charset.forName(match.getName());
-                } catch (Exception ignore) {
+                Charset charset = CharsetUtil.toCharset(match.getName());
+                if (charset != null) {
+                    return charset;
                 }
             } else {
                 break;
