@@ -4,9 +4,9 @@
 
 package com.zimbra.cs.ephemeral.migrate;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.ibm.icu.text.SimpleDateFormat;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 

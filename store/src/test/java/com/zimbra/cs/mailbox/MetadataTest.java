@@ -7,8 +7,6 @@ package com.zimbra.cs.mailbox;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.ibm.icu.util.Calendar;
-import com.ibm.icu.util.GregorianCalendar;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.calendar.ParsedDateTime;
 import com.zimbra.common.calendar.TimeZoneMap;
@@ -24,6 +22,8 @@ import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mime.ParsedContact;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.util.JMSession;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.mail.MessagingException;
