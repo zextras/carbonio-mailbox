@@ -47,6 +47,9 @@ consul config write /etc/carbonio/mailbox-internal-api/service-discover/intentio
 service-discover service-token ensure --service carbonio-mailbox-internal-api --policy "${POLICY_NAME}" \
   --token-file /etc/carbonio/mailbox-internal-api/service-discover/token --owner carbonio-mailbox
 
+chown carbonio-mailbox:carbonio-mailbox /etc/carbonio/mailbox-internal-api/service-discover/token
+chmod 0640 /etc/carbonio/mailbox-internal-api/service-discover/token
+
 consul reload
 
 systemctl restart carbonio-mailbox-internal-api-sidecar.service

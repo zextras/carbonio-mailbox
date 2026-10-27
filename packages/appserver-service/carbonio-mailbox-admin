@@ -47,6 +47,9 @@ consul config write /etc/carbonio/mailbox-admin/service-discover/intentions.json
 service-discover service-token ensure --service carbonio-mailbox-admin --policy "${POLICY_NAME}" \
   --token-file /etc/carbonio/mailbox-admin/service-discover/token --owner carbonio-mailbox
 
+chown carbonio-mailbox:carbonio-mailbox /etc/carbonio/mailbox-admin/service-discover/token
+chmod 0640 /etc/carbonio/mailbox-admin/service-discover/token
+
 consul reload
 
 # carbonio-mailbox is not managed by systemd

@@ -47,6 +47,9 @@ consul config write /etc/carbonio/authz/service-discover/intentions.json
 service-discover service-token ensure --service carbonio-authz --policy "${POLICY_NAME}" \
   --token-file /etc/carbonio/authz/service-discover/token --owner carbonio-mailbox
 
+chown carbonio-mailbox:carbonio-mailbox /etc/carbonio/authz/service-discover/token
+chmod 0640 /etc/carbonio/authz/service-discover/token
+
 consul reload
 
 systemctl restart carbonio-authz-sidecar.service
