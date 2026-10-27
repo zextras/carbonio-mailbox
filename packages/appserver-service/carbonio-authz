@@ -44,19 +44,16 @@ consul config write /etc/carbonio/authz/service-discover/service-protocol.json
 # Allow other services to contact this service
 consul config write /etc/carbonio/authz/service-discover/intentions.json
 
-if [[ ! -f "/etc/carbonio/authz/service-discover/token" ]]; then
-    # create the token
-    consul acl token create -format json -policy-name "${POLICY_NAME}" -description "Token for carbonio-authz/$(hostname -A)" |
-      jq -r '.SecretID' > /etc/carbonio/authz/service-discover/token;
-fi
-
-chown carbonio-mailbox:carbonio-mailbox /etc/carbonio/authz/service-discover/token
-chmod 0640 /etc/carbonio/authz/service-discover/token
+service-discover service-token ensure --service carbonio-authz --policy "${POLICY_NAME}" \
+  --token-file /etc/carbonio/authz/service-discover/token --owner carbonio-mailbox
 
 consul reload
 
+systemctl restart carbonio-authz-sidecar.service
+
+# Remove the tokens leaked by previous setups, only after the services use the new token
+service-discover service-token prune-legacy --service carbonio-authz --policy "${POLICY_NAME}"
+
 # limit token visibility as much as possible
 export -n CONSUL_HTTP_TOKEN
-
-systemctl restart carbonio-authz-sidecar.service
 trap - EXIT
