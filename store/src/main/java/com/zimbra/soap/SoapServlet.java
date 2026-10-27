@@ -200,13 +200,6 @@ public class SoapServlet extends ZimbraServlet {
   }
 
   @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    // SOAP requests must use POST.
-    resp.setHeader("Allow", "POST");
-    resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "SOAP requests must use POST");
-  }
-
-  @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     ZimbraLog.clearContext();
     long startTime = ZimbraPerf.STOPWATCH_SOAP.start();
