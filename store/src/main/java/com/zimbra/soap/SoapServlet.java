@@ -201,9 +201,7 @@ public class SoapServlet extends ZimbraServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    // SOAP requests carry their envelope in the request body and must use POST. A GET
-    // has no legitimate use on this servlet, so reject it instead of routing it through
-    // doWork (where a body-less request only produces a SOAP fault anyway).
+    // SOAP requests must use POST.
     resp.setHeader("Allow", "POST");
     resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "SOAP requests must use POST");
   }
