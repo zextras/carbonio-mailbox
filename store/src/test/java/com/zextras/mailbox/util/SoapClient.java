@@ -24,9 +24,11 @@ import javax.net.ssl.X509TrustManager;
 import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.cookie.BasicCookieStore;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -69,6 +71,44 @@ public class SoapClient {
 
 	public record SoapResponse(int statusCode, String body) {
 
+	}
+
+	public record RawResponse(int statusCode, String allow) {
+
+	}
+
+	static CloseableHttpClient newTrustAllClient(BasicCookieStore cookieStore) {
+		try {
+			final SSLContext sslContext = SSLContext.getInstance("SSL");
+			sslContext.init(null, new TrustManager[]{TRUST_ALL_CERTS},
+					new java.security.SecureRandom());
+			return HttpClients.custom()
+					.setDefaultCookieStore(cookieStore)
+					.setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
+							.setSSLSocketFactory(SSLConnectionSocketFactoryBuilder.create()
+									.setSslContext(sslContext)
+									.setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+									.build())
+							.setMaxConnTotal(100)
+							.setMaxConnPerRoute(100)
+							.build())
+					.build();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Issues a raw GET against the endpoint, without a SOAP envelope.
+	 *
+	 * @return the status code and the Allow response header (null when absent)
+	 */
+	public RawResponse get() throws Exception {
+		try (var client = newTrustAllClient(new BasicCookieStore())) {
+			final CloseableHttpResponse response = client.execute(new HttpGet(this.endpoint));
+			final Header allow = response.getFirstHeader("Allow");
+			return new RawResponse(response.getCode(), allow == null ? null : allow.getValue());
+		}
 	}
 
 	public static class Request {
@@ -122,24 +162,7 @@ public class SoapClient {
 		}
 
 		private CloseableHttpClient getClient(BasicCookieStore cookieStore) {
-			try {
-				final SSLContext sslContext = SSLContext.getInstance("SSL");
-				sslContext.init(null, new TrustManager[]{TRUST_ALL_CERTS},
-						new java.security.SecureRandom());
-				return HttpClients.custom()
-						.setDefaultCookieStore(cookieStore)
-						.setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
-								.setSSLSocketFactory(SSLConnectionSocketFactoryBuilder.create()
-										.setSslContext(sslContext)
-										.setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
-										.build())
-								.setMaxConnTotal(100)
-								.setMaxConnPerRoute(100)
-								.build())
-						.build();
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
+			return newTrustAllClient(cookieStore);
 		}
 
 		public SoapResponse execute() throws Exception {

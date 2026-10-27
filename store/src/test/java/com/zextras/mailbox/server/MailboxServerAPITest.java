@@ -79,6 +79,22 @@ class MailboxServerAPITest {
 	}
 
 	@Test
+	void shouldRejectGetOnUserSoapWith405() throws Exception {
+		final SoapClient.RawResponse response = new SoapClient(getUserEndpoint()).get();
+
+		Assertions.assertEquals(405, response.statusCode());
+		Assertions.assertEquals("POST", response.allow());
+	}
+
+	@Test
+	void shouldRejectGetOnAdminSoapWith405() throws Exception {
+		final SoapClient.RawResponse response = new SoapClient(getAdminEndpoint()).get();
+
+		Assertions.assertEquals(405, response.statusCode());
+		Assertions.assertEquals("POST", response.allow());
+	}
+
+	@Test
 	void internalApiShouldNotBeReachableOnUserHttpPort() throws Exception {
 		final Account account = server.getAccountFactory().create();
 		var response = server.getHttpClient().get(
