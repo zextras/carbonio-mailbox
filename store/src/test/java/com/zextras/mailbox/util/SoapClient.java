@@ -21,8 +21,9 @@ import java.util.Objects;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import org.apache.hc.client5.http.ssl.DefaultClientTlsStrategy;
 import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
-import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
+import org.apache.hc.client5.http.ssl.TlsSocketStrategy;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -77,13 +78,12 @@ public class SoapClient {
 			final SSLContext sslContext = SSLContext.getInstance("SSL");
 			sslContext.init(null, new TrustManager[]{TRUST_ALL_CERTS},
 					new java.security.SecureRandom());
+			final TlsSocketStrategy tlsStrategy =
+					new DefaultClientTlsStrategy(sslContext, NoopHostnameVerifier.INSTANCE);
 			return HttpClients.custom()
 					.setDefaultCookieStore(cookieStore)
 					.setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
-							.setSSLSocketFactory(SSLConnectionSocketFactoryBuilder.create()
-									.setSslContext(sslContext)
-									.setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
-									.build())
+							.setTlsSocketStrategy(tlsStrategy)
 							.setMaxConnTotal(100)
 							.setMaxConnPerRoute(100)
 							.build())
@@ -100,8 +100,7 @@ public class SoapClient {
 	 */
 	public int get() throws Exception {
 		try (var client = newTrustAllClient(new BasicCookieStore())) {
-			final CloseableHttpResponse response = client.execute(new HttpGet(this.endpoint));
-			return response.getCode();
+			return client.execute(new HttpGet(this.endpoint), response -> response.getCode());
 		}
 	}
 
