@@ -88,6 +88,8 @@ public class MimeConstants {
     public static final String P_CHARSET_GB2312 = "gb2312";
     public static final String P_CHARSET_GBK = "gbk";
     public static final String P_CHARSET_WINDOWS_31J = "Windows-31J";
+    public static final String P_CHARSET_ISO_8859_8 = "iso-8859-8";
+    public static final String P_CHARSET_ISO_8859_8_I = "iso-8859-8-i";
     public static final String P_CHARSET_SHIFT_JIS = "shift_jis";
     public static final String P_CHARSET_DEFAULT = P_CHARSET_ASCII;
 

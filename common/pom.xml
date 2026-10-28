@@ -80,8 +80,8 @@
     </dependency>
 
     <dependency>
-      <artifactId>icu4j</artifactId>
-      <groupId>com.ibm.icu</groupId>
+      <groupId>com.sigpwned</groupId>
+      <artifactId>chardet4j</artifactId>
     </dependency>
 
     <dependency>
