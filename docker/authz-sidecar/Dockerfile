@@ -1,5 +1,7 @@
 FROM registry.dev.zextras.com/dev/carbonio-sidecar:devel
 
+RUN useradd -r -U carbonio-mailbox
+
 # Service registration
 COPY packages/appserver-service/carbonio-authz.hcl /consul/config/
 
