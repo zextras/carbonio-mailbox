@@ -14,6 +14,7 @@ import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.AuthToken;
+import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.service.AttachmentService;
 import com.zimbra.cs.service.util.ContentDispositionParser;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
@@ -90,7 +91,7 @@ public class FilesCopyHandlerImpl implements FilesCopyHandler {
           fileLength);
       return Try.success(nodeId);
     } catch (RuntimeException e) {
-      return Try.failure(ServiceException.FAILURE("Files upload failed"));
+      return Try.failure(ServiceException.FAILURE("Files upload failed", e));
     }
   }
 
@@ -242,7 +243,7 @@ public class FilesCopyHandlerImpl implements FilesCopyHandler {
    * @return try of attachment content type
    */
   private Try<String> getAttachmentContentType(MimePart attachment) {
-    return Try.of(attachment::getContentType)
+    return Try.of(() -> Mime.getContentType(attachment))
         .onFailure(ex -> mLog.error(ex.getMessage()))
         .recoverWith(
             ex -> Try.failure(ServiceException.FAILURE("Cannot get file content-type.", ex)));
