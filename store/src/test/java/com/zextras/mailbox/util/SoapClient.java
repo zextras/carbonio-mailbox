@@ -29,6 +29,7 @@ import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.cookie.BasicCookieStore;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -100,7 +101,7 @@ public class SoapClient {
 	 */
 	public int get() throws Exception {
 		try (var client = newTrustAllClient(new BasicCookieStore())) {
-			return client.execute(new HttpGet(this.endpoint), response -> response.getCode());
+			return client.execute(new HttpGet(this.endpoint), HttpResponse::getCode);
 		}
 	}
 
