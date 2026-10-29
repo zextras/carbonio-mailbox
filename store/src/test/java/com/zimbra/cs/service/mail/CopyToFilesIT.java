@@ -204,6 +204,35 @@ class CopyToFilesIT extends MailboxTestSuite {
   }
 
   @Test
+  void shouldSendBaseContentTypeToFilesWhenAttachmentContentTypeHeaderIsFolded() throws Exception {
+    Account account = createAccount().create();
+    String uploadPath = "/internal/accounts/" + account.getId() + "/upload";
+    filesServer
+        .when(request().withMethod("POST").withPath(uploadPath))
+        .respond(HttpResponse.response("{\"nodeId\":\"1000\",\"version\":1}").withStatusCode(200));
+    // The long filename exceeds JavaMail's 76-character threshold, folding the header onto
+    // a continuation line separated by CRLF followed by whitespace (valid in MIME, not HTTP).
+    String longFileName = "Quarterly_sales_report_northern_region_2026_final.pdf";
+    Message message = createDraftWithAttachment(account, longFileName, "application/pdf");
+    CopyToFilesRequest up = new CopyToFilesRequest();
+    up.setMessageId(String.valueOf(message.getId()));
+    up.setPart("2");
+    CopyToFiles copyToFiles =
+        copyToFiles(new MailboxAttachmentService(), FilesInternalClient.atURL(FILES_SERVER_URL));
+
+    Element el =
+        copyToFiles.handle(JaxbUtil.jaxbToElement(up), this.getRequestContext(account.getName()));
+
+    CopyToFilesResponse response = JaxbUtil.elementToJaxb(el);
+    assertEquals("1000", response.getNodeId());
+    filesServer.verify(
+        request()
+            .withMethod("POST")
+            .withPath(uploadPath)
+            .withHeader("Content-Type", "application/pdf"));
+  }
+
+  @Test
   void shouldThrowFileNotFoundWhenFileNotFound() throws Exception {
     Account testAccount = createAccount().create();
     final Map<String, Object> context = this.getRequestContext(testAccount.getName());
@@ -342,6 +371,20 @@ class CopyToFilesIT extends MailboxTestSuite {
             .build();
 
     return AccountAction.Factory.getDefault().forAccount(acct).saveDraft(message);
+  }
+
+  private Message createDraftWithAttachment(Account account, String fileName, String contentType)
+      throws Exception {
+    final ParsedMessage message =
+        new MailMessageBuilder()
+            .from(account.getName())
+            .addRecipient(account.getName())
+            .subject("Test email")
+            .body("Hello there")
+            .addAttachment("attachment content", fileName, contentType)
+            .build();
+
+    return AccountAction.Factory.getDefault().forAccount(account).saveDraft(message);
   }
 
   private Map<String, Object> getRequestContext(String email) throws Exception {
