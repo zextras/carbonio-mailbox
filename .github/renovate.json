@@ -5,5 +5,8 @@
     "github>zextras/infra-renovate-config:docker",
     "github>zextras/infra-renovate-config:java",
     "github>zextras/infra-renovate-config:javascript"
-  ]
+  ],
+  "vulnerabilityAlerts": {
+    "groupName": "{{#if (containsString packageName 'org.apache.httpcomponents')}}Apache HTTP Components{{else}}{{packageName}}{{/if}}"
+  }
 }
