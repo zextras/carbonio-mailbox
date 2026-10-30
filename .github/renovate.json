@@ -7,6 +7,6 @@
     "github>zextras/infra-renovate-config:javascript"
   ],
   "vulnerabilityAlerts": {
-    "groupName": "{{#if (containsString packageName 'org.apache.httpcomponents')}}Apache HTTP Components{{else}}{{packageName}}{{/if}}"
+    "groupName": "{{#if (equals datasource 'maven')}}{{replace '^([^.:]+([.][^.:]+){0,2}).*$' '$1' packageName}}{{else}}{{packageName}}{{/if}}"
   }
 }
