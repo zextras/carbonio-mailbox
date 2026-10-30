@@ -10,9 +10,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.google.common.collect.Sets;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.util.JMSession;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Set;
 import javax.mail.Address;
@@ -90,6 +92,31 @@ public class MimeTest {
     testCP932("text/plain; charset=shift_jis");
     testCP932("text/plain; charset=windows-31j");
     testCP932("text/plain; charset=cp932");
+  }
+
+  private static final String HEBREW =
+      "לקוח יקר, ההזמנה שלך נשלחה. אנא אשר את קבלת החבילה. תודה על הקנייה בחנות שלנו ויום טוב.";
+
+  private static String readText(String text, String encoding, String contentType)
+      throws IOException {
+    InputStream input = new ByteArrayInputStream(text.getBytes(Charset.forName(encoding)));
+    return IOUtils.toString(Mime.getTextReader(input, contentType, "utf-8"));
+  }
+
+  @Test
+  void getTextReaderDetectsHebrewWithoutDeclaredCharset() throws Exception {
+    assertEquals(HEBREW, readText(HEBREW, "ISO-8859-8", "text/plain"));
+  }
+
+  @Test
+  void getTextReaderDecodesDeclaredIso88598i() throws Exception {
+    assertEquals("שלום", readText("שלום", "ISO-8859-8", "text/plain; charset=iso-8859-8-i"));
+  }
+
+  @Test
+  void getTextReaderDetectsUtf16WithoutBom() throws Exception {
+    String text = "Dear customer, your order has been shipped. Please confirm receipt of the parcel.";
+    assertEquals(text, readText(text, "UTF-16LE", "text/plain"));
   }
 
   @Test

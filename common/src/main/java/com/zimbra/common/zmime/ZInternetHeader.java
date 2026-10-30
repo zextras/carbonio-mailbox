@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ibm.icu.text.CharsetDetector;
-import com.ibm.icu.text.CharsetMatch;
+import com.sigpwned.chardet4j.com.ibm.icu.text.CharsetDetector;
+import com.sigpwned.chardet4j.com.ibm.icu.text.CharsetMatch;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.CharsetUtil;
@@ -106,9 +106,9 @@ public class ZInternetHeader {
     private Charset findMatch(CharsetDetector detector) {
         for (CharsetMatch match : detector.detectAll()) { // matches are sorted by confidence
             if (match.getConfidence() > 50) { // only trust good match
-                try {
-                    return Charset.forName(match.getName());
-                } catch (Exception ignore) {
+                Charset charset = CharsetUtil.toCharset(match.getName());
+                if (charset != null) {
+                    return charset;
                 }
             } else {
                 break;

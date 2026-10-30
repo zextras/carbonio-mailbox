@@ -80,8 +80,8 @@
     </dependency>
 
     <dependency>
-      <artifactId>icu4j</artifactId>
-      <groupId>com.ibm.icu</groupId>
+      <groupId>com.sigpwned</groupId>
+      <artifactId>chardet4j</artifactId>
     </dependency>
 
     <dependency>
@@ -262,7 +262,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>3.3.1</version>
+        <version>3.4.0</version>
         <executions>
           <execution>
             <id>attach-sources</id>

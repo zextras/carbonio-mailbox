@@ -36,6 +36,11 @@ public class AddArchiveFolderUtil {
       return;
     }
 
+    if (!account.isOnLocalServer()) {
+      ZimbraLog.mailbox.debug("Account not on this server: %s", accountId);
+      return;
+    }
+
     Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
     if (mailbox == null) {
       ZimbraLog.mailbox.debug("Mailbox not found for account: %s", accountId);

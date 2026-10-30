@@ -21,12 +21,15 @@ import java.util.Objects;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import org.apache.hc.client5.http.ssl.DefaultClientTlsStrategy;
 import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
-import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
+import org.apache.hc.client5.http.ssl.TlsSocketStrategy;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.cookie.BasicCookieStore;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -69,6 +72,37 @@ public class SoapClient {
 
 	public record SoapResponse(int statusCode, String body) {
 
+	}
+
+	static CloseableHttpClient newTrustAllClient(BasicCookieStore cookieStore) {
+		try {
+			final SSLContext sslContext = SSLContext.getInstance("SSL");
+			sslContext.init(null, new TrustManager[]{TRUST_ALL_CERTS},
+					new java.security.SecureRandom());
+			final TlsSocketStrategy tlsStrategy =
+					new DefaultClientTlsStrategy(sslContext, NoopHostnameVerifier.INSTANCE);
+			return HttpClients.custom()
+					.setDefaultCookieStore(cookieStore)
+					.setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
+							.setTlsSocketStrategy(tlsStrategy)
+							.setMaxConnTotal(100)
+							.setMaxConnPerRoute(100)
+							.build())
+					.build();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Issues a raw GET against the endpoint, without a SOAP envelope.
+	 *
+	 * @return the HTTP status code
+	 */
+	public int get() throws Exception {
+		try (var client = newTrustAllClient(new BasicCookieStore())) {
+			return client.execute(new HttpGet(this.endpoint), HttpResponse::getCode);
+		}
 	}
 
 	public static class Request {
@@ -122,24 +156,7 @@ public class SoapClient {
 		}
 
 		private CloseableHttpClient getClient(BasicCookieStore cookieStore) {
-			try {
-				final SSLContext sslContext = SSLContext.getInstance("SSL");
-				sslContext.init(null, new TrustManager[]{TRUST_ALL_CERTS},
-						new java.security.SecureRandom());
-				return HttpClients.custom()
-						.setDefaultCookieStore(cookieStore)
-						.setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
-								.setSSLSocketFactory(SSLConnectionSocketFactoryBuilder.create()
-										.setSslContext(sslContext)
-										.setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
-										.build())
-								.setMaxConnTotal(100)
-								.setMaxConnPerRoute(100)
-								.build())
-						.build();
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
+			return newTrustAllClient(cookieStore);
 		}
 
 		public SoapResponse execute() throws Exception {
