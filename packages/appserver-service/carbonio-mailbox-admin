@@ -44,21 +44,22 @@ consul config write /etc/carbonio/mailbox-admin/service-discover/service-protoco
 # Allow other services to contact this service
 consul config write /etc/carbonio/mailbox-admin/service-discover/intentions.json
 
-if [[ ! -f "/etc/carbonio/mailbox-admin/service-discover/token" ]]; then
-    # create the token
-    consul acl token create -format json -policy-name "${POLICY_NAME}" -description "Token for carbonio-mailbox-admin/$(hostname -A)" |
-      jq -r '.SecretID' > /etc/carbonio/mailbox-admin/service-discover/token;
-fi
+service-discover service-token ensure --service carbonio-mailbox-admin --policy "${POLICY_NAME}" \
+  --token-file /etc/carbonio/mailbox-admin/service-discover/token --owner carbonio-mailbox
 
 chown carbonio-mailbox:carbonio-mailbox /etc/carbonio/mailbox-admin/service-discover/token
 chmod 0640 /etc/carbonio/mailbox-admin/service-discover/token
 
 consul reload
 
-# limit token visibility as much as possible
-export -n CONSUL_HTTP_TOKEN
-
 # carbonio-mailbox is not managed by systemd
 
 systemctl restart carbonio-mailbox-admin-sidecar.service
+
+# Remove the tokens leaked by previous setups, only after the services use the new token
+service-discover service-token prune-legacy --service carbonio-mailbox-admin --policy "${POLICY_NAME}"
+
+# limit token visibility as much as possible
+export -n CONSUL_HTTP_TOKEN
+
 trap - EXIT
