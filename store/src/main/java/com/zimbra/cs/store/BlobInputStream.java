@@ -304,8 +304,8 @@ implements SharedInputStream, InputStreamSource {
                 if (numReadIntoBuffer <= 0) {
                     return -1;
                 }
-                System.arraycopy(mBuf, 0, b, off, len);
-                numRead = len;
+                numRead = Math.min(len, numReadIntoBuffer);
+                System.arraycopy(mBuf, 0, b, off, numRead);
             }
         }
         if (numRead > 0) {
