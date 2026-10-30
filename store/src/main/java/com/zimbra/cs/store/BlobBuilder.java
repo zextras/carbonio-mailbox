@@ -210,6 +210,9 @@ public class BlobBuilder {
         }
 
         try {
+            if (out instanceof GZIPOutputStream) {
+                ((GZIPOutputStream) out).finish();
+            }
             if (!DebugConfig.disableMessageStoreFsync) {
                 out.flush();
                 if (fc != null) {
