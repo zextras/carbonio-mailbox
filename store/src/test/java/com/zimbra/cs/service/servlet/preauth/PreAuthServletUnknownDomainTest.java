@@ -12,10 +12,10 @@ import com.zextras.mailbox.util.JettyServerFactory.ServerWithConfiguration;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.eclipse.jetty.ee8.servlet.ServletHolder;
 import org.eclipse.jetty.server.Server;
 import org.junit.jupiter.api.AfterAll;
@@ -65,7 +65,7 @@ class PreAuthServletUnknownDomainTest extends MailboxTestSuite {
             + URLEncoder.encode(account, StandardCharsets.UTF_8)
             + "&timestamp=1&expires=1&preauth=A";
     try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-      return client.execute(new HttpGet(url)).getStatusLine().getStatusCode();
+      return client.execute(new HttpGet(url), response -> response.getCode());
     }
   }
 }

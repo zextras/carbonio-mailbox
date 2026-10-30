@@ -11,13 +11,14 @@ import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.JettyServerFactory.ServerWithConfiguration;
 import java.io.IOException;
-import org.apache.http.Header;
-import org.apache.http.HttpHeaders;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.message.BasicHttpResponse;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.eclipse.jetty.ee8.servlet.ServletHolder;
 import org.eclipse.jetty.server.Server;
 import org.junit.jupiter.api.AfterAll;
@@ -47,12 +48,12 @@ class DavWellKnownServletTest extends MailboxTestSuite {
 
   @Test
   void shouldRespondNotFoundWhenThereIsNoPathAfterWellKnown() throws IOException {
-    assertEquals(HttpStatus.SC_NOT_FOUND, get("/.well-known").getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_NOT_FOUND, get("/.well-known").getCode());
   }
 
   @Test
   void shouldRespondNotFoundForUnknownWellKnownPath() throws IOException {
-    assertEquals(HttpStatus.SC_NOT_FOUND, get("/.well-known/unknown").getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_NOT_FOUND, get("/.well-known/unknown").getCode());
   }
 
   @Test
@@ -66,14 +67,18 @@ class DavWellKnownServletTest extends MailboxTestSuite {
   }
 
   private static void assertRedirectsToDav(HttpResponse response) {
-    assertEquals(HttpStatus.SC_MOVED_PERMANENTLY, response.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_MOVED_PERMANENTLY, response.getCode());
     final Header location = response.getFirstHeader(HttpHeaders.LOCATION);
     assertTrue(location.getValue().endsWith(DavServlet.DAV_PATH));
   }
 
   private static HttpResponse get(String path) throws IOException {
     try (CloseableHttpClient client = HttpClientBuilder.create().disableRedirectHandling().build()) {
-      return client.execute(new HttpGet(baseUrl + path));
+      return client.execute(new HttpGet(baseUrl + path), response -> {
+        HttpResponse result = new BasicHttpResponse(response.getCode());
+        result.setHeaders(response.getHeaders());
+        return result;
+      });
     }
   }
 }
