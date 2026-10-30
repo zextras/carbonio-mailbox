@@ -5,5 +5,8 @@
     "github>zextras/infra-renovate-config:docker",
     "github>zextras/infra-renovate-config:java",
     "github>zextras/infra-renovate-config:javascript"
-  ]
+  ],
+  "vulnerabilityAlerts": {
+    "groupName": "{{#if (equals datasource 'maven')}}{{replace '^([^.:]+([.][^.:]+){0,2}).*$' '$1' packageName}}{{else}}{{packageName}}{{/if}}"
+  }
 }
