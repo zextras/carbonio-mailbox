@@ -61,7 +61,7 @@
     <mockserver.version>5.13.0</mockserver.version>
     <pact.version>4.6.17</pact.version>
     <json-unit.version>4.1.1</json-unit.version>
-    <mariadb-java-client.version>2.7.14</mariadb-java-client.version>
+    <mariadb-java-client.version>2.7.15</mariadb-java-client.version>
   </properties>
 
   <profiles>
