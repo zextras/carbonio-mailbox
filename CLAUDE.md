@@ -27,3 +27,8 @@ Service-to-service API under `store/.../com/zextras/mailbox/api/`. Wired in `Int
 
 - [Coding rules](coding_feedback.md)
 - [Testing rules](test_feedback.md)
+
+## Pull requests
+
+Title: conventional commit + ticket, e.g. `fix: [CO-1234] reject preauth for an unknown domain`.
+Body: 1–3 sentences on why, plus anything the diff doesn't show (risk, follow-up, related PR). No headings, file lists, checklists or test logs. Same rule as [.github/pull_request_template.md](.github/pull_request_template.md), which `gh pr create --body` bypasses.
