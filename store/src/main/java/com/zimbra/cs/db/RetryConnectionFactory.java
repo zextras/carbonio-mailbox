@@ -9,7 +9,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.apache.commons.dbcp.DriverManagerConnectionFactory;
+import org.apache.commons.dbcp2.DriverManagerConnectionFactory;
 
 /**
  * ConnectionFactory implementation which allows for retry on exception
