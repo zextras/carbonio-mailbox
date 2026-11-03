@@ -14,10 +14,9 @@ license=(
 url="https://github.com/zextras"
 section="mail"
 priority="optional"
-conflicts__apt=('carbonio-core (<< 4.7.0)')
+breaks__apt=('carbonio-core (<< 4.7.0)')
 conflicts__yum=('carbonio-core < 4.7.0')
-depends__apt=('carbonio-configd (>= 1.1.0)')
-depends__yum=('carbonio-configd >= 1.1.0')
+depends=('carbonio-configd>=1.1.0')
 backup=(
   "opt/zextras/conf/localconfig.xml"
 )
