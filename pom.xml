@@ -216,7 +216,7 @@
       <dependency>
         <groupId>io.opentelemetry</groupId>
         <artifactId>opentelemetry-api</artifactId>
-        <version>1.35.0</version>
+        <version>1.67.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents.client5</groupId>
@@ -819,13 +819,13 @@
       </dependency>
       <dependency>
         <groupId>io.micrometer</groupId>
-        <artifactId>micrometer-registry-prometheus</artifactId>
-        <version>1.10.5</version>
+        <artifactId>micrometer-registry-prometheus-simpleclient</artifactId>
+        <version>1.17.2</version>
       </dependency>
       <dependency>
         <groupId>io.micrometer</groupId>
         <artifactId>micrometer-core</artifactId>
-        <version>1.10.5</version>
+        <version>1.17.2</version>
       </dependency>
       <dependency>
         <groupId>org.mock-server</groupId>
@@ -845,7 +845,7 @@
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
-        <version>3.26.3</version>
+        <version>3.27.7</version>
       </dependency>
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
