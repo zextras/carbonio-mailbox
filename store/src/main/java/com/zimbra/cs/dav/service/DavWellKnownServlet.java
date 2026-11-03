@@ -23,7 +23,7 @@ public class DavWellKnownServlet extends ZimbraServlet {
         addRemoteIpToLoggingContext(req);
         ZimbraLog.addUserAgentToContext(req.getHeader(DavProtocol.HEADER_USER_AGENT));
         String path = req.getPathInfo();
-        if (path.equalsIgnoreCase("/caldav") || path.equalsIgnoreCase("/carddav")) {
+        if (path != null && (path.equalsIgnoreCase("/caldav") || path.equalsIgnoreCase("/carddav"))) {
             resp.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
             resp.setHeader("Location", req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + DavServlet.DAV_PATH);
         } else {
