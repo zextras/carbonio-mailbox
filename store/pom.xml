@@ -60,7 +60,7 @@
     </dependency>
 
     <dependency>
-      <artifactId>micrometer-registry-prometheus</artifactId>
+      <artifactId>micrometer-registry-prometheus-simpleclient</artifactId>
       <groupId>io.micrometer</groupId>
     </dependency>
     <dependency>
