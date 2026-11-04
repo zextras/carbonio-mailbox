@@ -157,6 +157,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /config:
+    patch:
+      summary: Modify Global Config
+      description: Adds and removes values of multi-valued global config attributes
+        in a single LDAP modification. Only allowed attributes can be modified. Adding
+        a value already present or removing a missing one has no effect.
+      operationId: modifyConfig
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ModifyConfigRequest"
+      responses:
+        "204":
+          description: Global config modified
+        "400":
+          description: Invalid request or attribute not allowed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /cos/{id}:
     get:
       summary: Get COS
@@ -292,6 +319,21 @@ components:
           type: string
         cosId:
           type: string
+    ModifyConfigRequest:
+      type: object
+      properties:
+        add:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+        remove:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
     CosInfoResponse:
       type: object
       properties:

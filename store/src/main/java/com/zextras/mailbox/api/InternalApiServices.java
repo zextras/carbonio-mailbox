@@ -7,12 +7,15 @@
 package com.zextras.mailbox.api;
 
 import com.zextras.mailbox.api.rest.service.AccountService;
+import com.zextras.mailbox.api.rest.service.ConfigService;
 import com.zextras.mailbox.api.rest.service.CosService;
 import com.zextras.mailbox.api.rest.service.MailboxService;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.mailbox.MailboxManager;
+import java.util.Set;
 
 public final class InternalApiServices {
 
@@ -43,5 +46,10 @@ public final class InternalApiServices {
 
   public static CosService cosService() {
     return new CosService(Provisioning::getInstance);
+  }
+
+  public static ConfigService configService() {
+    return new ConfigService(
+        Provisioning::getInstance, Set.of(ZAttrProvisioning.A_carbonioClamAVDatabaseCustomURL));
   }
 }
