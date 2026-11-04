@@ -6,63 +6,67 @@
 
 package com.zextras.mailbox.api.rest.service;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-class AttributeChange {
+sealed interface AttributeChange {
 
-  private final String attribute;
-  private boolean replacing;
-  private final Set<String> replacement = new LinkedHashSet<>();
-  private final Set<String> added = new LinkedHashSet<>();
-  private final Set<String> removed = new LinkedHashSet<>();
+  record Replace(Set<String> values) implements AttributeChange {
 
-  AttributeChange(String attribute) {
-    this.attribute = attribute;
   }
 
-  void set(List<String> values) {
-    replacing = true;
-    replacement.clear();
-    replacement.addAll(values);
-    added.clear();
-    removed.clear();
+  record Delta(Set<String> added, Set<String> removed) implements AttributeChange {
+
   }
 
-  void unset() {
-    set(List.of());
+  static AttributeChange of(ConfigOperation operation) {
+    return switch (operation) {
+      case ConfigOperation.Set set -> new Replace(ordered(set.values()));
+      case ConfigOperation.Unset ignored -> new Replace(Set.of());
+      case ConfigOperation.Add add -> new Delta(ordered(add.values()), Set.of());
+      case ConfigOperation.Remove remove -> new Delta(Set.of(), ordered(remove.values()));
+    };
   }
 
-  void add(List<String> values) {
-    if (replacing) {
-      replacement.addAll(values);
-      return;
-    }
-    added.addAll(values);
-    values.forEach(removed::remove);
+  default AttributeChange then(AttributeChange next) {
+    return switch (next) {
+      case Replace replace -> replace;
+      case Delta delta -> switch (this) {
+        case Replace replace -> new Replace(union(minus(replace.values(), delta.removed()), delta.added()));
+        case Delta previous -> new Delta(
+            union(minus(previous.added(), delta.removed()), delta.added()),
+            union(minus(previous.removed(), delta.added()), delta.removed()));
+      };
+    };
   }
 
-  void remove(List<String> values) {
-    if (replacing) {
-      values.forEach(replacement::remove);
-      return;
-    }
-    removed.addAll(values);
-    values.forEach(added::remove);
+  default Map<String, Object> modifications(String attribute) {
+    return switch (this) {
+      case Replace replace -> Map.of(attribute, replace.values().isEmpty() ? "" : toArray(replace.values()));
+      case Delta delta -> Stream.of(Map.entry("+" + attribute, delta.added()), Map.entry("-" + attribute, delta.removed()))
+          .filter(entry -> !entry.getValue().isEmpty())
+          .collect(Collectors.toMap(Map.Entry::getKey, entry -> toArray(entry.getValue())));
+    };
   }
 
-  void putModifications(Map<String, Object> modifications) {
-    if (replacing) {
-      modifications.put(attribute, replacement.isEmpty() ? "" : replacement.toArray(String[]::new));
-      return;
-    }
-    if (!added.isEmpty()) {
-      modifications.put("+" + attribute, added.toArray(String[]::new));
-    }
-    if (!removed.isEmpty()) {
-      modifications.put("-" + attribute, removed.toArray(String[]::new));
-    }
+  private static Object toArray(Set<String> values) {
+    return values.toArray(String[]::new);
+  }
+
+  private static Set<String> ordered(Collection<String> values) {
+    return Collections.unmodifiableSet(new LinkedHashSet<>(values));
+  }
+
+  private static Set<String> minus(Set<String> values, Set<String> excluded) {
+    return ordered(values.stream().filter(value -> !excluded.contains(value)).toList());
+  }
+
+  private static Set<String> union(Set<String> first, Set<String> second) {
+    return ordered(Stream.concat(first.stream(), second.stream()).toList());
   }
 }

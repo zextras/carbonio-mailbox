@@ -165,7 +165,7 @@ paths:
         \ (one value for a single-valued attribute), 'unset' clears it, 'add' and\
         \ 'remove' change values of multi-valued attributes only. A later operation\
         \ on the same attribute builds on the earlier ones, so the last set wins.\
-        \ Only allowed attributes can be modified. Adding a value already present\
+        \ Attributes are validated by the LDAP schema. Adding a value already present\
         \ or removing a missing one has no effect."
       operationId: modifyConfig
       requestBody:
@@ -177,7 +177,7 @@ paths:
         "204":
           description: Global config modified
         "400":
-          description: Invalid request or attribute not allowed
+          description: Invalid request
           content:
             application/json:
               schema:

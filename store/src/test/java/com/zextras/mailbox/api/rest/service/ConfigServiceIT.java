@@ -42,8 +42,7 @@ class ConfigServiceIT {
 	@RegisterExtension
 	static final MailboxServerExtension server = new MailboxServerExtension();
 
-	private final ConfigService configService = new ConfigService(
-			Provisioning::getInstance, ConfigServiceIT::attributeManager, Set.of(CLAMAV_URL, SMTPD_BANNER));
+	private final ConfigService configService = new ConfigService(Provisioning::getInstance, ConfigServiceIT::attributeManager);
 
 	@Test
 	void addsSeveralValues() throws Exception {
@@ -224,18 +223,34 @@ class ConfigServiceIT {
 	}
 
 	@Test
-	void rejectsTheWholeRequestWhenAnAttributeIsNotAllowed() throws Exception {
+	void rejectsTheWholeRequestWhenAnOperationIsInvalid() throws Exception {
 		final List<String> before = clamavUrls();
 
-		final Try<Void> result = modify(add(CLAMAV_URL, signatureUrl()), add("zimbraMtaMyNetworks", "0.0.0.0/0"));
+		final Try<Void> result = modify(add(CLAMAV_URL, signatureUrl()), add(SMTPD_BANNER, "banner"));
 
 		assertInvalid(result);
 		assertEquals(before, clamavUrls());
 	}
 
 	@Test
-	void rejectsUnsettingAnAttributeThatIsNotAllowed() {
-		assertInvalid(modify(unset("zimbraMtaMyNetworks")));
+	void rejectsAnUnknownAttribute() {
+		assertInvalid(modify(set("carbonioNoSuchAttribute", "value")));
+	}
+
+	@Test
+	void rejectsAnAttributeThatIsNotPartOfTheGlobalConfig() {
+		assertInvalid(modify(set("zimbraMailQuota", "1024")));
+	}
+
+	@Test
+	void mergesOperationsOnTheSameAttributeSpelledDifferently() throws Exception {
+		final String url = signatureUrl();
+		addToConfig(url);
+
+		final Try<Void> result = modify(set(CLAMAV_URL.toLowerCase(), url), remove(CLAMAV_URL.toUpperCase(), url));
+
+		assertTrue(result.isSuccess());
+		assertTrue(clamavUrls().isEmpty());
 	}
 
 	@Test

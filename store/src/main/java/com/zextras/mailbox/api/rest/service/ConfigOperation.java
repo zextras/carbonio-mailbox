@@ -12,6 +12,15 @@ public sealed interface ConfigOperation {
 
   String attribute();
 
+  default ConfigOperation withAttribute(String attribute) {
+    return switch (this) {
+      case Set set -> new Set(attribute, set.values());
+      case Unset ignored -> new Unset(attribute);
+      case Add add -> new Add(attribute, add.values());
+      case Remove remove -> new Remove(attribute, remove.values());
+    };
+  }
+
   record Set(String attribute, List<String> values) implements ConfigOperation {
 
     public Set {

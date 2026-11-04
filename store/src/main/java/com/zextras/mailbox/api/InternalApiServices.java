@@ -10,13 +10,11 @@ import com.zextras.mailbox.api.rest.service.AccountService;
 import com.zextras.mailbox.api.rest.service.ConfigService;
 import com.zextras.mailbox.api.rest.service.CosService;
 import com.zextras.mailbox.api.rest.service.MailboxService;
-import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.StoreAttributeManager;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.mailbox.MailboxManager;
-import java.util.Set;
 
 public final class InternalApiServices {
 
@@ -58,7 +56,6 @@ public final class InternalApiServices {
           } catch (ServiceException e) {
             throw new InternalApiInitializationException(e);
           }
-        },
-        Set.of(ZAttrProvisioning.A_carbonioClamAVDatabaseCustomURL));
+        });
   }
 }

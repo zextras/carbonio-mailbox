@@ -69,12 +69,39 @@ class ConfigResourceIT {
 	}
 
 	@Test
-	void rejectsAnAttributeThatIsNotAllowed() throws Exception {
+	void rejectsAddingToASingleValuedAttribute() throws Exception {
 		final Response response = patchConfig(operations(
-				"{\"attribute\": \"zimbraMtaMyNetworks\", \"op\": \"add\", \"values\": [\"0.0.0.0/0\"]}"));
+				"{\"attribute\": \"zimbraMtaSmtpdBanner\", \"op\": \"add\", \"values\": [\"banner\"]}"));
 
 		assertEquals(400, response.statusCode());
-		assertThatJson(response.body()).node("error").asString().contains("zimbraMtaMyNetworks");
+		assertThatJson(response.body()).node("error").asString().contains("zimbraMtaSmtpdBanner");
+	}
+
+	@Test
+	void rejectsAnUnknownAttribute() throws Exception {
+		final Response response = patchConfig(operations(
+				"{\"attribute\": \"carbonioNoSuchAttribute\", \"op\": \"set\", \"values\": [\"value\"]}"));
+
+		assertEquals(400, response.statusCode());
+		assertThatJson(response.body()).node("error").asString().contains("carbonioNoSuchAttribute");
+	}
+
+	@Test
+	void rejectsAnImmutableAttribute() throws Exception {
+		final Response response = patchConfig(operations(
+				"{\"attribute\": \"zimbraMtaAuthURL\", \"op\": \"set\", \"values\": [\"http://localhost\"]}"));
+
+		assertEquals(400, response.statusCode());
+		assertThatJson(response.body()).node("error").asString().contains("zimbraMtaAuthURL");
+	}
+
+	@Test
+	void rejectsAnInvalidValue() throws Exception {
+		final Response response = patchConfig(operations(
+				"{\"attribute\": \"zimbraMtaDnsLookupsEnabled\", \"op\": \"set\", \"values\": [\"maybe\"]}"));
+
+		assertEquals(400, response.statusCode());
+		assertThatJson(response.body()).node("error").asString().contains("zimbraMtaDnsLookupsEnabled");
 	}
 
 	@Test
