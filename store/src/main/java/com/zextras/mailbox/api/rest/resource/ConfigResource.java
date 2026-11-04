@@ -8,6 +8,7 @@ package com.zextras.mailbox.api.rest.resource;
 
 import com.zextras.mailbox.api.rest.resource.dto.ModifyConfigRequest;
 import com.zextras.mailbox.api.rest.response.ErrorResponse;
+import com.zextras.mailbox.api.rest.service.ConfigChanges;
 import com.zextras.mailbox.api.rest.service.ConfigService;
 import com.zextras.mailbox.api.rest.service.InvalidConfigModificationException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,7 +34,7 @@ public class ConfigResource {
 	@PATCH
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@Operation(summary = "Modify Global Config", description = "Adds and removes values of multi-valued global config attributes in a single LDAP modification. Only allowed attributes can be modified. Adding a value already present or removing a missing one has no effect.")
+	@Operation(summary = "Modify Global Config", description = "Modifies global config attributes in a single LDAP modification. 'set' replaces all values of an attribute (one value for a single-valued attribute), 'unset' clears it, 'add' and 'remove' change values of multi-valued attributes only. An attribute set or unset cannot appear in another operation. Only allowed attributes can be modified. Adding a value already present or removing a missing one has no effect.")
 	@ApiResponse(responseCode = "204", description = "Global config modified")
 	@ApiResponse(responseCode = "400", description = "Invalid request or attribute not allowed",
 			content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
@@ -45,7 +46,8 @@ public class ConfigResource {
 					.entity(new ErrorResponse("Missing request body"))
 					.build();
 		}
-		return configService.modifyConfig(request.add(), request.remove())
+		return configService.modifyConfig(
+				new ConfigChanges(request.set(), request.unset(), request.add(), request.remove()))
 				.map(ignored -> Response.noContent().build())
 				.recover(ConfigResource::toErrorResponse)
 				.get();

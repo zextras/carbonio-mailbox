@@ -12,6 +12,7 @@ import com.zextras.mailbox.api.rest.service.CosService;
 import com.zextras.mailbox.api.rest.service.MailboxService;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.account.StoreAttributeManager;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -50,6 +51,14 @@ public final class InternalApiServices {
 
   public static ConfigService configService() {
     return new ConfigService(
-        Provisioning::getInstance, Set.of(ZAttrProvisioning.A_carbonioClamAVDatabaseCustomURL));
+        Provisioning::getInstance,
+        () -> {
+          try {
+            return StoreAttributeManager.getInstance();
+          } catch (ServiceException e) {
+            throw new InternalApiInitializationException(e);
+          }
+        },
+        Set.of(ZAttrProvisioning.A_carbonioClamAVDatabaseCustomURL));
   }
 }

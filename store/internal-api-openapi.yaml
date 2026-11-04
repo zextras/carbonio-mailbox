@@ -160,9 +160,12 @@ paths:
   /config:
     patch:
       summary: Modify Global Config
-      description: Adds and removes values of multi-valued global config attributes
-        in a single LDAP modification. Only allowed attributes can be modified. Adding
-        a value already present or removing a missing one has no effect.
+      description: "Modifies global config attributes in a single LDAP modification.\
+        \ 'set' replaces all values of an attribute (one value for a single-valued\
+        \ attribute), 'unset' clears it, 'add' and 'remove' change values of multi-valued\
+        \ attributes only. An attribute set or unset cannot appear in another operation.\
+        \ Only allowed attributes can be modified. Adding a value already present\
+        \ or removing a missing one has no effect."
       operationId: modifyConfig
       requestBody:
         content:
@@ -322,6 +325,16 @@ components:
     ModifyConfigRequest:
       type: object
       properties:
+        set:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+        unset:
+          type: array
+          items:
+            type: string
         add:
           type: object
           additionalProperties:

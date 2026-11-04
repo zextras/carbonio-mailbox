@@ -47,6 +47,36 @@ class ConfigResourceIT {
 	}
 
 	@Test
+	void setReplacesAllValues() throws Exception {
+		addToConfig(signatureUrl());
+		final String url = signatureUrl();
+
+		final Response response = patchConfig(String.format("{\"set\": {\"%s\": [\"%s\"]}}", CLAMAV_URL, url));
+
+		assertEquals(204, response.statusCode());
+		assertEquals(List.of(url), configValues());
+	}
+
+	@Test
+	void unsetClearsTheAttribute() throws Exception {
+		addToConfig(signatureUrl());
+
+		final Response response = patchConfig(String.format("{\"unset\": [\"%s\"]}", CLAMAV_URL));
+
+		assertEquals(204, response.statusCode());
+		assertTrue(configValues().isEmpty());
+	}
+
+	@Test
+	void rejectsAnAttributeInMoreThanOneOperation() throws Exception {
+		final Response response = patchConfig(String.format(
+				"{\"unset\": [\"%1$s\"], \"add\": {\"%1$s\": [\"%2$s\"]}}", CLAMAV_URL, signatureUrl()));
+
+		assertEquals(400, response.statusCode());
+		assertThatJson(response.body()).node("error").asString().contains(CLAMAV_URL);
+	}
+
+	@Test
 	void rejectsAnAttributeThatIsNotAllowed() throws Exception {
 		final Response response = patchConfig(
 				"{\"add\": {\"zimbraMtaMyNetworks\": [\"0.0.0.0/0\"]}}");
