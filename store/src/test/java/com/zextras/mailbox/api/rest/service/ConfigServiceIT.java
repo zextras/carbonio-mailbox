@@ -6,6 +6,10 @@
 
 package com.zextras.mailbox.api.rest.service;
 
+import static com.zextras.mailbox.api.rest.service.ConfigOperation.add;
+import static com.zextras.mailbox.api.rest.service.ConfigOperation.remove;
+import static com.zextras.mailbox.api.rest.service.ConfigOperation.set;
+import static com.zextras.mailbox.api.rest.service.ConfigOperation.unset;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -20,6 +24,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.StoreAttributeManager;
 import io.vavr.control.Try;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,7 +50,7 @@ class ConfigServiceIT {
 		final String first = signatureUrl();
 		final String second = signatureUrl();
 
-		final Try<Void> result = configService.modifyConfig(add(CLAMAV_URL, first, second));
+		final Try<Void> result = modify(add(CLAMAV_URL, first, second));
 
 		assertTrue(result.isSuccess());
 		assertTrue(clamavUrls().containsAll(List.of(first, second)));
@@ -57,8 +62,7 @@ class ConfigServiceIT {
 		final String added = signatureUrl();
 		addToConfig(removed);
 
-		final Try<Void> result = configService.modifyConfig(
-				new ConfigChanges(null, null, Map.of(CLAMAV_URL, List.of(added)), Map.of(CLAMAV_URL, List.of(removed))));
+		final Try<Void> result = modify(add(CLAMAV_URL, added), remove(CLAMAV_URL, removed));
 
 		assertTrue(result.isSuccess());
 		assertTrue(clamavUrls().contains(added));
@@ -71,7 +75,7 @@ class ConfigServiceIT {
 		final String removed = signatureUrl();
 		addToConfig(kept, removed);
 
-		final Try<Void> result = configService.modifyConfig(remove(CLAMAV_URL, removed));
+		final Try<Void> result = modify(remove(CLAMAV_URL, removed));
 
 		assertTrue(result.isSuccess());
 		assertTrue(clamavUrls().contains(kept));
@@ -83,17 +87,17 @@ class ConfigServiceIT {
 		final String url = signatureUrl();
 		addToConfig(url);
 
-		final Try<Void> result = configService.modifyConfig(add(CLAMAV_URL, url));
+		final Try<Void> result = modify(add(CLAMAV_URL, url));
 
 		assertTrue(result.isSuccess());
-		assertEquals(1, clamavUrls().stream().filter(url::equals).count());
+		assertEquals(1, Collections.frequency(clamavUrls(), url));
 	}
 
 	@Test
 	void ignoresTheRemovalOfAMissingValue() throws Exception {
 		final String url = signatureUrl();
 
-		final Try<Void> result = configService.modifyConfig(remove(CLAMAV_URL, url));
+		final Try<Void> result = modify(remove(CLAMAV_URL, url));
 
 		assertTrue(result.isSuccess());
 		assertFalse(clamavUrls().contains(url));
@@ -105,7 +109,7 @@ class ConfigServiceIT {
 		final String first = signatureUrl();
 		final String second = signatureUrl();
 
-		final Try<Void> result = configService.modifyConfig(set(CLAMAV_URL, first, second));
+		final Try<Void> result = modify(set(CLAMAV_URL, first, second));
 
 		assertTrue(result.isSuccess());
 		assertEquals(Set.of(first, second), Set.copyOf(clamavUrls()));
@@ -115,75 +119,115 @@ class ConfigServiceIT {
 	void setsASingleValuedAttribute() throws Exception {
 		final String banner = "banner " + UUID.randomUUID();
 
-		final Try<Void> result = configService.modifyConfig(set(SMTPD_BANNER, banner));
+		final Try<Void> result = modify(set(SMTPD_BANNER, banner));
 
 		assertTrue(result.isSuccess());
-		assertEquals(banner, Provisioning.getInstance().getConfig().getAttr(SMTPD_BANNER));
+		assertEquals(banner, smtpdBanner());
 	}
 
 	@Test
 	void unsetsAnAttribute() throws Exception {
-		configService.modifyConfig(set(SMTPD_BANNER, "banner")).get();
+		modify(set(SMTPD_BANNER, "banner")).get();
 
-		final Try<Void> result = configService.modifyConfig(unset(SMTPD_BANNER));
+		final Try<Void> result = modify(unset(SMTPD_BANNER));
 
 		assertTrue(result.isSuccess());
-		assertNull(Provisioning.getInstance().getConfig().getAttr(SMTPD_BANNER));
+		assertNull(smtpdBanner());
 	}
 
 	@Test
 	void unsetsAllValuesOfAMultiValuedAttribute() throws Exception {
 		addToConfig(signatureUrl(), signatureUrl());
 
-		final Try<Void> result = configService.modifyConfig(unset(CLAMAV_URL));
+		final Try<Void> result = modify(unset(CLAMAV_URL));
 
 		assertTrue(result.isSuccess());
 		assertTrue(clamavUrls().isEmpty());
 	}
 
 	@Test
-	void rejectsSeveralValuesForASingleValuedAttribute() {
-		final Try<Void> result = configService.modifyConfig(set(SMTPD_BANNER, "first", "second"));
+	void theLastSetWins() throws Exception {
+		final Try<Void> result = modify(set(SMTPD_BANNER, "first"), set(SMTPD_BANNER, "last"));
 
-		assertInvalid(result);
+		assertTrue(result.isSuccess());
+		assertEquals("last", smtpdBanner());
+	}
+
+	@Test
+	void addAfterSetExtendsTheReplacement() throws Exception {
+		addToConfig(signatureUrl());
+		final String first = signatureUrl();
+		final String second = signatureUrl();
+
+		final Try<Void> result = modify(set(CLAMAV_URL, first), add(CLAMAV_URL, second));
+
+		assertTrue(result.isSuccess());
+		assertEquals(Set.of(first, second), Set.copyOf(clamavUrls()));
+	}
+
+	@Test
+	void removeAfterAddRemovesAValueAlreadyPresent() throws Exception {
+		final String url = signatureUrl();
+		addToConfig(url);
+
+		final Try<Void> result = modify(add(CLAMAV_URL, url), remove(CLAMAV_URL, url));
+
+		assertTrue(result.isSuccess());
+		assertFalse(clamavUrls().contains(url));
+	}
+
+	@Test
+	void addAfterRemoveKeepsTheValue() throws Exception {
+		final String url = signatureUrl();
+		addToConfig(url);
+
+		final Try<Void> result = modify(remove(CLAMAV_URL, url), add(CLAMAV_URL, url));
+
+		assertTrue(result.isSuccess());
+		assertTrue(clamavUrls().contains(url));
+	}
+
+	@Test
+	void addAfterUnsetLeavesOnlyTheAddedValue() throws Exception {
+		addToConfig(signatureUrl());
+		final String url = signatureUrl();
+
+		final Try<Void> result = modify(unset(CLAMAV_URL), add(CLAMAV_URL, url));
+
+		assertTrue(result.isSuccess());
+		assertEquals(List.of(url), clamavUrls());
+	}
+
+	@Test
+	void matchesTheAttributeIgnoringCase() throws Exception {
+		final String url = signatureUrl();
+
+		final Try<Void> result = modify(add(CLAMAV_URL.toUpperCase(), url));
+
+		assertTrue(result.isSuccess());
+		assertTrue(clamavUrls().contains(url));
+	}
+
+	@Test
+	void rejectsSeveralValuesForASingleValuedAttribute() {
+		assertInvalid(modify(set(SMTPD_BANNER, "first", "second")));
 	}
 
 	@Test
 	void rejectsAddingToASingleValuedAttribute() {
-		final Try<Void> result = configService.modifyConfig(add(SMTPD_BANNER, "banner"));
-
-		assertInvalid(result);
+		assertInvalid(modify(add(SMTPD_BANNER, "banner")));
 	}
 
 	@Test
 	void rejectsRemovingFromASingleValuedAttribute() {
-		final Try<Void> result = configService.modifyConfig(remove(SMTPD_BANNER, "banner"));
-
-		assertInvalid(result);
+		assertInvalid(modify(remove(SMTPD_BANNER, "banner")));
 	}
 
 	@Test
-	void rejectsAnAttributeSetAndChangedByValue() {
-		final Try<Void> result = configService.modifyConfig(new ConfigChanges(
-				Map.of(CLAMAV_URL, List.of(signatureUrl())), null, Map.of(CLAMAV_URL, List.of(signatureUrl())), null));
-
-		assertInvalid(result);
-	}
-
-	@Test
-	void rejectsAnAttributeSetAndUnset() {
-		final Try<Void> result = configService.modifyConfig(new ConfigChanges(
-				Map.of(SMTPD_BANNER, List.of("banner")), List.of(SMTPD_BANNER), null, null));
-
-		assertInvalid(result);
-	}
-
-	@Test
-	void rejectsAnAttributeThatIsNotAllowed() throws Exception {
+	void rejectsTheWholeRequestWhenAnAttributeIsNotAllowed() throws Exception {
 		final List<String> before = clamavUrls();
 
-		final Try<Void> result = configService.modifyConfig(new ConfigChanges(
-				null, null, Map.of(CLAMAV_URL, List.of(signatureUrl()), "zimbraMtaMyNetworks", List.of("0.0.0.0/0")), null));
+		final Try<Void> result = modify(add(CLAMAV_URL, signatureUrl()), add("zimbraMtaMyNetworks", "0.0.0.0/0"));
 
 		assertInvalid(result);
 		assertEquals(before, clamavUrls());
@@ -191,56 +235,41 @@ class ConfigServiceIT {
 
 	@Test
 	void rejectsUnsettingAnAttributeThatIsNotAllowed() {
-		final Try<Void> result = configService.modifyConfig(unset("zimbraMtaMyNetworks"));
-
-		assertInvalid(result);
+		assertInvalid(modify(unset("zimbraMtaMyNetworks")));
 	}
 
 	@Test
-	void rejectsTheSameValueAddedAndRemoved() {
-		final String url = signatureUrl();
+	void rejectsAnUnknownOperation() {
+		assertInvalid(modify(new ConfigOperation(CLAMAV_URL, "replace", List.of(signatureUrl()))));
+	}
 
-		final Try<Void> result = configService.modifyConfig(
-				new ConfigChanges(null, null, Map.of(CLAMAV_URL, List.of(url)), Map.of(CLAMAV_URL, List.of(url))));
+	@Test
+	void rejectsAMissingAttribute() {
+		assertInvalid(modify(new ConfigOperation(null, "add", List.of(signatureUrl()))));
+	}
 
-		assertInvalid(result);
+	@Test
+	void rejectsValuesForUnset() {
+		assertInvalid(modify(new ConfigOperation(CLAMAV_URL, "unset", List.of(signatureUrl()))));
 	}
 
 	@Test
 	void rejectsABlankValue() {
-		final Try<Void> result = configService.modifyConfig(set(SMTPD_BANNER, " "));
-
-		assertInvalid(result);
+		assertInvalid(modify(set(SMTPD_BANNER, " ")));
 	}
 
 	@Test
 	void rejectsAnEmptyListOfValues() {
-		final Try<Void> result = configService.modifyConfig(remove(CLAMAV_URL));
-
-		assertInvalid(result);
+		assertInvalid(modify(remove(CLAMAV_URL)));
 	}
 
 	@Test
 	void rejectsNothingToModify() {
-		final Try<Void> result = configService.modifyConfig(new ConfigChanges(Map.of(), List.of(), null, null));
-
-		assertInvalid(result);
+		assertInvalid(configService.modifyConfig(List.of()));
 	}
 
-	private static ConfigChanges set(String attribute, String... values) {
-		return new ConfigChanges(Map.of(attribute, List.of(values)), null, null, null);
-	}
-
-	private static ConfigChanges unset(String attribute) {
-		return new ConfigChanges(null, List.of(attribute), null, null);
-	}
-
-	private static ConfigChanges add(String attribute, String... values) {
-		return new ConfigChanges(null, null, Map.of(attribute, List.of(values)), null);
-	}
-
-	private static ConfigChanges remove(String attribute, String... values) {
-		return new ConfigChanges(null, null, null, Map.of(attribute, List.of(values)));
+	private Try<Void> modify(ConfigOperation... operations) {
+		return configService.modifyConfig(List.of(operations));
 	}
 
 	private static void assertInvalid(Try<Void> result) {
@@ -267,5 +296,9 @@ class ConfigServiceIT {
 
 	private static List<String> clamavUrls() throws ServiceException {
 		return Arrays.asList(Provisioning.getInstance().getConfig().getMultiAttr(CLAMAV_URL));
+	}
+
+	private static String smtpdBanner() throws ServiceException {
+		return Provisioning.getInstance().getConfig().getAttr(SMTPD_BANNER);
 	}
 }

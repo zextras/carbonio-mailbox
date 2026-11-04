@@ -160,10 +160,11 @@ paths:
   /config:
     patch:
       summary: Modify Global Config
-      description: "Modifies global config attributes in a single LDAP modification.\
-        \ 'set' replaces all values of an attribute (one value for a single-valued\
-        \ attribute), 'unset' clears it, 'add' and 'remove' change values of multi-valued\
-        \ attributes only. An attribute set or unset cannot appear in another operation.\
+      description: "Applies the operations in order, like an LDAP modify request,\
+        \ as a single LDAP modification. 'set' replaces all values of an attribute\
+        \ (one value for a single-valued attribute), 'unset' clears it, 'add' and\
+        \ 'remove' change values of multi-valued attributes only. A later operation\
+        \ on the same attribute builds on the earlier ones, so the last set wins.\
         \ Only allowed attributes can be modified. Adding a value already present\
         \ or removing a missing one has no effect."
       operationId: modifyConfig
@@ -322,31 +323,33 @@ components:
           type: string
         cosId:
           type: string
+    ConfigOperationRequest:
+      type: object
+      properties:
+        attribute:
+          type: string
+          description: Global config attribute name
+        op:
+          type: string
+          description: Operation
+          enum:
+          - set
+          - unset
+          - add
+          - remove
+        values:
+          type: array
+          description: "Values for set, add and remove; absent for unset"
+          items:
+            type: string
+            description: "Values for set, add and remove; absent for unset"
     ModifyConfigRequest:
       type: object
       properties:
-        set:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-        unset:
+        operations:
           type: array
           items:
-            type: string
-        add:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-        remove:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
+            $ref: "#/components/schemas/ConfigOperationRequest"
     CosInfoResponse:
       type: object
       properties:

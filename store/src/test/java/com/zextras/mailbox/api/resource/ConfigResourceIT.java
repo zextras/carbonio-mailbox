@@ -32,18 +32,18 @@ class ConfigResourceIT {
 	static final MailboxServerExtension server = new MailboxServerExtension();
 
 	@Test
-	void addsAndRemovesValues() throws Exception {
+	void appliesTheOperations() throws Exception {
 		final String oldUrl = signatureUrl();
 		final String newUrl = signatureUrl();
 		addToConfig(oldUrl);
 
-		final Response response = patchConfig(String.format(
-				"{\"add\": {\"%1$s\": [\"%2$s\"]}, \"remove\": {\"%1$s\": [\"%3$s\"]}}", CLAMAV_URL, newUrl, oldUrl));
+		final Response response = patchConfig(operations(
+				operation("add", newUrl),
+				operation("remove", oldUrl)));
 
 		assertEquals(204, response.statusCode());
-		final List<String> urls = configValues();
-		assertTrue(urls.contains(newUrl));
-		assertFalse(urls.contains(oldUrl));
+		assertTrue(configValues().contains(newUrl));
+		assertFalse(configValues().contains(oldUrl));
 	}
 
 	@Test
@@ -51,7 +51,7 @@ class ConfigResourceIT {
 		addToConfig(signatureUrl());
 		final String url = signatureUrl();
 
-		final Response response = patchConfig(String.format("{\"set\": {\"%s\": [\"%s\"]}}", CLAMAV_URL, url));
+		final Response response = patchConfig(operations(operation("set", url)));
 
 		assertEquals(204, response.statusCode());
 		assertEquals(List.of(url), configValues());
@@ -61,28 +61,28 @@ class ConfigResourceIT {
 	void unsetClearsTheAttribute() throws Exception {
 		addToConfig(signatureUrl());
 
-		final Response response = patchConfig(String.format("{\"unset\": [\"%s\"]}", CLAMAV_URL));
+		final Response response = patchConfig(operations(String.format(
+				"{\"attribute\": \"%s\", \"op\": \"unset\"}", CLAMAV_URL)));
 
 		assertEquals(204, response.statusCode());
 		assertTrue(configValues().isEmpty());
 	}
 
 	@Test
-	void rejectsAnAttributeInMoreThanOneOperation() throws Exception {
-		final Response response = patchConfig(String.format(
-				"{\"unset\": [\"%1$s\"], \"add\": {\"%1$s\": [\"%2$s\"]}}", CLAMAV_URL, signatureUrl()));
-
-		assertEquals(400, response.statusCode());
-		assertThatJson(response.body()).node("error").asString().contains(CLAMAV_URL);
-	}
-
-	@Test
 	void rejectsAnAttributeThatIsNotAllowed() throws Exception {
-		final Response response = patchConfig(
-				"{\"add\": {\"zimbraMtaMyNetworks\": [\"0.0.0.0/0\"]}}");
+		final Response response = patchConfig(operations(
+				"{\"attribute\": \"zimbraMtaMyNetworks\", \"op\": \"add\", \"values\": [\"0.0.0.0/0\"]}"));
 
 		assertEquals(400, response.statusCode());
 		assertThatJson(response.body()).node("error").asString().contains("zimbraMtaMyNetworks");
+	}
+
+	@Test
+	void rejectsAnUnknownOperation() throws Exception {
+		final Response response = patchConfig(operations(operation("replace", signatureUrl())));
+
+		assertEquals(400, response.statusCode());
+		assertThatJson(response.body()).node("error").asString().contains("replace");
 	}
 
 	@Test
@@ -94,6 +94,14 @@ class ConfigResourceIT {
 
 	private static Response patchConfig(String body) throws Exception {
 		return server.getHttpClient().patch(server.getInternalApiEndpoint() + "/config", body);
+	}
+
+	private static String operations(String... operations) {
+		return "{\"operations\": [" + String.join(", ", operations) + "]}";
+	}
+
+	private static String operation(String op, String url) {
+		return String.format("{\"attribute\": \"%s\", \"op\": \"%s\", \"values\": [\"%s\"]}", CLAMAV_URL, op, url);
 	}
 
 	private static String signatureUrl() {
