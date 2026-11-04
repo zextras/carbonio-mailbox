@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.vavr.control.Try;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PATCH;
@@ -48,7 +49,8 @@ public class ConfigResource {
 					.entity(new ErrorResponse("Missing request body"))
 					.build();
 		}
-		return configService.modifyConfig(toOperations(request))
+		return Try.of(() -> toOperations(request))
+				.flatMap(configService::modifyConfig)
 				.map(ignored -> Response.noContent().build())
 				.recover(ConfigResource::toErrorResponse)
 				.get();
@@ -58,13 +60,14 @@ public class ConfigResource {
 		if (request.operations() == null) {
 			return List.of();
 		}
-		return request.operations().stream()
-				.map(operation -> operation == null ? null : toOperation(operation))
-				.toList();
+		return request.operations().stream().map(ConfigResource::toOperation).toList();
 	}
 
 	private static ConfigOperation toOperation(ConfigOperationRequest operation) {
-		return new ConfigOperation(operation.attribute(), operation.op(), operation.values());
+		if (operation == null) {
+			throw new InvalidConfigModificationException("Missing operation");
+		}
+		return operation.toOperation();
 	}
 
 	private static Response toErrorResponse(Throwable e) {

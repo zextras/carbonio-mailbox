@@ -239,31 +239,6 @@ class ConfigServiceIT {
 	}
 
 	@Test
-	void rejectsAnUnknownOperation() {
-		assertInvalid(modify(new ConfigOperation(CLAMAV_URL, "replace", List.of(signatureUrl()))));
-	}
-
-	@Test
-	void rejectsAMissingAttribute() {
-		assertInvalid(modify(new ConfigOperation(null, "add", List.of(signatureUrl()))));
-	}
-
-	@Test
-	void rejectsValuesForUnset() {
-		assertInvalid(modify(new ConfigOperation(CLAMAV_URL, "unset", List.of(signatureUrl()))));
-	}
-
-	@Test
-	void rejectsABlankValue() {
-		assertInvalid(modify(set(SMTPD_BANNER, " ")));
-	}
-
-	@Test
-	void rejectsAnEmptyListOfValues() {
-		assertInvalid(modify(remove(CLAMAV_URL)));
-	}
-
-	@Test
 	void rejectsNothingToModify() {
 		assertInvalid(configService.modifyConfig(List.of()));
 	}

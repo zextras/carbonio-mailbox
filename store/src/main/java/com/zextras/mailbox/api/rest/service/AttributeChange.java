@@ -14,7 +14,8 @@ import java.util.Set;
 class AttributeChange {
 
   private final String attribute;
-  private Set<String> replacement;
+  private boolean replacing;
+  private final Set<String> replacement = new LinkedHashSet<>();
   private final Set<String> added = new LinkedHashSet<>();
   private final Set<String> removed = new LinkedHashSet<>();
 
@@ -23,7 +24,9 @@ class AttributeChange {
   }
 
   void set(List<String> values) {
-    replacement = new LinkedHashSet<>(values);
+    replacing = true;
+    replacement.clear();
+    replacement.addAll(values);
     added.clear();
     removed.clear();
   }
@@ -33,7 +36,7 @@ class AttributeChange {
   }
 
   void add(List<String> values) {
-    if (replacement != null) {
+    if (replacing) {
       replacement.addAll(values);
       return;
     }
@@ -42,7 +45,7 @@ class AttributeChange {
   }
 
   void remove(List<String> values) {
-    if (replacement != null) {
+    if (replacing) {
       values.forEach(replacement::remove);
       return;
     }
@@ -51,7 +54,7 @@ class AttributeChange {
   }
 
   void putModifications(Map<String, Object> modifications) {
-    if (replacement != null) {
+    if (replacing) {
       modifications.put(attribute, replacement.isEmpty() ? "" : replacement.toArray(String[]::new));
       return;
     }

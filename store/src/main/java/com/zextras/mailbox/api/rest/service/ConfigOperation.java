@@ -8,21 +8,48 @@ package com.zextras.mailbox.api.rest.service;
 
 import java.util.List;
 
-public record ConfigOperation(String attribute, String op, List<String> values) {
+public sealed interface ConfigOperation {
 
-  public static ConfigOperation set(String attribute, String... values) {
-    return new ConfigOperation(attribute, "set", List.of(values));
+  String attribute();
+
+  record Set(String attribute, List<String> values) implements ConfigOperation {
+
+    public Set {
+      values = List.copyOf(values);
+    }
   }
 
-  public static ConfigOperation unset(String attribute) {
-    return new ConfigOperation(attribute, "unset", null);
+  record Unset(String attribute) implements ConfigOperation {
+
   }
 
-  public static ConfigOperation add(String attribute, String... values) {
-    return new ConfigOperation(attribute, "add", List.of(values));
+  record Add(String attribute, List<String> values) implements ConfigOperation {
+
+    public Add {
+      values = List.copyOf(values);
+    }
   }
 
-  public static ConfigOperation remove(String attribute, String... values) {
-    return new ConfigOperation(attribute, "remove", List.of(values));
+  record Remove(String attribute, List<String> values) implements ConfigOperation {
+
+    public Remove {
+      values = List.copyOf(values);
+    }
+  }
+
+  static ConfigOperation set(String attribute, String... values) {
+    return new Set(attribute, List.of(values));
+  }
+
+  static ConfigOperation unset(String attribute) {
+    return new Unset(attribute);
+  }
+
+  static ConfigOperation add(String attribute, String... values) {
+    return new Add(attribute, List.of(values));
+  }
+
+  static ConfigOperation remove(String attribute, String... values) {
+    return new Remove(attribute, List.of(values));
   }
 }

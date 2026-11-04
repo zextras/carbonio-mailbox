@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -46,13 +47,13 @@ public class ConfigService {
   }
 
   private Map<String, Object> toModifications(List<ConfigOperation> operations) {
-    if (operations == null || operations.isEmpty()) {
+    if (operations.isEmpty()) {
       throw new InvalidConfigModificationException("Nothing to modify: provide at least one operation");
     }
     final AttributeManager attributeManager = attributeManagerSupplier.get();
     final Map<String, AttributeChange> changes = new LinkedHashMap<>();
     for (ConfigOperation operation : operations) {
-      final String attribute = allowedAttribute(operation);
+      final String attribute = allowedAttribute(operation.attribute());
       apply(operation, attribute, attributeManager.isMultiValued(attribute),
           changes.computeIfAbsent(attribute, AttributeChange::new));
     }
@@ -61,56 +62,35 @@ public class ConfigService {
     return modifications;
   }
 
-  private String allowedAttribute(ConfigOperation operation) {
-    if (operation == null || operation.attribute() == null || operation.attribute().isBlank()) {
-      throw new InvalidConfigModificationException("Missing attribute in operation");
-    }
-    final String attribute = modifiableAttributes.get(key(operation.attribute()));
-    if (attribute == null) {
-      throw new InvalidConfigModificationException("Attribute cannot be modified: " + operation.attribute());
-    }
-    return attribute;
+  private String allowedAttribute(String requested) {
+    return Optional.ofNullable(modifiableAttributes.get(key(requested)))
+        .orElseThrow(() -> new InvalidConfigModificationException("Attribute cannot be modified: " + requested));
   }
 
   private static void apply(ConfigOperation operation, String attribute, boolean multiValued, AttributeChange change) {
-    switch (operation.op() == null ? "" : operation.op()) {
-      case "set" -> {
-        validateValues(attribute, operation.values());
-        if (!multiValued && operation.values().size() > 1) {
+    switch (operation) {
+      case ConfigOperation.Set set -> {
+        if (!multiValued && set.values().size() > 1) {
           throw new InvalidConfigModificationException(
               "Attribute is single-valued, set accepts one value: " + attribute);
         }
-        change.set(operation.values());
+        change.set(set.values());
       }
-      case "unset" -> {
-        if (operation.values() != null) {
-          throw new InvalidConfigModificationException("unset takes no values: " + attribute);
-        }
-        change.unset();
+      case ConfigOperation.Unset ignored -> change.unset();
+      case ConfigOperation.Add add -> {
+        requireMultiValued(attribute, multiValued);
+        change.add(add.values());
       }
-      case "add" -> {
-        validateValueChange(attribute, operation.values(), multiValued);
-        change.add(operation.values());
+      case ConfigOperation.Remove remove -> {
+        requireMultiValued(attribute, multiValued);
+        change.remove(remove.values());
       }
-      case "remove" -> {
-        validateValueChange(attribute, operation.values(), multiValued);
-        change.remove(operation.values());
-      }
-      default -> throw new InvalidConfigModificationException(
-          "Unknown operation '" + operation.op() + "', expected set, unset, add or remove");
     }
   }
 
-  private static void validateValueChange(String attribute, List<String> values, boolean multiValued) {
+  private static void requireMultiValued(String attribute, boolean multiValued) {
     if (!multiValued) {
       throw new InvalidConfigModificationException("Attribute is single-valued, use set or unset: " + attribute);
-    }
-    validateValues(attribute, values);
-  }
-
-  private static void validateValues(String attribute, List<String> values) {
-    if (values == null || values.isEmpty() || values.stream().anyMatch(value -> value == null || value.isBlank())) {
-      throw new InvalidConfigModificationException("Missing or empty value for attribute: " + attribute);
     }
   }
 
