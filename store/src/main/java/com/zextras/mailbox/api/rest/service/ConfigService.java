@@ -13,14 +13,12 @@ import com.zimbra.cs.account.AttributeInfo;
 import com.zimbra.cs.account.AttributeManager;
 import com.zimbra.cs.account.Provisioning;
 import io.vavr.control.Try;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ConfigService {
@@ -50,12 +48,9 @@ public class ConfigService {
       throw new InvalidConfigModificationException("Nothing to modify: provide at least one operation");
     }
     final AttributeManager attributeManager = attributeManagerSupplier.get();
-    return operations.stream()
+    return ConfigModifications.of(operations.stream()
         .map(operation -> checked(operation, attributeManager))
-        .collect(Collectors.toMap(ConfigOperation::attribute, AttributeChange::of, AttributeChange::then, LinkedHashMap::new))
-        .entrySet().stream()
-        .flatMap(entry -> entry.getValue().modifications(entry.getKey()).entrySet().stream())
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        .toList());
   }
 
   private static ConfigOperation checked(ConfigOperation operation, AttributeManager attributeManager) {
