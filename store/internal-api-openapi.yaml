@@ -157,6 +157,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /config:
+    patch:
+      summary: Modify Global Config
+      description: "Applies the operations in order, like an LDAP modify request,\
+        \ as a single LDAP modification. 'set' replaces all values of an attribute\
+        \ (one value for a single-valued attribute), 'unset' clears it, 'add' and\
+        \ 'remove' change values of multi-valued attributes only. A later operation\
+        \ on the same attribute builds on the earlier ones, so the last set wins.\
+        \ Attributes are validated by the LDAP schema. Adding a value already present\
+        \ or removing a missing one has no effect."
+      operationId: modifyConfig
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ModifyConfigRequest"
+      responses:
+        "204":
+          description: Global config modified
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /cos/{id}:
     get:
       summary: Get COS
@@ -292,6 +323,33 @@ components:
           type: string
         cosId:
           type: string
+    ConfigOperationRequest:
+      type: object
+      properties:
+        attribute:
+          type: string
+          description: Global config attribute name
+        op:
+          type: string
+          description: Operation
+          enum:
+          - set
+          - unset
+          - add
+          - remove
+        values:
+          type: array
+          description: "Values for set, add and remove; absent for unset"
+          items:
+            type: string
+            description: "Values for set, add and remove; absent for unset"
+    ModifyConfigRequest:
+      type: object
+      properties:
+        operations:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConfigOperationRequest"
     CosInfoResponse:
       type: object
       properties:

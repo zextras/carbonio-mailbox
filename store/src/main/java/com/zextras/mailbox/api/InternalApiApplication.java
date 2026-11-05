@@ -7,6 +7,7 @@
 package com.zextras.mailbox.api;
 
 import com.zextras.mailbox.api.rest.resource.AccountResource;
+import com.zextras.mailbox.api.rest.resource.ConfigResource;
 import com.zextras.mailbox.api.rest.resource.CosResource;
 import com.zextras.mailbox.api.rest.resource.MailboxResource;
 import com.zextras.mailbox.api.rest.service.AccountService;
@@ -33,7 +34,8 @@ public class InternalApiApplication extends Application {
 		singletons = Set.of(
 				new MailboxResource(mailboxService, accountService),
 				new AccountResource(accountService),
-				new CosResource(InternalApiServices.cosService()));
+				new CosResource(InternalApiServices.cosService()),
+				new ConfigResource(InternalApiServices.configService()));
 	}
 
 	@Override
