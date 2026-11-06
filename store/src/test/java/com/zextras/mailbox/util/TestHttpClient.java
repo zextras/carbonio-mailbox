@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.net.ssl.SSLContext;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPatch;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
@@ -55,7 +56,7 @@ public class TestHttpClient implements AutoCloseable {
 		try (CloseableHttpResponse response = delegate.execute(request)) {
 			return new Response(
 					response.getCode(),
-					HttpClientUtil.entityToString(response.getEntity()));
+					response.getEntity() == null ? "" : HttpClientUtil.entityToString(response.getEntity()));
 		}
 	}
 
@@ -80,6 +81,13 @@ public class TestHttpClient implements AutoCloseable {
 		final HttpPost request = new HttpPost(url);
 		request.setHeader("Content-Type", "application/json");
 		headers.forEach(request::setHeader);
+		request.setEntity(new StringEntity(jsonBody, StandardCharsets.UTF_8));
+		return execute(request);
+	}
+
+	public Response patch(String url, String jsonBody) throws IOException {
+		final HttpPatch request = new HttpPatch(url);
+		request.setHeader("Content-Type", "application/json");
 		request.setEntity(new StringEntity(jsonBody, StandardCharsets.UTF_8));
 		return execute(request);
 	}
