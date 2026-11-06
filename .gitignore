@@ -47,6 +47,3 @@ target/
 
 # Local Maven settings — contain Nexus credentials, never commit
 nexus-maven-settings.xml
-
-# Prebuilt configd binary copied into the mailbox image (see docker/mailbox/Dockerfile)
-/docker/mailbox/configd

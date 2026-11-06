@@ -73,9 +73,8 @@ FROM docker.io/library/eclipse-temurin:21-jre-jammy
 COPY --from=build /staging /
 
 # zmlocalconfig is a wrapper around `configd localconfig` (LocalConfigCLI was removed).
-# The build context must contain a prebuilt static configd binary at docker/mailbox/configd
-# (CGO_ENABLED=0 go build ./cmd/configd in carbonio-configd >= 1.1.0).
-COPY docker/mailbox/configd /usr/local/bin/configd
+# The static configd binary comes from the carbonio-configd image (multi-arch).
+COPY --from=registry.dev.zextras.com/dev/carbonio-configd:main /opt/zextras/bin/configd /usr/local/bin/configd
 
 # Add OpenTelemetry agent
 ADD https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar \
