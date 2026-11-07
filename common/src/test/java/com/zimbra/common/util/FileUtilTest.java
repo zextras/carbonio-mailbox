@@ -6,13 +6,21 @@
 package com.zimbra.common.util;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.verify;
 
 import com.google.common.collect.Lists;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Objects;
+import java.util.zip.GZIPInputStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -79,6 +87,40 @@ class FileUtilTest {
 
     IOException exception = assertThrows(IOException.class, () -> FileUtil.copy(srcFile, destFile));
     assertTrue(exception.getMessage().contains("nonexistent.txt"));
+  }
+
+  @Test
+  void compressPropagatesFailureWritingFinalGzipBytes() throws IOException {
+    File source = new File(tempDir, "source.txt");
+    File destination = new File(tempDir, "destination.gz");
+    Files.writeString(source.toPath(), "mail content");
+    Files.createFile(destination.toPath());
+    try (var outputs = mockConstruction(FileOutputStream.class, (output, context) ->
+        doAnswer(invocation -> {
+          throw new IOException("final gzip write failed");
+        }).when(output).write(any(byte[].class), anyInt(), anyInt()))) {
+      IOException failure =
+          assertThrows(IOException.class, () -> FileUtil.compress(source, destination, false));
+      assertEquals("final gzip write failed", failure.getMessage());
+      // The header write succeeds. The failure is in the later deflater write.
+      verify(outputs.constructed().get(0)).write(any(byte[].class));
+    }
+    assertFalse(destination.exists());
+    assertEquals("mail content", Files.readString(source.toPath()));
+  }
+
+  @Test
+  void compressProducesReadableGzipWithSyncEnabled() throws IOException {
+    File source = new File(tempDir, "source.txt");
+    File destination = new File(tempDir, "destination.gz");
+    byte[] content = "message data".repeat(100).getBytes(StandardCharsets.UTF_8);
+    Files.write(source.toPath(), content);
+
+    FileUtil.compress(source, destination, true);
+
+    try (var input = new GZIPInputStream(Files.newInputStream(destination.toPath()))) {
+      assertArrayEquals(content, input.readAllBytes());
+    }
   }
 
   @Test
