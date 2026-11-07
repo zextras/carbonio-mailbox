@@ -123,9 +123,15 @@ public class BlobBuilder {
 
     public BlobBuilder append(InputStream in) throws IOException {
         byte[] buffer = new byte[BUFLEN];
-        int numRead;
-        while ((numRead = in.read(buffer)) >= 0)
-            append(buffer, 0, numRead);
+        try {
+            int numRead;
+            while ((numRead = in.read(buffer)) >= 0) {
+                append(buffer, 0, numRead);
+            }
+        } catch (IOException e) {
+            dispose();
+            throw e;
+        }
 
         return this;
     }
