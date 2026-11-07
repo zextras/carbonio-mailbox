@@ -163,7 +163,11 @@ public class FileBlobStore extends StoreManager {
                 destCompressed = src.isCompressed();
             } else {
                 FileUtil.compress(srcFile, dest, !DebugConfig.disableMessageStoreFsync);
-                destCompressed = true;
+                destCompressed = dest.length() != srcFile.length();
+                if (!destCompressed) {
+                    // Readers assume a blob is uncompressed when its file size matches its raw size.
+                    FileUtil.copy(srcFile, dest, !DebugConfig.disableMessageStoreFsync);
+                }
             }
         } else {
             if (src.isCompressed()) {
