@@ -99,6 +99,21 @@ class AttributesReconcileIT extends MailboxTestSuite {
   }
 
   @Test
+  void reconcile_RefreshesRowWrittenWithFewerAttributes() throws Exception {
+    Account account = createAccount().create();
+    AccountAttributes mirroredRow = mirrored.accounts.find(account.getId()).orElseThrow();
+    mirrored.db
+        .update(PostgresAccountAttributes.ACCOUNT_ATTRIBUTES)
+        .set(PostgresAccountAttributes.ATTRIBUTES, AttributesJson.toJson(Map.of()))
+        .where(PostgresAccountAttributes.ACCOUNT_ID.eq(account.getId()))
+        .execute();
+
+    mirrored.reconcile().run();
+
+    assertThat(mirrored.accounts.find(account.getId())).contains(mirroredRow);
+  }
+
+  @Test
   void reconcile_SkipsWhileAnotherNodeRunsIt() throws Exception {
     mirrored.accounts.save(new AccountAttributes("gone", "gone.com", null, FUTURE_CSN, Map.of()));
 

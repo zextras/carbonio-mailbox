@@ -44,7 +44,13 @@ public class PostgresDomainDefaultCos {
         .set(DEFAULT_COS_ID, excluded(DEFAULT_COS_ID))
         .set(ENTRY_CSN, excluded(ENTRY_CSN))
         .set(SYNCED_AT, currentOffsetDateTime())
-        .where(ENTRY_CSN.lt(excluded(ENTRY_CSN)))
+        .where(
+            ENTRY_CSN
+                .lt(excluded(ENTRY_CSN))
+                .or(
+                    ENTRY_CSN
+                        .eq(excluded(ENTRY_CSN))
+                        .and(DEFAULT_COS_ID.isDistinctFrom(excluded(DEFAULT_COS_ID)))))
         .execute();
   }
 

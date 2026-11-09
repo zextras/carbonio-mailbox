@@ -6,6 +6,7 @@ import static org.jooq.impl.DSL.currentOffsetDateTime;
 import static org.jooq.impl.DSL.excluded;
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.name;
+import static org.jooq.impl.DSL.row;
 import static org.jooq.impl.DSL.table;
 
 import java.time.OffsetDateTime;
@@ -48,7 +49,15 @@ public class PostgresCosAttributes {
         .set(ENTRY_CSN, excluded(ENTRY_CSN))
         .set(ATTRIBUTES, excluded(ATTRIBUTES))
         .set(SYNCED_AT, currentOffsetDateTime())
-        .where(ENTRY_CSN.lt(excluded(ENTRY_CSN)))
+        .where(
+            ENTRY_CSN
+                .lt(excluded(ENTRY_CSN))
+                .or(
+                    ENTRY_CSN
+                        .eq(excluded(ENTRY_CSN))
+                        .and(
+                            row(NAME, ATTRIBUTES)
+                                .isDistinctFrom(row(excluded(NAME), excluded(ATTRIBUTES))))))
         .execute();
   }
 

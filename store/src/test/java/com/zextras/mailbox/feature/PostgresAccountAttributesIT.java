@@ -64,6 +64,24 @@ class PostgresAccountAttributesIT {
   }
 
   @Test
+  void saveSameCsnMoreAttributes_ReplacesRow() {
+    accountFeatures.save(mobileSync("a4", OLDER_CSN, "TRUE"));
+    AccountAttributes moreAttributes =
+        new AccountAttributes(
+            "a4",
+            "test.com",
+            "cos-1",
+            OLDER_CSN,
+            Map.of(
+                "zimbraFeatureMobileSyncEnabled", List.of("TRUE"),
+                "zimbraAccountStatus", List.of("active")));
+
+    accountFeatures.save(moreAttributes);
+
+    assertThat(accountFeatures.find("a4")).contains(moreAttributes);
+  }
+
+  @Test
   void findMissing_IsEmpty() {
     assertThat(accountFeatures.find("missing")).isEmpty();
   }
