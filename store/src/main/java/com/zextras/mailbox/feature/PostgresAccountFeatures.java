@@ -23,6 +23,8 @@ public class PostgresAccountFeatures {
       table(name(MailboxSchemaMigration.SCHEMA, "account_features"));
   static final Field<String> ACCOUNT_ID =
       field(name("account_features", "account_id"), SQLDataType.VARCHAR);
+  static final Field<String> DOMAIN_NAME =
+      field(name("account_features", "domain_name"), SQLDataType.VARCHAR);
   static final Field<String> COS_ID =
       field(name("account_features", "cos_id"), SQLDataType.VARCHAR);
   static final Field<String> ENTRY_CSN =
@@ -41,11 +43,13 @@ public class PostgresAccountFeatures {
   public void save(AccountFeatures account) {
     db.insertInto(ACCOUNT_FEATURES)
         .set(ACCOUNT_ID, account.accountId())
+        .set(DOMAIN_NAME, account.domainName())
         .set(COS_ID, account.cosId())
         .set(ENTRY_CSN, account.entryCsn())
         .set(FEATURES, toJson(account.features()))
         .onConflict(ACCOUNT_ID)
         .doUpdate()
+        .set(DOMAIN_NAME, excluded(DOMAIN_NAME))
         .set(COS_ID, excluded(COS_ID))
         .set(ENTRY_CSN, excluded(ENTRY_CSN))
         .set(FEATURES, excluded(FEATURES))
@@ -55,13 +59,14 @@ public class PostgresAccountFeatures {
   }
 
   public Optional<AccountFeatures> find(String accountId) {
-    return db.select(ACCOUNT_ID, COS_ID, ENTRY_CSN, FEATURES)
+    return db.select(ACCOUNT_ID, DOMAIN_NAME, COS_ID, ENTRY_CSN, FEATURES)
         .from(ACCOUNT_FEATURES)
         .where(ACCOUNT_ID.eq(accountId))
         .fetchOptional(
             row ->
                 new AccountFeatures(
                     row.get(ACCOUNT_ID),
+                    row.get(DOMAIN_NAME),
                     row.get(COS_ID),
                     row.get(ENTRY_CSN),
                     fromJson(row.get(FEATURES))));

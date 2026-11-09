@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Cos;
+import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import java.util.HashMap;
 import java.util.List;
@@ -70,12 +71,33 @@ class FeaturesDualWriteIT extends MailboxTestSuite {
   }
 
   @Test
-  void modifyNonFeature_WritesNothing() throws Exception {
+  void createAccount_IsInPostgres() throws Exception {
     Account account = createAccount().create();
+
+    assertThat(mirrored.accounts.find(account.getId()).orElseThrow().domainName())
+        .isEqualTo(account.getDomainName());
+  }
+
+  @Test
+  void modifyNonFeature_KeepsMirroredRow() throws Exception {
+    Account account = createAccount().create();
+    String mirroredCsn = mirrored.accounts.find(account.getId()).orElseThrow().entryCsn();
 
     modify(account, "displayName", "Someone");
 
-    assertThat(mirrored.accounts.find(account.getId())).isEmpty();
+    assertThat(mirrored.accounts.find(account.getId()).orElseThrow().entryCsn())
+        .isEqualTo(mirroredCsn);
+  }
+
+  @Test
+  void setDomainDefaultCos_IsInPostgres() throws Exception {
+    Cos cos = createCos();
+    Domain domain = createDomain();
+
+    modify(domain, "zimbraDomainDefaultCOSId", cos.getId());
+
+    assertThat(mirrored.domains.find(domain.getName()).orElseThrow().defaultCosId())
+        .isEqualTo(cos.getId());
   }
 
   @Test
@@ -102,5 +124,9 @@ class FeaturesDualWriteIT extends MailboxTestSuite {
 
   private static Cos createCos() throws Exception {
     return Provisioning.getInstance().createCos(UUID.randomUUID().toString(), new HashMap<>());
+  }
+
+  private static Domain createDomain() throws Exception {
+    return Provisioning.getInstance().createDomain(UUID.randomUUID() + ".com", new HashMap<>());
   }
 }

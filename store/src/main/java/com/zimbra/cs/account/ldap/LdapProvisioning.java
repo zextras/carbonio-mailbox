@@ -703,14 +703,27 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   }
 
   private void mirrorFeatures(Entry entry, ZLdapContext zlc, Map<String, ? extends Object> changes) {
+    boolean mirrored =
+        (entry instanceof Account && FeaturesMirror.changesAccountFeatures(changes))
+            || (entry instanceof Cos && FeaturesMirror.changesCosFeatures(changes))
+            || (entry instanceof Domain && FeaturesMirror.changesDomainDefaultCos(changes));
+    if (mirrored) {
+      mirrorFeatures(entry, zlc);
+    }
+  }
+
+  private void mirrorFeatures(Entry entry, ZLdapContext zlc) {
     if (featuresMirror == null) {
       return;
     }
     try {
-      if (entry instanceof Account account && FeaturesMirror.changesAccountFeatures(changes)) {
-        featuresMirror.saveAccount(account.getId(), savedAttributes(entry, zlc));
-      } else if (entry instanceof Cos cos && FeaturesMirror.changesCosFeatures(changes)) {
+      if (entry instanceof Account account) {
+        featuresMirror.saveAccount(
+            account.getId(), account.getDomainName(), savedAttributes(entry, zlc));
+      } else if (entry instanceof Cos cos) {
         featuresMirror.saveCos(cos.getId(), savedAttributes(entry, zlc));
+      } else if (entry instanceof Domain domain) {
+        featuresMirror.saveDomain(domain.getName(), savedAttributes(entry, zlc));
       }
     } catch (Exception e) {
       ZimbraLog.account.warn("Unable to mirror features of %s", entry.getLabel(), e);
@@ -1562,6 +1575,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
                 + ", check ldap log for possible error",
             null);
       }
+      mirrorFeatures(acct, zlc);
 
       LdapAttributeCallbackHelper.get(StoreAttributeManager.getInstance()).postModify(acctAttrs, acct, callbackContext);
       removeExternalAddrsFromAllDynamicGroups(acct.getAllAddrsSet(), zlc);
@@ -2806,6 +2820,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       }
 
       Domain domain = getDomainById(zimbraIdStr, zlc);
+      mirrorFeatures(domain, zlc);
 
       LdapAttributeCallbackHelper.get(StoreAttributeManager.getInstance()).postModify(domainAttrs, domain, callbackContext);
       return domain;
@@ -3179,6 +3194,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       zlc.createEntry(entry);
 
       Cos cos = getCosById(zimbraIdStr, zlc);
+      mirrorFeatures(cos, zlc);
       LdapAttributeCallbackHelper.get(StoreAttributeManager.getInstance()).postModify(allAttrs, cos, callbackContext);
       return cos;
     } catch (LdapEntryAlreadyExistException nabe) {

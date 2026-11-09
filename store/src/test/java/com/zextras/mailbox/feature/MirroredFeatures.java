@@ -16,11 +16,13 @@ final class MirroredFeatures {
   final DSLContext db;
   final PostgresAccountFeatures accounts;
   final PostgresCosFeatures coses;
+  final PostgresDomainDefaultCos domains;
 
   private MirroredFeatures(DSLContext db) {
     this.db = db;
     this.accounts = new PostgresAccountFeatures(db);
     this.coses = new PostgresCosFeatures(db);
+    this.domains = new PostgresDomainDefaultCos(db);
   }
 
   static MirroredFeatures enable(PostgreSQLContainer postgres) {
@@ -30,7 +32,9 @@ final class MirroredFeatures {
     dataSource.setPassword(postgres.getPassword());
     new MailboxSchemaMigration(dataSource).migrate();
     MirroredFeatures features = new MirroredFeatures(DSL.using(dataSource, SQLDialect.POSTGRES));
-    ldapProvisioning().setFeaturesMirror(new FeaturesMirror(features.accounts, features.coses));
+    ldapProvisioning()
+        .setFeaturesMirror(
+            new FeaturesMirror(features.accounts, features.coses, features.domains));
     return features;
   }
 
@@ -41,10 +45,13 @@ final class MirroredFeatures {
   void clear() {
     db.truncate(PostgresAccountFeatures.ACCOUNT_FEATURES).execute();
     db.truncate(PostgresCosFeatures.COS_FEATURES).execute();
+    db.truncate(PostgresDomainDefaultCos.DOMAIN_DEFAULT_COS).execute();
   }
 
   static void modify(Entry entry, String attribute, String value) throws Exception {
-    Provisioning.getInstance().modifyAttrs(entry, new HashMap<>(Map.of(attribute, value)));
+    Map<String, Object> changes = new HashMap<>();
+    changes.put(attribute, value);
+    Provisioning.getInstance().modifyAttrs(entry, changes);
   }
 
   private static LdapProvisioning ldapProvisioning() {

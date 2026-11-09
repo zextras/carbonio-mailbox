@@ -70,6 +70,10 @@ class PostgresAccountFeaturesIT {
 
   private static AccountFeatures mobileSync(String accountId, String entryCsn, String enabled) {
     return new AccountFeatures(
-        accountId, "cos-1", entryCsn, Map.of("zimbraFeatureMobileSyncEnabled", List.of(enabled)));
+        accountId,
+        "test.com",
+        "cos-1",
+        entryCsn,
+        Map.of("zimbraFeatureMobileSyncEnabled", List.of(enabled)));
   }
 }

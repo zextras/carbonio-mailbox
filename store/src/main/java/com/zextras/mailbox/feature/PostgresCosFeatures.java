@@ -22,6 +22,7 @@ public class PostgresCosFeatures {
   static final Table<Record> COS_FEATURES =
       table(name(MailboxSchemaMigration.SCHEMA, "cos_features"));
   static final Field<String> COS_ID = field(name("cos_features", "cos_id"), SQLDataType.VARCHAR);
+  static final Field<String> NAME = field(name("cos_features", "name"), SQLDataType.VARCHAR);
   static final Field<String> ENTRY_CSN =
       field(name("cos_features", "entry_csn"), SQLDataType.VARCHAR);
   static final Field<JSONB> FEATURES = field(name("cos_features", "features"), SQLDataType.JSONB);
@@ -37,10 +38,12 @@ public class PostgresCosFeatures {
   public void save(CosFeatures cos) {
     db.insertInto(COS_FEATURES)
         .set(COS_ID, cos.cosId())
+        .set(NAME, cos.name())
         .set(ENTRY_CSN, cos.entryCsn())
         .set(FEATURES, toJson(cos.features()))
         .onConflict(COS_ID)
         .doUpdate()
+        .set(NAME, excluded(NAME))
         .set(ENTRY_CSN, excluded(ENTRY_CSN))
         .set(FEATURES, excluded(FEATURES))
         .set(SYNCED_AT, currentOffsetDateTime())
@@ -49,11 +52,15 @@ public class PostgresCosFeatures {
   }
 
   public Optional<CosFeatures> find(String cosId) {
-    return db.select(COS_ID, ENTRY_CSN, FEATURES)
+    return db.select(COS_ID, NAME, ENTRY_CSN, FEATURES)
         .from(COS_FEATURES)
         .where(COS_ID.eq(cosId))
         .fetchOptional(
             row ->
-                new CosFeatures(row.get(COS_ID), row.get(ENTRY_CSN), fromJson(row.get(FEATURES))));
+                new CosFeatures(
+                    row.get(COS_ID),
+                    row.get(NAME),
+                    row.get(ENTRY_CSN),
+                    fromJson(row.get(FEATURES))));
   }
 }
