@@ -730,6 +730,23 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     }
   }
 
+  private void forgetFeatures(Entry entry) {
+    if (featuresMirror == null) {
+      return;
+    }
+    try {
+      if (entry instanceof Account account) {
+        featuresMirror.deleteAccount(account.getId());
+      } else if (entry instanceof Cos cos) {
+        featuresMirror.deleteCos(cos.getId());
+      } else if (entry instanceof Domain domain) {
+        featuresMirror.deleteDomain(domain.getName());
+      }
+    } catch (Exception e) {
+      ZimbraLog.account.warn("Unable to delete mirrored features of %s", entry.getLabel(), e);
+    }
+  }
+
   private Map<String, Object> savedAttributes(Entry entry, ZLdapContext zlc)
       throws ServiceException {
     return helper
@@ -3375,6 +3392,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       zlc.deleteEntry(entry.getDN());
       validate(ProvisioningValidator.DELETE_ACCOUNT_SUCCEEDED, attrs);
       accountCache.remove(acc);
+      forgetFeatures(acc);
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to purge account: " + zimbraId, e);
     } finally {
@@ -3719,6 +3737,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       try {
         zlc.deleteEntry(domain.getDN());
         domainCache.remove(domain);
+        forgetFeatures(domain);
       } catch (LdapContextNotEmptyException e) {
         // remove from cache before nuking all attrs
         domainCache.remove(domain);
@@ -3922,6 +3941,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       zlc = ldapClient.getContext(LdapServerType.MASTER, LdapUsage.DELETE_COS);
       zlc.deleteEntry(c.getDN());
       cosCache.remove(c);
+      forgetFeatures(c);
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to purge cos: " + zimbraId, e);
     } finally {

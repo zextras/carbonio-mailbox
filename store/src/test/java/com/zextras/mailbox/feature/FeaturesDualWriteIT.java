@@ -122,6 +122,36 @@ class FeaturesDualWriteIT extends MailboxTestSuite {
         .containsEntry(MOBILE_SYNC, List.of("FALSE"));
   }
 
+  @Test
+  void deleteAccount_IsGoneFromPostgres() throws Exception {
+    Account account = createAccount().create();
+    assertThat(mirrored.accounts.find(account.getId())).isPresent();
+
+    Provisioning.getInstance().deleteAccount(account.getId());
+
+    assertThat(mirrored.accounts.find(account.getId())).isEmpty();
+  }
+
+  @Test
+  void deleteCos_IsGoneFromPostgres() throws Exception {
+    Cos cos = createCos();
+    assertThat(mirrored.coses.find(cos.getId())).isPresent();
+
+    Provisioning.getInstance().deleteCos(cos.getId());
+
+    assertThat(mirrored.coses.find(cos.getId())).isEmpty();
+  }
+
+  @Test
+  void deleteDomain_IsGoneFromPostgres() throws Exception {
+    Domain domain = createDomain();
+    assertThat(mirrored.domains.find(domain.getName())).isPresent();
+
+    Provisioning.getInstance().deleteDomain(domain.getId());
+
+    assertThat(mirrored.domains.find(domain.getName())).isEmpty();
+  }
+
   private static Cos createCos() throws Exception {
     return Provisioning.getInstance().createCos(UUID.randomUUID().toString(), new HashMap<>());
   }

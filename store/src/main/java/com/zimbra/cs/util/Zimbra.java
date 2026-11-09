@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.util;
 
+import com.zextras.mailbox.feature.FeaturesMirrorStartup;
 import com.zimbra.common.calendar.WellKnownTimeZones;
 import com.zimbra.common.lmtp.SmtpToLmtp;
 import com.zimbra.common.localconfig.ConfigException;
@@ -24,6 +25,7 @@ import com.zimbra.cs.account.StoreAttributeManager;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.ldap.LdapAttributeCallbackHelper;
 import com.zimbra.cs.account.ldap.LdapProv;
+import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.Versions;
 import com.zimbra.cs.ephemeral.EphemeralStore;
@@ -228,6 +230,10 @@ public final class Zimbra {
       if (forMailboxd) {
         LdapAttributeCallbackHelper.get(StoreAttributeManager.getInstance()).loadLdapSchemaExtensionAttrs((LdapProv) prov);
       }
+    }
+
+    if (forMailboxd && prov instanceof LdapProvisioning ldapProvisioning) {
+      FeaturesMirrorStartup.enableInBackground(ldapProvisioning);
     }
 
     if (server.isMailSSLClientCertOCSPEnabled()) {

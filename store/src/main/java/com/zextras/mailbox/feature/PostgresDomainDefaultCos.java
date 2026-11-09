@@ -7,6 +7,7 @@ import static org.jooq.impl.DSL.name;
 import static org.jooq.impl.DSL.table;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -45,6 +46,17 @@ public class PostgresDomainDefaultCos {
         .set(SYNCED_AT, currentOffsetDateTime())
         .where(ENTRY_CSN.lt(excluded(ENTRY_CSN)))
         .execute();
+  }
+
+  public void delete(String domainName) {
+    db.deleteFrom(DOMAIN_DEFAULT_COS).where(DOMAIN_NAME.eq(domainName)).execute();
+  }
+
+  public List<String> namesSyncedBefore(OffsetDateTime start) {
+    return db.select(DOMAIN_NAME)
+        .from(DOMAIN_DEFAULT_COS)
+        .where(SYNCED_AT.lt(start))
+        .fetch(DOMAIN_NAME);
   }
 
   public Optional<DomainDefaultCos> find(String domainName) {

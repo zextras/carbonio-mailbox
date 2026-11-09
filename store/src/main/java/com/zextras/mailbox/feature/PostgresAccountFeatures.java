@@ -9,6 +9,7 @@ import static org.jooq.impl.DSL.name;
 import static org.jooq.impl.DSL.table;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -56,6 +57,14 @@ public class PostgresAccountFeatures {
         .set(SYNCED_AT, currentOffsetDateTime())
         .where(ENTRY_CSN.lt(excluded(ENTRY_CSN)))
         .execute();
+  }
+
+  public void delete(String accountId) {
+    db.deleteFrom(ACCOUNT_FEATURES).where(ACCOUNT_ID.eq(accountId)).execute();
+  }
+
+  public List<String> idsSyncedBefore(OffsetDateTime start) {
+    return db.select(ACCOUNT_ID).from(ACCOUNT_FEATURES).where(SYNCED_AT.lt(start)).fetch(ACCOUNT_ID);
   }
 
   public Optional<AccountFeatures> find(String accountId) {

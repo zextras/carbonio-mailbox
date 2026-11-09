@@ -66,6 +66,18 @@ public class FeaturesMirror {
             entryCsn(domainName, ldapAttributes)));
   }
 
+  public void deleteAccount(String accountId) {
+    accountFeatures.delete(accountId);
+  }
+
+  public void deleteCos(String cosId) {
+    cosFeatures.delete(cosId);
+  }
+
+  public void deleteDomain(String domainName) {
+    domainDefaultCos.delete(domainName);
+  }
+
   private static String entryCsn(String id, Map<String, Object> ldapAttributes) {
     String csn = single(ldapAttributes, ENTRY_CSN);
     if (csn == null) {
