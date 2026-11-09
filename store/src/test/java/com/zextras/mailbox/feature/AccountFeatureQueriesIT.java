@@ -31,7 +31,7 @@ class AccountFeatureQueriesIT extends MailboxTestSuite {
   @BeforeAll
   static void setUp() {
     mirrored = MirroredFeatures.enable(postgres);
-    queries = new AccountFeatureQueries(mirrored.db);
+    queries = mirrored.queries();
   }
 
   @AfterAll

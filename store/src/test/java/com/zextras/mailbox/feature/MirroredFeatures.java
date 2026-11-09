@@ -1,7 +1,9 @@
 package com.zextras.mailbox.feature;
 
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.StoreAttributeManager;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,6 +48,14 @@ final class MirroredFeatures {
 
   void resume() {
     ldapProvisioning().setFeaturesMirror(mirror);
+  }
+
+  AccountFeatureQueries queries() {
+    try {
+      return new AccountFeatureQueries(db, StoreAttributeManager.getInstance());
+    } catch (ServiceException e) {
+      throw new IllegalStateException(e);
+    }
   }
 
   FeaturesReconcile reconcile() {

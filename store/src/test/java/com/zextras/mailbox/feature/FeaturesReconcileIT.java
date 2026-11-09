@@ -72,7 +72,7 @@ class FeaturesReconcileIT extends MailboxTestSuite {
         .isEqualTo(cos.getId());
     assertThat(mirrored.coses.find(cos.getId()).orElseThrow().features())
         .containsEntry(MOBILE_SYNC, List.of("TRUE"));
-    assertThat(new AccountFeatureQueries(mirrored.db).effectiveValue(account.getId(), MOBILE_SYNC))
+    assertThat(mirrored.queries().effectiveValue(account.getId(), MOBILE_SYNC))
         .contains("TRUE");
   }
 

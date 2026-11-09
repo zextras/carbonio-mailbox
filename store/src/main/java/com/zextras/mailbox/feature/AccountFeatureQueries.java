@@ -1,5 +1,8 @@
 package com.zextras.mailbox.feature;
 
+import com.zimbra.cs.account.AttributeInfo;
+import com.zimbra.cs.account.AttributeManager;
+import java.util.List;
 import java.util.Optional;
 import org.jooq.DSLContext;
 
@@ -24,13 +27,16 @@ public class AccountFeatureQueries {
           WHEN own_cos.cos_id IS NOT NULL THEN own_cos.features -> {1} ->> 0
           WHEN domain_cos.cos_id IS NOT NULL THEN domain_cos.features -> {1} ->> 0
           ELSE default_cos.features -> {1} ->> 0
-        END)
+        END,
+        CAST({2} AS TEXT))
       """;
 
   private final DSLContext db;
+  private final AttributeManager attributes;
 
-  public AccountFeatureQueries(DSLContext db) {
+  public AccountFeatureQueries(DSLContext db, AttributeManager attributes) {
     this.db = db;
+    this.attributes = attributes;
   }
 
   public int countEnabled(String feature) {
@@ -41,7 +47,8 @@ public class AccountFeatureQueries {
                 + EFFECTIVE_VALUE
                 + " = 'TRUE'",
             DEFAULT_COS_NAME,
-            feature)
+            feature,
+            defaultValue(feature))
         .get(0, Integer.class);
   }
 
@@ -51,10 +58,17 @@ public class AccountFeatureQueries {
                 + EFFECTIVE_VALUE
                 + " "
                 + ACCOUNTS_WITH_EFFECTIVE_VALUE
-                + " WHERE account.account_id = {2}",
+                + " WHERE account.account_id = {3}",
             DEFAULT_COS_NAME,
             feature,
+            defaultValue(feature),
             accountId)
         .map(row -> row.get(0, String.class));
+  }
+
+  private String defaultValue(String feature) {
+    AttributeInfo info = attributes.getAttributeInfo(feature);
+    List<String> defaults = info == null ? List.of() : info.getDefaultCosValues();
+    return defaults == null || defaults.isEmpty() ? null : defaults.get(0);
   }
 }

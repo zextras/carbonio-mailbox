@@ -23,6 +23,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 class FeatureHierarchyIT extends MailboxTestSuite {
 
   private static final String MOBILE_SYNC = "zimbraFeatureMobileSyncEnabled";
+  private static final String CONTACTS = "zimbraFeatureContactsEnabled";
 
   @Container
   private static final PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:16-alpine");
@@ -33,7 +34,7 @@ class FeatureHierarchyIT extends MailboxTestSuite {
   @BeforeAll
   static void setUp() {
     mirrored = MirroredFeatures.enable(postgres);
-    queries = new AccountFeatureQueries(mirrored.db);
+    queries = mirrored.queries();
   }
 
   @AfterAll
@@ -100,6 +101,20 @@ class FeatureHierarchyIT extends MailboxTestSuite {
     modify(defaultCos(), MOBILE_SYNC, "TRUE");
 
     assertThat(queries.countEnabled(MOBILE_SYNC)).isEqualTo(2);
+  }
+
+  @Test
+  void featureUnsetEverywhere_UsesAttributeDefault() throws Exception {
+    Cos cos = Provisioning.getInstance().createCos(UUID.randomUUID().toString(), new HashMap<>());
+    modify(cos, CONTACTS, "");
+    Account account = accountIn(domainWithoutDefault());
+
+    modify(account, "zimbraCOSId", cos.getId());
+
+    Provisioning.getInstance().reload(account);
+    assertThat(account.getAttr(CONTACTS)).isNull();
+    assertThat(account.isFeatureContactsEnabled()).isTrue();
+    assertThat(queries.effectiveValue(account.getId(), CONTACTS)).contains("TRUE");
   }
 
   private static void assertEffectiveValue(Account account, String expected) throws Exception {
