@@ -1,18 +1,14 @@
 package com.zextras.mailbox.feature;
 
+import static com.zextras.mailbox.feature.FeaturesJson.fromJson;
+import static com.zextras.mailbox.feature.FeaturesJson.toJson;
 import static org.jooq.impl.DSL.currentOffsetDateTime;
 import static org.jooq.impl.DSL.excluded;
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.name;
 import static org.jooq.impl.DSL.table;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.UncheckedIOException;
 import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -23,22 +19,20 @@ import org.jooq.impl.SQLDataType;
 
 public class PostgresAccountFeatures {
 
-  private static final Table<Record> ACCOUNT_FEATURES =
+  static final Table<Record> ACCOUNT_FEATURES =
       table(name(MailboxSchemaMigration.SCHEMA, "account_features"));
-  private static final Field<String> ACCOUNT_ID =
+  static final Field<String> ACCOUNT_ID =
       field(name("account_features", "account_id"), SQLDataType.VARCHAR);
-  private static final Field<String> ENTRY_CSN =
+  static final Field<String> COS_ID =
+      field(name("account_features", "cos_id"), SQLDataType.VARCHAR);
+  static final Field<String> ENTRY_CSN =
       field(name("account_features", "entry_csn"), SQLDataType.VARCHAR);
-  private static final Field<JSONB> FEATURES =
+  static final Field<JSONB> FEATURES =
       field(name("account_features", "features"), SQLDataType.JSONB);
-  private static final Field<OffsetDateTime> SYNCED_AT =
+  static final Field<OffsetDateTime> SYNCED_AT =
       field(name("account_features", "synced_at"), SQLDataType.TIMESTAMPWITHTIMEZONE);
 
-  private static final TypeReference<Map<String, List<String>>> FEATURE_MAP =
-      new TypeReference<>() {};
-
   private final DSLContext db;
-  private final ObjectMapper json = new ObjectMapper();
 
   public PostgresAccountFeatures(DSLContext db) {
     this.db = db;
@@ -47,10 +41,12 @@ public class PostgresAccountFeatures {
   public void save(AccountFeatures account) {
     db.insertInto(ACCOUNT_FEATURES)
         .set(ACCOUNT_ID, account.accountId())
+        .set(COS_ID, account.cosId())
         .set(ENTRY_CSN, account.entryCsn())
         .set(FEATURES, toJson(account.features()))
         .onConflict(ACCOUNT_ID)
         .doUpdate()
+        .set(COS_ID, excluded(COS_ID))
         .set(ENTRY_CSN, excluded(ENTRY_CSN))
         .set(FEATURES, excluded(FEATURES))
         .set(SYNCED_AT, currentOffsetDateTime())
@@ -59,28 +55,15 @@ public class PostgresAccountFeatures {
   }
 
   public Optional<AccountFeatures> find(String accountId) {
-    return db.select(ACCOUNT_ID, ENTRY_CSN, FEATURES)
+    return db.select(ACCOUNT_ID, COS_ID, ENTRY_CSN, FEATURES)
         .from(ACCOUNT_FEATURES)
         .where(ACCOUNT_ID.eq(accountId))
         .fetchOptional(
             row ->
                 new AccountFeatures(
-                    row.get(ACCOUNT_ID), row.get(ENTRY_CSN), fromJson(row.get(FEATURES))));
-  }
-
-  private JSONB toJson(Map<String, List<String>> features) {
-    try {
-      return JSONB.valueOf(json.writeValueAsString(features));
-    } catch (JsonProcessingException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
-
-  private Map<String, List<String>> fromJson(JSONB features) {
-    try {
-      return json.readValue(features.data(), FEATURE_MAP);
-    } catch (JsonProcessingException e) {
-      throw new UncheckedIOException(e);
-    }
+                    row.get(ACCOUNT_ID),
+                    row.get(COS_ID),
+                    row.get(ENTRY_CSN),
+                    fromJson(row.get(FEATURES))));
   }
 }

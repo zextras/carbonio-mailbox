@@ -10,7 +10,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.zextras.mailbox.feature.AccountFeaturesMirror;
+import com.zextras.mailbox.feature.FeaturesMirror;
 import com.zimbra.common.account.ForgetPasswordEnums.CodeConstants;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
@@ -244,10 +244,10 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   private String[] BASIC_DYNAMIC_GROUP_ATTRS;
   private String[] BASIC_GROUP_ATTRS;
 
-  private AccountFeaturesMirror accountFeaturesMirror;
+  private FeaturesMirror featuresMirror;
 
-  public void setAccountFeaturesMirror(AccountFeaturesMirror accountFeaturesMirror) {
-    this.accountFeaturesMirror = accountFeaturesMirror;
+  public void setFeaturesMirror(FeaturesMirror featuresMirror) {
+    this.featuresMirror = featuresMirror;
   }
 
   public static LdapProvisioning create(CacheMode cacheMode) {
@@ -685,7 +685,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
                 LdapServerType.MASTER, LdapUsage.modifyEntryfromEntryType(entry.getEntryType()));
       }
       helper.modifyAttrs(zlc, ((LdapEntry) entry).getDN(), attrs, entry);
-      mirrorAccountFeatures(entry, zlc, attrs);
+      mirrorFeatures(entry, zlc, attrs);
     } catch (LdapInvalidAttrNameException e) {
       throw AccountServiceException.INVALID_ATTR_NAME("invalid attr name: " + e.getMessage(), e);
     } catch (LdapInvalidAttrValueException e) {
@@ -702,21 +702,27 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     }
   }
 
-  private void mirrorAccountFeatures(
-      Entry entry, ZLdapContext zlc, Map<String, ? extends Object> changes) {
-    if (accountFeaturesMirror == null
-        || !(entry instanceof Account account)
-        || !AccountFeaturesMirror.changesFeatures(changes)) {
+  private void mirrorFeatures(Entry entry, ZLdapContext zlc, Map<String, ? extends Object> changes) {
+    if (featuresMirror == null) {
       return;
     }
     try {
-      ZAttributes saved =
-          helper.getAttributes(
-              zlc, ((LdapEntry) entry).getDN(), new String[] {"*", AccountFeaturesMirror.ENTRY_CSN});
-      accountFeaturesMirror.save(account.getId(), saved.getAttrs());
+      if (entry instanceof Account account && FeaturesMirror.changesAccountFeatures(changes)) {
+        featuresMirror.saveAccount(account.getId(), savedAttributes(entry, zlc));
+      } else if (entry instanceof Cos cos && FeaturesMirror.changesCosFeatures(changes)) {
+        featuresMirror.saveCos(cos.getId(), savedAttributes(entry, zlc));
+      }
     } catch (Exception e) {
-      ZimbraLog.account.warn("Unable to mirror features of account %s", account.getId(), e);
+      ZimbraLog.account.warn("Unable to mirror features of %s", entry.getLabel(), e);
     }
+  }
+
+  private Map<String, Object> savedAttributes(Entry entry, ZLdapContext zlc)
+      throws ServiceException {
+    return helper
+        .getAttributes(
+            zlc, ((LdapEntry) entry).getDN(), new String[] {"*", FeaturesMirror.ENTRY_CSN})
+        .getAttrs();
   }
 
   private void setLdapPassword(Entry entry, ZLdapContext initZlc, String newPassword)
