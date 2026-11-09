@@ -10,6 +10,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.zextras.mailbox.feature.AccountFeaturesMirror;
 import com.zimbra.common.account.ForgetPasswordEnums.CodeConstants;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
@@ -242,6 +243,12 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   private String[] BASIC_DL_ATTRS;
   private String[] BASIC_DYNAMIC_GROUP_ATTRS;
   private String[] BASIC_GROUP_ATTRS;
+
+  private AccountFeaturesMirror accountFeaturesMirror;
+
+  public void setAccountFeaturesMirror(AccountFeaturesMirror accountFeaturesMirror) {
+    this.accountFeaturesMirror = accountFeaturesMirror;
+  }
 
   public static LdapProvisioning create(CacheMode cacheMode) {
     try {
@@ -678,6 +685,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
                 LdapServerType.MASTER, LdapUsage.modifyEntryfromEntryType(entry.getEntryType()));
       }
       helper.modifyAttrs(zlc, ((LdapEntry) entry).getDN(), attrs, entry);
+      mirrorAccountFeatures(entry, zlc, attrs);
     } catch (LdapInvalidAttrNameException e) {
       throw AccountServiceException.INVALID_ATTR_NAME("invalid attr name: " + e.getMessage(), e);
     } catch (LdapInvalidAttrValueException e) {
@@ -691,6 +699,23 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       if (initZlc == null) {
         ldapClient.closeContext(zlc);
       }
+    }
+  }
+
+  private void mirrorAccountFeatures(
+      Entry entry, ZLdapContext zlc, Map<String, ? extends Object> changes) {
+    if (accountFeaturesMirror == null
+        || !(entry instanceof Account account)
+        || !AccountFeaturesMirror.changesFeatures(changes)) {
+      return;
+    }
+    try {
+      ZAttributes saved =
+          helper.getAttributes(
+              zlc, ((LdapEntry) entry).getDN(), new String[] {"*", AccountFeaturesMirror.ENTRY_CSN});
+      accountFeaturesMirror.save(account.getId(), saved.getAttrs());
+    } catch (Exception e) {
+      ZimbraLog.account.warn("Unable to mirror features of account %s", account.getId(), e);
     }
   }
 

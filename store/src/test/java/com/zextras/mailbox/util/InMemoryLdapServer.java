@@ -63,6 +63,7 @@ public class InMemoryLdapServer {
       ldapServerConfig.setListenerConfigs(InMemoryListenerConfig.createLDAPConfig("LDAP", ldapPort));
       ldapServerConfig.setSchema(null);
       ldapServerConfig.setGenerateOperationalAttributes(true);
+      ldapServerConfig.addInMemoryOperationInterceptor(new EntryCsnInterceptor());
 
       InMemoryDirectoryServer inMemoryDirectoryServer = new InMemoryDirectoryServer(ldapServerConfig);
       return new InMemoryLdapServer(inMemoryDirectoryServer, adminPassword);
