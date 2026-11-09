@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.jooq.Query;
 import org.jooq.Record;
 import org.jooq.Table;
 import org.jooq.impl.SQLDataType;
@@ -35,7 +36,17 @@ public class PostgresDomainDefaultCos {
   }
 
   public void save(DomainDefaultCos domain) {
-    db.insertInto(DOMAIN_DEFAULT_COS)
+    upsert(domain).execute();
+  }
+
+  public void saveAll(List<DomainDefaultCos> rows) {
+    if (!rows.isEmpty()) {
+      db.batch(rows.stream().map(this::upsert).toList()).execute();
+    }
+  }
+
+  private Query upsert(DomainDefaultCos domain) {
+    return db.insertInto(DOMAIN_DEFAULT_COS)
         .set(DOMAIN_NAME, domain.domainName())
         .set(DEFAULT_COS_ID, domain.defaultCosId())
         .set(ENTRY_CSN, domain.entryCsn())
@@ -50,8 +61,7 @@ public class PostgresDomainDefaultCos {
                 .or(
                     ENTRY_CSN
                         .eq(excluded(ENTRY_CSN))
-                        .and(DEFAULT_COS_ID.isDistinctFrom(excluded(DEFAULT_COS_ID)))))
-        .execute();
+                        .and(DEFAULT_COS_ID.isDistinctFrom(excluded(DEFAULT_COS_ID)))));
   }
 
   public void delete(String domainName) {

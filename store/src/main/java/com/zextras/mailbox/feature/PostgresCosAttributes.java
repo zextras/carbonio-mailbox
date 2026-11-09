@@ -15,6 +15,7 @@ import java.util.Optional;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.JSONB;
+import org.jooq.Query;
 import org.jooq.Record;
 import org.jooq.Table;
 import org.jooq.impl.SQLDataType;
@@ -38,7 +39,17 @@ public class PostgresCosAttributes {
   }
 
   public void save(CosAttributes cos) {
-    db.insertInto(COS_ATTRIBUTES)
+    upsert(cos).execute();
+  }
+
+  public void saveAll(List<CosAttributes> rows) {
+    if (!rows.isEmpty()) {
+      db.batch(rows.stream().map(this::upsert).toList()).execute();
+    }
+  }
+
+  private Query upsert(CosAttributes cos) {
+    return db.insertInto(COS_ATTRIBUTES)
         .set(COS_ID, cos.cosId())
         .set(NAME, cos.name())
         .set(ENTRY_CSN, cos.entryCsn())
@@ -57,8 +68,7 @@ public class PostgresCosAttributes {
                         .eq(excluded(ENTRY_CSN))
                         .and(
                             row(NAME, ATTRIBUTES)
-                                .isDistinctFrom(row(excluded(NAME), excluded(ATTRIBUTES))))))
-        .execute();
+                                .isDistinctFrom(row(excluded(NAME), excluded(ATTRIBUTES))))));
   }
 
   public void delete(String cosId) {

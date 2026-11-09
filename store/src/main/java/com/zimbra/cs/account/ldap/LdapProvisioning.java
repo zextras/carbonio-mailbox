@@ -717,7 +717,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       return;
     }
     try {
-      if (entry instanceof Account account) {
+      if (entry instanceof Account account && account.getName().contains("@")) {
         attributesMirror.saveAccount(
             account.getId(), account.getDomainName(), savedAttributes(entry, zlc));
       } else if (entry instanceof Cos cos) {

@@ -63,7 +63,7 @@ public class AttributesMirrorStartup {
     ZimbraLog.misc.info("Features mirror to Postgres enabled");
 
     AttributesReconcile reconcile =
-        new AttributesReconcile(provisioning, mirror, db, accounts, coses, domains);
+        new AttributesReconcile(provisioning, db);
     ScheduledExecutorService scheduler =
         Executors.newSingleThreadScheduledExecutor(
             task -> {

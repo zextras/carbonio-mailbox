@@ -59,7 +59,7 @@ final class MirroredAttributes {
   }
 
   AttributesReconcile reconcile() {
-    return new AttributesReconcile(ldapProvisioning(), mirror, db, accounts, coses, domains);
+    return new AttributesReconcile(ldapProvisioning(), db);
   }
 
   static void disable() {

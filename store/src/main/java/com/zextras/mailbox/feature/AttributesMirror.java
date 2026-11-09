@@ -48,30 +48,40 @@ public class AttributesMirror {
   }
 
   public void saveAccount(String accountId, String domainName, Map<String, Object> ldapAttributes) {
-    accountFeatures.save(
-        new AccountAttributes(
-            accountId,
-            domainName,
-            single(ldapAttributes, COS_ID),
-            entryCsn(accountId, ldapAttributes),
-            mirrored(ldapAttributes)));
+    accountFeatures.save(accountRow(accountId, domainName, ldapAttributes));
   }
 
   public void saveCos(String cosId, Map<String, Object> ldapAttributes) {
-    cosFeatures.save(
-        new CosAttributes(
-            cosId,
-            single(ldapAttributes, COS_NAME),
-            entryCsn(cosId, ldapAttributes),
-            mirrored(ldapAttributes)));
+    cosFeatures.save(cosRow(cosId, ldapAttributes));
   }
 
   public void saveDomain(String domainName, Map<String, Object> ldapAttributes) {
-    domainDefaultCos.save(
-        new DomainDefaultCos(
-            domainName,
-            single(ldapAttributes, DOMAIN_DEFAULT_COS_ID),
-            entryCsn(domainName, ldapAttributes)));
+    domainDefaultCos.save(domainRow(domainName, ldapAttributes));
+  }
+
+  public static AccountAttributes accountRow(
+      String accountId, String domainName, Map<String, Object> ldapAttributes) {
+    return new AccountAttributes(
+        accountId,
+        domainName,
+        single(ldapAttributes, COS_ID),
+        entryCsn(accountId, ldapAttributes),
+        mirrored(ldapAttributes));
+  }
+
+  public static CosAttributes cosRow(String cosId, Map<String, Object> ldapAttributes) {
+    return new CosAttributes(
+        cosId,
+        single(ldapAttributes, COS_NAME),
+        entryCsn(cosId, ldapAttributes),
+        mirrored(ldapAttributes));
+  }
+
+  public static DomainDefaultCos domainRow(String domainName, Map<String, Object> ldapAttributes) {
+    return new DomainDefaultCos(
+        domainName,
+        single(ldapAttributes, DOMAIN_DEFAULT_COS_ID),
+        entryCsn(domainName, ldapAttributes));
   }
 
   public void deleteAccount(String accountId) {

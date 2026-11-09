@@ -15,6 +15,7 @@ import java.util.Optional;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.JSONB;
+import org.jooq.Query;
 import org.jooq.Record;
 import org.jooq.Table;
 import org.jooq.impl.SQLDataType;
@@ -43,7 +44,17 @@ public class PostgresAccountAttributes {
   }
 
   public void save(AccountAttributes account) {
-    db.insertInto(ACCOUNT_ATTRIBUTES)
+    upsert(account).execute();
+  }
+
+  public void saveAll(List<AccountAttributes> rows) {
+    if (!rows.isEmpty()) {
+      db.batch(rows.stream().map(this::upsert).toList()).execute();
+    }
+  }
+
+  private Query upsert(AccountAttributes account) {
+    return db.insertInto(ACCOUNT_ATTRIBUTES)
         .set(ACCOUNT_ID, account.accountId())
         .set(DOMAIN_NAME, account.domainName())
         .set(COS_ID, account.cosId())
@@ -68,8 +79,7 @@ public class PostgresAccountAttributes {
                                     row(
                                         excluded(DOMAIN_NAME),
                                         excluded(COS_ID),
-                                        excluded(ATTRIBUTES))))))
-        .execute();
+                                        excluded(ATTRIBUTES))))));
   }
 
   public void delete(String accountId) {
