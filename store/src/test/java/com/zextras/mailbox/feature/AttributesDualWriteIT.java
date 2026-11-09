@@ -1,6 +1,6 @@
 package com.zextras.mailbox.feature;
 
-import static com.zextras.mailbox.feature.MirroredFeatures.modify;
+import static com.zextras.mailbox.feature.MirroredAttributes.modify;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.zextras.mailbox.MailboxTestSuite;
@@ -19,23 +19,23 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.postgresql.PostgreSQLContainer;
 
 @Testcontainers
-class FeaturesDualWriteIT extends MailboxTestSuite {
+class AttributesDualWriteIT extends MailboxTestSuite {
 
   private static final String MOBILE_SYNC = "zimbraFeatureMobileSyncEnabled";
 
   @Container
   private static final PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:16-alpine");
 
-  private static MirroredFeatures mirrored;
+  private static MirroredAttributes mirrored;
 
   @BeforeAll
   static void setUp() {
-    mirrored = MirroredFeatures.enable(postgres);
+    mirrored = MirroredAttributes.enable(postgres);
   }
 
   @AfterAll
   static void tearDown() {
-    MirroredFeatures.disable();
+    MirroredAttributes.disable();
   }
 
   @Test
@@ -44,7 +44,7 @@ class FeaturesDualWriteIT extends MailboxTestSuite {
 
     modify(account, MOBILE_SYNC, "TRUE");
 
-    assertThat(mirrored.accounts.find(account.getId()).orElseThrow().features())
+    assertThat(mirrored.accounts.find(account.getId()).orElseThrow().attributes())
         .containsEntry(MOBILE_SYNC, List.of("TRUE"));
   }
 
@@ -55,7 +55,7 @@ class FeaturesDualWriteIT extends MailboxTestSuite {
     modify(account, MOBILE_SYNC, "TRUE");
     modify(account, MOBILE_SYNC, "FALSE");
 
-    assertThat(mirrored.accounts.find(account.getId()).orElseThrow().features())
+    assertThat(mirrored.accounts.find(account.getId()).orElseThrow().attributes())
         .containsEntry(MOBILE_SYNC, List.of("FALSE"));
   }
 
@@ -66,7 +66,7 @@ class FeaturesDualWriteIT extends MailboxTestSuite {
 
     modify(account, "-" + MOBILE_SYNC, "TRUE");
 
-    assertThat(mirrored.accounts.find(account.getId()).orElseThrow().features())
+    assertThat(mirrored.accounts.find(account.getId()).orElseThrow().attributes())
         .doesNotContainKey(MOBILE_SYNC);
   }
 
@@ -118,8 +118,22 @@ class FeaturesDualWriteIT extends MailboxTestSuite {
     modify(cos, MOBILE_SYNC, "TRUE");
     modify(cos, MOBILE_SYNC, "FALSE");
 
-    assertThat(mirrored.coses.find(cos.getId()).orElseThrow().features())
+    assertThat(mirrored.coses.find(cos.getId()).orElseThrow().attributes())
         .containsEntry(MOBILE_SYNC, List.of("FALSE"));
+  }
+
+  @Test
+  void seatAttributes_AreInPostgres() throws Exception {
+    Account account = createAccount().create();
+
+    modify(account, "carbonioFeatureFilesEnabled", "FALSE");
+    modify(account, "zimbraIsSystemResource", "TRUE");
+    modify(account, "zimbraAccountStatus", "locked");
+
+    assertThat(mirrored.accounts.find(account.getId()).orElseThrow().attributes())
+        .containsEntry("carbonioFeatureFilesEnabled", List.of("FALSE"))
+        .containsEntry("zimbraIsSystemResource", List.of("TRUE"))
+        .containsEntry("zimbraAccountStatus", List.of("locked"));
   }
 
   @Test

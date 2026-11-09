@@ -13,41 +13,41 @@ import org.jooq.impl.DSL;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.testcontainers.postgresql.PostgreSQLContainer;
 
-final class MirroredFeatures {
+final class MirroredAttributes {
 
   final PGSimpleDataSource dataSource;
   final DSLContext db;
-  final PostgresAccountFeatures accounts;
-  final PostgresCosFeatures coses;
+  final PostgresAccountAttributes accounts;
+  final PostgresCosAttributes coses;
   final PostgresDomainDefaultCos domains;
-  final FeaturesMirror mirror;
+  final AttributesMirror mirror;
 
-  private MirroredFeatures(PGSimpleDataSource dataSource) {
+  private MirroredAttributes(PGSimpleDataSource dataSource) {
     this.dataSource = dataSource;
     this.db = DSL.using(dataSource, SQLDialect.POSTGRES);
-    this.accounts = new PostgresAccountFeatures(db);
-    this.coses = new PostgresCosFeatures(db);
+    this.accounts = new PostgresAccountAttributes(db);
+    this.coses = new PostgresCosAttributes(db);
     this.domains = new PostgresDomainDefaultCos(db);
-    this.mirror = new FeaturesMirror(accounts, coses, domains);
+    this.mirror = new AttributesMirror(accounts, coses, domains);
   }
 
-  static MirroredFeatures enable(PostgreSQLContainer postgres) {
+  static MirroredAttributes enable(PostgreSQLContainer postgres) {
     PGSimpleDataSource dataSource = new PGSimpleDataSource();
     dataSource.setUrl(postgres.getJdbcUrl());
     dataSource.setUser(postgres.getUsername());
     dataSource.setPassword(postgres.getPassword());
     new MailboxSchemaMigration(dataSource).migrate();
-    MirroredFeatures features = new MirroredFeatures(dataSource);
+    MirroredAttributes features = new MirroredAttributes(dataSource);
     features.resume();
     return features;
   }
 
   void pause() {
-    ldapProvisioning().setFeaturesMirror(null);
+    ldapProvisioning().setAttributesMirror(null);
   }
 
   void resume() {
-    ldapProvisioning().setFeaturesMirror(mirror);
+    ldapProvisioning().setAttributesMirror(mirror);
   }
 
   AccountFeatureQueries queries() {
@@ -58,17 +58,17 @@ final class MirroredFeatures {
     }
   }
 
-  FeaturesReconcile reconcile() {
-    return new FeaturesReconcile(ldapProvisioning(), mirror, db, accounts, coses, domains);
+  AttributesReconcile reconcile() {
+    return new AttributesReconcile(ldapProvisioning(), mirror, db, accounts, coses, domains);
   }
 
   static void disable() {
-    ldapProvisioning().setFeaturesMirror(null);
+    ldapProvisioning().setAttributesMirror(null);
   }
 
   void clear() {
-    db.truncate(PostgresAccountFeatures.ACCOUNT_FEATURES).execute();
-    db.truncate(PostgresCosFeatures.COS_FEATURES).execute();
+    db.truncate(PostgresAccountAttributes.ACCOUNT_ATTRIBUTES).execute();
+    db.truncate(PostgresCosAttributes.COS_ATTRIBUTES).execute();
     db.truncate(PostgresDomainDefaultCos.DOMAIN_DEFAULT_COS).execute();
   }
 

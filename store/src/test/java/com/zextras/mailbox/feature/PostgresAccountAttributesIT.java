@@ -14,7 +14,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.postgresql.PostgreSQLContainer;
 
 @Testcontainers
-class PostgresAccountFeaturesIT {
+class PostgresAccountAttributesIT {
 
   private static final String OLDER_CSN = "20261109120000.000000Z#000000#001#000000";
   private static final String NEWER_CSN = "20261109120001.000000Z#000000#001#000000";
@@ -22,7 +22,7 @@ class PostgresAccountFeaturesIT {
   @Container
   private static final PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:16-alpine");
 
-  private static PostgresAccountFeatures accountFeatures;
+  private static PostgresAccountAttributes accountFeatures;
 
   @BeforeAll
   static void setUp() {
@@ -31,12 +31,12 @@ class PostgresAccountFeaturesIT {
     dataSource.setUser(postgres.getUsername());
     dataSource.setPassword(postgres.getPassword());
     new MailboxSchemaMigration(dataSource).migrate();
-    accountFeatures = new PostgresAccountFeatures(DSL.using(dataSource, SQLDialect.POSTGRES));
+    accountFeatures = new PostgresAccountAttributes(DSL.using(dataSource, SQLDialect.POSTGRES));
   }
 
   @Test
   void save_FindsFeatures() {
-    AccountFeatures features = mobileSync("a1", OLDER_CSN, "TRUE");
+    AccountAttributes features = mobileSync("a1", OLDER_CSN, "TRUE");
 
     accountFeatures.save(features);
 
@@ -46,7 +46,7 @@ class PostgresAccountFeaturesIT {
   @Test
   void saveNewerCsn_ReplacesFeatures() {
     accountFeatures.save(mobileSync("a2", OLDER_CSN, "TRUE"));
-    AccountFeatures newer = mobileSync("a2", NEWER_CSN, "FALSE");
+    AccountAttributes newer = mobileSync("a2", NEWER_CSN, "FALSE");
 
     accountFeatures.save(newer);
 
@@ -55,7 +55,7 @@ class PostgresAccountFeaturesIT {
 
   @Test
   void saveOlderCsn_KeepsNewerFeatures() {
-    AccountFeatures newer = mobileSync("a3", NEWER_CSN, "FALSE");
+    AccountAttributes newer = mobileSync("a3", NEWER_CSN, "FALSE");
     accountFeatures.save(newer);
 
     accountFeatures.save(mobileSync("a3", OLDER_CSN, "TRUE"));
@@ -68,8 +68,8 @@ class PostgresAccountFeaturesIT {
     assertThat(accountFeatures.find("missing")).isEmpty();
   }
 
-  private static AccountFeatures mobileSync(String accountId, String entryCsn, String enabled) {
-    return new AccountFeatures(
+  private static AccountAttributes mobileSync(String accountId, String entryCsn, String enabled) {
+    return new AccountAttributes(
         accountId,
         "test.com",
         "cos-1",

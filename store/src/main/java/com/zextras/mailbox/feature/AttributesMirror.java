@@ -3,36 +3,44 @@ package com.zextras.mailbox.feature;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class FeaturesMirror {
+public class AttributesMirror {
 
   public static final String ENTRY_CSN = "entryCSN";
   private static final String COS_ID = "zimbraCOSId";
   private static final String COS_NAME = "cn";
   private static final String DOMAIN_DEFAULT_COS_ID = "zimbraDomainDefaultCOSId";
-  private static final String FEATURE_PREFIX = "zimbraFeature";
+  private static final List<String> MIRRORED_PREFIXES = List.of("zimbraFeature", "carbonioFeature");
+  private static final Set<String> MIRRORED_ACCOUNT_ATTRIBUTES =
+      Set.of(
+          "zimbraAccountStatus",
+          "zimbraIsSystemAccount",
+          "zimbraIsSystemResource",
+          "zimbraCalResType",
+          "zimbraIsExternalVirtualAccount");
 
-  private final PostgresAccountFeatures accountFeatures;
-  private final PostgresCosFeatures cosFeatures;
+  private final PostgresAccountAttributes accountFeatures;
+  private final PostgresCosAttributes cosFeatures;
   private final PostgresDomainDefaultCos domainDefaultCos;
 
-  public FeaturesMirror(
-      PostgresAccountFeatures accountFeatures,
-      PostgresCosFeatures cosFeatures,
+  public AttributesMirror(
+      PostgresAccountAttributes accountFeatures,
+      PostgresCosAttributes cosFeatures,
       PostgresDomainDefaultCos domainDefaultCos) {
     this.accountFeatures = accountFeatures;
     this.cosFeatures = cosFeatures;
     this.domainDefaultCos = domainDefaultCos;
   }
 
-  public static boolean changesAccountFeatures(Map<String, ?> changes) {
-    return changedAttributes(changes).anyMatch(name -> isFeature(name) || COS_ID.equals(name));
+  public static boolean changesAccountAttributes(Map<String, ?> changes) {
+    return changedAttributes(changes).anyMatch(name -> isMirrored(name) || COS_ID.equals(name));
   }
 
-  public static boolean changesCosFeatures(Map<String, ?> changes) {
-    return changedAttributes(changes).anyMatch(FeaturesMirror::isFeature);
+  public static boolean changesCosAttributes(Map<String, ?> changes) {
+    return changedAttributes(changes).anyMatch(AttributesMirror::isMirrored);
   }
 
   public static boolean changesDomainDefaultCos(Map<String, ?> changes) {
@@ -41,21 +49,21 @@ public class FeaturesMirror {
 
   public void saveAccount(String accountId, String domainName, Map<String, Object> ldapAttributes) {
     accountFeatures.save(
-        new AccountFeatures(
+        new AccountAttributes(
             accountId,
             domainName,
             single(ldapAttributes, COS_ID),
             entryCsn(accountId, ldapAttributes),
-            features(ldapAttributes)));
+            mirrored(ldapAttributes)));
   }
 
   public void saveCos(String cosId, Map<String, Object> ldapAttributes) {
     cosFeatures.save(
-        new CosFeatures(
+        new CosAttributes(
             cosId,
             single(ldapAttributes, COS_NAME),
             entryCsn(cosId, ldapAttributes),
-            features(ldapAttributes)));
+            mirrored(ldapAttributes)));
   }
 
   public void saveDomain(String domainName, Map<String, Object> ldapAttributes) {
@@ -91,9 +99,9 @@ public class FeaturesMirror {
     return value == null ? null : values(value).get(0);
   }
 
-  private static Map<String, List<String>> features(Map<String, Object> ldapAttributes) {
+  private static Map<String, List<String>> mirrored(Map<String, Object> ldapAttributes) {
     return ldapAttributes.entrySet().stream()
-        .filter(attribute -> isFeature(attribute.getKey()))
+        .filter(attribute -> isMirrored(attribute.getKey()))
         .collect(Collectors.toMap(Map.Entry::getKey, attribute -> values(attribute.getValue())));
   }
 
@@ -102,11 +110,12 @@ public class FeaturesMirror {
   }
 
   private static Stream<String> changedAttributes(Map<String, ?> changes) {
-    return changes.keySet().stream().map(FeaturesMirror::withoutOperator);
+    return changes.keySet().stream().map(AttributesMirror::withoutOperator);
   }
 
-  private static boolean isFeature(String attribute) {
-    return attribute.startsWith(FEATURE_PREFIX);
+  private static boolean isMirrored(String attribute) {
+    return MIRRORED_ACCOUNT_ATTRIBUTES.contains(attribute)
+        || MIRRORED_PREFIXES.stream().anyMatch(attribute::startsWith);
   }
 
   private static String withoutOperator(String attribute) {

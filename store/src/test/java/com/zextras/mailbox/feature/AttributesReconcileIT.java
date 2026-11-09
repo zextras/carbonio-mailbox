@@ -1,6 +1,6 @@
 package com.zextras.mailbox.feature;
 
-import static com.zextras.mailbox.feature.MirroredFeatures.modify;
+import static com.zextras.mailbox.feature.MirroredAttributes.modify;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.zextras.mailbox.MailboxTestSuite;
@@ -24,7 +24,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.postgresql.PostgreSQLContainer;
 
 @Testcontainers
-class FeaturesReconcileIT extends MailboxTestSuite {
+class AttributesReconcileIT extends MailboxTestSuite {
 
   private static final String MOBILE_SYNC = "zimbraFeatureMobileSyncEnabled";
   private static final String FUTURE_CSN = "20991231235959.999999Z#000000#000#000000";
@@ -32,16 +32,16 @@ class FeaturesReconcileIT extends MailboxTestSuite {
   @Container
   private static final PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:16-alpine");
 
-  private static MirroredFeatures mirrored;
+  private static MirroredAttributes mirrored;
 
   @BeforeAll
   static void setUp() {
-    mirrored = MirroredFeatures.enable(postgres);
+    mirrored = MirroredAttributes.enable(postgres);
   }
 
   @AfterAll
   static void tearDown() {
-    MirroredFeatures.disable();
+    MirroredAttributes.disable();
   }
 
   @BeforeEach
@@ -70,7 +70,7 @@ class FeaturesReconcileIT extends MailboxTestSuite {
         .isEqualTo(domain.getName());
     assertThat(mirrored.domains.find(domain.getName()).orElseThrow().defaultCosId())
         .isEqualTo(cos.getId());
-    assertThat(mirrored.coses.find(cos.getId()).orElseThrow().features())
+    assertThat(mirrored.coses.find(cos.getId()).orElseThrow().attributes())
         .containsEntry(MOBILE_SYNC, List.of("TRUE"));
     assertThat(mirrored.queries().effectiveValue(account.getId(), MOBILE_SYNC))
         .contains("TRUE");
@@ -78,7 +78,7 @@ class FeaturesReconcileIT extends MailboxTestSuite {
 
   @Test
   void reconcile_RemovesRowsOfMissingEntries() {
-    mirrored.accounts.save(new AccountFeatures("gone", "gone.com", null, FUTURE_CSN, Map.of()));
+    mirrored.accounts.save(new AccountAttributes("gone", "gone.com", null, FUTURE_CSN, Map.of()));
 
     mirrored.reconcile().run();
 
@@ -89,7 +89,7 @@ class FeaturesReconcileIT extends MailboxTestSuite {
   void reconcile_KeepsNewerRow() throws Exception {
     Account account = createAccount().create();
     mirrored.accounts.save(
-        new AccountFeatures(
+        new AccountAttributes(
             account.getId(), account.getDomainName(), null, FUTURE_CSN, Map.of()));
 
     mirrored.reconcile().run();
@@ -100,7 +100,7 @@ class FeaturesReconcileIT extends MailboxTestSuite {
 
   @Test
   void reconcile_SkipsWhileAnotherNodeRunsIt() throws Exception {
-    mirrored.accounts.save(new AccountFeatures("gone", "gone.com", null, FUTURE_CSN, Map.of()));
+    mirrored.accounts.save(new AccountAttributes("gone", "gone.com", null, FUTURE_CSN, Map.of()));
 
     try (Connection otherNode = mirrored.dataSource.getConnection();
         Statement lock = otherNode.createStatement()) {

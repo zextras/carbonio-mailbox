@@ -8,25 +8,25 @@ import java.util.List;
 import java.util.Map;
 import org.jooq.JSONB;
 
-final class FeaturesJson {
+final class AttributesJson {
 
   private static final ObjectMapper JSON = new ObjectMapper();
-  private static final TypeReference<Map<String, List<String>>> FEATURE_MAP =
+  private static final TypeReference<Map<String, List<String>>> ATTRIBUTE_MAP =
       new TypeReference<>() {};
 
-  private FeaturesJson() {}
+  private AttributesJson() {}
 
-  static JSONB toJson(Map<String, List<String>> features) {
+  static JSONB toJson(Map<String, List<String>> attributes) {
     try {
-      return JSONB.valueOf(JSON.writeValueAsString(features));
+      return JSONB.valueOf(JSON.writeValueAsString(attributes));
     } catch (JsonProcessingException e) {
       throw new UncheckedIOException(e);
     }
   }
 
-  static Map<String, List<String>> fromJson(JSONB features) {
+  static Map<String, List<String>> fromJson(JSONB attributes) {
     try {
-      return JSON.readValue(features.data(), FEATURE_MAP);
+      return JSON.readValue(attributes.data(), ATTRIBUTE_MAP);
     } catch (JsonProcessingException e) {
       throw new UncheckedIOException(e);
     }

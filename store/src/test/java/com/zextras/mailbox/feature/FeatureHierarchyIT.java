@@ -1,6 +1,6 @@
 package com.zextras.mailbox.feature;
 
-import static com.zextras.mailbox.feature.MirroredFeatures.modify;
+import static com.zextras.mailbox.feature.MirroredAttributes.modify;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.zextras.mailbox.MailboxTestSuite;
@@ -28,18 +28,18 @@ class FeatureHierarchyIT extends MailboxTestSuite {
   @Container
   private static final PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:16-alpine");
 
-  private static MirroredFeatures mirrored;
+  private static MirroredAttributes mirrored;
   private static AccountFeatureQueries queries;
 
   @BeforeAll
   static void setUp() {
-    mirrored = MirroredFeatures.enable(postgres);
+    mirrored = MirroredAttributes.enable(postgres);
     queries = mirrored.queries();
   }
 
   @AfterAll
   static void tearDown() {
-    MirroredFeatures.disable();
+    MirroredAttributes.disable();
   }
 
   @BeforeEach
@@ -121,6 +121,8 @@ class FeatureHierarchyIT extends MailboxTestSuite {
     Provisioning.getInstance().reload(account);
     assertThat(account.getAttr(MOBILE_SYNC)).isEqualTo(expected);
     assertThat(queries.effectiveValue(account.getId(), MOBILE_SYNC)).contains(expected);
+    assertThat(queries.effectiveCosId(account.getId()))
+        .contains(Provisioning.getInstance().getCOS(account).getId());
   }
 
   private static Cos defaultCos() throws Exception {

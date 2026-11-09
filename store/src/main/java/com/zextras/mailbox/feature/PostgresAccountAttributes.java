@@ -1,7 +1,7 @@
 package com.zextras.mailbox.feature;
 
-import static com.zextras.mailbox.feature.FeaturesJson.fromJson;
-import static com.zextras.mailbox.feature.FeaturesJson.toJson;
+import static com.zextras.mailbox.feature.AttributesJson.fromJson;
+import static com.zextras.mailbox.feature.AttributesJson.toJson;
 import static org.jooq.impl.DSL.currentOffsetDateTime;
 import static org.jooq.impl.DSL.excluded;
 import static org.jooq.impl.DSL.field;
@@ -18,66 +18,66 @@ import org.jooq.Record;
 import org.jooq.Table;
 import org.jooq.impl.SQLDataType;
 
-public class PostgresAccountFeatures {
+public class PostgresAccountAttributes {
 
-  static final Table<Record> ACCOUNT_FEATURES =
-      table(name(MailboxSchemaMigration.SCHEMA, "account_features"));
+  static final Table<Record> ACCOUNT_ATTRIBUTES =
+      table(name(MailboxSchemaMigration.SCHEMA, "account_attributes"));
   static final Field<String> ACCOUNT_ID =
-      field(name("account_features", "account_id"), SQLDataType.VARCHAR);
+      field(name("account_attributes", "account_id"), SQLDataType.VARCHAR);
   static final Field<String> DOMAIN_NAME =
-      field(name("account_features", "domain_name"), SQLDataType.VARCHAR);
+      field(name("account_attributes", "domain_name"), SQLDataType.VARCHAR);
   static final Field<String> COS_ID =
-      field(name("account_features", "cos_id"), SQLDataType.VARCHAR);
+      field(name("account_attributes", "cos_id"), SQLDataType.VARCHAR);
   static final Field<String> ENTRY_CSN =
-      field(name("account_features", "entry_csn"), SQLDataType.VARCHAR);
-  static final Field<JSONB> FEATURES =
-      field(name("account_features", "features"), SQLDataType.JSONB);
+      field(name("account_attributes", "entry_csn"), SQLDataType.VARCHAR);
+  static final Field<JSONB> ATTRIBUTES =
+      field(name("account_attributes", "attributes"), SQLDataType.JSONB);
   static final Field<OffsetDateTime> SYNCED_AT =
-      field(name("account_features", "synced_at"), SQLDataType.TIMESTAMPWITHTIMEZONE);
+      field(name("account_attributes", "synced_at"), SQLDataType.TIMESTAMPWITHTIMEZONE);
 
   private final DSLContext db;
 
-  public PostgresAccountFeatures(DSLContext db) {
+  public PostgresAccountAttributes(DSLContext db) {
     this.db = db;
   }
 
-  public void save(AccountFeatures account) {
-    db.insertInto(ACCOUNT_FEATURES)
+  public void save(AccountAttributes account) {
+    db.insertInto(ACCOUNT_ATTRIBUTES)
         .set(ACCOUNT_ID, account.accountId())
         .set(DOMAIN_NAME, account.domainName())
         .set(COS_ID, account.cosId())
         .set(ENTRY_CSN, account.entryCsn())
-        .set(FEATURES, toJson(account.features()))
+        .set(ATTRIBUTES, toJson(account.attributes()))
         .onConflict(ACCOUNT_ID)
         .doUpdate()
         .set(DOMAIN_NAME, excluded(DOMAIN_NAME))
         .set(COS_ID, excluded(COS_ID))
         .set(ENTRY_CSN, excluded(ENTRY_CSN))
-        .set(FEATURES, excluded(FEATURES))
+        .set(ATTRIBUTES, excluded(ATTRIBUTES))
         .set(SYNCED_AT, currentOffsetDateTime())
         .where(ENTRY_CSN.lt(excluded(ENTRY_CSN)))
         .execute();
   }
 
   public void delete(String accountId) {
-    db.deleteFrom(ACCOUNT_FEATURES).where(ACCOUNT_ID.eq(accountId)).execute();
+    db.deleteFrom(ACCOUNT_ATTRIBUTES).where(ACCOUNT_ID.eq(accountId)).execute();
   }
 
   public List<String> idsSyncedBefore(OffsetDateTime start) {
-    return db.select(ACCOUNT_ID).from(ACCOUNT_FEATURES).where(SYNCED_AT.lt(start)).fetch(ACCOUNT_ID);
+    return db.select(ACCOUNT_ID).from(ACCOUNT_ATTRIBUTES).where(SYNCED_AT.lt(start)).fetch(ACCOUNT_ID);
   }
 
-  public Optional<AccountFeatures> find(String accountId) {
-    return db.select(ACCOUNT_ID, DOMAIN_NAME, COS_ID, ENTRY_CSN, FEATURES)
-        .from(ACCOUNT_FEATURES)
+  public Optional<AccountAttributes> find(String accountId) {
+    return db.select(ACCOUNT_ID, DOMAIN_NAME, COS_ID, ENTRY_CSN, ATTRIBUTES)
+        .from(ACCOUNT_ATTRIBUTES)
         .where(ACCOUNT_ID.eq(accountId))
         .fetchOptional(
             row ->
-                new AccountFeatures(
+                new AccountAttributes(
                     row.get(ACCOUNT_ID),
                     row.get(DOMAIN_NAME),
                     row.get(COS_ID),
                     row.get(ENTRY_CSN),
-                    fromJson(row.get(FEATURES))));
+                    fromJson(row.get(ATTRIBUTES))));
   }
 }

@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.util;
 
-import com.zextras.mailbox.feature.FeaturesMirrorStartup;
+import com.zextras.mailbox.feature.AttributesMirrorStartup;
 import com.zimbra.common.calendar.WellKnownTimeZones;
 import com.zimbra.common.lmtp.SmtpToLmtp;
 import com.zimbra.common.localconfig.ConfigException;
@@ -233,7 +233,7 @@ public final class Zimbra {
     }
 
     if (forMailboxd && prov instanceof LdapProvisioning ldapProvisioning) {
-      FeaturesMirrorStartup.enableInBackground(ldapProvisioning);
+      AttributesMirrorStartup.enableInBackground(ldapProvisioning);
     }
 
     if (server.isMailSSLClientCertOCSPEnabled()) {

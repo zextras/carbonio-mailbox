@@ -15,7 +15,7 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.postgresql.ds.PGSimpleDataSource;
 
-public class FeaturesMirrorStartup {
+public class AttributesMirrorStartup {
 
   private static final Path SERVICE_DISCOVER_TOKEN =
       Path.of("/etc/carbonio/mailbox/service-discover/token");
@@ -26,7 +26,7 @@ public class FeaturesMirrorStartup {
   private final String host;
   private final int port;
 
-  public FeaturesMirrorStartup(ServiceDiscoverHttpClient serviceDiscover, String host, int port) {
+  public AttributesMirrorStartup(ServiceDiscoverHttpClient serviceDiscover, String host, int port) {
     this.serviceDiscover = serviceDiscover;
     this.host = host;
     this.port = port;
@@ -45,25 +45,25 @@ public class FeaturesMirrorStartup {
     Try.of(() -> Files.readString(SERVICE_DISCOVER_TOKEN).trim())
         .map(
             token ->
-                new FeaturesMirrorStartup(
+                new AttributesMirrorStartup(
                     ServiceDiscoverHttpClient.defaultUrl().withToken(token),
                     LC.mailbox_postgres_host.value(),
                     LC.mailbox_postgres_port.intValue()))
-        .flatMap(FeaturesMirrorStartup::connect)
+        .flatMap(AttributesMirrorStartup::connect)
         .onSuccess(db -> start(provisioning, db))
         .onFailure(e -> ZimbraLog.misc.warn("Features mirror to Postgres not enabled", e));
   }
 
   private static void start(LdapProvisioning provisioning, DSLContext db) {
-    PostgresAccountFeatures accounts = new PostgresAccountFeatures(db);
-    PostgresCosFeatures coses = new PostgresCosFeatures(db);
+    PostgresAccountAttributes accounts = new PostgresAccountAttributes(db);
+    PostgresCosAttributes coses = new PostgresCosAttributes(db);
     PostgresDomainDefaultCos domains = new PostgresDomainDefaultCos(db);
-    FeaturesMirror mirror = new FeaturesMirror(accounts, coses, domains);
-    provisioning.setFeaturesMirror(mirror);
+    AttributesMirror mirror = new AttributesMirror(accounts, coses, domains);
+    provisioning.setAttributesMirror(mirror);
     ZimbraLog.misc.info("Features mirror to Postgres enabled");
 
-    FeaturesReconcile reconcile =
-        new FeaturesReconcile(provisioning, mirror, db, accounts, coses, domains);
+    AttributesReconcile reconcile =
+        new AttributesReconcile(provisioning, mirror, db, accounts, coses, domains);
     ScheduledExecutorService scheduler =
         Executors.newSingleThreadScheduledExecutor(
             task -> {

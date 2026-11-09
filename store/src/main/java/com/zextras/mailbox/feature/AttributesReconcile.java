@@ -16,26 +16,26 @@ import java.util.function.Consumer;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
-public class FeaturesReconcile {
+public class AttributesReconcile {
 
   private static final long LOCK_KEY = 4706L;
-  private static final String[] ATTRIBUTES = {"*", FeaturesMirror.ENTRY_CSN};
+  private static final String[] ATTRIBUTES = {"*", AttributesMirror.ENTRY_CSN};
   private static final String DOMAIN_NAME = "zimbraDomainName";
   private static final String ZIMBRA_ID = "zimbraId";
 
   private final LdapProvisioning provisioning;
-  private final FeaturesMirror mirror;
+  private final AttributesMirror mirror;
   private final DSLContext db;
-  private final PostgresAccountFeatures accounts;
-  private final PostgresCosFeatures coses;
+  private final PostgresAccountAttributes accounts;
+  private final PostgresCosAttributes coses;
   private final PostgresDomainDefaultCos domains;
 
-  public FeaturesReconcile(
+  public AttributesReconcile(
       LdapProvisioning provisioning,
-      FeaturesMirror mirror,
+      AttributesMirror mirror,
       DSLContext db,
-      PostgresAccountFeatures accounts,
-      PostgresCosFeatures coses,
+      PostgresAccountAttributes accounts,
+      PostgresCosAttributes coses,
       PostgresDomainDefaultCos domains) {
     this.provisioning = provisioning;
     this.mirror = mirror;
