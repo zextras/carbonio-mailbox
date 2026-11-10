@@ -11,6 +11,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.zextras.mailbox.feature.AttributesMirror;
+import com.zextras.mailbox.feature.PostgresEntries;
+import com.zextras.mailbox.feature.StoredEntry;
 import com.zimbra.common.account.ForgetPasswordEnums.CodeConstants;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
@@ -247,9 +249,39 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   private static final String[] MIRRORED_READ = {"*", AttributesMirror.ENTRY_CSN};
 
   private AttributesMirror attributesMirror;
+  private PostgresEntries postgresEntries;
 
   public void setAttributesMirror(AttributesMirror attributesMirror) {
     this.attributesMirror = attributesMirror;
+  }
+
+  public void setPostgresEntries(PostgresEntries postgresEntries) {
+    this.postgresEntries = postgresEntries;
+  }
+
+  private boolean readsFromPostgres() {
+    return postgresEntries != null && LC.mailbox_directory_reads_from_postgres.booleanValue();
+  }
+
+  private static ZAttributes zAttributes(StoredEntry stored) {
+    return new ZAttributes(stored.toLdapEntry());
+  }
+
+  private Account accountFromPostgres(Optional<StoredEntry> stored) throws ServiceException {
+    return stored.isEmpty() ? null : makeAccount(stored.get().dn(), zAttributes(stored.get()));
+  }
+
+  private LdapCos cosFromPostgres(Optional<StoredEntry> stored) throws ServiceException {
+    return stored.isEmpty()
+        ? null
+        : new LdapCos(stored.get().dn(), zAttributes(stored.get()), this);
+  }
+
+  private LdapDomain domainFromPostgres(Optional<StoredEntry> stored) throws ServiceException {
+    return stored.isEmpty()
+        ? null
+        : new LdapDomain(
+            stored.get().dn(), zAttributes(stored.get()), getConfig().getDomainDefaults(), this);
   }
 
   public static LdapProvisioning create(CacheMode cacheMode) {
@@ -1093,6 +1125,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   private Account getAccountById(String zimbraId, ZLdapContext zlc, boolean loadFromMaster)
       throws ServiceException {
     if (zimbraId == null) return null;
+    if (zlc == null && !loadFromMaster && readsFromPostgres()) {
+      return accountFromPostgres(postgresEntries.accountById(zimbraId));
+    }
     Account a = accountCache.getById(zimbraId);
     if (a == null) {
       ZLdapFilter filter = filterFactory.accountById(zimbraId);
@@ -1285,6 +1320,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       throws ServiceException {
 
     emailAddress = fixupAccountName(emailAddress);
+    if (!loadFromMaster && readsFromPostgres()) {
+      return accountFromPostgres(postgresEntries.accountByName(emailAddress));
+    }
 
     Account account = accountCache.getByName(emailAddress);
     if (account == null) {
@@ -2992,6 +3030,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     if (zimbraId == null) {
       return null;
     }
+    if (zlc == null && readsFromPostgres()) {
+      return domainFromPostgres(postgresEntries.domainById(zimbraId));
+    }
 
     Domain d = domainCache.getById(zimbraId, option);
     if (d instanceof DomainCache.NonExistingDomain) {
@@ -3035,6 +3076,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
   private Domain getDomainByAsciiNameInternal(
       String name, ZLdapContext zlc, GetFromDomainCacheOption option) throws ServiceException {
+    if (zlc == null && readsFromPostgres()) {
+      return domainFromPostgres(postgresEntries.domainByName(name));
+    }
     Domain d = domainCache.getByName(name, option);
     if (d instanceof DomainCache.NonExistingDomain) return null;
 
@@ -3336,6 +3380,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
   private Cos getCosById(String zimbraId, ZLdapContext zlc) throws ServiceException {
     if (zimbraId == null) return null;
+    if (zlc == null && readsFromPostgres()) {
+      return cosFromPostgres(postgresEntries.cosById(zimbraId));
+    }
 
     LdapCos cos = cosCache.getById(zimbraId);
     if (cos == null) {
@@ -3369,6 +3416,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   }
 
   private Cos getCosByName(String name, ZLdapContext initZlc) throws ServiceException {
+    if (initZlc == null && readsFromPostgres()) {
+      return cosFromPostgres(postgresEntries.cosByName(name));
+    }
     LdapCos cos = cosCache.getByName(name);
     if (cos != null) return cos;
 

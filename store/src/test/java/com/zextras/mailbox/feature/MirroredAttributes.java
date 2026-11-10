@@ -1,5 +1,6 @@
 package com.zextras.mailbox.feature;
 
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Provisioning;
@@ -64,6 +65,17 @@ final class MirroredAttributes {
 
   static void disable() {
     ldapProvisioning().setAttributesMirror(null);
+    readFromLdap();
+  }
+
+  void readFromPostgres() {
+    ldapProvisioning().setPostgresEntries(new PostgresEntries(db));
+    LC.mailbox_directory_reads_from_postgres.setDefault(true);
+  }
+
+  static void readFromLdap() {
+    LC.mailbox_directory_reads_from_postgres.setDefault(false);
+    ldapProvisioning().setPostgresEntries(null);
   }
 
   void clear() {

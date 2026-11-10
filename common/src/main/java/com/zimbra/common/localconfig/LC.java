@@ -435,6 +435,7 @@ public final class LC {
   public static final KnownKey mailbox_postgres_host = KnownKey.newKey("127.78.0.7");
   public static final KnownKey mailbox_postgres_port = KnownKey.newKey(20003);
   public static final KnownKey mailbox_features_reconcile_interval_seconds = KnownKey.newKey(300);
+  public static final KnownKey mailbox_directory_reads_from_postgres = KnownKey.newKey(false);
 
   @Supported public static final KnownKey mysql_root_password = KnownKey.newKey("zimbra").protect();
 

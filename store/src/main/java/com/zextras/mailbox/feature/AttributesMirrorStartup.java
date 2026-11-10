@@ -63,6 +63,7 @@ public class AttributesMirrorStartup {
     PostgresDomainAttributes domains = new PostgresDomainAttributes(db);
     AttributesMirror mirror = new AttributesMirror(accounts, coses, domains);
     provisioning.setAttributesMirror(mirror);
+    provisioning.setPostgresEntries(new PostgresEntries(db));
     ZimbraLog.misc.info("Features mirror to Postgres enabled");
 
     AttributesReconcile reconcile =
