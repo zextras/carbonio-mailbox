@@ -5,16 +5,23 @@ import com.unboundid.ldap.listener.interceptor.InMemoryInterceptedModifyResult;
 import com.unboundid.ldap.listener.interceptor.InMemoryInterceptedSearchEntry;
 import com.unboundid.ldap.listener.interceptor.InMemoryOperationInterceptor;
 import com.unboundid.ldap.sdk.DN;
+import com.unboundid.ldap.sdk.Control;
 import com.unboundid.ldap.sdk.Entry;
+import com.unboundid.ldap.sdk.LDAPResult;
+import com.unboundid.ldap.sdk.ReadOnlyEntry;
+import com.unboundid.ldap.sdk.controls.PostReadResponseControl;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.ResultCode;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-class EntryCsnInterceptor extends InMemoryOperationInterceptor {
+public class EntryCsnInterceptor extends InMemoryOperationInterceptor {
 
   private static final String ENTRY_CSN = "entryCSN";
+  private static final AtomicLong ENTRY_CSN_READS = new AtomicLong();
 
   private final AtomicLong sequence = new AtomicLong();
   private final Map<String, Long> versions = new ConcurrentHashMap<>();
@@ -28,8 +35,35 @@ class EntryCsnInterceptor extends InMemoryOperationInterceptor {
 
   @Override
   public void processModifyResult(InMemoryInterceptedModifyResult modify) {
-    if (modify.getResult().getResultCode() == ResultCode.SUCCESS) {
-      bump(modify.getRequest().getDN());
+    if (modify.getResult().getResultCode() != ResultCode.SUCCESS) {
+      return;
+    }
+    bump(modify.getRequest().getDN());
+    LDAPResult result = modify.getResult();
+    try {
+      PostReadResponseControl postRead = PostReadResponseControl.get(result);
+      if (postRead == null) {
+        return;
+      }
+      Entry entry = postRead.getEntry().duplicate();
+      entry.setAttribute(ENTRY_CSN, csn(versions.get(normalize(entry.getDN()))));
+      List<Control> controls = new ArrayList<>();
+      for (Control control : result.getResponseControls()) {
+        if (!PostReadResponseControl.POST_READ_RESPONSE_OID.equals(control.getOID())) {
+          controls.add(control);
+        }
+      }
+      controls.add(new PostReadResponseControl(new ReadOnlyEntry(entry)));
+      modify.setResult(
+          new LDAPResult(
+              result.getMessageID(),
+              result.getResultCode(),
+              result.getDiagnosticMessage(),
+              result.getMatchedDN(),
+              result.getReferralURLs(),
+              controls.toArray(new Control[0])));
+    } catch (LDAPException e) {
+      throw new IllegalStateException(e);
     }
   }
 
@@ -38,9 +72,14 @@ class EntryCsnInterceptor extends InMemoryOperationInterceptor {
     if (!search.getRequest().getAttributeList().contains(ENTRY_CSN)) {
       return;
     }
+    ENTRY_CSN_READS.incrementAndGet();
     Entry entry = search.getSearchEntry().duplicate();
     entry.setAttribute(ENTRY_CSN, csn(versions.getOrDefault(normalize(entry.getDN()), 0L)));
     search.setSearchEntry(entry);
+  }
+
+  public static long entryCsnReads() {
+    return ENTRY_CSN_READS.get();
   }
 
   private void bump(String dn) {

@@ -4,6 +4,7 @@ import static com.zextras.mailbox.feature.MirroredAttributes.modify;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.zextras.mailbox.MailboxTestSuite;
+import com.zextras.mailbox.util.EntryCsnInterceptor;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Cos;
 import com.zimbra.cs.account.Domain;
@@ -46,6 +47,18 @@ class AttributesDualWriteIT extends MailboxTestSuite {
 
     assertThat(mirrored.accounts.find(account.getId()).orElseThrow().attributes())
         .containsEntry(MOBILE_SYNC, List.of("TRUE"));
+  }
+
+  @Test
+  void flipFeature_SavesFromModifyResponseWithoutRead() throws Exception {
+    Account account = createAccount().create();
+    long readsBefore = EntryCsnInterceptor.entryCsnReads();
+
+    modify(account, MOBILE_SYNC, "FALSE");
+
+    assertThat(EntryCsnInterceptor.entryCsnReads()).isEqualTo(readsBefore);
+    assertThat(mirrored.accounts.find(account.getId()).orElseThrow().attributes())
+        .containsEntry(MOBILE_SYNC, List.of("FALSE"));
   }
 
   @Test

@@ -244,6 +244,8 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   private String[] BASIC_DYNAMIC_GROUP_ATTRS;
   private String[] BASIC_GROUP_ATTRS;
 
+  private static final String[] MIRRORED_READ = {"*", AttributesMirror.ENTRY_CSN};
+
   private AttributesMirror attributesMirror;
 
   public void setAttributesMirror(AttributesMirror attributesMirror) {
@@ -684,8 +686,14 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             ldapClient.getContext(
                 LdapServerType.MASTER, LdapUsage.modifyEntryfromEntryType(entry.getEntryType()));
       }
-      helper.modifyAttrs(zlc, ((LdapEntry) entry).getDN(), attrs, entry);
-      mirrorAttributes(entry, zlc, attrs);
+      String dn = ((LdapEntry) entry).getDN();
+      if (attributesMirror != null && isMirrored(entry, attrs)) {
+        Optional<ZAttributes> saved =
+            helper.modifyAttrsAndRead(zlc, dn, attrs, entry, MIRRORED_READ);
+        mirrorAttributes(entry, zlc, saved);
+      } else {
+        helper.modifyAttrs(zlc, dn, attrs, entry);
+      }
     } catch (LdapInvalidAttrNameException e) {
       throw AccountServiceException.INVALID_ATTR_NAME("invalid attr name: " + e.getMessage(), e);
     } catch (LdapInvalidAttrValueException e) {
@@ -702,13 +710,21 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     }
   }
 
-  private void mirrorAttributes(Entry entry, ZLdapContext zlc, Map<String, ? extends Object> changes) {
-    boolean mirrored =
-        (entry instanceof Account && AttributesMirror.changesAccountAttributes(changes))
-            || (entry instanceof Cos && AttributesMirror.changesCosAttributes(changes))
-            || (entry instanceof Domain && AttributesMirror.changesDomainDefaultCos(changes));
-    if (mirrored) {
+  private static boolean isMirrored(Entry entry, Map<String, ? extends Object> changes) {
+    return (entry instanceof Account && AttributesMirror.changesAccountAttributes(changes))
+        || (entry instanceof Cos && AttributesMirror.changesCosAttributes(changes))
+        || (entry instanceof Domain && AttributesMirror.changesDomainDefaultCos(changes));
+  }
+
+  private void mirrorAttributes(Entry entry, ZLdapContext zlc, Optional<ZAttributes> saved) {
+    if (saved.isEmpty()) {
       mirrorAttributes(entry, zlc);
+      return;
+    }
+    try {
+      mirrorAttributes(entry, saved.get().getAttrs());
+    } catch (Exception e) {
+      ZimbraLog.account.warn("Unable to mirror features of %s", entry.getLabel(), e);
     }
   }
 
@@ -717,16 +733,19 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       return;
     }
     try {
-      if (entry instanceof Account account && account.getName().contains("@")) {
-        attributesMirror.saveAccount(
-            account.getId(), account.getDomainName(), savedAttributes(entry, zlc));
-      } else if (entry instanceof Cos cos) {
-        attributesMirror.saveCos(cos.getId(), savedAttributes(entry, zlc));
-      } else if (entry instanceof Domain domain) {
-        attributesMirror.saveDomain(domain.getName(), savedAttributes(entry, zlc));
-      }
+      mirrorAttributes(entry, savedAttributes(entry, zlc));
     } catch (Exception e) {
       ZimbraLog.account.warn("Unable to mirror features of %s", entry.getLabel(), e);
+    }
+  }
+
+  private void mirrorAttributes(Entry entry, Map<String, Object> saved) {
+    if (entry instanceof Account account && account.getName().contains("@")) {
+      attributesMirror.saveAccount(account.getId(), account.getDomainName(), saved);
+    } else if (entry instanceof Cos cos) {
+      attributesMirror.saveCos(cos.getId(), saved);
+    } else if (entry instanceof Domain domain) {
+      attributesMirror.saveDomain(domain.getName(), saved);
     }
   }
 
@@ -749,10 +768,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
   private Map<String, Object> savedAttributes(Entry entry, ZLdapContext zlc)
       throws ServiceException {
-    return helper
-        .getAttributes(
-            zlc, ((LdapEntry) entry).getDN(), new String[] {"*", AttributesMirror.ENTRY_CSN})
-        .getAttrs();
+    return helper.getAttributes(zlc, ((LdapEntry) entry).getDN(), MIRRORED_READ).getAttrs();
   }
 
   private void setLdapPassword(Entry entry, ZLdapContext initZlc, String newPassword)

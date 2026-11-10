@@ -8,6 +8,7 @@ package com.zimbra.cs.account.ldap;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.AttributeManager;
@@ -154,6 +155,17 @@ public class ZLdapHelper extends LdapHelper {
         if (!modList.isEmpty()) {
             zlc.modifyAttributes(dn, modList);
         }
+    }
+
+    @Override
+    public Optional<ZAttributes> modifyAttrsAndRead(ZLdapContext zlc, String dn,
+            Map<String, ? extends Object> attrs, Entry entry, String... returnAttrs)
+    throws ServiceException {
+        ZModificationList modList = getModList(zlc, dn, attrs, entry);
+        if (modList.isEmpty()) {
+            return Optional.empty();
+        }
+        return zlc.modifyAttributesAndRead(dn, modList, returnAttrs);
     }
 
     @Override
