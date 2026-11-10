@@ -1,5 +1,7 @@
 package com.zextras.mailbox.feature;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.ZimbraLog;
@@ -13,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-import org.postgresql.ds.PGSimpleDataSource;
 
 public class AttributesMirrorStartup {
 
@@ -21,6 +22,8 @@ public class AttributesMirrorStartup {
       Path.of("/etc/carbonio/mailbox/service-discover/token");
   private static final String MAILBOX_SERVICE = "carbonio-mailbox";
   private static final int CONNECT_TIMEOUT_SECONDS = 5;
+  private static final int MAXIMUM_POOL_SIZE = 5;
+  private static final int MINIMUM_IDLE = 1;
 
   private final ServiceDiscoverHttpClient serviceDiscover;
   private final String host;
@@ -84,17 +87,18 @@ public class AttributesMirrorStartup {
         .map(dataSource -> DSL.using(dataSource, SQLDialect.POSTGRES));
   }
 
-  private Try<PGSimpleDataSource> dataSource() {
+  private Try<HikariDataSource> dataSource() {
     return Try.of(
         () -> {
-          PGSimpleDataSource dataSource = new PGSimpleDataSource();
-          dataSource.setServerNames(new String[] {host});
-          dataSource.setPortNumbers(new int[] {port});
-          dataSource.setDatabaseName(config("db-name"));
-          dataSource.setUser(config("db-username"));
-          dataSource.setPassword(config("db-password"));
-          dataSource.setConnectTimeout(CONNECT_TIMEOUT_SECONDS);
-          return dataSource;
+          HikariConfig pool = new HikariConfig();
+          pool.setPoolName("mailbox-attributes");
+          pool.setJdbcUrl("jdbc:postgresql://%s:%d/%s".formatted(host, port, config("db-name")));
+          pool.setUsername(config("db-username"));
+          pool.setPassword(config("db-password"));
+          pool.setMaximumPoolSize(MAXIMUM_POOL_SIZE);
+          pool.setMinimumIdle(MINIMUM_IDLE);
+          pool.setConnectionTimeout(TimeUnit.SECONDS.toMillis(CONNECT_TIMEOUT_SECONDS));
+          return new HikariDataSource(pool);
         });
   }
 
