@@ -19,7 +19,7 @@ final class MirroredAttributes {
   final DSLContext db;
   final PostgresAccountAttributes accounts;
   final PostgresCosAttributes coses;
-  final PostgresDomainDefaultCos domains;
+  final PostgresDomainAttributes domains;
   final AttributesMirror mirror;
 
   private MirroredAttributes(PGSimpleDataSource dataSource) {
@@ -27,7 +27,7 @@ final class MirroredAttributes {
     this.db = DSL.using(dataSource, SQLDialect.POSTGRES);
     this.accounts = new PostgresAccountAttributes(db);
     this.coses = new PostgresCosAttributes(db);
-    this.domains = new PostgresDomainDefaultCos(db);
+    this.domains = new PostgresDomainAttributes(db);
     this.mirror = new AttributesMirror(accounts, coses, domains);
   }
 
@@ -69,7 +69,7 @@ final class MirroredAttributes {
   void clear() {
     db.truncate(PostgresAccountAttributes.ACCOUNT_ATTRIBUTES).execute();
     db.truncate(PostgresCosAttributes.COS_ATTRIBUTES).execute();
-    db.truncate(PostgresDomainDefaultCos.DOMAIN_DEFAULT_COS).execute();
+    db.truncate(PostgresDomainAttributes.DOMAIN_ATTRIBUTES).execute();
   }
 
   static void modify(Entry entry, String attribute, String value) throws Exception {

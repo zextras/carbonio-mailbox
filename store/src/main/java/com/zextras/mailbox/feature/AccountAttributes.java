@@ -5,6 +5,7 @@ import java.util.Map;
 
 public record AccountAttributes(
     String accountId,
+    String dn,
     String domainName,
     String cosId,
     String entryCsn,

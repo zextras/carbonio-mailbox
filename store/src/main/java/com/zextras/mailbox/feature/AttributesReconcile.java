@@ -63,20 +63,20 @@ public class AttributesReconcile {
     long started = System.currentTimeMillis();
     PostgresAccountAttributes accounts = new PostgresAccountAttributes(held);
     PostgresCosAttributes coses = new PostgresCosAttributes(held);
-    PostgresDomainDefaultCos domains = new PostgresDomainDefaultCos(held);
+    PostgresDomainAttributes domains = new PostgresDomainAttributes(held);
     OffsetDateTime start = held.fetchValue(DSL.select(DSL.currentOffsetDateTime()));
     Set<String> seenDomains = new HashSet<>();
     Set<String> seenCoses = new HashSet<>();
     Set<String> seenAccounts = new HashSet<>();
     ZLdapFilterFactory filters = ZLdapFilterFactory.getInstance();
 
-    Batch<DomainDefaultCos> domainBatch = new Batch<>(domains::saveAll);
+    Batch<DomainAttributes> domainBatch = new Batch<>(domains::saveAll);
     scan(
         provisioning.getDIT().domainBaseDN(),
         filters.allDomains(),
         (dn, attrs) -> {
           String name = (String) attrs.get(DOMAIN_NAME);
-          domainBatch.add(AttributesMirror.domainRow(name, attrs));
+          domainBatch.add(AttributesMirror.domainRow(name, dn, attrs));
           seenDomains.add(name);
         });
     domainBatch.flush();
@@ -87,7 +87,7 @@ public class AttributesReconcile {
         filters.allCoses(),
         (dn, attrs) -> {
           String id = (String) attrs.get(ZIMBRA_ID);
-          cosBatch.add(AttributesMirror.cosRow(id, attrs));
+          cosBatch.add(AttributesMirror.cosRow(id, dn, attrs));
           seenCoses.add(id);
         });
     cosBatch.flush();
@@ -103,7 +103,7 @@ public class AttributesReconcile {
           }
           String id = (String) attrs.get(ZIMBRA_ID);
           accountBatch.add(
-              AttributesMirror.accountRow(id, email.substring(email.indexOf('@') + 1), attrs));
+              AttributesMirror.accountRow(id, dn, email.substring(email.indexOf('@') + 1), attrs));
           seenAccounts.add(id);
         });
     accountBatch.flush();

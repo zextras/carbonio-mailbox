@@ -1,5 +1,8 @@
 package com.zextras.mailbox.util;
 
+import com.unboundid.ldap.sdk.RDN;
+import com.unboundid.ldap.sdk.ReadOnlyModifyDNRequest;
+import com.unboundid.ldap.listener.interceptor.InMemoryInterceptedModifyDNResult;
 import com.unboundid.ldap.listener.interceptor.InMemoryInterceptedAddResult;
 import com.unboundid.ldap.listener.interceptor.InMemoryInterceptedModifyResult;
 import com.unboundid.ldap.listener.interceptor.InMemoryInterceptedSearchEntry;
@@ -62,6 +65,24 @@ public class EntryCsnInterceptor extends InMemoryOperationInterceptor {
               result.getMatchedDN(),
               result.getReferralURLs(),
               controls.toArray(new Control[0])));
+    } catch (LDAPException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  @Override
+  public void processModifyDNResult(InMemoryInterceptedModifyDNResult modifyDN) {
+    if (modifyDN.getResult().getResultCode() != ResultCode.SUCCESS) {
+      return;
+    }
+    try {
+      ReadOnlyModifyDNRequest request = modifyDN.getRequest();
+      DN oldDn = new DN(request.getDN());
+      DN parent =
+          request.getNewSuperiorDN() == null
+              ? oldDn.getParent()
+              : new DN(request.getNewSuperiorDN());
+      bump(new DN(new RDN(request.getNewRDN()), parent).toString());
     } catch (LDAPException e) {
       throw new IllegalStateException(e);
     }

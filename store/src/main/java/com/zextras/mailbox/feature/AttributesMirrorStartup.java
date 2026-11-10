@@ -60,7 +60,7 @@ public class AttributesMirrorStartup {
   private static void start(LdapProvisioning provisioning, DSLContext db) {
     PostgresAccountAttributes accounts = new PostgresAccountAttributes(db);
     PostgresCosAttributes coses = new PostgresCosAttributes(db);
-    PostgresDomainDefaultCos domains = new PostgresDomainDefaultCos(db);
+    PostgresDomainAttributes domains = new PostgresDomainAttributes(db);
     AttributesMirror mirror = new AttributesMirror(accounts, coses, domains);
     provisioning.setAttributesMirror(mirror);
     ZimbraLog.misc.info("Features mirror to Postgres enabled");

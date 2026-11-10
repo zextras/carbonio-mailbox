@@ -14,7 +14,7 @@ public class AccountFeatureQueries {
       """
       FROM mailbox.account_attributes account
       LEFT JOIN mailbox.cos_attributes own_cos ON own_cos.cos_id = account.cos_id
-      LEFT JOIN mailbox.domain_default_cos domain ON domain.domain_name = account.domain_name
+      LEFT JOIN mailbox.domain_attributes domain ON domain.domain_name = account.domain_name
       LEFT JOIN mailbox.cos_attributes domain_cos ON domain_cos.cos_id = domain.default_cos_id
       LEFT JOIN mailbox.cos_attributes default_cos ON default_cos.name = {0}
       """;

@@ -25,6 +25,7 @@ public class PostgresCosAttributes {
   static final Table<Record> COS_ATTRIBUTES =
       table(name(MailboxSchemaMigration.SCHEMA, "cos_attributes"));
   static final Field<String> COS_ID = field(name("cos_attributes", "cos_id"), SQLDataType.VARCHAR);
+  static final Field<String> DN = field(name("cos_attributes", "dn"), SQLDataType.VARCHAR);
   static final Field<String> NAME = field(name("cos_attributes", "name"), SQLDataType.VARCHAR);
   static final Field<String> ENTRY_CSN =
       field(name("cos_attributes", "entry_csn"), SQLDataType.VARCHAR);
@@ -51,11 +52,13 @@ public class PostgresCosAttributes {
   private Query upsert(CosAttributes cos) {
     return db.insertInto(COS_ATTRIBUTES)
         .set(COS_ID, cos.cosId())
+        .set(DN, cos.dn())
         .set(NAME, cos.name())
         .set(ENTRY_CSN, cos.entryCsn())
         .set(ATTRIBUTES, toJson(cos.attributes()))
         .onConflict(COS_ID)
         .doUpdate()
+        .set(DN, excluded(DN))
         .set(NAME, excluded(NAME))
         .set(ENTRY_CSN, excluded(ENTRY_CSN))
         .set(ATTRIBUTES, excluded(ATTRIBUTES))
@@ -67,8 +70,9 @@ public class PostgresCosAttributes {
                     ENTRY_CSN
                         .eq(excluded(ENTRY_CSN))
                         .and(
-                            row(NAME, ATTRIBUTES)
-                                .isDistinctFrom(row(excluded(NAME), excluded(ATTRIBUTES))))));
+                            row(DN, NAME, ATTRIBUTES)
+                                .isDistinctFrom(
+                                    row(excluded(DN), excluded(NAME), excluded(ATTRIBUTES))))));
   }
 
   public void delete(String cosId) {
@@ -80,13 +84,14 @@ public class PostgresCosAttributes {
   }
 
   public Optional<CosAttributes> find(String cosId) {
-    return db.select(COS_ID, NAME, ENTRY_CSN, ATTRIBUTES)
+    return db.select(COS_ID, DN, NAME, ENTRY_CSN, ATTRIBUTES)
         .from(COS_ATTRIBUTES)
         .where(COS_ID.eq(cosId))
         .fetchOptional(
             row ->
                 new CosAttributes(
                     row.get(COS_ID),
+                    row.get(DN),
                     row.get(NAME),
                     row.get(ENTRY_CSN),
                     fromJson(row.get(ATTRIBUTES))));

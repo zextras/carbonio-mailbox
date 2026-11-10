@@ -26,6 +26,7 @@ public class PostgresAccountAttributes {
       table(name(MailboxSchemaMigration.SCHEMA, "account_attributes"));
   static final Field<String> ACCOUNT_ID =
       field(name("account_attributes", "account_id"), SQLDataType.VARCHAR);
+  static final Field<String> DN = field(name("account_attributes", "dn"), SQLDataType.VARCHAR);
   static final Field<String> DOMAIN_NAME =
       field(name("account_attributes", "domain_name"), SQLDataType.VARCHAR);
   static final Field<String> COS_ID =
@@ -56,12 +57,14 @@ public class PostgresAccountAttributes {
   private Query upsert(AccountAttributes account) {
     return db.insertInto(ACCOUNT_ATTRIBUTES)
         .set(ACCOUNT_ID, account.accountId())
+        .set(DN, account.dn())
         .set(DOMAIN_NAME, account.domainName())
         .set(COS_ID, account.cosId())
         .set(ENTRY_CSN, account.entryCsn())
         .set(ATTRIBUTES, toJson(account.attributes()))
         .onConflict(ACCOUNT_ID)
         .doUpdate()
+        .set(DN, excluded(DN))
         .set(DOMAIN_NAME, excluded(DOMAIN_NAME))
         .set(COS_ID, excluded(COS_ID))
         .set(ENTRY_CSN, excluded(ENTRY_CSN))
@@ -74,9 +77,10 @@ public class PostgresAccountAttributes {
                     ENTRY_CSN
                         .eq(excluded(ENTRY_CSN))
                         .and(
-                            row(DOMAIN_NAME, COS_ID, ATTRIBUTES)
+                            row(DN, DOMAIN_NAME, COS_ID, ATTRIBUTES)
                                 .isDistinctFrom(
                                     row(
+                                        excluded(DN),
                                         excluded(DOMAIN_NAME),
                                         excluded(COS_ID),
                                         excluded(ATTRIBUTES))))));
@@ -91,13 +95,14 @@ public class PostgresAccountAttributes {
   }
 
   public Optional<AccountAttributes> find(String accountId) {
-    return db.select(ACCOUNT_ID, DOMAIN_NAME, COS_ID, ENTRY_CSN, ATTRIBUTES)
+    return db.select(ACCOUNT_ID, DN, DOMAIN_NAME, COS_ID, ENTRY_CSN, ATTRIBUTES)
         .from(ACCOUNT_ATTRIBUTES)
         .where(ACCOUNT_ID.eq(accountId))
         .fetchOptional(
             row ->
                 new AccountAttributes(
                     row.get(ACCOUNT_ID),
+                    row.get(DN),
                     row.get(DOMAIN_NAME),
                     row.get(COS_ID),
                     row.get(ENTRY_CSN),

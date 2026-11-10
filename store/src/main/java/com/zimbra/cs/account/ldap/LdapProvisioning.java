@@ -687,7 +687,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
                 LdapServerType.MASTER, LdapUsage.modifyEntryfromEntryType(entry.getEntryType()));
       }
       String dn = ((LdapEntry) entry).getDN();
-      if (attributesMirror != null && isMirrored(entry, attrs)) {
+      if (attributesMirror != null && isMirrored(entry)) {
         Optional<ZAttributes> saved =
             helper.modifyAttrsAndRead(zlc, dn, attrs, entry, MIRRORED_READ);
         mirrorAttributes(entry, zlc, saved);
@@ -710,10 +710,8 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     }
   }
 
-  private static boolean isMirrored(Entry entry, Map<String, ? extends Object> changes) {
-    return (entry instanceof Account && AttributesMirror.changesAccountAttributes(changes))
-        || (entry instanceof Cos && AttributesMirror.changesCosAttributes(changes))
-        || (entry instanceof Domain && AttributesMirror.changesDomainDefaultCos(changes));
+  private static boolean isMirrored(Entry entry) {
+    return entry instanceof Account || entry instanceof Cos || entry instanceof Domain;
   }
 
   private void mirrorAttributes(Entry entry, ZLdapContext zlc, Optional<ZAttributes> saved) {
@@ -740,12 +738,13 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   }
 
   private void mirrorAttributes(Entry entry, Map<String, Object> saved) {
+    String dn = ((LdapEntry) entry).getDN();
     if (entry instanceof Account account && account.getName().contains("@")) {
-      attributesMirror.saveAccount(account.getId(), account.getDomainName(), saved);
+      attributesMirror.saveAccount(account.getId(), dn, account.getDomainName(), saved);
     } else if (entry instanceof Cos cos) {
-      attributesMirror.saveCos(cos.getId(), saved);
+      attributesMirror.saveCos(cos.getId(), dn, saved);
     } else if (entry instanceof Domain domain) {
-      attributesMirror.saveDomain(domain.getName(), saved);
+      attributesMirror.saveDomain(domain.getName(), dn, saved);
     }
   }
 
@@ -766,6 +765,52 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     }
   }
 
+  private void mirrorFromMaster(Entry entry) {
+    if (attributesMirror == null || entry == null) {
+      return;
+    }
+    ZLdapContext zlc = null;
+    try {
+      zlc = ldapClient.getContext(LdapServerType.MASTER, LdapUsage.GET_ENTRY);
+      mirrorAttributes(entry, zlc);
+    } catch (ServiceException e) {
+      ZimbraLog.account.warn("Unable to mirror attributes of %s", entry.getLabel(), e);
+    } finally {
+      ldapClient.closeContext(zlc);
+    }
+  }
+
+  private void mirrorRenamedDomain(String oldName, String newName) {
+    if (attributesMirror == null) {
+      return;
+    }
+    try {
+      attributesMirror.deleteDomain(oldName);
+      searchLdapOnMaster(
+          mDIT.domainNameToDN(newName),
+          filterFactory.domainByName(newName),
+          MIRRORED_READ,
+          new SearchLdapVisitor() {
+            @Override
+            public void visit(String dn, Map<String, Object> attrs, IAttributes ldapAttrs) {
+              attributesMirror.saveDomain(newName, dn, attrs);
+            }
+          });
+      searchLdapOnMaster(
+          mDIT.domainToAccountSearchDN(newName),
+          filterFactory.allAccounts(),
+          MIRRORED_READ,
+          new SearchLdapVisitor() {
+            @Override
+            public void visit(String dn, Map<String, Object> attrs, IAttributes ldapAttrs) {
+              attributesMirror.saveAccount((String) attrs.get("zimbraId"), dn, newName, attrs);
+            }
+          });
+    } catch (Exception e) {
+      ZimbraLog.account.warn("Unable to mirror renamed domain %s", newName, e);
+    }
+  }
+
   private Map<String, Object> savedAttributes(Entry entry, ZLdapContext zlc)
       throws ServiceException {
     return helper.getAttributes(zlc, ((LdapEntry) entry).getDN(), MIRRORED_READ).getAttrs();
@@ -779,6 +824,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         zlc = ldapClient.getContext(LdapServerType.MASTER, LdapUsage.SET_PASSWORD);
       }
       zlc.setPassword(((LdapEntry) entry).getDN(), newPassword);
+      mirrorAttributes(entry, zlc);
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to set password: " + e.getMessage(), e);
     } finally {
@@ -3257,6 +3303,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       zlc.renameEntry(cos.getDN(), newDn);
       // remove old cos from cache
       cosCache.remove(cos);
+      mirrorAttributes(getCOSByQuery(filterFactory.cosById(zimbraId), zlc), zlc);
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.COS_EXISTS(newName);
     } catch (LdapException | AccountServiceException e) {
@@ -3589,6 +3636,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     // reload it to cache using the master, bug 45736
     Account renamedAcct = getAccountById(zimbraId, null, true);
+    mirrorFromMaster(renamedAcct);
 
     if (domainChanged) {
       PermissionCache.invalidateCache(renamedAcct);
@@ -3927,6 +3975,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
       RenameDomain rd = new RenameDomain(this, helper, oldDomain, newDomainName);
       rd.execute();
+      mirrorRenamedDomain(oldDomain.getName(), newDomainName);
     } finally {
       ldapClient.closeContext(zlc);
     }

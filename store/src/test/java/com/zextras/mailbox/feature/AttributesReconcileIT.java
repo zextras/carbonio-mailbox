@@ -78,7 +78,7 @@ class AttributesReconcileIT extends MailboxTestSuite {
 
   @Test
   void reconcile_RemovesRowsOfMissingEntries() {
-    mirrored.accounts.save(new AccountAttributes("gone", "gone.com", null, FUTURE_CSN, Map.of()));
+    mirrored.accounts.save(new AccountAttributes("gone", null, "gone.com", null, FUTURE_CSN, Map.of()));
 
     mirrored.reconcile().run();
 
@@ -90,7 +90,7 @@ class AttributesReconcileIT extends MailboxTestSuite {
     Account account = createAccount().create();
     mirrored.accounts.save(
         new AccountAttributes(
-            account.getId(), account.getDomainName(), null, FUTURE_CSN, Map.of()));
+            account.getId(), null, account.getDomainName(), null, FUTURE_CSN, Map.of()));
 
     mirrored.reconcile().run();
 
@@ -115,7 +115,7 @@ class AttributesReconcileIT extends MailboxTestSuite {
 
   @Test
   void reconcile_SkipsWhileAnotherNodeRunsIt() throws Exception {
-    mirrored.accounts.save(new AccountAttributes("gone", "gone.com", null, FUTURE_CSN, Map.of()));
+    mirrored.accounts.save(new AccountAttributes("gone", null, "gone.com", null, FUTURE_CSN, Map.of()));
 
     try (Connection otherNode = mirrored.dataSource.getConnection();
         Statement lock = otherNode.createStatement()) {

@@ -69,6 +69,7 @@ class PostgresAccountAttributesIT {
     AccountAttributes moreAttributes =
         new AccountAttributes(
             "a4",
+            "uid=a4,ou=people,dc=test,dc=com",
             "test.com",
             "cos-1",
             OLDER_CSN,
@@ -89,6 +90,7 @@ class PostgresAccountAttributesIT {
   private static AccountAttributes mobileSync(String accountId, String entryCsn, String enabled) {
     return new AccountAttributes(
         accountId,
+        "uid=" + accountId + ",ou=people,dc=test,dc=com",
         "test.com",
         "cos-1",
         entryCsn,
