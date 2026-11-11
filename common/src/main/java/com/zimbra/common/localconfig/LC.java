@@ -126,9 +126,6 @@ public final class LC {
   public static final KnownKey skins_directory =
       KnownKey.newKey("${mailboxd_directory}/webapps/zimbra/skins");
 
-  public static final KnownKey zimbra_disk_cache_servlet_flush = KnownKey.newKey(true);
-  public static final KnownKey zimbra_disk_cache_servlet_size = KnownKey.newKey(1000);
-
   @Supported
   public static final KnownKey zimbra_store_sweeper_max_age =
       KnownKey.newKey(480); // 480 mins = 8 hours
