@@ -3134,7 +3134,33 @@ public class Invite {
     for (Alarm alarm : mAlarms) {
       inv.addAlarm(alarm.newCopy());
     }
+    copyCarbonioXPropsTo(inv);
     return inv;
+  }
+
+  private static final String CARBONIO_XPROP_PREFIX = "X-CRB-";
+
+  /**
+   * Copies the Carbonio X-properties (e.g. X-CRB-MEETING-ROOM, the virtual room) to the given invite.
+   * The other X-properties are left out on purpose: some are one-shot server markers
+   * (X-ZIMBRA-DISCARD-EXCEPTIONS, X-ZIMBRA-CHANGES).
+   */
+  private void copyCarbonioXPropsTo(Invite inv) {
+    for (ZProperty xprop : mXProps) {
+      if (xprop.getName().startsWith(CARBONIO_XPROP_PREFIX)) {
+        inv.addXProp(copyXProp(xprop));
+      }
+    }
+  }
+
+  private static ZProperty copyXProp(ZProperty prop) {
+    ZProperty copy = new ZProperty(prop.getName());
+    copy.setValue(prop.getValue());
+    for (Iterator<ZParameter> params = prop.parameterIterator(); params.hasNext(); ) {
+      ZParameter param = params.next();
+      copy.addParameter(new ZParameter(param.getName(), param.getValue()));
+    }
+    return copy;
   }
 
   private static String limitIntegerRange(String value, int min, int max, String defaultValue) {
