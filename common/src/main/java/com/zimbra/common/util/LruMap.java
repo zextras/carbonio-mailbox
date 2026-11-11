@@ -32,16 +32,6 @@ extends LinkedHashMap<K, V> {
 
     @Override
     protected boolean removeEldestEntry(Entry<K, V> eldest) {
-        boolean willRemove = size() > maxSize;
-        if (willRemove) {
-            willRemove(eldest.getKey(), eldest.getValue());
-        }
-        return willRemove;
-    }
-
-    /**
-     * Override to handle an entry that will be removed from the map.
-     */
-    protected void willRemove(K key, V value) {
+        return size() > maxSize;
     }
 }
