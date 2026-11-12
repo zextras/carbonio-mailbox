@@ -34,7 +34,7 @@ public final class CompoundHeaderParser {
 
     private final Map<String, String> params;
     private final UnaryOperator<String> encodedWordDecoder;
-    private final Map<String, Map<Integer, ParameterContinuation>> partials = new HashMap<>(3);
+    private final Map<String, Map<Integer, ParameterContinuation>> partials = HashMap.newHashMap(3);
     private State state = State.EQUALS;
     private State precomment;
     private ByteBuilder key = null;
