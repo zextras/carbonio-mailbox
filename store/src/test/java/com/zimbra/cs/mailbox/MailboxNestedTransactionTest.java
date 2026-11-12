@@ -23,14 +23,13 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class DesktopMailboxTest extends MailboxTestSuite {
+public class MailboxNestedTransactionTest extends MailboxTestSuite {
 
 	@BeforeAll
 	public static void init() throws Exception {
 		MailboxManager.setInstance(new MailboxManager() {
 			@Override
 			protected Mailbox instantiateMailbox(MailboxData data) {
-				//mock the behaviors we need to test in DesktopMailbox
 				return new Mailbox(data) {
 					@Override
 					protected boolean needRedo(OperationContext octxt, RedoableOp recorder) {
