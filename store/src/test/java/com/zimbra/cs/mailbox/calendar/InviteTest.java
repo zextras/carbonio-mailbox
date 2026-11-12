@@ -5,15 +5,24 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.calendar.ZCalendar.ScheduleAgent;
 import com.zimbra.common.calendar.ZCalendar.ZCalendarBuilder;
+import com.zimbra.common.calendar.ZCalendar.ZParameter;
+import com.zimbra.common.calendar.ZCalendar.ZProperty;
 import com.zimbra.common.calendar.ZCalendar.ZVCalendar;
 import com.zimbra.cs.account.Account;
+import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 public class InviteTest extends MailboxTestSuite {
+
+	private static final String MEETING_ROOM = "X-CRB-MEETING-ROOM";
+	private static final String ROOM_LINK = "https://example.com/carbonio/meetings/room-1";
+	private static final String ROOM_VALUE = "room-1";
 
 	private static Stream<Arguments> getScheduleAgentParams() {
 		return Stream.of(
@@ -116,5 +125,90 @@ public class InviteTest extends MailboxTestSuite {
 		assertEquals(scheduleAgentExpected, inviteList.get(0).getOrganizer().getScheduleAgent());
 		assertEquals(1, inviteList.get(0).getAttendees().size());
 		assertEquals(scheduleAgentExpected, inviteList.get(0).getAttendees().get(0).getScheduleAgent());
+	}
+
+
+	@Test
+	void newCopy_shouldKeepCarbonioXProperties() throws Exception {
+		Invite series = recurringInviteWithMeetingRoom();
+
+		Invite copy = series.newCopy();
+
+		assertMeetingRoom(copy);
+	}
+
+	@Test
+	void newCopy_shouldCopyCarbonioXPropertiesAsNewObjects() throws Exception {
+		Invite series = recurringInviteWithMeetingRoom();
+
+		Invite copy = series.newCopy();
+		copy.getXProperty(MEETING_ROOM).setValue("changed");
+
+		assertEquals(ROOM_VALUE, series.getXProperty(MEETING_ROOM).getValue());
+	}
+
+	@Test
+	void newCopy_shouldNotCopyOtherXProperties() throws Exception {
+		Invite series = recurringInviteWithMeetingRoom();
+
+		Invite copy = series.newCopy();
+
+		assertNotNull(series.getXProperty("X-ZIMBRA-DISCARD-EXCEPTIONS"));
+		assertNotNull(series.getXProperty("X-OTHER-CLIENT"));
+		assertNull(copy.getXProperty("X-ZIMBRA-DISCARD-EXCEPTIONS"));
+		assertNull(copy.getXProperty("X-OTHER-CLIENT"));
+	}
+
+	@Test
+	void makeInstanceInvite_shouldKeepMeetingRoom() throws Exception {
+		Invite series = recurringInviteWithMeetingRoom();
+
+		Invite instance = series.makeInstanceInvite(series.getStartTime());
+
+		assertMeetingRoom(instance);
+	}
+
+	private Invite recurringInviteWithMeetingRoom() throws Exception {
+		Account organizer = createAccount().create();
+		Account attendee = createAccount().create();
+		String ics =
+				"BEGIN:VCALENDAR\r\n"
+						+ "VERSION:2.0\r\n"
+						+ "METHOD:REQUEST\r\n"
+						+ "BEGIN:VEVENT\r\n"
+						+ "UID:" + UUID.randomUUID() + "\r\n"
+						+ "SUMMARY:Weekly meeting\r\n"
+						+ "DTSTART:20261123T090000Z\r\n"
+						+ "DTEND:20261123T100000Z\r\n"
+						+ "DTSTAMP:20261111T090000Z\r\n"
+						+ "RRULE:FREQ=WEEKLY;COUNT=4\r\n"
+						+ "ORGANIZER:mailto:" + organizer.getName() + "\r\n"
+						+ "ATTENDEE;RSVP=TRUE:mailto:" + attendee.getName() + "\r\n"
+						+ MEETING_ROOM + ";ROOM-LINK=\"" + ROOM_LINK + "\";ROOM-NAME=Room 1:"
+						+ ROOM_VALUE + "\r\n"
+						+ "X-ZIMBRA-DISCARD-EXCEPTIONS:TRUE\r\n"
+						+ "X-OTHER-CLIENT:value\r\n"
+						+ "END:VEVENT\r\n"
+						+ "END:VCALENDAR";
+		ZVCalendar calendar = ZCalendarBuilder.build(ics);
+		return Invite.createFromCalendar(organizer, "", calendar, true).get(0);
+	}
+
+	private static void assertMeetingRoom(Invite invite) {
+		ZProperty room = invite.getXProperty(MEETING_ROOM);
+		assertNotNull(room);
+		assertEquals(ROOM_VALUE, room.getValue());
+		assertEquals(ROOM_LINK, parameterValue(room, "ROOM-LINK"));
+		assertEquals("Room 1", parameterValue(room, "ROOM-NAME"));
+	}
+
+	private static String parameterValue(ZProperty property, String name) {
+		for (Iterator<ZParameter> params = property.parameterIterator(); params.hasNext(); ) {
+			ZParameter param = params.next();
+			if (param.getName().equals(name)) {
+				return param.getValue();
+			}
+		}
+		return null;
 	}
 }
