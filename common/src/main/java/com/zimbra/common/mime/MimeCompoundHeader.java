@@ -108,7 +108,12 @@ public class MimeCompoundHeader extends MimeHeader {
                     break;
 
                 case VALUE:
-                    if (b == ';' || b == ' ' || b == '\t' || b == '\r' || b == '\n') {
+                    if (rfc2231.opensQuotedValue(b)) {
+                        rfc2231.setQuoted();
+                    } else if (b == '"' && rfc2231.isQuoted()) {
+                        rfc2231.saveParameter(params);
+                        rfc2231.setState(RFC2231State.SLOP);
+                    } else if (b == ';' || b == ' ' || b == '\t' || b == '\r' || b == '\n') {
                         rfc2231.saveParameter(params);
                         rfc2231.setState(b == ' ' || b == '\t' ? RFC2231State.SLOP : RFC2231State.PARAM);
                     } else if (b == '(') {
@@ -158,8 +163,13 @@ public class MimeCompoundHeader extends MimeHeader {
                     break;
 
                 case CHARSET:
-                    if (b == '\'') {
+                    if (rfc2231.opensQuotedCharset(b)) {
+                        rfc2231.setQuoted();
+                    } else if (b == '\'') {
                         rfc2231.setState(RFC2231State.LANG);
+                    } else if (b == '"' && rfc2231.isQuoted()) {
+                        rfc2231.saveParameter(params);
+                        rfc2231.setState(RFC2231State.SLOP);
                     } else if (b == ';') {
                         rfc2231.saveParameter(params);
                         rfc2231.setState(RFC2231State.PARAM);
@@ -171,6 +181,9 @@ public class MimeCompoundHeader extends MimeHeader {
                 case LANG:
                     if (b == '\'') {
                         rfc2231.setState(RFC2231State.VALUE);
+                    } else if (b == '"' && rfc2231.isQuoted()) {
+                        rfc2231.saveParameter(params);
+                        rfc2231.setState(RFC2231State.SLOP);
                     } else if (b == ';') {
                         rfc2231.saveParameter(params);
                         rfc2231.setState(RFC2231State.PARAM);
@@ -417,6 +430,7 @@ public class MimeCompoundHeader extends MimeHeader {
         int comment = 0;
         int continued = -1;
         private boolean encoded = false;
+        private boolean quoted = false;
         private ByteBuilder charset = null;
         private Map<String, Map<Integer, ParameterContinuation>> partials;
 
@@ -446,6 +460,27 @@ public class MimeCompoundHeader extends MimeHeader {
             }
         }
 
+        void setQuoted() {
+            quoted = true;
+        }
+
+        boolean isQuoted() {
+            return quoted;
+        }
+
+        // tolerate quotes around an encoded value (e.g. filename*0*="UTF-8''%D0%A2"), as other MUAs do
+        boolean opensQuotedCharset(byte b) {
+            return b == '"' && !quoted && encoded && charset.isEmpty();
+        }
+
+        boolean opensQuotedValue(byte b) {
+            return b == '"' && !quoted && isEncodedContinuation() && value.isEmpty();
+        }
+
+        private boolean isEncodedContinuation() {
+            return encoded && continued > 0;
+        }
+
         void addCharsetByte(byte b) {
             charset.append(b);
         }
@@ -463,6 +498,7 @@ public class MimeCompoundHeader extends MimeHeader {
             value = new ByteBuilder(DEFAULT_CHARSET);
             continued = -1;
             encoded = false;
+            quoted = false;
         }
 
         void saveParameter(Map<String, String> attrs) {
