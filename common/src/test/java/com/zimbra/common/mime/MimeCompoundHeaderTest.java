@@ -122,8 +122,11 @@ public class MimeCompoundHeaderTest {
         "attachment; filename*=\"UTF-8''%D1%82%D0%B5%D1%81%D1%82.txt\"; foo=bar",
         "attachment", new String[]{"filename", "\u0442\u0435\u0441\u0442.txt", "foo", "bar"});
     test(false, "quoted 2231 encoded continuations",
-        "attachment;\n filename*0*=\"UTF-8''%D0%A2%D0%B5%D1%81%D1%82%D0%BE%D0%B2%D1%8B%D0%B9%20\";\n"
-            + " filename*1*=\"%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%2Edoc\";\n filename*2*=\"%78\"",
+        """
+            attachment;
+             filename*0*="UTF-8''%D0%A2%D0%B5%D1%81%D1%82%D0%BE%D0%B2%D1%8B%D0%B9%20";
+             filename*1*="%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%2Edoc";
+             filename*2*="%78\"""",
         "attachment", new String[]{"filename", "\u0422\u0435\u0441\u0442\u043e\u0432\u044b\u0439 \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442.docx"});
     test(false, "quoted 2231 value without charset",
         "attachment; foo*=\"big%20dog\"; bar=baz",
