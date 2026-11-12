@@ -25,8 +25,6 @@ public final class MemcachedKeyPrefix {
 
     public static final String IMAP                 = "zmImap" + DELIMITER;
 
-    public static final String WATCHED_ITEMS        = "zmWatch" + DELIMITER;
-
     public static final String SYNC_STATE           = "zmSync" + DELIMITER;
 
     private MemcachedKeyPrefix() {

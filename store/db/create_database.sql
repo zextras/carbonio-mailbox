@@ -307,11 +307,3 @@ CREATE TABLE IF NOT EXISTS ${DATABASE_NAME}.event (
 
    CONSTRAINT fk_event_mailbox_id FOREIGN KEY (mailbox_id) REFERENCES zimbra.mailbox(id) ON DELETE CASCADE
 ) ENGINE = InnoDB;
-
-CREATE TABLE IF NOT EXISTS ${DATABASE_NAME}.watch (
-   mailbox_id   INTEGER UNSIGNED NOT NULL,
-   target       VARCHAR(36) NOT NULL,  -- watch target account id
-   item_id      INTEGER NOT NULL,  -- target item id
-
-   PRIMARY KEY (mailbox_id, target, item_id)
-) ENGINE = InnoDB;

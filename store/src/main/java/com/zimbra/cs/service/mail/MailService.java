@@ -168,11 +168,6 @@ public class MailService implements DocumentService {
     dispatcher.registerHandler(
         MailConstants.CHECK_RECUR_CONFLICTS_REQUEST, new CheckRecurConflicts());
 
-    // spell check
-    dispatcher.registerHandler(MailConstants.CHECK_SPELLING_REQUEST, new CheckSpelling());
-    dispatcher.registerHandler(
-        MailConstants.GET_SPELL_DICTIONARIES_REQUEST, new GetSpellDictionaries());
-
     // data source
     dispatcher.registerHandler(MailConstants.GET_DATA_SOURCES_REQUEST, new GetDataSources());
     dispatcher.registerHandler(MailConstants.CREATE_DATA_SOURCE_REQUEST, new CreateDataSource());
