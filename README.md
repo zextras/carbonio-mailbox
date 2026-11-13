@@ -15,8 +15,8 @@ and their roles:
 
 ## Building Carbonio Mailbox from source
 Requirements:
-- JDK version 17. Confirm by running: `javac -version`
-- gcc to build `native` module
+- JDK 21. Confirm with `javac -version` and check that `mvn -version` reports Java 21.
+- Apache Maven.
 
 Build the Code by running:
    ```shell

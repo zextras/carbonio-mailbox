@@ -10,9 +10,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import com.zimbra.common.util.ZimbraLog;
-import org.apache.commons.dbcp.DelegatingConnection;
+import org.apache.commons.dbcp2.DelegatingConnection;
 
-class DebugConnection extends DelegatingConnection {
+class DebugConnection extends DelegatingConnection<Connection> {
     protected final Connection mConn;
 
     DebugConnection(Connection conn) {

@@ -95,7 +95,9 @@ public class FileUtil {
      * @sync <tt>true</tt> to fsync writes
      */
     public static void uncompress(File src, File dest, boolean sync) throws IOException {
-        uncompress(new GZIPInputStream(new FileInputStream(src)), dest, sync);
+        try (InputStream input = new FileInputStream(src)) {
+            uncompress(new GZIPInputStream(input), dest, sync);
+        }
     }
 
     /**

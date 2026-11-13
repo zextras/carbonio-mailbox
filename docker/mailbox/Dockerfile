@@ -55,8 +55,7 @@ RUN mkdir -p /staging/usr/bin && \
       "${BASE_JAVA_ARGS}" \
       > /staging/usr/bin/zmprov && \
     chmod +x /staging/usr/bin/zmprov && \
-    printf '#!/bin/sh\njava %s com.zimbra.cs.localconfig.LocalConfigCLI "$@"\n' \
-      "${BASE_JAVA_ARGS}" \
+    printf '#!/bin/sh\nexec /usr/local/bin/configd localconfig "$@"\n' \
       > /staging/usr/bin/zmlocalconfig && \
     chmod +x /staging/usr/bin/zmlocalconfig && \
     printf '#!/bin/sh\njava %s com.zimbra.cs.util.GalSyncAccountUtil "$@"\n' \
@@ -72,6 +71,10 @@ FROM docker.io/library/eclipse-temurin:21-jre-jammy
 
 # Copy entire staged directory structure
 COPY --from=build /staging /
+
+# zmlocalconfig is a wrapper around `configd localconfig` (LocalConfigCLI was removed).
+# The static configd binary comes from the carbonio-configd image (multi-arch).
+COPY --from=registry.dev.zextras.com/dev/carbonio-configd:main /opt/zextras/bin/configd /usr/local/bin/configd
 
 # Add OpenTelemetry agent
 ADD https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar \

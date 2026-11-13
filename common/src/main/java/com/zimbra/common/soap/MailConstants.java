@@ -201,10 +201,6 @@ public final class MailConstants {
   public static final String E_GET_RECUR_REQUEST = "GetRecurRequest";
   public static final String E_EXPAND_RECUR_REQUEST = "ExpandRecurRequest";
   public static final String E_CHECK_RECUR_CONFLICTS_REQUEST = "CheckRecurConflictsRequest";
-  public static final String E_GET_SPELL_DICTIONARIES_REQUEST = "GetSpellDictionariesRequest";
-  public static final String E_GET_SPELL_DICTIONARIES_RESPONSE = "GetSpellDictionariesResponse";
-  public static final String E_CHECK_SPELLING_REQUEST = "CheckSpellingRequest";
-  public static final String E_CHECK_SPELLING_RESPONSE = "CheckSpellingResponse";
   public static final String E_CREATE_DATA_SOURCE_REQUEST = "CreateDataSourceRequest";
   public static final String E_CREATE_DATA_SOURCE_RESPONSE = "CreateDataSourceResponse";
   public static final String E_GET_DATA_SOURCES_REQUEST = "GetDataSourcesRequest";
@@ -569,16 +565,6 @@ public final class MailConstants {
   public static final QName EXPAND_RECUR_REQUEST = QName.get(E_EXPAND_RECUR_REQUEST, NAMESPACE);
   public static final QName CHECK_RECUR_CONFLICTS_REQUEST =
       QName.get(E_CHECK_RECUR_CONFLICTS_REQUEST, NAMESPACE);
-
-  // spell checking
-  public static final QName GET_SPELL_DICTIONARIES_REQUEST =
-      QName.get(E_GET_SPELL_DICTIONARIES_REQUEST, NAMESPACE);
-  public static final QName GET_SPELL_DICTIONARIES_RESPONSE =
-      QName.get(E_GET_SPELL_DICTIONARIES_RESPONSE, NAMESPACE);
-
-  public static final QName CHECK_SPELLING_REQUEST = QName.get(E_CHECK_SPELLING_REQUEST, NAMESPACE);
-  public static final QName CHECK_SPELLING_RESPONSE =
-      QName.get(E_CHECK_SPELLING_RESPONSE, NAMESPACE);
 
   // data sources
   public static final QName CREATE_DATA_SOURCE_REQUEST =
@@ -1287,15 +1273,6 @@ public final class MailConstants {
   public static final String A_CAL_FORCESEND = "forcesend";
 
   public static final String A_CAL_ORPHAN = "orphan";
-
-  // spell checking
-  public static final String A_AVAILABLE = "available";
-  public static final String E_MISSPELLED = "misspelled";
-  public static final String A_WORD = "word";
-  public static final String A_SUGGESTIONS = "suggestions";
-  public static final String E_DICTIONARY = "dictionary";
-  public static final String A_DICTIONARY = "dictionary";
-  public static final String A_IGNORE = "ignore";
 
   // data sources
   public static final String E_DS = "dsrc";

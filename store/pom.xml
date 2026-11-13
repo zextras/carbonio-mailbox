@@ -45,8 +45,8 @@
     </dependency>
 
     <dependency>
-      <artifactId>commons-dbcp</artifactId>
-      <groupId>commons-dbcp</groupId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-dbcp2</artifactId>
     </dependency>
 
     <dependency>
@@ -60,7 +60,7 @@
     </dependency>
 
     <dependency>
-      <artifactId>micrometer-registry-prometheus</artifactId>
+      <artifactId>micrometer-registry-prometheus-simpleclient</artifactId>
       <groupId>io.micrometer</groupId>
     </dependency>
     <dependency>
@@ -357,10 +357,6 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-pool</groupId>
-      <artifactId>commons-pool</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.james</groupId>

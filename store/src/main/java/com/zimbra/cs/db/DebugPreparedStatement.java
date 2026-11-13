@@ -26,8 +26,8 @@ import java.util.List;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.util.Zimbra;
 
-import org.apache.commons.dbcp.DelegatingPreparedStatement;
-import org.apache.commons.dbcp.DelegatingConnection;
+import org.apache.commons.dbcp2.DelegatingPreparedStatement;
+import org.apache.commons.dbcp2.DelegatingConnection;
 
 class DebugPreparedStatement extends DelegatingPreparedStatement {
 
@@ -55,7 +55,7 @@ class DebugPreparedStatement extends DelegatingPreparedStatement {
     }
     private List<Object> mParams = new AutoSizeList<>();
     
-    DebugPreparedStatement(DelegatingConnection conn, PreparedStatement stmt, String sql) {
+    DebugPreparedStatement(DelegatingConnection<?> conn, PreparedStatement stmt, String sql) {
         super(conn, stmt);
         mStmt = stmt;
         mSql = sql;

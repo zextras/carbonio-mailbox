@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.commons.dbcp.DelegatingConnection;
+import org.apache.commons.dbcp2.DelegatingConnection;
 
 /**
  * PreparedStatement wrapper that allows for retry on exception.
@@ -20,7 +20,7 @@ import org.apache.commons.dbcp.DelegatingConnection;
  */
 public class RetryPreparedStatement extends DebugPreparedStatement {
     
-    RetryPreparedStatement(DelegatingConnection conn,
+    RetryPreparedStatement(DelegatingConnection<?> conn,
             PreparedStatement stmt, String sql) {
         super(conn, stmt, sql);
     }
