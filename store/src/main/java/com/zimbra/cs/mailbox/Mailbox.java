@@ -102,7 +102,6 @@ import com.zimbra.cs.mailbox.MailItem.CustomMetadata;
 import com.zimbra.cs.mailbox.MailItem.PendingDelete;
 import com.zimbra.cs.mailbox.MailItem.TargetConstraint;
 import com.zimbra.cs.mailbox.MailItem.Type;
-import com.zimbra.cs.mailbox.MailItem.UnderlyingData;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mailbox.MailboxListener.ChangeNotification;
 import com.zimbra.cs.mailbox.Tag.NormalizedTags;
@@ -256,11 +255,6 @@ import java.util.regex.Pattern;
  * @since Jun 13, 2004
  */
 public class Mailbox implements MailboxStore {
-
-  /* these probably should be ints... */
-  public static final String BROWSE_BY_DOMAINS = "domains";
-  public static final String BROWSE_BY_OBJECTS = "objects";
-  public static final String BROWSE_BY_ATTACHMENTS = "attachments";
 
   public static final int ID_AUTO_INCREMENT = FolderConstants.ID_AUTO_INCREMENT; // -1;
   public static final int ID_FOLDER_USER_ROOT = FolderConstants.ID_FOLDER_USER_ROOT; // 1;
