@@ -19,10 +19,6 @@ public final class DebugConfig {
     private DebugConfig() {
     }
 
-    /** If true, then we do ICalendar Validation every time we generate
-     *  ICalendar data. */
-    public static final boolean validateOutgoingICalendar = value("debug_validate_outgoing_icalendar", false);
-
     /** If true, turns off conversation feature. */
     public static final boolean disableConversation = value("debug_disable_conversation", false);
 
@@ -124,17 +120,6 @@ public final class DebugConfig {
     public static final int numMailboxGroups = disableMailboxGroups ?
             Integer.MAX_VALUE : Math.max(LC.zimbra_mailbox_groups.intValue(), 1);
 
-    /** If true, more than one server may be sharing the same store and
-     *  database install.  In that case, the server must perform extra checks
-     *  to ensure that mailboxes "homed" on other servers are treated
-     *  accordingly. */
-    public static final boolean mockMultiserverInstall = value("debug_mock_multiserver_install", false);
-
-    /** If true, the GAL sync visitor mechanism is disabled.  SyncGal will use
-     *  the traditional way of adding matches to a SearchGalResult, then add
-     *  each match in the SOAP response.  The GAL sync visitor mechanism
-     *  reduces chance of OOME when there is a huge result. */
-    public static final boolean disableGalSyncVisitor = value("debug_disable_gal_sync_visitor", false);
     public static final boolean disableCalendarTZMatchByID = value("debug_disable_calendar_tz_match_by_id", false);
     public static final boolean disableCalendarTZMatchByRule = value("debug_disable_calendar_tz_match_by_rule", false);
     public static final boolean disableMimeConvertersForCalendarBlobs =
@@ -145,8 +130,6 @@ public final class DebugConfig {
     public static final boolean enableContactLocalizedSort = value("debug_enable_contact_localized_sort", true);
     public static final boolean enableMigrateUserZimletPrefs = value("migrate_user_zimlet_prefs", false);
     public static final boolean disableGroupTargetForAdminRight = value("disable_group_target_for_admin_right", false);
-    public static final boolean disableComputeGroupMembershipOptimization =
-            value("disable_compute_group_membership_optimization", false);
     public static final boolean disableCalendarReminderEmail = value("debug_disable_calendar_reminder_email", false);
     public static final int imapSerializedSessionNotificationOverloadThreshold =
             value("debug_imap_serialized_session_notification_overload_threshold", 100);
@@ -179,12 +162,6 @@ public final class DebugConfig {
     public static boolean certAuthCaptureClientCertificate =
         value("debug_certauth_capture_client_certificate", false);
 
-    public static boolean running_unittest =
-        value("debug_running_unittest", false);
-
-    public static boolean useInMemoryLdapServer =
-        value("debug_use_in_memory_ldap_server", false);
-
     public static final String defangStyleUnwantedFunc = value(
             "defang_style_unwanted_func",
             "\\w+\\s*\\(.*?\\)");
@@ -216,7 +193,6 @@ public final class DebugConfig {
     public static final String defangStyleUnwantedImport = value(
             "defang_style_unwanted_import",
             "@import(\\s)*((\'|\")?(\\s)*(http://|https://)?([^\\s;]*)(\\s)*(\'|\")?(\\s)*;?)");
-    public static final int defangStyleValueLimit = value("defang_style_value_limit", 10000);
 
     public static final String xhtmlWhitelistedTags = value("defang_xhtml_whitelisted_tags",
         "a,abbr,acronym,blockquote,div,font,h1,h2,h3,h4,h5,h6,img,li,ol,p,span,table,td,th,tr,ul");
@@ -246,8 +222,6 @@ public final class DebugConfig {
     public static final boolean debugMailboxLock =
             value("debug_mailbox_lock", false);
 
-    public static final boolean debugLocalSplit = value("debug_local_websplit", false);
-
     public static final boolean allowUnauthedPing = value("allow_unauthed_ping", false);
 
     public static final String defangImgSkipOwaspSanitize = value("defang_img_skip_owasp_sanitize", "^cid:.*@");
@@ -255,31 +229,7 @@ public final class DebugConfig {
     public static final String defangStyleUnwantedStrgPattern = value("defang_style_unwanted_strg_pattern", "\\s*(('){2,})");
     public static final String defangOnloadMethod = value("defang_owasp_alert_tag", "onload=.*\\(.*\\)");
 
-    /*
-     * Default maximum size of convertd response. This reduces OOME in case of
-     * large response
-     */
-    public static final long convertdMaxResponseSize = value("convertd_max_response_size",
-        (long) 20 * 1024 * 1024);
-
     public static final boolean imapForceSpecialUse = value("imap_force_special_use", true);
-
-    public static final boolean pushNotificationVerboseMode = value(
-        "push_notification_verbose_mode", false);
-
-    /*
-     * Use multiple threads to cut down time to calculate counts of objects for domain admin
-     * where there are a large number of domains.
-     * Negative value disables.
-     */
-    public static final int minimumDomainsToUseThreadsForDomainAdminCountObjects =
-            value ("debug_minimum_domains_to_use_threads_for_domain_admin_count_objects", 100);
-
-    /* If "debug_minimum_domains_to_use_threads_for_domain_admin_count_objects" is in effect,
-     * this determines how many threads will be used to perform LDAP queries
-     */
-    public static final int numberOfThreadsToUseForDomainAdminCountObjects =
-            value ("debug_number_of_threads_to_use_for_domain_admin_count_objects", 3);
 
     /**
      * "sync_maximum_change_count" page limit of maximum changes to be sent in a SyncResponse.
@@ -315,16 +265,6 @@ public final class DebugConfig {
         value("debug_invalid_password_cache_expiration_in_minutes", 2880);
 
     /**
-     * "profile_image_max_size" maximum image size allowed for account profile.
-     */
-    public static final int profileImageMaxSize = value ("profile_image_max_size", 2*1024*1024);
-
-    /**
-     * "profile_thumbnail_image_dimension" profile ldap thumbnail image dimesion.
-     */
-    public static final int profileThumbnailImageDimension = value ("profile_thumbnail_image_dimension", 50);
-
-    /**
      * "restricted_server_ldap_attributes" comma separated list of restricted server ldap attributes
      */
     public static final String restrictedServerLDAPAttributes = value ("restricted_server_ldap_attributes", "zimbraSSLPrivateKey");
@@ -348,15 +288,6 @@ public final class DebugConfig {
         String value = LC.get(key);
         try {
             return value.isEmpty() ? defaultValue : Integer.parseInt(value);
-        } catch (Exception e) {
-            return defaultValue;
-        }
-    }
-
-    private static long value(String key, long defaultValue) {
-        String value = LC.get(key);
-        try {
-            return value.isEmpty() ? defaultValue : Long.parseLong(value);
         } catch (Exception e) {
             return defaultValue;
         }
