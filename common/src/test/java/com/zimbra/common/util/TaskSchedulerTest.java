@@ -10,6 +10,7 @@ import com.zimbra.common.util.TaskRetry.RetryParams;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -79,18 +80,24 @@ class TaskSchedulerTest {
 
     @Test
     void stillRetriesTransientFailureWhenNotCancelled() throws Exception {
-        CountDownLatch retried = new CountDownLatch(1);
+        CountDownLatch completed = new CountDownLatch(1);
         AtomicInteger calls = new AtomicInteger();
+        AtomicReference<String> callbackResult = new AtomicReference<>();
+        scheduler.addCallback((task, result) -> {
+            callbackResult.set(result);
+            completed.countDown();
+        });
         scheduler.schedule("normal-retry", () -> {
             if (calls.incrementAndGet() == 1) {
                 throw ServiceException.FAILURE("temporary failure", null);
             }
-            retried.countDown();
             return "done";
         }, 0, retryParams());
 
-        assertTrue(retried.await(5, SECONDS));
+        assertTrue(completed.await(5, SECONDS));
         assertEquals(2, calls.get());
+        assertEquals("done", callbackResult.get());
+        assertEquals("done", scheduler.getLastResult("normal-retry"));
     }
 
     @Test
