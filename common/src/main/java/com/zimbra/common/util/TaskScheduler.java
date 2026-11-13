@@ -92,12 +92,11 @@ public class TaskScheduler<V> {
             } catch (OutOfMemoryError error) {
                 ZimbraLog.scheduler.fatal("Shutting down due to OutOfMemoryError", error);
                 throw error;
+            } catch (ServiceException failure) {
+                taskFailed(failure);
+                retrying = scheduleRetry();
             } catch (Throwable failure) {
-                ZimbraLog.scheduler.warn("Exception during execution of task %s", mId, failure);
-                mLastResult = null;
-                if (failure instanceof ServiceException) {
-                    retrying = scheduleRetry();
-                }
+                taskFailed(failure);
             }
 
             // Reschedule if this is a recurring task
@@ -108,6 +107,11 @@ public class TaskScheduler<V> {
                 ZimbraLog.scheduler.debug("Not rescheduling task %s.  mRecurs=%b", mId, mRecurs);
             }
             return mLastResult;
+        }
+
+        private void taskFailed(Throwable failure) {
+            ZimbraLog.scheduler.warn("Exception during execution of task %s", mId, failure);
+            mLastResult = null;
         }
 
         private void taskCompleted() {
