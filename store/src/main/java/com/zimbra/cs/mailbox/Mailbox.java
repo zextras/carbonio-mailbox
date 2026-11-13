@@ -11035,10 +11035,6 @@ public class Mailbox implements MailboxStore {
     return enabled;
   }
 
-  public boolean useDumpsterForSpam() {
-    return true;
-  }
-
   /**
    * Return true if the folder is a internally managed system folder which should not normally be
    * modified Used during ZD account import to ignore entries in LocalMailbox 'Notification

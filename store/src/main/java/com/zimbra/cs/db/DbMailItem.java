@@ -2073,7 +2073,7 @@ public class DbMailItem {
         DbUtil.whereIn("id", count)
             + " AND type IN "
             + DUMPSTER_TYPES
-            + (!mbox.useDumpsterForSpam() ? " AND folder_id != " + Mailbox.ID_FOLDER_SPAM : "")
+            + (!true ? " AND folder_id != " + Mailbox.ID_FOLDER_SPAM : "")
             + " AND folder_id != "
             + Mailbox.ID_FOLDER_DRAFTS;
     PreparedStatement miCopyStmt = null;
@@ -3785,7 +3785,7 @@ public class DbMailItem {
   static List<Integer> accumulateLeafNodes(PendingDelete info, Mailbox mbox, ResultSet rs)
       throws SQLException, ServiceException {
     boolean dumpsterEnabled = mbox.dumpsterEnabled();
-    boolean useDumpsterForSpam = mbox.useDumpsterForSpam();
+    boolean useDumpsterForSpam = true;
     StoreManager sm = StoreManager.getInstance();
     List<Integer> versioned = new ArrayList<>();
 
@@ -3903,7 +3903,7 @@ public class DbMailItem {
       return;
     }
     boolean dumpsterEnabled = mbox.dumpsterEnabled();
-    boolean useDumpsterForSpam = mbox.useDumpsterForSpam();
+    boolean useDumpsterForSpam = true;
     DbConnection conn = mbox.getOperationConnection();
     StoreManager sm = StoreManager.getInstance();
 
@@ -3939,9 +3939,7 @@ public class DbMailItem {
         }
 
         int fid = folderId != null ? folderId : -1;
-        if (!dumpsterEnabled
-            || fid == Mailbox.ID_FOLDER_DRAFTS
-            || (fid == Mailbox.ID_FOLDER_SPAM && !useDumpsterForSpam)) {
+        if (!dumpsterEnabled || fid == Mailbox.ID_FOLDER_DRAFTS) {
           String blobDigest = rs.getString(6);
           if (blobDigest != null) {
             info.blobDigests.add(blobDigest);
