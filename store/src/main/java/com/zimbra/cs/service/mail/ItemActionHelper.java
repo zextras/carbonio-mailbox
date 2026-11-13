@@ -859,7 +859,7 @@ public class ItemActionHelper {
               new HashMap<>();
           for (Contact.Attachment att : ct.getAttachments()) {
             String attachmentId =
-                zmbx.uploadAttachment(att.getFilename(), att.getContent(), att.getContentType(), 0);
+                zmbx.uploadAttachment(att.getFilename(), att.getContent(), att.getContentType());
             ZMailbox.ZAttachmentInfo info =
                 new ZMailbox.ZAttachmentInfo().setAttachmentId(attachmentId);
             attachments.put(att.getName(), info);
@@ -1035,7 +1035,7 @@ public class ItemActionHelper {
         spinfo.getFirst().writeTo(baos);
         String uploadId =
             zmbx.uploadAttachment(
-                "message", baos.toByteArray(), MimeConstants.CT_MESSAGE_RFC822, 6000);
+                "message", baos.toByteArray(), MimeConstants.CT_MESSAGE_RFC822);
         m.addAttribute(MailConstants.A_ATTACHMENT_ID, uploadId);
       } catch (IOException | MessagingException ioe) {
         ZimbraLog.misc.info(

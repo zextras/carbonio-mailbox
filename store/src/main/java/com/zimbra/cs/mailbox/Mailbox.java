@@ -6976,8 +6976,8 @@ public class Mailbox implements MailboxStore {
   }
 
   // please keep this package-visible but not public
-  void closeConversation(Conversation conv, String subjectHash) throws ServiceException {
-    String hash = subjectHash != null ? subjectHash : getHash(conv.getNormalizedSubject());
+  void closeConversation(Conversation conv) throws ServiceException {
+    String hash = getHash(conv.getNormalizedSubject());
     conv.close(hash);
     mConvHashes.remove(hash);
   }

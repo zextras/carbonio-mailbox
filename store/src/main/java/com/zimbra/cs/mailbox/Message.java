@@ -1676,7 +1676,7 @@ public class Message extends MailItem {
     }
 
     if (parent.getSize() <= 1) {
-      mMailbox.closeConversation((Conversation) parent, null);
+      mMailbox.closeConversation((Conversation) parent);
     } else {
       // remove this message from its (real) conversation
       markItemModified(Change.PARENT);
