@@ -3785,8 +3785,7 @@ public class DbMailItem {
   static List<Integer> accumulateLeafNodes(PendingDelete info, Mailbox mbox, ResultSet rs)
       throws SQLException, ServiceException {
     boolean dumpsterEnabled = mbox.dumpsterEnabled();
-    boolean useDumpsterForSpam = true;
-    StoreManager sm = StoreManager.getInstance();
+		StoreManager sm = StoreManager.getInstance();
     List<Integer> versioned = new ArrayList<>();
 
     while (rs.next()) {
@@ -3859,9 +3858,7 @@ public class DbMailItem {
       }
 
       int fid = folderId != null ? folderId : -1;
-      if (!dumpsterEnabled
-          || fid == Mailbox.ID_FOLDER_DRAFTS
-          || (fid == Mailbox.ID_FOLDER_SPAM && !useDumpsterForSpam)) {
+      if (!dumpsterEnabled || fid == Mailbox.ID_FOLDER_DRAFTS) {
         String blobDigest = rs.getString(LEAF_CI_BLOB_DIGEST);
         if (blobDigest != null) {
           info.blobDigests.add(blobDigest);
@@ -3903,8 +3900,7 @@ public class DbMailItem {
       return;
     }
     boolean dumpsterEnabled = mbox.dumpsterEnabled();
-    boolean useDumpsterForSpam = true;
-    DbConnection conn = mbox.getOperationConnection();
+		DbConnection conn = mbox.getOperationConnection();
     StoreManager sm = StoreManager.getInstance();
 
     PreparedStatement stmt = null;
