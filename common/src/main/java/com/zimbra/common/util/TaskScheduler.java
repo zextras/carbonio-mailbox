@@ -86,7 +86,9 @@ public class TaskScheduler<V> {
             }
             boolean retrying = false;
             try {
-                executeTask();
+                ZimbraLog.scheduler.debug("Executing task %s", mId);
+                mLastResult = mTask.call();
+                taskCompleted();
             } catch (Throwable t) {
                 if (t instanceof OutOfMemoryError) {
                     ZimbraLog.scheduler.fatal("Shutting down due to OutOfMemoryError", t);
@@ -110,9 +112,7 @@ public class TaskScheduler<V> {
             return mLastResult;
         }
 
-        private void executeTask() throws Exception {
-            ZimbraLog.scheduler.debug("Executing task %s", mId);
-            mLastResult = mTask.call();
+        private void taskCompleted() {
             TaskRetry retry = retries.remove(mId);
             if (retry == null) {
                 ZimbraLog.scheduler.debug("Task returned result %s", mLastResult);
