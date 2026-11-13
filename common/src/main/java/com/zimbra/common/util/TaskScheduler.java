@@ -84,23 +84,9 @@ public class TaskScheduler<V> {
             if (isCancelled()) {
                 return null;
             }
-            long backoff = 0L;
             boolean retrying = false;
             try {
-                ZimbraLog.scheduler.debug("Executing task %s", mId);
-                mLastResult = mTask.call();
-                TaskRetry retry = retries.remove(mId);
-                if (retry == null) {
-                    ZimbraLog.scheduler.debug("Task returned result %s", mLastResult);
-                } else {
-                    ZimbraLog.scheduler.debug("Task returned result %s after %d attempts", mLastResult, retry.getNumRetries());
-                }
-
-                if (mCallbacks != null) {
-                    for (ScheduledTaskCallback<V2> callback : mCallbacks) {
-                        callback.afterTaskRun(mTask, mLastResult);
-                    }
-                }
+                executeTask();
             } catch (Throwable t) {
                 if (t instanceof OutOfMemoryError) {
                     ZimbraLog.scheduler.fatal("Shutting down due to OutOfMemoryError", t);
@@ -109,23 +95,7 @@ public class TaskScheduler<V> {
                     ZimbraLog.scheduler.warn("Exception during execution of task %s", mId, t);
                     mLastResult = null;
                     if (t instanceof ServiceException) {
-                        TaskRetry retry = retries.get(mId);
-                        if (retry == null && retryParams != null) {
-                            retry = new TaskRetry(retryParams);
-                            retries.put(mId, retry);
-                        }
-                        if (retry != null) {
-                            if (retry.canRetry()) {
-                                backoff = retry.getDelayMillis();
-                                retry.increment();
-                                retrying = schedule(backoff);
-                                if (retrying) {
-                                    ZimbraLog.scheduler.debug("Retrying task %s in %s ms", mId, backoff);
-                                }
-                            } else {
-                                ZimbraLog.scheduler.debug("reached retry limit for task %s", mId);
-                            }
-                        }
+                        retrying = scheduleRetry();
                     }
                 }
             }
@@ -138,6 +108,45 @@ public class TaskScheduler<V> {
                 ZimbraLog.scheduler.debug("Not rescheduling task %s.  mRecurs=%b", mId, mRecurs);
             }
             return mLastResult;
+        }
+
+        private void executeTask() throws Exception {
+            ZimbraLog.scheduler.debug("Executing task %s", mId);
+            mLastResult = mTask.call();
+            TaskRetry retry = retries.remove(mId);
+            if (retry == null) {
+                ZimbraLog.scheduler.debug("Task returned result %s", mLastResult);
+            } else {
+                ZimbraLog.scheduler.debug("Task returned result %s after %d attempts", mLastResult, retry.getNumRetries());
+            }
+
+            if (mCallbacks != null) {
+                for (ScheduledTaskCallback<V2> callback : mCallbacks) {
+                    callback.afterTaskRun(mTask, mLastResult);
+                }
+            }
+        }
+
+        private boolean scheduleRetry() {
+            boolean retrying = false;
+            TaskRetry retry = retries.get(mId);
+            if (retry == null && retryParams != null) {
+                retry = new TaskRetry(retryParams);
+                retries.put(mId, retry);
+            }
+            if (retry != null) {
+                if (retry.canRetry()) {
+                    long backoff = retry.getDelayMillis();
+                    retry.increment();
+                    retrying = schedule(backoff);
+                    if (retrying) {
+                        ZimbraLog.scheduler.debug("Retrying task %s in %s ms", mId, backoff);
+                    }
+                } else {
+                    ZimbraLog.scheduler.debug("reached retry limit for task %s", mId);
+                }
+            }
+            return retrying;
         }
     }
 
