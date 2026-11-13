@@ -30,7 +30,6 @@ import com.zimbra.cs.gal.GalSearchParams;
 import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import com.zimbra.cs.util.AccountUtil;
-import com.zimbra.soap.account.type.AddressListInfo;
 import com.zimbra.soap.admin.type.CacheEntryType;
 import com.zimbra.soap.admin.type.CmdRightsInfo;
 import com.zimbra.soap.admin.type.CountObjectsType;
@@ -66,12 +65,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
 
   public static final String SERVICE_MAILBOX = "mailbox";
   public static final String SERVICE_PROXY = "proxy";
-
-  /** generate appts that try to be compatible with exchange */
-  public static final String CAL_MODE_EXCHANGE = "exchange";
-
-  /** generate appts that try to follow the standard */
-  public static final String CAL_MODE_STANDARD = "standard";
 
   /**
    * For kerberos5 auth, we allow specifying a principal on a per-account basis. If
@@ -752,29 +745,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
     }
   }
 
-  /**
-   * Intended to store membership information only related to groups who define their membership by
-   * a custom MemberURL. As we can't control what updates affect these, the only handle we have on
-   * whether the the information is valid is how long ago it was accurate.
-   */
-  public static class GroupMembershipAtTime {
-    private final GroupMembership membership;
-    private final long correctAtTime;
-
-    public GroupMembershipAtTime(GroupMembership members, long accurateAtTime) {
-      membership = members;
-      correctAtTime = accurateAtTime;
-    }
-
-    public GroupMembership getMembership() {
-      return membership;
-    }
-
-    public long getCorrectAtTime() {
-      return correctAtTime;
-    }
-  }
-
   public static class GroupMembership {
     private final List<MemberOf> mMemberOf; // list of MemberOf
     private final List<String> mGroupIds; // list of group ids
@@ -1101,21 +1071,8 @@ public abstract class Provisioning extends ZAttrProvisioning {
     return get(AccountBy.id, id);
   }
 
-  public Account getAccountByAppAdminName(String name) throws ServiceException {
-    return get(AccountBy.appAdminName, name);
-  }
-
   public Account getAccountByForeignPrincipal(String name) throws ServiceException {
     return get(AccountBy.foreignPrincipal, name);
-  }
-
-  public Account getAccountByKrb5Principal(String name) throws ServiceException {
-    return get(AccountBy.krb5Principal, name);
-  }
-
-  public Account getAccountByForeignName(String foreignName, String application, Domain domain)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
   }
 
   /**
@@ -1437,14 +1394,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
     return get(Key.DomainBy.virtualHostname, host);
   }
 
-  public Domain getDomainByKrb5Realm(String realm) throws ServiceException {
-    return get(Key.DomainBy.krb5Realm, realm);
-  }
-
-  public Domain getDomainByForeignName(String realm) throws ServiceException {
-    return get(Key.DomainBy.foreignName, realm);
-  }
-
   public abstract List<Domain> getAllDomains() throws ServiceException;
 
   public void getAllDomains(NamedEntry.Visitor visitor, String[] retAttrs) throws ServiceException {
@@ -1545,39 +1494,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract List<Server> getAllServers() throws ServiceException;
 
   public abstract List<Server> getAllServers(String service) throws ServiceException;
-
-  public List<Server> getAllWebClientServers() throws ServiceException {
-    List<Server> mailboxservers = getAllServers(Provisioning.SERVICE_MAILBOX);
-    List<Server> webclientservers = getAllServers(Provisioning.SERVICE_WEBCLIENT);
-    webclientservers.addAll(mailboxservers);
-    return webclientservers;
-  }
-
-  public List<Server> getAllAdminClientServers() throws ServiceException {
-    List<Server> mailboxservers = getAllServers(Provisioning.SERVICE_MAILBOX);
-    List<Server> adminclientservers = getAllServers(Provisioning.SERVICE_ADMINCLIENT);
-    adminclientservers.addAll(mailboxservers);
-    return adminclientservers;
-  }
-
-  public List<Server> getAllZimletServers() throws ServiceException {
-    List<Server> mailboxservers = getAllServers(Provisioning.SERVICE_MAILBOX);
-    List<Server> zimletservers = getAllServers(Provisioning.SERVICE_ZIMLET);
-    zimletservers.addAll(mailboxservers);
-    return zimletservers;
-  }
-
-  public List<Server> getAllDeployableZimletServers() throws ServiceException {
-    List<Server> deployableservers = new ArrayList<>();
-
-    for (Server server : getAllZimletServers()) {
-      if (server.isLocalServer() || server.hasMailClientService()) {
-        deployableservers.add(server);
-      }
-    }
-
-    return deployableservers;
-  }
 
   public List<Server> getAllMailClientServers() throws ServiceException {
     List<Server> mailboxservers = getAllServers(Provisioning.SERVICE_MAILBOX);
@@ -2628,28 +2544,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
     throw ServiceException.UNSUPPORTED();
   }
 
-  public AddressList getAddressList(String id) throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  public AddressListInfo getAddressListByName(String name, Domain domain) throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  public List<AddressListInfo> getAllAddressLists(Domain domain, boolean activeOnly)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  public void deleteAddressList(String addressListId) throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  public void modifyAddressList(AddressList addressList, String name, Map<String, String> attrs)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
   //
   //
   // Validators
@@ -2671,11 +2565,5 @@ public abstract class Provisioning extends ZAttrProvisioning {
     for (ProvisioningValidator validator : validators) {
       validator.refresh();
     }
-  }
-
-  // address list
-  public String createAddressList(
-      Domain domain, String name, String desc, Map<String, Object> attrs) throws ServiceException {
-    throw new UnsupportedOperationException("Currently address list is not supported.");
   }
 }

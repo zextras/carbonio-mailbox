@@ -3717,10 +3717,9 @@ public abstract class MailItem
    * Locks this MailItem with exclusive write lock. When a MailItem is locked, only the user who
    * locked the item can move the item or change the content.
    *
-   * @param authuser
    * @throws ServiceException
    */
-  void lock(Account authuser) throws ServiceException {
+  void lock() throws ServiceException {
     throw MailServiceException.CANNOT_LOCK(mId);
   }
 
@@ -3728,10 +3727,9 @@ public abstract class MailItem
    * Unlocks this MailItem. The user who previously locked the item, or anyone who has admin
    * privilige to this MailItem can perform unlock operation.
    *
-   * @param authuser
    * @throws ServiceException
    */
-  void unlock(Account authuser) throws ServiceException {
+  void unlock() throws ServiceException {
     throw MailServiceException.CANNOT_UNLOCK(mId);
   }
 

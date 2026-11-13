@@ -8,7 +8,6 @@ package com.zimbra.cs.mailbox;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.zimbra.common.account.Key.AccountBy;
-import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
@@ -349,8 +348,6 @@ public class MailboxManager {
       mailboxKey = mailboxIds.get(accountId.toLowerCase());
     }
     if (mailboxKey != null) {
-      if (DebugConfig.mockMultiserverInstall)
-        lookupAccountWithHostCheck(accountId, skipMailHostCheck);
       return getMailboxById(mailboxKey, fetchMode, skipMailHostCheck);
     } else if (fetchMode != FetchMode.AUTOCREATE) {
       return null;

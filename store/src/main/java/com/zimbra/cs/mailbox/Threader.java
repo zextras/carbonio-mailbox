@@ -19,7 +19,6 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.zimbra.common.account.ZAttrProvisioning.MailThreadingAlgorithm;
-import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.mime.HeaderUtils;
 import com.zimbra.common.mime.MimeHeader;
 import com.zimbra.common.service.ServiceException;
@@ -90,12 +89,8 @@ public final class Threader {
      *  attribute {@link Provisioning#A_zimbraMailThreadingAlgorithm}.
      *  If this attribute is unset, we default to {@link
      *  MailThreadingAlgorithm#references}.
-     * @see DebugConfig#disableConversation */
+     *  */
     private static MailThreadingAlgorithm getThreadingAlgorithm(Account acct) {
-        if (DebugConfig.disableConversation) {
-            return MailThreadingAlgorithm.none;
-        }
-
         MailThreadingAlgorithm tmode = acct.getMailThreadingAlgorithm();
         return tmode == null ? MailThreadingAlgorithm.references : tmode;
     }

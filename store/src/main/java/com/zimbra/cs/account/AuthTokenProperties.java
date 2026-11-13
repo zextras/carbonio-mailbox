@@ -53,7 +53,6 @@ public class AuthTokenProperties implements Cloneable {
   private String proxyAuthToken;
   private AuthMech authMech;
   private Integer tokenID = -1;
-  private String server_version; // version of the mailbox server where this account resides
   private boolean csrfTokenEnabled;
   private Usage usage; // what this token will be used for
 
@@ -81,7 +80,6 @@ public class AuthTokenProperties implements Cloneable {
       } else {
         type = C_TYPE_ZIMBRA_USER;
       }
-      server_version = getServerVersion(acct);
     }
     adminAccountId = adminAcct != null ? adminAcct.getId() : null;
     this.expires = expires;
@@ -99,14 +97,6 @@ public class AuthTokenProperties implements Cloneable {
     this.digest = digest != null ? digest : AuthToken.generateDigest(externalEmail, pass);
     this.type = C_TYPE_EXTERNAL_USER;
     tokenID = new Random().nextInt(Integer.MAX_VALUE - 1) + 1;
-    try {
-      Account acct = Provisioning.getInstance().getAccountById(accountId);
-      if (acct != null) {
-        server_version = getServerVersion(acct);
-      }
-    } catch (ServiceException e) {
-      ZimbraLog.account.error("Unable to get the user account: %s", accountId, e);
-    }
   }
 
   public AuthTokenProperties(Map<?, ?> map) throws AuthTokenException {
@@ -158,20 +148,11 @@ public class AuthTokenProperties implements Cloneable {
     } else {
       tokenID = -1;
     }
-    server_version = (String) map.get(C_SERVER_VERSION);
 
     String csrf = (String) map.get(C_CSRF);
     if (csrf != null) {
       csrfTokenEnabled = "1".equals(map.get(C_CSRF));
     }
-  }
-
-  // TODO: remove in future version of Carbonio
-  // when we deeply investigate authentication
-  // currently getting rid of this is causing the
-  // auth token expire as soon as it is provided
-  private String getServerVersion(Account acct) {
-    return null;
   }
 
   public String getAccountId() {

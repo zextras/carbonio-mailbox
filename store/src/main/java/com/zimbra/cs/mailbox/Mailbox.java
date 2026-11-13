@@ -102,7 +102,6 @@ import com.zimbra.cs.mailbox.MailItem.CustomMetadata;
 import com.zimbra.cs.mailbox.MailItem.PendingDelete;
 import com.zimbra.cs.mailbox.MailItem.TargetConstraint;
 import com.zimbra.cs.mailbox.MailItem.Type;
-import com.zimbra.cs.mailbox.MailItem.UnderlyingData;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mailbox.MailboxListener.ChangeNotification;
 import com.zimbra.cs.mailbox.Tag.NormalizedTags;
@@ -256,11 +255,6 @@ import java.util.regex.Pattern;
  * @since Jun 13, 2004
  */
 public class Mailbox implements MailboxStore {
-
-  /* these probably should be ints... */
-  public static final String BROWSE_BY_DOMAINS = "domains";
-  public static final String BROWSE_BY_OBJECTS = "objects";
-  public static final String BROWSE_BY_ATTACHMENTS = "attachments";
 
   public static final int ID_AUTO_INCREMENT = FolderConstants.ID_AUTO_INCREMENT; // -1;
   public static final int ID_FOLDER_USER_ROOT = FolderConstants.ID_FOLDER_USER_ROOT; // 1;
@@ -1193,10 +1187,6 @@ public class Mailbox implements MailboxStore {
     return currentChange().recorder;
   }
 
-  PendingLocalModifications getPendingModifications() {
-    return currentChange().dirty;
-  }
-
   /**
    * Returns the {@link Account} for the authenticated user for the transaction. Returns
    * <tt>null</tt> if none was supplied in the transaction's {@link OperationContext} or if the
@@ -1214,14 +1204,6 @@ public class Mailbox implements MailboxStore {
       authuser = null;
     }
     return authuser;
-  }
-
-  Account getLockAccount() throws ServiceException {
-    Account authenticatedAccount = getAuthenticatedAccount();
-    if (authenticatedAccount == null) {
-      authenticatedAccount = getAccount();
-    }
-    return authenticatedAccount;
   }
 
   /**
@@ -2726,20 +2708,6 @@ public class Mailbox implements MailboxStore {
       return mData.version;
     } finally {
       lock.release();
-    }
-  }
-
-  public void resetMailboxForRestore() throws ServiceException {
-    boolean success = false;
-    try {
-      beginTransaction("resetMailboxForRestore", null);
-      for (int tagId : REIFIED_FLAGS) {
-        DbTag.deleteTagRow(this, tagId);
-      }
-      DbMailbox.updateVersion(this, null);
-      success = true;
-    } finally {
-      endTransaction(success);
     }
   }
 
@@ -4697,25 +4665,6 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  public FolderNode getFolderTreeByUuid(
-      OperationContext octxt, String uuid, boolean returnAllVisibleFolders)
-      throws ServiceException {
-    lock.lock(false);
-    try {
-      Folder folder;
-      if (uuid != null) {
-        folder = getFolderByUuid(returnAllVisibleFolders ? null : octxt, uuid);
-      } else {
-        folder = getFolderById(returnAllVisibleFolders ? null : octxt, Mailbox.ID_FOLDER_USER_ROOT);
-      }
-      // for each subNode...
-      Set<Folder> visibleFolders = getVisibleFolders(octxt);
-      return handleFolder(folder, visibleFolders, returnAllVisibleFolders);
-    } finally {
-      lock.release();
-    }
-  }
-
   private FolderNode handleFolder(
       Folder folder, Set<Folder> visible, boolean returnAllVisibleFolders) throws ServiceException {
     boolean isVisible = visible == null || visible.remove(folder);
@@ -4852,11 +4801,6 @@ public class Mailbox implements MailboxStore {
 
   public Mountpoint getMountpointById(OperationContext octxt, int mptId) throws ServiceException {
     return (Mountpoint) getItemById(octxt, mptId, MailItem.Type.MOUNTPOINT);
-  }
-
-  public Mountpoint getMountpointByUuid(OperationContext octxt, String mptUuid)
-      throws ServiceException {
-    return (Mountpoint) getItemByUuid(octxt, mptUuid, MailItem.Type.MOUNTPOINT);
   }
 
   public Chat getChatById(OperationContext octxt, int id) throws ServiceException {
@@ -5077,22 +5021,12 @@ public class Mailbox implements MailboxStore {
     return (CalendarItem) getItem(data);
   }
 
-  public List<MailItem> getCalendarItemList(OperationContext octxt, int folderId)
-      throws ServiceException {
-    return getItemList(octxt, MailItem.Type.UNKNOWN, folderId);
-  }
-
   public Appointment getAppointmentById(OperationContext octxt, int id) throws ServiceException {
     return (Appointment) getItemById(octxt, id, MailItem.Type.APPOINTMENT);
   }
 
   Appointment getAppointmentById(int id) throws ServiceException {
     return (Appointment) getItemById(id, MailItem.Type.APPOINTMENT);
-  }
-
-  public List<MailItem> getAppointmentList(OperationContext octxt, int folderId)
-      throws ServiceException {
-    return getItemList(octxt, MailItem.Type.APPOINTMENT, folderId);
   }
 
   /**
@@ -5205,34 +5139,6 @@ public class Mailbox implements MailboxStore {
       }
       success = true;
       return calItems;
-    } finally {
-      endTransaction(success);
-    }
-  }
-
-  public List<Integer> getItemIdList(OperationContext octxt, QueryParams params)
-      throws ServiceException {
-    boolean success = false;
-    try {
-      beginTransaction("getItemIdList", octxt);
-      List<Integer> msgIds =
-          DbMailItem.getIdsInOrder(this, this.getOperationConnection(), params, false);
-      success = true;
-      return msgIds;
-    } finally {
-      endTransaction(success);
-    }
-  }
-
-  public List<Pair<Integer, Integer>> getDateAndItemIdList(
-      OperationContext octxt, QueryParams params) throws ServiceException {
-    boolean success = false;
-    try {
-      beginTransaction("getDateAndItemIdList", octxt);
-      List<Pair<Integer, Integer>> result =
-          DbMailItem.getDatesAndIdsInOrder(this, this.getOperationConnection(), params, false);
-      success = true;
-      return result;
     } finally {
       endTransaction(success);
     }
@@ -10328,16 +10234,6 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  public Message updateOrCreateChat(OperationContext octxt, ParsedMessage pm, int id)
-      throws IOException, ServiceException {
-    // special-case saving a new Chat
-    if (id == ID_AUTO_INCREMENT) {
-      return createChat(octxt, pm, ID_FOLDER_IM_LOGS, Flag.BITMASK_FROM_ME, null);
-    } else {
-      return updateChat(octxt, pm, id);
-    }
-  }
-
   public Chat createChat(
       OperationContext octxt, ParsedMessage pm, int folderId, int flags, String[] tags)
       throws IOException, ServiceException {
@@ -10521,75 +10417,10 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  /**
-   * Turns shared delivery on/off. If turning off, waits until the op can begin, i.e. until all
-   * currently ongoing shared deliveries finish. A thread turning shared delivery off must turn it
-   * on at the end of the operation, otherwise no further shared deliveries are possible to the
-   * mailbox.
-   *
-   * @param onoff
-   */
-  public void setSharedDeliveryAllowed(boolean onoff) {
-    synchronized (mSharedDelivCoord) {
-      if (onoff) {
-        // allow shared delivery
-        mSharedDelivCoord.mSharedDeliveryAllowed = true;
-      } else {
-        // disallow shared delivery
-        mSharedDelivCoord.mSharedDeliveryAllowed = false;
-      }
-      mSharedDelivCoord.notifyAll();
-    }
-  }
-
-  /**
-   * Wait until shared delivery is completed on this mailbox. Other conflicting ops may begin when
-   * there is no shared delivery in progress. Call setSharedDeliveryAllowed(false) before calling
-   * this method.
-   */
-  public void waitUntilSharedDeliveryCompletes() {
-    synchronized (mSharedDelivCoord) {
-      while (mSharedDelivCoord.mNumDelivs > 0) {
-        try {
-          mSharedDelivCoord.wait(3000);
-          ZimbraLog.misc.info(
-              "wake up from wait for completion of shared delivery; mailbox="
-                  + getId()
-                  + " # of shared deliv="
-                  + mSharedDelivCoord.mNumDelivs);
-        } catch (InterruptedException e) {
-        }
-      }
-    }
-  }
-
-  /**
-   * Tests whether shared delivery is completed on this mailbox. Other conflicting ops may begin
-   * when there is no shared delivery in progress.
-   */
-  public boolean isSharedDeliveryComplete() {
-    synchronized (mSharedDelivCoord) {
-      return mSharedDelivCoord.mNumDelivs < 1;
-    }
-  }
-
   void addIndexItemToCurrentChange(IndexItemEntry item) {
     assert (lock.isWriteLockedByCurrentThread());
     assert (currentChange().isActive());
     currentChange().addIndexItem(item);
-  }
-
-  /** for folder view migration. */
-  void migrateFolderView(OperationContext octxt, Folder f, MailItem.Type newView)
-      throws ServiceException {
-    boolean success = false;
-    try {
-      beginTransaction("migrateFolderView", octxt, null);
-      f.migrateDefaultView(newView);
-      success = true;
-    } finally {
-      endTransaction(success);
-    }
   }
 
   protected boolean needRedo(OperationContext octxt, RedoableOp recorder) {
@@ -11167,7 +10998,7 @@ public class Mailbox implements MailboxStore {
     try {
       beginTransaction("lock", octxt, redoRecorder);
       MailItem item = getItemById(itemId, type);
-      item.lock(Provisioning.getInstance().getAccountById(accountId));
+      item.lock();
       success = true;
       return item;
     } finally {
@@ -11183,25 +11014,8 @@ public class Mailbox implements MailboxStore {
     try {
       beginTransaction("unlock", octxt, redoRecorder);
       MailItem item = getItemById(itemId, type);
-      item.unlock(Provisioning.getInstance().getAccountById(accountId));
+      item.unlock();
       success = true;
-    } finally {
-      endTransaction(success);
-    }
-  }
-
-  public UnderlyingData getFirstChildData(OperationContext octxt, MailItem parent)
-      throws ServiceException {
-    boolean success = false;
-    try {
-      beginTransaction("getFirstChildData", octxt, null);
-      List<UnderlyingData> keyItems = DbMailItem.getByParent(parent);
-      if (!keyItems.isEmpty()) {
-        success = true;
-        return keyItems.get(0);
-      } else {
-        throw ServiceException.NOT_FOUND("Data not found");
-      }
     } finally {
       endTransaction(success);
     }
@@ -11302,39 +11116,6 @@ public class Mailbox implements MailboxStore {
       return ids;
     } finally {
       endTransaction(success);
-    }
-  }
-
-  /**
-   * @param octxt
-   * @param i
-   * @param sinceTime
-   * @param unknown
-   * @param object
-   * @return
-   */
-  public Pair<List<Map<String, String>>, TypedIdList> getItemsChangedSince(
-      OperationContext octxt, int sinceDate) throws ServiceException {
-    lock.lock(false);
-    try {
-
-      boolean success = false;
-      try {
-        beginReadTransaction("getModifiedItems", octxt);
-
-        Set<Integer> folderIds = Folder.toId(getAccessibleFolders(ACL.RIGHT_READ));
-        Pair<List<Map<String, String>>, TypedIdList> dataList =
-            DbMailItem.getItemsChangedSinceDate(this, MailItem.Type.UNKNOWN, sinceDate, folderIds);
-        if (dataList == null) {
-          return null;
-        }
-        success = true;
-        return dataList;
-      } finally {
-        endTransaction(success);
-      }
-    } finally {
-      lock.release();
     }
   }
 
