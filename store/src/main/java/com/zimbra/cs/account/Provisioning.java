@@ -404,11 +404,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
       Entry e, Map<String, ? extends Object> attrs, boolean checkImmutable, boolean allowCallback)
       throws ServiceException;
 
-  public void restoreAccountAttrs(Account acct, Map<String, ? extends Object> backupAttrs)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
   /** Replace sensitive strings like passwords with "VALUE-BLOCKED" */
   public static Object sanitizedAttrValue(String name, Object realValue) {
     // Never return password.
@@ -1767,7 +1762,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   }
 
   public Locale getLocale(Entry entry) throws ServiceException {
-    if (entry instanceof Account) {
+    if (entry instanceof Account account) {
       // Order of precedence for Account's locale: (including
       // CalendarResource which extends Account)
       //
@@ -1779,8 +1774,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
       // 6. locale set at Account's Server level
       // 7. locale set at global Config level
       // 8. Locale.getDefault() of current JVM
-      Account account = (Account) entry;
-      Locale lc = getEntryLocale(account, A_zimbraPrefLocale);
+			Locale lc = getEntryLocale(account, A_zimbraPrefLocale);
       if (lc != null) return lc;
       Cos cos = getCOS(account);
       lc = getEntryLocale(cos, A_zimbraPrefLocale);
