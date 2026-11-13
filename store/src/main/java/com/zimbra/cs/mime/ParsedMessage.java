@@ -216,7 +216,9 @@ public final class ParsedMessage {
 
         long size;
         if (FileUtil.isGzipped(file)) {
-            size = ByteUtil.getDataLength(new GZIPInputStream(new FileInputStream(file)));
+            try (InputStream in = new FileInputStream(file)) {
+                size = ByteUtil.getDataLength(new GZIPInputStream(in));
+            }
         } else {
             size = file.length();
         }
