@@ -101,6 +101,53 @@ class TaskSchedulerTest {
     }
 
     @Test
+    void stopsRetryingWhenTheRetryLimitIsReached() throws Exception {
+        CountDownLatch lastAttempt = new CountDownLatch(1);
+        CountDownLatch extraAttempt = new CountDownLatch(1);
+        AtomicInteger calls = new AtomicInteger();
+        scheduler.schedule("retry-limit", () -> {
+            int attempt = calls.incrementAndGet();
+            if (attempt == 2) {
+                lastAttempt.countDown();
+            } else if (attempt > 2) {
+                extraAttempt.countDown();
+            }
+            throw ServiceException.FAILURE("temporary failure", null);
+        }, 0, retryParams());
+
+        assertTrue(lastAttempt.await(5, SECONDS));
+        assertFalse(extraAttempt.await(500, TimeUnit.MILLISECONDS),
+            "one allowed retry must not schedule a third attempt");
+        assertEquals(2, calls.get());
+        assertNull(scheduler.getLastResult("retry-limit"));
+    }
+
+    @Test
+    void recurringTaskRunsAgainUntilCancelled() throws Exception {
+        CountDownLatch secondRun = new CountDownLatch(1);
+        CountDownLatch thirdRun = new CountDownLatch(1);
+        AtomicInteger calls = new AtomicInteger();
+        scheduler.schedule("normal-recurring", () -> {
+            int attempt = calls.incrementAndGet();
+            if (attempt == 2) {
+                secondRun.countDown();
+                release.await(5, SECONDS);
+            } else if (attempt > 2) {
+                thirdRun.countDown();
+            }
+            return "done";
+        }, true, 1, 0);
+
+        assertTrue(secondRun.await(5, SECONDS));
+        assertNotNull(scheduler.cancel("normal-recurring", false));
+        release.countDown();
+        assertFalse(thirdRun.await(500, TimeUnit.MILLISECONDS),
+            "cancellation must stop further recurring executions");
+        assertEquals(2, calls.get());
+        assertNull(scheduler.getTask("normal-recurring"));
+    }
+
+    @Test
     void cancelledRecurringTaskDoesNotRunAgain() throws Exception {
         CountDownLatch started = new CountDownLatch(1);
         CountDownLatch repeated = new CountDownLatch(1);
