@@ -400,12 +400,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract void modifyAttrs(
       Entry e, Map<String, ? extends Object> attrs, boolean checkImmutable) throws ServiceException;
 
-  public void modifyAttrs(
-      Entry e, Map<String, ? extends Object> attrs, boolean checkImmutable, AuthToken authToken)
-      throws ServiceException {
-    modifyAttrs(e, attrs, checkImmutable);
-  }
-
   public abstract void modifyAttrs(
       Entry e, Map<String, ? extends Object> attrs, boolean checkImmutable, boolean allowCallback)
       throws ServiceException;

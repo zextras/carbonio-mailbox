@@ -83,7 +83,7 @@ public class EmailChannel extends ChannelProvider {
         // store the same in ldap attribute for user
         HashMap<String, Object> prefs = new HashMap<>();
         prefs.put(ZAttrProvisioning.A_zimbraResetPasswordRecoveryCode, JWEUtil.getJWE(recoveryCodeMap));
-        Provisioning.getInstance().modifyAttrs(account, prefs, true, null);
+        Provisioning.getInstance().modifyAttrs(account, prefs, true);
     }
 
     /*
@@ -116,8 +116,9 @@ public class EmailChannel extends ChannelProvider {
             prefs.put(ZAttrProvisioning.A_zimbraPrefPasswordRecoveryAddressStatus,
                     PrefPasswordRecoveryAddressStatus.verified);
             prefs.put(ZAttrProvisioning.A_zimbraRecoveryAccountVerificationData, null);
+            final Account accountByMailbox = Provisioning.getInstance().getAccountByMailbox(mbox);
             Provisioning.getInstance().modifyAttrs(
-                Provisioning.getInstance().getAccountByMailbox(mbox), prefs, true, zsc.getAuthToken());
+                accountByMailbox, prefs, true);
         } else {
             throw ForgetPasswordException.CODE_MISMATCH("Verification of recovery email address verification code failed.");
         }
@@ -167,7 +168,7 @@ public class EmailChannel extends ChannelProvider {
         }
         String verificationDataStr = JWEUtil.getJWE(recoveryCodeMap);
         prefs.put(ZAttrProvisioning.A_zimbraRecoveryAccountVerificationData, verificationDataStr);
-        Provisioning.getInstance().modifyAttrs(account, prefs, true, zsc.getAuthToken());
+        Provisioning.getInstance().modifyAttrs(account, prefs, true);
         account.unsetResetPasswordRecoveryCode();
     }
 
@@ -203,7 +204,7 @@ public class EmailChannel extends ChannelProvider {
 
             HashMap<String, Object> prefs = new HashMap<>();
             prefs.put(ZAttrProvisioning.A_zimbraResetPasswordRecoveryCode, JWEUtil.getJWE(recoveryCodeMap));
-            Provisioning.getInstance().modifyAttrs(account, prefs, true, null);
+            Provisioning.getInstance().modifyAttrs(account, prefs, true);
         } catch (MessagingException e) {
             ZimbraLog.account.warn(String.format("Failed to send verification link to email ID: %s'",
                     recoveryCodeMap.get(CodeConstants.EMAIL.toString())), e);

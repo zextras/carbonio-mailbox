@@ -126,7 +126,7 @@ public final class RecoverAccount extends MailDocumentHandler {
           HashMap<String, Object> prefs = new HashMap<>();
           prefs.put(
               ZAttrProvisioning.A_zimbraResetPasswordRecoveryCode, JWEUtil.getJWE(recoveryCodeMap));
-          Provisioning.getInstance().modifyAttrs(account, prefs, true, zsc.getAuthToken());
+          Provisioning.getInstance().modifyAttrs(account, prefs, true);
           throw ForgetPasswordException.MAX_ATTEMPTS_REACHED_SUSPEND_FEATURE(
               "Max re-send attempts reached, feature is suspended.");
         } else {
