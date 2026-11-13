@@ -2,7 +2,12 @@
 Description=Carbonio Appserver Daemon
 # carbonio-mailbox-sidecar provides the outbound DB mesh path (carbonio-mailbox-db)
 # that mailboxd needs during its Zextras bootstrap; it must be up first.
-After=carbonio-appserver-db.service carbonio-configd.service carbonio-mailbox-sidecar.service
+# On stop and restart, the core DB mesh path (carbonio-mailbox-db-sidecar) must
+# stay up until the appserver shutdown has finished, because the shutdown hook
+# writes to the DB. Measured: the sidecar was stopped in parallel and the
+# appserver hung until SIGKILL at 90 s. Ordering only (no Wants/Requires); it is
+# a no-op where that unit does not exist (multi-server).
+After=carbonio-appserver-db.service carbonio-configd.service carbonio-mailbox-sidecar.service carbonio-mailbox-db-sidecar.service
 Wants=carbonio-appserver-db.service carbonio-configd.service carbonio-mailbox-sidecar.service carbonio-mailbox-internal-api-sidecar.service carbonio-authz-sidecar.service
 PartOf=carbonio-appserver.target
 
