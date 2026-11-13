@@ -1529,19 +1529,6 @@ public class Folder extends MailItem implements FolderStore {
     return (ids == null ? 0 : ids.size());
   }
 
-  /** To be used for special situation such as migration. */
-  void migrateDefaultView(MailItem.Type view) throws ServiceException {
-    if (!canAccess(ACL.RIGHT_WRITE)) {
-      throw ServiceException.PERM_DENIED("you do not have the required rights on the folder");
-    }
-    if (view == defaultView) {
-      return;
-    }
-    markItemModified(Change.VIEW);
-    defaultView = view;
-    saveMetadata();
-  }
-
   @Override
   void decodeMetadata(Metadata meta) throws ServiceException {
     super.decodeMetadata(meta);
