@@ -11167,7 +11167,7 @@ public class Mailbox implements MailboxStore {
     try {
       beginTransaction("lock", octxt, redoRecorder);
       MailItem item = getItemById(itemId, type);
-      item.lock(Provisioning.getInstance().getAccountById(accountId));
+      item.lock();
       success = true;
       return item;
     } finally {
@@ -11183,7 +11183,7 @@ public class Mailbox implements MailboxStore {
     try {
       beginTransaction("unlock", octxt, redoRecorder);
       MailItem item = getItemById(itemId, type);
-      item.unlock(Provisioning.getInstance().getAccountById(accountId));
+      item.unlock();
       success = true;
     } finally {
       endTransaction(success);
