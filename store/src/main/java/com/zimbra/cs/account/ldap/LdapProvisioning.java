@@ -1174,40 +1174,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     return account;
   }
 
-  @Override
-  public Account getAccountByForeignName(String foreignName, String application, Domain domain)
-      throws ServiceException {
-    // first try direct match
-    Account acct = getAccountByForeignPrincipal(application + ":" + foreignName);
-
-    if (acct != null) return acct;
-
-    if (domain == null) {
-      String[] parts = foreignName.split("@");
-      if (parts.length != 2) return null;
-
-      String domainName = parts[1];
-      domain = getDomain(Key.DomainBy.foreignName, application + ":" + domainName, true);
-    }
-
-    if (domain == null) return null;
-
-    // see if there is a custom hander on the domain
-    DomainNameMappingHandler.HandlerConfig handlerConfig =
-        DomainNameMappingHandler.getHandlerConfig(domain, application);
-
-    String acctName;
-    if (handlerConfig != null) {
-      // invoke the custom handler
-      acctName = DomainNameMappingHandler.mapName(handlerConfig, foreignName, domain.getName());
-    } else {
-      // do our builtin mapping of {localpart}@{zimbra domain name}
-      acctName = foreignName.split("@")[0] + "@" + domain.getName();
-    }
-
-    return get(AccountBy.name, acctName);
-  }
-
   private Cos lookupCos(String key, ZLdapContext zlc) throws ServiceException {
     Cos c = null;
     c = getCosById(key, zlc);

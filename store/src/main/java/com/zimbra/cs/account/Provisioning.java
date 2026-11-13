@@ -66,12 +66,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public static final String SERVICE_MAILBOX = "mailbox";
   public static final String SERVICE_PROXY = "proxy";
 
-  /** generate appts that try to be compatible with exchange */
-  public static final String CAL_MODE_EXCHANGE = "exchange";
-
-  /** generate appts that try to follow the standard */
-  public static final String CAL_MODE_STANDARD = "standard";
-
   /**
    * For kerberos5 auth, we allow specifying a principal on a per-account basis. If
    * zimbraForeignPrincipal is in the format of kerberos5:{principal-name}, we use the
@@ -1079,11 +1073,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
 
   public Account getAccountByForeignPrincipal(String name) throws ServiceException {
     return get(AccountBy.foreignPrincipal, name);
-  }
-
-  public Account getAccountByForeignName(String foreignName, String application, Domain domain)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
   }
 
   /**
