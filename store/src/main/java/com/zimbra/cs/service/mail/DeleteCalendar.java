@@ -80,7 +80,7 @@ public class DeleteCalendar extends ItemAction {
         if (result.mSuccessIds.contains(Integer.toString(defaultCalId))) {
             ZimbraLog.mailbox.info(
                     "Default calendar deleted, so setting default calendar back to \"Calendar\"");
-            mbox.resetDefaultCalendarId();
+            Provisioning.getInstance().getAccountByMailbox(mbox).resetDefaultCalendarId();
         }
         return result;
     }

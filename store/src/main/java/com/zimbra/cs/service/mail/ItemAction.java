@@ -321,7 +321,7 @@ public class ItemAction extends MailDocumentHandler {
         && result.mSuccessIds.contains(defaultCalId.toString())) {
       ZimbraLog.mailbox.info(
           "Default calendar deleted, so setting default calendar back to \"Calendar\"");
-      mbox.resetDefaultCalendarId();
+      Provisioning.getInstance().getAccountByMailbox(mbox).resetDefaultCalendarId();
     }
     return result;
   }

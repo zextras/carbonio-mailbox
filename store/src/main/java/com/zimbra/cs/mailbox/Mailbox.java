@@ -11290,9 +11290,6 @@ public class Mailbox implements MailboxStore {
   /*
    * This method resets defalult calendar id to ID_FOLDER_CALENDAR in pref
    */
-  public void resetDefaultCalendarId() throws ServiceException {
-    getAccount().setPrefDefaultCalendarId(ID_FOLDER_CALENDAR);
-  }
 
   public Map<Object, Tag> getTagCache() {
     return mTagCache;
