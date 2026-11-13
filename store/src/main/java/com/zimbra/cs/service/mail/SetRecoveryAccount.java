@@ -156,7 +156,7 @@ public class SetRecoveryAccount extends DocumentHandler {
         prefs.put(Provisioning.A_zimbraPrefPasswordRecoveryAddress, null);
         prefs.put(Provisioning.A_zimbraPrefPasswordRecoveryAddressStatus, null);
         prefs.put(Provisioning.A_zimbraRecoveryAccountVerificationData, null);
-        Provisioning.getInstance().modifyAttrs(mbox.getAccount(), prefs, true, zsc.getAuthToken());
+        Provisioning.getInstance().modifyAttrs(Provisioning.getInstance().getAccountByMailbox(mbox), prefs, true, zsc.getAuthToken());
     }
 
     private static void validateEmail(String email, Account account) throws ServiceException {

@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.cs.filter;
+import com.zimbra.cs.account.Provisioning;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -146,7 +147,8 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
         this.handler = handler;
 
         try {
-            setAccount(getMailbox().getAccount());
+            Mailbox mailbox1 = getMailbox();
+            setAccount(Provisioning.getInstance().getAccountByMailbox(mailbox1));
         } catch (ServiceException e) {
             ZimbraLog.filter.info("Error initializing the sieve variables extension.", e);
         }
@@ -845,7 +847,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
              */
             List<LmtpAddress> recipients = envelope.getRecipients();
             try {
-                String myaddress = mailbox.getAccount().getMail();
+                String myaddress = Provisioning.getInstance().getAccountByMailbox(mailbox).getMail();
                 if (null != myaddress && !myaddress.isEmpty()) {
                     for (LmtpAddress recipient: recipients) {
                         if (myaddress.toUpperCase().startsWith(recipient.getEmailAddress().toUpperCase())) {
@@ -853,7 +855,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
                         }
                     }
                 }
-                String[] myaliases = mailbox.getAccount().getMailAlias();
+                String[] myaliases = Provisioning.getInstance().getAccountByMailbox(mailbox).getMailAlias();
                 if (myaliases.length > 0) {
                     for (String alias : myaliases) {
                         for (LmtpAddress recipient: recipients) {

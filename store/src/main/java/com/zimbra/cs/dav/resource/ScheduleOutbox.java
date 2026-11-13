@@ -362,7 +362,8 @@ public class ScheduleOutbox extends CalendarCollection {
                 if (delegationInfo.getOwnerEmail() != null) {
                     from = new JavaMailInternetAddress(delegationInfo.getOwnerEmail());
                 } else {
-                    target = getMailbox(ctxt).getAccount();
+                    Mailbox mailbox = getMailbox(ctxt);
+                    target = Provisioning.getInstance().getAccountByMailbox(mailbox);
                     if (AccountUtil.addressMatchesAccount(target, delegationInfo.getOriginatorEmail())) {
                         // Make sure we don't use two different aliases for From and Sender.
                         // This is a concern with Apple iCal, which picks a random alias as originator.
@@ -389,7 +390,7 @@ public class ScheduleOutbox extends CalendarCollection {
             ZProperty organizerProp = req.getProperty(ICalTok.ORGANIZER);
             if (organizerProp != null) {
                 String organizerStr = this.getAddressFromPrincipalURL(new ZOrganizer(organizerProp).getAddress());
-                if (!AccountUtil.addressMatchesAccount(getMailbox(ctxt).getAccount(), organizerStr)) {
+                if (!AccountUtil.addressMatchesAccount(Provisioning.getInstance().getAccountByMailbox(getMailbox(ctxt)), organizerStr)) {
                     ZimbraLog.dav.debug("scheduling appointment on behalf of %s", organizerStr);
                 }
             }

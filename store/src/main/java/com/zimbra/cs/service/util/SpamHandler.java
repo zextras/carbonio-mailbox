@@ -71,7 +71,8 @@ public class SpamHandler {
         String isSpamString = sr.isSpam ? config.getSpamReportTypeSpam() : config.getSpamReportTypeHam();
 
         Mailbox mbox = MailboxManager.getInstance().getMailboxById(sr.mailboxId);
-        SMTPMessage out = AccountUtil.getSmtpMessageObj(mbox.getAccount());
+        SMTPMessage out = AccountUtil.getSmtpMessageObj(
+            Provisioning.getInstance().getAccountByMailbox(mbox));
 
         Message msg = mbox.getMessageById(null, sr.messageId);
 
@@ -248,7 +249,7 @@ public class SpamHandler {
             throw ServiceException.INVALID_REQUEST("Invalid address: " + address, e);
         }
 
-        report.accountName = mbox.getAccount().getName();
+        report.accountName = Provisioning.getInstance().getAccountByMailbox(mbox).getName();
         report.mailboxId = mbox.getId();
         if (octxt != null) {
             report.origIp = octxt.getRequestIP();

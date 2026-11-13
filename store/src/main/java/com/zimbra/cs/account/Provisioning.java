@@ -28,6 +28,7 @@ import com.zimbra.cs.account.names.NameUtil;
 import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.gal.GalSearchParams;
 import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
+import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.admin.type.CacheEntryType;
@@ -986,6 +987,18 @@ public abstract class Provisioning extends ZAttrProvisioning {
    * @throws ServiceException if the key is malformed
    */
   public abstract Account get(AccountBy keyType, String key) throws ServiceException;
+
+  public Account getAccountByMailbox(Mailbox mailbox) throws ServiceException {
+    final String accountId = mailbox.getAccountId();
+    final int mailboxId = mailbox.getId();
+    Account acct = Provisioning.getInstance().getAccountById(accountId);
+    if (acct == null) {
+      ZimbraLog.mailbox.warn(
+          "no account found in directory for mailbox %d (was expecting %s)", mailboxId, accountId);
+      throw AccountServiceException.NO_SUCH_ACCOUNT(accountId);
+    }
+    return acct;
+  }
 
   public Account get(AccountSelector acctSel) throws ServiceException {
     return get(acctSel.getBy().toKeyAccountBy(), acctSel.getKey());

@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zimbra.cs.account.Provisioning;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -82,7 +83,9 @@ public class Appointment extends CalendarItem {
      */
     public String getEffectiveFreeBusyActual(Invite inv, Instance inst) throws ServiceException {
         if (!inv.isOrganizer()) {
-            ZAttendee at = getReplyList().getEffectiveAttendee(getMailbox().getAccount(), inv, inst);
+            Mailbox mailbox = getMailbox();
+            ZAttendee at = getReplyList().getEffectiveAttendee(
+                Provisioning.getInstance().getAccountByMailbox(mailbox), inv, inst);
             if (at != null) {
                 if (at.hasPartStat())
                     return inv.partStatToFreeBusyActual(at.getPartStat());
@@ -306,7 +309,8 @@ public class Appointment extends CalendarItem {
             octxt != null ? (CreateCalendarItemPlayer) octxt.getPlayer() : null;
         long opTime = octxt != null ? octxt.getTimestamp() : System.currentTimeMillis();
 
-        Account account = getMailbox().getAccount();
+        Mailbox mailbox = getMailbox();
+        Account account = Provisioning.getInstance().getAccountByMailbox(mailbox);
         boolean onBehalfOf = false;
         Account authAcct = account;
         if (octxt != null) {
@@ -529,7 +533,8 @@ public class Appointment extends CalendarItem {
     // conflicting meetings.  Do our best to use a timezone familiar to the
     // organizer.
     private ICalTimeZone chooseReplyTZ(Invite invite) throws ServiceException {
-        Account account = getMailbox().getAccount();
+        Mailbox mailbox = getMailbox();
+        Account account = Provisioning.getInstance().getAccountByMailbox(mailbox);
         Account organizer = invite.getOrganizerAccount();
         ICalTimeZone tz = invite.getStartTime().getTimeZone();
         if (tz == null && invite.isAllDayEvent()) {

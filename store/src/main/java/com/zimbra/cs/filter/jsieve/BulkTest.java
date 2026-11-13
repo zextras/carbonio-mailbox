@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.filter.jsieve;
 
+import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.mailbox.Mailbox;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -59,7 +61,9 @@ public final class BulkTest extends AbstractTest {
                     addrs.addAll(InternetAddress.parseHeader(to));
                 }
                 try {
-                    Set<String> me = AccountUtil.getEmailAddresses(adapter.getMailbox().getAccount());
+                    Mailbox mailbox = adapter.getMailbox();
+                    Set<String> me = AccountUtil.getEmailAddresses(
+                        Provisioning.getInstance().getAccountByMailbox(mailbox));
                     for (InternetAddress addr : addrs) {
                         if (me.contains(addr.getAddress().toLowerCase())) {
                             return true;

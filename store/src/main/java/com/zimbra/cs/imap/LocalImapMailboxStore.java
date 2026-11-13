@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.imap;
 
+import com.zimbra.cs.account.Provisioning;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -195,7 +196,8 @@ public class LocalImapMailboxStore extends ImapMailboxStore {
 
     @Override
     public boolean addressMatchesAccountOrSendAs(String givenAddress) throws ServiceException {
-        return (AccountUtil.addressMatchesAccountOrSendAs(mailbox.getAccount(), givenAddress));
+        return (AccountUtil.addressMatchesAccountOrSendAs(
+            Provisioning.getInstance().getAccountByMailbox(mailbox), givenAddress));
     }
 
     @Override
@@ -211,7 +213,7 @@ public class LocalImapMailboxStore extends ImapMailboxStore {
 
     @Override
     public Account getAccount() throws ServiceException {
-        return mailbox.getAccount();
+        return Provisioning.getInstance().getAccountByMailbox(mailbox);
     }
 
     public Mailbox getMailbox() {

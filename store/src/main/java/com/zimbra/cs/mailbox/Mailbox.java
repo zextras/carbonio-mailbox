@@ -814,21 +814,8 @@ public class Mailbox implements MailboxStore {
     return mData.accountId;
   }
 
-  /**
-   * Returns the {@link Account} object for this mailbox's owner. At present, each account can have
-   * at most one <tt>Mailbox</tt>.
-   *
-   * @throws AccountServiceException if no account exists
-   */
-  public Account getAccount() throws ServiceException {
-    String accountId = getAccountId();
-    Account acct = Provisioning.getInstance().get(AccountBy.id, accountId);
-    if (acct == null) {
-      ZimbraLog.mailbox.warn(
-          "no account found in directory for mailbox %d (was expecting %s)", mId, accountId);
-      throw AccountServiceException.NO_SUCH_ACCOUNT(accountId);
-    }
-    return acct;
+  private Account getAccount() throws ServiceException {
+    return Provisioning.getInstance().getAccountByMailbox(this);
   }
 
   /** Retuns the ID of the volume this <tt>Mailbox</tt>'s index lives on. */

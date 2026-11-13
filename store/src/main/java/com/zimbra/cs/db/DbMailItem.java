@@ -20,6 +20,7 @@ import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.UUIDUtil;
 import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.imap.ImapMessage;
 import com.zimbra.cs.index.SortBy;
@@ -45,7 +46,6 @@ import com.zimbra.cs.store.MailboxBlob;
 import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.util.SpoolingCache;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -745,7 +745,7 @@ public class DbMailItem {
     String prevFolders = item.getPrevFolders();
     if (!StringUtil.isNullOrEmpty(prevFolders)) {
       String[] modseq2FolderId = prevFolders.split(";");
-      int maxCount = mbox.getAccount().getServer().getPrevFoldersToTrackMax();
+      int maxCount = Provisioning.getInstance().getAccountByMailbox(mbox).getServer().getPrevFoldersToTrackMax();
       if (modseq2FolderId.length < maxCount) {
         prevFolders += ";" + modseq + ":" + item.getFolderId();
       } else {
@@ -817,7 +817,7 @@ public class DbMailItem {
           String prevFolders = ud.getPrevFolders();
           if (!StringUtil.isNullOrEmpty(prevFolders)) {
             String[] modseq2FolderId = prevFolders.split(";");
-            int maxCount = mbox.getAccount().getServer().getPrevFoldersToTrackMax();
+            int maxCount = Provisioning.getInstance().getAccountByMailbox(mbox).getServer().getPrevFoldersToTrackMax();
             if (modseq2FolderId.length < maxCount) {
               prevFolders += ";" + modseq + ":" + ud.folderId;
             } else {

@@ -421,7 +421,8 @@ public class CreateContact extends MailDocumentHandler  {
             ItemId iid = new ItemId(messageId, zsc);
             String part = vcard.getAttribute(MailConstants.A_PART);
             String[] acceptableTypes = new String[] { MimeConstants.CT_TEXT_PLAIN, MimeConstants.CT_TEXT_VCARD, MimeConstants.CT_TEXT_VCARD_LEGACY, MimeConstants.CT_TEXT_VCARD_LEGACY2 };
-            String charsetWanted = mbox.getAccount().getAttr(Provisioning.A_zimbraPrefMailDefaultCharset, null);
+            String charsetWanted = Provisioning.getInstance().getAccountByMailbox(mbox)
+                .getAttr(Provisioning.A_zimbraPrefMailDefaultCharset, null);
             text = fetchItemPart(zsc, octxt, mbox, iid, part, acceptableTypes, charsetWanted);
         }
 

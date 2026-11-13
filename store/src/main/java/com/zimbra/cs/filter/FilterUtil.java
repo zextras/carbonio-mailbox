@@ -238,7 +238,8 @@ public final class FilterUtil {
             authToken = AuthToken.getCsrfUnsecuredAuthToken(opCtxt.getAuthToken());
         }
         if (authToken == null) {
-            authToken = AuthProvider.getAuthToken(localMbox.getAccount());
+            authToken = AuthProvider.getAuthToken(
+                Provisioning.getInstance().getAccountByMailbox(localMbox));
         }
 
         // Get ZMailbox
@@ -268,7 +269,8 @@ public final class FilterUtil {
             if (!isMailLoop(sourceMbox, msg, new String[]{HEADER_FORWARDED})) {
                 outgoingMsg = new MimeMessage(msg);
                 Mime.recursiveRepairTransferEncoding(outgoingMsg);
-                outgoingMsg.addHeader(HEADER_FORWARDED, sourceMbox.getAccount().getName());
+                outgoingMsg.addHeader(HEADER_FORWARDED, Provisioning.getInstance()
+                    .getAccountByMailbox(sourceMbox).getName());
                 outgoingMsg.saveChanges();
             } else {
                 String error = String.format("Detected a mail loop for message %s.", Mime.getMessageID(msg));
@@ -292,7 +294,7 @@ public final class FilterUtil {
                     sender.setDsnNotifyOptions(MailSender.DsnNotifyOption.NEVER);
                 } else {
                     // Set envelope sender to the account name (bug 31309).
-                    Account account = sourceMbox.getAccount();
+                    Account account = Provisioning.getInstance().getAccountByMailbox(sourceMbox);
                     sender.setEnvelopeFrom(account.getName());
                 }
             } else {
@@ -340,7 +342,7 @@ public final class FilterUtil {
             return;
         }
 
-        Account account = mailbox.getAccount();
+        Account account = Provisioning.getInstance().getAccountByMailbox(mailbox);
         MimeMessage replyMsg = new Mime.FixedMimeMessage(JMSession.getSmtpSession(account));
         // add the forwarded header account names to detect the mail loop between accounts
         for (String headerFwdAccountName : Mime.getHeaders(mimeMessage, HEADER_FORWARDED)) {
@@ -390,7 +392,7 @@ public final class FilterUtil {
             throw ServiceException.FAILURE(error, null);
         }
 
-        Account account = mailbox.getAccount();
+        Account account = Provisioning.getInstance().getAccountByMailbox(mailbox);
         MimeMessage notification = new Mime.FixedMimeMessage(JMSession.getSmtpSession(account));
         // add the forwarded header account names to detect the mail loop between accounts
         for (String headerFwdAccountName : Mime.getHeaders(mimeMessage, HEADER_FORWARDED)) {
@@ -494,7 +496,7 @@ public final class FilterUtil {
             }
         }
 
-        Account owner = mailbox.getAccount();
+        Account owner = Provisioning.getInstance().getAccountByMailbox(mailbox);
         Locale locale = owner.getLocale();
         String charset = owner.getPrefMailDefaultCharset();
         if (charset == null) {
@@ -558,7 +560,7 @@ public final class FilterUtil {
             throw ServiceException.FAILURE(error, null);
         }
 
-        Account account = mailbox.getAccount();
+        Account account = Provisioning.getInstance().getAccountByMailbox(mailbox);
         MimeMessage notification = new Mime.FixedMimeMessage(JMSession.getSmtpSession(account));
         MailSender mailSender = mailbox.getMailSender().setSaveToSent(false);
         mailSender.setRedirectMode(true);
@@ -643,7 +645,7 @@ public final class FilterUtil {
             // used by Sieve...
             // This MUST NOT be overridden by a "from" URI header, and any such
             // URI header MUST be ignored.
-            notification.addHeader("from", mailbox.getAccount().getMail());
+            notification.addHeader("from", Provisioning.getInstance().getAccountByMailbox(mailbox).getMail());
         }
 
         // Subject
@@ -737,7 +739,8 @@ public final class FilterUtil {
         if (bodyPart != null) {
             try {
                 vars.put("body",
-                         Mime.getStringContent(bodyPart.getMimePart(), mailbox.getAccount().getPrefMailDefaultCharset()));
+                         Mime.getStringContent(bodyPart.getMimePart(), Provisioning.getInstance()
+                             .getAccountByMailbox(mailbox).getPrefMailDefaultCharset()));
             } catch (IOException e) {
                 ZimbraLog.filter.warn("Error in reading text body", e);
             }
@@ -771,7 +774,7 @@ public final class FilterUtil {
      */
     private static boolean isMailLoop(Mailbox sourceMbox, MimeMessage msg, String[] checkHeaders)
     throws ServiceException {
-        String userName = sourceMbox.getAccount().getName();
+        String userName = Provisioning.getInstance().getAccountByMailbox(sourceMbox).getName();
         for (String header : checkHeaders) {
             if (HEADER_FORWARDED.equals(header)) {
                 String[] forwards = Mime.getHeaders(msg, HEADER_FORWARDED);

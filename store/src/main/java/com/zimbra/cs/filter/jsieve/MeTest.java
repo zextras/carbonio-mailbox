@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.filter.jsieve;
 
+import com.zimbra.cs.account.Provisioning;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -84,7 +85,7 @@ public final class MeTest extends AbstractTest {
             }
         }
         try {
-            Account account = mbox.getAccount();
+            Account account = Provisioning.getInstance().getAccountByMailbox(mbox);
             Set<String> me = AccountUtil.getEmailAddresses(account);
             me.addAll(AccountUtil.getImapPop3EmailAddresses(account));
             for (InternetAddress addr : addrs) {

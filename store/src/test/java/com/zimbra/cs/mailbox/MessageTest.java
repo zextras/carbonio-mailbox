@@ -13,6 +13,7 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.db.DbUtil;
@@ -130,7 +131,7 @@ public final class MessageTest extends MailboxTestSuite {
   void moveOutOfSpam() throws Exception {
     var account = createAccount().create();
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
-    mbox.getAccount().setJunkMessagesIndexingEnabled(false);
+    Provisioning.getInstance().getAccountByMailbox(mbox).setJunkMessagesIndexingEnabled(false);
     DeliveryOptions opt = new DeliveryOptions();
     opt.setFolderId(Mailbox.ID_FOLDER_SPAM);
     Message msg =

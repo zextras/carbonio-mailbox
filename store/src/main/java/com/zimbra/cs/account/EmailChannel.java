@@ -116,7 +116,8 @@ public class EmailChannel extends ChannelProvider {
             prefs.put(ZAttrProvisioning.A_zimbraPrefPasswordRecoveryAddressStatus,
                     PrefPasswordRecoveryAddressStatus.verified);
             prefs.put(ZAttrProvisioning.A_zimbraRecoveryAccountVerificationData, null);
-            Provisioning.getInstance().modifyAttrs(mbox.getAccount(), prefs, true, zsc.getAuthToken());
+            Provisioning.getInstance().modifyAttrs(
+                Provisioning.getInstance().getAccountByMailbox(mbox), prefs, true, zsc.getAuthToken());
         } else {
             throw ForgetPasswordException.CODE_MISMATCH("Verification of recovery email address verification code failed.");
         }

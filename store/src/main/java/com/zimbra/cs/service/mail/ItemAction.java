@@ -315,7 +315,7 @@ public class ItemAction extends MailDocumentHandler {
     }
 
     // check if default calendar is deleted, if yes, reset default calendar id
-    Integer defaultCalId = mbox.getAccount().getPrefDefaultCalendarId();
+    Integer defaultCalId = Provisioning.getInstance().getAccountByMailbox(mbox).getPrefDefaultCalendarId();
     if (defaultCalId != null
         && (opStr.equals(MailConstants.OP_TRASH) || opStr.equals(MailConstants.OP_HARD_DELETE))
         && result.mSuccessIds.contains(defaultCalId.toString())) {
@@ -478,7 +478,7 @@ public class ItemAction extends MailDocumentHandler {
       throws ServiceException {
     Folder folder = mbox.getFolderById(octxt, item.getFolderId());
     Map<Integer, String> dataSources = new HashMap<>();
-    for (DataSource ds : mbox.getAccount().getAllDataSources()) {
+    for (DataSource ds : Provisioning.getInstance().getAccountByMailbox(mbox).getAllDataSources()) {
       dataSources.put(ds.getFolderId(), ds.getId());
     }
     while (folder.getId() != Mailbox.ID_FOLDER_ROOT) {
@@ -492,7 +492,7 @@ public class ItemAction extends MailDocumentHandler {
   }
 
   private Integer getImapTrashFolder(Mailbox mbox, String dsId) throws ServiceException {
-    DataSource ds = mbox.getAccount().getDataSourceById(dsId);
+    DataSource ds = Provisioning.getInstance().getAccountByMailbox(mbox).getDataSourceById(dsId);
     if (ds.getType() == DataSourceType.imap) {
       /* If RFC 6154 is supported, we know exactly what the remote trash folder is.
        * If it's not supported, default to checking folder name.

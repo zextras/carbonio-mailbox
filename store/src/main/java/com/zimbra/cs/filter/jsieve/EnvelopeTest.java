@@ -12,6 +12,8 @@ import static org.apache.jsieve.tests.AddressPartTags.ALL_TAG;
 import static org.apache.jsieve.tests.AddressPartTags.LOCALPART_TAG;
 import static org.apache.jsieve.tests.AddressPartTags.DOMAIN_TAG;
 
+import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.mailbox.Mailbox;
 import java.util.Iterator;
 import java.util.List;
 
@@ -121,7 +123,8 @@ public class EnvelopeTest extends Envelope {
                 // is running.
                 String recipient = null;
                 try {
-                    recipient = ((ZimbraMailAdapter)mail).getMailbox().getAccount().getMail();
+                    Mailbox mailbox = ((ZimbraMailAdapter)mail).getMailbox();
+                    recipient = Provisioning.getInstance().getAccountByMailbox(mailbox).getMail();
                 } catch (ServiceException e) {
                     recipient = "";
                 }

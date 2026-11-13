@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.mime.ParsedMessageOptions;
@@ -87,7 +88,7 @@ public class DumpsterTest extends MailboxTestSuite {
         mbox.lock.release();
       }
 
-      pm.setDefaultCharset(mbox.getAccount().getPrefMailDefaultCharset());
+      pm.setDefaultCharset(Provisioning.getInstance().getAccountByMailbox(mbox).getPrefMailDefaultCharset());
       mbox.reanalyze(msg.mId, MailItem.Type.MESSAGE, pm, msg.getSize());
     } catch (MailServiceException e) {
       fail("should not be throwing an exception");

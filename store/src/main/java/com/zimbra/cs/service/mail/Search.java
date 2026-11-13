@@ -74,7 +74,7 @@ public class Search extends MailDocumentHandler {
 
     SearchParams params = SearchParams.parse(req, zsc, account.getPrefMailInitialSearch());
     if (params.getLocale() == null) {
-      params.setLocale(mbox.getAccount().getLocale());
+      params.setLocale(Provisioning.getInstance().getAccountByMailbox(mbox).getLocale());
     }
     if (params.inDumpster() && params.getTypes().contains(MailItem.Type.CONVERSATION)) {
       throw ServiceException.INVALID_REQUEST("cannot search for conversations in dumpster", null);

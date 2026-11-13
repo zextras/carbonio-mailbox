@@ -82,7 +82,8 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
     fields.put(ContactConstants.A_email, getRandomMail());
     mbox.createContact(null, new ParsedContact(fields), Mailbox.ID_FOLDER_CONTACTS, null);
 
-    ContactAutoComplete autocomplete = new ContactAutoComplete(mbox.getAccount(),
+    ContactAutoComplete autocomplete = new ContactAutoComplete(
+        Provisioning.getInstance().getAccountByMailbox(mbox),
         new OperationContext(mbox));
     assertEquals(1, autocomplete.query("first second third forth", null, 100).entries.size());
   }
@@ -102,7 +103,8 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
     mbox.createContact(null, new ParsedContact(fields), Mailbox.ID_FOLDER_CONTACTS, null);
 
     Thread.sleep(500);
-    ContactAutoComplete autocomplete = new ContactAutoComplete(mbox.getAccount(),
+    ContactAutoComplete autocomplete = new ContactAutoComplete(
+        Provisioning.getInstance().getAccountByMailbox(mbox),
         new OperationContext(mbox));
     assertEquals(1, autocomplete.query("not", null, 100).entries.size());
     assertEquals(1, autocomplete.query("not and", null, 100).entries.size());
@@ -122,7 +124,8 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
     mbox.createContact(null, new ParsedContact(fields), Mailbox.ID_FOLDER_CONTACTS, null);
 
     Thread.sleep(500);
-    ContactAutoComplete autocomplete = new ContactAutoComplete(mbox.getAccount(),
+    ContactAutoComplete autocomplete = new ContactAutoComplete(
+        Provisioning.getInstance().getAccountByMailbox(mbox),
         new OperationContext(mbox));
     assertEquals(1, autocomplete.query("conf -", null, 100).entries.size());
     assertEquals(1, autocomplete.query("conf - h", null, 100).entries.size());
@@ -254,7 +257,8 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
     ContactRankings.increment(mbox.getAccountId(),
         Collections.singleton(new InternetAddress(mail)));
 
-    ContactAutoComplete autocomplete = new ContactAutoComplete(mbox.getAccount(),
+    ContactAutoComplete autocomplete = new ContactAutoComplete(
+        Provisioning.getInstance().getAccountByMailbox(mbox),
         new OperationContext(mbox));
     AutoCompleteResult result = autocomplete.query("Pal", null, 10);
     assertEquals(1, result.entries.size());
@@ -282,7 +286,8 @@ class ContactAutoCompleteTest extends MailboxTestSuite {
         Collections.singleton(new InternetAddress(mail)));
     ContactRankings.increment(mbox.getAccountId(),
         Collections.singleton(new InternetAddress(mail)));
-    ContactAutoComplete autocomplete = new ContactAutoComplete(mbox.getAccount(),
+    ContactAutoComplete autocomplete = new ContactAutoComplete(
+        Provisioning.getInstance().getAccountByMailbox(mbox),
         new OperationContext(mbox));
     assertEquals(0, autocomplete.query("noex", null, 10).entries.size());
   }

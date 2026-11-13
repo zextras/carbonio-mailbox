@@ -55,7 +55,7 @@ public class DataSourceTask extends ScheduledTask {
         try {
             // Look up mailbox, account and data source
             mbox = MailboxManager.getInstance().getMailboxById(getMailboxId());
-            Account account = mbox.getAccount();
+            Account account = Provisioning.getInstance().getAccountByMailbox(mbox);
             ZimbraLog.addAccountNameToContext(account.getName());
             Provisioning prov = Provisioning.getInstance();
             DataSource ds = prov.get(account, Key.DataSourceBy.id, getDataSourceId());

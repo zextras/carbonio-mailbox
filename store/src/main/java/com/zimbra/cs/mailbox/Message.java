@@ -193,7 +193,8 @@ public class Message extends MailItem {
       Metadata metaInv = meta.getMap(FN_INV, true);
       if (metaInv != null) {
         int mboxId = mbox.getId();
-        ICalTimeZone accountTZ = Util.getAccountTimeZone(mbox.getAccount());
+        ICalTimeZone accountTZ = Util.getAccountTimeZone(
+            Provisioning.getInstance().getAccountByMailbox(mbox));
         inv = Invite.decodeMetadata(mboxId, metaInv, null, accountTZ);
       }
       return new CalendarItemInfo(calItemId, owner, componentNo, inv, invChanges);
@@ -487,7 +488,7 @@ public class Message extends MailItem {
     MimeMessage mm = MessageCache.getMimeMessage(this, runConverters);
     if (mm instanceof ZMimeMessage && ZMimeMessage.usingZimbraParser()) {
       try {
-        mm = new Mime.FixedMimeMessage(mm, mMailbox.getAccount());
+        mm = new Mime.FixedMimeMessage(mm, Provisioning.getInstance().getAccountByMailbox(mMailbox));
       } catch (MessagingException e) {
         ZimbraLog.mailbox.info("could not copy MimeMessage; using original", e);
       }
@@ -587,7 +588,7 @@ public class Message extends MailItem {
       throw ServiceException.PERM_DENIED("you do not have the required rights on the folder");
     }
     Mailbox mbox = folder.getMailbox();
-    Account acct = mbox.getAccount();
+    Account acct = Provisioning.getInstance().getAccountByMailbox(mbox);
 
     String sender = pm.getSenderEmail();
 
@@ -749,7 +750,8 @@ public class Message extends MailItem {
     try {
       headerVal = getCalendarIntendedFor(getMimeMessage());
       if (headerVal != null && headerVal.length() > 0) {
-        AccountAddressMatcher acctMatcher = new AccountAddressMatcher(mMailbox.getAccount());
+        AccountAddressMatcher acctMatcher = new AccountAddressMatcher(
+            Provisioning.getInstance().getAccountByMailbox(mMailbox));
         if (!acctMatcher.matches(headerVal) && manageCalendar(headerVal)) {
           Provisioning prov = Provisioning.getInstance();
           Account ownerAcct = prov.get(AccountBy.name, headerVal);
@@ -1319,7 +1321,7 @@ public class Message extends MailItem {
                       .getBooleanAttr(
                           Provisioning.A_zimbraPrefCalendarAllowPublishMethodInvite, false))) {
             if (status.autoAddNew) {
-              if (mMailbox.getAccount().sameAccount(cur.getOrganizerAccount())) {
+              if (Provisioning.getInstance().getAccountByMailbox(mMailbox).sameAccount(cur.getOrganizerAccount())) {
                 // Bug 100456 ZCO sends out invites before adding a calendar entry.  If server adds
                 // Calendar entry and ZCO sees that before creating its entry, ZCO gets confused.
                 LOG.info(
@@ -1831,7 +1833,8 @@ public class Message extends MailItem {
    */
   @Override
   protected boolean isQuotaCheckRequired() throws ServiceException {
-    Account account = getMailbox().getAccount();
+    Mailbox mailbox = getMailbox();
+    Account account = Provisioning.getInstance().getAccountByMailbox(mailbox);
     return !account.isMailAllowReceiveButNotSendWhenOverQuota();
   }
 

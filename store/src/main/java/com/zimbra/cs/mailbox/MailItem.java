@@ -636,7 +636,8 @@ public abstract class MailItem
       if (sentFolder == -1) {
         sentFolder = Mailbox.ID_FOLDER_SENT;
         try {
-          String sent = mailbox.getAccount().getAttr(Provisioning.A_zimbraPrefSentMailFolder, null);
+          String sent = Provisioning.getInstance().getAccountByMailbox(mailbox)
+              .getAttr(Provisioning.A_zimbraPrefSentMailFolder, null);
           if (sent != null) {
             sentFolder = mailbox.getFolderByPath(null, sent).getId();
           }
@@ -840,7 +841,7 @@ public abstract class MailItem
 
   /** Returns the {@link Account} this item's Mailbox belongs to. */
   public Account getAccount() throws ServiceException {
-    return mMailbox.getAccount();
+    return Provisioning.getInstance().getAccountByMailbox(mMailbox);
   }
 
   /**

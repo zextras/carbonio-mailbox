@@ -254,7 +254,7 @@ public class ItemActionHelper {
     // First build all external account / data source root folder ids
     Set<Integer> dsRootFolderIds = new HashSet<>();
     if (!ids.isEmpty()) {
-      List<DataSource> dataSources = mbox.getAccount().getAllDataSources();
+      List<DataSource> dataSources = Provisioning.getInstance().getAccountByMailbox(mbox).getAllDataSources();
       if (dataSources != null) {
         for (DataSource ds : dataSources) {
           int dsFolderId = ds.getFolderId();
@@ -531,7 +531,8 @@ public class ItemActionHelper {
     mMailbox = mbox;
 
     mAuthenticatedAccount = octxt == null ? null : octxt.getAuthenticatedUser();
-    if (mAuthenticatedAccount == null) mAuthenticatedAccount = mbox.getAccount();
+    if (mAuthenticatedAccount == null)
+      mAuthenticatedAccount = Provisioning.getInstance().getAccountByMailbox(mbox);
     mIdFormatter = new ItemIdFormatter(mAuthenticatedAccount, mbox, false);
     mResponseProtocol = responseProto;
 

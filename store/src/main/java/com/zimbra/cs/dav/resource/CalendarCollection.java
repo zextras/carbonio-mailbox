@@ -754,7 +754,8 @@ public class CalendarCollection extends Collection {
             range.getEnd(),
             FreeBusyQuery.CALENDAR_FOLDER_ALL);
     return fb.toVCalendar(
-        FreeBusy.Method.REPLY, ctxt.getAuthAccount().getName(), mbox.getAccount().getName(), null,
+        FreeBusy.Method.REPLY, ctxt.getAuthAccount().getName(), Provisioning.getInstance()
+            .getAccountByMailbox(mbox).getName(), null,
         null);
   }
 }

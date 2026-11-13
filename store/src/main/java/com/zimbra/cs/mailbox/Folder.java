@@ -19,6 +19,7 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbMailItem;
 import com.zimbra.cs.db.DbTag;
 import com.zimbra.cs.imap.ImapSession;
@@ -933,7 +934,8 @@ public class Folder extends MailItem implements FolderStore {
     data.date = date == null ? mbox.getOperationTimestamp() : (int) (date / 1000);
     // Automatically apply the SYNCFOLDER flag when the folder is created with an external
     // sync URL (iCal/ICS, RSS, etc.) so that the 'y' flag is correctly reported to clients.
-    int effectiveFlags = flags | Flag.toBitmask(mbox.getAccount().getDefaultFolderFlags());
+    int effectiveFlags = flags | Flag.toBitmask(
+        Provisioning.getInstance().getAccountByMailbox(mbox).getDefaultFolderFlags());
     if (url != null && !url.isEmpty()) {
       effectiveFlags |= Flag.BITMASK_SYNCFOLDER;
     }
