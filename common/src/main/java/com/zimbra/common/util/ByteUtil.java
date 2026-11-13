@@ -599,17 +599,6 @@ public class ByteUtil {
     }
 
     /**
-     * return the MD5 digest of the supplied data.
-     * @param data data to digest
-     * @param base64 if true, return as base64 String, otherwise return
-     *  as hex string.
-     * @return hex or base64 string
-     */
-    public static String getMD5Digest(byte[] data, boolean base64) {
-        return getDigest("MD5", data, base64);
-    }
-
-    /**
      * Returns the SHA256 digest for the given data, encoded
      * as base64.
      * @return hex or base64 string

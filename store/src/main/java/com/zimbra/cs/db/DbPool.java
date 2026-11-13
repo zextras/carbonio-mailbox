@@ -22,10 +22,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 import java.util.Properties;
-import org.apache.commons.dbcp.ConnectionFactory;
-import org.apache.commons.dbcp.PoolableConnectionFactory;
-import org.apache.commons.dbcp.PoolingDataSource;
-import org.apache.commons.pool.impl.GenericObjectPool;
+import org.apache.commons.dbcp2.ConnectionFactory;
+import org.apache.commons.dbcp2.PoolableConnection;
+import org.apache.commons.dbcp2.PoolableConnectionFactory;
+import org.apache.commons.dbcp2.PoolingDataSource;
+import org.apache.commons.pool2.impl.GenericObjectPool;
 
 /**
  * @since Apr 7, 2004
@@ -39,12 +40,12 @@ public class DbPool {
 
     // instance level
     private final Db db;
-    private final PoolingDataSource dataSource;
-    private final GenericObjectPool pool;
+    private final PoolingDataSource<PoolableConnection> dataSource;
+    private final GenericObjectPool<PoolableConnection> pool;
     private final String sRootUrl;
     private final String sLoggerRootUrl;
 
-    private DbPool(Db db, PoolingDataSource dataSource, GenericObjectPool pool) {
+    private DbPool(Db db, PoolingDataSource<PoolableConnection> dataSource, GenericObjectPool<PoolableConnection> pool) {
         this.db = db;
         this.dataSource = dataSource;
         this.pool = pool;
@@ -55,13 +56,20 @@ public class DbPool {
     static DbPool newPool(Db db) {
         PoolConfig pconfig = db.getPoolConfig();
         System.setProperty("jdbc.drivers", pconfig.mDriverClassName);
-        var connectionPool = new GenericObjectPool(null, pconfig.mPoolSize, pconfig.whenExhaustedAction, -1, pconfig.mPoolSize);
         ConnectionFactory cfac = ZimbraConnectionFactory.getConnectionFactory(pconfig);
 
-        boolean defAutoCommit = false, defReadOnly = false;
-        new PoolableConnectionFactory(cfac, connectionPool, null, null, defReadOnly, defAutoCommit);
+        var connectionFactory = new PoolableConnectionFactory(cfac, null);
+        connectionFactory.setDefaultReadOnly(false);
+        connectionFactory.setDefaultAutoCommit(false);
+        connectionFactory.setCacheState(false);
 
-        PoolingDataSource pds = new PoolingDataSource(connectionPool);
+        var connectionPool = new GenericObjectPool<>(connectionFactory);
+        connectionPool.setMaxTotal(pconfig.mPoolSize);
+        connectionPool.setMaxIdle(pconfig.mPoolSize);
+        connectionPool.setBlockWhenExhausted(pconfig.blockWhenExhausted);
+        connectionFactory.setPool(connectionPool);
+
+        var pds = new PoolingDataSource<>(connectionPool);
         pds.setAccessToUnderlyingConnectionAllowed(true);
 
         final DbPool dbPool = new DbPool(db, pds, connectionPool);
@@ -281,7 +289,7 @@ public class DbPool {
         String mLoggerUrl;
         boolean mSupportsStatsCallback;
         Properties mDatabaseProperties;
-        byte whenExhaustedAction = GenericObjectPool.WHEN_EXHAUSTED_BLOCK;
+        boolean blockWhenExhausted = true;
     }
 
     /**
@@ -365,9 +373,9 @@ public class DbPool {
     }
 
     private void checkPoolUsage() {
-        final GenericObjectPool poolStats = this.pool;
+        final GenericObjectPool<PoolableConnection> poolStats = this.pool;
         int numActive = poolStats.getNumActive();
-        int maxActive = poolStats.getMaxActive();
+        int maxActive = poolStats.getMaxTotal();
 
         if (numActive <= maxActive * 0.75)
             return;

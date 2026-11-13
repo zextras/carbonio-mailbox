@@ -126,9 +126,6 @@ public final class LC {
   public static final KnownKey skins_directory =
       KnownKey.newKey("${mailboxd_directory}/webapps/zimbra/skins");
 
-  public static final KnownKey zimbra_disk_cache_servlet_flush = KnownKey.newKey(true);
-  public static final KnownKey zimbra_disk_cache_servlet_size = KnownKey.newKey(1000);
-
   @Supported
   public static final KnownKey zimbra_store_sweeper_max_age =
       KnownKey.newKey(480); // 480 mins = 8 hours
@@ -649,8 +646,6 @@ public final class LC {
   public static final KnownKey zmconfigd_interval = KnownKey.newKey(60);
   public static final KnownKey zmconfigd_log_level = KnownKey.newKey(3);
   public static final KnownKey zmconfigd_listen_port = KnownKey.newKey(7171);
-  public static final KnownKey zmconfigd_max_failed_restarts = KnownKey.newKey(3);
-  public static final KnownKey zmconfigd_startup_pause = KnownKey.newKey(60);
 
   public static final KnownKey zimbra_configrewrite_timeout = KnownKey.newKey(120);
 
@@ -1448,7 +1443,7 @@ public final class LC {
 
   /**
    * This annotation represents a supported local config setting. To make a new setting show up in
-   * the zmlocalconfig -i command, use this annotation
+   * the configd localconfig -i command, use this annotation
    *
    * @author jpowers
    */

@@ -105,8 +105,6 @@ import com.zimbra.soap.account.type.AuthToken;
 import com.zimbra.soap.account.type.InfoSection;
 import com.zimbra.soap.base.SpecifyContact;
 import com.zimbra.soap.mail.message.BeginTrackingIMAPRequest;
-import com.zimbra.soap.mail.message.CheckSpellingRequest;
-import com.zimbra.soap.mail.message.CheckSpellingResponse;
 import com.zimbra.soap.mail.message.CreateContactRequest;
 import com.zimbra.soap.mail.message.CreateDataSourceRequest;
 import com.zimbra.soap.mail.message.CreateDataSourceResponse;
@@ -5357,22 +5355,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     } finally {
       unlock();
     }
-  }
-
-  public CheckSpellingResponse checkSpelling(String text) throws ServiceException {
-    return checkSpelling(text, null, null);
-  }
-
-  public CheckSpellingResponse checkSpelling(String text, String dictionary)
-      throws ServiceException {
-    return checkSpelling(text, dictionary, null);
-  }
-
-  public CheckSpellingResponse checkSpelling(String text, String dictionary, List<String> ignore)
-      throws ServiceException {
-    String ignoreList = (ignore == null ? null : StringUtil.join(",", ignore));
-    CheckSpellingRequest req = new CheckSpellingRequest(dictionary, ignoreList, text);
-    return invokeJaxb(req);
   }
 
   public void createIdentity(ZIdentity identity) throws ServiceException {

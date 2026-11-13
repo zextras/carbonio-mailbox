@@ -1,5 +1,5 @@
 library(
-        identifier: 'jenkins-lib-common@v5.1.0',
+        identifier: 'jenkins-lib-common@v5.3.1',
         retriever: modernSCM([
                 $class: 'GitSCMSource',
                 credentialsId: 'jenkins-integration-with-github-account',
@@ -59,7 +59,7 @@ pipeline {
                         mvn ${MVN_OPTS} clean install
                         mkdir staging
                         cp -a store* right-manager \
-                                client common packages soap jython-libs \
+                                client common packages soap \
                                 staging/
                     """
                     stash includes: 'staging/**', name: 'staging'
