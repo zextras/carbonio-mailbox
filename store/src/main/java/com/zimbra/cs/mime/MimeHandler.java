@@ -6,7 +6,6 @@
 package com.zimbra.cs.mime;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +18,7 @@ import org.apache.lucene.document.Document;
 
 import com.google.common.base.Strings;
 import com.zimbra.common.calendar.ZCalendar.ZVCalendar;
-import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.convert.AttachmentInfo;
@@ -164,37 +161,12 @@ public abstract class MimeHandler {
      * Gets the text content of the document.
      */
     public final String getContent() throws MimeHandlerException {
-        if (!DebugConfig.disableMimePartExtraction) {
-            String toRet = getContentImpl();
-            if (toRet == null)
-                return "";
-            else
-                return toRet;
-        } else {
-            if (dataSource != null && !mDrainedContent) {
-                InputStream is = null;
-                try {
-                    is = dataSource.getInputStream();
-                    // Read all bytes from the input stream and discard them.
-                    // This is useful for testing MIME parser performance, as
-                    // the parser may not fully parse the message unless the
-                    // message part is read in its entirety.
-                    // Multiple buffers will share sDrainBuffer without any
-                    // synchronizing, but this is okay since we don't use the
-                    // data read.
-                    while (is.read(sDrainBuffer) != -1) {}
-                } catch (IOException e) {
-                    throw new MimeHandlerException("cannot extract text", e);
-                } finally {
-                    ByteUtil.closeStream(is);
-                }
-                mDrainedContent = true;
-            }
+        String toRet = getContentImpl();
+        if (toRet == null)
             return "";
-        }
+        else
+            return toRet;
     }
-    private boolean mDrainedContent = false;
-    private static byte[] sDrainBuffer = new byte[4096];
 
     /**
      * Returns the content for this MIME part.  Length of content returned
@@ -274,10 +246,6 @@ public abstract class MimeHandler {
 
     public static void getObjects(String text, IndexDocument doc)
         throws ObjectHandlerException, ServiceException {
-
-        if (DebugConfig.disableObjects) {
-            return;
-        }
 
         List<ObjectHandler> objects = ObjectHandler.getObjectHandlers();
         StringBuffer l_objects = new StringBuffer();

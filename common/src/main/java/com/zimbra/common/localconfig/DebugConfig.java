@@ -19,36 +19,11 @@ public final class DebugConfig {
     private DebugConfig() {
     }
 
-    /** If true, turns off conversation feature. */
-    public static final boolean disableConversation = value("debug_disable_conversation", false);
-
     /** If true, turns off filtering of incoming messages. */
     public static final boolean disableIncomingFilter = value("debug_disable_filter", false);
 
     /** If true, turns off filtering of outgoing messages. */
     public static final boolean disableOutgoingFilter = value("debug_disable_outgoing_filter", false);
-
-    /** If true, turns off message structure analysis and text extraction.
-     *  Attachment extraction, indexing, and objects only work when message
-     *  analysis is enabled. */
-    public static final boolean disableMessageAnalysis = value("debug_disable_message_analysis", false);
-
-    /** If true, turns off extracting content of attachments
-     *  If extraction is disabled, indexing and objects features are
-     *  meaningless.  When extraction is disabled,
-     *  not even the text of main text body part is extracted and won't be
-     *  searchable.  Only the message subject ends up being indexed.
-     *
-     *  Disabling extraction still performs reading the MIME body part data
-     *  from JavaMail API.  It only skips sending the body data to the code
-     *  that does type-specific text extraction.  Setting this key to true
-     *  allows one to test the performance of JavaMail apart from performance
-     *  of text extraction routines. */
-    public static final boolean disableMimePartExtraction = disableMessageAnalysis ?
-            true : value("debug_disable_mime_part_extraction", false);
-
-    /** If true, turns off object detection feature. */
-    public static final boolean disableObjects = disableMessageAnalysis ? true : value("debug_disable_objects", false);
 
     /** If true, turns off DHTML UI's highlighting of attachment with search
      *  hit. */

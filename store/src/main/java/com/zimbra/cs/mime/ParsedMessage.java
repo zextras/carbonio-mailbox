@@ -368,9 +368,6 @@ public final class ParsedMessage {
         }
 
         analyzedBodyParts = true;
-        if (DebugConfig.disableMessageAnalysis) {
-            return;
-        }
 
         parse();
 
@@ -410,9 +407,6 @@ public final class ParsedMessage {
         }
 
         analyzedNonBodyParts = true;
-        if (DebugConfig.disableMessageAnalysis) {
-            return;
-        }
 
         analyzeBodyParts();
 
