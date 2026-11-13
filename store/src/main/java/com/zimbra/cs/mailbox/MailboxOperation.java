@@ -93,8 +93,6 @@ public enum MailboxOperation {
     CreateComment(84),
     CreateLink(85),
     SetRetentionPolicy(86),
-    Watch(87),       // Octopus item watch / follow
-    Unwatch(88),
     RefreshMountpoint(89),
     ExpireAccess(90),
     SetDisableActiveSync(91),

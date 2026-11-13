@@ -304,8 +304,6 @@ public class TrackCommandRequestService implements DocumentService {
           , MailConstants.GET_RECUR_REQUEST
           , MailConstants.EXPAND_RECUR_REQUEST
           , MailConstants.CHECK_RECUR_CONFLICTS_REQUEST
-          , MailConstants.CHECK_SPELLING_REQUEST
-          , MailConstants.GET_SPELL_DICTIONARIES_REQUEST
           , MailConstants.GET_DATA_SOURCES_REQUEST
           , MailConstants.CREATE_DATA_SOURCE_REQUEST
           , MailConstants.MODIFY_DATA_SOURCE_REQUEST
