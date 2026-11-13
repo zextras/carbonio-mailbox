@@ -10,6 +10,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.zextras.mailbox.feature.AttributesMirror;
+import com.zextras.mailbox.feature.PostgresEntries;
+import com.zextras.mailbox.feature.StoredEntry;
 import com.zimbra.common.account.ForgetPasswordEnums.CodeConstants;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
@@ -242,6 +245,44 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   private String[] BASIC_DL_ATTRS;
   private String[] BASIC_DYNAMIC_GROUP_ATTRS;
   private String[] BASIC_GROUP_ATTRS;
+
+  private static final String[] MIRRORED_READ = {"*", AttributesMirror.ENTRY_CSN};
+
+  private AttributesMirror attributesMirror;
+  private PostgresEntries postgresEntries;
+
+  public void setAttributesMirror(AttributesMirror attributesMirror) {
+    this.attributesMirror = attributesMirror;
+  }
+
+  public void setPostgresEntries(PostgresEntries postgresEntries) {
+    this.postgresEntries = postgresEntries;
+  }
+
+  private boolean readsFromPostgres() {
+    return postgresEntries != null && LC.mailbox_directory_reads_from_postgres.booleanValue();
+  }
+
+  private static ZAttributes zAttributes(StoredEntry stored) {
+    return new ZAttributes(stored.toLdapEntry());
+  }
+
+  private Account accountFromPostgres(Optional<StoredEntry> stored) throws ServiceException {
+    return stored.isEmpty() ? null : makeAccount(stored.get().dn(), zAttributes(stored.get()));
+  }
+
+  private LdapCos cosFromPostgres(Optional<StoredEntry> stored) throws ServiceException {
+    return stored.isEmpty()
+        ? null
+        : new LdapCos(stored.get().dn(), zAttributes(stored.get()), this);
+  }
+
+  private LdapDomain domainFromPostgres(Optional<StoredEntry> stored) throws ServiceException {
+    return stored.isEmpty()
+        ? null
+        : new LdapDomain(
+            stored.get().dn(), zAttributes(stored.get()), getConfig().getDomainDefaults(), this);
+  }
 
   public static LdapProvisioning create(CacheMode cacheMode) {
     try {
@@ -677,7 +718,14 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             ldapClient.getContext(
                 LdapServerType.MASTER, LdapUsage.modifyEntryfromEntryType(entry.getEntryType()));
       }
-      helper.modifyAttrs(zlc, ((LdapEntry) entry).getDN(), attrs, entry);
+      String dn = ((LdapEntry) entry).getDN();
+      if (attributesMirror != null && isMirrored(entry)) {
+        Optional<ZAttributes> saved =
+            helper.modifyAttrsAndRead(zlc, dn, attrs, entry, MIRRORED_READ);
+        mirrorAttributes(entry, zlc, saved);
+      } else {
+        helper.modifyAttrs(zlc, dn, attrs, entry);
+      }
     } catch (LdapInvalidAttrNameException e) {
       throw AccountServiceException.INVALID_ATTR_NAME("invalid attr name: " + e.getMessage(), e);
     } catch (LdapInvalidAttrValueException e) {
@@ -694,6 +742,112 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     }
   }
 
+  private static boolean isMirrored(Entry entry) {
+    return entry instanceof Account || entry instanceof Cos || entry instanceof Domain;
+  }
+
+  private void mirrorAttributes(Entry entry, ZLdapContext zlc, Optional<ZAttributes> saved) {
+    if (saved.isEmpty()) {
+      mirrorAttributes(entry, zlc);
+      return;
+    }
+    try {
+      mirrorAttributes(entry, saved.get().getAttrs());
+    } catch (Exception e) {
+      ZimbraLog.account.warn("Unable to mirror features of %s", entry.getLabel(), e);
+    }
+  }
+
+  private void mirrorAttributes(Entry entry, ZLdapContext zlc) {
+    if (attributesMirror == null) {
+      return;
+    }
+    try {
+      mirrorAttributes(entry, savedAttributes(entry, zlc));
+    } catch (Exception e) {
+      ZimbraLog.account.warn("Unable to mirror features of %s", entry.getLabel(), e);
+    }
+  }
+
+  private void mirrorAttributes(Entry entry, Map<String, Object> saved) {
+    String dn = ((LdapEntry) entry).getDN();
+    if (entry instanceof Account account && account.getName().contains("@")) {
+      attributesMirror.saveAccount(account.getId(), dn, account.getDomainName(), saved);
+    } else if (entry instanceof Cos cos) {
+      attributesMirror.saveCos(cos.getId(), dn, saved);
+    } else if (entry instanceof Domain domain) {
+      attributesMirror.saveDomain(domain.getName(), dn, saved);
+    }
+  }
+
+  private void forgetAttributes(Entry entry) {
+    if (attributesMirror == null) {
+      return;
+    }
+    try {
+      if (entry instanceof Account account) {
+        attributesMirror.deleteAccount(account.getId());
+      } else if (entry instanceof Cos cos) {
+        attributesMirror.deleteCos(cos.getId());
+      } else if (entry instanceof Domain domain) {
+        attributesMirror.deleteDomain(domain.getName());
+      }
+    } catch (Exception e) {
+      ZimbraLog.account.warn("Unable to delete mirrored features of %s", entry.getLabel(), e);
+    }
+  }
+
+  private void mirrorFromMaster(Entry entry) {
+    if (attributesMirror == null || entry == null) {
+      return;
+    }
+    ZLdapContext zlc = null;
+    try {
+      zlc = ldapClient.getContext(LdapServerType.MASTER, LdapUsage.GET_ENTRY);
+      mirrorAttributes(entry, zlc);
+    } catch (ServiceException e) {
+      ZimbraLog.account.warn("Unable to mirror attributes of %s", entry.getLabel(), e);
+    } finally {
+      ldapClient.closeContext(zlc);
+    }
+  }
+
+  private void mirrorRenamedDomain(String oldName, String newName) {
+    if (attributesMirror == null) {
+      return;
+    }
+    try {
+      attributesMirror.deleteDomain(oldName);
+      searchLdapOnMaster(
+          mDIT.domainNameToDN(newName),
+          filterFactory.domainByName(newName),
+          MIRRORED_READ,
+          new SearchLdapVisitor() {
+            @Override
+            public void visit(String dn, Map<String, Object> attrs, IAttributes ldapAttrs) {
+              attributesMirror.saveDomain(newName, dn, attrs);
+            }
+          });
+      searchLdapOnMaster(
+          mDIT.domainToAccountSearchDN(newName),
+          filterFactory.allAccounts(),
+          MIRRORED_READ,
+          new SearchLdapVisitor() {
+            @Override
+            public void visit(String dn, Map<String, Object> attrs, IAttributes ldapAttrs) {
+              attributesMirror.saveAccount((String) attrs.get("zimbraId"), dn, newName, attrs);
+            }
+          });
+    } catch (Exception e) {
+      ZimbraLog.account.warn("Unable to mirror renamed domain %s", newName, e);
+    }
+  }
+
+  private Map<String, Object> savedAttributes(Entry entry, ZLdapContext zlc)
+      throws ServiceException {
+    return helper.getAttributes(zlc, ((LdapEntry) entry).getDN(), MIRRORED_READ).getAttrs();
+  }
+
   private void setLdapPassword(Entry entry, ZLdapContext initZlc, String newPassword)
       throws ServiceException {
     ZLdapContext zlc = initZlc;
@@ -702,6 +856,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         zlc = ldapClient.getContext(LdapServerType.MASTER, LdapUsage.SET_PASSWORD);
       }
       zlc.setPassword(((LdapEntry) entry).getDN(), newPassword);
+      mirrorAttributes(entry, zlc);
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to set password: " + e.getMessage(), e);
     } finally {
@@ -970,6 +1125,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   private Account getAccountById(String zimbraId, ZLdapContext zlc, boolean loadFromMaster)
       throws ServiceException {
     if (zimbraId == null) return null;
+    if (zlc == null && !loadFromMaster && readsFromPostgres()) {
+      return accountFromPostgres(postgresEntries.accountById(zimbraId));
+    }
     Account a = accountCache.getById(zimbraId);
     if (a == null) {
       ZLdapFilter filter = filterFactory.accountById(zimbraId);
@@ -1162,6 +1320,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       throws ServiceException {
 
     emailAddress = fixupAccountName(emailAddress);
+    if (!loadFromMaster && readsFromPostgres()) {
+      return accountFromPostgres(postgresEntries.accountByName(emailAddress));
+    }
 
     Account account = accountCache.getByName(emailAddress);
     if (account == null) {
@@ -1531,6 +1692,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
                 + ", check ldap log for possible error",
             null);
       }
+      mirrorAttributes(acct, zlc);
 
       LdapAttributeCallbackHelper.get(StoreAttributeManager.getInstance()).postModify(acctAttrs, acct, callbackContext);
       removeExternalAddrsFromAllDynamicGroups(acct.getAllAddrsSet(), zlc);
@@ -2775,6 +2937,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       }
 
       Domain domain = getDomainById(zimbraIdStr, zlc);
+      mirrorAttributes(domain, zlc);
 
       LdapAttributeCallbackHelper.get(StoreAttributeManager.getInstance()).postModify(domainAttrs, domain, callbackContext);
       return domain;
@@ -2867,6 +3030,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     if (zimbraId == null) {
       return null;
     }
+    if (zlc == null && readsFromPostgres()) {
+      return domainFromPostgres(postgresEntries.domainById(zimbraId));
+    }
 
     Domain d = domainCache.getById(zimbraId, option);
     if (d instanceof DomainCache.NonExistingDomain) {
@@ -2910,6 +3076,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
   private Domain getDomainByAsciiNameInternal(
       String name, ZLdapContext zlc, GetFromDomainCacheOption option) throws ServiceException {
+    if (zlc == null && readsFromPostgres()) {
+      return domainFromPostgres(postgresEntries.domainByName(name));
+    }
     Domain d = domainCache.getByName(name, option);
     if (d instanceof DomainCache.NonExistingDomain) return null;
 
@@ -3148,6 +3317,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       zlc.createEntry(entry);
 
       Cos cos = getCosById(zimbraIdStr, zlc);
+      mirrorAttributes(cos, zlc);
       LdapAttributeCallbackHelper.get(StoreAttributeManager.getInstance()).postModify(allAttrs, cos, callbackContext);
       return cos;
     } catch (LdapEntryAlreadyExistException nabe) {
@@ -3177,6 +3347,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       zlc.renameEntry(cos.getDN(), newDn);
       // remove old cos from cache
       cosCache.remove(cos);
+      mirrorAttributes(getCOSByQuery(filterFactory.cosById(zimbraId), zlc), zlc);
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.COS_EXISTS(newName);
     } catch (LdapException | AccountServiceException e) {
@@ -3209,6 +3380,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
   private Cos getCosById(String zimbraId, ZLdapContext zlc) throws ServiceException {
     if (zimbraId == null) return null;
+    if (zlc == null && readsFromPostgres()) {
+      return cosFromPostgres(postgresEntries.cosById(zimbraId));
+    }
 
     LdapCos cos = cosCache.getById(zimbraId);
     if (cos == null) {
@@ -3242,6 +3416,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   }
 
   private Cos getCosByName(String name, ZLdapContext initZlc) throws ServiceException {
+    if (initZlc == null && readsFromPostgres()) {
+      return cosFromPostgres(postgresEntries.cosByName(name));
+    }
     LdapCos cos = cosCache.getByName(name);
     if (cos != null) return cos;
 
@@ -3328,6 +3505,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       zlc.deleteEntry(entry.getDN());
       validate(ProvisioningValidator.DELETE_ACCOUNT_SUCCEEDED, attrs);
       accountCache.remove(acc);
+      forgetAttributes(acc);
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to purge account: " + zimbraId, e);
     } finally {
@@ -3508,6 +3686,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     // reload it to cache using the master, bug 45736
     Account renamedAcct = getAccountById(zimbraId, null, true);
+    mirrorFromMaster(renamedAcct);
 
     if (domainChanged) {
       PermissionCache.invalidateCache(renamedAcct);
@@ -3672,6 +3851,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       try {
         zlc.deleteEntry(domain.getDN());
         domainCache.remove(domain);
+        forgetAttributes(domain);
       } catch (LdapContextNotEmptyException e) {
         // remove from cache before nuking all attrs
         domainCache.remove(domain);
@@ -3845,6 +4025,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
       RenameDomain rd = new RenameDomain(this, helper, oldDomain, newDomainName);
       rd.execute();
+      mirrorRenamedDomain(oldDomain.getName(), newDomainName);
     } finally {
       ldapClient.closeContext(zlc);
     }
@@ -3875,6 +4056,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       zlc = ldapClient.getContext(LdapServerType.MASTER, LdapUsage.DELETE_COS);
       zlc.deleteEntry(c.getDN());
       cosCache.remove(c);
+      forgetAttributes(c);
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to purge cos: " + zimbraId, e);
     } finally {

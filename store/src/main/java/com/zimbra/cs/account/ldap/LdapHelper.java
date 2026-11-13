@@ -27,6 +27,7 @@ import com.zimbra.cs.ldap.ZSearchResultEntry;
 import com.zimbra.cs.ldap.ZSearchResultEnumeration;
 import com.zimbra.cs.ldap.ZSearchScope;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class LdapHelper {
 
@@ -65,6 +66,10 @@ public abstract class LdapHelper {
      */
     public abstract void modifyAttrs(ZLdapContext zlc, String dn,
             Map<String, ? extends Object> attrs, Entry entry)
+    throws ServiceException;
+
+    public abstract Optional<ZAttributes> modifyAttrsAndRead(ZLdapContext zlc, String dn,
+            Map<String, ? extends Object> attrs, Entry entry, String... returnAttrs)
     throws ServiceException;
 
     /**

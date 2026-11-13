@@ -27,6 +27,8 @@ import com.unboundid.ldap.sdk.SearchResult;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.SearchScope;
 import com.unboundid.ldap.sdk.controls.AssertionRequestControl;
+import com.unboundid.ldap.sdk.controls.PostReadRequestControl;
+import com.unboundid.ldap.sdk.controls.PostReadResponseControl;
 import com.unboundid.ldap.sdk.controls.ManageDsaITRequestControl;
 import com.unboundid.ldap.sdk.controls.SimplePagedResultsControl;
 import com.unboundid.ldap.sdk.extensions.StartTLSExtendedRequest;
@@ -45,6 +47,7 @@ import com.zimbra.cs.ldap.unboundid.UBIDLdapOperation;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapPoolConfig;
 import com.zimbra.cs.ldap.unboundid.UBIDLogger;
 import com.zimbra.cs.stats.ZimbraPerf;
+import java.util.Optional;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -335,6 +338,30 @@ public class ZLdapContext extends ZLdapElement implements ILdapContext {
 		}
 	}
 
+
+	public Optional<ZAttributes> modifyAttributesAndRead(String dn, ZModificationList modList,
+			String... returnAttrs) throws LdapException {
+		ModifyRequest modReq = new ModifyRequest(dn, modList.getModList());
+		modReq.addControl(new PostReadRequestControl(returnAttrs));
+		LDAPResult result;
+		try {
+			result = UBIDLdapOperation.TEST_AND_MODIFY_ATTRS.execute(this, modReq);
+		} catch (LDAPException e) {
+			if (e.getResultCode() == ResultCode.NO_SUCH_ATTRIBUTE) {
+				modifyAttributes(dn, modList);
+				return Optional.empty();
+			}
+			throw mapToLdapException("unable to modify attributes", e);
+		}
+		try {
+			PostReadResponseControl postRead = PostReadResponseControl.get(result);
+			return postRead == null
+					? Optional.empty()
+					: Optional.of(new ZAttributes(postRead.getEntry()));
+		} catch (LDAPException e) {
+			return Optional.empty();
+		}
+	}
 
 	public boolean testAndModifyAttributes(String dn,
 			ZModificationList modList, ZLdapFilter testFilter)
