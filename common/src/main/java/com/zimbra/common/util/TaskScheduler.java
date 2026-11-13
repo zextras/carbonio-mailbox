@@ -89,16 +89,14 @@ public class TaskScheduler<V> {
                 ZimbraLog.scheduler.debug("Executing task %s", mId);
                 mLastResult = mTask.call();
                 taskCompleted();
-            } catch (Throwable t) {
-                if (t instanceof OutOfMemoryError) {
-                    ZimbraLog.scheduler.fatal("Shutting down due to OutOfMemoryError", t);
-                    throw (OutOfMemoryError) t;
-                } else {
-                    ZimbraLog.scheduler.warn("Exception during execution of task %s", mId, t);
-                    mLastResult = null;
-                    if (t instanceof ServiceException) {
-                        retrying = scheduleRetry();
-                    }
+            } catch (OutOfMemoryError error) {
+                ZimbraLog.scheduler.fatal("Shutting down due to OutOfMemoryError", error);
+                throw error;
+            } catch (Throwable failure) {
+                ZimbraLog.scheduler.warn("Exception during execution of task %s", mId, failure);
+                mLastResult = null;
+                if (failure instanceof ServiceException) {
+                    retrying = scheduleRetry();
                 }
             }
 
