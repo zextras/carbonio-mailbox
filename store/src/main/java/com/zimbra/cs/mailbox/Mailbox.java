@@ -5407,20 +5407,15 @@ public class Mailbox implements MailboxStore {
     return zq.toQueryString();
   }
 
-  public FreeBusy getFreeBusy(OperationContext octxt, long start, long end, int folder)
+  public FreeBusy getFreeBusy(OperationContext octxt, Account account, long start, long end, int folder)
       throws ServiceException {
-    return getFreeBusy(octxt, getAccount().getName(), start, end, folder, null);
+    return getFreeBusy(octxt, account.getName(), start, end, folder, null);
   }
 
-  public FreeBusy getFreeBusy(OperationContext octxt, long start, long end, Appointment exAppt)
+  public FreeBusy getFreeBusy(OperationContext octxt, Account account, long start, long end, Appointment exAppt)
       throws ServiceException {
     return getFreeBusy(
-        octxt, getAccount().getName(), start, end, FreeBusyQuery.CALENDAR_FOLDER_ALL, exAppt);
-  }
-
-  public FreeBusy getFreeBusy(OperationContext octxt, String name, long start, long end, int folder)
-      throws ServiceException {
-    return getFreeBusy(octxt, name, start, end, folder, null);
+        octxt, account.getName(), start, end, FreeBusyQuery.CALENDAR_FOLDER_ALL, exAppt);
   }
 
   public FreeBusy getFreeBusy(

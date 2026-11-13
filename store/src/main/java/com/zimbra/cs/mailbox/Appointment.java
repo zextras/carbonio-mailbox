@@ -290,7 +290,7 @@ public class Appointment extends CalendarItem {
             long start = inst.getStart();
             long end = inst.getEnd();
             // Run free/busy search of this user between instance start/end times.
-            FreeBusy fb = getMailbox().getFreeBusy(octxt, start, end, this);
+            FreeBusy fb = getMailbox().getFreeBusy(octxt, getAccount(), start, end, this);
             String status = fb.getBusiest();
             if (Conflict.isBusy(status)) {
                 list.add(new Conflict(inst, status, fb));
