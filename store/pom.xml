@@ -662,6 +662,33 @@
             <arg>--enable-preview</arg>
           </compilerArgs>
         </configuration>
+        <executions>
+          <!-- Multi-release IO: the base class (default-compile) uses the JDK 21 preview FFM API
+               and cannot load on JDK 25; this builds the final-FFM variant (JDK 22+) into
+               target/classes-ffm22, which the antrun execution below adds to zm-store.jar under
+               META-INF/versions/22 (kept out of target/classes: JDK 21 tooling such as
+               dependency:analyze and JaCoCo cannot read class file version 66, and the class name
+               clashes with the base class). javac 21 cannot target release 22, so this execution
+               needs a JDK >= 22 registered in the Maven toolchains (toolchains.xml). -->
+          <execution>
+            <id>compile-ffm-22</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <jdkToolchain>
+                <version>[22,)</version>
+              </jdkToolchain>
+              <release>22</release>
+              <compilerArgs combine.self="override" />
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src/main/java22</compileSourceRoot>
+              </compileSourceRoots>
+              <outputDirectory>${project.build.directory}/classes-ffm22</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <!-- Generate classes -->
       <plugin>
@@ -1023,6 +1050,9 @@ EOF
             <manifest>
               <mainClass>com.zextras.mailbox.Mailbox</mainClass>
             </manifest>
+            <manifestEntries>
+              <Multi-Release>true</Multi-Release>
+            </manifestEntries>
           </archive>
         </configuration>
         <executions>
@@ -1052,6 +1082,28 @@ EOF
                 <include>datasource-test.xml</include>
                 <include>localconfig-api-test.xml</include>
               </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Adds the release 22 classes to zm-store.jar (Multi-Release: true in its manifest).
+           Must stay after maven-jar-plugin: plugins of the same phase run in POM order. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-multi-release-classes</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <jar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
+                  <zipfileset dir="${project.build.directory}/classes-ffm22" prefix="META-INF/versions/22" />
+                </jar>
+              </target>
             </configuration>
           </execution>
         </executions>
