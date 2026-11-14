@@ -21,7 +21,19 @@ EnvironmentFile=-/opt/zextras/data/systemd.env
 # legacy zmtlsctl names (webxml, service, zextras, zextrasAdmin, zimlet).
 ExecStartPre=echo REWRITE sasl mailbox | netcat -w 120 localhost 7171
 ExecStartPre=-/opt/zextras/bin/zmtlsctl
+# Class data sharing (AppCDS): the JVM maps the classes of the previous run from
+# mailboxd.jsa instead of parsing and verifying them again; the extension classes
+# are included. AutoCreateSharedArchive writes the archive when the JVM exits if
+# it is missing; carbonio-appserver-cds deletes it when the JDK or the jars
+# changed (upgrades) and writes the class path argument file. A start without
+# the archive is a normal start. CDS messages go to cds.log, not the journal.
+StateDirectory=carbonio-appserver
+ExecStartPre=/usr/libexec/carbonio-appserver-cds
 ExecStart=/opt/zextras/common/bin/java \
+  -XX:SharedArchiveFile=/var/lib/carbonio-appserver/mailboxd.jsa \
+  -XX:+AutoCreateSharedArchive \
+  -Xlog:cds*=off:stdout \
+  -Xlog:cds*=warning:file=/var/lib/carbonio-appserver/cds.log::filecount=2 \
   --enable-preview \
   --enable-native-access=ALL-UNNAMED \
   -Dfile.encoding=UTF-8 \
@@ -30,7 +42,7 @@ ExecStart=/opt/zextras/common/bin/java \
   -Xmx${java_xmx}m \
   -Djava.io.tmpdir=/opt/zextras/mailboxd/work \
   -Dzimbra.config=/opt/zextras/conf/localconfig.xml \
-  -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/* \
+  @/var/lib/carbonio-appserver/classpath.args \
   com.zextras.mailbox.Mailbox
 LimitNOFILE=524288
 TimeoutStartSec=300s

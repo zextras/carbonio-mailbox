@@ -112,6 +112,10 @@ _package() {
   # needrestart false-positive fix (CO-3996, CO-4287)
   install -Dm644 packages/appserver-service/needrestart-carbonio-appserver.conf \
     "${pkgdir}/etc/needrestart/conf.d/carbonio-appserver.conf"
+
+  # class data sharing (AppCDS) preparation for the appserver unit
+  install -Dm755 packages/appserver-service/carbonio-appserver-cds \
+    "${pkgdir}/usr/libexec/carbonio-appserver-cds"
 }
 
 _package_legacy() {

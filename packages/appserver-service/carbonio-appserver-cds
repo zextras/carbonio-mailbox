@@ -1,0 +1,52 @@
+#!/bin/sh
+# SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# Prepares class data sharing (AppCDS) for mailboxd; run by the
+# carbonio-appserver unit as ExecStartPre, as zextras.
+#
+# 1. Writes the java argument file with the class path. It is the class path
+#    "jars/mailbox.jar:jars/*" spelled out: mailbox.jar first, then every jar in
+#    directory order, which is how the JVM expands the "jars/*" wildcard, so
+#    class resolution does not change. The only difference is that mailbox.jar
+#    is not listed a second time; with the duplicate entry the JVM refuses the
+#    archive ("shared class paths mismatch").
+#
+# 2. Deletes the archive when what it was built from changed: the JDK, the
+#    mailbox jars or the extension jars (package upgrades). The JVM does not
+#    rewrite a stale archive by itself (it only writes a missing one, when it
+#    exits), so without this the archive would stay unused after an upgrade.
+set -eu
+
+state=/var/lib/carbonio-appserver
+jars=/opt/zextras/mailbox/jars
+java=/opt/zextras/common/bin/java
+
+args=$state/classpath.args
+{
+  printf -- '-cp %s/mailbox.jar' "$jars"
+  ls -U "$jars" | while IFS= read -r jar; do
+    case "$jar" in
+      mailbox.jar) ;;
+      *.jar | *.JAR) printf ':%s/%s' "$jars" "$jar" ;;
+    esac
+  done
+  echo
+} > "$args.tmp"
+mv -f "$args.tmp" "$args"
+
+stamp=$state/mailboxd.jsa.inputs
+jdk=$(dirname "$(dirname "$(readlink -f "$java")")")
+inputs=$(
+  {
+    cat "$args"
+    find "$jdk/lib/modules" "$jdk/lib/server" "$jars" /opt/zextras/lib/ext \
+      -name '*.jar' -o -name modules -o -name libjvm.so 2>/dev/null |
+      sort | xargs -r stat -L -c '%n %s %Y'
+  } | sha256sum
+)
+if [ "$(cat "$stamp" 2>/dev/null)" != "$inputs" ]; then
+  rm -f "$state/mailboxd.jsa"
+  printf '%s\n' "$inputs" > "$stamp"
+fi
