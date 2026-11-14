@@ -210,6 +210,7 @@ public class BlobBuilder {
         }
 
         try {
+            finishCompression();
             if (!DebugConfig.disableMessageStoreFsync) {
                 out.flush();
                 if (fc != null) {
@@ -254,6 +255,12 @@ public class BlobBuilder {
 
         finished = true;
         return blob;
+    }
+
+    private void finishCompression() throws IOException {
+        if (out instanceof GZIPOutputStream gzipOutputStream) {
+            gzipOutputStream.finish();
+        }
     }
 
     @Override public String toString() {
