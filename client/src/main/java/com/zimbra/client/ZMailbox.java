@@ -346,10 +346,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       setUri(uri);
     }
 
-    public String getClientIp() {
-      return null;
-    }
-
     public String getAccount() {
       return mAccount;
     }
@@ -393,14 +389,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     public Options setPassword(String password) {
       mPassword = password;
       return this;
-    }
-
-    public String getNewPassword() {
-      return null;
-    }
-
-    public String getVirtualHost() {
-      return null;
     }
 
     public ZAuthToken getAuthToken() {
@@ -468,10 +456,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       return this;
     }
 
-    public String getOriginalUserAgent() {
-      return null;
-    }
-
     public int getTimeout() {
       return mTimeout;
     }
@@ -522,18 +506,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     public Options setAuthAuthToken(boolean authAuthToken) {
       mAuthAuthToken = authAuthToken;
       return this;
-    }
-
-    public ZEventHandler getEventHandler() {
-      return null;
-    }
-
-    public List<String> getPrefs() {
-      return null;
-    }
-
-    public List<String> getAttrs() {
-      return null;
     }
 
     public boolean getCsrfSupported() {
@@ -633,14 +605,14 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     mContactCache = MapUtil.newLruMap(MAX_NUM_CACHED_CONTACTS);
     mApptSummaryCache = new ZApptSummaryCache();
     mHandlers.add(mApptSummaryCache);
-    if (options.getEventHandler() != null) {
-      mHandlers.add(options.getEventHandler());
+    if (null != null) {
+      mHandlers.add(null);
     }
     mNotificationFormat = options.getNotificationFormat();
     mNotifyPreference = SessionPreference.fromOptions(options);
     alwaysRefreshFolders = options.getAlwaysRefreshFolders();
 
-    mClientIp = options.getClientIp();
+    mClientIp = null;
 
     initPreAuth(options);
     if (options.getTargetAccount() != null) {
@@ -657,14 +629,14 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       }
     } else if (options.getAccount() != null) {
       String password;
-      if (options.getNewPassword() != null) {
+      if (null != null) {
         changePassword(
             options.getAccount(),
             options.getAccountBy(),
             options.getPassword(),
-            options.getNewPassword(),
-            options.getVirtualHost());
-        password = options.getNewPassword();
+            (String) null,
+            (String) null);
+        password = null;
       } else {
         password = options.getPassword();
       }
@@ -745,13 +717,13 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
   }
 
   private void addAttrsAndPrefs(AuthRequest req, Options options) {
-    List<String> prefs = options.getPrefs();
+    List<String> prefs = null;
     if (!ListUtil.isEmpty(prefs)) {
       for (String p : prefs) {
         req.addPref(p);
       }
     }
-    List<String> attrs = options.getAttrs();
+    List<String> attrs = null;
     if (!ListUtil.isEmpty(attrs)) {
       for (String a : attrs) {
         req.addAttr(a);
@@ -768,7 +740,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
         new AccountSelector(com.zimbra.soap.type.AccountBy.name, options.getAccount());
     AuthRequest auth = new AuthRequest(account, password);
     auth.setPassword(password);
-    auth.setVirtualHost(options.getVirtualHost());
+    auth.setVirtualHost(null);
     auth.setCsrfSupported(options.getCsrfSupported());
     if (options.getAuthToken() != null) {
       auth.setAuthToken(new AuthToken(options.getAuthToken().getValue(), false));
@@ -824,8 +796,8 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     } else {
       mTransport.setUserAgent(options.getUserAgentName(), options.getUserAgentVersion());
     }
-    if (options.getOriginalUserAgent() != null) {
-      mTransport.setOriginalUserAgent(options.getOriginalUserAgent());
+    if (null != null) {
+      mTransport.setOriginalUserAgent(null);
     }
     mTransport.setMaxNotifySeq(0);
     mTransport.setClientIp(mClientIp);
@@ -4096,16 +4068,9 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     private List<ZEmailAddress> mAddresses;
     private String mSubject;
     private String mPriority;
-    private String mInReplyTo;
     private MessagePart mMessagePart;
     private String mAttachmentUploadId;
-    private List<AttachedMessagePart> mMessagePartsToAttach;
-    private List<String> mContactIdsToAttach;
-    private List<String> mMessageIdsToAttach;
-    private List<String> mDocIdsToAttach;
-    private String mOriginalMessageId;
     private String mMessageId;
-    private String mDraftMessageId;
     private String mReplyType;
     private String mIdentityId;
 
@@ -4118,18 +4083,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
       public void setMessageId(String messageId) {
         mMessageId = messageId;
-      }
-
-      public String getContentId() {
-        return null;
-      }
-
-      public String getPartName() {
-        return null;
-      }
-
-      public String getAttachmentId() {
-        return null;
       }
 
     }
@@ -4192,10 +4145,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       mAttachmentUploadId = attachmentUploadId;
     }
 
-    public List<String> getContactIdsToAttach() {
-      return mContactIdsToAttach;
-    }
-
     public MessagePart getMessagePart() {
       return mMessagePart;
     }
@@ -4204,28 +4153,12 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       mMessagePart = messagePart;
     }
 
-    public List<AttachedMessagePart> getMessagePartsToAttach() {
-      return mMessagePartsToAttach;
-    }
-
-    public String getOriginalMessageId() {
-      return mOriginalMessageId;
-    }
-
     public String getMessageId() {
       return mMessageId;
     }
 
     public void setMessageId(String messageId) {
       mMessageId = messageId;
-    }
-
-    public String getDraftMessageId() {
-      return mDraftMessageId;
-    }
-
-    public String getInReplyTo() {
-      return mInReplyTo;
     }
 
     public String getReplyType() {
@@ -4252,10 +4185,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       mPriority = priority;
     }
 
-    public List<String> getMessageIdsToAttach() {
-      return mMessageIdsToAttach;
-    }
-
     public String getIdentityId() {
       return mIdentityId;
     }
@@ -4264,16 +4193,12 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       mIdentityId = id;
     }
 
-    public List<String> getDocIdsToAttach() {
-      return mDocIdsToAttach;
-    }
-
   }
 
   public Element getMessageElement(Element req, ZOutgoingMessage message, ZMountpoint mountpoint) {
     Element m = req.addNonUniqueElement(MailConstants.E_MSG);
 
-    String id = message.getOriginalMessageId();
+    String id = null;
     if (mountpoint != null) {
       // Use normalized id for a shared folder
       int idx = id.indexOf(":");
@@ -4290,7 +4215,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       m.addAttribute(MailConstants.A_ID, msgId);
     }
 
-    String draftId = message.getDraftMessageId();
+    String draftId = null;
     if (draftId != null) {
       m.addAttribute(MailConstants.A_DRAFT_ID, draftId);
     }
@@ -4327,8 +4252,8 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       m.addAttribute(MailConstants.A_FLAGS, message.getPriority());
     }
 
-    if (message.getInReplyTo() != null) {
-      m.addNonUniqueElement(MailConstants.E_IN_REPLY_TO).setText(message.getInReplyTo());
+    if (null != null) {
+      m.addNonUniqueElement(MailConstants.E_IN_REPLY_TO).setText(null);
     }
 
     if (message.getMessagePart() != null) {
@@ -4342,38 +4267,38 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       attach.addAttribute(MailConstants.A_ATTACHMENT_ID, message.getAttachmentUploadId());
     }
 
-    if (message.getMessageIdsToAttach() != null) {
+    if (null != null) {
       if (attach == null) {
         attach = m.addNonUniqueElement(MailConstants.E_ATTACH);
       }
-      for (String mid : message.getMessageIdsToAttach()) {
+      for (String mid : (List<String>) null) {
         attach.addNonUniqueElement(MailConstants.E_MSG).addAttribute(MailConstants.A_ID, mid);
       }
     }
-    if (message.getDocIdsToAttach() != null) {
+    if (null != null) {
       if (attach == null) {
         attach = m.addNonUniqueElement(MailConstants.E_ATTACH);
       }
-      for (String did : message.getDocIdsToAttach()) {
+      for (String did : (List<String>) null) {
         attach.addNonUniqueElement(MailConstants.E_DOC).addAttribute(MailConstants.A_ID, did);
       }
     }
-    if (message.getContactIdsToAttach() != null) {
+    if (null != null) {
       if (attach == null) attach = m.addNonUniqueElement(MailConstants.E_ATTACH);
-      for (String cid : message.getContactIdsToAttach()) {
+      for (String cid : (List<String>) null) {
         attach.addNonUniqueElement(MailConstants.E_CONTACT).addAttribute(MailConstants.A_ID, cid);
       }
     }
-    if (message.getMessagePartsToAttach() != null) {
+    if (null != null) {
       if (attach == null) {
         attach = m.addNonUniqueElement(MailConstants.E_ATTACH);
       }
-      for (AttachedMessagePart part : message.getMessagePartsToAttach()) {
-        if (part.getContentId() == null || part.getContentId().equals("")) {
+      for (AttachedMessagePart part : (List<AttachedMessagePart>) null) {
+        if (null == null || ((String) null).equals("")) {
           attach
               .addNonUniqueElement(MailConstants.E_MIMEPART)
               .addAttribute(MailConstants.A_MESSAGE_ID, part.getMessageId())
-              .addAttribute(MailConstants.A_PART, part.getPartName());
+              .addAttribute(MailConstants.A_PART, (String) null);
         }
       }
     }
@@ -4382,7 +4307,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
   private ZMountpoint getMountpoint(ZOutgoingMessage message) throws ServiceException {
     ZMountpoint mountpoint = null;
-    String oringinalId = message.getOriginalMessageId();
+    String oringinalId = null;
     if (oringinalId != null) {
       ZGetMessageParams params = new ZGetMessageParams();
       params.setId(oringinalId);
