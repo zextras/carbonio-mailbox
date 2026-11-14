@@ -15,7 +15,6 @@ import com.zimbra.client.ZFolder.Color;
 import com.zimbra.client.ZFolder.Flag;
 import com.zimbra.client.ZFolder.View;
 import com.zimbra.client.ZGrant.GranteeType;
-import com.zimbra.client.ZMailbox.ZOutgoingMessage.AttachedMessagePart;
 import com.zimbra.client.ZSearchParams.Cursor;
 import com.zimbra.client.event.ZCreateAppointmentEvent;
 import com.zimbra.client.event.ZCreateContactEvent;
@@ -86,8 +85,6 @@ import com.zimbra.common.zclient.ZClientException;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.account.message.AuthRequest;
 import com.zimbra.soap.account.message.AuthResponse;
-import com.zimbra.soap.account.message.ChangePasswordRequest;
-import com.zimbra.soap.account.message.ChangePasswordResponse;
 import com.zimbra.soap.account.message.EndSessionRequest;
 import com.zimbra.soap.account.message.GetIdentitiesRequest;
 import com.zimbra.soap.account.message.GetIdentitiesResponse;
@@ -231,7 +228,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
   private ZFilterRules incomingRules;
   private ZFilterRules outgoingRules;
   private ZAuthResult mAuthResult;
-  private String mClientIp;
   private long mSize;
   private boolean alwaysRefreshFolders;
   private final ZMailboxLock lock;
@@ -609,8 +605,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     mNotifyPreference = SessionPreference.fromOptions(options);
     alwaysRefreshFolders = options.getAlwaysRefreshFolders();
 
-    mClientIp = null;
-
     initPreAuth(options);
     if (options.getTargetAccount() != null) {
       /* ZCS-4341 NOT initTargetAccountForTransport - that can cause problems because
@@ -688,36 +682,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     }
   }
 
-  private ZChangePasswordResult changePassword(
-      String key, AccountBy by, String oldPassword, String newPassword, String virtualHost)
-      throws ServiceException {
-    if (mTransport == null) {
-      throw ZClientException.CLIENT_ERROR("must call setURI before calling changePassword", null);
-    }
-
-    AccountSelector account = new AccountSelector(SoapConverter.TO_SOAP_ACCOUNT_BY.apply(by), key);
-    ChangePasswordRequest req = new ChangePasswordRequest(account, oldPassword, newPassword);
-    req.setVirtualHost(virtualHost);
-
-    ChangePasswordResponse res = invokeJaxb(req);
-    return new ZChangePasswordResult(res);
-  }
-
-  private void addAttrsAndPrefs(AuthRequest req, Options options) {
-    List<String> prefs = null;
-    if (!ListUtil.isEmpty(prefs)) {
-      for (String p : prefs) {
-        req.addPref(p);
-      }
-    }
-    List<String> attrs = null;
-    if (!ListUtil.isEmpty(attrs)) {
-      for (String a : attrs) {
-        req.addAttr(a);
-      }
-    }
-  }
-
   public ZAuthResult authByPassword(Options options, String password) throws ServiceException {
     if (mTransport == null) {
       throw ZClientException.CLIENT_ERROR("must call setURI before calling authenticate", null);
@@ -732,7 +696,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     if (options.getAuthToken() != null) {
       auth.setAuthToken(new AuthToken(options.getAuthToken().getValue(), false));
     }
-    addAttrsAndPrefs(auth, options);
 
     invokeJaxb(auth, (r) -> handleAuthResponse((AuthResponse) r, options));
     return mAuthResult;
@@ -747,7 +710,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     ZAuthToken zat = options.getAuthToken(); // cannot be null here
     req.setAuthToken(new AuthToken(zat.getValue(), false));
     req.setCsrfSupported(options.getCsrfSupported());
-    addAttrsAndPrefs(req, options);
 
     invokeJaxb(req, (r) -> handleAuthResponse((AuthResponse) r, options));
     return mAuthResult;
@@ -784,7 +746,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       mTransport.setUserAgent(options.getUserAgentName(), options.getUserAgentVersion());
     }
     mTransport.setMaxNotifySeq(0);
-    mTransport.setClientIp(mClientIp);
+    mTransport.setClientIp(null);
     if (options.getTimeout() > -1) {
       mTransport.setTimeout(options.getTimeout());
     }
@@ -4057,19 +4019,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     private String mMessageId;
     private String mReplyType;
     private String mIdentityId;
-
-    public static class AttachedMessagePart {
-      private String mMessageId;
-
-      public String getMessageId() {
-        return mMessageId;
-      }
-
-      public void setMessageId(String messageId) {
-        mMessageId = messageId;
-      }
-
-    }
 
     public static class MessagePart {
       private String mContentType;
