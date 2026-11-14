@@ -40,7 +40,6 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.util.L10nUtil.MsgKey;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AttributeInfo;
-import com.zimbra.cs.account.AttributeManager;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -113,7 +112,7 @@ public class ModifyPrefs extends AccountDocumentHandler {
                 }
             }
         }
-        Provisioning.getInstance().modifyAttrs(account, prefs, true, zsc.getAuthToken());
+        Provisioning.getInstance().modifyAttrs(account, prefs, true);
         return zsc.createElement(AccountConstants.MODIFY_PREFS_RESPONSE);
     }
 

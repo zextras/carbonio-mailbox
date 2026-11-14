@@ -41,7 +41,7 @@ public class SearchAction extends MailDocumentHandler {
     OperationContext octxt = getOperationContext(zsc, context);
     SearchActionRequest req = zsc.elementToJaxb(request);
     SearchRequest searchRequest = req.getSearchRequest();
-    Account acct = mbox.getAccount();
+    Account acct = Provisioning.getInstance().getAccountByMailbox(mbox);
     Server server = Provisioning.getInstance().getServer(acct);
     String url = URLUtil.getSoapURL(server, false);
     com.zimbra.soap.mail.message.SearchResponse resp = null;
@@ -131,7 +131,7 @@ public class SearchAction extends MailDocumentHandler {
   private static void performReadUnreadAction(
       SearchRequest searchRequest, List<SearchHit> searchHits, Mailbox mbox, String op)
       throws ServiceException, AuthTokenException, IOException {
-    Account acct = mbox.getAccount();
+    Account acct = Provisioning.getInstance().getAccountByMailbox(mbox);
     Server server = Provisioning.getInstance().getServer(acct);
     String url = URLUtil.getSoapURL(server, false);
     SoapHttpTransport transport = getSoapHttpTransportInstance(url);

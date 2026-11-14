@@ -47,7 +47,7 @@ public class OperationContext implements OpContext {
   }
 
   public OperationContext(Mailbox mbox) throws ServiceException {
-    this(mbox.getAccount());
+    this(Provisioning.getInstance().getAccountByMailbox(mbox));
   }
 
   public OperationContext(Account acct, boolean admin) {

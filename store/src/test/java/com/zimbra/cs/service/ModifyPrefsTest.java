@@ -81,7 +81,8 @@ class ModifyPrefsTest extends MailboxTestSuite {
         "test1@somedomain.com");
     request.addPref(pref);
     Element req = JaxbUtil.jaxbToElement(request);
-    new ModifyPrefs().handle(req, ServiceTestUtil.getRequestContext(mbox.getAccount()));
+    new ModifyPrefs().handle(req, ServiceTestUtil.getRequestContext(
+        Provisioning.getInstance().getAccountByMailbox(mbox)));
     /*
      * Verify that the forwarding address is not directly stored into
      * 'zimbraPrefMailForwardingAddress' Instead, it is stored in
@@ -99,7 +100,8 @@ class ModifyPrefsTest extends MailboxTestSuite {
     account.setPrefMailForwardingAddress(null);
     account.setFeatureAddressUnderVerification(null);
     account.setFeatureAddressVerificationEnabled(false);
-    new ModifyPrefs().handle(req, ServiceTestUtil.getRequestContext(mbox.getAccount()));
+    new ModifyPrefs().handle(req, ServiceTestUtil.getRequestContext(
+        Provisioning.getInstance().getAccountByMailbox(mbox)));
 
     assertNull(account.getFeatureAddressUnderVerification());
     final Account updatedAccount2 = retrieveUpdatedAccount(account);
@@ -119,7 +121,8 @@ class ModifyPrefsTest extends MailboxTestSuite {
 
     request.addPref(new Pref(Provisioning.A_zimbraPrefCalendarInitialView, "year"));
     Element req = JaxbUtil.jaxbToElement(request);
-    new ModifyPrefs().handle(req, ServiceTestUtil.getRequestContext(mbox.getAccount()));
+    new ModifyPrefs().handle(req, ServiceTestUtil.getRequestContext(
+        Provisioning.getInstance().getAccountByMailbox(mbox)));
     // FIXME: these tests were asserting against an object in memory instead of verifying the API result
     final Account updatedAccount = retrieveUpdatedAccount(account);
     assertFalse(updatedAccount.getPrefCalendarInitialView().isDay());

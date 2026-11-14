@@ -9,6 +9,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.DataSource;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.filter.RuleManager;
 import com.zimbra.cs.mailbox.Conversation;
 import com.zimbra.cs.mailbox.DeliveryContext;
@@ -168,7 +169,7 @@ public abstract class MailItemImport implements DataSource.DataImport {
 
   protected void purgeIfNecessary(OperationContext octxt, CurrentUsage usage, ParsedMessage pm)
       throws ServiceException {
-    if (!mbox.getAccount().isFeatureDataSourcePurgingEnabled()) {
+    if (!Provisioning.getInstance().getAccountByMailbox(mbox).isFeatureDataSourcePurgingEnabled()) {
       return;
     }
     if (usage == null) {
@@ -201,7 +202,7 @@ public abstract class MailItemImport implements DataSource.DataImport {
     }
     if (usage.spaceToFreeUp > 0 && !usage.sizeOverQuota) {
       // see if a purge process is already running
-      PurgeLock purgeLock = getPurgeLock(mbox.getAccount());
+      PurgeLock purgeLock = getPurgeLock(Provisioning.getInstance().getAccountByMailbox(mbox));
       try {
         synchronized (purgeLock) {
           if (purgeLock.isLocked()) {
@@ -283,8 +284,8 @@ public abstract class MailItemImport implements DataSource.DataImport {
     }
 
     private void calculate() throws ServiceException {
-      long quota = dataSource.getQuota(mbox.getAccount());
-      long totalQuota = mbox.getAccount().getDataSourceTotalQuota();
+      long quota = dataSource.getQuota(Provisioning.getInstance().getAccountByMailbox(mbox));
+      long totalQuota = Provisioning.getInstance().getAccountByMailbox(mbox).getDataSourceTotalQuota();
       long thisDsUsage = dataSource.getUsage();
       long totalDsUsage = mbox.getTotalDataSourceUsage();
       sizeOverQuota = (quota > 0 && size > quota) || (totalQuota > 0 && size > totalQuota);

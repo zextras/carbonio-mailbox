@@ -636,7 +636,8 @@ public abstract class MailItem
       if (sentFolder == -1) {
         sentFolder = Mailbox.ID_FOLDER_SENT;
         try {
-          String sent = mailbox.getAccount().getAttr(Provisioning.A_zimbraPrefSentMailFolder, null);
+          String sent = Provisioning.getInstance().getAccountByMailbox(mailbox)
+              .getAttr(Provisioning.A_zimbraPrefSentMailFolder, null);
           if (sent != null) {
             sentFolder = mailbox.getFolderByPath(null, sent).getId();
           }
@@ -840,7 +841,7 @@ public abstract class MailItem
 
   /** Returns the {@link Account} this item's Mailbox belongs to. */
   public Account getAccount() throws ServiceException {
-    return mMailbox.getAccount();
+    return Provisioning.getInstance().getAccountByMailbox(mMailbox);
   }
 
   /**
@@ -3501,9 +3502,8 @@ public abstract class MailItem
     //   2) permantently deleting an item from dumpster
     // In other words, skip the blob/index deletes when soft-deleting item to dumpster.
     if (!getMailbox().dumpsterEnabled()
-        || inDumpster()
-        || mData.folderId == Mailbox.ID_FOLDER_DRAFTS
-        || (inSpam() && !getMailbox().useDumpsterForSpam())) {
+				|| inDumpster()
+				|| mData.folderId == Mailbox.ID_FOLDER_DRAFTS) {
       if (getIndexStatus() != IndexStatus.NO) {
         int indexId = getIndexStatus() == IndexStatus.DONE ? mData.indexId : mData.id;
         if (isTagged(Flag.FlagInfo.COPIED)) {
@@ -3524,9 +3524,11 @@ public abstract class MailItem
               "missing blob for id: " + mId + ", change: " + revision.getSavedSequence());
         }
       }
+    } else {
+	    inSpam();
     }
 
-    return info;
+		return info;
   }
 
   private static final int UNREAD_ITEM_BATCH_SIZE = 500;

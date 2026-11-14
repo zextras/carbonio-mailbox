@@ -190,7 +190,9 @@ public final class ParseMimeMessage {
         int curAltPart = 0;
 
         // goes into the "content" subpart
-        InviteParserResult result = inviteParser.parse(ctxt.getZsc(), ctxt.getOctxt(), ctxt.getMbox().getAccount(), inviteElem);
+        Mailbox mailbox = ctxt.getMbox();
+        InviteParserResult result = inviteParser.parse(ctxt.getZsc(), ctxt.getOctxt(),
+            Provisioning.getInstance().getAccountByMailbox(mailbox), inviteElem);
 
         if (partElem != null && result.mCal != null) {
           // If textual content is provided and there's an invite,

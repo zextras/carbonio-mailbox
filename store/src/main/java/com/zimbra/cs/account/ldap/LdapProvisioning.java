@@ -8,7 +8,6 @@ package com.zimbra.cs.account.ldap;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.zimbra.common.account.ForgetPasswordEnums.CodeConstants;
 import com.zimbra.common.account.Key;
@@ -479,34 +478,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         .preModify(attrs, e, callbackContext, checkImmutable, allowCallback);
     modifyAttrsInternal(e, null, attrs);
     LdapAttributeCallbackHelper.get(StoreAttributeManager.getInstance()).postModify(attrs, e, callbackContext, allowCallback);
-  }
-
-  @Override
-  public void restoreAccountAttrs(Account acct, Map<String, ? extends Object> backupAttrs)
-      throws ServiceException {
-    Map<String, Object> attrs = Maps.newHashMap(backupAttrs);
-
-    Object ocsInBackupObj = backupAttrs.get(A_objectClass);
-    String[] ocsInBackup = StringUtil.toStringArray(ocsInBackupObj);
-
-    String[] ocsOnAcct = acct.getMultiAttr(A_objectClass);
-
-    // replace A_objectClass in backupAttrs with only OCs that is not a
-    // super OC of LdapObjectClass.ZIMBRA_DEFAULT_PERSON_OC, then merge them with
-    // OCs added during restoreAccount.
-    List<String> needOCs = Lists.newArrayList(ocsOnAcct);
-    for (String oc : ocsInBackup) {
-      if (!LdapObjectClassHierarchy.isSuperiorOC(
-          this, LdapObjectClass.ZIMBRA_DEFAULT_PERSON_OC, oc)) {
-        if (!needOCs.contains(oc)) {
-          needOCs.add(oc);
-        }
-      }
-    }
-
-    attrs.put(A_objectClass, needOCs.toArray(new String[0]));
-
-    modifyAttrs(acct, attrs, false, false);
   }
 
   protected void modifyAttrsInternal(
@@ -2069,17 +2040,13 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     private final ZLdapContext zlc;
     private final String configBranchBaseDn;
     private final NamedEntry.Visitor visitor;
-    private final int maxResults;
     private final MakeObjectOpt makeObjOpt;
     private final String[] returnAttrs;
-
-    private final int total = 0;
 
     private SearchObjectsVisitor(
         LdapProvisioning prov,
         ZLdapContext zlc,
         NamedEntry.Visitor visitor,
-        int maxResults,
         MakeObjectOpt makeObjOpt,
         String[] returnAttrs) {
       super(false);
@@ -2088,7 +2055,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       this.zlc = zlc;
       configBranchBaseDn = prov.getDIT().configBranchBaseDN();
       this.visitor = visitor;
-      this.maxResults = maxResults;
       this.makeObjOpt = makeObjOpt;
       this.returnAttrs = returnAttrs;
     }
@@ -2105,11 +2071,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     @TODO
     private void doVisit(String dn, IAttributes ldapAttrs) throws ServiceException {
-      /* can this happen?  TODO: check
-      if (maxResults > 0 && total++ > maxResults) {
-          throw AccountServiceException.TOO_MANY_SEARCH_RESULTS("exceeded limit of "+maxResults, null);
-      }
-      */
 
       List<String> objectclass =
           ldapAttrs.getMultiAttrStringAsList(Provisioning.A_objectClass, CheckBinary.NOCHECK);
@@ -2206,7 +2167,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
       SearchObjectsVisitor searchObjectsVisitor =
           new SearchObjectsVisitor(
-              this, zlc, visitor, opts.getMaxResults(), opts.getMakeObjectOpt(), returnAttrs);
+              this, zlc, visitor, opts.getMakeObjectOpt(), returnAttrs);
 
       SearchLdapOptions searchObjectsOptions =
           new SearchLdapOptions(
@@ -2850,11 +2811,11 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
    * @throws ServiceException
    */
   private Domain getDomainByIdFromCache(
-      String zimbraId, ZLdapContext zlc, GetFromDomainCacheOption option) {
+      String zimbraId) {
     if (zimbraId == null) {
       return null;
     }
-    Domain d = domainCache.getById(zimbraId, option);
+    Domain d = domainCache.getById(zimbraId, GetFromDomainCacheOption.POSITIVE);
     if (d instanceof DomainCache.NonExistingDomain) {
       return null;
     }
@@ -2936,7 +2897,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     searcher.doSearch(filterFactory.allDomains(), DOMAINS_OBJECT_TYPE);
     List<String> cacheMisses = Lists.newArrayList();
     for (String zimbraId : collector.domains) {
-      Domain cachedDom = getDomainByIdFromCache(zimbraId, null, GetFromDomainCacheOption.POSITIVE);
+      Domain cachedDom = getDomainByIdFromCache(zimbraId);
       if (cachedDom == null) {
         cacheMisses.add(zimbraId);
       } else {
@@ -4581,14 +4542,8 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     deleteDistributionList(dl);
   }
 
-  private void deleteDistributionList(LdapDistributionList dl) throws ServiceException {
-    deleteDistributionList(dl, false);
-  }
-
-  private void deleteDistributionList(LdapDistributionList dl, boolean cascadeDelete)
+  private void deleteDistributionList(LdapDistributionList dl)
       throws ServiceException {
-    // check if cascadeDelete is true. If it's true, delete all subgroups.
-
     String zimbraId = dl.getId();
 
     // make a copy of all addrs of this DL, after the delete all aliases on this dl
@@ -7099,16 +7054,10 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
   private static class LdapOnlyGalSearchResultCallback extends GalSearchResultCallback {
     GalContact.Visitor visitor;
-    String newToken;
-    boolean hasMore;
 
     LdapOnlyGalSearchResultCallback(GalSearchParams params, GalContact.Visitor visitor) {
       super(params);
       this.visitor = visitor;
-    }
-
-    private String getNewToken() {
-      return newToken;
     }
 
     @Override
@@ -7123,12 +7072,10 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     @Override
     public void setNewToken(String newToken) {
-      this.newToken = newToken;
     }
 
     @Override
     public void setHasMoreResult(boolean more) {
-      this.hasMore = more;
     }
 
     @Override
@@ -9296,7 +9243,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     if (group.isDynamic()) {
       deleteDynamicGroup((LdapDynamicGroup) group);
     } else {
-      deleteDistributionList((LdapDistributionList) group, cascadeDelete);
+      deleteDistributionList((LdapDistributionList) group);
     }
   }
 
@@ -9625,8 +9572,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   private DynamicGroup createDynamicGroup(
       String groupAddress, Map<String, Object> groupAttrs, Account creator)
       throws ServiceException {
-    SpecialAttrs specialAttrs = mDIT.handleSpecialAttrs(groupAttrs);
-    String baseDn = specialAttrs.getLdapBaseDn();
 
     groupAddress = groupAddress.toLowerCase().trim();
     EmailAddress addr = new EmailAddress(groupAddress);

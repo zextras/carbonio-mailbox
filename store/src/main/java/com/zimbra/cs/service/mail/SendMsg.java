@@ -316,7 +316,7 @@ public class SendMsg extends MailDocumentHandler {
     OutlookICalendarFixupMimeVisitor mv = null;
     if (needCalendarSentByFixup || isCalendarForward) {
       mv =
-          new OutlookICalendarFixupMimeVisitor(mbox.getAccount(), mbox)
+          new OutlookICalendarFixupMimeVisitor(Provisioning.getInstance().getAccountByMailbox(mbox), mbox)
               .needFixup(needCalendarSentByFixup)
               .setIsCalendarForward(isCalendarForward);
       try {
@@ -342,7 +342,7 @@ public class SendMsg extends MailDocumentHandler {
       }
     } else {
       com.zimbra.cs.account.DataSource dataSource =
-          mbox.getAccount().getDataSourceById(dataSourceId);
+          Provisioning.getInstance().getAccountByMailbox(mbox).getDataSourceById(dataSourceId);
       if (dataSource == null) {
         throw ServiceException.INVALID_REQUEST("No data source with id " + dataSourceId, null);
       }
@@ -359,10 +359,11 @@ public class SendMsg extends MailDocumentHandler {
         if (org != null) {
           String orgAddress = org.getAddress();
           Account orgAccount = Provisioning.getInstance().getAccountByName(orgAddress);
-          if (orgAccount != null && !orgAccount.getId().equals(mbox.getAccount().getId())) {
+          if (orgAccount != null && !orgAccount.getId()
+              .equals(Provisioning.getInstance().getAccountByMailbox(mbox).getId())) {
             MimeMessage notifyMimeMsg =
                 CalendarMailSender.createForwardNotifyMessage(
-                    mbox.getAccount(),
+                    Provisioning.getInstance().getAccountByMailbox(mbox),
                     orgAccount,
                     orgAddress,
                     mm.getAllRecipients(),

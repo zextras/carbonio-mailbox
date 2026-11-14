@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zimbra.cs.account.Provisioning;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -854,7 +855,8 @@ public class Conversation extends MailItem {
      */
     @Override
     protected boolean isQuotaCheckRequired() throws ServiceException {
-        Account account = getMailbox().getAccount();
+        Mailbox mailbox = getMailbox();
+        Account account = Provisioning.getInstance().getAccountByMailbox(mailbox);
         return !account.isMailAllowReceiveButNotSendWhenOverQuota();
     }
 

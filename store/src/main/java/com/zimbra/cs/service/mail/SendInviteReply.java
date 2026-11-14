@@ -147,7 +147,7 @@ public class SendInviteReply extends CalendarRequest {
               "The intended account " + intendedFor + " was not found", null);
         }
         // Special case: intended account = me.
-        if (intendedAcct.equals(mbox.getAccount())) intendedAcct = null;
+        if (intendedAcct.equals(Provisioning.getInstance().getAccountByMailbox(mbox))) intendedAcct = null;
         else intendedForMe = false;
       }
 
@@ -331,7 +331,8 @@ public class SendInviteReply extends CalendarRequest {
         oldInv = calItem.getInvite(new RecurId(exceptDt, RecurId.RANGE_NONE));
       }
 
-      ZAttendee att = oldInv.getMatchingAttendee(mbox.getAccount());
+      ZAttendee att = oldInv.getMatchingAttendee(
+          Provisioning.getInstance().getAccountByMailbox(mbox));
       if (att != null) {
         stat = att.getPartStat();
       }

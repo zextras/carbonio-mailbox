@@ -16,12 +16,9 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Closeables;
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import com.zextras.mailbox.quota.QuotaCheckSingleton;
-import com.zimbra.client.ZFolder;
 import com.zimbra.client.ZMailbox;
 import com.zimbra.client.ZMailbox.Options;
-import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
-import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.calendar.ICalTimeZone;
 import com.zimbra.common.calendar.ParsedDateTime;
 import com.zimbra.common.calendar.TimeZoneMap;
@@ -69,7 +66,6 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ProvisioningCache;
 import com.zimbra.cs.account.Server;
-import com.zimbra.cs.account.ShareLocator;
 import com.zimbra.cs.datasource.DataSourceManager;
 import com.zimbra.cs.db.DbDataSource;
 import com.zimbra.cs.db.DbMailItem;
@@ -282,8 +278,6 @@ public class Mailbox implements MailboxStore {
   public static final int HIGHEST_SYSTEM_ID = FolderConstants.HIGHEST_SYSTEM_ID; // 20;
 
   public static final int FIRST_USER_ID = 256;
-
-  public static final String CONF_PREVIOUS_MAILBOX_IDS = "prev_mbox_ids";
 
   /**
    * Checks if folder can be accessed using current operation context.
@@ -814,21 +808,8 @@ public class Mailbox implements MailboxStore {
     return mData.accountId;
   }
 
-  /**
-   * Returns the {@link Account} object for this mailbox's owner. At present, each account can have
-   * at most one <tt>Mailbox</tt>.
-   *
-   * @throws AccountServiceException if no account exists
-   */
-  public Account getAccount() throws ServiceException {
-    String accountId = getAccountId();
-    Account acct = Provisioning.getInstance().get(AccountBy.id, accountId);
-    if (acct == null) {
-      ZimbraLog.mailbox.warn(
-          "no account found in directory for mailbox %d (was expecting %s)", mId, accountId);
-      throw AccountServiceException.NO_SUCH_ACCOUNT(accountId);
-    }
-    return acct;
+  private Account getAccount() throws ServiceException {
+    return Provisioning.getInstance().getAccountByMailbox(this);
   }
 
   /** Retuns the ID of the volume this <tt>Mailbox</tt>'s index lives on. */
@@ -1177,10 +1158,6 @@ public class Mailbox implements MailboxStore {
 
   public OperationContext getOperationContext() {
     return currentChange().active ? currentChange().octxt : null;
-  }
-
-  RedoableOp getRedoPlayer() {
-    return currentChange().getRedoPlayer();
   }
 
   RedoableOp getRedoRecorder() {
@@ -1802,7 +1779,7 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  public String getConfig(OperationContext octxt, Pattern pattern) throws ServiceException {
+  public String getConfig(Pattern pattern) throws ServiceException {
 
     String previousDeviceId = null;
     if (!hasFullAccess()) {
@@ -3178,10 +3155,6 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  MailItem getItemByUuid(String uuid, MailItem.Type type) throws ServiceException {
-    return getItemByUuid(uuid, type, false);
-  }
-
   MailItem getItemByUuid(String uuid, MailItem.Type type, boolean fromDumpster)
       throws ServiceException {
     if (fromDumpster) {
@@ -3503,11 +3476,6 @@ public class Mailbox implements MailboxStore {
       return item;
     }
     return MailItem.constructItem(this, data);
-  }
-
-  public MailItem getItemRevision(OperationContext octxt, int id, MailItem.Type type, int version)
-      throws ServiceException {
-    return getItemRevision(octxt, id, type, version, false);
   }
 
   /**
@@ -3953,31 +3921,6 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  public List<Integer> getTombstones(int lastSync, Set<MailItem.Type> types)
-      throws ServiceException {
-    lock.lock(false);
-    try {
-      if (!isTrackingSync()) {
-        throw ServiceException.FAILURE("not tracking sync", null);
-      } else if (lastSync < getSyncCutoff()) {
-        throw MailServiceException.TOMBSTONES_EXPIRED();
-      }
-
-      boolean success = false;
-      try {
-        beginReadTransaction("getTombstones", null);
-        List<Integer> tombstones =
-            DbMailItem.readTombstones(this, getOperationConnection(), lastSync, types);
-        success = true;
-        return tombstones;
-      } finally {
-        endTransaction(success);
-      }
-    } finally {
-      lock.release();
-    }
-  }
-
   public TypedIdList getTombstones(int lastSync, boolean equalModSeq) throws ServiceException {
     lock.lock(false);
     try {
@@ -4003,41 +3946,6 @@ public class Mailbox implements MailboxStore {
 
   public TypedIdList getTombstones(int lastSync) throws ServiceException {
     return getTombstones(lastSync, Boolean.FALSE);
-  }
-
-  public List<Integer> getDumpsterItems(int lastSync, int folderId, int maxTrack)
-      throws ServiceException {
-    lock.lock(false);
-    try {
-      boolean success = false;
-      try {
-        beginReadTransaction("getDumpsterItems", null);
-        List<Integer> items = DbMailItem.getDumpsterItems(this, lastSync, folderId, maxTrack);
-        success = true;
-        return items;
-      } finally {
-        endTransaction(success);
-      }
-    } finally {
-      lock.release();
-    }
-  }
-
-  public Map<Integer, Integer> getDumpsterItemAndFolderId(int lastSync) throws ServiceException {
-    lock.lock(false);
-    try {
-      boolean success = false;
-      try {
-        beginReadTransaction("getDumpsterItemAndFolderId", null);
-        Map<Integer, Integer> items = DbMailItem.getDumpsterItemAndFolderId(this, lastSync);
-        success = true;
-        return items;
-      } finally {
-        endTransaction(success);
-      }
-    } finally {
-      lock.release();
-    }
   }
 
   public List<Folder> getModifiedFolders(final int lastSync) throws ServiceException {
@@ -4120,28 +4028,6 @@ public class Mailbox implements MailboxStore {
   }
 
   /**
-   * Returns the IDs of all items modified since a given change number. Will not return modified
-   * folders or tags; for these you need to call {@link #getModifiedFolders(long, byte)} or {@link
-   * #getModifiedTags(OperationContext, long)}. Modified items not visible to the caller (i.e. the
-   * caller lacks {@link ACL#RIGHT_READ}) are returned in a separate Integer List in the returned
-   * Pair.
-   *
-   * @param octxt The context for this request (e.g. auth user id).
-   * @param lastSync We return items with change ID larger than this value.
-   * @return A {@link Pair} containing:
-   *     <ul>
-   *       <li>a List of the IDs of all caller-visible MailItems of the given type modified since
-   *           the checkpoint, and
-   *       <li>a List of the IDs of all items modified since the checkpoint but not currently
-   *           visible to the caller
-   *     </ul>
-   */
-  public Pair<List<Integer>, TypedIdList> getModifiedItems(OperationContext octxt, int lastSync)
-      throws ServiceException {
-    return getModifiedItems(octxt, lastSync, MailItem.Type.UNKNOWN, null);
-  }
-
-  /**
    * Returns the IDs of all items of the given type modified since a given change number. Will not
    * return modified folders or tags; for these you need to call {@link #getModifiedFolders(long,
    * byte)} or {@link #getModifiedTags(OperationContext, long)}. Modified items not visible to the
@@ -4169,26 +4055,6 @@ public class Mailbox implements MailboxStore {
       OperationContext octxt, int lastSync, MailItem.Type type, Set<Integer> folderIds)
       throws ServiceException {
     return getModifiedItems(octxt, lastSync, 0, type, folderIds, -1);
-  }
-
-  public Pair<List<Integer>, TypedIdList> getModifiedItems(
-      OperationContext octxt,
-      int lastSync,
-      MailItem.Type type,
-      Set<Integer> folderIds,
-      int lastDeleteSync)
-      throws ServiceException {
-    return getModifiedItems(octxt, lastSync, 0, type, folderIds, lastDeleteSync);
-  }
-
-  public Pair<List<Integer>, TypedIdList> getModifiedItems(
-      OperationContext octxt,
-      int lastSync,
-      int sinceDate,
-      MailItem.Type type,
-      Set<Integer> folderIds)
-      throws ServiceException {
-    return getModifiedItems(octxt, lastSync, sinceDate, type, folderIds, -1);
   }
 
   public Pair<List<Integer>, TypedIdList> getModifiedItems(
@@ -4353,10 +4219,6 @@ public class Mailbox implements MailboxStore {
     return flag;
   }
 
-  public List<Flag> getFlagList() throws ServiceException {
-    return Flag.allOf(this);
-  }
-
   public Tag getTagById(OperationContext octxt, int id) throws ServiceException {
     return (Tag) getItemById(octxt, id, MailItem.Type.TAG);
   }
@@ -4438,15 +4300,6 @@ public class Mailbox implements MailboxStore {
    */
   public Folder getFolderByUuid(OperationContext octxt, String uuid) throws ServiceException {
     return (Folder) getItemByUuid(octxt, uuid, MailItem.Type.FOLDER);
-  }
-
-  /**
-   * Returns the folder with the specified uuid.
-   *
-   * @throws NoSuchItemException if the folder does not exist
-   */
-  Folder getFolderByUuid(String uuid) throws ServiceException {
-    return (Folder) getItemByUuid(uuid, MailItem.Type.FOLDER);
   }
 
   /**
@@ -4807,23 +4660,6 @@ public class Mailbox implements MailboxStore {
     return (Chat) getItemById(octxt, id, MailItem.Type.CHAT);
   }
 
-  Chat getChatById(int id) throws ServiceException {
-    return (Chat) getItemById(id, MailItem.Type.CHAT);
-  }
-
-  public List<Chat> getChatList(OperationContext octxt, int folderId) throws ServiceException {
-    return getChatList(octxt, folderId, SortBy.NONE);
-  }
-
-  public List<Chat> getChatList(OperationContext octxt, int folderId, SortBy sort)
-      throws ServiceException {
-    List<Chat> chats = new ArrayList<>();
-    for (MailItem item : getItemList(octxt, MailItem.Type.CHAT, folderId, sort)) {
-      chats.add((Chat) item);
-    }
-    return chats;
-  }
-
   public Contact getContactById(OperationContext octxt, int id) throws ServiceException {
     return (Contact) getItemById(octxt, id, MailItem.Type.CONTACT);
   }
@@ -5023,10 +4859,6 @@ public class Mailbox implements MailboxStore {
 
   public Appointment getAppointmentById(OperationContext octxt, int id) throws ServiceException {
     return (Appointment) getItemById(octxt, id, MailItem.Type.APPOINTMENT);
-  }
-
-  Appointment getAppointmentById(int id) throws ServiceException {
-    return (Appointment) getItemById(id, MailItem.Type.APPOINTMENT);
   }
 
   /**
@@ -5420,20 +5252,15 @@ public class Mailbox implements MailboxStore {
     return zq.toQueryString();
   }
 
-  public FreeBusy getFreeBusy(OperationContext octxt, long start, long end, int folder)
+  public FreeBusy getFreeBusy(OperationContext octxt, Account account, long start, long end, int folder)
       throws ServiceException {
-    return getFreeBusy(octxt, getAccount().getName(), start, end, folder, null);
+    return getFreeBusy(octxt, account.getName(), start, end, folder, null);
   }
 
-  public FreeBusy getFreeBusy(OperationContext octxt, long start, long end, Appointment exAppt)
+  public FreeBusy getFreeBusy(OperationContext octxt, Account account, long start, long end, Appointment exAppt)
       throws ServiceException {
     return getFreeBusy(
-        octxt, getAccount().getName(), start, end, FreeBusyQuery.CALENDAR_FOLDER_ALL, exAppt);
-  }
-
-  public FreeBusy getFreeBusy(OperationContext octxt, String name, long start, long end, int folder)
-      throws ServiceException {
-    return getFreeBusy(octxt, name, start, end, folder, null);
+        octxt, account.getName(), start, end, FreeBusyQuery.CALENDAR_FOLDER_ALL, exAppt);
   }
 
   public FreeBusy getFreeBusy(
@@ -6039,19 +5866,6 @@ public class Mailbox implements MailboxStore {
       throws ServiceException {
     boolean addRevision = true; // Always rev the calendar item.
     return addInvite(octxt, inv, folderId, null, false, false, addRevision, false);
-  }
-
-  public AddInviteData addInvite(
-      OperationContext octxt, Invite inv, int folderId, boolean updatePrevFolders)
-      throws ServiceException {
-    boolean addRevision = true; // Always rev the calendar item.
-    return addInvite(octxt, inv, folderId, null, false, false, addRevision, updatePrevFolders);
-  }
-
-  public AddInviteData addInvite(OperationContext octxt, Invite inv, int folderId, ParsedMessage pm)
-      throws ServiceException {
-    boolean addRevision = true; // Always rev the calendar item.
-    return addInvite(octxt, inv, folderId, pm, false, false, addRevision);
   }
 
   public AddInviteData addInvite(
@@ -7162,8 +6976,8 @@ public class Mailbox implements MailboxStore {
   }
 
   // please keep this package-visible but not public
-  void closeConversation(Conversation conv, String subjectHash) throws ServiceException {
-    String hash = subjectHash != null ? subjectHash : getHash(conv.getNormalizedSubject());
+  void closeConversation(Conversation conv) throws ServiceException {
+    String hash = getHash(conv.getNormalizedSubject());
     conv.close(hash);
     mConvHashes.remove(hash);
   }
@@ -7721,7 +7535,7 @@ public class Mailbox implements MailboxStore {
     boolean success = false;
     try {
       beginTransaction("recover[]", octxt, redoRecorder);
-      List<MailItem> result = copyInternal(octxt, itemIds, type, folderId, true);
+      List<MailItem> result = copyInternal(itemIds, type, folderId, true);
       deleteFromDumpster(itemIds);
       success = true;
       return result;
@@ -7742,7 +7556,7 @@ public class Mailbox implements MailboxStore {
     boolean success = false;
     try {
       beginTransaction("copy[]", octxt, redoRecorder);
-      List<MailItem> result = copyInternal(octxt, itemIds, type, folderId, false);
+      List<MailItem> result = copyInternal(itemIds, type, folderId, false);
       success = true;
       return result;
     } finally {
@@ -7751,7 +7565,7 @@ public class Mailbox implements MailboxStore {
   }
 
   private List<MailItem> copyInternal(
-      OperationContext octxt, int[] itemIds, MailItem.Type type, int folderId, boolean fromDumpster)
+      int[] itemIds, MailItem.Type type, int folderId, boolean fromDumpster)
       throws ServiceException {
     CopyItem redoRecorder = (CopyItem) currentChange().getRedoRecorder();
     try {
@@ -9850,55 +9664,6 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  /**
-   * Updates the remote owner and item id stored in the mountpoint to match the current location of
-   * the target folder. The target folder is identified by the remote UUID stored in the
-   * mountpoint's metadata.
-   *
-   * @param octxt
-   * @param mountpointId item id of the Mountpoint
-   * @return
-   * @throws ServiceException
-   */
-  public Mountpoint refreshMountpoint(OperationContext octxt, int mountpointId)
-      throws ServiceException {
-    Mountpoint mp = getMountpointById(octxt, mountpointId);
-    Provisioning prov = Provisioning.getInstance();
-    ShareLocator shloc = prov.getShareLocatorById(mp.getRemoteUuid());
-    if (shloc == null || mp.getOwnerId().equalsIgnoreCase(shloc.getShareOwnerAccountId())) {
-      // Share apparently did not move.
-      return mp;
-    }
-
-    // Look up remote folder by UUID to discover the new numeric id.
-    Account shareOwner =
-        Provisioning.getInstance().get(Key.AccountBy.id, shloc.getShareOwnerAccountId());
-    AuthToken at = AuthToken.getCsrfUnsecuredAuthToken(octxt.getAuthToken());
-    String pxyAuthToken =
-        Provisioning.getInstance().onLocalServer(shareOwner) ? null : at.getProxyAuthToken();
-    ZAuthToken zat = null;
-    if (pxyAuthToken == null) {
-      zat = at.toZAuthToken();
-      zat.resetProxyAuthToken();
-    } else {
-      zat = new ZAuthToken(pxyAuthToken);
-    }
-    ZMailbox.Options zoptions = new ZMailbox.Options(zat, AccountUtil.getSoapUri(shareOwner));
-    zoptions.setNoSession(true);
-    zoptions.setTargetAccount(shareOwner.getId());
-    zoptions.setTargetAccountBy(Key.AccountBy.id);
-    ZMailbox zmbx = ZMailbox.getMailbox(zoptions);
-    zmbx.setName(shareOwner.getName()); /* need this when logging in using another user's auth */
-    ZFolder zfolder = zmbx.getFolderByUuid(shloc.getUuid());
-
-    if (zfolder != null) {
-      ItemId fid = new ItemId(zfolder.getId(), shareOwner.getId());
-      return refreshMountpoint(octxt, mountpointId, shareOwner.getId(), fid.getId());
-    } else {
-      return null;
-    }
-  }
-
   public Mountpoint refreshMountpoint(
       OperationContext octxt, int mountpointId, String ownerId, int remoteId)
       throws ServiceException {
@@ -11021,19 +10786,6 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  public MailItem markMetadataChanged(OperationContext octxt, int itemId) throws ServiceException {
-    boolean success = false;
-    try {
-      beginTransaction("markMetadataChanged", octxt, null);
-      MailItem item = getItemById(octxt, itemId, MailItem.Type.UNKNOWN);
-      item.markMetadataChanged();
-      success = true;
-      return item;
-    } finally {
-      endTransaction(success);
-    }
-  }
-
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
@@ -11053,10 +10805,6 @@ public class Mailbox implements MailboxStore {
     return enabled;
   }
 
-  public boolean useDumpsterForSpam() {
-    return true;
-  }
-
   /**
    * Return true if the folder is a internally managed system folder which should not normally be
    * modified Used during ZD account import to ignore entries in LocalMailbox 'Notification
@@ -11064,7 +10812,7 @@ public class Mailbox implements MailboxStore {
    *
    * @param folderId not used
    */
-  public boolean isImmutableSystemFolder(int folderId) {
+  public boolean isImmutableSystemFolder() {
     return false;
   }
 
@@ -11312,15 +11060,5 @@ public class Mailbox implements MailboxStore {
   /*
    * This method resets defalult calendar id to ID_FOLDER_CALENDAR in pref
    */
-  public void resetDefaultCalendarId() throws ServiceException {
-    getAccount().setPrefDefaultCalendarId(ID_FOLDER_CALENDAR);
-  }
 
-  public Map<Object, Tag> getTagCache() {
-    return mTagCache;
-  }
-
-  public Collection<Folder> getCacheFolders() {
-    return mFolderCache.mapById.values();
-  }
 }

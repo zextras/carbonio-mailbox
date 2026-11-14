@@ -11,6 +11,7 @@ import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.index.query.ConjQuery;
 import com.zimbra.cs.index.query.InQuery;
 import com.zimbra.cs.index.query.Query;
@@ -564,7 +565,9 @@ public final class ZimbraQuery {
     if (!localOps.operations.isEmpty()) {
       ZimbraLog.search.debug("LOCAL_IN=%s", localOps);
 
-      Account authAcct = octxt != null ? octxt.getAuthenticatedUser() : mailbox.getAccount();
+      Account authAcct;
+      authAcct = octxt != null ? octxt.getAuthenticatedUser()
+          : Provisioning.getInstance().getAccountByMailbox(mailbox);
 
       // Now, for all the LOCAL PARTS of the query, add the trash/spam exclusion part
       boolean includeTrash = false;
@@ -628,7 +631,7 @@ public final class ZimbraQuery {
             AccessManager.getInstance()
                 .allowPrivateAccess(
                     octxt.getAuthenticatedUser(),
-                    mailbox.getAccount(),
+                    Provisioning.getInstance().getAccountByMailbox(mailbox),
                     octxt.isUsingAdminPrivileges());
       }
 

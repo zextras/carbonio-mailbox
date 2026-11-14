@@ -5,6 +5,7 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
@@ -75,11 +76,11 @@ public class DeleteCalendar extends ItemAction {
         }
 
         // check if default calendar is deleted, if yes, reset default calendar id
-        int defaultCalId = mbox.getAccount().getPrefDefaultCalendarId();
+        int defaultCalId = Provisioning.getInstance().getAccountByMailbox(mbox).getPrefDefaultCalendarId();
         if (result.mSuccessIds.contains(Integer.toString(defaultCalId))) {
             ZimbraLog.mailbox.info(
                     "Default calendar deleted, so setting default calendar back to \"Calendar\"");
-            mbox.resetDefaultCalendarId();
+            Provisioning.getInstance().getAccountByMailbox(mbox).resetDefaultCalendarId();
         }
         return result;
     }

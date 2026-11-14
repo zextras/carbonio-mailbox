@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.cs.account.Provisioning;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public class ICalReply extends MailDocumentHandler {
         ZVCalendar cal = ZCalendarBuilder.build(icalStr);
 
         List<Invite> invites =
-            Invite.createFromCalendar(mbox.getAccount(), null, cal, false);
+            Invite.createFromCalendar(Provisioning.getInstance().getAccountByMailbox(mbox), null, cal, false);
         for (Invite inv : invites) {
             String method = inv.getMethod();
             if (!ICalTok.REPLY.toString().equals(method)) {

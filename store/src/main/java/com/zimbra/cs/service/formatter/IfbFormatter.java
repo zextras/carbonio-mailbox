@@ -72,7 +72,7 @@ public class IfbFormatter extends Formatter {
                 if (ci instanceof Appointment)
                     exAppt = (Appointment) ci;
             }
-            acctName = context.targetMailbox.getAccount().getName();
+            acctName = Provisioning.getInstance().getAccountByMailbox(context.targetMailbox).getName();
             fb = context.targetMailbox.getFreeBusy(context.opContext, acctName, rangeStart, rangeEnd, context.getFreeBusyCalendar(), exAppt);
         } else {
             // Unknown mailbox.  Fake an always-free response, to avoid harvest attacks.

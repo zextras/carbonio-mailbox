@@ -231,7 +231,7 @@ public class CalDavDataImport extends MailItemImport {
       // folder may be deleted. delete the datasource
       ZimbraLog.datasource.info(
           "Folder %d was deleted.  Deleting data source %s.", getRootFolderId(ds), ds.getName());
-      mbox.getAccount().deleteDataSource(ds.getId());
+      Provisioning.getInstance().getAccountByMailbox(mbox).deleteDataSource(ds.getId());
       // return empty array
       return new ArrayList<>(0);
     }
@@ -617,7 +617,8 @@ public class CalDavDataImport extends MailItemImport {
 
       try {
         vcalendar = ZCalendar.ZCalendarBuilder.build(appt.data);
-        List<Invite> invites = Invite.createFromCalendar(mbox.getAccount(), null, vcalendar, true);
+        List<Invite> invites = Invite.createFromCalendar(
+            Provisioning.getInstance().getAccountByMailbox(mbox), null, vcalendar, true);
         if (invites.size() > 1) exceptions = new SetCalendarItemData[invites.size() - 1];
 
         int pos = 0;

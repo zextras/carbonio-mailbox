@@ -13,6 +13,7 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.calendar.ZCalendar.ZCalendarBuilder;
 import com.zimbra.common.calendar.ZCalendar.ZVCalendar;
 import com.zimbra.common.mime.MimeConstants;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.ldap.LdapUtil;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -123,7 +124,8 @@ public class ImportAppointments extends MailDocumentHandler  {
             is.close();
             is = null;
 
-            List<Invite> invites = Invite.createFromCalendar(mbox.getAccount(), null, icals, true, true, null);
+            List<Invite> invites = Invite.createFromCalendar(
+                Provisioning.getInstance().getAccountByMailbox(mbox), null, icals, true, true, null);
 
             Set<String> uidsSeen = new HashSet<>();
             StringBuilder ids = new StringBuilder();

@@ -131,7 +131,7 @@ public class ExpireGrantsTask extends ScheduledTask {
     }
 
     private static ZMailbox getZMailbox(Mailbox mbox) throws ServiceException {
-        Account account = mbox.getAccount();
+        Account account = Provisioning.getInstance().getAccountByMailbox(mbox);
         ZMailbox.Options options = new ZMailbox.Options();
         options.setNoSession(true);
         options.setAuthToken(AuthProvider.getAuthToken(account).toZAuthToken());

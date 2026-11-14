@@ -112,7 +112,7 @@ public final class MailboxIndex {
     mailbox = mbox;
     String analyzerName;
     try {
-      analyzerName = mbox.getAccount().getTextAnalyzer();
+      analyzerName = Provisioning.getInstance().getAccountByMailbox(mbox).getTextAnalyzer();
     } catch (ServiceException e) {
       analyzerName = null;
     }
@@ -281,7 +281,7 @@ public final class MailboxIndex {
   public int getBatchThreshold() {
     if (indexStore instanceof LuceneIndex) {
       try {
-        return mailbox.getAccount().getBatchedIndexingSize();
+        return Provisioning.getInstance().getAccountByMailbox(mailbox).getBatchedIndexingSize();
       } catch (ServiceException e) {
         ZimbraLog.index.warn("Failed to get %s", Provisioning.A_zimbraBatchedIndexingSize, e);
       }
@@ -1415,7 +1415,7 @@ public final class MailboxIndex {
     public final void run() {
       try {
         ZimbraLog.addMboxToContext(mailbox.getId());
-        ZimbraLog.addAccountNameToContext(mailbox.getAccount().getName());
+        ZimbraLog.addAccountNameToContext(Provisioning.getInstance().getAccountByMailbox(mailbox).getName());
         exec();
       } catch (OutOfMemoryError e) {
         Zimbra.halt("out of memory", e);

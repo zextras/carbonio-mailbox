@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.mime;
 
+import com.zimbra.cs.account.Provisioning;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -606,7 +607,7 @@ public final class ParsedContact {
 
     public ParsedContact analyze(Mailbox mbox) throws ServiceException {
         try {
-            analyzeContact(mbox.getAccount(), mbox.attachmentsIndexingEnabled());
+            analyzeContact(Provisioning.getInstance().getAccountByMailbox(mbox), mbox.attachmentsIndexingEnabled());
         } catch (ServiceException e) {
             throw e;
         } catch (Exception e) {

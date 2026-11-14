@@ -92,7 +92,7 @@ public class AccountUtil {
    * @throws ServiceException when exceeds quota
    */
   public static void checkQuotaWhenSendMail(Mailbox mbox) throws ServiceException {
-    Account account = mbox.getAccount();
+    Account account = Provisioning.getInstance().getAccountByMailbox(mbox);
     QuotaCheckSingleton.getInstance().onSendMessage(account);
   }
 

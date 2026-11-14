@@ -1380,7 +1380,7 @@ public class CalendarMailSender {
       boolean addSignature)
       throws ServiceException {
     boolean onBehalfOf = false;
-    Account acct = mbox.getAccount();
+    Account acct = Provisioning.getInstance().getAccountByMailbox(mbox);
     Account authAcct = acct;
     if (octxt != null) {
       Account authuser = octxt.getAuthenticatedUser();
@@ -1522,7 +1522,7 @@ public class CalendarMailSender {
       Invite[] replies,
       MimeMessage mmInv)
       throws ServiceException {
-    Identity iden = getTargetedIdentity(mbox.getAccount(), inv);
+    Identity iden = getTargetedIdentity(Provisioning.getInstance().getAccountByMailbox(mbox), inv);
     final MimeMessage mm =
         createResourceAutoReply(
             octxt,

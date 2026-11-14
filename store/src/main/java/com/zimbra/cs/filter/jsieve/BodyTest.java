@@ -16,7 +16,9 @@ import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.HtmlTextExtractor;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.filter.ZimbraMailAdapter;
+import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mime.MPartInfo;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.mime.ParsedMessage;
@@ -141,7 +143,8 @@ public class BodyTest extends AbstractTest {
 
         Account acct = null;
         try {
-            acct = zimbraMail.getMailbox().getAccount();
+            Mailbox mailbox = zimbraMail.getMailbox();
+            acct = Provisioning.getInstance().getAccountByMailbox(mailbox);
         } catch (ServiceException e) {
             ZimbraLog.filter.warn("Error in getting account", e);
         }

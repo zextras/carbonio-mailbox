@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.mailbox.acl;
 
+import com.zimbra.cs.account.Provisioning;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -84,7 +85,7 @@ public class AclPushTask extends TimerTask {
                     }
                 }
 
-                Account account = mbox.getAccount();
+							Account account = Provisioning.getInstance().getAccountByMailbox(mbox);
                 String[] existingSharedItems = account.getSharedItem();
                 Set<String> updatedSharedItems = new HashSet<>();
 

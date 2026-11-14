@@ -747,14 +747,17 @@ public class CalendarCollection extends Collection {
   public String getFreeBusyReport(DavContext ctxt, TimeRange range)
       throws ServiceException, DavException {
     Mailbox mbox = getCalendarMailbox(ctxt);
+    final Account accountByMailbox = Provisioning.getInstance().getAccountByMailbox(mbox);
     FreeBusy fb =
         mbox.getFreeBusy(
             ctxt.getOperationContext(),
+            accountByMailbox,
             range.getStart(),
             range.getEnd(),
             FreeBusyQuery.CALENDAR_FOLDER_ALL);
+    final String organizer = ctxt.getAuthAccount().getName();
     return fb.toVCalendar(
-        FreeBusy.Method.REPLY, ctxt.getAuthAccount().getName(), mbox.getAccount().getName(), null,
+        FreeBusy.Method.REPLY, organizer, accountByMailbox.getName(), null,
         null);
   }
 }

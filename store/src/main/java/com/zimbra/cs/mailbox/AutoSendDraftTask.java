@@ -8,6 +8,7 @@ package com.zimbra.cs.mailbox;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.service.util.ItemId;
 
 import java.util.Date;
@@ -110,7 +111,7 @@ public class AutoSendDraftTask extends ScheduledTask<Object> {
                 : new ItemId(msg.getDraftOrigId(), mbox.getAccountId()));
         mailSender.setReplyType(StringUtil.isNullOrEmpty(msg.getDraftReplyType()) ? null : msg.getDraftReplyType());
         mailSender.setIdentity(StringUtil.isNullOrEmpty(msg.getDraftIdentityId()) ? null
-                : mbox.getAccount().getIdentityById(msg.getDraftIdentityId()));
+                : Provisioning.getInstance().getAccountByMailbox(mbox).getIdentityById(msg.getDraftIdentityId()));
 
         try {
             mailSender.sendMimeMessage(new OperationContext(mbox), mbox, msg.getMimeMessage());

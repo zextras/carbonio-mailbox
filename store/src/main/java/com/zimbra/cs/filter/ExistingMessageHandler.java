@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.filter;
 
+import com.zimbra.cs.account.Provisioning;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -169,7 +170,7 @@ public final class ExistingMessageHandler implements FilterHandler {
         }
 
         ItemId id = FilterUtil.addMessage(new DeliveryContext(), mailbox, getParsedMessage(),
-                                          mailbox.getAccount().getName(), folderPath, false,
+                                          Provisioning.getInstance().getAccountByMailbox(mailbox).getName(), folderPath, false,
                                           FilterUtil.getFlagBitmask(flagActions, source.getFlagBitmask()),
                                           tags, Mailbox.ID_AUTO_INCREMENT, octxt);
         if (id != null) {

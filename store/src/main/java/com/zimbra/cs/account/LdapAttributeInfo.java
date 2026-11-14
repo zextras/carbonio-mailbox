@@ -55,13 +55,13 @@ public class LdapAttributeInfo {
 
 
 
-	public void checkValue(Object value, boolean checkImmutable, Map attrsToModify) throws ServiceException {
+	public void checkValue(Object value, boolean checkImmutable) throws ServiceException {
 		if ((value == null) || (value instanceof String)) {
-			checkValue((String) value, checkImmutable, attrsToModify);
+			checkValue((String) value, checkImmutable);
 		} else if (value instanceof String[]) {
 			String[] values = (String[]) value;
 			for (String s : values)
-				checkValue(s, checkImmutable, attrsToModify);
+				checkValue(s, checkImmutable);
 		}
 
 		if (attributeInfo.isDeprecated() && !DebugConfig.allowModifyingDeprecatedAttributes) {
@@ -69,13 +69,13 @@ public class LdapAttributeInfo {
 		}
 	}
 
-	private void checkValue(String value, boolean checkImmutable, Map attrsToModify) throws ServiceException {
+	private void checkValue(String value, boolean checkImmutable) throws ServiceException {
 		if (checkImmutable && attributeInfo.ismImmutable())
 			throw ServiceException.INVALID_REQUEST(attributeInfo.getName() +" is immutable", null);
-		checkValue(value, attrsToModify);
+		checkValue(value);
 	}
 
-	private void checkValue(String value, Map attrsToModify) throws ServiceException {
+	private void checkValue(String value) throws ServiceException {
 
 		// means to delete/unset the attribute
 		if (value == null || value.equals(""))

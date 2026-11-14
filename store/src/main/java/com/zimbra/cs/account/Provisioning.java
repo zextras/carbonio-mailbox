@@ -28,6 +28,7 @@ import com.zimbra.cs.account.names.NameUtil;
 import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.gal.GalSearchParams;
 import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
+import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.admin.type.CacheEntryType;
@@ -399,20 +400,9 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract void modifyAttrs(
       Entry e, Map<String, ? extends Object> attrs, boolean checkImmutable) throws ServiceException;
 
-  public void modifyAttrs(
-      Entry e, Map<String, ? extends Object> attrs, boolean checkImmutable, AuthToken authToken)
-      throws ServiceException {
-    modifyAttrs(e, attrs, checkImmutable);
-  }
-
   public abstract void modifyAttrs(
       Entry e, Map<String, ? extends Object> attrs, boolean checkImmutable, boolean allowCallback)
       throws ServiceException;
-
-  public void restoreAccountAttrs(Account acct, Map<String, ? extends Object> backupAttrs)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
 
   /** Replace sensitive strings like passwords with "VALUE-BLOCKED" */
   public static Object sanitizedAttrValue(String name, Object realValue) {
@@ -986,6 +976,18 @@ public abstract class Provisioning extends ZAttrProvisioning {
    * @throws ServiceException if the key is malformed
    */
   public abstract Account get(AccountBy keyType, String key) throws ServiceException;
+
+  public Account getAccountByMailbox(Mailbox mailbox) throws ServiceException {
+    final String accountId = mailbox.getAccountId();
+    final int mailboxId = mailbox.getId();
+    Account acct = getAccountById(accountId);
+    if (acct == null) {
+      ZimbraLog.mailbox.warn(
+          "no account found in directory for mailbox %d (was expecting %s)", mailboxId, accountId);
+      throw AccountServiceException.NO_SUCH_ACCOUNT(accountId);
+    }
+    return acct;
+  }
 
   public Account get(AccountSelector acctSel) throws ServiceException {
     return get(acctSel.getBy().toKeyAccountBy(), acctSel.getKey());
@@ -1760,7 +1762,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   }
 
   public Locale getLocale(Entry entry) throws ServiceException {
-    if (entry instanceof Account) {
+    if (entry instanceof Account account) {
       // Order of precedence for Account's locale: (including
       // CalendarResource which extends Account)
       //
@@ -1772,8 +1774,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
       // 6. locale set at Account's Server level
       // 7. locale set at global Config level
       // 8. Locale.getDefault() of current JVM
-      Account account = (Account) entry;
-      Locale lc = getEntryLocale(account, A_zimbraPrefLocale);
+			Locale lc = getEntryLocale(account, A_zimbraPrefLocale);
       if (lc != null) return lc;
       Cos cos = getCOS(account);
       lc = getEntryLocale(cos, A_zimbraPrefLocale);

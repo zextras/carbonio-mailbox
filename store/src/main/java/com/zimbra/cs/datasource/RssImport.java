@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.datasource;
 
+import com.zimbra.cs.account.Provisioning;
 import java.util.List;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
@@ -42,7 +43,7 @@ public class RssImport implements DataImport {
         } catch (NoSuchItemException e) {
             ZimbraLog.datasource.info("Folder %d was deleted.  Deleting data source %s.",
                 folderId, mDataSource.getName());
-            mbox.getAccount().deleteDataSource(mDataSource.getId());
+            Provisioning.getInstance().getAccountByMailbox(mbox).deleteDataSource(mDataSource.getId());
         }
     }
 

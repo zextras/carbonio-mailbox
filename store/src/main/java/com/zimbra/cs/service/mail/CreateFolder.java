@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.cs.account.Provisioning;
 import java.util.Map;
 
 import com.zimbra.common.mailbox.Color;
@@ -53,7 +54,7 @@ public class CreateFolder extends MailDocumentHandler {
         boolean fetchIfExists = t.getAttributeBool(MailConstants.A_FETCH_IF_EXISTS, false);
         boolean syncToUrl = t.getAttributeBool(MailConstants.A_SYNC, true);
         ACL acl = FolderAction.parseACL(t.getOptionalElement(MailConstants.E_ACL), MailItem.Type.of(view),
-                mbox.getAccount());
+            Provisioning.getInstance().getAccountByMailbox(mbox));
 
         Folder folder;
         boolean alreadyExisted = false;

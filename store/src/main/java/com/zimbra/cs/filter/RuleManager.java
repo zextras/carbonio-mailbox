@@ -39,7 +39,6 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -392,7 +391,7 @@ public final class RuleManager {
 
         try {
             boolean applyRules = true;
-            Account account = mailbox.getAccount();
+            Account account = Provisioning.getInstance().getAccountByMailbox(mailbox);
             for (String filter : filters) {
                 // Determine whether to apply rules
                 Node node = getRulesNode(account, filter);
@@ -457,7 +456,7 @@ public final class RuleManager {
                 ADMIN_OUTGOING_FILTER_RULES_AFTER_CACHE_KEY};
 
         try {
-            Account account = mailbox.getAccount();
+            Account account = Provisioning.getInstance().getAccountByMailbox(mailbox);
             for (String filter : filters) {
                 Node node = getRulesNode(account, filter);
                 if (null != node) {
