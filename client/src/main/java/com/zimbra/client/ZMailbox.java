@@ -605,9 +605,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     mContactCache = MapUtil.newLruMap(MAX_NUM_CACHED_CONTACTS);
     mApptSummaryCache = new ZApptSummaryCache();
     mHandlers.add(mApptSummaryCache);
-    if (null != null) {
-      mHandlers.add(null);
-    }
     mNotificationFormat = options.getNotificationFormat();
     mNotifyPreference = SessionPreference.fromOptions(options);
     alwaysRefreshFolders = options.getAlwaysRefreshFolders();
@@ -629,17 +626,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       }
     } else if (options.getAccount() != null) {
       String password;
-      if (null != null) {
-        changePassword(
-            options.getAccount(),
-            options.getAccountBy(),
-            options.getPassword(),
-            (String) null,
-            (String) null);
-        password = null;
-      } else {
-        password = options.getPassword();
-      }
+      password = options.getPassword();
       authByPassword(options, password);
     }
     if (options.getTargetAccount() != null) {
@@ -795,9 +782,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       mTransport.setUserAgent("zclient", SystemUtil.getProductVersion());
     } else {
       mTransport.setUserAgent(options.getUserAgentName(), options.getUserAgentVersion());
-    }
-    if (null != null) {
-      mTransport.setOriginalUserAgent(null);
     }
     mTransport.setMaxNotifySeq(0);
     mTransport.setClientIp(mClientIp);
@@ -4252,10 +4236,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       m.addAttribute(MailConstants.A_FLAGS, message.getPriority());
     }
 
-    if (null != null) {
-      m.addNonUniqueElement(MailConstants.E_IN_REPLY_TO).setText(null);
-    }
-
     if (message.getMessagePart() != null) {
       message.getMessagePart().toElement(m);
     }
@@ -4265,42 +4245,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     if (message.getAttachmentUploadId() != null) {
       attach = m.addNonUniqueElement(MailConstants.E_ATTACH);
       attach.addAttribute(MailConstants.A_ATTACHMENT_ID, message.getAttachmentUploadId());
-    }
-
-    if (null != null) {
-      if (attach == null) {
-        attach = m.addNonUniqueElement(MailConstants.E_ATTACH);
-      }
-      for (String mid : (List<String>) null) {
-        attach.addNonUniqueElement(MailConstants.E_MSG).addAttribute(MailConstants.A_ID, mid);
-      }
-    }
-    if (null != null) {
-      if (attach == null) {
-        attach = m.addNonUniqueElement(MailConstants.E_ATTACH);
-      }
-      for (String did : (List<String>) null) {
-        attach.addNonUniqueElement(MailConstants.E_DOC).addAttribute(MailConstants.A_ID, did);
-      }
-    }
-    if (null != null) {
-      if (attach == null) attach = m.addNonUniqueElement(MailConstants.E_ATTACH);
-      for (String cid : (List<String>) null) {
-        attach.addNonUniqueElement(MailConstants.E_CONTACT).addAttribute(MailConstants.A_ID, cid);
-      }
-    }
-    if (null != null) {
-      if (attach == null) {
-        attach = m.addNonUniqueElement(MailConstants.E_ATTACH);
-      }
-      for (AttachedMessagePart part : (List<AttachedMessagePart>) null) {
-        if (null == null || ((String) null).equals("")) {
-          attach
-              .addNonUniqueElement(MailConstants.E_MIMEPART)
-              .addAttribute(MailConstants.A_MESSAGE_ID, part.getMessageId())
-              .addAttribute(MailConstants.A_PART, (String) null);
-        }
-      }
     }
     return m;
   }
