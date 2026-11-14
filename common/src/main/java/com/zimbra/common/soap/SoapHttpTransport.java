@@ -9,6 +9,19 @@
 
 package com.zimbra.common.soap;
 
+import com.zimbra.common.auth.ZAuthToken;
+import com.zimbra.common.auth.ZJWToken;
+import com.zimbra.common.httpclient.HttpClientUtil;
+import com.zimbra.common.httpclient.HttpProxyConfig;
+import com.zimbra.common.httpclient.ZimbraHttpClientManager;
+import com.zimbra.common.localconfig.LC;
+import com.zimbra.common.net.ProxyHostConfiguration;
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.util.ByteUtil;
+import com.zimbra.common.util.Constants;
+import com.zimbra.common.util.ZimbraCookie;
+import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.ZimbraLog;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -21,54 +34,37 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.HttpRequest;
-import org.apache.hc.core5.http.HttpVersion;
 import org.apache.hc.client5.http.ClientProtocolException;
+import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
+import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
 import org.apache.hc.client5.http.auth.AuthScope;
 import org.apache.hc.client5.http.auth.Credentials;
 import org.apache.hc.client5.http.auth.CredentialsStore;
 import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.classic.HttpClient;
-import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.cookie.BasicCookieStore;
 import org.apache.hc.client5.http.cookie.CookieStore;
 import org.apache.hc.client5.http.cookie.StandardCookieSpec;
+import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 import org.apache.hc.client5.http.protocol.HttpClientContext;
 import org.apache.hc.core5.concurrent.FutureCallback;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.ContentType;
-import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.http.HttpVersion;
 import org.apache.hc.core5.http.io.entity.StringEntity;
-import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
-import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
-import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
-import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
-import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.core5.http.message.BasicHeader;
 import org.dom4j.DocumentException;
 import org.dom4j.ElementHandler;
 import org.dom4j.io.SAXReader;
 import org.xml.sax.SAXException;
-
-import com.zimbra.common.auth.ZAuthToken;
-import com.zimbra.common.auth.ZJWToken;
-import com.zimbra.common.httpclient.HttpClientUtil;
-import com.zimbra.common.httpclient.HttpProxyConfig;
-import com.zimbra.common.httpclient.ZimbraHttpClientManager;
-import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.net.ProxyHostConfiguration;
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ByteUtil;
-import com.zimbra.common.util.Constants;
-import com.zimbra.common.util.RemoteIP;
-import com.zimbra.common.util.ZimbraCookie;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
-import com.zimbra.common.util.ZimbraLog;
 
 public class SoapHttpTransport extends SoapTransport {
     private HttpClientBuilder mClientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().getDefaultHttpClient();
@@ -257,12 +253,6 @@ public class SoapHttpTransport extends SoapTransport {
             // the content-type charset will determine encoding used
             // when we set the request body
             method.addHeader("Content-Type", getRequestProtocol().getContentType());
-            if (getClientIp() != null) {
-                method.addHeader(RemoteIP.X_ORIGINATING_IP_HEADER, getClientIp());
-                if (ZimbraLog.misc.isDebugEnabled()) {
-                    ZimbraLog.misc.debug("set remote IP header [%s] to [%s]", RemoteIP.X_ORIGINATING_IP_HEADER, getClientIp());
-                }
-            }
             Element soapReq = generateSoapMessage(document, raw, noSession, requestedAccountId, changeToken, tokenType, nFormat, curWaitSetID);
             String soapMessage = SoapProtocol.toString(soapReq, getPrettyPrint());
 
@@ -443,12 +433,6 @@ public class SoapHttpTransport extends SoapTransport {
 
         // request headers
         post.setHeader("Content-Type", getRequestProtocol().getContentType());
-        if (getClientIp() != null) {
-            post.setHeader(RemoteIP.X_ORIGINATING_IP_HEADER, getClientIp());
-            if (ZimbraLog.misc.isDebugEnabled()) {
-                ZimbraLog.misc.debug("set remote IP header [%s] to [%s]", RemoteIP.X_ORIGINATING_IP_HEADER, getClientIp());
-            }
-        }
         if (getRequestProtocol().hasSOAPActionHeader())
             post.setHeader("SOAPAction", mUri);
 

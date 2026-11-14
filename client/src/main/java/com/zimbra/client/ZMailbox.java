@@ -746,7 +746,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       mTransport.setUserAgent(options.getUserAgentName(), options.getUserAgentVersion());
     }
     mTransport.setMaxNotifySeq(0);
-    mTransport.setClientIp(null);
     if (options.getTimeout() > -1) {
       mTransport.setTimeout(options.getTimeout());
     }
