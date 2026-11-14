@@ -1,7 +1,9 @@
 status = error
 dest = err
 name = PropertiesConfig
-packages = com.zimbra
+# Only package with a Log4j plugin (MailboxPatternConverter); scanning all of
+# com.zimbra cost ~0.9 s of mailboxd startup.
+packages = com.zimbra.common.logging
 
 # Appender LOGFILE writes to the file "/opt/zextras/log/mailbox.log".
 # Daily rolling policy with compressing the old log file while rotating!!
