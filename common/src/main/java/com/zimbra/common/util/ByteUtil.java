@@ -453,7 +453,7 @@ public class ByteUtil {
     public static long getDataLength(InputStream in)
     throws IOException {
         byte[] buf = new byte[8192];
-        int dataLength = 0;
+        long dataLength = 0;
         int bytesRead = 0;
         try {
             while ((bytesRead = in.read(buf)) >= 0) {
