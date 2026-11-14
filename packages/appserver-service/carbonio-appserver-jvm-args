@@ -1,0 +1,89 @@
+#!/bin/sh
+# SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# Writes the JVM argument file of mailboxd (jvm.args in the state directory);
+# run by the carbonio-appserver unit as ExecStartPre, as zextras, on every start.
+#
+# 1. Flat class path. mailbox.jar first, then the other jars of the mailbox jars
+#    directory, then the jars of the Carbonio Advanced extension directory (if
+#    present). Each directory is listed in directory order, which is how the JVM
+#    expands the "jars/*" wildcard, so class resolution inside the mailbox jars
+#    does not change (many classes are duplicated across them with different
+#    bytes: do not sort). mailbox.jar is listed once; a duplicate entry makes
+#    the JVM refuse AOT/CDS archives. -Dzal.flatClasspath=true tells ZAL's
+#    BootstrapClassLoader to delegate to this class path instead of loading the
+#    extension jars itself.
+#
+# 2. AOT cache (JEP 514), only when the JDK is >= 25 (JDK 21 rejects the
+#    options). With a valid cache the JVM maps it (-XX:AOTCache); without one the
+#    run is a training run and the JVM writes the cache when it exits
+#    (-XX:AOTCacheOutput). The JVM ignores a stale cache and never rewrites it,
+#    so the cache is deleted when its inputs changed: the class path, the JDK
+#    (modules image, libjvm.so) or any jar (name, size, mtime). AOT warnings go
+#    to aot.log in the state directory, never to the journal.
+#
+# Paths can be overridden through the environment (used by tests); the defaults
+# are the production locations.
+set -eu
+
+state=${CARBONIO_APPSERVER_STATE:-/var/lib/carbonio-appserver}
+jars=${CARBONIO_APPSERVER_JARS:-/opt/zextras/mailbox/jars}
+ext=${CARBONIO_APPSERVER_EXT:-/opt/zextras/lib/ext/carbonio}
+java=${CARBONIO_APPSERVER_JAVA:-/opt/zextras/common/bin/java}
+
+mkdir -p "$state"
+
+# Class path and the jar list (one path per line) for the fingerprint.
+cp=$jars/mailbox.jar
+files=$cp
+for dir in "$jars" "$ext"; do
+  [ -d "$dir" ] || continue
+  # shellcheck disable=SC2012,SC2045 # directory order is required, ls -U gives it
+  for jar in $(ls -U "$dir"); do
+    case "$jar" in
+      mailbox.jar) [ "$dir" = "$jars" ] && continue ;;
+      *.jar | *.JAR) ;;
+      *) continue ;;
+    esac
+    cp=$cp:$dir/$jar
+    files=$files'
+'$dir/$jar
+  done
+done
+
+jdk=$(dirname "$(dirname "$(readlink -f "$java")")")
+major=$(sed -n 's/^JAVA_VERSION="\{0,1\}\([0-9]*\).*/\1/p' "$jdk/release" 2>/dev/null | head -n 1)
+
+args="-cp $cp
+-Dzal.flatClasspath=true"
+
+if [ "${major:-0}" -ge 25 ]; then
+  cache=$state/mailboxd.aot
+  stamp=$cache.inputs
+  inputs=$(
+    {
+      printf '%s\n' "$cp"
+      printf '%s\n' "$files" | xargs stat -L -c '%n %s %Y'
+      stat -L -c '%n %s %Y' "$jdk/lib/modules" "$jdk/lib/server/libjvm.so"
+    } | sha256sum
+  )
+  if [ "$(cat "$stamp" 2>/dev/null || :)" != "$inputs" ]; then
+    rm -f "$cache"
+    printf '%s\n' "$inputs" > "$stamp"
+  fi
+  if [ -s "$cache" ]; then
+    aot=-XX:AOTCache=$cache
+  else
+    rm -f "$cache"
+    aot=-XX:AOTCacheOutput=$cache
+  fi
+  args="$args
+$aot
+-Xlog:aot*=off:stdout
+-Xlog:aot*=warning:file=$state/aot.log"
+fi
+
+printf '%s\n' "$args" > "$state/jvm.args.tmp"
+mv -f "$state/jvm.args.tmp" "$state/jvm.args"
