@@ -50,40 +50,30 @@ public class FileUtil {
      * GZIP compress file src into file dest.
      */
     public static void compress(File src, File dest, boolean sync) throws IOException {
-        FileInputStream fin = null;
-        GZIPOutputStream fout = null;
-        boolean isComplete = false;
-
-        try {
-            fin = new FileInputStream(src);
-            FileOutputStream fos = new FileOutputStream(dest);
-            fout = new GZIPOutputStream(fos);
-            byte[] buf = new byte[COPYBUFLEN];
-            int byteRead;
-            while ((byteRead = fin.read(buf)) != -1) {
-                fout.write(buf, 0, byteRead);
-            }
-            if (sync)
-                fos.getChannel().force(true);
-            isComplete = true;
-        } finally {
-            if (fin != null) {
-                try {
-                    fin.close();
-                } catch (IOException ioe) {
-                    ZimbraLog.misc.warn("FileUtil.compress(" + src + "," + dest + "): ignoring exception while closing input channel", ioe);
+        boolean destinationOpened = false;
+        try (FileInputStream input = new FileInputStream(src);
+             FileOutputStream fileOutput = new FileOutputStream(dest)) {
+            destinationOpened = true;
+            try (GZIPOutputStream gzipOutput = new GZIPOutputStream(fileOutput)) {
+                byte[] buffer = new byte[COPYBUFLEN];
+                int bytesRead;
+                while ((bytesRead = input.read(buffer)) != -1) {
+                    gzipOutput.write(buffer, 0, bytesRead);
+                }
+                gzipOutput.finish();
+                if (sync) {
+                    fileOutput.getChannel().force(true);
                 }
             }
-            if (fout != null) {
+        } catch (IOException failure) {
+            if (destinationOpened) {
                 try {
-                    fout.close();
-                } catch (IOException ioe) {
-                    ZimbraLog.misc.warn("FileUtil.compress(" + src + "," + dest + "): ignoring exception while closing output channel", ioe);
+                    delete(dest);
+                } catch (IOException cleanupFailure) {
+                    failure.addSuppressed(cleanupFailure);
                 }
             }
-            if (!isComplete) {
-                dest.delete();
-            }
+            throw failure;
         }
     }
 
