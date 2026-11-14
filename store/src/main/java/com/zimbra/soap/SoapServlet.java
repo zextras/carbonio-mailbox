@@ -194,6 +194,14 @@ public class SoapServlet extends ZimbraServlet {
   }
 
   private void addService(DocumentService service) throws ServiceException {
+    if (mEngine == null) {
+      // Destroyed: Jetty stops before extensions shut down, and an extension that
+      // restores its handlers on shutdown must not fail (and abort its own shutdown).
+      ZimbraLog.soap.debug(
+          "Not adding service %s to %s: servlet destroyed",
+          service.getClass().getSimpleName(), getServletName());
+      return;
+    }
     ZimbraLog.soap.info(
         "Adding service %s to %s", service.getClass().getSimpleName(), getServletName());
     service.registerHandlers(mEngine.getDocumentDispatcher());
