@@ -307,16 +307,22 @@ public class DbPool {
 
     private static void waitForDatabase(DbPool dbPool) {
         DbConnection conn = null;
-        final int RETRY_SECONDS = 5;
+        // On a full start the database is usually still starting when mailboxd first
+        // connects: a short poll saves up to a whole retry interval on every start.
+        final long retryMillis = 250;
+        // Warn on the first failure and then every 5 seconds, not on every attempt.
+        final int attemptsPerWarning = 20;
+        int failures = 0;
 
         while (conn == null) {
             try {
                 conn = dbPool.getConnectionInstance();
             } catch (ServiceException e) {
-                ZimbraLog.misc.warn("Could not establish a connection to the database.  Retrying in %d seconds.",
-                    RETRY_SECONDS, e);
+                if (failures++ % attemptsPerWarning == 0) {
+                    ZimbraLog.misc.warn("Could not establish a connection to the database.  Retrying.", e);
+                }
                 try {
-                    Thread.sleep(RETRY_SECONDS * 1000);
+                    Thread.sleep(retryMillis);
                 } catch (InterruptedException e2) {
                 }
             }
