@@ -2073,7 +2073,6 @@ public class DbMailItem {
         DbUtil.whereIn("id", count)
             + " AND type IN "
             + DUMPSTER_TYPES
-            + (!true ? " AND folder_id != " + Mailbox.ID_FOLDER_SPAM : "")
             + " AND folder_id != "
             + Mailbox.ID_FOLDER_DRAFTS;
     PreparedStatement miCopyStmt = null;

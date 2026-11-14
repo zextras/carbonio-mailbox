@@ -980,7 +980,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public Account getAccountByMailbox(Mailbox mailbox) throws ServiceException {
     final String accountId = mailbox.getAccountId();
     final int mailboxId = mailbox.getId();
-    Account acct = Provisioning.getInstance().getAccountById(accountId);
+    Account acct = getAccountById(accountId);
     if (acct == null) {
       ZimbraLog.mailbox.warn(
           "no account found in directory for mailbox %d (was expecting %s)", mailboxId, accountId);
