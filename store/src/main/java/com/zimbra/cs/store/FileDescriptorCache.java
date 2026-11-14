@@ -154,9 +154,9 @@ public class FileDescriptorCache
             sLog.debug("Adding file descriptor cache entry for %s from the uncompressed file cache.", path);
             FileCache.Item uncompressed = mUncompressedFileCache.get(path);
             if (uncompressed == null) {
-                InputStream in = null;
-                in = new GZIPInputStream(new FileInputStream(file));
-                mUncompressedFileCache.put(path, in);
+                try (InputStream in = new FileInputStream(file)) {
+                    mUncompressedFileCache.put(path, new GZIPInputStream(in));
+                }
                 uncompressed = mUncompressedFileCache.get(path);
                 if (uncompressed == null) {
                     // Should not happen, since the uncompressed file is guaranteed to
