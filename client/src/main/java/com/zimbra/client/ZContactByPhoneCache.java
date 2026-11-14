@@ -97,7 +97,7 @@ public class ZContactByPhoneCache extends ZEventHandler {
     }
 
     private synchronized void init(ZMailbox mailbox) throws ServiceException {
-		List<ZContact> contacts = mailbox.getContacts(null, null, false, null);
+		List<ZContact> contacts = mailbox.getContacts(null, false, null);
         for (ZContact contact : contacts) {
             if (!contact.getFolderId().equals(ZFolder.ID_TRASH))
                 addContact(contact);

@@ -1695,29 +1695,19 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
   // ------------------------
 
-  public enum ContactSortBy {
-    nameDesc,
-    nameAsc
-
-	}
-
   /**
    * @param optFolderId return contacts only in specified folder (null for all folders)
-   * @param sortBy sort results (null for no sorting)
    * @param sync if true, return modified date on contacts
    * @return list of contacts
    * @throws ServiceException on error
    * @param attrs specified attrs to return, or null for all.
    */
   public List<ZContact> getAllContacts(
-      String optFolderId, ContactSortBy sortBy, boolean sync, List<String> attrs)
+      String optFolderId, boolean sync, List<String> attrs)
       throws ServiceException {
     Element req = newRequestElement(MailConstants.GET_CONTACTS_REQUEST);
     if (optFolderId != null) {
       req.addAttribute(MailConstants.A_FOLDER, optFolderId);
-    }
-    if (sortBy != null) {
-      req.addAttribute(MailConstants.A_SORTBY, sortBy.name());
     }
     if (sync) {
       req.addAttribute(MailConstants.A_SYNC, sync);
@@ -1905,21 +1895,17 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    * @param folderid folder id of the contact folder
    * @param ids comma-separated list of contact ids
    * @param attrs limit attrs returns to given list
-   * @param sortBy sort results (null for no sorting)
    * @param sync if true, return modified date on contacts
    * @return list of contacts
    * @throws ServiceException on error
    */
   public List<ZContact> getContactsForFolder(
-      String folderid, String ids, ContactSortBy sortBy, boolean sync, List<String> attrs)
+      String folderid, String ids, boolean sync, List<String> attrs)
       throws ServiceException {
     Element req = newRequestElement(MailConstants.GET_CONTACTS_REQUEST);
 
     if (!StringUtil.isNullOrEmpty(folderid)) {
       req.addAttribute(MailConstants.A_FOLDER, folderid);
-    }
-    if (sortBy != null) {
-      req.addAttribute(MailConstants.A_SORTBY, sortBy.name());
     }
     if (sync) {
       req.addAttribute(MailConstants.A_SYNC, sync);
@@ -1943,8 +1929,8 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
   }
 
   public List<ZContact> getContacts(
-      String ids, ContactSortBy sortBy, boolean sync, List<String> attrs) throws ServiceException {
-    return getContactsForFolder(null, ids, sortBy, sync, attrs);
+      String ids, boolean sync, List<String> attrs) throws ServiceException {
+    return getContactsForFolder(null, ids, sync, attrs);
   }
 
   public ZContact getContact(ItemIdentifier itemId) throws ServiceException {
