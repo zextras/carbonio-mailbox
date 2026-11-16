@@ -13,16 +13,8 @@ import com.zimbra.common.util.ZimbraLog;
 public class Logging {
 
     private static boolean sQuietMode = false;
-    
-    public static void setQuietMode(boolean value) {
-        sQuietMode = value;
-    }
 
     private static boolean sUseZimbraLog = true;
-
-    public static void setUseZimbraLog(boolean value) {
-        sUseZimbraLog = value;
-    }
 
     public static void warn(String message) {
         warn(message, null);

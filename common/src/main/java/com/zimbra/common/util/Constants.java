@@ -21,8 +21,6 @@ public class Constants {
     public static final int SECONDS_PER_MINUTE = 60;
     public static final int SECONDS_PER_HOUR   = SECONDS_PER_MINUTE * 60;
     public static final int SECONDS_PER_DAY    = SECONDS_PER_HOUR * 24;
-    public static final int SECONDS_PER_WEEK = SECONDS_PER_DAY * 7;
-    public static final int SECONDS_PER_MONTH = SECONDS_PER_DAY * 31;
 
     public static final String CSRF_TOKEN = "X-Zimbra-Csrf-Token";
     public static final String ERROR_CODE_NO_SUCH_DOMAIN = "account.NO_SUCH_DOMAIN";
@@ -33,7 +31,6 @@ public class Constants {
     public static final String LOAD_EXTERNAL_DTD = "http://apache.org/xml/features/nonvalidating/load-external-dtd";
 
     //JWT constants
-    public static final String TOKEN_VALIDITY_VALUE_CLAIM = "tvv";
     public static final String AUTH_HEADER = "Authorization";
     public static final String BEARER= "Bearer";
     public static final String JWT_SALT_SEPARATOR = "|";

@@ -39,7 +39,6 @@ public abstract class SoapProtocol {
 	protected QName mHeaderQName;
     protected Element.ElementFactory mFactory;
 
-
     /** Package-Private constructor to prevent anyone else from
         extending */
     SoapProtocol() {
@@ -104,10 +103,6 @@ public abstract class SoapProtocol {
      */
     public abstract Namespace getNamespace();
 
-    public QName getFaultQName() {
-        return mFaultQName;
-    }
-
     public QName getBodyQName() {
         return mBodyQName;
     }
@@ -123,13 +118,6 @@ public abstract class SoapProtocol {
     /** Return charset encoding for converting from bytes/strings */
     public static String getCharset() {
         return "UTF-8";
-    }
-
-    /** Convert a SOAP message in a String to bytes */
-    public static byte[] toBytes(String message)
-        throws java.io.UnsupportedEncodingException
-    {
-        return message.getBytes(getCharset());
     }
 
     /** Convert a SOAP message in bytes to a String */
@@ -222,7 +210,6 @@ public abstract class SoapProtocol {
         Element body = getBodyElement(soapEnvelope);
         return body != null && isFault(body);
     }
-
 
     private static final String[] ZIMBRA_ERROR_ELEMENT = new String[] { "Detail", "Error", "a" };
 

@@ -154,7 +154,6 @@ public class ZInternetHeader {
         return new ZInternetHeader(this);
     }
 
-
     enum HeaderInfo {
         RETURN_PATH("Return-Path", 1, false, true),
         RECEIVED("Received", 2, false, true),
@@ -227,7 +226,6 @@ public class ZInternetHeader {
             return name;
         }
     }
-
 
     /** Reserializes the {@code ZInternetHeader}, using {@code bvalue} as the
      *  field value (the bit after the '<tt>:</tt>').  {@code bvalue} is
@@ -445,11 +443,9 @@ public class ZInternetHeader {
         public String getText()                      { return bytes.toString(); }
         public String getCharset()                   { return charset.toString(); }
         public String getDecodeType()                { return decodeType.toString(); }
-        public void setSeqType(SequenceType seqType) { this.seqType = seqType;}
         public void appendBody(byte b)               { this.bytes.write(b); }
         public void appendCharset(byte b)            { this.charset.write(b); }
         public void appendDecodeType(byte b)         { this.decodeType.write(b); }
-        public boolean isPadding(int index)          { return (bytes.toByteArray()[index] == '='); }
         public void reset() {
             seqType = SequenceType.UNDEFINED;
             bytes.reset();

@@ -294,10 +294,6 @@ public class L10nUtil {
         sMsgClassLoader = getClassLoader(directory);
     }
 
-    public static ClassLoader getMsgClassLoader() {
-        return sMsgClassLoader;
-    }
-
     public static String getMessage(MsgKey key, Object... args) {
         return getMessage(key.toString(), (Locale) null, args);
     }

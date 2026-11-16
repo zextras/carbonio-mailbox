@@ -66,7 +66,6 @@ public class ZimbraMemcachedClient {
     public static final int DEFAULT_EXPIRY = -1;
     public static final long DEFAULT_TIMEOUT = -1;
     public static final String SHA256_HASHING = "SHA-256";
-    public static final int BASE_16 = 16;
 
     private MemcachedClient mMCDClient;
     private int mDefaultExpiry;  // in seconds
@@ -615,8 +614,6 @@ public class ZimbraMemcachedClient {
             }
             mFingerprint = ff.getValue();
         }
-
-        public int getTotalLen() { return mTotalLen; }
         public int getNumChunks() { return mNumChunks; }
         public ByteArray getChunk(int chunkIndex) { return mChunks[chunkIndex]; }
 
@@ -868,7 +865,6 @@ public class ZimbraMemcachedClient {
         // If it's a short value, just return it.
         if (prefixed[prefixed.length - 1] == BBA_PREFIX_VALUE)
             return value;
-
 
         // We have a table of contents.
         String tocEncoded = null;

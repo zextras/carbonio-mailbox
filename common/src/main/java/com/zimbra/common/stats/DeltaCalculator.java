@@ -62,17 +62,7 @@ implements Accumulator {
         updateNames();
         return this;
     }
-    
-    /**
-     * If non-null, the given name will be returned by {@link #getNames()}
-     * and the realtime average value will be returned by {@link #getData()}.
-     */
-    public DeltaCalculator setRealtimeAverageName(String name) {
-        mRealtimeAverageName = name;
-        updateNames();
-        return this;
-    }
-    
+
     private void updateNames() {
         ArrayList<String> names = new ArrayList<>();
         if (mCountName != null) {

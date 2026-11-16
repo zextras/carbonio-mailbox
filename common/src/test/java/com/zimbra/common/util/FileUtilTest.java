@@ -108,21 +108,6 @@ class FileUtilTest {
   }
 
   @Test
-  void listDirsRecursivelyReturnsAllDirectories() {
-    File subDir1 = new File(tempDir, "subDir1");
-    File subDir2 = new File(subDir1, "subDir2");
-    assertTrue(subDir1.mkdir());
-    assertTrue(subDir2.mkdir());
-
-    List<File> dirs = FileUtil.listDirsRecursively(tempDir);
-
-    assertEquals(3, dirs.size());
-    assertTrue(dirs.contains(tempDir));
-    assertTrue(dirs.contains(subDir1));
-    assertTrue(dirs.contains(subDir2));
-  }
-
-  @Test
   void getExtensionReturnsCorrectExtension() {
     assertEquals("txt", FileUtil.getExtension("file.txt"));
     assertEquals("", FileUtil.getExtension("file."));

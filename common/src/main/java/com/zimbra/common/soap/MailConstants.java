@@ -126,7 +126,6 @@ public final class MailConstants {
   public static final String E_GET_CONTACTS_RESPONSE = "GetContactsResponse";
   public static final String E_GET_CONTACT_BACKUP_LIST_REQUEST = "GetContactBackupListRequest";
   public static final String E_GET_CONTACT_BACKUP_LIST_RESPONSE = "GetContactBackupListResponse";
-  public static final String E_BACKUPS = "backups";
   public static final String E_BACKUP = "backup";
   public static final String E_IMPORT_CONTACTS_REQUEST = "ImportContactsRequest";
   public static final String E_IMPORT_CONTACTS_RESPONSE = "ImportContactsResponse";
@@ -136,10 +135,6 @@ public final class MailConstants {
   public static final String E_CONTACT_ACTION_RESPONSE = "ContactActionResponse";
   public static final String E_SYNC_REQUEST = "SyncRequest";
   public static final String E_SYNC_RESPONSE = "SyncResponse";
-  public static final String E_GET_RULES_REQUEST = "GetRulesRequest";
-  public static final String E_GET_RULES_RESPONSE = "GetRulesResponse";
-  public static final String E_SAVE_RULES_REQUEST = "SaveRulesRequest";
-  public static final String E_SAVE_RULES_RESPONSE = "SaveRulesResponse";
   public static final String E_GET_FILTER_RULES_REQUEST = "GetFilterRulesRequest";
   public static final String E_GET_FILTER_RULES_RESPONSE = "GetFilterRulesResponse";
   public static final String E_MODIFY_FILTER_RULES_REQUEST = "ModifyFilterRulesRequest";
@@ -684,12 +679,10 @@ public final class MailConstants {
   public static final String E_FOLDER = "folder";
   public static final String E_SEARCH = "search";
   public static final String E_MOUNT = "link";
-  public static final String E_COMMENT = "comment";
   public static final String E_LINK = "lk";
 
   public static final String E_INFO = "info";
   public static final String E_LOCALE = "locale";
-  public static final String E_PARAM = "p";
   public static final String E_BROWSE_DATA = "bd";
   public static final String E_ACTION = "action";
   public static final String E_ATTRIBUTE = "a";
@@ -761,7 +754,6 @@ public final class MailConstants {
   public static final String E_ACTION_DELETEHEADER = "actionDeleteheader";
   public static final String E_ACTION_REPLACEHEADER = "actionReplaceheader";
 
-  public static final String A_ADDRESS_PART = "part";
   public static final String A_STRING_COMPARISON = "stringComparison";
   public static final String A_VALUE_COMPARISON = "valueComparison";
   public static final String A_COUNT_COMPARISON = "countComparison";
@@ -831,7 +823,6 @@ public final class MailConstants {
   public static final String A_EXP = "exp";
   public static final String A_NEED_EXP = "needExp";
 
-  public static final String A_DESC_ENABLED = "descEnabled";
   public static final String A_PATH = "path";
   public static final String A_NAME = "name";
   public static final String A_VALUE = "value";
@@ -882,7 +873,6 @@ public final class MailConstants {
   public static final String A_STATUS = "status";
   public static final String A_EXCLUDE_FREEBUSY = "excludeFreeBusy";
   public static final String A_FILE_AS_STR = "fileAsStr";
-  public static final String A_CONTACT_TYPE = "type";
   public static final String A_ELIDED = "elided";
   public static final String A_CAL_EXPAND_INST_START = "calExpandInstStart";
   public static final String A_CAL_EXPAND_INST_END = "calExpandInstEnd";
@@ -1000,12 +990,10 @@ public final class MailConstants {
   public static final String A_IN_DUMPSTER = "inDumpster";
   public static final String A_WARMUP = "warmup";
   public static final String A_QUICK = "quick";
-  public static final String A_SCORE = "score";
   public static final String E_HIT = "hit";
 
   // search-result paging
   public static final String E_CURSOR = "cursor";
-  public static final String A_QUERY_CONTEXT = "context";
   public static final String A_QUERY_OFFSET = "offset";
   public static final String A_QUERY_LIMIT = "limit";
   public static final String A_QUERY_MORE = "more";
@@ -1108,7 +1096,6 @@ public final class MailConstants {
   public static final String E_CAL_CATEGORY = "category";
   public static final String E_CAL_COMMENT = "comment";
   public static final String E_CAL_CONTACT = "contact";
-  public static final String E_CAL_CONTENT = "content";
   public static final String E_CAL_GEO = "geo";
 
   public static final String E_CAL_XPROP = "xprop";
@@ -1149,7 +1136,6 @@ public final class MailConstants {
   public static final String A_CAL_DATETIME_UTC = "u";
   public static final String A_CAL_TZ_OFFSET = "tzo";
   public static final String A_CAL_TZ_OFFSET_DUE = "tzoDue";
-  public static final String A_CAL_SUB_ID = "subId";
   public static final String A_CAL_INV_ID = "invId";
   public static final String A_APPT_ID_DEPRECATE_ME = "apptId";
   public static final String A_CAL_STATUS = "status";
@@ -1165,8 +1151,6 @@ public final class MailConstants {
   public static final String A_CAL_NEVER_SENT = "neverSent";
   public static final String A_CAL_NO_BLOB = "noBlob";
   public static final String A_CAL_LOCATION = "loc";
-  public static final String A_CAL_NEEDS_REPLY = "needsReply";
-  public static final String A_CAL_SENDUPDATE = "sendUpd";
   public static final String A_CAL_SENTBY = "sentBy";
   public static final String A_CAL_DIR = "dir";
   public static final String A_CAL_LANGUAGE = "lang";
@@ -1181,7 +1165,6 @@ public final class MailConstants {
   public static final String A_CAL_RECUR = "recur";
   public static final String A_CAL_HAS_EXCEPTIONS = "hasEx";
   public static final String A_CAL_UPDATE_ORGANIZER = "updateOrganizer";
-  public static final String A_CAL_THIS_AND_FUTURE = "thisAndFuture";
   public static final String A_CAL_TIMEZONE = "tz";
   public static final String A_CAL_ISORG = "isOrg";
   public static final String A_CAL_ATTENDEE = "at";
@@ -1248,7 +1231,6 @@ public final class MailConstants {
   public static final String A_CAL_ORPHAN = "orphan";
 
   // data sources
-  public static final String E_DS = "dsrc";
   public static final String E_DS_POP3 = "pop3";
   public static final String E_DS_IMAP = "imap";
   public static final String E_DS_CALDAV = "caldav";
@@ -1272,7 +1254,6 @@ public final class MailConstants {
   public static final String A_DS_SMTP_AUTH_REQUIRED = "smtpAuthRequired";
   public static final String A_DS_SMTP_USERNAME = "smtpUsername";
   public static final String A_DS_SMTP_PASSWORD = "smtpPassword";
-  public static final String A_DS_TYPE = "type";
   public static final String A_DS_SUCCESS = "success";
   public static final String A_DS_ERROR = "error";
   public static final String A_DS_IS_RUNNING = "isRunning";
@@ -1292,29 +1273,13 @@ public final class MailConstants {
 
   public static final String A_ACCT_RELATIVE_PATH = "acctRelPath";
 
-  public static final String A_CREATOR = "cr";
   public static final String A_TYPE = "t";
-  public static final String E_WIKIWORD = "w";
-  public static final String E_DOC = "doc";
-  public static final String E_UPLOAD = "upload";
   public static final String A_VERSION = "ver";
-  public static final String A_USER_AGENT = "ua";
   public static final String A_METADATA_VERSION = "mdver";
   public static final String A_SUBJECT = "su";
-  public static final String A_LAST_EDITED_BY = "leb";
-  public static final String A_COUNT = "count";
   public static final String A_ARGS = "args";
   public static final String A_REST_URL = "rest";
-  public static final String A_V1 = "v1";
-  public static final String A_V2 = "v2";
-  public static final String E_CHUNK = "chunk";
-  public static final String A_DISP = "disp";
   public static final String A_DESC = "desc";
-  public static final String A_LOCKOWNER_ID = "loid";
-  public static final String A_LOCKOWNER_EMAIL = "loe";
-  public static final String A_LOCKTIMESTAMP = "lt";
-  public static final String E_REVISION = "revision";
-  public static final String A_INCLUDE_OLDER_REVISIONS = "includeOlderRevisions";
 
   // WaitSet
   public static final String E_WAITSET_ADD = "add";
@@ -1358,19 +1323,8 @@ public final class MailConstants {
   public static final String A_NICKNAME = "nick";
   public static final String A_COMPANY = "company";
   public static final String A_FILEAS = "fileas";
-  public static final String A_LDAP_OFFSET = "ldapOffset";
 
   public static final String A_USER = "user";
-  public static final String A_TS = "ts";
-  public static final String A_ITEMID = "itemId";
-  public static final String A_ITEM_NAME = "itemName";
-
-  public static final String A_CREATED = "created";
-  public static final String A_ACCESSED = "accessed";
-
-  public static final String A_PARENT_ID = "parentId";
-  public static final String A_TEXT = "text";
-  public static final String E_ARG = "arg";
 
   public static final String E_GRANTOR = "grantor";
   public static final String E_GRANTEE = "grantee";
@@ -1385,10 +1339,7 @@ public final class MailConstants {
   public static final String A_LIFETIME = "lifetime";
   public static final String A_RETENTION_POLICY_TYPE = "type";
 
-  public static final String E_WATCHER = "watcher";
-
   public static final String E_FILTER = "filter";
-  public static final String A_SESSION = "session";
 
   public static final String A_ACTION = "action";
 
@@ -1420,9 +1371,6 @@ public final class MailConstants {
       QName.get(E_RESTORE_CONTACTS_REQUEST, NAMESPACE);
   public static final QName RESTORE_CONTACTS_RESPONSE =
       QName.get(E_RESTORE_CONTACTS_RESPONSE, NAMESPACE);
-  public static final String A_CONTACTS_BACKUP_FILE_NAME = "contactsBackupFileName";
-  public static final String A_CONTACTS_RESTORE_RESOLVE = "resolve";
-  public static final String A_CONTACTS_BACKUP_FOLDER_NAME = "ContactsBackup";
 
   // SearchAction API
   public static final String E_SEARCH_ACTION_REQUEST = "SearchActionRequest";

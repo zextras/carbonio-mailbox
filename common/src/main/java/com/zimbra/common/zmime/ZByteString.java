@@ -6,7 +6,6 @@
 package com.zimbra.common.zmime;
 
 import java.nio.charset.Charset;
-import java.util.List;
 
 import com.zimbra.common.zmime.ZMimeUtility.ByteBuilder;
 
@@ -33,29 +32,6 @@ public class ZByteString {
 
     public boolean canMerge (ZByteString byteString) {
         return this.charset.equals(byteString.charset);
-    }
-
-    public static String makeString(List<ZByteString> byteStrings) {
-        StringBuilder builder = new StringBuilder();
-        ZByteString lastByteString = null;
-        for (ZByteString bStr : byteStrings) {
-            if (lastByteString != null) {
-                if (lastByteString.canMerge(bStr)) {
-                    lastByteString = lastByteString.merge(bStr);
-                }
-                else {
-                    builder.append(lastByteString);
-                    lastByteString = bStr;
-                }
-            }
-            else {
-                lastByteString = bStr;
-            }
-        }
-        if (lastByteString != null) {
-            builder.append(lastByteString);
-        }
-        return builder.toString();
     }
 
     public ZByteString merge (ZByteString byteString) throws IllegalArgumentException {
