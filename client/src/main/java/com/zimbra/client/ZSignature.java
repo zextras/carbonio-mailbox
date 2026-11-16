@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
@@ -120,12 +121,22 @@ public class ZSignature implements Comparable<ZSignature>, ToZJSONObject {
         return zjo;
     }
 
+    @Override
+    public ObjectNode toObjectNode() {
+        ZObjectNode zjo = new ZObjectNode();
+        zjo.put("name", getName());
+        zjo.put("id", getId());
+        zjo.put("value", getValue());
+        zjo.put("type", getType());
+        return zjo.getObjectNode();
+    }
+
     public String toString() {
         return String.format("[ZSignature %s]", getName());
     }
 
     public String dump() {
-        return ZJSONObject.toString(this);
+        return ToZJSONObject.toString(this);
     }
 
     public int compareTo(ZSignature other) {

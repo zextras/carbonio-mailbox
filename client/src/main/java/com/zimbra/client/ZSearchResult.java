@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.zimbra.client.event.ZModifyConversationEvent;
 import com.zimbra.client.event.ZModifyEvent;
@@ -122,6 +123,16 @@ public class ZSearchResult implements ToZJSONObject {
   }
 
   @Override
+  public ObjectNode toObjectNode() {
+    ZObjectNode zjo = new ZObjectNode();
+    zjo.put("more", hasMore);
+    zjo.put("sortBy", sortBy);
+    zjo.put("offset", offset);
+    zjo.put("hits", hits);
+    return zjo.getObjectNode();
+  }
+
+  @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
         .add("size", hits.size())
@@ -130,7 +141,7 @@ public class ZSearchResult implements ToZJSONObject {
   }
 
   public String dump() {
-    return ZJSONObject.toString(this);
+    return ToZJSONObject.toString(this);
   }
 
   /*
@@ -178,6 +189,16 @@ public class ZSearchResult implements ToZJSONObject {
       zjo.put("tags", mTags);
       zjo.put("messageCount", mMessageCount);
       return zjo;
+    }
+
+    @Override
+    public ObjectNode toObjectNode() {
+      ZObjectNode zjo = new ZObjectNode();
+      zjo.put("id", mId);
+      zjo.put("flags", mFlags);
+      zjo.put("tags", mTags);
+      zjo.put("messageCount", mMessageCount);
+      return zjo.getObjectNode();
     }
 
     @Override

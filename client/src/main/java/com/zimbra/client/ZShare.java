@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.XmlParseException;
@@ -91,6 +92,17 @@ public class ZShare implements ToZJSONObject {
         zjo.put(E_GRANTOR, mGrantor);
         zjo.put(E_LINK, mLink);
         return zjo;
+    }
+
+    @Override
+    public ObjectNode toObjectNode() {
+        ZObjectNode zjo = new ZObjectNode();
+        zjo.put(A_VERSION, mVersion);
+        zjo.put(A_ACTION, mAction.name());
+        zjo.put(E_GRANTEE, mGrantee);
+        zjo.put(E_GRANTOR, mGrantor);
+        zjo.put(E_LINK, mLink);
+        return zjo.getObjectNode();
     }
 
     @Override
@@ -213,6 +225,15 @@ public class ZShare implements ToZJSONObject {
         }
 
         @Override
+        public ObjectNode toObjectNode() {
+            ZObjectNode zjo = new ZObjectNode();
+            zjo.put(A_ID, mId);
+            zjo.put(A_EMAIL, mEmail);
+            zjo.put(A_NAME, mName);
+            return zjo.getObjectNode();
+        }
+
+        @Override
         public String toString() {
             return String.format("[ZGrantInfo id=%s email=%s name=%s]", mId, mEmail, mName);
         }
@@ -314,6 +335,16 @@ public class ZShare implements ToZJSONObject {
             zjo.put(A_VIEW, mView.name());
             zjo.put(A_NAME, mName);
             return zjo;
+        }
+
+        @Override
+        public ObjectNode toObjectNode() {
+            ZObjectNode zjo = new ZObjectNode();
+            zjo.put(A_ID, mId);
+            zjo.put(A_PERM, mPermission);
+            zjo.put(A_VIEW, mView.name());
+            zjo.put(A_NAME, mName);
+            return zjo.getObjectNode();
         }
 
         @Override

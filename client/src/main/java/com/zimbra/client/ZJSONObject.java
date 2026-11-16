@@ -110,12 +110,4 @@ public class ZJSONObject {
         }
     }
 
-    public static String toString(ToZJSONObject zjo) {
-        try {
-            return zjo.toZJSONObject().toString();
-        } catch (JSONException e) {
-            return ExceptionToString.ToString(e);
-        }
-    }
-
 }

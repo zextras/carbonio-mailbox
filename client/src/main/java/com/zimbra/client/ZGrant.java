@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Arrays;
 
 import org.json.JSONException;
@@ -296,12 +297,23 @@ public class ZGrant implements ACLGrant, ToZJSONObject {
     }
 
     @Override
+    public ObjectNode toObjectNode() {
+        ZObjectNode jo = new ZObjectNode();
+        jo.put("type", mGranteeType.name());
+        jo.put("name", mGranteeName);
+        jo.put("id", mGranteeId);
+        jo.put("permissions", mPermissions);
+        jo.put("args", mArgs);
+        return jo.getObjectNode();
+    }
+
+    @Override
     public String toString() {
         return String.format("[ZGrant %s %s %s]", mGranteeType.name(), mGranteeName, mPermissions);
     }
 
     public String dump() {
-        return ZJSONObject.toString(this);
+        return ToZJSONObject.toString(this);
     }
 
 }

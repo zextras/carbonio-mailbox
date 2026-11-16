@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -173,12 +174,23 @@ public class ZAce implements ToZJSONObject {
         return jo;
     }
 
+    @Override
+    public ObjectNode toObjectNode() {
+        ZObjectNode jo = new ZObjectNode();
+        jo.put("type", mGranteeType.name());
+        jo.put("name", mGranteeName);
+        jo.put("id", mGranteeId);
+        jo.put("right", mRight);
+        jo.put("deny", mDeny);
+        return jo.getObjectNode();
+    }
+
     public String toString() {
         return String.format("[ZGrant %s %s]", mGranteeName, mRight);
     }
 
     public String dump() {
-        return ZJSONObject.toString(this);
+        return ToZJSONObject.toString(this);
     }
 
     public String getGranteeTypeDisplay() {

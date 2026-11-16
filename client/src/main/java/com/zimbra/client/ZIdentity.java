@@ -5,6 +5,8 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Collection;
 import java.util.Map;
 
@@ -133,12 +135,25 @@ public class ZIdentity  implements ToZJSONObject {
     }
 
     @Override
+    public ObjectNode toObjectNode() {
+        ZObjectNode zjo = new ZObjectNode();
+        zjo.put("name", getName());
+        zjo.put("id", getId());
+        ObjectNode jo = JsonNodeFactory.instance.objectNode();
+        zjo.put("attrs",jo);
+        for (Map.Entry<String, String> entry : data.getAttrsMultimap().entries()) {
+            ZObjectNode.putOrRemove(jo, entry.getKey(), entry.getValue());
+        }
+        return zjo.getObjectNode();
+    }
+
+    @Override
     public String toString() {
         return String.format("[ZIdentity %s]", getName());
     }
 
     public String dump() {
-        return ZJSONObject.toString(this);
+        return ToZJSONObject.toString(this);
     }
 
 }

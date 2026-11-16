@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -159,6 +160,30 @@ public class ZContactHit implements ZImapSearchHit {
         jo.put(ContactConstants.A_fullName, mFullName);
         jo.putMap("attrs", mAttrs);
         return jo;
+    }
+
+    @Override
+    public ObjectNode toObjectNode() {
+        ZObjectNode jo = new ZObjectNode();
+        jo.put("id", mId);
+        jo.put("tags", mTagIds);
+        jo.put("flags", mFlags);
+        jo.put("sortField", mSortField);
+        jo.put("type", mType);
+        jo.put("date", mDate);
+        jo.put("fileAsStr", mFileAsStr);
+        jo.put("revision", mRevision);
+        jo.put("folderId", mFolderId);
+        jo.put(ContactConstants.A_dlist, mDlist);
+        jo.put(ContactConstants.A_email, mEmail);
+        jo.put(ContactConstants.A_email2, mEmail2);
+        jo.put(ContactConstants.A_email3, mEmail3);
+        jo.put(ContactConstants.A_workEmail1, mWorkEmail1);
+        jo.put(ContactConstants.A_workEmail2, mWorkEmail2);
+        jo.put(ContactConstants.A_workEmail3, mWorkEmail3);
+        jo.put(ContactConstants.A_fullName, mFullName);
+        jo.putMap("attrs", mAttrs);
+        return jo.getObjectNode();
     }
 
     @Override

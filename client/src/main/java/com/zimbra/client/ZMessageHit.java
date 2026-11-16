@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,6 +109,25 @@ public class ZMessageHit implements ZImapSearchHit {
         zjo.put("addresses", mAddresses);
         zjo.put("message", mMessage);
         return zjo;
+    }
+
+    @Override
+    public ObjectNode toObjectNode() {
+        ZObjectNode zjo = new ZObjectNode();
+        zjo.put("id", mId);
+        zjo.put("conversationId", mConvId);
+        zjo.put("flags", mFlags);
+        zjo.put("isInvite", mIsInvite);
+        zjo.put("fragment", mFragment);
+        zjo.put("subject", mSubject);
+        zjo.put("date", mDate);
+        zjo.put("size", mSize);
+        zjo.put("sender", mSender);
+        zjo.put("sortField", mSortField);
+        zjo.putList("mimePartHits", mMimePartHits);
+        zjo.put("addresses", mAddresses);
+        zjo.put("message", mMessage);
+        return zjo.getObjectNode();
     }
 
     @Override

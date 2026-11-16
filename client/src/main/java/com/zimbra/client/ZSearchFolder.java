@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.json.JSONException;
 
 import com.google.common.base.Joiner;
@@ -66,6 +67,15 @@ public final class ZSearchFolder extends ZFolder implements SearchFolderStore {
         jo.put("types", types);
         jo.put("sortBy", sortBy.name());
         return jo;
+    }
+
+    @Override
+    public ObjectNode toObjectNode() {
+        ZObjectNode jo = new ZObjectNode(super.toObjectNode());
+        jo.put("query", query);
+        jo.put("types", types);
+        jo.put("sortBy", sortBy.name());
+        return jo.getObjectNode();
     }
 
     @Override

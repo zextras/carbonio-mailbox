@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zimbra.common.calendar.TZIDMapper;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -137,6 +138,15 @@ public class ZDateTime implements ToZJSONObject {
         zjo.put("dateTime", mDateTime);
         zjo.put("timeZoneId", mTimeZoneId);
         return zjo;
+    }
+
+    @Override
+    public ObjectNode toObjectNode() {
+        ZObjectNode zjo = new ZObjectNode();
+        zjo.put("time", getDate().getTime());
+        zjo.put("dateTime", mDateTime);
+        zjo.put("timeZoneId", mTimeZoneId);
+        return zjo.getObjectNode();
     }
 
     public String toString() {

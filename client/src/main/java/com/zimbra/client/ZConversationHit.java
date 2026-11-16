@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -81,6 +82,22 @@ public class ZConversationHit implements ZSearchHit {
         jo.putList("messageIds", mMessageIds);
         jo.put("recipients", mRecipients);
         return jo;
+    }
+
+    @Override
+    public ObjectNode toObjectNode() {
+        ZObjectNode jo = new ZObjectNode();
+        jo.put("id", mId);
+        jo.put("flags", mFlags);
+        jo.put("tags", mTags);
+        jo.put("fragment", mFragment);
+        jo.put("subject", mSubject);
+        jo.put("date", mDate);
+        jo.put("sortField", mSortField);
+        jo.put("messageCount", mMessageCount);
+        jo.putList("messageIds", mMessageIds);
+        jo.put("recipients", mRecipients);
+        return jo.getObjectNode();
     }
 
     @Override

@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import com.zimbra.client.event.ZModifyEvent;
 import com.zimbra.client.event.ZModifyFolderEvent;
@@ -964,12 +965,46 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
   }
 
   @Override
+  public ObjectNode toObjectNode() {
+    ZObjectNode jo = new ZObjectNode();
+    jo.put("id", mId);
+    jo.put("uuid", mUuid);
+    jo.put("name", mName);
+    jo.put("path", getPath());
+    jo.put("pathURLEncoded", getPathURLEncoded());
+    jo.put("parentId", mParentId);
+    jo.put("flags", mFlags);
+    jo.put("color", mColor.getName());
+    jo.put("unreadCount", mUnreadCount);
+    jo.put("imapUnreadCount", mImapUnreadCount);
+    jo.put("itemCount", mMessageCount);
+    jo.put("imapItemCount", mImapMessageCount);
+    jo.put("defaultView", mDefaultView.name());
+    jo.put("imapUIDNEXT", mImapUIDNEXT);
+    jo.put("imapMODSEQ", mImapMODSEQ);
+    jo.put("defaultView", mDefaultView.name());
+    jo.put("remoteUrl", mRemoteURL);
+    jo.put("activeSyncDisabled", mActiveSyncDisabled);
+    jo.put("effectivePermissions", mEffectivePerms);
+    jo.put("grants", mGrants);
+    jo.put("size", mSize);
+    jo.put("subFolders", mSubFolders);
+    jo.put("isCheckedInUI", isCheckedInUI());
+    jo.put("isExcludedFromFreeBusy", isExcludedFromFreeBusy());
+    jo.put("isSyncEnabled", isSyncEnabled());
+    jo.put("isSyncFolder", isSyncFolder());
+    jo.put("isSystemFolder", isSystemFolder());
+    jo.put("contentSequence", getContentSequence());
+    return jo.getObjectNode();
+  }
+
+  @Override
   public String toString() {
     return String.format("[ZFolder %s]", getPath());
   }
 
   public String dump() {
-    return ZJSONObject.toString(this);
+    return ToZJSONObject.toString(this);
   }
 
   public void delete() throws ServiceException {

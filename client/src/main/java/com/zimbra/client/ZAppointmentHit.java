@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zimbra.client.ZInvite.ZComponent;
 import com.zimbra.client.ZInvite.ZStatus;
 import com.zimbra.client.ZMailbox.ZFreeBusyTimeSlot;
@@ -402,6 +403,45 @@ public class ZAppointmentHit implements ZSearchHit {
     jo.put("size", mSize);
     jo.put("hitDate", mHitDate);
     return jo;
+  }
+
+  @Override
+  public ObjectNode toObjectNode() {
+    ZObjectNode jo = new ZObjectNode();
+    jo.put("id", mId);
+    jo.put("folderId", mFolderId);
+    jo.put("tags", mTags);
+    jo.put("flags", mFlags);
+    jo.put("name", mName);
+    jo.put("location", mLocation);
+    jo.putList("categories", mCategories);
+    if (mGeo != null) jo.put("geo", mGeo.toString());
+    jo.put("inviteId", mInviteId);
+    jo.put("inviteComponentNumber", mInviteComponentNumber);
+    jo.put("freeBusyActual", mFreeBusyActual);
+    jo.put("transparency", mTransparency);
+    jo.put("status", mStatus);
+    jo.put("class", mClass);
+    jo.put("participantStatus", mPartStatus);
+    jo.put("allDay", mIsAllDay);
+    jo.put("draft", mDraft);
+    jo.put("otherAttendees", mIsOtherAttendees);
+    jo.put("alarm", mIsAlarm);
+    jo.put("recurring", mIsRecurring);
+    jo.put("isOrganizer", mIsOrganizer);
+    jo.put("priority", mPriority);
+    jo.put("percentComplete", mPercentComplete);
+    jo.put("duration", mDuration);
+    jo.put("startTime", mStartTime);
+    jo.put("timeZoneOffset", mTimeZoneOffset);
+    jo.put("exception", mIsException);
+    jo.put("recurrenceId", mRecurrenceIdZ);
+    jo.put("fragment", mFragment);
+    jo.put("sortField", mSortField);
+    jo.put("conversationId", mConvId);
+    jo.put("size", mSize);
+    jo.put("hitDate", mHitDate);
+    return jo.getObjectNode();
   }
 
   @Override

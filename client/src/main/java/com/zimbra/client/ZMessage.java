@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
@@ -206,12 +207,57 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
     }
 
     @Override
+    public ObjectNode toObjectNode() {
+        ZObjectNode zjo = new ZObjectNode();
+        zjo.put("id", mId);
+        zjo.put("flags", mFlags);
+        zjo.put("tagIds", mTagIds);
+        zjo.put("inReplyTo", mInReplyTo);
+        zjo.put("originalId", mOrigId);
+        zjo.put("subject", mSubject);
+        zjo.put("fragment", mFragment);
+        zjo.put("partName", mPartName);
+        zjo.put("messageIdHeader", mMessageIdHeader);
+        zjo.put("receivedDate", mReceivedDate);
+        zjo.put("sentDate", mSentDate);
+        zjo.put("folderId", mFolderId);
+        zjo.put("conversationId", mConversationId);
+        zjo.put("size", mSize);
+        zjo.put("content", mContent);
+        zjo.put("contentURL", mContentURL);
+        zjo.put("addresses", mAddresses);
+        zjo.put("mimeStructure", mMimeStructure);
+        zjo.put("invite", mInvite);
+        zjo.put("share", mShare);
+        zjo.put("isInvite", getInvite() != null);
+        zjo.put("hasAttachment", hasAttachment());
+        zjo.put("hasFlags", hasFlags());
+        zjo.put("hasTags", hasTags());
+        zjo.put("isDeleted", isDeleted());
+        zjo.put("isDraft", isDraft());
+        zjo.put("isFlagged", isFlagged());
+        zjo.put("isHighPriority", isHighPriority());
+        zjo.put("isLowPriority", isLowPriority());
+        zjo.put("isForwarded", isForwarded());
+        zjo.put("isNotificationSent", isNotificationSent());
+        zjo.put("isRepliedTo", isRepliedTo());
+        zjo.put("isSentByMe", isSentByMe());
+        zjo.put("isUnread", isUnread());
+        zjo.put("idnt", mIdentityId);
+        if (imapUid >= 0) {
+            zjo.put("imapUid", imapUid);
+        }
+        zjo.putMap("requestHeaders", mReqHdrs);
+        return zjo.getObjectNode();
+    }
+
+    @Override
     public String toString() {
         return String.format("[ZMessage %s]", mId);
     }
 
     public String dump() {
-        return ZJSONObject.toString(this);
+        return ToZJSONObject.toString(this);
     }
 
     /**
@@ -333,6 +379,24 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
             zjo.put("fileName", mFileName);
             zjo.put("children", mChildren);
             return zjo;
+        }
+
+        @Override
+        public ObjectNode toObjectNode() {
+            ZObjectNode zjo = new ZObjectNode();
+            zjo.put("partName", mPartName);
+            zjo.put("content", mContent);
+            zjo.put("contentType", mContentType);
+            zjo.put("contentDisposition", mContentDisposition);
+            zjo.put("contentId", mContentId);
+            zjo.put("contentLocation", mContentLocation);
+            zjo.put("contentDescription", mContentDescription);
+            zjo.put("isBody", mIsBody);
+            zjo.put("size", mSize);
+            zjo.put("name", mName);
+            zjo.put("fileName", mFileName);
+            zjo.put("children", mChildren);
+            return zjo.getObjectNode();
         }
 
         @Override
