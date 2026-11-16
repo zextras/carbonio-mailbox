@@ -368,6 +368,8 @@ public final class JaxbUtil {
           com.zimbra.soap.admin.message.RecalculateMailboxCountsResponse.class,
           com.zimbra.soap.admin.message.RefreshRegisteredAuthTokensRequest.class,
           com.zimbra.soap.admin.message.RefreshRegisteredAuthTokensResponse.class,
+          com.zimbra.soap.admin.message.ReloadLocalConfigRequest.class,
+          com.zimbra.soap.admin.message.ReloadLocalConfigResponse.class,
           com.zimbra.soap.admin.message.ReloadMemcachedClientConfigRequest.class,
           com.zimbra.soap.admin.message.ReloadMemcachedClientConfigResponse.class,
           com.zimbra.soap.admin.message.RemoveAccountAliasRequest.class,

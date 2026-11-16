@@ -294,6 +294,7 @@ public class AdminService implements DocumentService {
         AdminConstants.GET_MEMCACHED_CLIENT_CONFIG_REQUEST, new GetMemcachedClientConfig());
 
     // local config
+    dispatcher.registerHandler(AdminConstants.RELOAD_LOCAL_CONFIG_REQUEST, new ReloadLocalConfig());
 
     // noop
     dispatcher.registerHandler(AdminConstants.NO_OP_REQUEST, new NoOp());

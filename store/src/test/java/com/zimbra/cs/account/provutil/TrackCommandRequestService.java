@@ -147,6 +147,7 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.SYNC_GAL_ACCOUNT_REQUEST
           , AdminConstants.RELOAD_MEMCACHED_CLIENT_CONFIG_REQUEST
           , AdminConstants.GET_MEMCACHED_CLIENT_CONFIG_REQUEST
+          , AdminConstants.RELOAD_LOCAL_CONFIG_REQUEST
           , AdminConstants.NO_OP_REQUEST
           , AdminConstants.LOCKOUT_MAILBOX_REQUEST
           , AdminConstants.REFRESH_REGISTERED_AUTHTOKENS_REQUEST

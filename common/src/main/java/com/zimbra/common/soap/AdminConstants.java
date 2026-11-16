@@ -364,6 +364,8 @@ public final class AdminConstants {
       "GetMemcachedClientConfigResponse";
 
   // local config
+  public static final String E_RELOAD_LOCAL_CONFIG_REQUEST = "ReloadLocalConfigRequest";
+  public static final String E_RELOAD_LOCAL_CONFIG_RESPONSE = "ReloadLocalConfigResponse";
 
   // wiki migration
 
@@ -869,6 +871,10 @@ public final class AdminConstants {
       QName.get(E_GET_MEMCACHED_CLIENT_CONFIG_RESPONSE, NAMESPACE);
 
   // local config
+  public static final QName RELOAD_LOCAL_CONFIG_REQUEST =
+      QName.get(E_RELOAD_LOCAL_CONFIG_REQUEST, NAMESPACE);
+  public static final QName RELOAD_LOCAL_CONFIG_RESPONSE =
+      QName.get(E_RELOAD_LOCAL_CONFIG_RESPONSE, NAMESPACE);
 
   // wiki migration
 
