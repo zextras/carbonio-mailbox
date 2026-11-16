@@ -15,6 +15,8 @@ url="https://github.com/zextras"
 section="mail"
 priority="optional"
 depends=('carbonio-configd')
+depends__ubuntu_noble=('carbonio-configd>=1.13.0')
+depends__rocky_9=('carbonio-configd>=1.13.0')
 backup=(
   "opt/zextras/conf/localconfig.xml"
 )

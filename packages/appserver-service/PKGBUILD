@@ -19,6 +19,21 @@ depends=(
   "pending-setups"
 )
 
+depends__ubuntu_noble=(
+  "carbonio-configd>=1.13.0"
+  "carbonio-core"
+  "service-discover"
+  "service-discover-base"
+  "pending-setups"
+)
+depends__rocky_9=(
+  "carbonio-configd>=1.13.0"
+  "carbonio-core"
+  "service-discover"
+  "service-discover-base"
+  "pending-setups"
+)
+
 section="mail"
 priority="optional"
 
@@ -116,7 +131,7 @@ _package() {
 
 _package_legacy() {
   # systemd unit
-  install -Dm644 packages/appserver-service/carbonio-appserver.service \
+  install -Dm644 packages/appserver-service/carbonio-appserver-legacy.service \
     "${pkgdir}/usr/lib/systemd/system/carbonio-appserver.service"
   install -Dm644 packages/appserver-service/carbonio-mailbox-sidecar-legacy.service \
     "${pkgdir}/usr/lib/systemd/system/carbonio-mailbox-sidecar.service"
