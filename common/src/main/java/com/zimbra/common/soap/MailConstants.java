@@ -126,7 +126,6 @@ public final class MailConstants {
   public static final String E_GET_CONTACTS_RESPONSE = "GetContactsResponse";
   public static final String E_GET_CONTACT_BACKUP_LIST_REQUEST = "GetContactBackupListRequest";
   public static final String E_GET_CONTACT_BACKUP_LIST_RESPONSE = "GetContactBackupListResponse";
-  public static final String E_BACKUP = "backup";
   public static final String E_IMPORT_CONTACTS_REQUEST = "ImportContactsRequest";
   public static final String E_IMPORT_CONTACTS_RESPONSE = "ImportContactsResponse";
   public static final String E_EXPORT_CONTACTS_REQUEST = "ExportContactsRequest";
@@ -687,15 +686,12 @@ public final class MailConstants {
   public static final String E_ACTION = "action";
   public static final String E_ATTRIBUTE = "a";
   public static final String E_NAME = "name";
-  public static final String E_DESCRIPTION = "desc";
   public static final String E_VCARD = "vcard";
-  public static final String E_SIGNATURE = "signature";
   public static final String E_METADATA = "meta";
   public static final String A_SECTION = "section";
 
   // Old filter rules constants
   public static final String E_RULE = "r";
-  public static final String E_RULES = "rules";
   public static final String E_CONDITION_GROUP = "g";
   public static final String E_CONDITION = "c";
   public static final String E_FILTER_ARG = "arg";
@@ -803,13 +799,9 @@ public final class MailConstants {
 
   // account ACLs
   public static final String E_ACE = "ace";
-  public static final String E_RIGHT = "right";
   public static final String E_TARGET = "target";
-  public static final String A_ALLOW = "allow";
   public static final String A_DENY = "deny";
   public static final String A_RIGHT = "right";
-  public static final String A_TARGET_BY = "by";
-  public static final String A_TARGET_TYPE = "type";
 
   // email addresses
   public static final String E_EMAIL = "e";
@@ -866,7 +858,6 @@ public final class MailConstants {
   public static final String A_IMAP_UNREAD = "i4u";
   public static final String A_COLOR = "color";
   public static final String A_RGB = "rgb";
-  public static final String A_CREATED_DATE = "cd";
   public static final String A_ATTRIBUTE_NAME = "n";
   public static final String A_REPLACE = "replace";
   public static final String A_BOUNDS = "pos";
@@ -1279,7 +1270,6 @@ public final class MailConstants {
   public static final String A_SUBJECT = "su";
   public static final String A_ARGS = "args";
   public static final String A_REST_URL = "rest";
-  public static final String A_DESC = "desc";
 
   // WaitSet
   public static final String E_WAITSET_ADD = "add";
@@ -1324,22 +1314,15 @@ public final class MailConstants {
   public static final String A_COMPANY = "company";
   public static final String A_FILEAS = "fileas";
 
-  public static final String A_USER = "user";
-
   public static final String E_GRANTOR = "grantor";
   public static final String E_GRANTEE = "grantee";
 
-  public static final String A_ACCOUNT_ID = "accountId";
-
   // Retention policy
   public static final String E_RETENTION_POLICY = "retentionPolicy";
-  public static final String E_KEEP = "keep";
   public static final String E_PURGE = "purge";
   public static final String E_POLICY = "policy";
   public static final String A_LIFETIME = "lifetime";
   public static final String A_RETENTION_POLICY_TYPE = "type";
-
-  public static final String E_FILTER = "filter";
 
   public static final String A_ACTION = "action";
 

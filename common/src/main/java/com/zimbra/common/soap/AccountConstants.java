@@ -120,8 +120,6 @@ public class AccountConstants {
   public static final String E_GET_SMIME_PUBLIC_CERTS_RESPONSE = "GetSMIMEPublicCertsResponse";
 
   // AddressList
-  public static final String A_DESCRIPTION = "description";
-  public static final String A_COUNT_ONLY = "countOnly";
 
   // auth
   public static final QName AUTH_REQUEST = QName.get(E_AUTH_REQUEST, NAMESPACE);
@@ -286,7 +284,6 @@ public class AccountConstants {
 
   public static final String E_PRODUCT_QUERY = "productQuery";
   public static final String E_ACTION = "action";
-  public static final String E_ALIAS = "alias";
   public static final String E_ADMIN_DELEGATED = "adminDelegated";
   public static final String E_AUTH_TOKEN = "authToken";
   public static final String E_CRUMB = "crumb";
@@ -367,7 +364,6 @@ public class AccountConstants {
   public static final String A_ATTRS = "attrs";
   public static final String A_ADDR = "addr";
   public static final String A_DYNAMIC = "dynamic";
-  public static final String A_HOSTNAME = "hostname";
   public static final String A_KEY = "key";
   public static final String A_N = "n";
   public static final String A_NAME = "name";
@@ -398,13 +394,8 @@ public class AccountConstants {
   public static final String A_EXPIRES = "expires";
   public static final String A_OP = "op";
   public static final String A_REF = "ref";
-  public static final String A_STATUS = "status";
-  public static final String A_SORT_BY = "sortBy";
-  public static final String A_SORT_ASCENDING = "sortAscending";
   public static final String A_VISIBLE = "visible";
   public static final String A_PERM_DENIED = "pd";
-  public static final String A_EMAIL = "email";
-  public static final String A_FIELD = "field";
   public static final String A_VIA = "via";
   public static final String A_VERIFY_ACCOUNT = "verifyAccount";
   public static final String A_CSRF_SUPPORT = "csrfTokenSecured";
@@ -426,15 +417,12 @@ public class AccountConstants {
   public static final String A_TARGET_TYPE = "type";
   public static final String A_ZIMBRA_ID = "zid";
   public static final String E_ACE = "ace";
-  public static final String E_ACL = "acl";
-  public static final String E_GRANT = "grant";
   public static final String E_RIGHT = "right";
   public static final String E_RIGHTS = "rights";
   public static final String E_TARGET = "target";
   public static final String E_TARGETS = "targets";
 
   // gal
-  public static final String A_IS_GROUP = "isGroup";
   public static final String A_EXP = "exp";
   public static final String A_NEED_EXP = "needExp";
   public static final String A_NEED_SMIME_CERTS = "needSMIMECerts";
@@ -504,5 +492,4 @@ public class AccountConstants {
   public static final String A_SESSION_ID = "sessionId";
 
   // Client Info
-  public static final String E_HOSTNAME = "hostname";
 }

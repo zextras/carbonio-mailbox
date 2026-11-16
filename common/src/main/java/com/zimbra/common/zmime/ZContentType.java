@@ -12,7 +12,6 @@ public class ZContentType extends ZCompoundHeader {
     private final String defaultType;
 
     public static final String TEXT_PLAIN = "text/plain";
-    public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
     public static final String MESSAGE_RFC822 = "message/rfc822";
     public static final String DEFAULT = TEXT_PLAIN;
 

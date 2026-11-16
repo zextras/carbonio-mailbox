@@ -59,7 +59,6 @@ public class SmimeConstants {
     public static final String E_IP_ADDRESS = "iPAddress";
     public static final String E_REGISTERED_ID = "registeredID";
 
-    public static final String ALIAS = "alias";
     public static final String PUB_CERT_TYPE = "X.509";
 
 }

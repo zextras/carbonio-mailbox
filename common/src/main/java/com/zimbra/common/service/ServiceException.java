@@ -73,9 +73,6 @@ public class ServiceException extends Exception {
   public static final String MAILBOX_ID = "mboxId";
   public static final String ACCOUNT_ID = "acctId";
 
-  public static final String PROXIED_FROM_ACCT =
-      "proxiedFromAcct"; // exception proxied from remote account
-
   // to ensure that exception id is unique across multiple servers.
   private static String ID_KEY = null;
 

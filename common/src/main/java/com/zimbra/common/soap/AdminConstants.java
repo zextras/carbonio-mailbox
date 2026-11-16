@@ -1098,7 +1098,6 @@ public final class AdminConstants {
   // AddressList
 
   // DumpSessions
-  public static final String E_SESSION = "session";
   public static final String A_ZIMBRA_ID = "zid";
   public static final String A_SESSION_ID = "sid";
   public static final String A_LIST_SESSIONS = "listSessions";
@@ -1171,11 +1170,9 @@ public final class AdminConstants {
   public static final String E_PRINCIPAL = "principal";
   public static final String E_TOKEN = "token";
 
-  public static final String A_ACCOUNT = "account";
   public static final String A_DOMAIN = "domain";
   public static final String A_SERVER = "server";
 
-  public static final String A_ACTION = "action";
   public static final String A_APPLY_CONFIG = "applyConfig";
   public static final String A_APPLY_COS = "applyCos";
   public static final String A_ID = "id";
@@ -1289,8 +1286,6 @@ public final class AdminConstants {
   public static final String A_VERSION_INFO_HOST = "host";
   public static final String A_VERSION_INFO_TYPE = "type";
 
-  public static final String E_ZIMLET = "zimlet";
-  public static final String E_ACL = "acl";
   public static final String A_VALUE = "value";
 
   public static final String A_QUOTA_USED = "used";
@@ -1372,7 +1367,6 @@ public final class AdminConstants {
   public static final String A_SUB_DOMAIN = "subDomain";
   public static final String A_EXPAND_ALL_ATTRS = "expandAllAttrs";
   public static final String A_INHERITED = "inherited";
-  public static final String A_RIGHT = "right";
   public static final String A_RIGHT_CLASS = "rightClass";
   public static final String A_TARGET_TYPE = "targetType";
   public static final String A_SECRET = "secret";
@@ -1428,13 +1422,10 @@ public final class AdminConstants {
   public static final String A_MDAY = "mday";
 
   // ZimbraLicenseExtenstion LicenseService and LicenseAdminService
-  public static final String E_CONTENT = "content";
   public static final String A_ATTACHMENT_ID = "aid";
-  public static final String E_INFO = "info";
 
   // Retention policy
   public static final String E_RETENTION_POLICY = "retentionPolicy";
-  public static final String E_KEEP = "keep";
   public static final String E_PURGE = "purge";
   public static final String E_POLICY = "policy";
 

@@ -78,27 +78,8 @@ public final class BackupConstants {
     public static final QName QUERY_MAILBOX_MOVE_RESPONSE = QName.get(E_QUERY_MAILBOX_MOVE_RESPONSE, NAMESPACE);
 
     public static final String E_ACCOUNT = "account";
-    public static final String E_MAILBOX = "mbox";
-    public static final String E_QUERY = "query";
-    public static final String E_BACKUP = "backup";
-    public static final String E_ERROR = "error";
-    public static final String E_STATS = "stats";
 
-    public static final String A_MAILBOXID = "mbxid";
     public static final String A_NAME = "name";
-    public static final String A_METHOD = "method";
-    public static final String A_ACCOUNT_ID = "accountId";
-    public static final String A_PREFIX = "prefix";
-    public static final String A_TYPE = "type";  // "full" or "incremental"
-    public static final String A_FROM = "from";
-    public static final String A_VERBOSE = "verbose";
-    public static final String A_TOTAL_COUNT = "total";
-    public static final String A_MORE = "more";
-    public static final String A_START = "start";
-    public static final String A_END = "end";
-    public static final String A_SYNC = "sync";
-    public static final String A_SERVER = "server";
-    public static final String A_STATUS = "status";
 
     // mailbox move
     public static final String A_TARGET = "dest";
