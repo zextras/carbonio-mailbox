@@ -7,7 +7,6 @@ package com.zimbra.cs.mailclient;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.net.SocketFactory;
@@ -29,8 +28,6 @@ public abstract class MailConfig {
     private String authorizationId;
     private String authenticationId;
     private String mechanism;
-    private String realm;
-    private Map<String, String> saslProperties;
     private Log logger;
     private SocketFactory socketFactory;
     private SSLSocketFactory sslSocketFactory;
@@ -216,46 +213,6 @@ public abstract class MailConfig {
     }
 
     /**
-     * Returns the SASL authentication realm.
-     *
-     * @return the SASL authentication realm, or <tt>null</tt> if none
-     */
-    public String getRealm() {
-        return realm;
-    }
-
-    /**
-     * Sets the realm for SASL authentication.
-     *
-     * @param realm the SASL realm
-     */
-    public void setRealm(String realm) {
-        this.realm = realm;
-    }
-
-    /**
-     * Returns SASL authentication properties. These properties will be
-     * specified when
-     * {@link javax.security.sasl.Sasl#createSaslClient Sasl.createSaslClient}
-     * is called to create the <tt>SaslClient</tt>.
-     *
-     * @return the SASL authentication properties, or <tt>null</tt> if none
-     * @see javax.security.sasl.SaslClient
-     */
-    public Map<String, String> getSaslProperties() {
-        return saslProperties;
-    }
-
-    /**
-     * Sets optional properties to use for SASL authentication.
-     *
-     * @param properties the SASL properties to use
-     */
-    public void setSaslProperties(Map<String, String> properties) {
-        saslProperties = properties;
-    }
-
-    /**
      * Returns the <tt>AuthenticatorFactory</tt> to use for SASL authentication.
      * The default value is what is returned by calling
      * {@link AuthenticatorFactory#getDefault}
@@ -368,9 +325,6 @@ public abstract class MailConfig {
             .add("connectTimeout", connectTimeout);
         if (null != mechanism) {
             helper.add("mechanism", mechanism);
-        }
-        if (null != realm) {
-            helper.add("realm", realm);
         }
         if (null != authorizationId) {
             helper.add("authorizationId", "<not null>");

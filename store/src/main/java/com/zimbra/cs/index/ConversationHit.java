@@ -49,10 +49,6 @@ public final class ConversationHit extends ZimbraHit {
         return messageHits.values();
     }
 
-    public int getNumMessageHits() {
-        return getMessageHits().size();
-    }
-
     public int getNumMessages() throws ServiceException {
         return getConversation().getMessageCount();
     }

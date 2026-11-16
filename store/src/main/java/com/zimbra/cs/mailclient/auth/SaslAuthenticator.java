@@ -60,12 +60,7 @@ public final class SaslAuthenticator extends Authenticator {
     checkRequired("protocol", config.getProtocol());
     checkRequired("authentication id", config.getAuthenticationId());
     saslClient = mechanism.equals(GSSAPI) ? createGssSaslClient() : createSaslClient();
-    Map<String, String> props = config.getSaslProperties();
-    String qop = QOP_AUTH;
-    if (props != null) {
-      qop = props.get(Sasl.QOP);
-    }
-    debug("Requested QOP is %s", qop != null ? qop : "auth");
+    debug("Requested QOP is %s", QOP_AUTH);
   }
 
   @Override
@@ -126,11 +121,7 @@ public final class SaslAuthenticator extends Authenticator {
   }
 
   private String getPrincipal() {
-    String realm = config.getRealm();
-    String authenticationId = config.getAuthenticationId();
-    return realm != null && authenticationId.indexOf('@') == -1
-        ? authenticationId + '@' + realm
-        : authenticationId;
+    return config.getAuthenticationId();
   }
 
   private SaslClient createSaslClient() throws SaslException {
@@ -139,7 +130,7 @@ public final class SaslAuthenticator extends Authenticator {
         config.getAuthorizationId(),
         config.getProtocol(),
         config.getHost(),
-        config.getSaslProperties(),
+        null,
         new SaslCallbackHandler());
   }
 
@@ -200,11 +191,7 @@ public final class SaslAuthenticator extends Authenticator {
           ((PasswordCallback) cb).setPassword(password.toCharArray());
           password = null; // Clear password once finished
         } else if (cb instanceof RealmCallback) {
-          String realm = config.getRealm();
-          if (realm == null) {
-            throw new IllegalStateException("Realm missing but required");
-          }
-          ((RealmCallback) cb).setText(realm);
+          throw new IllegalStateException("Realm missing but required");
         } else {
           throw new UnsupportedCallbackException(cb);
         }

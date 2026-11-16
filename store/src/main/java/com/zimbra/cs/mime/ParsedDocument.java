@@ -198,10 +198,6 @@ public final class ParsedDocument {
         return fragment;
     }
 
-    public String getCreator() {
-        return creator;
-    }
-
     public long getCreatedDate() {
         return createdDate;
     }
