@@ -19,7 +19,6 @@ import com.zimbra.soap.admin.message.GetMailboxVersionRequest;
 import com.zimbra.soap.admin.message.GetMailboxVolumesRequest;
 import com.zimbra.soap.admin.message.GetXMbxSearchesListRequest;
 import com.zimbra.soap.admin.message.HsmRequest;
-import com.zimbra.soap.admin.message.InstallCertRequest;
 import com.zimbra.soap.admin.message.MoveBlobsRequest;
 import com.zimbra.soap.admin.message.MoveMailboxRequest;
 import com.zimbra.soap.admin.message.PurgeMovedMailboxRequest;
@@ -62,7 +61,6 @@ public final class DocExcludedServices {
         SERVICE_SET.add(removeRequest(GetMailboxVolumesRequest.class));
         SERVICE_SET.add(removeRequest(GetXMbxSearchesListRequest.class));
         SERVICE_SET.add(removeRequest(HsmRequest.class));
-        SERVICE_SET.add(removeRequest(InstallCertRequest.class));
         SERVICE_SET.add(removeRequest(MoveBlobsRequest.class));
         SERVICE_SET.add(removeRequest(MoveMailboxRequest.class));
         SERVICE_SET.add(removeRequest(PurgeMovedMailboxRequest.class));
