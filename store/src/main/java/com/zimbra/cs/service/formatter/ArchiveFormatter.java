@@ -1251,7 +1251,7 @@ public abstract class ArchiveFormatter extends Formatter {
 
   private static String pathUnderFolder(String dir, String folderPath) {
     String base = folderPath.endsWith("/") ? folderPath : folderPath + '/';
-    String relative = dir.startsWith(base) ? dir.substring(base.length()) : dir.substring(1);
+    String relative = dir.substring(dir.startsWith(base) ? base.length() : 1);
     String path = base + relative;
     return path.length() > 1 && path.endsWith("/") ? path.substring(0, path.length() - 1) : path;
   }
