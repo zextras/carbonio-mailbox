@@ -949,8 +949,4 @@ public class GalSearchControl {
     buf.append("_").append(result.getToken());
     return buf.toString();
   }
-
-  public String getGalQuery() throws ServiceException {
-    return getSearchQuery(null, false);
-  }
 }

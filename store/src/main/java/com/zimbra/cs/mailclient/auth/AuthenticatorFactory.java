@@ -53,11 +53,6 @@ public final class AuthenticatorFactory {
     return auth;
   }
 
-  public boolean isPasswordRequired(String mechanism) {
-    Info info = authenticators.get(mechanism);
-    return info != null && info.passwordRequired;
-  }
-
   public Authenticator newAuthenticator(MailConfig config) throws LoginException, SaslException {
     return newAuthenticator(config, null);
   }

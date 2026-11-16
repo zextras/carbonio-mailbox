@@ -19,7 +19,6 @@ import com.zimbra.common.net.ProxyHostConfiguration;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.Constants;
-import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.common.util.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import java.io.IOException;
@@ -51,7 +50,6 @@ import org.apache.hc.client5.http.cookie.StandardCookieSpec;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 import org.apache.hc.client5.http.protocol.HttpClientContext;
 import org.apache.hc.core5.concurrent.FutureCallback;
 import org.apache.hc.core5.http.ClassicHttpResponse;
@@ -244,12 +242,6 @@ public class SoapHttpTransport extends SoapTransport {
                 method.addHeader(new BasicHeader("User-Agent", agentName));
             }
 
-            // Set the original user agent if it's specified.
-            String originalUserAgent = getOriginalUserAgent();
-            if (originalUserAgent != null) {
-                method.addHeader(new BasicHeader(HeaderConstants.HTTP_HEADER_ORIG_USER_AGENT, originalUserAgent));
-            }
-
             // the content-type charset will determine encoding used
             // when we set the request body
             method.addHeader("Content-Type", getRequestProtocol().getContentType());
@@ -270,14 +262,6 @@ public class SoapHttpTransport extends SoapTransport {
             ZAuthToken zToken = getAuthToken();
 
             BasicCookieStore cookieStore = HttpClientUtil.newHttpState(zToken, host, this.isAdmin());
-            String trustedToken = getTrustedToken();
-            if (trustedToken != null) {
-                BasicClientCookie cookie = new BasicClientCookie(ZimbraCookie.COOKIE_ZM_TRUST_TOKEN, trustedToken);
-                cookie.setDomain(host);
-                cookie.setPath("/");
-                cookie.setSecure(false);
-                cookieStore.addCookie(cookie);
-            }
 
             if (zToken instanceof ZJWToken) {
                 method.addHeader(Constants.AUTH_HEADER, Constants.BEARER + " " + zToken.getValue());
@@ -448,14 +432,6 @@ public class SoapHttpTransport extends SoapTransport {
         HttpClientContext context = HttpClientContext.create();
         String host = HttpClientUtil.requestUri(post).getHost();
         CookieStore cookieStore = HttpClientUtil.newCookieStore(getAuthToken(), host, isAdmin());
-        String trustedToken = getTrustedToken();
-        if (trustedToken != null) {
-            BasicClientCookie cookie = new BasicClientCookie(ZimbraCookie.COOKIE_ZM_TRUST_TOKEN, trustedToken);
-            cookie.setDomain(HttpClientUtil.requestUri(post).getHost());
-            cookie.setPath("/");
-            cookie.setSecure(false);
-            cookieStore.addCookie(cookie);
-        }
         context.setCookieStore(cookieStore);
         CloseableHttpAsyncClient httpClient = ZimbraHttpClientManager.getInstance().getInternalAsyncHttpClient();
         CompletableFuture<Element> result = new CompletableFuture<>();

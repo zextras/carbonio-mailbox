@@ -34,10 +34,8 @@ public abstract class SoapTransport {
     private String mUserAgentVersion;
     private DebugListener mDebugListener;
     private String csrfToken;
-    private String trustedToken;
     private boolean voidOnExpired = false;
     private boolean isAdmin = false;
-    private String originalUserAgent;
     public static final String DEFAULT_USER_AGENT_NAME = "Carbonio";
     private static String sDefaultUserAgentName = DEFAULT_USER_AGENT_NAME;
     private static String sDefaultUserAgentVersion;
@@ -62,7 +60,6 @@ public abstract class SoapTransport {
         mRequestProto = SoapProtocol.Soap12;
         mPrettyPrint = false;
     }
-
 
     public void setDebugListener(DebugListener listener) {
         mDebugListener = listener;
@@ -189,14 +186,6 @@ public abstract class SoapTransport {
      */
     public void setCsrfToken(String csrfToken) {
         this.csrfToken = csrfToken;
-    }
-
-    public String getTrustedToken() {
-        return trustedToken;
-    }
-
-    public void setTrustedToken(String trustedToken) {
-        this.trustedToken = trustedToken;
     }
 
     /**
@@ -504,14 +493,6 @@ public abstract class SoapTransport {
 
     public void setAdmin(boolean isAdmin) {
         this.isAdmin = isAdmin;
-    }
-
-    public String getOriginalUserAgent() {
-        return originalUserAgent;
-    }
-
-    public void setOriginalUserAgent(String originalUserAgent) {
-        this.originalUserAgent = originalUserAgent;
     }
 
 }

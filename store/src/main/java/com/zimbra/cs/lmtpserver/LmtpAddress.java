@@ -98,14 +98,6 @@ public class LmtpAddress {
 	return mLocalPart;
     }
 
-    public String getNormalizedLocalPart() {
-	return mNormalizedLocalPart;
-    }
-
-    public String getDomainPart() {
-	return mDomainPart;
-    }
-
     public boolean isValid() {
 	return mIsValid;
     }
@@ -194,7 +186,6 @@ public class LmtpAddress {
 	offset++;
     }
 
-
     private void init(String p) {
 	array = p.toCharArray();
 	length = array.length;
@@ -272,7 +263,6 @@ public class LmtpAddress {
 
 	return true;
     }
-
 
     private void skipSpaces() {
 	while (peek() == ' ') skip();
@@ -374,7 +364,6 @@ public class LmtpAddress {
 	}
 	return true;
     }
-
 
     private boolean parseLocalPart() {
 	int ch = peek();

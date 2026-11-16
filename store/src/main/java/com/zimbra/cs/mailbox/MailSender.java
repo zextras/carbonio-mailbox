@@ -337,11 +337,6 @@ public class MailSender {
     return mSaveToSent;
   }
 
-  /** Getter for original message Id - exposed for OfflineMailSender */
-  protected ItemId getOriginalMessageId() {
-    return mOriginalMessageId;
-  }
-
   /** Getter for reply type - exposed for OfflineMailSender */
   protected String getReplyType() {
     return mReplyType;
