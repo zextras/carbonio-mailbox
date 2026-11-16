@@ -68,14 +68,6 @@ public abstract class SoapTransport {
     public DebugListener getDebugListener() {
         return mDebugListener;
     }
-    /**
-     * Whether or not to pretty-print XML before sending it.
-     *
-     * <p> Default value is <code>false</code>.
-     */
-    public void setPrettyPrint(boolean prettyPrint) {
-        this.mPrettyPrint = prettyPrint;
-    }
 
     /**
      * Get the mPrettyPrint value.

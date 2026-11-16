@@ -1365,15 +1365,6 @@ public final class LC {
           KnownKey key = (KnownKey) field.get(null);
           // Automatically set the key name with the variable name.
           key.setKey(field.getName());
-
-          // process annotations
-          if (field.isAnnotationPresent(Supported.class)) {
-            key.setSupported(true);
-          }
-          if (field.isAnnotationPresent(Reloadable.class)) {
-            key.setReloadable(true);
-          }
-
         } catch (Throwable never) {
           assert false : never;
         }

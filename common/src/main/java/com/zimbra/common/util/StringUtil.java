@@ -13,13 +13,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -28,8 +26,6 @@ import java.util.regex.Pattern;
 import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.zimbra.common.mime.MimeConstants;
-import com.zimbra.common.service.ServiceException;
 
 /**
  * @author schemers
@@ -427,51 +423,6 @@ public class StringUtil {
         }
     }
 
-    public static List<String> parseSieveStringList(String value) throws ServiceException {
-        List<String> result = new ArrayList<>();
-        if (value == null) {
-            return result;
-        }
-        value = value.trim();
-        if (value.isEmpty()) {
-            return result;
-        }
-
-        int i = 0;
-        boolean inStr = false;
-        boolean inList = false;
-        StringBuilder sb = null;
-        while (i < value.length()) {
-            char ch = value.charAt(i++);
-            if (inStr) {
-                if (ch == '"') {
-                    result.add(sb.toString());
-                    inStr = false;
-                } else {
-                    if (ch == '\\' && i < value.length())
-                        ch = value.charAt(i++);
-                    sb.append(ch);
-                }
-            } else {
-                if (ch == '"') {
-                    inStr = true;
-                    sb = new StringBuilder();
-                } else if (ch == '[' && !inList) {
-                    inList = true;
-                } else if (ch ==']' && inList) {
-                    inList = false;
-                } else if (!Character.isWhitespace(ch)) {
-                    throw ServiceException.INVALID_REQUEST("unable to parse string list: "+value, null);
-                }
-            }
-        }
-        if (inStr || inList) {
-            throw ServiceException.INVALID_REQUEST("unable to parse string list2: "+value, null);
-        }
-        return result;
-    }
-
-
     /**
      * split a line into array of Strings, using a shell-style syntax for tokenizing words.
      *
@@ -747,10 +698,6 @@ public class StringUtil {
         return (sb == null ? str : sb.append(str, last, i).toString());
     }
 
-    public static String jsEncodeKey(String key) {
-        return '"' + key + '"';
-    }
-
     //
     // HTML methods
     //
@@ -778,26 +725,6 @@ public class StringUtil {
             }
         }
         return result.toString();
-    }
-
-    /**
-     * Unescapes a string containing entity escapes to a string containing the actual Unicode characters
-     * corresponding to the escapes.
-     */
-    public static String unEscapeHtml(String text) {
-        if (text == null || text.length() == 0) {
-            return "";
-        }
-
-        String result = text;
-        result = result.replace("&lt;", "<");
-        result = result.replace("&gt;", ">");
-        result = result.replace("&amp;", "&");
-        result = result.replace("&quot;", "\"");
-        result = result.replace("&#034;", "\"");
-        result = result.replace("&#039;", "\'");
-
-        return result;
     }
 
     private static Set<String> sJavaReservedWords =
@@ -861,31 +788,6 @@ public class StringUtil {
         return sJavaReservedWords.contains(s);
     }
 
-    /**
-     * Escape (if needed) given identifer. Invalid characters are replaced with an "_".
-     * If the whole word is a Java Identifier, then it is suffixed with a "_".
-     * @param s identifier that potentially needs escaping
-     * @return escaped (if needed) identifier
-     */
-    public static String escapeJavaIdentifier(String s) {
-        if (isNullOrEmpty(s)) {
-            return s;
-        } else if (isJavaReservedWord(s)) {
-            return s + "_";
-        }
-
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
-            char ch = s.charAt(i);
-            if (i == 0) {
-                result.append(Character.isJavaIdentifierStart(ch) ? ch : "_");
-            } else {
-                result.append(Character.isJavaIdentifierPart(ch) ? ch : "_");
-            }
-         }
-         return result.toString();
-    }
-
     public static String capitalize(String s) {
         return s.substring(0,1).toUpperCase() + s.substring(1);
     }
@@ -940,29 +842,6 @@ public class StringUtil {
      */
     public static String lfToCrlf(CharSequence s) {
         return replaceAll(s, "\r?\n", "\r\n");
-    }
-
-    /** Replaces all non-printable-ASCII characters with their Java Unicode escape sequences. */
-    public static String escapeString(String string) {
-        if (Strings.isNullOrEmpty(string))
-            return string;
-
-        StringBuilder sb = new StringBuilder(string.length());
-        for (int index = 0, len = string.length(); index < len; index++) {
-            char c = string.charAt(index);
-            if (c >= 0x20 && c < 0x7F) {
-                sb.append(c);
-            } else if (c == '\t') {
-                sb.append("\\t");
-            } else if (c == '\r') {
-                sb.append("\\r");
-            } else if (c == '\n') {
-                sb.append("\\n");
-            } else {
-                sb.append(String.format("\\u%04x", (int) c));
-            }
-        }
-        return sb.toString();
     }
 
     public static boolean isUUID(String value) {

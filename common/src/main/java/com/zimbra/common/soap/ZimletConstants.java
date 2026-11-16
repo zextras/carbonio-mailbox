@@ -26,7 +26,6 @@ public final class ZimletConstants {
     /* for serverExtension branch */
     public static final String ZIMLET_TAG_SERVER_EXTENSION = "serverExtension";
     public static final String ZIMLET_ATTR_HAS_KEYWORD     = "hasKeyword";
-    public static final String ZIMLET_ATTR_MATCH_ON        = "matchOn";
     public static final String ZIMLET_ATTR_EXTENSION_CLASS = "extensionClass";
     public static final String ZIMLET_ATTR_REGEX           = "regex";
 

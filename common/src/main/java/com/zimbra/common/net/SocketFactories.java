@@ -92,10 +92,6 @@ public final class SocketFactories {
     registered = true;
   }
 
-  public static synchronized void resetRegisteredFlag() {
-    registered = false;
-  }
-
   /**
    * Returns a ProtocolSocketFactory that wraps the specified SocketFactory.
    *
@@ -132,15 +128,6 @@ public final class SocketFactories {
    */
   public static LayeredConnectionSocketFactory defaultSecureProtocolSocketFactory() {
     return secureProtocolSocketFactory(defaultSSLSocketFactory());
-  }
-
-  /**
-   * Returns a SecureProtocolSocketFactory that trusts all certificates.
-   *
-   * @return a SecureProtocolSocketFactory trusting all certificates
-   */
-  public static LayeredConnectionSocketFactory dummySecureProtocolSocketFactory() {
-    return secureProtocolSocketFactory(dummySSLSocketFactory());
   }
 
   /**

@@ -66,28 +66,12 @@ public class LmtpClient {
         this.skipTLSCertValidation = skipTLSCertValidation;
     }
 
-   
-
-    public void warnOnRejectedRecipients(boolean yesno) {
-        mWarnOnRejectedRecipients = yesno;
-    }
-
     public void close() {
         try {
             sendLine("QUIT");
             mConnection.close();
         } catch (IOException ioe) {
             warn("IOException closing connection: " + ioe.getMessage());
-        }
-        mConnection = null;
-    }
-
-    // This method is used only for testing
-    public void abruptClose() {
-        try {
-            mConnection.close();
-        } catch (IOException ioe) {
-            info("IOException closing connection: " + ioe.getMessage());
         }
         mConnection = null;
     }
@@ -316,8 +300,6 @@ public class LmtpClient {
             return TrustManagers.customTrustManager();	        
         }
     }
-
-
 
     private void warn(String s)  { System.err.println("[warn] "  + s); System.err.flush(); }
     private void error(String s) { System.err.println("[error] " + s); System.err.flush(); }

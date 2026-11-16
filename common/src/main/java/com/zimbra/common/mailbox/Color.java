@@ -58,18 +58,6 @@ public class Color {
         return mValue;
     }
 
-    public byte getRed() {
-        return (byte) ((getRgb() >> 16) & 0xff);
-    }
-
-    public byte getGreen() {
-        return (byte) ((getRgb() >> 8) & 0xff);
-    }
-
-    public byte getBlue() {
-        return (byte) (getRgb() & 0xff);
-    }
-
     public long getRgb() {
         return hasMapping() ? COLORS[(int) mValue] : mValue & RGB_MASK;
     }

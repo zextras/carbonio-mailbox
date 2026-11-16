@@ -55,11 +55,6 @@ public class ZContentType extends ZCompoundHeader {
         return new ZContentType(this);
     }
 
-
-    public ZContentType setZContentType(String contentType) {
-        return setPrimaryValue(contentType);
-    }
-
     @Override
     public ZContentType setPrimaryValue(String value) {
         super.setPrimaryValue(value);

@@ -56,7 +56,6 @@ public class MimeCompoundHeader extends MimeHeader {
         return value == null ? null : value.getBytes(DEFAULT_CHARSET);
     }
 
-
     private void parse() {
         if (content != null) {
             this.primaryValue = CompoundHeaderParser.parse(content, valueStart, params, MimeHeader::decode);
@@ -132,11 +131,6 @@ public class MimeCompoundHeader extends MimeHeader {
 
     public MimeCompoundHeader setCharset(String charset) {
         this.charset = charset == null || charset.trim().isEmpty() ? null : charset;
-        return this;
-    }
-
-    public MimeCompoundHeader setUse2231Encoding(boolean use2231) {
-        this.use2231Encoding = use2231;
         return this;
     }
 

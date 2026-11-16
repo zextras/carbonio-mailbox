@@ -58,10 +58,6 @@ RUN mkdir -p /staging/usr/bin && \
     printf '#!/bin/sh\nexec /usr/local/bin/configd localconfig "$@"\n' \
       > /staging/usr/bin/zmlocalconfig && \
     chmod +x /staging/usr/bin/zmlocalconfig && \
-    printf '#!/bin/sh\njava %s com.zimbra.cs.util.GalSyncAccountUtil "$@"\n' \
-      "${BASE_JAVA_ARGS}" \
-      > /staging/usr/bin/zmgsautil && \
-    chmod +x /staging/usr/bin/zmgsautil && \
     printf '#!/bin/sh\njava %s com.zimbra.cs.zclient.ZMailboxUtil "$@"\n' \
       "${BASE_JAVA_ARGS}" \
       > /staging/usr/bin/zmmailbox && \
