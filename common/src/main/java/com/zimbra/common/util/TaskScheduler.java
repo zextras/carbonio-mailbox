@@ -195,18 +195,6 @@ public class TaskScheduler<V> {
     }
 
     /**
-     * Returns the result of the last task execution.
-     * @param taskId
-     */
-    public V getLastResult(Object taskId) {
-        TaskRunner<V> runner = mRunnerMap.get(taskId);
-        if (runner == null) {
-            return null;
-        }
-        return runner.mLastResult;
-    }
-
-    /**
      * Cancels a task.
      * @return the task, or <tt>null</tt> if the task couldn't be found.
      */

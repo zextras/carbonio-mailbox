@@ -58,13 +58,8 @@ public class ZimbraHttpConnectionManager {
         protected  RequestConfig reqConfig = RequestConfig.DEFAULT;
         protected SocketConfig socketConfig = SocketConfig.DEFAULT;
 
-
         public RequestConfig getReqConfig() {
             return reqConfig;
-        }
-
-        public SocketConfig getSocketConfig() {
-            return socketConfig;
         }
         abstract long getHttpClientConnectionTimeout();
         abstract long getReaperSleepInterval();
@@ -188,7 +183,6 @@ private static class ExternalConnMgrParams extends ZimbraConnMgrParams {
     private HttpClientBuilder defaultHttpClient;
     private IdleReaper idleReaper;
 
-
     private ZimbraHttpConnectionManager(String name, ZimbraConnMgrParams zimbraConnMgrParams) {
         this.name = name;
         this.zimbraConnMgrParams = zimbraConnMgrParams;
@@ -227,13 +221,9 @@ private static class ExternalConnMgrParams extends ZimbraConnMgrParams {
 
     }
 
-
-
-
     public ZimbraConnMgrParams getZimbraConnMgrParams() {
         return zimbraConnMgrParams;
     }
-
 
     /**
      * Returns the default HttpClient instance associated with this connection
@@ -321,8 +311,6 @@ private static class ExternalConnMgrParams extends ZimbraConnMgrParams {
             .setDefaultRequestConfig(this.zimbraConnMgrParams.reqConfig);
     }
 
-
-
     /*
      * =====================
      *  Idle Reaper
@@ -366,12 +354,9 @@ private static class ExternalConnMgrParams extends ZimbraConnMgrParams {
                     " - reaper sleep interval=%d, reaper connection timeout=%d",
                     getReaperSleepInterval(), getReaperConnectionTimeout());
 
-
             // create and start thread
             reaperThread = new IdleConnectionMonitorThread(connMgr.getHttpConnMgr());
             reaperThread.setName("IdleConnectionTimeoutThread" + " for " + connMgr.getName());
-
-
 
             reaperThread.setConnectionTimeout(getReaperConnectionTimeout());
             reaperThread.setTimeoutInterval(getReaperSleepInterval());

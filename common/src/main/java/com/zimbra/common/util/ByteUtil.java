@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -285,21 +284,6 @@ public class ByteUtil {
             os.close();
         } catch (Exception e) {
             ZimbraLog.misc.debug("ignoring exception while closing output stream", e);
-        }
-    }
-
-    /**
-     * Closes the given reader and ignores any exceptions.
-     * @param r the <tt>Reader</tt>, may be <tt>null</tt>
-     */
-    public static void closeReader(Reader r) {
-        if (r == null) {
-            return;
-        }
-        try {
-            r.close();
-        } catch (IOException e) {
-            ZimbraLog.misc.debug("ignoring exception while closing reader", e);
         }
     }
 
@@ -605,26 +589,6 @@ public class ByteUtil {
      */
     public static String getDigest(byte[] data) {
         return getSHA256Digest(data, true);
-    }
-
-    /**
-     * Returns byte array containing binary version of digest.
-     * @param digest
-     * @return
-     */
-    public static byte[] getBinaryDigest(String digest) {
-        return decodeFSSafeBase64(digest);
-    }
-
-    public static boolean isValidDigest(String digest) {
-        if (digest != null) {
-            byte[] bin = decodeFSSafeBase64(digest);
-            if (bin != null) {
-                String str = encodeFSSafeBase64(bin);
-                return digest.equals(str);
-            }
-        }
-        return false;
     }
 
     private static final int SKIP_BUFFER_SIZE = 4096;

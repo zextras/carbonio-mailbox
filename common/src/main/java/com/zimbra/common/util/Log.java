@@ -423,17 +423,6 @@ public class Log {
     }
   }
 
-  /** Like error but provides stack trace info if debug is enabled */
-  public void errorQuietlyFmt(String format, Object o) {
-    if (!isErrorEnabled()) {
-      return;
-    }
-    if (isDebugEnabled()) {
-      errorQuietly(format, o, new Throwable("Throwable provided for stack detail"));
-    }
-    error(format, o);
-  }
-
   /** Like error but will only include full details of throwable at debug level. */
   public void errorQuietly(String format, Object o, Throwable t) {
     if (!isErrorEnabled()) {

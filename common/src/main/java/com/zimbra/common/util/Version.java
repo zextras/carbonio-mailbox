@@ -197,10 +197,6 @@ public final class Version implements Comparable<Version> {
         return (this.mMajor > version.mMajor || (this.mMajor == version.mMajor && this.mMinor > version.mMinor));
     }
 
-    public boolean isFuture() {
-        return mFuture;
-    }
-
     @Override
     public String toString() {
         return mVersion;

@@ -15,7 +15,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -306,13 +305,6 @@ public class ZCalendar {
       return defaultValue;
     }
 
-    public long getPropLongVal(ICalTok tok, long defaultValue) {
-      ZProperty prop = getProperty(tok);
-      if (prop != null) return Long.parseLong(prop.mValue);
-
-      return defaultValue;
-    }
-
     @Override
     public String toString() {
       StringBuffer toRet = new StringBuffer("BEGIN:VCALENDAR");
@@ -457,13 +449,6 @@ public class ZCalendar {
     public String getPropVal(ICalTok tok, String defaultValue) {
       ZProperty prop = getProperty(tok);
       if (prop != null) return prop.mValue;
-
-      return defaultValue;
-    }
-
-    long getPropLongVal(ICalTok tok, long defaultValue) {
-      ZProperty prop = getProperty(tok);
-      if (prop != null) return Long.parseLong(prop.mValue);
 
       return defaultValue;
     }
@@ -682,10 +667,6 @@ public class ZCalendar {
 
     public Iterator<ZParameter> parameterIterator() {
       return mParameters.iterator();
-    }
-
-    public int getNumParameters() {
-      return mParameters.size();
     }
 
     public String getParameterVal(ICalTok tok, String defaultValue) {

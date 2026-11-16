@@ -25,7 +25,6 @@ public final class HeaderConstants {
     public static final String E_NO_NOTIFY  = "nonotify";
     public static final String E_NO_SESSION = "nosession";
     public static final String E_SESSION    = "session";
-    public static final String E_MODS = "mods";
 
     @Deprecated
     public static final String E_SESSION_ID    = "sessionId";
@@ -50,8 +49,6 @@ public final class HeaderConstants {
     public static final String TYPE_XML        = "xml";
     public static final String TYPE_JAVASCRIPT = "js";
     public static final String CHANGE_MODIFIED = "mod";
-    public static final String CHANGE_CREATED  = "new";
-    public static final String SESSION_MAIL  = "mail";
     public static final String SESSION_ADMIN = "admin";
     public static final String E_CSRFTOKEN = "csrfToken";
     public static final String E_SOAP_ID = "soapId";

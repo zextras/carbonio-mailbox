@@ -6,9 +6,7 @@
 package com.zimbra.common.util;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import com.google.common.cache.LoadingCache;
@@ -43,26 +41,4 @@ public class MapUtilTest {
     assertTrue(list.contains("c"));
   }
 
-  @Test
-  void newValueSetMap() throws ExecutionException {
-    LoadingCache<Integer, Set<String>> map = MapUtil.newValueSetMap();
-    Set<String> set1 = new HashSet<String>();
-    set1.add("a");
-    set1.add("b");
-    Set<String> set2 = new HashSet<String>();
-    set2.add("c");
-    map.put(1, set1);
-    map.put(2, set2);
-
-    assertEquals(2, map.size());
-
-    Set<String> set = map.get(1);
-    assertEquals(2, set.size());
-    assertTrue(set.contains("a"));
-    assertTrue(set.contains("b"));
-
-    set = map.get(2);
-    assertEquals(1, set.size());
-    assertTrue(set.contains("c"));
-  }
 }

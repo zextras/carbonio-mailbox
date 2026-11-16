@@ -34,7 +34,6 @@ public class MimeAddressHeader extends MimeHeader {
         }
     }
 
-
     private void parseAddresses() {
         if (valueStart > 0) {
             mAddresses = InternetAddress.parseHeader(content, valueStart, content.length - valueStart);
@@ -68,12 +67,6 @@ public class MimeAddressHeader extends MimeHeader {
             }
         }
         return addresses;
-    }
-
-    public MimeAddressHeader addAddress(InternetAddress iaddr) {
-        mAddresses.add(iaddr);
-        markDirty();
-        return this;
     }
 
     @Override protected void reserialize() {

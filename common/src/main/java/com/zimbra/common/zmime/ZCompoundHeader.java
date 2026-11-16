@@ -55,7 +55,6 @@ public class ZCompoundHeader extends ZInternetHeader {
         return value == null ? null : value.getBytes(DEFAULT_CHARSET);
     }
 
-
     private void parse() {
         if (content != null) {
             this.primaryValue = CompoundHeaderParser.parse(content, valueStart, params, ZInternetHeader::decode);
@@ -71,10 +70,6 @@ public class ZCompoundHeader extends ZInternetHeader {
             this.primaryValue = value;
         }
         return this;
-    }
-
-    public int getParameterCount() {
-        return params.size();
     }
 
     public boolean containsParameter(String pname) {
@@ -128,11 +123,6 @@ public class ZCompoundHeader extends ZInternetHeader {
 
     public ZCompoundHeader setCharset(String charset) {
         this.charset = charset == null || charset.trim().isEmpty() ? null : charset;
-        return this;
-    }
-
-    public ZCompoundHeader setUse2231Encoding(boolean use2231) {
-        this.use2231Encoding = use2231;
         return this;
     }
 

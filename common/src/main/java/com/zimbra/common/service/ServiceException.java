@@ -72,7 +72,6 @@ public class ServiceException extends Exception {
   public static final String URL = "url";
   public static final String MAILBOX_ID = "mboxId";
   public static final String ACCOUNT_ID = "acctId";
-  public static final String TWO_FACTOR_AUTH_TOKEN = "twoFactorAuthToken";
 
   public static final String PROXIED_FROM_ACCT =
       "proxiedFromAcct"; // exception proxied from remote account
@@ -501,13 +500,6 @@ public class ServiceException extends Exception {
 
   public static ServiceException GROUP_NAME_ALREADY_EXIST(String name) {
     return new ServiceException("operation denied: calendar group with name" + name + " already exists", GROUP_NAME_ALREADY_EXIST, SENDERS_FAULT);
-  }
-
-  public static ServiceException NETWORK_MODULES_NG_ENABLED(String str) {
-    return new ServiceException(
-        "ZimbraNetworkModulesNG: " + str + " is not enabled.",
-        ZIMBRA_NETWORK_MODULES_NG_ENABLED,
-        RECEIVERS_FAULT);
   }
 
   public static ServiceException INTERNAL_ERROR(Throwable cause) {

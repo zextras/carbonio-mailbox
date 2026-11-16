@@ -17,9 +17,6 @@ public class Pair<F,S> {
     public F car() {
         return getFirst();
     }
-    public S cdr() {
-        return getSecond();
-    }
     public F getFirst() {
         return mFirst;
     }

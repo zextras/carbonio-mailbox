@@ -35,7 +35,6 @@ public enum ZTransferEncoding {
         return (this == QUOTED_PRINTABLE || this == BASE64 ? this : BINARY);
     }
 
-
     static class Base64EncoderStream extends TransferEncodingStream {
         static final byte[] BASE64_TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".getBytes();
 
@@ -263,10 +262,6 @@ public enum ZTransferEncoding {
 
         int nextByte() throws IOException {
             return super.read();
-        }
-
-        boolean canUnread() {
-            return pos > 0;
         }
 
         @Override public void unread(int b) throws IOException {

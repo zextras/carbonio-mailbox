@@ -126,15 +126,6 @@ public class HeaderUtils {
         }
     }
 
-    public static byte[] decodeQ2047(String encoded) {
-        InputStream decoder = new Q2047Decoder(new ByteArrayInputStream(encoded.getBytes()));
-        try {
-            return ByteUtil.readInput(decoder, 0, Integer.MAX_VALUE);
-        } catch (IOException ioe) {     // should *never* happen
-            return null;
-        }
-    }
-
     public static byte[] decodeB2047(String encoded) {
         InputStream decoder = new ContentTransferEncoding.Base64DecoderStream(new ByteArrayInputStream(encoded.getBytes()));
         try {
@@ -143,7 +134,6 @@ public class HeaderUtils {
             return null;
         }
     }
-
 
     public static class ByteBuilder extends ByteArrayOutputStream {
         private Charset charset;

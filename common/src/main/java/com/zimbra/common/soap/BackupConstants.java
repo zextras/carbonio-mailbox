@@ -43,7 +43,6 @@ public final class BackupConstants {
     public static final String E_QUERY_MAILBOX_MOVE_REQUEST = "QueryMailboxMoveRequest";
     public static final String E_QUERY_MAILBOX_MOVE_RESPONSE = "QueryMailboxMoveResponse";
 
-
     public static final QName BACKUP_REQUEST = QName.get(E_BACKUP_REQUEST, NAMESPACE);
     public static final QName BACKUP_RESPONSE = QName.get(E_BACKUP_RESPONSE, NAMESPACE);
     public static final QName BACKUP_QUERY_REQUEST = QName.get(E_BACKUP_QUERY_REQUEST, NAMESPACE);
@@ -78,8 +77,6 @@ public final class BackupConstants {
     public static final QName QUERY_MAILBOX_MOVE_REQUEST = QName.get(E_QUERY_MAILBOX_MOVE_REQUEST, NAMESPACE);
     public static final QName QUERY_MAILBOX_MOVE_RESPONSE = QName.get(E_QUERY_MAILBOX_MOVE_RESPONSE, NAMESPACE);
 
-    public static final String ZM_SCHEDULE_BACKUP = "zmschedulebackup";
-
     public static final String E_ACCOUNT = "account";
     public static final String E_MAILBOX = "mbox";
     public static final String E_QUERY = "query";
@@ -109,7 +106,4 @@ public final class BackupConstants {
     // FileCopier options
 
     // include/exclude full backup components
-    public static final String V_INCLUDE = "include";
-    public static final String V_EXCLUDE = "exclude";
-    public static final String V_CONFIG = "config";
 }
