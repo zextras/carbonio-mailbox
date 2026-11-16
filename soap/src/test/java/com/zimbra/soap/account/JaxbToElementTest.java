@@ -58,9 +58,7 @@ import com.zimbra.soap.account.type.Session;
 import com.zimbra.soap.admin.message.CreateAccountRequest;
 import com.zimbra.soap.admin.message.CreateXMbxSearchRequest;
 import com.zimbra.soap.admin.message.MailQueueActionRequest;
-import com.zimbra.soap.admin.message.SearchAutoProvDirectoryResponse;
 import com.zimbra.soap.admin.type.Attr;
-import com.zimbra.soap.admin.type.AutoProvDirectoryEntry;
 import com.zimbra.soap.admin.type.MailQueueAction;
 import com.zimbra.soap.admin.type.MailQueueWithAction;
 import com.zimbra.soap.admin.type.QueueQuery;
@@ -812,34 +810,6 @@ Caused by: javax.xml.bind.UnmarshalException: Namespace URIs and local names to 
       assertNotNull(soapObj, "Unmarshal soap object");
       assertEquals(10, soapObj.getKeyValuePairs().size(), "Number of attributes");
     }
-  }
-
-  // AutoProvDirectoryEntry contains 2 lists - one via extending AdminKeyValuePairs
-  // No order is specified for elements via XmlType propOrder.  Checking how well this works.
-  @Test
-  void searchAutoProvDirectoryResponse() throws Exception {
-    Element resp = Element.XMLElement.mFactory.createElement(
-        AdminConstants.SEARCH_AUTO_PROV_DIRECTORY_RESPONSE);
-    resp.addAttribute(AdminConstants.A_MORE, false);
-    resp.addAttribute(AdminConstants.A_SEARCH_TOTAL, 1);
-    Element entryE = resp.addNonUniqueElement(AdminConstants.E_ENTRY);
-    entryE.addAttribute(AdminConstants.A_DN, "displayNam");
-    entryE.addNonUniqueElement(AdminConstants.E_KEY).setText("keyValue1");
-    entryE.addNonUniqueElement(AdminConstants.E_KEY).setText("keyValue2");
-    entryE.addNonUniqueElement(AdminConstants.E_A).addAttribute(AdminConstants.A_N, "nVal1").setText("attr1Txt");
-    entryE.addNonUniqueElement(AdminConstants.E_A).addAttribute(AdminConstants.A_N, "nVal2").setText("attr2Txt");
-    SearchAutoProvDirectoryResponse jaxb = JaxbUtil.elementToJaxb(resp);
-    assertNotNull(jaxb, "Unmarshal soap object");
-    List<AutoProvDirectoryEntry> entries = jaxb.getEntries();
-    assertNotNull(entries, "entries list");
-    assertEquals(1, entries.size(), "Number of entries");
-    AutoProvDirectoryEntry entry = entries.get(0);
-    List<KeyValuePair> kvps = entry.getKeyValuePairs();
-    assertNotNull(kvps, "entry - attrs list");
-    assertEquals(2, kvps.size(), "entry - Number of attrs");
-    List<String> keys = entry.getKeys();
-    assertNotNull(keys, "entry - keys list");
-    assertEquals(2, keys.size(), "entry - Number of keys");
   }
 
     // TODO - enable when/if bug fixed.  Note that handler currently uses "Element".  This issue is with

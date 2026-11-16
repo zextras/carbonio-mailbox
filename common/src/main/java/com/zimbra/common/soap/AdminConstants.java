@@ -56,15 +56,11 @@ public final class AdminConstants {
   public static final String E_SET_PASSWORD_RESPONSE = "SetPasswordResponse";
   public static final String E_CHECK_PASSWORD_STRENGTH_REQUEST = "CheckPasswordStrengthRequest";
   public static final String E_CHECK_PASSWORD_STRENGTH_RESPONSE = "CheckPasswordStrengthResponse";
-  public static final String E_RESET_ACCOUNT_PASSWORD_REQUEST = "ResetAccountPasswordRequest";
-  public static final String E_RESET_ACCOUNT_PASSWORD_RESPONSE = "ResetAccountPasswordResponse";
 
   public static final String E_ADD_ACCOUNT_ALIAS_REQUEST = "AddAccountAliasRequest";
   public static final String E_ADD_ACCOUNT_ALIAS_RESPONSE = "AddAccountAliasResponse";
   public static final String E_REMOVE_ACCOUNT_ALIAS_REQUEST = "RemoveAccountAliasRequest";
   public static final String E_REMOVE_ACCOUNT_ALIAS_RESPONSE = "RemoveAccountAliasResponse";
-  public static final String E_SEARCH_ACCOUNTS_REQUEST = "SearchAccountsRequest";
-  public static final String E_SEARCH_ACCOUNTS_RESPONSE = "SearchAccountsResponse";
   public static final String E_RENAME_ACCOUNT_REQUEST = "RenameAccountRequest";
   public static final String E_RENAME_ACCOUNT_RESPONSE = "RenameAccountResponse";
   public static final String E_CHANGE_PRIMARY_EMAIL_REQUEST = "ChangePrimaryEmailRequest";
@@ -121,8 +117,6 @@ public final class AdminConstants {
 
   public static final String E_PURGE_MESSAGES_REQUEST = "PurgeMessagesRequest";
   public static final String E_PURGE_MESSAGES_RESPONSE = "PurgeMessagesResponse";
-  public static final String E_DELETE_MAILBOX_REQUEST = "DeleteMailboxRequest";
-  public static final String E_DELETE_MAILBOX_RESPONSE = "DeleteMailboxResponse";
   public static final String E_GET_MAILBOX_REQUEST = "GetMailboxRequest";
   public static final String E_GET_MAILBOX_RESPONSE = "GetMailboxResponse";
   public static final String E_LOCKOUT_MAILBOX_REQUEST = "LockoutMailboxRequest";
@@ -386,22 +380,14 @@ public final class AdminConstants {
   public static final String E_NO_OP_RESPONSE = "NoOpResponse";
 
   // cookie
-  public static final String E_CLEAR_COOKIE_REQUEST = "ClearCookieRequest";
-  public static final String E_CLEAR_COOKIE_RESPONSE = "ClearCookieResponse";
   public static final String E_REFRESH_REGISTERED_AUTHTOKENS_REQUEST =
       "RefreshRegisteredAuthTokensRequest";
   public static final String E_REFRESH_REGISTERED_AUTHTOKENS_RESPONSE =
       "RefreshRegisteredAuthTokensResponse";
 
   // Auto Provision
-  public static final String E_AUTO_PROV_ACCOUNT_REQUEST = "AutoProvAccountRequest";
-  public static final String E_AUTO_PROV_ACCOUNT_RESPONSE = "AutoProvAccountResponse";
   public static final String E_AUTO_PROV_TASK_CONTROL_REQUEST = "AutoProvTaskControlRequest";
   public static final String E_AUTO_PROV_TASK_CONTROL_RESPONSE = "AutoProvTaskControlResponse";
-  public static final String E_SEARCH_AUTO_PROV_DIRECTORY_REQUEST =
-      "SearchAutoProvDirectoryRequest";
-  public static final String E_SEARCH_AUTO_PROV_DIRECTORY_RESPONSE =
-      "SearchAutoProvDirectoryResponse";
 
   // Retention policy
   public static final String E_CREATE_SYSTEM_RETENTION_POLICY_REQUEST =
@@ -473,10 +459,6 @@ public final class AdminConstants {
       QName.get(E_CHECK_PASSWORD_STRENGTH_REQUEST, NAMESPACE);
   public static final QName CHECK_PASSWORD_STRENGTH_RESPONSE =
       QName.get(E_CHECK_PASSWORD_STRENGTH_RESPONSE, NAMESPACE);
-  public static final QName RESET_ACCOUNT_PASSWORD_REQUEST =
-      QName.get(E_RESET_ACCOUNT_PASSWORD_REQUEST, NAMESPACE);
-  public static final QName RESET_ACCOUNT_PASSWORD_RESPONSE =
-      QName.get(E_RESET_ACCOUNT_PASSWORD_RESPONSE, NAMESPACE);
 
   public static final QName ADD_ACCOUNT_ALIAS_REQUEST =
       QName.get(E_ADD_ACCOUNT_ALIAS_REQUEST, NAMESPACE);
@@ -486,10 +468,6 @@ public final class AdminConstants {
       QName.get(E_REMOVE_ACCOUNT_ALIAS_REQUEST, NAMESPACE);
   public static final QName REMOVE_ACCOUNT_ALIAS_RESPONSE =
       QName.get(E_REMOVE_ACCOUNT_ALIAS_RESPONSE, NAMESPACE);
-  public static final QName SEARCH_ACCOUNTS_REQUEST =
-      QName.get(E_SEARCH_ACCOUNTS_REQUEST, NAMESPACE);
-  public static final QName SEARCH_ACCOUNTS_RESPONSE =
-      QName.get(E_SEARCH_ACCOUNTS_RESPONSE, NAMESPACE);
   public static final QName RENAME_ACCOUNT_REQUEST = QName.get(E_RENAME_ACCOUNT_REQUEST, NAMESPACE);
   public static final QName RENAME_ACCOUNT_RESPONSE =
       QName.get(E_RENAME_ACCOUNT_RESPONSE, NAMESPACE);
@@ -559,9 +537,6 @@ public final class AdminConstants {
   public static final QName PURGE_MESSAGES_REQUEST = QName.get(E_PURGE_MESSAGES_REQUEST, NAMESPACE);
   public static final QName PURGE_MESSAGES_RESPONSE =
       QName.get(E_PURGE_MESSAGES_RESPONSE, NAMESPACE);
-  public static final QName DELETE_MAILBOX_REQUEST = QName.get(E_DELETE_MAILBOX_REQUEST, NAMESPACE);
-  public static final QName DELETE_MAILBOX_RESPONSE =
-      QName.get(E_DELETE_MAILBOX_RESPONSE, NAMESPACE);
   public static final QName GET_MAILBOX_REQUEST = QName.get(E_GET_MAILBOX_REQUEST, NAMESPACE);
   public static final QName GET_MAILBOX_RESPONSE = QName.get(E_GET_MAILBOX_RESPONSE, NAMESPACE);
   public static final QName LOCKOUT_MAILBOX_REQUEST =
@@ -923,26 +898,16 @@ public final class AdminConstants {
   public static final QName NO_OP_RESPONSE = QName.get(E_NO_OP_RESPONSE, NAMESPACE);
 
   // cookie
-  public static final QName CLEAR_COOKIE_REQUEST = QName.get(E_CLEAR_COOKIE_REQUEST, NAMESPACE);
-  public static final QName CLEAR_COOKIE_RESPONSE = QName.get(E_CLEAR_COOKIE_RESPONSE, NAMESPACE);
   public static final QName REFRESH_REGISTERED_AUTHTOKENS_REQUEST =
       QName.get(E_REFRESH_REGISTERED_AUTHTOKENS_REQUEST, NAMESPACE);
   public static final QName REFRESH_REGISTERED_AUTHTOKENS_RESPONSE =
       QName.get(E_REFRESH_REGISTERED_AUTHTOKENS_RESPONSE, NAMESPACE);
 
   // Auto provision
-  public static final QName AUTO_PROV_ACCOUNT_REQUEST =
-      QName.get(E_AUTO_PROV_ACCOUNT_REQUEST, NAMESPACE);
-  public static final QName AUTO_PROV_ACCOUNT_RESPONSE =
-      QName.get(E_AUTO_PROV_ACCOUNT_RESPONSE, NAMESPACE);
   public static final QName AUTO_PROV_TASK_CONTROL_REQUEST =
       QName.get(E_AUTO_PROV_TASK_CONTROL_REQUEST, NAMESPACE);
   public static final QName AUTO_PROV_TASK_CONTROL_RESPONSE =
       QName.get(E_AUTO_PROV_TASK_CONTROL_RESPONSE, NAMESPACE);
-  public static final QName SEARCH_AUTO_PROV_DIRECTORY_REQUEST =
-      QName.get(E_SEARCH_AUTO_PROV_DIRECTORY_REQUEST, NAMESPACE);
-  public static final QName SEARCH_AUTO_PROV_DIRECTORY_RESPONSE =
-      QName.get(E_SEARCH_AUTO_PROV_DIRECTORY_RESPONSE, NAMESPACE);
 
   // Retention policy
   public static final QName CREATE_SYSTEM_RETENTION_POLICY_REQUEST =
@@ -1043,7 +1008,6 @@ public final class AdminConstants {
   public static final String E_CACHE = "cache";
   public static final String E_CODE = "code";
   public static final String E_CONFIG = "config";
-  public static final String E_COOKIE = "cookie";
   public static final String E_COS = "cos";
   public static final String E_CN = "cn";
   public static final String E_DOMAIN = "domain";
@@ -1138,7 +1102,6 @@ public final class AdminConstants {
   public static final String A_REVISION = "rev";
   public static final String A_DESC = "desc";
   public static final String A_DN = "dn";
-  public static final String A_KEYATTR = "keyAttr";
   public static final String A_DYNAMIC = "dynamic";
   public static final String A_PERSIST_AUTH_TOKEN_COOKIE = "persistAuthTokenCookie";
   public static final String A_ALL_SERVERS = "allServers";

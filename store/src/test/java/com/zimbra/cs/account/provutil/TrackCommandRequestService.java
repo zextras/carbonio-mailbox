@@ -39,10 +39,8 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.CHECK_PASSWORD_STRENGTH_REQUEST
           , AdminConstants.ADD_ACCOUNT_ALIAS_REQUEST
           , AdminConstants.REMOVE_ACCOUNT_ALIAS_REQUEST
-          , AdminConstants.SEARCH_ACCOUNTS_REQUEST
           , AdminConstants.RENAME_ACCOUNT_REQUEST
           , AdminConstants.CHANGE_PRIMARY_EMAIL_REQUEST
-          , AdminConstants.RESET_ACCOUNT_PASSWORD_REQUEST
           , AdminConstants.SEARCH_DIRECTORY_REQUEST
           , AdminConstants.GET_ACCOUNT_MEMBERSHIP_REQUEST
           , AdminConstants.ISSUE_CERT_REQUEST
@@ -68,7 +66,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.GET_ALL_CONFIG_REQUEST
           , AdminConstants.MODIFY_CONFIG_REQUEST
           , AdminConstants.PURGE_MESSAGES_REQUEST
-          , AdminConstants.DELETE_MAILBOX_REQUEST
           , AdminConstants.GET_MAILBOX_REQUEST
           , AdminConstants.RUN_UNIT_TESTS_REQUEST
           , AdminConstants.CHECK_AUTH_CONFIG_REQUEST
@@ -92,9 +89,7 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.REMOVE_DISTRIBUTION_LIST_ALIAS_REQUEST
           , AdminConstants.RENAME_DISTRIBUTION_LIST_REQUEST
           , AdminConstants.GET_DISTRIBUTION_LIST_MEMBERSHIP_REQUEST
-          , AdminConstants.AUTO_PROV_ACCOUNT_REQUEST
           , AdminConstants.AUTO_PROV_TASK_CONTROL_REQUEST
-          , AdminConstants.SEARCH_AUTO_PROV_DIRECTORY_REQUEST
           , AdminConstants.REINDEX_REQUEST
           , AdminConstants.COMPACT_INDEX_REQUEST
           , AdminConstants.GET_INDEX_STATS_REQUEST
@@ -154,7 +149,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.RELOAD_MEMCACHED_CLIENT_CONFIG_REQUEST
           , AdminConstants.GET_MEMCACHED_CLIENT_CONFIG_REQUEST
           , AdminConstants.NO_OP_REQUEST
-          , AdminConstants.CLEAR_COOKIE_REQUEST
           , AdminConstants.LOCKOUT_MAILBOX_REQUEST
           , AdminConstants.REFRESH_REGISTERED_AUTHTOKENS_REQUEST
           , AdminConstants.CREATE_SYSTEM_RETENTION_POLICY_REQUEST

@@ -92,13 +92,10 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(AdminConstants.ADD_ACCOUNT_ALIAS_REQUEST, new AddAccountAlias());
     dispatcher.registerHandler(
         AdminConstants.REMOVE_ACCOUNT_ALIAS_REQUEST, new RemoveAccountAlias());
-    dispatcher.registerHandler(AdminConstants.SEARCH_ACCOUNTS_REQUEST, new SearchAccounts());
     dispatcher.registerHandler(AdminConstants.RENAME_ACCOUNT_REQUEST, new RenameAccount());
     dispatcher.registerHandler(
         AdminConstants.CHANGE_PRIMARY_EMAIL_REQUEST, new ChangePrimaryEmail());
 
-    dispatcher.registerHandler(
-        AdminConstants.RESET_ACCOUNT_PASSWORD_REQUEST, new ResetAccountPassword());
 
     dispatcher.registerHandler(AdminConstants.SEARCH_DIRECTORY_REQUEST, new SearchDirectory());
     dispatcher.registerHandler(
@@ -135,7 +132,6 @@ public class AdminService implements DocumentService {
 
 
     dispatcher.registerHandler(AdminConstants.PURGE_MESSAGES_REQUEST, new PurgeMessages());
-    dispatcher.registerHandler(AdminConstants.DELETE_MAILBOX_REQUEST, new DeleteMailbox());
     dispatcher.registerHandler(AdminConstants.GET_MAILBOX_REQUEST, new GetMailbox());
 
     dispatcher.registerHandler(AdminConstants.CHECK_AUTH_CONFIG_REQUEST, new CheckAuthConfig());
@@ -175,11 +171,8 @@ public class AdminService implements DocumentService {
         AdminConstants.GET_DISTRIBUTION_LIST_MEMBERSHIP_REQUEST,
         new GetDistributionListMembership());
 
-    dispatcher.registerHandler(AdminConstants.AUTO_PROV_ACCOUNT_REQUEST, new AutoProvAccount());
     dispatcher.registerHandler(
         AdminConstants.AUTO_PROV_TASK_CONTROL_REQUEST, new AutoProvTaskControl());
-    dispatcher.registerHandler(
-        AdminConstants.SEARCH_AUTO_PROV_DIRECTORY_REQUEST, new SearchAutoProvDirectory());
 
 
     dispatcher.registerHandler(AdminConstants.REINDEX_REQUEST, new ReIndex());
@@ -306,7 +299,6 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(AdminConstants.NO_OP_REQUEST, new NoOp());
 
     // cookie and authtoken maintenance
-    dispatcher.registerHandler(AdminConstants.CLEAR_COOKIE_REQUEST, new ClearCookie());
     dispatcher.registerHandler(AdminConstants.LOCKOUT_MAILBOX_REQUEST, new LockoutMailbox());
     dispatcher.registerHandler(
         AdminConstants.REFRESH_REGISTERED_AUTHTOKENS_REQUEST, new RefreshRegisteredAuthTokens());
