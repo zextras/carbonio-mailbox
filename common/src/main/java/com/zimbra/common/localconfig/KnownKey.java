@@ -6,12 +6,10 @@
 package com.zimbra.common.localconfig;
 
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
-import com.zimbra.common.util.L10nUtil;
 
 public final class KnownKey {
 
@@ -124,11 +122,6 @@ public final class KnownKey {
     private String defaultValue;
     private String value; //cached value after expansion
     private boolean forceToEdit;
-    private boolean reloadable = false;
-    /*
-     * whether or not this is a 'supported' key (printing with configd localconfig -i)
-     */
-    private boolean supported = false;
 
     /**
      * The only public method here.  If you have a KnownKey object, this
@@ -205,14 +198,6 @@ public final class KnownKey {
         ALL.put(name, this);
     }
 
-    public String doc() {
-        return doc(null);
-    }
-
-    public String doc(Locale locale) {
-        return L10nUtil.getMessage(key, locale);
-    }
-
     /**
      * You must call {@link #setKey(String)} before using this {@link KnownKey}.
      */
@@ -263,35 +248,6 @@ public final class KnownKey {
         return this;
     }
 
-    /**
-     * Mark this key as reloadable.
-     * <p>
-     * This is solely for documentation purpose. Developers are responsible for
-     * providing accurate information. If it's reloadable, changes are in effect
-     * after LC reload. Otherwise, changes are in effect after server restart.
-     *
-     */
-    public void setReloadable(boolean reloadable) {
-        this.reloadable = reloadable;
-    }
-
-    public void setSupported(boolean supported){
-        this.supported = supported;
-    }
-
-    /**
-     * Whether or not the value of the key will be reloaded without a server restart
-     *
-     */
-    boolean isReloadable() {
-        return reloadable;
-    }
-    /**
-     * Whether or not to show the key for the -i option on the command line.
-     */
-    boolean isSupported() {
-        return supported;
-    }
 
 
     private void expand(LocalConfig lc) throws ConfigException {
