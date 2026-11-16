@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.json.JSONException;
-
 import com.zimbra.client.event.ZModifyContactEvent;
 import com.zimbra.common.mailbox.MailItemType;
 import com.zimbra.common.service.ServiceException;
@@ -253,29 +251,7 @@ public class ZContact extends ZBaseItem implements ToZJSONObject {
             return "";
     }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject jo = new ZJSONObject();
-        jo.put("id", mId);
-        if (imapUid >= 0) {
-            jo.put("imapUid", imapUid);
-        }
-        jo.put("folderId", mFolderId);
-        jo.put("flags", mFlags);
-        jo.put("tagIds", mTagIds);
-        jo.put("date", mDate);
-        jo.put("metaDataChangedDate", mMetaDataChangedDate);
-        jo.put("revision", mRevision);
-        jo.put("isFlagged", isFlagged());
-        jo.put("isGalContact", isGalContact());
-        jo.put("isGroup", isGroup());
-        jo.put("hasFlags", hasFlags());
-        jo.put("hasTags", hasTags());
-        jo.putMap("attrs", mAttrs);
-        return jo;
-    }
-
-    @Override
+  @Override
     public ObjectNode toObjectNode() {
         ObjectNode jo = JsonNodeFactory.instance.objectNode();
         if (mId != null) jo.put("id", mId);

@@ -16,7 +16,6 @@ import com.zimbra.common.soap.MailConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
-import org.json.JSONException;
 
 public class ZSearchResult implements ToZJSONObject {
 
@@ -114,16 +113,6 @@ public class ZSearchResult implements ToZJSONObject {
   }
 
   @Override
-  public ZJSONObject toZJSONObject() throws JSONException {
-    ZJSONObject zjo = new ZJSONObject();
-    zjo.put("more", hasMore);
-    zjo.put("sortBy", sortBy);
-    zjo.put("offset", offset);
-    zjo.put("hits", hits);
-    return zjo;
-  }
-
-  @Override
   public ObjectNode toObjectNode() {
     ObjectNode zjo = JsonNodeFactory.instance.objectNode();
     zjo.put("more", hasMore);
@@ -180,16 +169,6 @@ public class ZSearchResult implements ToZJSONObject {
     @Override
     public String getSortField() {
       return null;
-    }
-
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-      ZJSONObject zjo = new ZJSONObject();
-      zjo.put("id", mId);
-      zjo.put("flags", mFlags);
-      zjo.put("tags", mTags);
-      zjo.put("messageCount", mMessageCount);
-      return zjo;
     }
 
     @Override

@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.json.JSONException;
 
 public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONObject {
 
@@ -929,40 +928,6 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
 
   public RetentionPolicy getRetentionPolicy() {
     return mRetentionPolicy;
-  }
-
-  @Override
-  public ZJSONObject toZJSONObject() throws JSONException {
-    ZJSONObject jo = new ZJSONObject();
-    jo.put("id", mId);
-    jo.put("uuid", mUuid);
-    jo.put("name", mName);
-    jo.put("path", getPath());
-    jo.put("pathURLEncoded", getPathURLEncoded());
-    jo.put("parentId", mParentId);
-    jo.put("flags", mFlags);
-    jo.put("color", mColor.getName());
-    jo.put("unreadCount", mUnreadCount);
-    jo.put("imapUnreadCount", mImapUnreadCount);
-    jo.put("itemCount", mMessageCount);
-    jo.put("imapItemCount", mImapMessageCount);
-    jo.put("defaultView", mDefaultView.name());
-    jo.put("imapUIDNEXT", mImapUIDNEXT);
-    jo.put("imapMODSEQ", mImapMODSEQ);
-    jo.put("defaultView", mDefaultView.name());
-    jo.put("remoteUrl", mRemoteURL);
-    jo.put("activeSyncDisabled", mActiveSyncDisabled);
-    jo.put("effectivePermissions", mEffectivePerms);
-    jo.put("grants", mGrants);
-    jo.put("size", mSize);
-    jo.put("subFolders", mSubFolders);
-    jo.put("isCheckedInUI", isCheckedInUI());
-    jo.put("isExcludedFromFreeBusy", isExcludedFromFreeBusy());
-    jo.put("isSyncEnabled", isSyncEnabled());
-    jo.put("isSyncFolder", isSyncFolder());
-    jo.put("isSystemFolder", isSystemFolder());
-    jo.put("contentSequence", getContentSequence());
-    return jo;
   }
 
   @Override

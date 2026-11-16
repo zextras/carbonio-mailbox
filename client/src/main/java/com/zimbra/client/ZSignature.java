@@ -16,7 +16,6 @@ import com.zimbra.soap.account.type.SignatureContent;
 import com.zimbra.util.SignatureUtil;
 import java.util.HashMap;
 import java.util.Map;
-import org.json.JSONException;
 
 public class ZSignature implements Comparable<ZSignature>, ToZJSONObject {
 
@@ -113,16 +112,7 @@ public class ZSignature implements Comparable<ZSignature>, ToZJSONObject {
         return sig;
     }
 
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put("name", getName());
-        zjo.put("id", getId());
-        zjo.put("value", getValue());
-        zjo.put("type", getType());
-        return zjo;
-    }
-
-    @Override
+  @Override
     public ObjectNode toObjectNode() {
         ObjectNode zjo = JsonNodeFactory.instance.objectNode();
         if (getName() != null) zjo.put("name", getName());

@@ -12,7 +12,6 @@ import org.json.JSONException;
 
 public interface ToZJSONObject {
 
-  ZJSONObject toZJSONObject() throws JSONException;
   ObjectNode toObjectNode();
 
   static String toString(ToZJSONObject zjo) {

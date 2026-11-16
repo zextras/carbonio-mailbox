@@ -10,8 +10,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.JSONException;
-
 import com.zimbra.client.event.ZModifyTagEvent;
 import com.zimbra.common.mailbox.ZimbraTag;
 import com.zimbra.common.service.ServiceException;
@@ -138,17 +136,7 @@ public class ZTag implements Comparable<ZTag>, ZItem, ZimbraTag, ToZJSONObject {
         return mColor;
     }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put("id", mId);
-        zjo.put("name", mName);
-        zjo.put("color", mColor.name());
-        zjo.put("unreadCount", mUnreadCount);
-        return zjo;
-    }
-
-    @Override
+  @Override
     public ObjectNode toObjectNode() {
         ObjectNode zjo = JsonNodeFactory.instance.objectNode();
         if (mId != null) zjo.put("id", mId);

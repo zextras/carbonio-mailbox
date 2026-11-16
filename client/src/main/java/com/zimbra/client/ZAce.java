@@ -12,8 +12,6 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.zclient.ZClientException;
 
-import org.json.JSONException;
-
 import java.util.Arrays;
 
 public class ZAce implements ToZJSONObject {
@@ -165,17 +163,7 @@ public class ZAce implements ToZJSONObject {
         return this.getGranteeType().equals(ZAce.GranteeType.pub);
     }
 
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject jo = new ZJSONObject();
-        jo.put("type", mGranteeType.name());
-        jo.put("name", mGranteeName);
-        jo.put("id", mGranteeId);
-        jo.put("right", mRight);
-        jo.put("deny", mDeny);
-        return jo;
-    }
-
-    @Override
+  @Override
     public ObjectNode toObjectNode() {
         ObjectNode jo = JsonNodeFactory.instance.objectNode();
         jo.put("type", mGranteeType.name());

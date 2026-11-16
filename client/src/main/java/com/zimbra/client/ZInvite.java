@@ -21,7 +21,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import org.json.JSONException;
 
 public class ZInvite implements ToZJSONObject {
 
@@ -97,14 +96,6 @@ public class ZInvite implements ToZJSONObject {
     for (ZTimeZone tz : mTimeZones) tz.toElement(invEl);
     for (ZComponent comp : mComponents) comp.toElement(invEl);
     return invEl;
-  }
-
-  public ZJSONObject toZJSONObject() throws JSONException {
-    ZJSONObject zjo = new ZJSONObject();
-    zjo.put("type", mType.name());
-    zjo.put("timezones", mTimeZones);
-    zjo.put("components", mComponents);
-    return zjo;
   }
 
   @Override
@@ -618,43 +609,6 @@ public class ZInvite implements ToZJSONObject {
       mIsNoBlob = noBlob;
     }
 
-    public ZJSONObject toZJSONObject() throws JSONException {
-      ZJSONObject zjo = new ZJSONObject();
-      zjo.put("status", mStatus.name());
-      zjo.put("class", mClass.name());
-      zjo.put("freeBusyStatus", mFreeBusyStatus.name());
-      zjo.put("actualFreeBusyStatus", mActualFreeBusyStatus.name());
-      zjo.put("transparency", mTransparency.name());
-      zjo.put("isAllDay", mIsAllDay);
-      zjo.put("draft", mDraft);
-      zjo.put("name", mName);
-      zjo.put("method", mMethod.name());
-      zjo.put("compNum", mComponentNum);
-      zjo.put("location", mLocation);
-      zjo.putList("categories", mCategories);
-      zjo.putList("comments", mComments);
-      zjo.putList("contacts", mContacts);
-      if (mGeo != null) zjo.put("geo", mGeo.toString());
-      if (mUrl != null) zjo.put("url", mUrl);
-      zjo.put("isOrganizer", mIsOrganizer);
-      zjo.put("sequenceNumber", mSequenceNumber);
-      zjo.put("priority", mPriority);
-      zjo.put("percentCompleted", mPercentCompleted);
-      zjo.put("completed", mCompleted);
-      zjo.put("replies", mReplies);
-      zjo.put("start", mStart);
-      zjo.put("end", mEnd);
-      zjo.put("duration", mDuration);
-      zjo.put("organizer", mOrganizer);
-      zjo.put("attendees", mAttendees);
-      zjo.put("recurrence", mRecurrence);
-      zjo.put("recurrenceId", mRecurrenceIdZ);
-      zjo.put("desc", mDescription);
-      zjo.put("deschtml", mDescriptionHtml);
-      zjo.put("noblob", mIsNoBlob);
-      return zjo;
-    }
-
     @Override
     public ObjectNode toObjectNode() {
       ObjectNode zjo = JsonNodeFactory.instance.objectNode();
@@ -707,14 +661,6 @@ public class ZInvite implements ToZJSONObject {
       private String mTimeZone;
 
       public ZReply() {}
-
-      public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put("date", mDate);
-        zjo.put("attendee", mAttendee);
-        zjo.put("participantStatus", mParticipantStatus.name());
-        return zjo;
-      }
 
       @Override
       public ObjectNode toObjectNode() {
@@ -907,18 +853,6 @@ public class ZInvite implements ToZJSONObject {
       mDaylight = daylight;
     }
 
-    public ZJSONObject toZJSONObject() throws JSONException {
-      ZJSONObject zjo = new ZJSONObject();
-      zjo.put("id", mId);
-      zjo.put("standardOffset", mStandardOffset);
-      zjo.put("daylightOffset", mDaylightSavingsOffset);
-      zjo.put("standardRule", mStandard);
-      zjo.put("daylightRule", mDaylight);
-      zjo.put("standardTzname", mStandardTzname);
-      zjo.put("daylightTzname", mDaylightTzname);
-      return zjo;
-    }
-
     @Override
     public ObjectNode toObjectNode() {
       ObjectNode zjo = JsonNodeFactory.instance.objectNode();
@@ -1023,18 +957,6 @@ public class ZInvite implements ToZJSONObject {
 
       public void setSecond(int second) {
         mSecond = second;
-      }
-
-      public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put("week", mWeek);
-        zjo.put("dayOfWeek", mDayOfWeek);
-        zjo.put("dayOfMonth", mDayOfMonth);
-        zjo.put("month", mMonth);
-        zjo.put("hour", mHour);
-        zjo.put("minute", mMinute);
-        zjo.put("second", mSecond);
-        return zjo;
       }
 
       @Override
@@ -1151,17 +1073,6 @@ public class ZInvite implements ToZJSONObject {
 
     public void setSeconds(int seconds) {
       mSeconds = seconds;
-    }
-
-    public ZJSONObject toZJSONObject() throws JSONException {
-      ZJSONObject zjo = new ZJSONObject();
-      zjo.put("negative", mNegative);
-      zjo.put("weeks", mWeeks);
-      zjo.put("days", mDays);
-      zjo.put("hours", mHours);
-      zjo.put("minutes", mMinutes);
-      zjo.put("seconds", mSeconds);
-      return zjo;
     }
 
     @Override
@@ -1567,17 +1478,6 @@ public class ZInvite implements ToZJSONObject {
       return mXParams.iterator();
     }
 
-    public ZJSONObject toZJSONObject() throws JSONException {
-      ZJSONObject zjo = new ZJSONObject();
-      zjo.put("address", mAddress);
-      zjo.put("url", mUrl);
-      zjo.put("personalName", mPersonalName);
-      zjo.put("sentBy", mSentBy);
-      zjo.put("dir", mDirectoryUrl);
-      zjo.put("language", mLanguage);
-      return zjo;
-    }
-
     @Override
     public ObjectNode toObjectNode() {
       ObjectNode zjo = JsonNodeFactory.instance.objectNode();
@@ -1733,18 +1633,6 @@ public class ZInvite implements ToZJSONObject {
       mDelegatedFrom = delegatedFrom;
     }
 
-    public ZJSONObject toZJSONObject() throws JSONException {
-      ZJSONObject zjo = super.toZJSONObject();
-      zjo.put("role", mRole.name());
-      zjo.put("participantStatus", mParticipantStatus.name());
-      zjo.put("rsvp", mRSVP);
-      zjo.put("calendarUserType", mCalendarUserType.name());
-      zjo.put("member", mMember);
-      zjo.put("delegatedFrom", mDelegatedFrom);
-      zjo.put("delegatedTo", mDelegatedTo);
-      return zjo;
-    }
-
     @Override
     public ObjectNode toObjectNode() {
       ObjectNode zjo = super.toObjectNode();
@@ -1811,14 +1699,6 @@ public class ZInvite implements ToZJSONObject {
       mDuration = duration;
     }
 
-    public ZJSONObject toZJSONObject() throws JSONException {
-      ZJSONObject zjo = new ZJSONObject();
-      zjo.put("start", mStart);
-      zjo.put("end", mEnd);
-      zjo.put("duration", mDuration);
-      return zjo;
-    }
-
     @Override
     public ObjectNode toObjectNode() {
       ObjectNode zjo = JsonNodeFactory.instance.objectNode();
@@ -1870,13 +1750,6 @@ public class ZInvite implements ToZJSONObject {
 
     public void setDates(List<ZRecurrenceDate> dates) {
       mDates = dates;
-    }
-
-    public ZJSONObject toZJSONObject() throws JSONException {
-      ZJSONObject zjo = new ZJSONObject();
-      zjo.put("timeZoneId", mTimeZoneId);
-      zjo.put("dates", mDates);
-      return zjo;
     }
 
     @Override
@@ -2105,13 +1978,6 @@ public class ZInvite implements ToZJSONObject {
       mDay = day;
     }
 
-    public ZJSONObject toZJSONObject() throws JSONException {
-      ZJSONObject zjo = new ZJSONObject();
-      zjo.put("weekOrd", mWeekOrd);
-      zjo.put("day", mDay.name());
-      return zjo;
-    }
-
     @Override
     public ObjectNode toObjectNode() {
       ObjectNode zjo = JsonNodeFactory.instance.objectNode();
@@ -2264,14 +2130,6 @@ public class ZInvite implements ToZJSONObject {
       return mWeekDays;
     }
 
-    public ZJSONObject toZJSONObject() throws JSONException {
-      ZJSONObject zjo = new ZJSONObject();
-      zjo.put("type", mType.name());
-      zjo.put("list", mList);
-      zjo.put("weekdays", mWeekDays);
-      return zjo;
-    }
-
     @Override
     public ObjectNode toObjectNode() {
       ObjectNode zjo = JsonNodeFactory.instance.objectNode();
@@ -2313,17 +2171,6 @@ public class ZInvite implements ToZJSONObject {
           mByRules.add(new ZByRule(childEl));
         }
       }
-    }
-
-    public ZJSONObject toZJSONObject() throws JSONException {
-      ZJSONObject zjo = new ZJSONObject();
-      zjo.put("frequency", mFrequency.name());
-      zjo.put("until", mUntilDate);
-      zjo.put("count", mCount);
-      zjo.put("interval", mInterval);
-      zjo.put("byRules", mByRules);
-      if (mWeekStart != null) zjo.put("weekStart", mWeekStart.name());
-      return zjo;
     }
 
     @Override
@@ -2516,15 +2363,6 @@ public class ZInvite implements ToZJSONObject {
 
     public void setExDates(List<ZRecurrenceDates> exDates) {
       mExDates = exDates;
-    }
-
-    public ZJSONObject toZJSONObject() throws JSONException {
-      ZJSONObject jso = new ZJSONObject();
-      jso.put("rules", mRules);
-      jso.put("dates", mDates);
-      jso.put("exRules", mExRules);
-      jso.put("exDates", mExDates);
-      return jso;
     }
 
     @Override

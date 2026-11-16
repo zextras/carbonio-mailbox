@@ -10,9 +10,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Collection;
 import java.util.Map;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.soap.AccountConstants;
@@ -121,20 +118,7 @@ public class ZIdentity  implements ToZJSONObject {
         return identity;
     }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put("name", getName());
-        zjo.put("id", getId());
-        JSONObject jo = new JSONObject();
-        zjo.put("attrs",jo);
-        for (Map.Entry<String, String> entry : data.getAttrsMultimap().entries()) {
-            jo.put(entry.getKey(), entry.getValue());
-        }
-        return zjo;
-    }
-
-    @Override
+  @Override
     public ObjectNode toObjectNode() {
         ObjectNode zjo = JsonNodeFactory.instance.objectNode();
         if (getName() != null) zjo.put("name", getName());

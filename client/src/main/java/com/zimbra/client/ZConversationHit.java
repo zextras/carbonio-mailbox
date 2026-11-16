@@ -12,7 +12,6 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.client.event.ZModifyConversationEvent;
 import com.zimbra.client.event.ZModifyEvent;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,23 +68,7 @@ public class ZConversationHit implements ZSearchHit {
         return mId;
     }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject jo = new ZJSONObject();
-        jo.put("id", mId);
-        jo.put("flags", mFlags);
-        jo.put("tags", mTags);
-        jo.put("fragment", mFragment);
-        jo.put("subject", mSubject);
-        jo.put("date", mDate);
-        jo.put("sortField", mSortField);
-        jo.put("messageCount", mMessageCount);
-        jo.putList("messageIds", mMessageIds);
-        jo.put("recipients", mRecipients);
-        return jo;
-    }
-
-    @Override
+  @Override
     public ObjectNode toObjectNode() {
         ObjectNode jo = JsonNodeFactory.instance.objectNode();
         if (mId != null) jo.put("id", mId);

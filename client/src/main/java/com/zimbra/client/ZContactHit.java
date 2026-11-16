@@ -12,8 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.json.JSONException;
-
 import com.zimbra.client.ZContact.Flag;
 import com.zimbra.client.event.ZModifyContactEvent;
 import com.zimbra.client.event.ZModifyEvent;
@@ -139,31 +137,7 @@ public class ZContactHit implements ZImapSearchHit {
         mType = attrs.get(ContactConstants.A_type);
     }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject jo = new ZJSONObject();
-        jo.put("id", mId);
-        jo.put("tags", mTagIds);
-        jo.put("flags", mFlags);
-        jo.put("sortField", mSortField);
-        jo.put("type", mType);
-        jo.put("date", mDate);
-        jo.put("fileAsStr", mFileAsStr);
-        jo.put("revision", mRevision);
-        jo.put("folderId", mFolderId);
-        jo.put(ContactConstants.A_dlist, mDlist);
-        jo.put(ContactConstants.A_email, mEmail);
-        jo.put(ContactConstants.A_email2, mEmail2);
-        jo.put(ContactConstants.A_email3, mEmail3);
-        jo.put(ContactConstants.A_workEmail1, mWorkEmail1);
-        jo.put(ContactConstants.A_workEmail2, mWorkEmail2);
-        jo.put(ContactConstants.A_workEmail3, mWorkEmail3);
-        jo.put(ContactConstants.A_fullName, mFullName);
-        jo.putMap("attrs", mAttrs);
-        return jo;
-    }
-
-    @Override
+  @Override
     public ObjectNode toObjectNode() {
         ObjectNode jo = JsonNodeFactory.instance.objectNode();
         if (mId != null) jo.put("id", mId);

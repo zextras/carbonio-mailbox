@@ -12,7 +12,6 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.XmlParseException;
 import com.zimbra.common.zclient.ZClientException;
 import com.zimbra.client.ZFolder.View;
-import org.json.JSONException;
 
 public class ZShare implements ToZJSONObject {
 
@@ -82,17 +81,6 @@ public class ZShare implements ToZJSONObject {
         if (mGrantor != null) mGrantor.toElement(e);
         if (mLink != null) return mLink.toElement(e);
         return e;
-    }
-
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put(A_VERSION, mVersion);
-        zjo.put(A_ACTION, mAction.name());
-        zjo.put(E_GRANTEE, mGrantee);
-        zjo.put(E_GRANTOR, mGrantor);
-        zjo.put(E_LINK, mLink);
-        return zjo;
     }
 
     @Override
@@ -216,16 +204,7 @@ public class ZShare implements ToZJSONObject {
             mName = name;
         }
 
-        @Override
-        public ZJSONObject toZJSONObject() throws JSONException {
-            ZJSONObject zjo = new ZJSONObject();
-            zjo.put(A_ID, mId);
-            zjo.put(A_EMAIL, mEmail);
-            zjo.put(A_NAME, mName);
-            return zjo;
-        }
-
-        @Override
+      @Override
         public ObjectNode toObjectNode() {
             ObjectNode zjo = JsonNodeFactory.instance.objectNode();
             if (mId != null) zjo.put(A_ID, mId);
@@ -326,16 +305,6 @@ public class ZShare implements ToZJSONObject {
 
         public void setName(String name) {
             mName = name;
-        }
-
-        @Override
-        public ZJSONObject toZJSONObject() throws JSONException {
-            ZJSONObject zjo = new ZJSONObject();
-            zjo.put(A_ID, mId);
-            zjo.put(A_PERM, mPermission);
-            zjo.put(A_VIEW, mView.name());
-            zjo.put(A_NAME, mName);
-            return zjo;
         }
 
         @Override

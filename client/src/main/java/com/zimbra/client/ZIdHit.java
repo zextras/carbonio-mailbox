@@ -6,7 +6,6 @@ package com.zimbra.client;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.json.JSONException;
 
 import com.zimbra.client.event.ZModifyEvent;
 import com.zimbra.common.mailbox.ItemIdentifier;
@@ -25,15 +24,7 @@ public class ZIdHit implements ZImapSearchHit {
         sortField = e.getAttribute(MailConstants.A_SORT_FIELD, null);
     }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put("id", id);
-        zjo.put("sortField", sortField);
-        return zjo;
-    }
-
-    @Override
+  @Override
     public ObjectNode toObjectNode() {
         ObjectNode zjo = JsonNodeFactory.instance.objectNode();
         if (id != null) zjo.put("id", id);

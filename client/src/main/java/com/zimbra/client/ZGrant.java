@@ -9,8 +9,6 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Arrays;
 
-import org.json.JSONException;
-
 import com.zimbra.common.mailbox.ACLGrant;
 import com.zimbra.common.mailbox.GrantGranteeType;
 import com.zimbra.common.service.ServiceException;
@@ -286,18 +284,7 @@ public class ZGrant implements ACLGrant, ToZJSONObject {
         return this.getGranteeType().equals(GranteeType.pub);
     }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject jo = new ZJSONObject();
-        jo.put("type", mGranteeType.name());
-        jo.put("name", mGranteeName);
-        jo.put("id", mGranteeId);
-        jo.put("permissions", mPermissions);
-        jo.put("args", mArgs);
-        return jo;
-    }
-
-    @Override
+  @Override
     public ObjectNode toObjectNode() {
         ObjectNode jo = JsonNodeFactory.instance.objectNode();
         jo.put("type", mGranteeType.name());

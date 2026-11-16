@@ -14,8 +14,6 @@ import java.util.List;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import org.json.JSONException;
-
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -135,18 +133,7 @@ public class ZEmailAddress implements ToZJSONObject {
     public boolean  isTo()         { return ZEmailAddress.EMAIL_TYPE_TO.equals(getType()); }
     public boolean  isReplyTo()    { return ZEmailAddress.EMAIL_TYPE_REPLY_TO.equals(getType()); }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject jo = new ZJSONObject();
-        jo.put("address", address);
-        jo.put("display", display);
-        jo.put("personal", personal);
-        jo.put("type", type);
-        jo.put("fullAddressQuoted", getFullAddressQuoted());
-        return jo;
-    }
-
-    @Override
+  @Override
     public ObjectNode toObjectNode() {
         ObjectNode jo = JsonNodeFactory.instance.objectNode();
         if (address != null) jo.put("address", address);

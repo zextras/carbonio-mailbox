@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONException;
-
 import com.zimbra.client.event.ZModifyMessageEvent;
 import com.zimbra.common.mailbox.MailItemType;
 import com.zimbra.common.service.ServiceException;
@@ -162,52 +160,7 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
         return mId;
     }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put("id", mId);
-        zjo.put("flags", mFlags);
-        zjo.put("tagIds", mTagIds);
-        zjo.put("inReplyTo", mInReplyTo);
-        zjo.put("originalId", mOrigId);
-        zjo.put("subject", mSubject);
-        zjo.put("fragment", mFragment);
-        zjo.put("partName", mPartName);
-        zjo.put("messageIdHeader", mMessageIdHeader);
-        zjo.put("receivedDate", mReceivedDate);
-        zjo.put("sentDate", mSentDate);
-        zjo.put("folderId", mFolderId);
-        zjo.put("conversationId", mConversationId);
-        zjo.put("size", mSize);
-        zjo.put("content", mContent);
-        zjo.put("contentURL", mContentURL);
-        zjo.put("addresses", mAddresses);
-        zjo.put("mimeStructure", mMimeStructure);
-        zjo.put("invite", mInvite);
-        zjo.put("share", mShare);
-        zjo.put("isInvite", getInvite() != null);
-        zjo.put("hasAttachment", hasAttachment());
-        zjo.put("hasFlags", hasFlags());
-        zjo.put("hasTags", hasTags());
-        zjo.put("isDeleted", isDeleted());
-        zjo.put("isDraft", isDraft());
-        zjo.put("isFlagged", isFlagged());
-        zjo.put("isHighPriority", isHighPriority());
-        zjo.put("isLowPriority", isLowPriority());
-        zjo.put("isForwarded", isForwarded());
-        zjo.put("isNotificationSent", isNotificationSent());
-        zjo.put("isRepliedTo", isRepliedTo());
-        zjo.put("isSentByMe", isSentByMe());
-        zjo.put("isUnread", isUnread());
-        zjo.put("idnt", mIdentityId);
-        if (imapUid >= 0) {
-            zjo.put("imapUid", imapUid);
-        }
-        zjo.putMap("requestHeaders", mReqHdrs);
-        return zjo;
-    }
-
-    @Override
+  @Override
     public ObjectNode toObjectNode() {
         ObjectNode zjo = JsonNodeFactory.instance.objectNode();
         if (mId != null) zjo.put("id", mId);
@@ -364,25 +317,7 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
             mTruncated = e.getAttributeBool(MailConstants.A_TRUNCATED_CONTENT, false);
         }
 
-        @Override
-        public ZJSONObject toZJSONObject() throws JSONException {
-            ZJSONObject zjo = new ZJSONObject();
-            zjo.put("partName", mPartName);
-            zjo.put("content", mContent);
-            zjo.put("contentType", mContentType);
-            zjo.put("contentDisposition", mContentDisposition);
-            zjo.put("contentId", mContentId);
-            zjo.put("contentLocation", mContentLocation);
-            zjo.put("contentDescription", mContentDescription);
-            zjo.put("isBody", mIsBody);
-            zjo.put("size", mSize);
-            zjo.put("name", mName);
-            zjo.put("fileName", mFileName);
-            zjo.put("children", mChildren);
-            return zjo;
-        }
-
-        @Override
+      @Override
         public ObjectNode toObjectNode() {
             ObjectNode zjo = JsonNodeFactory.instance.objectNode();
             if (mPartName != null) zjo.put("partName", mPartName);

@@ -11,6 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.soap.Element;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.TimeZone;
 import org.junit.jupiter.api.BeforeAll;
@@ -35,13 +38,13 @@ class ToObjectNodeTest {
           + "<or a='alice@test.com' d='Alice' sentBy='carol@test.com'/>"
           + "<at a='bob@test.com' d='Bob' role='REQ' ptst='NE' rsvp='1' cutype='IND'/>"
           + "<recur>"
-          + "<add><rule freq='WEE'><until d='20261231'/><interval ival='1'/>"
+          + "<add><rule freq='WEE'><until d='20261231' tz='Europe/Rome'/><interval ival='1'/>"
           + "<byday><wkday day='MO'/><wkday ordwk='2' day='FR'/></byday>"
           + "<bymonth molist='1,2'/></rule></add>"
-          + "<add><dates tz='Europe/Rome'><dtval><s d='20261120T100000'/>"
+          + "<add><dates tz='Europe/Rome'><dtval><s d='20261120T100000' tz='Europe/Rome'/>"
           + "<dur h='1' m='30'/></dtval></dates></add>"
-          + "<exclude><dates tz='Europe/Rome'><dtval><s d='20261123T100000'/>"
-          + "<e d='20261123T110000'/></dtval></dates></exclude>"
+          + "<exclude><dates tz='Europe/Rome'><dtval><s d='20261123T100000' tz='Europe/Rome'/>"
+          + "<e d='20261123T110000' tz='Europe/Rome'/></dtval></dates></exclude>"
           + "</recur>"
           + "<desc>plain</desc><descHtml>&lt;b&gt;html&lt;/b&gt;</descHtml>"
           + "</comp>"
@@ -62,7 +65,41 @@ class ToObjectNodeTest {
   }
 
   @Test
-  void messageWithMimePartsInviteAndShare() throws Exception {
+  void message() throws Exception {
+    assertJson("message.json", createMessage());
+  }
+
+  @Test
+  void folder() throws Exception {
+    assertJson("folder.json", createFolder());
+  }
+
+  @Test
+  void searchResult() throws Exception {
+    assertJson("search-result.json", createSearchResult());
+  }
+
+  @Test
+  void contact() throws Exception {
+    assertJson("contact.json", createContact());
+  }
+
+  @Test
+  void tag() throws Exception {
+    assertJson("tag.json", createTag());
+  }
+
+  @Test
+  void signature() throws Exception {
+    assertJson("signature.json", createSignature());
+  }
+
+  @Test
+  void ace() throws Exception {
+    assertJson("ace.json", createAce());
+  }
+
+  static ZMessage createMessage() throws Exception {
     String xml =
         "<m id='257' f='au' t='1,2' l='2' cid='-257' d='1700000000000' sd='1699999999000' s='1234'"
             + " imap='9'>"
@@ -79,12 +116,10 @@ class ToObjectNodeTest {
             + SHARE
             + "'/>"
             + "</m>";
-
-    assertSameJson(new ZMessage(Element.parseXML(xml), null));
+    return new ZMessage(Element.parseXML(xml), null);
   }
 
-  @Test
-  void folderWithGrantsAndSubFolders() throws Exception {
+  static ZFolder createFolder() throws Exception {
     String xml =
         "<folder id='1' uuid='u1' name='USER_ROOT' l='11' f='#' color='3' u='1' n='2' s='300'"
             + " view='message' i4next='5' i4ms='6' rev='1' ms='1' perm='rwidx' url='http://feed'>"
@@ -96,12 +131,10 @@ class ToObjectNodeTest {
             + "<link id='4' name='Shared' l='1' zid='owner' rid='10' owner='carol@test.com'"
             + " view='appointment' rev='1' ms='1' n='0' s='0'/>"
             + "</folder>";
-
-    assertSameJson(new ZFolder(Element.parseXML(xml), null, null));
+    return new ZFolder(Element.parseXML(xml), null, null);
   }
 
-  @Test
-  void searchResultWithEveryHitType() throws Exception {
+  static ZSearchResult createSearchResult() throws Exception {
     String xml =
         "<SearchResponse sortBy='dateDesc' more='1' offset='0'>"
             + "<c id='-1' n='2' f='u' t='1' d='1700000000000' sf='1700000000000'>"
@@ -118,32 +151,37 @@ class ToObjectNodeTest {
             + "<category>work</category>"
             + "<inst s='1700000000000' tzo='3600000'/></appt>"
             + "</SearchResponse>";
-
-    assertSameJson(new ZSearchResult(Element.parseXML(xml), false, TimeZone.getTimeZone("UTC")));
+    return new ZSearchResult(Element.parseXML(xml), false, TimeZone.getTimeZone("UTC"));
   }
 
-  @Test
-  void contact() throws Exception {
+  static ZContact createContact() throws Exception {
     String xml =
         "<cn id='6' l='7' f='f' t='1' d='1700000000000' md='1700000000' rev='3'>"
             + "<a n='firstName'>John</a><a n='email'>john@test.com</a></cn>";
-
-    assertSameJson(new ZContact(Element.parseXML(xml), null));
+    return new ZContact(Element.parseXML(xml), null);
   }
 
-  @Test
-  void tagSignatureAndAce() throws Exception {
-    assertSameJson(
-        new ZTag(Element.parseXML("<tag id='64' name='Important' color='2' u='3'/>"), null));
-    assertSameJson(new ZSignature("s1", "Work", "Bye", "text/plain"));
-    assertSameJson(
-        new ZAce(
-            Element.parseXML("<ace gt='usr' d='bob@test.com' zid='z1' right='sendAs'/>")));
+  static ZTag createTag() throws Exception {
+    return new ZTag(Element.parseXML("<tag id='64' name='Important' color='2' u='3'/>"), null);
   }
 
-  private static void assertSameJson(ToZJSONObject object) throws Exception {
-    JsonNode expected = MAPPER.readTree(object.toZJSONObject().toString());
+  static ZSignature createSignature() {
+    return new ZSignature("s1", "Work", "Bye", "text/plain");
+  }
+
+  static ZAce createAce() throws Exception {
+    return new ZAce(Element.parseXML("<ace gt='usr' d='bob@test.com' zid='z1' right='sendAs'/>"));
+  }
+
+  private static void assertJson(String expectedResource, ToZJSONObject object) throws Exception {
+    JsonNode expected = MAPPER.readTree(readResource(expectedResource));
     JsonNode actual = MAPPER.readTree(object.toObjectNode().toString());
     assertEquals(expected, actual);
+  }
+
+  private static String readResource(String name) throws IOException {
+    try (InputStream in = ToObjectNodeTest.class.getResourceAsStream("to-object-node/" + name)) {
+      return new String(in.readAllBytes(), StandardCharsets.UTF_8);
+    }
   }
 }

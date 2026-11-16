@@ -10,8 +10,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONException;
-
 import com.zimbra.client.event.ZModifyConversationEvent;
 import com.zimbra.client.event.ZModifyEvent;
 import com.zimbra.client.event.ZModifyMessageEvent;
@@ -109,19 +107,7 @@ public class ZConversation implements ZItem, ToZJSONObject {
         return mMailbox;
     }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject jo = new ZJSONObject();
-        jo.put("id", mId);
-        jo.put("tagIds", mTags);
-        jo.put("flags", mFlags);
-        jo.put("subject", mSubject);
-        jo.put("messageCount", mMessageCount);
-        jo.put("messageSummaries", mMessageSummaries);
-        return jo;
-    }
-
-    @Override
+  @Override
     public ObjectNode toObjectNode() {
         ObjectNode jo = JsonNodeFactory.instance.objectNode();
         if (mId != null) jo.put("id", mId);
@@ -199,35 +185,7 @@ public class ZConversation implements ZItem, ToZJSONObject {
             }
         }
 
-        @Override
-        public ZJSONObject toZJSONObject() throws JSONException {
-            ZJSONObject jo = new ZJSONObject();
-            jo.put("id", mId);
-            jo.put("folderId", mFolderId);
-            jo.put("flags", mFlags);
-            jo.put("fragment", mFragment);
-            jo.put("tags", mTags);
-            jo.put("size", mSize);
-            jo.put("sender", mSender);
-            jo.put("date", mDate);
-            jo.put("hasAttachment", hasAttachment());
-            jo.put("hasFlags", hasFlags());
-            jo.put("hasTags", hasTags());
-            jo.put("isDeleted", isDeleted());
-            jo.put("isDraft", isDraft());
-            jo.put("isFlagged", isFlagged());
-            jo.put("isHighPriority", isHighPriority());
-            jo.put("isLowPriority", isLowPriority());
-            jo.put("isForwarded", isForwarded());
-            jo.put("isNotificationSent", isNotificationSent());
-            jo.put("isRepliedTo", isRepliedTo());
-            jo.put("isSentByMe", isSentByMe());
-            jo.put("isUnread", isUnread());
-            jo.put("subject", mSubject);
-            return jo;
-        }
-
-        @Override
+      @Override
         public ObjectNode toObjectNode() {
             ObjectNode jo = JsonNodeFactory.instance.objectNode();
             if (mId != null) jo.put("id", mId);
