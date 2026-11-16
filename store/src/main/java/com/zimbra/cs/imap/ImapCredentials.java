@@ -14,7 +14,6 @@ import com.zimbra.client.ZMailbox;
 import com.zimbra.client.event.ZEventHandler;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mailbox.MailboxStore;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.SoapTransport.NotificationFormat;
@@ -135,7 +134,7 @@ public class ImapCredentials implements java.io.Serializable {
     if (mStore != null) {
       return mStore;
     }
-    if (mIsLocal && !LC.imap_always_use_remote_store.booleanValue()) {
+    if (mIsLocal) {
       ZimbraLog.imap.debug("ImapCredentials returning local mailbox store for %s", mAccountId);
       return new LocalImapMailboxStore(
           MailboxManager.getInstance().getMailboxByAccountId(mAccountId));
