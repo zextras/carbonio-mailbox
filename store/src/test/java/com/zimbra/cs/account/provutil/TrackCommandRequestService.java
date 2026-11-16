@@ -223,7 +223,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AccountConstants.RESET_PASSWORD_REQUEST
           , AccountConstants.SEARCH_USERS_BY_FEATURE_REQUEST
           , MailConstants.NO_OP_REQUEST
-          , MailConstants.GENERATE_UUID_REQUEST
           , MailConstants.BROWSE_REQUEST
           , MailConstants.SEARCH_REQUEST
           , MailConstants.SEARCH_CONV_REQUEST
@@ -263,7 +262,6 @@ public class TrackCommandRequestService implements DocumentService {
           , MailConstants.APPLY_FILTER_RULES_REQUEST
           , MailConstants.GET_OUTGOING_FILTER_RULES_REQUEST
           , MailConstants.MODIFY_OUTGOING_FILTER_RULES_REQUEST
-          , MailConstants.APPLY_OUTGOING_FILTER_RULES_REQUEST
           , MailConstants.GET_APPOINTMENT_REQUEST
           , MailConstants.SET_APPOINTMENT_REQUEST
           , MailConstants.CREATE_APPOINTMENT_REQUEST
@@ -289,14 +287,10 @@ public class TrackCommandRequestService implements DocumentService {
           , MailConstants.DELETE_DATA_SOURCE_REQUEST
           , MailConstants.IMPORT_DATA_REQUEST
           , MailConstants.GET_IMPORT_STATUS_REQUEST
-          , MailConstants.GET_DATA_SOURCE_USAGE_REQUEST
           , MailConstants.WAIT_SET_REQUEST
           , MailConstants.GET_EFFECTIVE_FOLDER_PERMS_REQUEST
           , MailConstants.AUTO_COMPLETE_REQUEST
           , MailConstants.FULL_AUTO_COMPLETE_REQUEST
-          , MailConstants.RANKING_ACTION_REQUEST
-          , MailConstants.GET_SHARE_NOTIFICATIONS_REQUEST
-          , MailConstants.GET_SYSTEM_RETENTION_POLICY_REQUEST
           , MailConstants.GET_IMAP_RECENT_REQUEST
           , MailConstants.GET_IMAP_RECENT_CUTOFF_REQUEST
           , MailConstants.RECORD_IMAP_SESSION_REQUEST

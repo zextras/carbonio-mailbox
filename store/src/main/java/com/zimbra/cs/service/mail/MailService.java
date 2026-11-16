@@ -33,7 +33,6 @@ public class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.NO_OP_REQUEST, new NoOp());
 
     // UUID generation
-    dispatcher.registerHandler(MailConstants.GENERATE_UUID_REQUEST, new GenerateUUID());
 
     // searching
     dispatcher.registerHandler(MailConstants.BROWSE_REQUEST, new Browse());
@@ -101,8 +100,6 @@ public class MailService implements DocumentService {
         MailConstants.GET_OUTGOING_FILTER_RULES_REQUEST, new GetOutgoingFilterRules());
     dispatcher.registerHandler(
         MailConstants.MODIFY_OUTGOING_FILTER_RULES_REQUEST, new ModifyOutgoingFilterRules());
-    dispatcher.registerHandler(
-        MailConstants.APPLY_OUTGOING_FILTER_RULES_REQUEST, new ApplyOutgoingFilterRules());
 
     // Calendar
     dispatcher.registerHandler(MailConstants.GET_CALENDAR_GROUPS_REQUEST, new GetCalendarGroups());
@@ -152,8 +149,6 @@ public class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.DELETE_DATA_SOURCE_REQUEST, new DeleteDataSource());
     dispatcher.registerHandler(MailConstants.IMPORT_DATA_REQUEST, new ImportData());
     dispatcher.registerHandler(MailConstants.GET_IMPORT_STATUS_REQUEST, new GetImportStatus());
-    dispatcher.registerHandler(
-        MailConstants.GET_DATA_SOURCE_USAGE_REQUEST, new GetDataSourceUsage());
 
     // waitset
     dispatcher.registerHandler(MailConstants.WAIT_SET_REQUEST, new WaitSetRequest());
@@ -166,14 +161,9 @@ public class MailService implements DocumentService {
 
     dispatcher.registerHandler(MailConstants.AUTO_COMPLETE_REQUEST, new AutoComplete());
     dispatcher.registerHandler(MailConstants.FULL_AUTO_COMPLETE_REQUEST, new FullAutoComplete());
-    dispatcher.registerHandler(MailConstants.RANKING_ACTION_REQUEST, new RankingAction());
 
     // share
-    dispatcher.registerHandler(
-        MailConstants.GET_SHARE_NOTIFICATIONS_REQUEST, new GetShareNotifications());
 
-    dispatcher.registerHandler(
-        MailConstants.GET_SYSTEM_RETENTION_POLICY_REQUEST, new GetSystemRetentionPolicy());
 
     // IMAP
     dispatcher.registerHandler(MailConstants.GET_IMAP_RECENT_REQUEST, new GetIMAPRecent());
