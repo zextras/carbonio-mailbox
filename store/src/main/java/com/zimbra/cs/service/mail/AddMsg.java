@@ -34,6 +34,7 @@ import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.FileUploadServlet;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
+import com.zimbra.cs.session.PendingModifications.Change;
 import com.zimbra.soap.ZimbraSoapContext;
 
 /**
@@ -44,6 +45,8 @@ public class AddMsg extends MailDocumentHandler {
     private static Pattern sNumeric = Pattern.compile("\\d+");
 
     private static final String[] TARGET_FOLDER_PATH = new String[] { MailConstants.E_MSG, MailConstants.A_FOLDER };
+    private static final int SUMMARY_FIELDS = Change.SIZE | Change.PARENT | Change.FOLDER | Change.TAGS | Change.FLAGS |
+                                              Change.UNREAD | Change.DATE | Change.CONFLICT;
 
     @Override
     protected String[] getProxiedIdPath(Element request) {
@@ -139,7 +142,7 @@ public class AddMsg extends MailDocumentHandler {
 
         Element response = zsc.createElement(MailConstants.ADD_MSG_RESPONSE);
         if (msg != null) {
-            ToXML.encodeMessageSummary(response, ifmt, octxt, msg, null, GetMsgMetadata.SUMMARY_FIELDS);
+            ToXML.encodeMessageSummary(response, ifmt, octxt, msg, null, SUMMARY_FIELDS);
         }
 
         return response;

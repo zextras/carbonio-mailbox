@@ -31,7 +31,7 @@ import com.zimbra.cs.mailbox.Conversation;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
-import com.zimbra.cs.service.mail.GetCalendarItemSummaries.EncodeCalendarItemResult;
+import com.zimbra.cs.service.mail.CalendarItemInstanceEncoder.EncodeCalendarItemResult;
 import com.zimbra.cs.service.mail.ToXML.EmailType;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
@@ -387,7 +387,7 @@ final class SearchResponse {
       rangeEnd = rangeStart + 1;
     }
     EncodeCalendarItemResult encoded =
-        GetCalendarItemSummaries.encodeCalendarItemInstances(
+        CalendarItemInstanceEncoder.encodeCalendarItemInstances(
             zsc, octxt, item, acct, rangeStart, rangeEnd, true);
 
     Element el = encoded.element;

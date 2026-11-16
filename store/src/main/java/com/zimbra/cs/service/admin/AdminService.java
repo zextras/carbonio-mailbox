@@ -58,7 +58,6 @@ public class AdminService implements DocumentService {
   public void registerHandlers(DocumentDispatcher dispatcher) throws ServiceException {
     dispatcher.registerHandler(AdminConstants.PING_REQUEST, new Ping());
     dispatcher.registerHandler(AdminConstants.CHECK_HEALTH_REQUEST, new CheckHealth());
-    dispatcher.registerHandler(AdminConstants.GET_ALL_LOCALES_REQUEST, new GetAllLocales());
 
     dispatcher.registerHandler(AdminConstants.AUTH_REQUEST, new Auth());
     dispatcher.registerHandler(AdminConstants.CREATE_ACCOUNT_REQUEST, new CreateAccount());
@@ -93,13 +92,10 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(AdminConstants.ADD_ACCOUNT_ALIAS_REQUEST, new AddAccountAlias());
     dispatcher.registerHandler(
         AdminConstants.REMOVE_ACCOUNT_ALIAS_REQUEST, new RemoveAccountAlias());
-    dispatcher.registerHandler(AdminConstants.SEARCH_ACCOUNTS_REQUEST, new SearchAccounts());
     dispatcher.registerHandler(AdminConstants.RENAME_ACCOUNT_REQUEST, new RenameAccount());
     dispatcher.registerHandler(
         AdminConstants.CHANGE_PRIMARY_EMAIL_REQUEST, new ChangePrimaryEmail());
 
-    dispatcher.registerHandler(
-        AdminConstants.RESET_ACCOUNT_PASSWORD_REQUEST, new ResetAccountPassword());
 
     dispatcher.registerHandler(AdminConstants.SEARCH_DIRECTORY_REQUEST, new SearchDirectory());
     dispatcher.registerHandler(
@@ -134,23 +130,16 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(AdminConstants.GET_ALL_CONFIG_REQUEST, new GetAllConfig());
     dispatcher.registerHandler(AdminConstants.MODIFY_CONFIG_REQUEST, new ModifyConfig());
 
-    dispatcher.registerHandler(AdminConstants.GET_SERVICE_STATUS_REQUEST, new GetServiceStatus());
 
     dispatcher.registerHandler(AdminConstants.PURGE_MESSAGES_REQUEST, new PurgeMessages());
-    dispatcher.registerHandler(AdminConstants.DELETE_MAILBOX_REQUEST, new DeleteMailbox());
     dispatcher.registerHandler(AdminConstants.GET_MAILBOX_REQUEST, new GetMailbox());
 
     dispatcher.registerHandler(AdminConstants.CHECK_AUTH_CONFIG_REQUEST, new CheckAuthConfig());
-    dispatcher.registerHandler(AdminConstants.CHECK_GAL_CONFIG_REQUEST, new CheckGalConfig());
-    dispatcher.registerHandler(
-        AdminConstants.CHECK_HOSTNAME_RESOLVE_REQUEST, new CheckHostnameResolve());
-    dispatcher.registerHandler(AdminConstants.CHECK_EXCHANGE_AUTH_REQUEST, new CheckExchangeAuth());
     dispatcher.registerHandler(AdminConstants.CREATE_VOLUME_REQUEST, new CreateVolume());
     dispatcher.registerHandler(AdminConstants.GET_VOLUME_REQUEST, new GetVolume());
     dispatcher.registerHandler(AdminConstants.GET_ALL_VOLUMES_REQUEST, new GetAllVolumes());
     dispatcher.registerHandler(AdminConstants.MODIFY_VOLUME_REQUEST, new ModifyVolume());
     dispatcher.registerHandler(AdminConstants.DELETE_VOLUME_REQUEST, new DeleteVolume());
-    dispatcher.registerHandler(AdminConstants.GET_CURRENT_VOLUMES_REQUEST, new GetCurrentVolumes());
     dispatcher.registerHandler(AdminConstants.SET_CURRENT_VOLUME_REQUEST, new SetCurrentVolume());
     dispatcher.registerHandler(
         AdminConstants.CHECK_BLOB_CONSISTENCY_REQUEST, new CheckBlobConsistency());
@@ -182,14 +171,9 @@ public class AdminService implements DocumentService {
         AdminConstants.GET_DISTRIBUTION_LIST_MEMBERSHIP_REQUEST,
         new GetDistributionListMembership());
 
-    dispatcher.registerHandler(AdminConstants.AUTO_PROV_ACCOUNT_REQUEST, new AutoProvAccount());
     dispatcher.registerHandler(
         AdminConstants.AUTO_PROV_TASK_CONTROL_REQUEST, new AutoProvTaskControl());
-    dispatcher.registerHandler(
-        AdminConstants.SEARCH_AUTO_PROV_DIRECTORY_REQUEST, new SearchAutoProvDirectory());
 
-    dispatcher.registerHandler(AdminConstants.GET_VERSION_INFO_REQUEST, new GetVersionInfo());
-    dispatcher.registerHandler(AdminConstants.GET_ATTRIBUTE_INFO_REQUEST, new GetAttributeInfo());
 
     dispatcher.registerHandler(AdminConstants.REINDEX_REQUEST, new ReIndex());
     dispatcher.registerHandler(AdminConstants.COMPACT_INDEX_REQUEST, new CompactIndex());
@@ -219,7 +203,6 @@ public class AdminService implements DocumentService {
     // QUOTA and mailbox data
     dispatcher.registerHandler(AdminConstants.GET_QUOTA_USAGE_REQUEST, new GetQuotaUsage());
     dispatcher.registerHandler(AdminConstants.GET_ALL_MAILBOXES_REQUEST, new GetAllMailboxes());
-    dispatcher.registerHandler(AdminConstants.GET_MAILBOX_STATS_REQUEST, new GetMailboxStats());
 
     // Mail queue management
     dispatcher.registerHandler(AdminConstants.GET_MAIL_QUEUE_INFO_REQUEST, new GetMailQueueInfo());
@@ -246,10 +229,6 @@ public class AdminService implements DocumentService {
         AdminConstants.FIX_CALENDAR_PRIORITY_REQUEST, new FixCalendarPriority());
 
     // admin saved searches
-    dispatcher.registerHandler(
-        AdminConstants.GET_ADMIN_SAVED_SEARCHES_REQUEST, new GetAdminSavedSearches());
-    dispatcher.registerHandler(
-        AdminConstants.MODIFY_ADMIN_SAVED_SEARCHES_REQUEST, new ModifyAdminSavedSearches());
 
     dispatcher.registerHandler(
         AdminConstants.ADD_ACCOUNT_LOGGER_REQUEST,
@@ -261,7 +240,6 @@ public class AdminService implements DocumentService {
         AdminConstants.GET_ALL_ACCOUNT_LOGGERS_REQUEST, new GetAllAccountLoggers());
     dispatcher.registerHandler(AdminConstants.RESET_ALL_LOGGERS_REQUEST, new ResetAllLoggers());
 
-    dispatcher.registerHandler(AdminConstants.CHECK_DIRECTORY_REQUEST, new CheckDirectory());
 
     dispatcher.registerHandler(AdminConstants.FLUSH_CACHE_REQUEST, new FlushCache());
 
@@ -269,7 +247,6 @@ public class AdminService implements DocumentService {
 
     dispatcher.registerHandler(AdminConstants.GET_SHARE_INFO_REQUEST, new GetShareInfo());
 
-    dispatcher.registerHandler(AdminConstants.GET_SERVER_NIFS_REQUEST, new GetServerNIFs());
 
     // f/b mgmt
     dispatcher.registerHandler(
@@ -285,12 +262,8 @@ public class AdminService implements DocumentService {
         AdminConstants.PURGE_ACCOUNT_CALENDAR_CACHE_REQUEST, new PurgeAccountCalendarCache());
 
     // rights
-    dispatcher.registerHandler(
-        AdminConstants.GET_DELEGATED_ADMIN_CONSTRAINTS_REQUEST, new GetDelegatedAdminConstraints());
     dispatcher.registerHandler(AdminConstants.GET_RIGHTS_DOC_REQUEST, new GetRightsDoc());
     dispatcher.registerHandler(AdminConstants.GET_RIGHT_REQUEST, new GetRight());
-    dispatcher.registerHandler(
-        AdminConstants.GET_ADMIN_CONSOLE_UI_COMP_REQUEST, new GetAdminConsoleUIComp());
     dispatcher.registerHandler(
         AdminConstants.GET_ALL_EFFECTIVE_RIGHTS_REQUEST, new GetAllEffectiveRights());
     dispatcher.registerHandler(AdminConstants.GET_ALL_RIGHTS_REQUEST, new GetAllRights());
@@ -312,10 +285,7 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(AdminConstants.ADMIN_WAIT_SET_REQUEST, new AdminWaitSetRequest());
     dispatcher.registerHandler(
         AdminConstants.ADMIN_DESTROY_WAIT_SET_REQUEST, new AdminDestroyWaitSetRequest());
-    dispatcher.registerHandler(AdminConstants.QUERY_WAIT_SET_REQUEST, new QueryWaitSet());
 
-    dispatcher.registerHandler(AdminConstants.GET_SERVER_STATS_REQUEST, new GetServerStats());
-    dispatcher.registerHandler(AdminConstants.GET_LOGGER_STATS_REQUEST, new GetLoggerStats());
     dispatcher.registerHandler(AdminConstants.SYNC_GAL_ACCOUNT_REQUEST, new SyncGalAccount());
 
     // memcached
@@ -331,14 +301,11 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(AdminConstants.NO_OP_REQUEST, new NoOp());
 
     // cookie and authtoken maintenance
-    dispatcher.registerHandler(AdminConstants.CLEAR_COOKIE_REQUEST, new ClearCookie());
     dispatcher.registerHandler(AdminConstants.LOCKOUT_MAILBOX_REQUEST, new LockoutMailbox());
     dispatcher.registerHandler(
         AdminConstants.REFRESH_REGISTERED_AUTHTOKENS_REQUEST, new RefreshRegisteredAuthTokens());
 
     // Retention policy
-    dispatcher.registerHandler(
-        AdminConstants.GET_SYSTEM_RETENTION_POLICY_REQUEST, new GetSystemRetentionPolicy());
     dispatcher.registerHandler(
         AdminConstants.CREATE_SYSTEM_RETENTION_POLICY_REQUEST, new CreateSystemRetentionPolicy());
     dispatcher.registerHandler(
@@ -347,8 +314,6 @@ public class AdminService implements DocumentService {
         AdminConstants.DELETE_SYSTEM_RETENTION_POLICY_REQUEST, new DeleteSystemRetentionPolicy());
 
     // store manager verifier
-    dispatcher.registerHandler(
-        AdminConstants.VERIFY_STORE_MANAGER_REQUEST, new VerifyStoreManager());
 
     // Filter rules
     dispatcher.registerHandler(AdminConstants.GET_FILTER_RULES_REQUEST, new GetFilterRules());

@@ -51,15 +51,13 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.account.message.AuthRequest;
 import com.zimbra.soap.account.message.CreateIdentityRequest;
 import com.zimbra.soap.account.message.GetInfoResponse;
-import com.zimbra.soap.account.message.GetWhiteBlackListResponse;
+import com.zimbra.soap.account.message.ModifyWhiteBlackListRequest;
 import com.zimbra.soap.account.message.ModifyPrefsRequest;
 import com.zimbra.soap.account.type.Pref;
 import com.zimbra.soap.account.type.Session;
 import com.zimbra.soap.admin.message.CreateAccountRequest;
 import com.zimbra.soap.admin.message.MailQueueActionRequest;
-import com.zimbra.soap.admin.message.SearchAutoProvDirectoryResponse;
 import com.zimbra.soap.admin.type.Attr;
-import com.zimbra.soap.admin.type.AutoProvDirectoryEntry;
 import com.zimbra.soap.admin.type.MailQueueAction;
 import com.zimbra.soap.admin.type.MailQueueWithAction;
 import com.zimbra.soap.admin.type.QueueQuery;
@@ -799,34 +797,6 @@ Caused by: javax.xml.bind.UnmarshalException: Namespace URIs and local names to 
   }
 
 
-  // AutoProvDirectoryEntry contains 2 lists - one via extending AdminKeyValuePairs
-  // No order is specified for elements via XmlType propOrder.  Checking how well this works.
-  @Test
-  void searchAutoProvDirectoryResponse() throws Exception {
-    Element resp = Element.XMLElement.mFactory.createElement(
-        AdminConstants.SEARCH_AUTO_PROV_DIRECTORY_RESPONSE);
-    resp.addAttribute(AdminConstants.A_MORE, false);
-    resp.addAttribute(AdminConstants.A_SEARCH_TOTAL, 1);
-    Element entryE = resp.addNonUniqueElement(AdminConstants.E_ENTRY);
-    entryE.addAttribute(AdminConstants.A_DN, "displayNam");
-    entryE.addNonUniqueElement(AdminConstants.E_KEY).setText("keyValue1");
-    entryE.addNonUniqueElement(AdminConstants.E_KEY).setText("keyValue2");
-    entryE.addNonUniqueElement(AdminConstants.E_A).addAttribute(AdminConstants.A_N, "nVal1").setText("attr1Txt");
-    entryE.addNonUniqueElement(AdminConstants.E_A).addAttribute(AdminConstants.A_N, "nVal2").setText("attr2Txt");
-    SearchAutoProvDirectoryResponse jaxb = JaxbUtil.elementToJaxb(resp);
-    assertNotNull(jaxb, "Unmarshal soap object");
-    List<AutoProvDirectoryEntry> entries = jaxb.getEntries();
-    assertNotNull(entries, "entries list");
-    assertEquals(1, entries.size(), "Number of entries");
-    AutoProvDirectoryEntry entry = entries.get(0);
-    List<KeyValuePair> kvps = entry.getKeyValuePairs();
-    assertNotNull(kvps, "entry - attrs list");
-    assertEquals(2, kvps.size(), "entry - Number of attrs");
-    List<String> keys = entry.getKeys();
-    assertNotNull(keys, "entry - keys list");
-    assertEquals(2, keys.size(), "entry - Number of keys");
-  }
-
     // TODO - enable when/if bug fixed.  Note that handler currently uses "Element".  This issue is with
     //        zmsoap producing non-KeyValuePairs compatible JSON.  Although JAXB object originated JSON
     //        currently exhibits similar issues.  Would prefer to fix JAXB to JSON, use the JAXB object in zmsoap
@@ -915,7 +885,7 @@ Caused by: javax.xml.bind.UnmarshalException: Namespace URIs and local names to 
 
   @Test
   void jaxbElementNameOrderXmlElementWrapperTest() throws Exception {
-    JaxbInfo jaxbInfo = JaxbInfo.getFromCache(GetWhiteBlackListResponse.class);
+    JaxbInfo jaxbInfo = JaxbInfo.getFromCache(ModifyWhiteBlackListRequest.class);
     List<List<org.dom4j.QName>> expectedOrder = Lists.newArrayList();
     expectedOrder.add(Lists.newArrayList(new org.dom4j.QName(AccountConstants.E_WHITE_LIST, AccountConstants.NAMESPACE)));
     expectedOrder.add(Lists.newArrayList(new org.dom4j.QName(AccountConstants.E_BLACK_LIST, AccountConstants.NAMESPACE)));
