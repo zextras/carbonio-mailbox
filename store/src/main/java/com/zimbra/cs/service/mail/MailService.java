@@ -179,10 +179,6 @@ public class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.DESTROY_WAIT_SET_REQUEST, new DestroyWaitSet());
 
     // Account ACL
-    dispatcher.registerHandler(MailConstants.GET_PERMISSION_REQUEST, new GetPermission());
-    dispatcher.registerHandler(MailConstants.CHECK_PERMISSION_REQUEST, new CheckPermission());
-    dispatcher.registerHandler(MailConstants.GRANT_PERMISSION_REQUEST, new GrantPermission());
-    dispatcher.registerHandler(MailConstants.REVOKE_PERMISSION_REQUEST, new RevokePermission());
 
     // folder ACl
     dispatcher.registerHandler(
