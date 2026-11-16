@@ -5,21 +5,9 @@
 
 package com.zimbra.cs.session;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.util.LinkedList;
-import java.util.Map;
-
-import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.ZimbraNamespace;
-import com.zimbra.common.util.ByteUtil;
-import com.zimbra.common.util.LruMap;
-import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Server;
-import com.zimbra.cs.iochannel.CrossServerNotification;
-import com.zimbra.cs.iochannel.MessageChannel;
-import com.zimbra.cs.iochannel.MessageChannelException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.soap.ZimbraSoapContext;
 
@@ -29,19 +17,6 @@ public class RemoteSoapSession extends SoapSession {
      * @see Session#register() */
     public RemoteSoapSession(ZimbraSoapContext zsc) {
         super(zsc);
-        try {
-            authUserCtxt = new ZimbraSoapContext(zsc);
-        } catch (ServiceException e) {
-        }
-    }
-
-    @Override
-    public RemoteSoapSession register() throws ServiceException {
-        super.register();
-        if (MessageChannel.getInstance().isRunning()) {
-            registerNotificationConnection(new CrossMailboxPushChannel());
-        }
-        return this;
     }
 
     @Override
@@ -75,80 +50,5 @@ public class RemoteSoapSession extends SoapSession {
 
         putQueuedNotifications(null, ntfn, ctxt, zsc);
         return ctxt;
-    }
-
-    private ZimbraSoapContext authUserCtxt;
-
-    /* per account cache of recently sent notifications for deduping */
-    private static final Map<String,LinkedList<String>> sentNotifications;
-
-    static {
-        sentNotifications = new LruMap<>(100);  // cache of 100 accounts
-    }
-
-    private class CrossMailboxPushChannel implements PushChannel {
-
-        @Override
-        public void closePushChannel() {
-        }
-
-        @Override
-        public int getLastKnownSequence() {
-            return 0;
-        }
-
-        @Override
-        public ZimbraSoapContext getSoapContext() {
-            return null;
-        }
-
-        @Override
-        public boolean localChangesOnly() {
-            return false;
-        }
-
-        @Override
-        public boolean isPersistent() {
-            return true;
-        }
-
-        @Override
-        public void notificationsReady() {
-            CrossServerNotification ntfn;
-            try {
-                ntfn = CrossServerNotification.create(RemoteSoapSession.this, authUserCtxt);
-            } catch (MessageChannelException e) {
-                ZimbraLog.session.warn("unable to create CrossServerNotification", e);
-                return;
-            }
-            if (!checkDuplicateNotification(ntfn)) {
-                MessageChannel.getInstance().sendMessage(ntfn);
-            }
-        }
-
-        private boolean checkDuplicateNotification(CrossServerNotification ntfn) {
-            String msgHash;
-          msgHash = ByteUtil.getDigest(ntfn.toString().getBytes(StandardCharsets.UTF_8));
-          String accountId = authUserCtxt.getAuthtokenAccountId();
-            LinkedList<String> messageHashes;
-            synchronized (sentNotifications) {
-                messageHashes = sentNotifications.get(accountId);
-                if (messageHashes == null) {
-                    messageHashes = new LinkedList<>();
-                    sentNotifications.put(accountId, messageHashes);
-                }
-            }
-            synchronized (messageHashes) {
-                if (!messageHashes.contains(msgHash)) {
-                    // keep the last 10 notifications sent for this account
-                    if (messageHashes.size() > 9) {
-                        messageHashes.removeFirst();
-                    }
-                    messageHashes.add(msgHash);
-                    return false;  // new notification
-                }
-            }
-            return true;  // duplicate
-        }
     }
 }
