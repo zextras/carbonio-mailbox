@@ -13,6 +13,7 @@ license=(
 )
 url="https://github.com/zextras"
 depends=(
+  "carbonio-configd"
   "carbonio-core"
   "service-discover"
   "service-discover-base"
