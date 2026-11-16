@@ -25,8 +25,6 @@ public final class AdminConstants {
   public static final String E_CHECK_HEALTH_RESPONSE = "CheckHealthResponse";
 
 
-  public static final String E_EXPORTMAILBOX_REQUEST = "ExportMailboxRequest";
-  public static final String E_EXPORTMAILBOX_RESPONSE = "ExportMailboxResponse";
 
   public static final String E_AUTH_REQUEST = "AuthRequest";
   public static final String E_AUTH_RESPONSE = "AuthResponse";
@@ -122,8 +120,6 @@ public final class AdminConstants {
   public static final String E_LOCKOUT_MAILBOX_REQUEST = "LockoutMailboxRequest";
   public static final String E_LOCKOUT_MAILBOX_RESPONSE = "LockoutMailboxResponse";
 
-  public static final String E_RUN_UNIT_TESTS_REQUEST = "RunUnitTestsRequest";
-  public static final String E_RUN_UNIT_TESTS_RESPONSE = "RunUnitTestsResponse";
 
   public static final String E_CHECK_AUTH_CONFIG_REQUEST = "CheckAuthConfigRequest";
   public static final String E_CHECK_AUTH_CONFIG_RESPONSE = "CheckAuthConfigResponse";
@@ -216,8 +212,6 @@ public final class AdminConstants {
   public static final String E_SEARCH_CALENDAR_RESOURCES_RESPONSE =
       "SearchCalendarResourcesResponse";
 
-  public static final String E_SEARCH_MULTIPLE_MAILBOXES_REQUEST = "SearchMultiMailboxRequest";
-  public static final String E_SEARCH_MULTIPLE_MAILBOXES_RESPONSE = "SearchMultiMailboxResponse";
 
   public static final String E_GET_SESSIONS_REQUEST = "GetSessionsRequest";
   public static final String E_GET_SESSIONS_RESPONSE = "GetSessionsResponse";
@@ -372,8 +366,6 @@ public final class AdminConstants {
   // local config
 
   // wiki migration
-  public static final String E_MIGRATE_ACCOUNT_REQUEST = "MigrateAccountRequest";
-  public static final String E_MIGRATE_ACCOUNT_RESPONSE = "MigrateAccountResponse";
 
   // noop
   public static final String E_NO_OP_REQUEST = "NoOpRequest";
@@ -411,8 +403,6 @@ public final class AdminConstants {
   public static final QName CHECK_HEALTH_RESPONSE = QName.get(E_CHECK_HEALTH_RESPONSE, NAMESPACE);
 
 
-  public static final QName EXPORTMAILBOX_REQUEST = QName.get(E_EXPORTMAILBOX_REQUEST, NAMESPACE);
-  public static final QName EXPORTMAILBOX_RESPONSE = QName.get(E_EXPORTMAILBOX_RESPONSE, NAMESPACE);
 
   public static final QName AUTH_REQUEST = QName.get(E_AUTH_REQUEST, NAMESPACE);
   public static final QName AUTH_RESPONSE = QName.get(E_AUTH_RESPONSE, NAMESPACE);
@@ -544,9 +534,6 @@ public final class AdminConstants {
   public static final QName LOCKOUT_MAILBOX_RESPONSE =
       QName.get(E_LOCKOUT_MAILBOX_RESPONSE, NAMESPACE);
 
-  public static final QName RUN_UNIT_TESTS_REQUEST = QName.get(E_RUN_UNIT_TESTS_REQUEST, NAMESPACE);
-  public static final QName RUN_UNIT_TESTS_RESPONSE =
-      QName.get(E_RUN_UNIT_TESTS_RESPONSE, NAMESPACE);
 
   public static final QName CHECK_AUTH_CONFIG_REQUEST =
       QName.get(E_CHECK_AUTH_CONFIG_REQUEST, NAMESPACE);
@@ -674,10 +661,6 @@ public final class AdminConstants {
   public static final QName SEARCH_CALENDAR_RESOURCES_RESPONSE =
       QName.get(E_SEARCH_CALENDAR_RESOURCES_RESPONSE, NAMESPACE);
 
-  public static final QName SEARCH_MULTIPLE_MAILBOXES_REQUEST =
-      QName.get(E_SEARCH_MULTIPLE_MAILBOXES_REQUEST, NAMESPACE);
-  public static final QName SEARCH_MULTIPLE_MAILBOXES_RESPONSE =
-      QName.get(E_SEARCH_MULTIPLE_MAILBOXES_RESPONSE, NAMESPACE);
 
   public static final QName GET_SESSIONS_REQUEST = QName.get(E_GET_SESSIONS_REQUEST, NAMESPACE);
   public static final QName GET_SESSIONS_RESPONSE = QName.get(E_GET_SESSIONS_RESPONSE, NAMESPACE);
@@ -888,10 +871,6 @@ public final class AdminConstants {
   // local config
 
   // wiki migration
-  public static final QName MIGRATE_ACCOUNT_REQUEST =
-      QName.get(E_MIGRATE_ACCOUNT_REQUEST, NAMESPACE);
-  public static final QName MIGRATE_ACCOUNT_RESPONSE =
-      QName.get(E_MIGRATE_ACCOUNT_RESPONSE, NAMESPACE);
 
   // noop
   public static final QName NO_OP_REQUEST = QName.get(E_NO_OP_REQUEST, NAMESPACE);
@@ -955,30 +934,6 @@ public final class AdminConstants {
       QName.get(E_CONTACT_BACKUP_RESPONSE, NAMESPACE);
 
   // AddressList
-  public static final String E_GET_ALL_ADDRESS_LISTS_REQUEST = "GetAllAddressListsRequest";
-  public static final String E_GET_ALL_ADDRESS_LISTS_RESPONSE = "GetAllAddressListsResponse";
-  public static final QName GET_ALL_ADDRESS_LISTS_REQUEST =
-      QName.get(E_GET_ALL_ADDRESS_LISTS_REQUEST, NAMESPACE);
-  public static final QName GET_ALL_ADDRESS_LISTS_RESPONSE =
-      QName.get(E_GET_ALL_ADDRESS_LISTS_RESPONSE, NAMESPACE);
-  public static final String E_DELETE_ADDRESS_LIST_REQUEST = "DeleteAddressListRequest";
-  public static final String E_DELETE_ADDRESS_LIST_RESPONSE = "DeleteAddressListResponse";
-  public static final QName DELETE_ADDRESS_LIST_REQUEST =
-      QName.get(E_DELETE_ADDRESS_LIST_REQUEST, NAMESPACE);
-  public static final QName DELETE_ADDRESS_LIST_RESPONSE =
-      QName.get(E_DELETE_ADDRESS_LIST_RESPONSE, NAMESPACE);
-  public static final String E_MODIFY_ADDRESS_LIST_REQUEST = "ModifyAddressListRequest";
-  public static final String E_MODIFY_ADDRESS_LIST_RESPONSE = "ModifyAddressListResponse";
-  public static final QName MODIFY_ADDRESS_LIST_REQUEST =
-      QName.get(E_MODIFY_ADDRESS_LIST_REQUEST, NAMESPACE);
-  public static final QName MODIFY_ADDRESS_LIST_RESPONSE =
-      QName.get(E_MODIFY_ADDRESS_LIST_RESPONSE, NAMESPACE);
-  public static final String E_GET_ADDRESS_LIST_INFO_REQUEST = "GetAddressListInfoRequest";
-  public static final String E_GET_ADDRESS_LIST_INFO_RESPONSE = "GetAddressListInfoResponse";
-  public static final QName GET_ADDRESS_LIST_INFO_REQUEST =
-      QName.get(E_GET_ADDRESS_LIST_INFO_REQUEST, NAMESPACE);
-  public static final QName GET_ADDRESS_LIST_INFO_RESPONSE =
-      QName.get(E_GET_ADDRESS_LIST_INFO_RESPONSE, NAMESPACE);
 
   // DumpSessions
   public static final String E_SESSION = "session";
@@ -1097,11 +1052,9 @@ public final class AdminConstants {
   public static final String A_FOLDER_IDS = "folderIds";
   public static final String A_PATH = "path";
   public static final String A_PATH_OR_ID = "pathOrId";
-  public static final String A_CREATE = "create";
   public static final String A_IS_DEFAULT_COS = "isDefaultCos";
   public static final String A_REVISION = "rev";
   public static final String A_DESC = "desc";
-  public static final String A_DN = "dn";
   public static final String A_DYNAMIC = "dynamic";
   public static final String A_PERSIST_AUTH_TOKEN_COOKIE = "persistAuthTokenCookie";
   public static final String A_ALL_SERVERS = "allServers";
@@ -1129,7 +1082,6 @@ public final class AdminConstants {
   public static final String A_TYPES = "types";
   public static final String A_NUM_TABLES = "numTables";
 
-  public static final String A_NUM_EXECUTED = "numExecuted";
   public static final String A_NUM_SUCCEEDED = "numSucceeded";
   public static final String A_NUM_FAILED = "numFailed";
   public static final String A_NUM_SKIPPED = "numSkipped";
@@ -1305,9 +1257,7 @@ public final class AdminConstants {
 
   public static final String A_SYNCHRONOUS = "synchronous";
 
-  public static final String E_MIGRATE = "migrate";
 
-  public static final String A_ERROR = "error";
 
   public static final String OP_MODIFY = "modify";
   public static final String OP_REMOVE = "remove";
@@ -1380,14 +1330,4 @@ public final class AdminConstants {
   public static final String A_CASCADE_DELETE = "cascadeDelete";
 
   // address list
-  public static final String E_CREATE_ADDRESS_LIST_REQUEST = "CreateAddressListRequest";
-  public static final String E_CREATE_ADDRESS_LIST_RESPONSE = "CreateAddressListResponse";
-  public static final QName GET_CREATE_ADDRESS_LIST_REQUEST =
-      QName.get(E_CREATE_ADDRESS_LIST_REQUEST, NAMESPACE);
-  public static final QName GET_CREATE_ADDRESS_LIST_RESPONSE =
-      QName.get(E_CREATE_ADDRESS_LIST_RESPONSE, NAMESPACE);
-  public static final String E_SEARCH_FILTER = "searchFilter";
-  public static final String E_GAL_FILTER = "galFilter";
-  public static final String E_LDAP_FILTER = "ldapFilter";
-  public static final String A_CLEAR_FILTER = "clearFilter";
 }

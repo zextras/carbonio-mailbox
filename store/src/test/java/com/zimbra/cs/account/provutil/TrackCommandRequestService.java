@@ -67,7 +67,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.MODIFY_CONFIG_REQUEST
           , AdminConstants.PURGE_MESSAGES_REQUEST
           , AdminConstants.GET_MAILBOX_REQUEST
-          , AdminConstants.RUN_UNIT_TESTS_REQUEST
           , AdminConstants.CHECK_AUTH_CONFIG_REQUEST
           , AdminConstants.CREATE_VOLUME_REQUEST
           , AdminConstants.GET_VOLUME_REQUEST
@@ -202,7 +201,6 @@ public class TrackCommandRequestService implements DocumentService {
           , MailConstants.GET_MSG_REQUEST
           , MailConstants.MSG_ACTION_REQUEST
           , MailConstants.SEND_MSG_REQUEST
-          , MailConstants.SEND_SECURE_MSG_REQUEST
           , MailConstants.SEND_REPORT_REQUEST
           , MailConstants.SEND_SHARE_NOTIFICATION_REQUEST
           , MailConstants.BOUNCE_MSG_REQUEST

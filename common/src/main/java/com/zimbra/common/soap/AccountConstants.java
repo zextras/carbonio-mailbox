@@ -104,18 +104,7 @@ public class AccountConstants {
   public static final String E_GET_GCM_SENDER_ID_RESPONSE = "GetGcmSenderIdResponse";
 
   // AddressList
-  public static final String E_GET_ALL_ADDRESS_LISTS_REQUEST = "GetAllAddressListsRequest";
-  public static final String E_GET_ALL_ADDRESS_LISTS_RESPONSE = "GetAllAddressListsResponse";
-  public static final String E_ADDRESS_LISTS = "addressLists";
-  public static final String E_ADDRESS_LIST = "addressList";
   public static final String A_DESCRIPTION = "description";
-  public static final QName GET_ALL_ADDRESS_LISTS_REQUEST =
-      QName.get(E_GET_ALL_ADDRESS_LISTS_REQUEST, NAMESPACE);
-  public static final QName GET_ALL_ADDRESS_LISTS_RESPONSE =
-      QName.get(E_GET_ALL_ADDRESS_LISTS_RESPONSE, NAMESPACE);
-  public static final String E_GET_ADDRESS_LIST_MEMBERS_REQUEST = "GetAddressListMembersRequest";
-  public static final String E_GET_ADDRESS_LIST_MEMBERS_RESPONSE = "GetAddressListMembersResponse";
-  public static final String E_ADDRESS_LIST_MEMBERS = "alm";
   public static final String E_ADDRESS_LIST_MEMBER = "member";
   public static final String A_COUNT_ONLY = "countOnly";
 
@@ -242,10 +231,6 @@ public class AccountConstants {
   public static final QName GET_HAB_REQUEST = QName.get(E_GET_HAB_REQUEST, NAMESPACE);
   public static final QName GET_HAB_RESPONSE = QName.get(E_GET_HAB_RESPONSE, NAMESPACE);
 
-  public static final QName GET_ADDRESS_LIST_MEMBERS_REQUEST =
-      QName.get(E_GET_ADDRESS_LIST_MEMBERS_REQUEST, NAMESPACE);
-  public static final QName GET_ADDRESS_LIST_MEMBERS_RESPONSE =
-      QName.get(E_GET_ADDRESS_LIST_MEMBERS_RESPONSE, NAMESPACE);
 
   // users enabled to a particular feature
   public static final String E_SEARCH_USERS_BY_FEATURE_REQUEST = "SearchUsersByFeatureRequest";

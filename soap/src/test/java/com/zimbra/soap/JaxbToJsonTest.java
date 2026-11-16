@@ -21,7 +21,6 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.JSONElement;
 import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.soap.XMbxSearchConstants;
 import com.zimbra.soap.account.message.CreateDistributionListResponse;
 import com.zimbra.soap.account.message.GetDistributionListMembersResponse;
 import com.zimbra.soap.account.message.GetDistributionListResponse;
@@ -30,7 +29,7 @@ import com.zimbra.soap.account.type.DLInfo;
 import com.zimbra.soap.account.type.DistributionListGranteeInfo;
 import com.zimbra.soap.account.type.DistributionListInfo;
 import com.zimbra.soap.admin.message.AuthResponse;
-import com.zimbra.soap.admin.message.CreateXMbxSearchRequest;
+import com.zimbra.soap.admin.message.ModifyConfigRequest;
 import com.zimbra.soap.admin.message.VerifyIndexResponse;
 import com.zimbra.soap.jaxb.AnyAttrTester;
 import com.zimbra.soap.jaxb.AnyTester;
@@ -487,44 +486,17 @@ public class JaxbToJsonTest {
     assertEquals(1, roundtrippedX.getDl().getOwners().size(), "roundtrippedX owner num");
   }
 
-  /**
-   * CreateXMbxSearchRequest currently extends AdminKeyValuePairs which uses the
-   * {@link
-   * ZimbraKeyValuePairs} annotation.
-   *
-   * <p>
-   * Want JSON for KeyValuePairs to look something like : "_attrs": { "query":
-   * "Kitchen",
-   * "accounts": "*" },
-   */
   @Test
-  void keyValuePairMbxSearch() throws Exception {
+  void keyValuePairAdminAttrs() throws Exception {
     final String notifMsg = "Search task %taskId% completed with status %status%. \n"
         + "Imported: %numMsgs% messages. \n"
         + "Search query used: %query%.";
-
-    Element legacyElem = JSONElement.mFactory.createElement(XMbxSearchConstants.CREATE_XMBX_SEARCH_REQUEST);
-    legacyElem.addKeyValuePair("query", "Kitchen");
-    legacyElem.addKeyValuePair("accounts", "*");
-    legacyElem.addKeyValuePair("limit", "0");
-    legacyElem.addKeyValuePair("notificationMessage", notifMsg);
-    logDebug(
-        "CreateXmbxSearchRequest JSONElement ---> prettyPrint\n%1$s", legacyElem.prettyPrint());
-    // CreateXMbxSearchRequest extends AdminKeyValuePairs which uses
-    // ZimbraKeyValuePairs annotation
-    // to flag need
-    // for special handling required when serializing to JSON:
-    // @ZimbraKeyValuePairs
-    // @XmlElement(name=AdminConstants.E_A /* a */, required=false)
-    // private List<KeyValuePair> keyValuePairs;
-    CreateXMbxSearchRequest jaxb = new CreateXMbxSearchRequest();
-    jaxb.addKeyValuePair(new KeyValuePair("query", "Kitchen"));
-    jaxb.addKeyValuePair(new KeyValuePair("accounts", "*"));
-    jaxb.addKeyValuePair(new KeyValuePair("limit", "0"));
-    jaxb.addKeyValuePair(new KeyValuePair("notificationMessage", notifMsg));
-    Element elem = JacksonUtil.jaxbToJSONElement(jaxb, XMbxSearchConstants.CREATE_XMBX_SEARCH_REQUEST);
-    logDebug(
-        "CreateXmbxSearchRequest JSONElement from JAXB ---> prettyPrint\n%1$s", elem.prettyPrint());
+    ModifyConfigRequest jaxb = new ModifyConfigRequest();
+    jaxb.addAttr("query", "Kitchen");
+    jaxb.addAttr("accounts", "*");
+    jaxb.addAttr("limit", "0");
+    jaxb.addAttr("notificationMessage", notifMsg);
+    Element elem = JacksonUtil.jaxbToJSONElement(jaxb, AdminConstants.MODIFY_CONFIG_REQUEST);
     List<Element.KeyValuePair> kvps = elem.listKeyValuePairs();
     assertEquals(4, kvps.size(), "Number of keyValuePairs ");
     Element.KeyValuePair kvp4 = kvps.get(3);
