@@ -15,6 +15,7 @@ import com.zimbra.common.zmime.ZMimeMessage;
 import com.zimbra.common.zmime.ZMimeMultipart;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.DeliveryOptions;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -52,7 +53,7 @@ public class TestContentTransferEncoding extends MailboxTestSuite {
 	private MimeMessage sendForwardedMessage(SendMsgRequest req, Message origMsg) throws Exception {
 		Element reqElt = JaxbUtil.jaxbToElement(req);
 		Element msgElt = reqElt.getElement(MailConstants.E_MSG);
-		AuthToken at = AuthProvider.getAuthToken(mbox.getAccount());
+		AuthToken at = AuthProvider.getAuthToken(Provisioning.getInstance().getAccountByMailbox(mbox));
 		ZimbraSoapContext zsc = new ZimbraSoapContext(at, mbox.getAccountId(), SoapProtocol.Soap12,
 				SoapProtocol.Soap12);
 		return ParseMimeMessage.parseMimeMsgSoap(zsc, null, mbox, msgElt, new MimeMessageData());

@@ -747,7 +747,8 @@ public class ContactGroup {
         protected void deref(Mailbox mbox, OperationContext octxt, SoapProtocol proxyProtocol) 
         throws ServiceException {
             // search GAL by DN
-            GalSearchParams params = new GalSearchParams(mbox.getAccount(), null);
+            GalSearchParams params = new GalSearchParams(
+                Provisioning.getInstance().getAccountByMailbox(mbox), null);
             params.setSearchEntryByDn(value);
             params.setType(GalSearchType.all);
             params.setLimit(1);

@@ -86,7 +86,7 @@ public abstract class AutoScheduler {
       from = null;
       sender = null;
     } else {
-      calendarAccount = calendarMailbox.getAccount();
+      calendarAccount = Provisioning.getInstance().getAccountByMailbox(calendarMailbox);
       from = AccountUtil.getFriendlyEmailAddress(calendarAccount);
       // Only set sender if not same as from
       if (ctxt.getAuthAccount().equals(calendarAccount)) {
@@ -194,7 +194,7 @@ public abstract class AutoScheduler {
         return null; // no organizer means no scheduling
       }
       // TODO:  Does the auth user have scheduling capability for the calendar
-      if (calendarMailbox.getAccount().sameAccount(organizerAcct)) {
+      if (Provisioning.getInstance().getAccountByMailbox(calendarMailbox).sameAccount(organizerAcct)) {
         return new OrganizerAutoScheduler(
             userMailbox,
             calendarMailbox,

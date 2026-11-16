@@ -3293,11 +3293,11 @@ public class ZMailboxUtil implements DebugListener {
   }
 
   private void doGetAllContacts(String[] args) throws ServiceException {
-    dumpContacts(mMbox.getAllContacts(lookupFolderId(folderOpt()), null, true, getList(args, 0)));
+    dumpContacts(mMbox.getAllContacts(lookupFolderId(folderOpt()), true, getList(args, 0)));
   }
 
   private void doGetContacts(String[] args) throws ServiceException {
-    dumpContacts(mMbox.getContacts(id(args[0]), null, true, getList(args, 1)));
+    dumpContacts(mMbox.getContacts(id(args[0]), true, getList(args, 1)));
   }
 
   private void doAutoComplete(String[] args) throws ServiceException {

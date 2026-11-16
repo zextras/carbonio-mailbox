@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.redolog.op;
 
+import com.zimbra.cs.account.Provisioning;
 import java.io.IOException;
 
 import com.zimbra.cs.mailbox.Mailbox;
@@ -49,7 +50,8 @@ public class RenameMailbox extends RedoableOp {
         Mailbox mbox = MailboxManager.getInstance().getMailboxById(getMailboxId());
         // Redo the rename only if the current account name matches mOldName.  This prevents renaming an account
         // that is restored as a copy. (-ca option of zmrestore)
-        if (mNewName != null && AccountUtil.addressMatchesAccount(mbox.getAccount(), mOldName)) {
+        if (mNewName != null && AccountUtil.addressMatchesAccount(
+            Provisioning.getInstance().getAccountByMailbox(mbox), mOldName)) {
             mbox.renameMailbox(mOldName, mNewName);
         }
     }

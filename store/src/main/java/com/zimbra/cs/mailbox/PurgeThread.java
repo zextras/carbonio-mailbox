@@ -131,7 +131,7 @@ extends Thread {
                     if (mm.isMailboxLoadedAndAvailable(mailboxId) || purgePendingMailboxes.contains(mailboxId)) {
                         attemptedPurge = true;
                         Mailbox mbox = mm.getMailboxById(mailboxId);
-                        Account account = mbox.getAccount();
+                        Account account = Provisioning.getInstance().getAccountByMailbox(mbox);
                         Provisioning prov = Provisioning.getInstance();
                         if (!Provisioning.ACCOUNT_STATUS_MAINTENANCE.equals(account.getAccountStatus(prov)) &&
                                 !account.isIsExternalVirtualAccount()) {

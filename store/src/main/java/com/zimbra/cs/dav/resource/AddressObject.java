@@ -283,7 +283,9 @@ public class AddressObject extends MailItemResource {
             // check for existing contact
             if (uid != null) {
                 vcard.fields.put(ContactConstants.A_vCardUID, uid);
-                AddressObject ao = getAddressObjectByUID(ctxt, uid, ctxt.getTargetMailbox().getAccount(),
+                Mailbox mailbox = ctxt.getTargetMailbox();
+                AddressObject ao = getAddressObjectByUID(ctxt, uid,
+                    Provisioning.getInstance().getAccountByMailbox(mailbox),
                             ctxt.getTargetMailbox().getFolderById(ctxt.getOperationContext(), where.mId), baseName);
                 if (ao != null) {
                     if (!allowUpdate) {

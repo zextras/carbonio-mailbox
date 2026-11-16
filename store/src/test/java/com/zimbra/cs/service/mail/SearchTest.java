@@ -108,7 +108,8 @@ public class SearchTest extends MailboxTestSuite {
     action.addAttribute(MailConstants.A_ID, msg1.getId());
     action.addAttribute(MailConstants.A_MARK_READ, 1);
     new GetMsg()
-        .handle(request, ServiceTestUtil.getRequestContext(mbox.getAccount()))
+        .handle(request, ServiceTestUtil.getRequestContext(
+            Provisioning.getInstance().getAccountByMailbox(mbox)))
         .getElement(MailConstants.E_MSG);
     assertFalse(msg1.isUnread(), "msg read");
     assertTrue(msg2.isUnread(), "msg unread");

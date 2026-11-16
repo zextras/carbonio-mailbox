@@ -10,9 +10,11 @@
 package com.zimbra.cs.filter.jsieve;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.filter.DummyMailAdapter;
 import com.zimbra.cs.filter.ZimbraMailAdapter;
 import com.zimbra.cs.filter.ZimbraSieveException;
+import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.calendar.Util;
 
 import org.apache.jsieve.Argument;
@@ -70,7 +72,9 @@ public class CurrentTimeTest extends AbstractTest {
         DateFormat timeFormat = new SimpleDateFormat("HHmm");
         TimeZone accountTimeZone;
         try {
-            accountTimeZone = Util.getAccountTimeZone(((ZimbraMailAdapter) mail).getMailbox().getAccount());
+            Mailbox mailbox = ((ZimbraMailAdapter) mail).getMailbox();
+            accountTimeZone = Util.getAccountTimeZone(
+                Provisioning.getInstance().getAccountByMailbox(mailbox));
         } catch (ServiceException e) {
             throw new ZimbraSieveException(e);
         }

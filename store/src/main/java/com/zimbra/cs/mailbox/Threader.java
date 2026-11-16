@@ -77,7 +77,7 @@ public final class Threader {
     public Threader(Mailbox mbox, ParsedMessage pm) throws ServiceException {
         this.mbox = mbox;
         this.pm = pm;
-        this.mode = getThreadingAlgorithm(mbox.getAccount());
+        this.mode = getThreadingAlgorithm(Provisioning.getInstance().getAccountByMailbox(mbox));
         this.subjHash = isEnabled() ? getSubjectHash() : null;
         this.refHashes = isEnabled() && !mode.isSubject() ? getReferenceHashes(true) : null;
     }
@@ -136,7 +136,7 @@ public final class Threader {
     }
 
     private String prependDataSource(String toHash) throws ServiceException {
-        if (mbox.getAccount().isDisableCrossAccountConversationThreading()) {
+        if (Provisioning.getInstance().getAccountByMailbox(mbox).isDisableCrossAccountConversationThreading()) {
             String dsId = pm.getDataSourceId();
             if (Strings.isNullOrEmpty(dsId)) {
                 return toHash;
@@ -176,7 +176,7 @@ public final class Threader {
         List<String> hashes = new ArrayList<>(3);
         // technically shouldn't be shorter than 22 bytes, but always take 1 pass just in case
         int length = tindex.length;
-        boolean addDataSource = mbox.getAccount().isDisableCrossAccountConversationThreading();
+        boolean addDataSource = Provisioning.getInstance().getAccountByMailbox(mbox).isDisableCrossAccountConversationThreading();
         do {
             try {
                 MessageDigest md = MessageDigest.getInstance("SHA1");

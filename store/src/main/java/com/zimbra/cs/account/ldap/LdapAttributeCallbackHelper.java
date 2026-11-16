@@ -70,7 +70,7 @@ public class LdapAttributeCallbackHelper {
 				if (attributeManager.idnType(name).isEmailOrIDN()) {
 					value = attrs.get(name);
 				}
-				LdapAttributeInfo.get(info).checkValue(value, checkImmutable, attrs);
+				LdapAttributeInfo.get(info).checkValue(value, checkImmutable);
 				final LdapAttributeInfo ldapAttributeInfo = LdapAttributeInfo.get(info);
 				if (allowCallback && ldapAttributeInfo.getCallback() != null) {
 					ldapAttributeInfo.getCallback().preModify(context, name, value, attrs, entry);
@@ -112,7 +112,7 @@ public class LdapAttributeCallbackHelper {
 	}
 
 	private void getExtraObjectClassAttrs(
-			LdapProv ldapProv, AttributeClass attrClass, String extraObjectClassAttr)
+			LdapProv ldapProv, String extraObjectClassAttr)
 			throws ServiceException {
 		AttributeConfig config = ldapProv.getConfig();
 
@@ -130,17 +130,16 @@ public class LdapAttributeCallbackHelper {
 		attributeManager.setmLdapSchemaExtensionInited(true);
 
 		this.getExtraObjectClassAttrs(
-				repository, AttributeClass.account, ZAttrProvisioning.A_zimbraAccountExtraObjectClass);
+				repository, ZAttrProvisioning.A_zimbraAccountExtraObjectClass);
 		this.getExtraObjectClassAttrs(
 				repository,
-				AttributeClass.calendarResource,
 				ZAttrProvisioning.A_zimbraCalendarResourceExtraObjectClass);
 		this.getExtraObjectClassAttrs(
-				repository, AttributeClass.cos, ZAttrProvisioning.A_zimbraCosExtraObjectClass);
+				repository, ZAttrProvisioning.A_zimbraCosExtraObjectClass);
 		this.getExtraObjectClassAttrs(
-				repository, AttributeClass.domain, ZAttrProvisioning.A_zimbraDomainExtraObjectClass);
+				repository, ZAttrProvisioning.A_zimbraDomainExtraObjectClass);
 		this.getExtraObjectClassAttrs(
-				repository, AttributeClass.server, ZAttrProvisioning.A_zimbraServerExtraObjectClass);
+				repository, ZAttrProvisioning.A_zimbraServerExtraObjectClass);
 	}
 	public void loadLdapSchemaExtensionAttrs(LdapProv ldapProv) {
 		synchronized (AttributeManager.class) {

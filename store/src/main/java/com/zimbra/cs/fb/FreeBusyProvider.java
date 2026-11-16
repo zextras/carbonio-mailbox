@@ -279,7 +279,7 @@ public abstract class FreeBusyProvider {
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(accountId);
     if (mbox == null) return null;
     return mbox.getFreeBusy(
-        null, cachedFreeBusyStartTime(accountId), cachedFreeBusyEndTime(accountId), folderId);
+        null, account, cachedFreeBusyStartTime(accountId), cachedFreeBusyEndTime(accountId), folderId);
   }
 
   protected String getEmailAddress(String accountId) {

@@ -926,7 +926,7 @@ class ImapFolderSync {
 
     protected void refetchPurgedMsgsInConversation(ParsedMessage pm)
             throws ServiceException, IOException {
-        if (!mailbox.getAccount().isFeatureDataSourcePurgingEnabled()) {
+        if (!Provisioning.getInstance().getAccountByMailbox(mailbox).isFeatureDataSourcePurgingEnabled()) {
             return;
         }
         Threader threader = pm.getThreader(ds.getMailbox());

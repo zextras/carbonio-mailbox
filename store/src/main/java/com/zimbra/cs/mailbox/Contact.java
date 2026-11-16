@@ -684,7 +684,8 @@ public class Contact extends MailItem {
         data.id = id;
         data.type = Type.CONTACT.toByte();
         data.folderId = folder.getId();
-        if (!folder.inSpam() || mbox.getAccount().getBooleanAttr(Provisioning.A_zimbraJunkMessagesIndexingEnabled, false)) {
+        if (!folder.inSpam() || Provisioning.getInstance().getAccountByMailbox(mbox)
+            .getBooleanAttr(Provisioning.A_zimbraJunkMessagesIndexingEnabled, false)) {
             data.indexId = IndexStatus.DEFERRED.id();
         }
         data.imapId = id;

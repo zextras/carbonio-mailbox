@@ -215,7 +215,7 @@ public class ImapCredentials implements java.io.Serializable {
   }
 
   protected boolean isFolderHidden(ImapPath path) {
-    return mHiddenFolders == null ? false : mHiddenFolders.contains(path);
+    return mHiddenFolders != null && mHiddenFolders.contains(path);
   }
 
   @Override
@@ -245,7 +245,7 @@ public class ImapCredentials implements java.io.Serializable {
   }
 
   // ZCS-6695 Deserialization protection
-  private final void readObject(ObjectInputStream in) throws java.io.IOException {
+  private void readObject(ObjectInputStream in) throws java.io.IOException {
     throw new java.io.IOException("Cannot be deserialized");
   }
 }

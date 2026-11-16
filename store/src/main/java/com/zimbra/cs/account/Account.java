@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.account;
 
+import static com.zimbra.common.mailbox.FolderConstants.ID_FOLDER_CALENDAR;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.zimbra.common.account.Key;
@@ -76,6 +78,10 @@ public class Account extends ZAttrAccount implements GroupedEntry, AliasedEntry 
 
   public void removeAlias(String alias) throws ServiceException {
     getProvisioning().removeAlias(this, alias);
+  }
+
+  public void resetDefaultCalendarId() throws ServiceException {
+    this.setPrefDefaultCalendarId(ID_FOLDER_CALENDAR);
   }
 
   public void authAccount(String password, AuthContext.Protocol proto) throws ServiceException {

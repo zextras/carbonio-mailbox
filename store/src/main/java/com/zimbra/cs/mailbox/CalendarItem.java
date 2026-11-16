@@ -540,7 +540,7 @@ public abstract class CalendarItem extends MailItem {
       endTime = dtEnd != null ? dtEnd.getUtcTime() : startTime;
     }
 
-    Account account = mbox.getAccount();
+    Account account = Provisioning.getInstance().getAccountByMailbox(mbox);
     firstInvite.updateMyPartStat(account, firstInvite.getPartStat());
 
     UnderlyingData data = new UnderlyingData();
@@ -548,7 +548,7 @@ public abstract class CalendarItem extends MailItem {
     data.type = type.toByte();
     data.folderId = folder.getId();
     if (!folder.inSpam()
-        || mbox.getAccount()
+        || Provisioning.getInstance().getAccountByMailbox(mbox)
             .getBooleanAttr(Provisioning.A_zimbraJunkMessagesIndexingEnabled, false)) {
       data.indexId = IndexStatus.DEFERRED.id();
     }
@@ -885,7 +885,9 @@ public abstract class CalendarItem extends MailItem {
     mUid = Invite.fixupIfOutlookUid(meta.get(Metadata.FN_UID, null));
     mInvites = new ArrayList<>();
 
-    ICalTimeZone accountTZ = Util.getAccountTimeZone(getMailbox().getAccount());
+    Mailbox mailbox = getMailbox();
+    ICalTimeZone accountTZ = Util.getAccountTimeZone(
+        Provisioning.getInstance().getAccountByMailbox(mailbox));
     if (meta.containsKey(Metadata.FN_TZMAP)) {
       try {
         Set<String> tzids = new HashSet<>();
@@ -1794,7 +1796,8 @@ public abstract class CalendarItem extends MailItem {
 
     // Don't allow moving a private appointment on behalf of another user,
     // unless that other user is a calendar resource.
-    boolean isCalendarResource = getMailbox().getAccount() instanceof CalendarResource;
+    Mailbox mailbox = getMailbox();
+    boolean isCalendarResource = Provisioning.getInstance().getAccountByMailbox(mailbox) instanceof CalendarResource;
     boolean denyPrivateAccess =
         requirePrivateCheck ? !allowPrivateAccess(authAccount, asAdmin) : false;
     if (!newInvite.isPublic() || !isPublic()) {
@@ -3533,7 +3536,9 @@ public abstract class CalendarItem extends MailItem {
    */
   public String getEffectivePartStat(Invite inv, Instance inst) throws ServiceException {
     if (!inv.isOrganizer()) {
-      ZAttendee at = mReplyList.getEffectiveAttendee(getMailbox().getAccount(), inv, inst);
+      Mailbox mailbox = getMailbox();
+      ZAttendee at = mReplyList.getEffectiveAttendee(
+          Provisioning.getInstance().getAccountByMailbox(mailbox), inv, inst);
       if (at != null) {
         if (at.hasPartStat()) return at.getPartStat();
         else return IcalXmlStrMap.PARTSTAT_NEEDS_ACTION;

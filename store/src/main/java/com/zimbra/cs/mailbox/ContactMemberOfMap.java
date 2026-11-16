@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zimbra.cs.account.Provisioning;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +39,8 @@ public class ContactMemberOfMap {
         params.setSortBy(SortBy.NONE);
         OperationContext opCtxt;
         try {
-            opCtxt = octxt != null ? octxt : new OperationContext(mbox.getAccount());
+            opCtxt = octxt != null ? octxt
+                : new OperationContext(Provisioning.getInstance().getAccountByMailbox(mbox));
         } catch (ServiceException se) {
             ZimbraLog.contact.debug("Problem creating OperationContext for getMemberOfMap", se);
             return Collections.emptyMap();
@@ -71,7 +73,8 @@ public class ContactMemberOfMap {
                     }
                 }
             }
-            ZimbraLog.contact.debug("getMemberOfMap for %s - %s members %s", mbox.getAccount().getName(),
+            ZimbraLog.contact.debug("getMemberOfMap for %s - %s members %s", Provisioning.getInstance()
+                    .getAccountByMailbox(mbox).getName(),
                     memberOfMap.size(), ZimbraLog.elapsedTime(start, System.currentTimeMillis()));
             return memberOfMap;
         } catch (ServiceException | IOException e) {

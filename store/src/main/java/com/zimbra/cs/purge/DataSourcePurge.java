@@ -40,7 +40,7 @@ public abstract class DataSourcePurge {
     }
 
     protected List<DataSource> getAllDataSources() throws ServiceException {
-        return mbox.getAccount().getAllDataSources();
+        return Provisioning.getInstance().getAccountByMailbox(mbox).getAllDataSources();
     }
 
     abstract List<DataSource> getPurgeableDataSources(DataSource incoming) throws ServiceException;

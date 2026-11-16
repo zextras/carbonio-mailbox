@@ -246,7 +246,7 @@ public interface CalendarObject {
     public void delete(DavContext ctxt) throws DavException {
       try {
         Mailbox mbox = getMailbox(ctxt);
-        if (mbox.getAccount().isPrefDeleteInviteOnReply()) {
+        if (Provisioning.getInstance().getAccountByMailbox(mbox).isPrefDeleteInviteOnReply()) {
           super.delete(ctxt);
         } else {
           mbox.alterTag(

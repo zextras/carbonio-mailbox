@@ -707,7 +707,8 @@ public class Invite {
       // backward compat for invites created before FN_IS_ORGANIZER was introduced
       if (org != null) {
         String orgAddr = org.getAddress();
-        Account account = MailboxManager.getInstance().getMailboxById(mailboxId).getAccount();
+        Mailbox mailbox = MailboxManager.getInstance().getMailboxById(mailboxId);
+        Account account = Provisioning.getInstance().getAccountByMailbox(mailbox);
         AccountAddressMatcher acctMatcher = new AccountAddressMatcher(account);
         isOrganizer = acctMatcher.matches(orgAddr);
       } else {

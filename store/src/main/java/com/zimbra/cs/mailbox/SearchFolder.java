@@ -62,7 +62,8 @@ public final class SearchFolder extends Folder implements SearchFolderStore {
      *  attribute <code>zimbraPrefImapSearchFoldersEnabled</code>. */
     public boolean isImapVisible() {
         try {
-            return mMailbox.getAccount().getBooleanAttr(Provisioning.A_zimbraPrefImapSearchFoldersEnabled, true);
+            return Provisioning.getInstance().getAccountByMailbox(mMailbox)
+                .getBooleanAttr(Provisioning.A_zimbraPrefImapSearchFoldersEnabled, true);
         } catch (ServiceException e) {
             return true;
         }
@@ -131,7 +132,7 @@ public final class SearchFolder extends Folder implements SearchFolderStore {
         data.folderId = parent.getId();
         data.parentId = parent.getId();
         data.date = mbox.getOperationTimestamp();
-        data.setFlags((flags | Flag.toBitmask(mbox.getAccount().getDefaultFolderFlags())) & Flag.FLAGS_FOLDER);
+        data.setFlags((flags | Flag.toBitmask(Provisioning.getInstance().getAccountByMailbox(mbox).getDefaultFolderFlags())) & Flag.FLAGS_FOLDER);
         data.name = name;
         data.setSubject(name);
         data.metadata = encodeMetadata(color, 1, 1, custom, query, types, sort);

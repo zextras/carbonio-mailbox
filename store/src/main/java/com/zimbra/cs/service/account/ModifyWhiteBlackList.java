@@ -36,7 +36,7 @@ public class ModifyWhiteBlackList extends AccountDocumentHandler {
                 addrs);
 
         // call modifyAttrs and pass true to checkImmutable
-        Provisioning.getInstance().modifyAttrs(account, addrs, true, zsc.getAuthToken());
+        Provisioning.getInstance().modifyAttrs(account, addrs, true);
 
         Element response = zsc.createElement(AccountConstants.MODIFY_WHITE_BLACK_LIST_RESPONSE);
         return response;

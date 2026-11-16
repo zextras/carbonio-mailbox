@@ -592,7 +592,7 @@ public class Notification implements LmtpCallback {
     void interceptIfNecessary(Mailbox mbox, MimeMessage msg, String operation, Folder folder)
     throws ServiceException {
             // Don't do anything if intercept is turned off.
-            Account account = mbox.getAccount();
+        Account account = Provisioning.getInstance().getAccountByMailbox(mbox);
             String[] interceptAddresses = account.getMultiAttr(Provisioning.A_zimbraInterceptAddress);
             if (interceptAddresses.length == 0) {
                 return;

@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.filter;
 
+import com.zimbra.cs.account.Provisioning;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -113,7 +114,7 @@ public final class IncomingMessageHandler implements FilterHandler {
 
     @Override
     public Message implicitKeep(Collection<ActionFlag> flagActions, String[] tags) throws ServiceException {
-        int folderId = mailbox.getAccount().isFeatureAntispamEnabled() && SpamHandler.isSpam(getMimeMessage()) ?
+        int folderId = Provisioning.getInstance().getAccountByMailbox(mailbox).isFeatureAntispamEnabled() && SpamHandler.isSpam(getMimeMessage()) ?
                 Mailbox.ID_FOLDER_SPAM : defaultFolderId;
         return addMessage(folderId, flagActions, tags);
     }

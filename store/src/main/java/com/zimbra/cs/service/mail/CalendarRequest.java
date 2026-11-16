@@ -432,7 +432,7 @@ public abstract class CalendarRequest extends MailDocumentHandler {
     if (!csd.mInvite.isCancel() && !forceSend && willNotify) {
       try {
         MailUtil.validateRcptAddresses(
-            JMSession.getSmtpSession(mbox.getAccount()), csd.mMm.getAllRecipients());
+            JMSession.getSmtpSession(Provisioning.getInstance().getAccountByMailbox(mbox)), csd.mMm.getAllRecipients());
       } catch (MessagingException mex) {
         if (mex instanceof SendFailedException) {
           SendFailedException sfex = (SendFailedException) mex;
@@ -541,7 +541,7 @@ public abstract class CalendarRequest extends MailDocumentHandler {
       ZimbraSoapContext zsc, Account acct, Mailbox mbox, MimeMessage mm)
       throws ServiceException, MessagingException {
     if (acct.isSmtpRestrictEnvelopeFrom()) {
-      return mbox.getAccount().getName();
+      return Provisioning.getInstance().getAccountByMailbox(mbox).getName();
     }
     InternetAddress from = (InternetAddress) ArrayUtil.getFirstElement(mm.getFrom());
     InternetAddress sender = (InternetAddress) mm.getSender();

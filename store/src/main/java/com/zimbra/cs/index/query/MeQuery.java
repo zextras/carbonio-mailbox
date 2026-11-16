@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.index.query;
 
+import com.zimbra.cs.account.Provisioning;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +31,7 @@ public final class MeQuery extends SubQuery {
 
     public static Query create(Mailbox mbox, Analyzer analyzer, Set<AddrQuery.Address> addrs) throws ServiceException {
         List<Query> clauses = new ArrayList<>();
-        Account acct = mbox.getAccount();
+        Account acct = Provisioning.getInstance().getAccountByMailbox(mbox);
         if (addrs.contains(AddrQuery.Address.FROM)) {
             clauses.add(new SentQuery(true));
         }

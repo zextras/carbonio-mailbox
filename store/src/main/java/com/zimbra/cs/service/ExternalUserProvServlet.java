@@ -315,7 +315,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
         acct.unsetFeatureAddressUnderVerification();
         attrs.put(MESSAGE_KEY, "Success");
       }
-      prov.modifyAttrs(acct, prefs, true, null);
+      prov.modifyAttrs(acct, prefs, true);
     } catch (ServiceException e) {
       Map<String, String> errorAttrs = new HashMap<>();
       errorAttrs.put(MESSAGE_KEY, "Failure");

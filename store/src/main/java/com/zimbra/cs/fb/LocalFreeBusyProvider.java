@@ -51,13 +51,14 @@ public class LocalFreeBusyProvider {
             Account authAcct, boolean asAdmin, Mailbox mbox, String name, long start, long end, int folder, Appointment exAppt)
     throws ServiceException {
         AccessManager accessMgr = AccessManager.getInstance();
-        boolean accountAceAllowed = accessMgr.canDo(authAcct, mbox.getAccount(), User.R_viewFreeBusy, asAdmin);
+        boolean accountAceAllowed = accessMgr.canDo(authAcct,
+            Provisioning.getInstance().getAccountByMailbox(mbox), User.R_viewFreeBusy, asAdmin);
          
         // Check effective domain/global setting for public (unauthenticated) access
         if (accountAceAllowed && authAcct instanceof GuestAccount) {
             try {
                 Provisioning provisioning = Provisioning.getInstance();
-                Account targetAccount = mbox.getAccount();
+                Account targetAccount = Provisioning.getInstance().getAccountByMailbox(mbox);
                 Domain targetDomain = provisioning.getDomain(targetAccount);
                 boolean publicFreeBusyAllowed = targetDomain != null
                         ? targetDomain.getBooleanAttr(Provisioning.A_carbonioPublicFreeBusyAllowed, false)
@@ -180,7 +181,8 @@ public class LocalFreeBusyProvider {
 
         try {
             Mailbox mbox = MailboxManager.getInstance().getMailboxById(1);
-            FreeBusy fb = getFreeBusyList(mbox.getAccount(), false, mbox, mbox.getAccount().getName(), 0, Long.MAX_VALUE, FreeBusyQuery.CALENDAR_FOLDER_ALL, null);
+            FreeBusy fb = getFreeBusyList(Provisioning.getInstance().getAccountByMailbox(mbox), false, mbox, Provisioning.getInstance()
+                .getAccountByMailbox(mbox).getName(), 0, Long.MAX_VALUE, FreeBusyQuery.CALENDAR_FOLDER_ALL, null);
             System.out.println(fb);
         } catch (ServiceException e){
             System.out.println("EXCEPTION: "+e);

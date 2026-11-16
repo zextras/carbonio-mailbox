@@ -20,6 +20,7 @@ import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.UUIDUtil;
 import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.imap.ImapMessage;
 import com.zimbra.cs.index.SortBy;
@@ -45,7 +46,6 @@ import com.zimbra.cs.store.MailboxBlob;
 import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.util.SpoolingCache;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -745,7 +745,7 @@ public class DbMailItem {
     String prevFolders = item.getPrevFolders();
     if (!StringUtil.isNullOrEmpty(prevFolders)) {
       String[] modseq2FolderId = prevFolders.split(";");
-      int maxCount = mbox.getAccount().getServer().getPrevFoldersToTrackMax();
+      int maxCount = Provisioning.getInstance().getAccountByMailbox(mbox).getServer().getPrevFoldersToTrackMax();
       if (modseq2FolderId.length < maxCount) {
         prevFolders += ";" + modseq + ":" + item.getFolderId();
       } else {
@@ -817,7 +817,7 @@ public class DbMailItem {
           String prevFolders = ud.getPrevFolders();
           if (!StringUtil.isNullOrEmpty(prevFolders)) {
             String[] modseq2FolderId = prevFolders.split(";");
-            int maxCount = mbox.getAccount().getServer().getPrevFoldersToTrackMax();
+            int maxCount = Provisioning.getInstance().getAccountByMailbox(mbox).getServer().getPrevFoldersToTrackMax();
             if (modseq2FolderId.length < maxCount) {
               prevFolders += ";" + modseq + ":" + ud.folderId;
             } else {
@@ -2073,7 +2073,6 @@ public class DbMailItem {
         DbUtil.whereIn("id", count)
             + " AND type IN "
             + DUMPSTER_TYPES
-            + (!mbox.useDumpsterForSpam() ? " AND folder_id != " + Mailbox.ID_FOLDER_SPAM : "")
             + " AND folder_id != "
             + Mailbox.ID_FOLDER_DRAFTS;
     PreparedStatement miCopyStmt = null;
@@ -3785,8 +3784,7 @@ public class DbMailItem {
   static List<Integer> accumulateLeafNodes(PendingDelete info, Mailbox mbox, ResultSet rs)
       throws SQLException, ServiceException {
     boolean dumpsterEnabled = mbox.dumpsterEnabled();
-    boolean useDumpsterForSpam = mbox.useDumpsterForSpam();
-    StoreManager sm = StoreManager.getInstance();
+		StoreManager sm = StoreManager.getInstance();
     List<Integer> versioned = new ArrayList<>();
 
     while (rs.next()) {
@@ -3859,9 +3857,7 @@ public class DbMailItem {
       }
 
       int fid = folderId != null ? folderId : -1;
-      if (!dumpsterEnabled
-          || fid == Mailbox.ID_FOLDER_DRAFTS
-          || (fid == Mailbox.ID_FOLDER_SPAM && !useDumpsterForSpam)) {
+      if (!dumpsterEnabled || fid == Mailbox.ID_FOLDER_DRAFTS) {
         String blobDigest = rs.getString(LEAF_CI_BLOB_DIGEST);
         if (blobDigest != null) {
           info.blobDigests.add(blobDigest);
@@ -3903,8 +3899,7 @@ public class DbMailItem {
       return;
     }
     boolean dumpsterEnabled = mbox.dumpsterEnabled();
-    boolean useDumpsterForSpam = mbox.useDumpsterForSpam();
-    DbConnection conn = mbox.getOperationConnection();
+		DbConnection conn = mbox.getOperationConnection();
     StoreManager sm = StoreManager.getInstance();
 
     PreparedStatement stmt = null;
@@ -3939,9 +3934,7 @@ public class DbMailItem {
         }
 
         int fid = folderId != null ? folderId : -1;
-        if (!dumpsterEnabled
-            || fid == Mailbox.ID_FOLDER_DRAFTS
-            || (fid == Mailbox.ID_FOLDER_SPAM && !useDumpsterForSpam)) {
+        if (!dumpsterEnabled || fid == Mailbox.ID_FOLDER_DRAFTS) {
           String blobDigest = rs.getString(6);
           if (blobDigest != null) {
             info.blobDigests.add(blobDigest);

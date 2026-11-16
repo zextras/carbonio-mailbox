@@ -12,6 +12,7 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.CalendarItem.ReplyInfo;
 import com.zimbra.cs.mailbox.Flag;
@@ -225,7 +226,7 @@ public class SetCalendarItem extends CalendarRequest {
     }
 
     if (ipr == null && msgElem.getOptionalElement(MailConstants.E_INVITE) != null) {
-      ipr = parser.parse(zsc, octxt, mbox.getAccount(), msgElem.getElement(MailConstants.E_INVITE));
+      ipr = parser.parse(zsc, octxt, Provisioning.getInstance().getAccountByMailbox(mbox), msgElem.getElement(MailConstants.E_INVITE));
       // Get description texts out of the MimeMessage and set in the parsed invite.  Do it only if
       // the MimeMessage has text parts.  This prevents discarding texts when they're specified only
       // in the <inv> but not in mime parts.
@@ -244,7 +245,8 @@ public class SetCalendarItem extends CalendarRequest {
     if (inv == null || inv.getDTStamp() == -1) { // zdsync if -1 for 4.5 back compat
       CalendarPartInfo cpi = pm.getCalendarPartInfo();
       ZVCalendar cal = null;
-      if (cpi != null && CalendarItem.isAcceptableInvite(mbox.getAccount(), cpi)) {
+      if (cpi != null && CalendarItem.isAcceptableInvite(
+          Provisioning.getInstance().getAccountByMailbox(mbox), cpi)) {
         cal = cpi.cal;
       }
       if (cal == null) {

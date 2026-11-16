@@ -458,7 +458,7 @@ public class MailboxManager {
       }
 
       mbox = instantiateMailbox(data);
-      Account account = mbox.getAccount();
+      Account account = Provisioning.getInstance().getAccountByMailbox(mbox);
       boolean isGalSyncAccount = AccountUtil.isGalSyncAccount(account);
       mbox.setGalSyncMailbox(isGalSyncAccount);
 

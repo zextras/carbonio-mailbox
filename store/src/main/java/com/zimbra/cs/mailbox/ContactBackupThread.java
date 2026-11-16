@@ -117,7 +117,7 @@ public class ContactBackupThread extends Thread {
       try {
         Mailbox mbox = MailboxManager.getInstance().getMailboxById(mailboxId);
         sb.append(mailboxId).append(",");
-        Account account = mbox.getAccount();
+        Account account = Provisioning.getInstance().getAccountByMailbox(mbox);
         sb.append(account.getMail()).append(",");
         ZimbraLog.addAccountNameToContext(account.getName());
         if (account.isFeatureContactBackupEnabled()

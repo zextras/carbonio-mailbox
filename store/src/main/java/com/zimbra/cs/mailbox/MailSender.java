@@ -321,7 +321,8 @@ public class MailSender {
 
   public static int getSentFolderId(Mailbox mbox) throws ServiceException {
     int folderId = Mailbox.ID_FOLDER_SENT;
-    String sentFolder = mbox.getAccount().getAttr(Provisioning.A_zimbraPrefSentMailFolder, null);
+    String sentFolder = Provisioning.getInstance().getAccountByMailbox(mbox)
+        .getAttr(Provisioning.A_zimbraPrefSentMailFolder, null);
     if (sentFolder != null) {
       try {
         folderId = mbox.getFolderByPath(null, sentFolder).getId();
@@ -526,7 +527,7 @@ public class MailSender {
       throws ServiceException {
     Account authuser = octxt == null ? null : octxt.getAuthenticatedUser();
     if (authuser == null) {
-      authuser = mbox.getAccount();
+      authuser = Provisioning.getInstance().getAccountByMailbox(mbox);
     }
     Identity identity = null;
     if (identityId != null) {
@@ -599,7 +600,7 @@ public class MailSender {
         throw MailServiceException.MESSAGE_TOO_BIG(maxSize, size);
       }
 
-      Account acct = mbox.getAccount();
+      Account acct = Provisioning.getInstance().getAccountByMailbox(mbox);
       Account authuser = octxt == null ? null : octxt.getAuthenticatedUser();
       boolean isAdminRequest = octxt == null ? false : octxt.isUsingAdminPrivileges();
       if (authuser == null) {
@@ -627,7 +628,7 @@ public class MailSender {
       // Determine envelope sender.
       if (mEnvelopeFrom == null) {
         if (acct.isSmtpRestrictEnvelopeFrom() && !isDataSourceSender()) {
-          mEnvelopeFrom = mbox.getAccount().getName();
+          mEnvelopeFrom = Provisioning.getInstance().getAccountByMailbox(mbox).getName();
         } else {
           // Set envelope sender to Sender or Reply-To or From, in that order.
           Address envAddress = mm.getSender();

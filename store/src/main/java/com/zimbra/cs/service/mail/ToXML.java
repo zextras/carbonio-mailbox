@@ -236,7 +236,7 @@ public final class ToXML {
     } else {
       return AccessManager.getInstance()
           .canAccessAccount(
-              octxt.getAuthenticatedUser(), mbox.getAccount(), octxt.isUsingAdminPrivileges());
+              octxt.getAuthenticatedUser(), Provisioning.getInstance().getAccountByMailbox(mbox), octxt.isUsingAdminPrivileges());
     }
   }
 
@@ -348,8 +348,9 @@ public final class ToXML {
      if (folder.getId() > Mailbox.HIGHEST_SYSTEM_ID && folder.getUrl().isEmpty()) {
        try {
          if (hasFullAccess(mbox, octxt)) {
+           Mailbox mailbox = folder.getMailbox();
            DataSource ds = OperationContextData.DataSourceIndex.lookup(
-               octxt, folder.getMailbox().getAccount(), folder.getId());
+               octxt, Provisioning.getInstance().getAccountByMailbox(mailbox), folder.getId());
            if (ds != null && ds.getType() == DataSourceType.caldav && ds.isImportOnly()) {
              elem.addAttribute(MailConstants.A_RIGHTS, String.valueOf(ACL.ABBR_READ));
            }
@@ -375,8 +376,9 @@ public final class ToXML {
              if (parentFolder.getId() <= Mailbox.HIGHEST_SYSTEM_ID) {
                break;
              }
+             Mailbox mailbox = folder.getMailbox();
              DataSource dsParent = OperationContextData.DataSourceIndex.lookup(
-                 octxt, folder.getMailbox().getAccount(), parentFolder.getId());
+                 octxt, Provisioning.getInstance().getAccountByMailbox(mailbox), parentFolder.getId());
              if (dsParent != null && dsParent.getType() == DataSourceType.caldav && dsParent.isImportOnly()) {
                elem.addAttribute(MailConstants.A_RIGHTS, String.valueOf(ACL.ABBR_READ));
                break;
@@ -430,9 +432,10 @@ public final class ToXML {
       DataSource ds = null;
       try {
         if (hasFullAccess(mbox, octxt)) {
+          Mailbox mailbox = folder.getMailbox();
           ds =
               OperationContextData.DataSourceIndex.lookup(
-                  octxt, folder.getMailbox().getAccount(), folder.getId());
+                  octxt, Provisioning.getInstance().getAccountByMailbox(mailbox), folder.getId());
           if (ds != null) {
             elem.addAttribute(MailConstants.A_DATASOURCE_ID, ds.getId());
             elem.addAttribute(MailConstants.A_DATASOURCE_TYPE, ds.getType().toString());
@@ -2078,7 +2081,8 @@ public final class ToXML {
       if (wantExpandGroupInfo) {
         ZimbraLog.gal.trace("want expand group info");
         Account authedAcct = octxt.getAuthenticatedUser();
-        Account requestedAcct = msg.getMailbox().getAccount();
+        Mailbox mailbox = msg.getMailbox();
+        Account requestedAcct = Provisioning.getInstance().getAccountByMailbox(mailbox);
         encodeAddrsWithGroupInfo(messageElement, requestedAcct, authedAcct);
       } else {
         ZimbraLog.gal.trace("do not want expand group info");
@@ -2539,7 +2543,8 @@ public final class ToXML {
 
       if (wantExpandGroupInfo) {
         Account authedAcct = octxt.getAuthenticatedUser();
-        Account requestedAcct = calItem.getMailbox().getAccount();
+        Mailbox mailbox = calItem.getMailbox();
+        Account requestedAcct = Provisioning.getInstance().getAccountByMailbox(mailbox);
         encodeAddrsWithGroupInfo(m, requestedAcct, authedAcct);
       }
     } catch (IOException | MessagingException ex) {
