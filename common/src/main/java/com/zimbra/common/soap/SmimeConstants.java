@@ -8,15 +8,11 @@ import org.dom4j.QName;
 
 public class SmimeConstants {
 
-    public static final String E_SEND_SECURE_MSG_REQUEST = "SendSecureMsgRequest";
-    public static final String E_SEND_SECURE_MSG_RESPONSE = "SendSecureMsgResponse";
     public static final String E_GET_SMIME_CERT_INFO_REQUEST = "GetSmimeCertificateInfoRequest";
     public static final String E_GET_SMIME_CERT_INFO_RESPONSE = "GetSmimeCertificateInfoResponse";
     public static final String E_SAVE_SMIME_CERTIFICATE_REQUEST = "SaveSmimeCertificateRequest";
     public static final String E_SAVE_SMIME_CERTIFICATE_RESPONSE = "SaveSmimeCertificateResponse";
 
-    public static final QName SEND_SECURE_MSG_REQUEST = QName.get(E_SEND_SECURE_MSG_REQUEST, MailConstants.NAMESPACE);
-    public static final QName SEND_SECURE_MSG_RESPONSE = QName.get(E_SEND_SECURE_MSG_RESPONSE, MailConstants.NAMESPACE);
     public static final QName GET_SMIME_CERT_INFO_REQUEST = QName.get(E_GET_SMIME_CERT_INFO_REQUEST, AccountConstants.NAMESPACE);
     public static final QName GET_SMIME_CERT_INFO_RESPONSE = QName.get(E_GET_SMIME_CERT_INFO_RESPONSE, AccountConstants.NAMESPACE);
     public static final QName SAVE_SMIME_CERTIFICATE_REQUEST = QName.get(E_SAVE_SMIME_CERTIFICATE_REQUEST, AccountConstants.NAMESPACE);
@@ -26,7 +22,6 @@ public class SmimeConstants {
     public static final String A_IS_SIGNED = "isSigned";
     public static final String A_IS_ENCRYPTED = "isEncrypted";
     public static final String A_ENCRYPT = "encrypt";
-    public static final String A_CERT_ID = "certId";
     public static final String A_ENCRYPTION_TYPE = "encryptionType";
     public static final String A_ENCRYPTION_PASSWORD = "encryptionPassword";
     public static final String A_REPLACE_ID = "replaceId";
