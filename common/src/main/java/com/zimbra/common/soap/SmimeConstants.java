@@ -4,19 +4,8 @@
 
 package com.zimbra.common.soap;
 
-import org.dom4j.QName;
 
 public class SmimeConstants {
-
-    public static final String E_GET_SMIME_CERT_INFO_REQUEST = "GetSmimeCertificateInfoRequest";
-    public static final String E_GET_SMIME_CERT_INFO_RESPONSE = "GetSmimeCertificateInfoResponse";
-    public static final String E_SAVE_SMIME_CERTIFICATE_REQUEST = "SaveSmimeCertificateRequest";
-    public static final String E_SAVE_SMIME_CERTIFICATE_RESPONSE = "SaveSmimeCertificateResponse";
-
-    public static final QName GET_SMIME_CERT_INFO_REQUEST = QName.get(E_GET_SMIME_CERT_INFO_REQUEST, AccountConstants.NAMESPACE);
-    public static final QName GET_SMIME_CERT_INFO_RESPONSE = QName.get(E_GET_SMIME_CERT_INFO_RESPONSE, AccountConstants.NAMESPACE);
-    public static final QName SAVE_SMIME_CERTIFICATE_REQUEST = QName.get(E_SAVE_SMIME_CERTIFICATE_REQUEST, AccountConstants.NAMESPACE);
-    public static final QName SAVE_SMIME_CERTIFICATE_RESPONSE = QName.get(E_SAVE_SMIME_CERTIFICATE_RESPONSE, AccountConstants.NAMESPACE);
 
     public static final String A_SIGN = "sign";
     public static final String A_ENCRYPT = "encrypt";

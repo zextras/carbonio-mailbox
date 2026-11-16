@@ -116,8 +116,6 @@ public class AccountConstants {
   public static final String E_GET_VERSION_INFO_RESPONSE = "GetVersionInfoResponse";
 
   // SMIME
-  public static final String E_GET_SMIME_PUBLIC_CERTS_REQUEST = "GetSMIMEPublicCertsRequest";
-  public static final String E_GET_SMIME_PUBLIC_CERTS_RESPONSE = "GetSMIMEPublicCertsResponse";
 
   // AddressList
 
@@ -155,8 +153,6 @@ public class AccountConstants {
   public static final QName GET_AVAILABLE_CSV_FORMATS_RESPONSE =
       QName.get(E_GET_AVAILABLE_CSV_FORMATS_RESPONSE, NAMESPACE);
   public static final QName GET_SHARE_INFO_REQUEST = QName.get(E_GET_SHARE_INFO_REQUEST, NAMESPACE);
-  public static final QName GET_SHARE_INFO_RESPONSE =
-      QName.get(E_GET_SHARE_INFO_RESPONSE, NAMESPACE);
   public static final QName GET_WHITE_BLACK_LIST_REQUEST =
       QName.get(E_GET_WHITE_BLACK_LIST_REQUEST, NAMESPACE);
   public static final QName GET_WHITE_BLACK_LIST_RESPONSE =
@@ -263,16 +259,8 @@ public class AccountConstants {
       QName.get(E_GET_VERSION_INFO_RESPONSE, NAMESPACE);
 
   // SMIME
-  public static final QName GET_SMIME_PUBLIC_CERTS_REQUEST =
-      QName.get(E_GET_SMIME_PUBLIC_CERTS_REQUEST, NAMESPACE);
-  public static final QName GET_SMIME_PUBLIC_CERTS_RESPONSE =
-      QName.get(E_GET_SMIME_PUBLIC_CERTS_RESPONSE, NAMESPACE);
 
   // HAB
-  public static final String E_GET_HAB_REQUEST = "GetHABRequest";
-  public static final String E_GET_HAB_RESPONSE = "GetHABResponse";
-  public static final QName GET_HAB_REQUEST = QName.get(E_GET_HAB_REQUEST, NAMESPACE);
-  public static final QName GET_HAB_RESPONSE = QName.get(E_GET_HAB_RESPONSE, NAMESPACE);
 
   // users enabled to a particular feature
   public static final String E_SEARCH_USERS_BY_FEATURE_REQUEST = "SearchUsersByFeatureRequest";

@@ -124,8 +124,6 @@ public final class MailConstants {
   public static final String E_MODIFY_CONTACT_RESPONSE = "ModifyContactResponse";
   public static final String E_GET_CONTACTS_REQUEST = "GetContactsRequest";
   public static final String E_GET_CONTACTS_RESPONSE = "GetContactsResponse";
-  public static final String E_GET_CONTACT_BACKUP_LIST_REQUEST = "GetContactBackupListRequest";
-  public static final String E_GET_CONTACT_BACKUP_LIST_RESPONSE = "GetContactBackupListResponse";
   public static final String E_IMPORT_CONTACTS_REQUEST = "ImportContactsRequest";
   public static final String E_IMPORT_CONTACTS_RESPONSE = "ImportContactsResponse";
   public static final String E_EXPORT_CONTACTS_REQUEST = "ExportContactsRequest";
@@ -397,19 +395,11 @@ public final class MailConstants {
   public static final QName GET_CONTACTS_RESPONSE = QName.get(E_GET_CONTACTS_RESPONSE, NAMESPACE);
   public static final QName IMPORT_CONTACTS_REQUEST =
       QName.get(E_IMPORT_CONTACTS_REQUEST, NAMESPACE);
-  public static final QName IMPORT_CONTACTS_RESPONSE =
-      QName.get(E_IMPORT_CONTACTS_RESPONSE, NAMESPACE);
   public static final QName EXPORT_CONTACTS_REQUEST =
       QName.get(E_EXPORT_CONTACTS_REQUEST, NAMESPACE);
-  public static final QName EXPORT_CONTACTS_RESPONSE =
-      QName.get(E_EXPORT_CONTACTS_RESPONSE, NAMESPACE);
   public static final QName CONTACT_ACTION_REQUEST = QName.get(E_CONTACT_ACTION_REQUEST, NAMESPACE);
   public static final QName CONTACT_ACTION_RESPONSE =
       QName.get(E_CONTACT_ACTION_RESPONSE, NAMESPACE);
-  public static final QName GET_CONTACT_BACKUP_LIST_REQUEST =
-      QName.get(E_GET_CONTACT_BACKUP_LIST_REQUEST, NAMESPACE);
-  public static final QName GET_CONTACT_BACKUP_LIST_RESPONSE =
-      QName.get(E_GET_CONTACT_BACKUP_LIST_RESPONSE, NAMESPACE);
 
   // sync for Outlook
   public static final QName SYNC_REQUEST = QName.get(E_SYNC_REQUEST, NAMESPACE);
@@ -422,20 +412,14 @@ public final class MailConstants {
       QName.get(E_GET_FILTER_RULES_RESPONSE, NAMESPACE);
   public static final QName MODIFY_FILTER_RULES_REQUEST =
       QName.get(E_MODIFY_FILTER_RULES_REQUEST, NAMESPACE);
-  public static final QName MODIFY_FILTER_RULES_RESPONSE =
-      QName.get(E_MODIFY_FILTER_RULES_RESPONSE, NAMESPACE);
   public static final QName APPLY_FILTER_RULES_REQUEST =
       QName.get(E_APPLY_FILTER_RULES_REQUEST, NAMESPACE);
   public static final QName APPLY_FILTER_RULES_RESPONSE =
       QName.get(E_APPLY_FILTER_RULES_RESPONSE, NAMESPACE);
   public static final QName GET_OUTGOING_FILTER_RULES_REQUEST =
       QName.get(E_GET_OUTGOING_FILTER_RULES_REQUEST, NAMESPACE);
-  public static final QName GET_OUTGOING_FILTER_RULES_RESPONSE =
-      QName.get(E_GET_OUTGOING_FILTER_RULES_RESPONSE, NAMESPACE);
   public static final QName MODIFY_OUTGOING_FILTER_RULES_REQUEST =
       QName.get(E_MODIFY_OUTGOING_FILTER_RULES_REQUEST, NAMESPACE);
-  public static final QName MODIFY_OUTGOING_FILTER_RULES_RESPONSE =
-      QName.get(E_MODIFY_OUTGOING_FILTER_RULES_RESPONSE, NAMESPACE);
   public static final QName APPLY_OUTGOING_FILTER_RULES_REQUEST =
       QName.get(E_APPLY_OUTGOING_FILTER_RULES_REQUEST, NAMESPACE);
   public static final QName APPLY_OUTGOING_FILTER_RULES_RESPONSE =
@@ -496,16 +480,10 @@ public final class MailConstants {
       QName.get(E_FORWARD_APPOINTMENT_INVITE_REQUEST, NAMESPACE);
   public static final QName ADD_APPOINTMENT_INVITE_REQUEST =
       QName.get(E_ADD_APPOINTMENT_INVITE_REQUEST, NAMESPACE);
-  public static final QName ADD_APPOINTMENT_INVITE_RESPONSE =
-      QName.get(E_ADD_APPOINTMENT_INVITE_RESPONSE, NAMESPACE);
   public static final QName COUNTER_APPOINTMENT_REQUEST =
       QName.get(E_COUNTER_APPOINTMENT_REQUEST, NAMESPACE);
-  public static final QName COUNTER_APPOINTMENT_RESPONSE =
-      QName.get(E_COUNTER_APPOINTMENT_RESPONSE, NAMESPACE);
   public static final QName DECLINE_COUNTER_APPOINTMENT_REQUEST =
       QName.get(E_DECLINE_COUNTER_APPOINTMENT_REQUEST, NAMESPACE);
-  public static final QName DECLINE_COUNTER_APPOINTMENT_RESPONSE =
-      QName.get(E_DECLINE_COUNTER_APPOINTMENT_RESPONSE, NAMESPACE);
   public static final QName IMPORT_APPOINTMENTS_REQUEST =
       QName.get(E_IMPORT_APPOINTMENTS_REQUEST, NAMESPACE);
   public static final QName IMPORT_APPOINTMENTS_RESPONSE =
@@ -531,7 +509,6 @@ public final class MailConstants {
       QName.get(E_SEND_INVITE_REPLY_REQUEST, NAMESPACE);
   public static final QName ICAL_REPLY_REQUEST = QName.get(E_ICAL_REPLY_REQUEST, NAMESPACE);
   public static final QName GET_FREE_BUSY_REQUEST = QName.get(E_GET_FREE_BUSY_REQUEST, NAMESPACE);
-  public static final QName GET_FREE_BUSY_RESPONSE = QName.get(E_GET_FREE_BUSY_RESPONSE, NAMESPACE);
   public static final QName GET_WORKING_HOURS_REQUEST =
       QName.get(E_GET_WORKING_HOURS_REQUEST, NAMESPACE);
   public static final QName GET_ICAL_REQUEST = QName.get(E_GET_ICAL_REQUEST, NAMESPACE);
@@ -577,15 +554,10 @@ public final class MailConstants {
       QName.get(E_GET_IMPORT_STATUS_RESPONSE, NAMESPACE);
   public static final QName GET_DATA_SOURCE_USAGE_REQUEST =
       QName.get(E_GET_DATA_SOURCE_USAGE_REQUEST, NAMESPACE);
-  public static final QName GET_DATA_SOURCE_USAGE_RESPONSE =
-      QName.get(E_GET_DATA_SOURCE_USAGE_RESPONSE, NAMESPACE);
 
   public static final QName CREATE_WAIT_SET_REQUEST =
       QName.get(E_CREATE_WAIT_SET_REQUEST, NAMESPACE);
-  public static final QName CREATE_WAIT_SET_RESPONSE =
-      QName.get(E_CREATE_WAIT_SET_RESPONSE, NAMESPACE);
   public static final QName WAIT_SET_REQUEST = QName.get(E_WAIT_SET_REQUEST, NAMESPACE);
-  public static final QName WAIT_SET_RESPONSE = QName.get(E_WAIT_SET_RESPONSE, NAMESPACE);
   public static final QName DESTROY_WAIT_SET_REQUEST =
       QName.get(E_DESTROY_WAIT_SET_REQUEST, NAMESPACE);
   public static final QName DESTROY_WAIT_SET_RESPONSE =
@@ -621,52 +593,29 @@ public final class MailConstants {
 
   public static final QName GET_SYSTEM_RETENTION_POLICY_REQUEST =
       QName.get(E_GET_SYSTEM_RETENTION_POLICY_REQUEST, NAMESPACE);
-  public static final QName GET_SYSTEM_RETENTION_POLICY_RESPONSE =
-      QName.get(E_GET_SYSTEM_RETENTION_POLICY_RESPONSE, NAMESPACE);
 
   // IMAP
   public static final QName LIST_IMAP_SUBSCRIPTIONS_REQUEST =
       QName.get(E_LIST_IMAP_SUBSCRIPTIONS_REQUEST, NAMESPACE);
-  public static final QName LIST_IMAP_SUBSCRIPTIONS_RESPONSE =
-      QName.get(E_LIST_IMAP_SUBSCRIPTIONS_RESPONSE, NAMESPACE);
   public static final QName SAVE_IMAP_SUBSCRIPTIONS_REQUEST =
       QName.get(E_SAVE_IMAP_SUBSCRIPTIONS_REQUEST, NAMESPACE);
-  public static final QName SAVE_IMAP_SUBSCRIPTIONS_RESPONSE =
-      QName.get(E_SAVE_IMAP_SUBSCRIPTIONS_RESPONSE, NAMESPACE);
   public static final QName RESET_RECENT_MESSAGE_COUNT_REQUEST =
       QName.get(E_RESET_RECENT_MESSAGE_COUNT_REQUEST, NAMESPACE);
-  public static final QName RESET_RECENT_MESSAGE_COUNT_RESPONSE =
-      QName.get(E_RESET_RECENT_MESSAGE_COUNT_RESPONSE, NAMESPACE);
   public static final QName OPEN_IMAP_FOLDER_REQUEST =
       QName.get(E_OPEN_IMAP_FOLDER_REQUEST, NAMESPACE);
-  public static final QName OPEN_IMAP_FOLDER_RESPONSE =
-      QName.get(E_OPEN_IMAP_FOLDER_RESPONSE, NAMESPACE);
   public static final QName GET_MODIFIED_ITEMS_IDS_REQUEST =
       QName.get(E_GET_MODIFIED_ITEMS_IDS_REQUEST, NAMESPACE);
-  public static final QName GET_MODIFIED_ITEMS_IDS_RESPONSE =
-      QName.get(E_GET_MODIFIED_ITEMS_IDS_RESPONSE, NAMESPACE);
   public static final QName GET_LAST_ITEM_ID_IN_MAILBOX_REQUEST =
       QName.get(E_GET_LAST_ITEM_ID_IN_MAILBOX_REQUEST, NAMESPACE);
-  public static final QName GET_LAST_ITEM_ID_IN_MAILBOX_RESPONSE =
-      QName.get(E_GET_LAST_ITEM_ID_IN_MAILBOX_RESPONSE, NAMESPACE);
   public static final QName BEGIN_TRACKING_IMAP_REQUEST =
       QName.get(E_BEGIN_TRACKING_IMAP_REQUEST, NAMESPACE);
-  public static final QName BEGIN_TRACKING_IMAP_RESPONSE =
-      QName.get(E_BEGIN_TRACKING_IMAP_RESPONSE, NAMESPACE);
   public static final QName GET_IMAP_RECENT_REQUEST =
       QName.get(E_GET_IMAP_RECENT_REQUEST, NAMESPACE);
-  public static final QName GET_IMAP_RECENT_RESPONSE =
-      QName.get(E_GET_IMAP_RECENT_RESPONSE, NAMESPACE);
   public static final QName GET_IMAP_RECENT_CUTOFF_REQUEST =
       QName.get(E_GET_IMAP_RECENT_CUTOFF_REQUEST, NAMESPACE);
-  public static final QName GET_IMAP_RECENT_CUTOFF_RESPONSE =
-      QName.get(E_GET_IMAP_RECENT_CUTOFF_RESPONSE, NAMESPACE);
   public static final QName RECORD_IMAP_SESSION_REQUEST =
       QName.get(E_RECORD_IMAP_SESSION_REQUEST, NAMESPACE);
-  public static final QName RECORD_IMAP_SESSION_RESPONSE =
-      QName.get(E_RECORD_IMAP_SESSION_RESPONSE, NAMESPACE);
   public static final QName IMAP_COPY_REQUEST = QName.get(E_IMAP_COPY_REQUEST, NAMESPACE);
-  public static final QName IMAP_COPY_RESPONSE = QName.get(E_IMAP_COPY_RESPONSE, NAMESPACE);
 
   public static final String E_MAILBOX = "mbx";
   public static final String E_ITEM = "item";
@@ -1348,27 +1297,18 @@ public final class MailConstants {
   public static final String OP_RESET_IMAP_UID = "resetimapuid";
 
   // Contacts API
-  public static final String E_RESTORE_CONTACTS_REQUEST = "RestoreContactsRequest";
-  public static final String E_RESTORE_CONTACTS_RESPONSE = "RestoreContactsResponse";
-  public static final QName RESTORE_CONTACTS_REQUEST =
-      QName.get(E_RESTORE_CONTACTS_REQUEST, NAMESPACE);
-  public static final QName RESTORE_CONTACTS_RESPONSE =
-      QName.get(E_RESTORE_CONTACTS_RESPONSE, NAMESPACE);
 
   // SearchAction API
   public static final String E_SEARCH_ACTION_REQUEST = "SearchActionRequest";
   public static final String E_SEARCH_ACTION_RESPONSE = "SearchActionResponse";
   public static final String E_BULK_ACTION = "BulkAction";
   public static final QName SEARCH_ACTION_REQUEST = QName.get(E_SEARCH_ACTION_REQUEST, NAMESPACE);
-  public static final QName SEARCH_ACTION_RESPONSE = QName.get(E_SEARCH_ACTION_RESPONSE, NAMESPACE);
 
   // Password reset API
   public static final String E_SET_RECOVERY_ACCOUNT_REQUEST = "SetRecoveryAccountRequest";
   public static final String E_SET_RECOVERY_ACCOUNT_RESPONSE = "SetRecoveryAccountResponse";
   public static final QName SET_RECOVERY_EMAIL_REQUEST =
       QName.get(E_SET_RECOVERY_ACCOUNT_REQUEST, NAMESPACE);
-  public static final QName SET_RECOVERY_EMAIL_RESPONSE =
-      QName.get(E_SET_RECOVERY_ACCOUNT_RESPONSE, NAMESPACE);
   public static final String A_RECOVERY_ATTEMPTS_LEFT = "recoveryAttemptsLeft";
   public static final String A_RECOVERY_ACCOUNT_VERIFICATION_CODE =
       "recoveryAccountVerificationCode";
@@ -1376,8 +1316,6 @@ public final class MailConstants {
   public static final String E_RECOVER_ACCOUNT_RESPONSE = "RecoverAccountResponse";
   public static final QName RECOVER_ACCOUNT_REQUEST =
       QName.get(E_RECOVER_ACCOUNT_REQUEST, NAMESPACE);
-  public static final QName RECOVER_ACCOUNT_RESPONSE =
-      QName.get(E_RECOVER_ACCOUNT_RESPONSE, NAMESPACE);
   public static final String A_RECOVERY_ACCOUNT = "recoveryAccount";
   public static final String A_CHANNEL = "channel";
 
@@ -1388,5 +1326,4 @@ public final class MailConstants {
   public static final String E_COPY_TO_FILES_REQUEST = "CopyToFilesRequest";
   public static final String E_COPY_TO_FILES_RESPONSE = "CopyToFilesResponse";
   public static final QName COPY_TO_DRIVE_REQUEST = QName.get(E_COPY_TO_FILES_REQUEST, NAMESPACE);
-  public static final QName COPY_TO_DRIVE_RESPONSE = QName.get(E_COPY_TO_FILES_RESPONSE, NAMESPACE);
 }
