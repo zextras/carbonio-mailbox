@@ -356,8 +356,6 @@ public final class AdminConstants {
   public static final String E_ADMIN_WAIT_SET_RESPONSE = "AdminWaitSetResponse";
   public static final String E_ADMIN_DESTROY_WAIT_SET_REQUEST = "AdminDestroyWaitSetRequest";
   public static final String E_ADMIN_DESTROY_WAIT_SET_RESPONSE = "AdminDestroyWaitSetResponse";
-  public static final String E_QUERY_WAIT_SET_REQUEST = "QueryWaitSetRequest";
-  public static final String E_QUERY_WAIT_SET_RESPONSE = "QueryWaitSetResponse";
 
   // rights
   public static final String E_GET_RIGHT_REQUEST = "GetRightRequest";
@@ -945,9 +943,6 @@ public final class AdminConstants {
       QName.get(E_ADMIN_DESTROY_WAIT_SET_REQUEST, NAMESPACE);
   public static final QName ADMIN_DESTROY_WAIT_SET_RESPONSE =
       QName.get(E_ADMIN_DESTROY_WAIT_SET_RESPONSE, NAMESPACE);
-  public static final QName QUERY_WAIT_SET_REQUEST = QName.get(E_QUERY_WAIT_SET_REQUEST, NAMESPACE);
-  public static final QName QUERY_WAIT_SET_RESPONSE =
-      QName.get(E_QUERY_WAIT_SET_RESPONSE, NAMESPACE);
 
   // rights
   public static final QName GET_RIGHT_REQUEST = QName.get(E_GET_RIGHT_REQUEST, NAMESPACE);
@@ -1446,7 +1441,6 @@ public final class AdminConstants {
   public static final String A_TARGET_TYPE = "targetType";
   public static final String A_SECRET = "secret";
 
-  public static final String E_WAITSET = "waitSet";
 
   // Monitoring
   public static final String E_STAT = "stat";

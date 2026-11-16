@@ -163,7 +163,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.ADMIN_CREATE_WAIT_SET_REQUEST
           , AdminConstants.ADMIN_WAIT_SET_REQUEST
           , AdminConstants.ADMIN_DESTROY_WAIT_SET_REQUEST
-          , AdminConstants.QUERY_WAIT_SET_REQUEST
           , AdminConstants.GET_SERVER_STATS_REQUEST
           , AdminConstants.GET_LOGGER_STATS_REQUEST
           , AdminConstants.SYNC_GAL_ACCOUNT_REQUEST
@@ -301,9 +300,7 @@ public class TrackCommandRequestService implements DocumentService {
           , MailConstants.IMPORT_DATA_REQUEST
           , MailConstants.GET_IMPORT_STATUS_REQUEST
           , MailConstants.GET_DATA_SOURCE_USAGE_REQUEST
-          , MailConstants.CREATE_WAIT_SET_REQUEST
           , MailConstants.WAIT_SET_REQUEST
-          , MailConstants.DESTROY_WAIT_SET_REQUEST
           , MailConstants.GET_EFFECTIVE_FOLDER_PERMS_REQUEST
           , MailConstants.AUTO_COMPLETE_REQUEST
           , MailConstants.FULL_AUTO_COMPLETE_REQUEST

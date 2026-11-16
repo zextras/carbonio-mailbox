@@ -306,7 +306,6 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(AdminConstants.ADMIN_WAIT_SET_REQUEST, new AdminWaitSetRequest());
     dispatcher.registerHandler(
         AdminConstants.ADMIN_DESTROY_WAIT_SET_REQUEST, new AdminDestroyWaitSetRequest());
-    dispatcher.registerHandler(AdminConstants.QUERY_WAIT_SET_REQUEST, new QueryWaitSet());
 
     dispatcher.registerHandler(AdminConstants.GET_SERVER_STATS_REQUEST, new GetServerStats());
     dispatcher.registerHandler(AdminConstants.GET_LOGGER_STATS_REQUEST, new GetLoggerStats());

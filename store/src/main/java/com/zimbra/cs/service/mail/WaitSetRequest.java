@@ -338,7 +338,7 @@ public class WaitSetRequest extends MailDocumentHandler {
     }
   }
 
-  protected static List<WaitSetAccount> parseAddUpdateAccounts(
+  public static List<WaitSetAccount> parseAddUpdateAccounts(
       ZimbraSoapContext zsc,
       List<WaitSetAddSpec> accountDetails,
       Set<MailItem.Type> defaultInterest)

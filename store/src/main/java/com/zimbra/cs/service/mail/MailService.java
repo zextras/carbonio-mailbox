@@ -171,9 +171,7 @@ public class MailService implements DocumentService {
         MailConstants.GET_DATA_SOURCE_USAGE_REQUEST, new GetDataSourceUsage());
 
     // waitset
-    dispatcher.registerHandler(MailConstants.CREATE_WAIT_SET_REQUEST, new CreateWaitSet());
     dispatcher.registerHandler(MailConstants.WAIT_SET_REQUEST, new WaitSetRequest());
-    dispatcher.registerHandler(MailConstants.DESTROY_WAIT_SET_REQUEST, new DestroyWaitSet());
 
     // Account ACL
 

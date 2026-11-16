@@ -11,8 +11,9 @@ import java.util.Map;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
-import com.zimbra.cs.service.mail.DestroyWaitSet;
+import com.zimbra.cs.session.WaitSetMgr;
 import com.zimbra.soap.ZimbraSoapContext;
 
 public class AdminDestroyWaitSetRequest extends AdminDocumentHandler {
@@ -21,7 +22,10 @@ public class AdminDestroyWaitSetRequest extends AdminDocumentHandler {
     public Element handle(Element request, Map<String, Object> context) throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
         Element response = zsc.createElement(AdminConstants.ADMIN_DESTROY_WAIT_SET_RESPONSE);
-        return DestroyWaitSet.staticHandle(request, context, response);
+        String waitSetId = request.getAttribute(MailConstants.A_WAITSET_ID);
+        WaitSetMgr.destroy(zsc, zsc.getRequestedAccountId(), waitSetId);
+        response.addAttribute(MailConstants.A_WAITSET_ID, waitSetId);
+        return response;
     }
     
     @Override

@@ -203,12 +203,8 @@ public final class MailConstants {
   public static final String E_IMPORT_DATA_RESPONSE = "ImportDataResponse";
   public static final String E_GET_IMPORT_STATUS_REQUEST = "GetImportStatusRequest";
   public static final String E_GET_IMPORT_STATUS_RESPONSE = "GetImportStatusResponse";
-  public static final String E_CREATE_WAIT_SET_REQUEST = "CreateWaitSetRequest";
-  public static final String E_CREATE_WAIT_SET_RESPONSE = "CreateWaitSetResponse";
   public static final String E_WAIT_SET_REQUEST = "WaitSetRequest";
   public static final String E_WAIT_SET_RESPONSE = "WaitSetResponse";
-  public static final String E_DESTROY_WAIT_SET_REQUEST = "DestroyWaitSetRequest";
-  public static final String E_DESTROY_WAIT_SET_RESPONSE = "DestroyWaitSetResponse";
   public static final String E_GET_EFFECTIVE_FOLDER_PERMS_REQUEST =
       "GetEffectiveFolderPermsRequest";
   public static final String E_GET_EFFECTIVE_FOLDER_PERMS_RESPONSE =
@@ -558,16 +554,8 @@ public final class MailConstants {
   public static final QName GET_DATA_SOURCE_USAGE_RESPONSE =
       QName.get(E_GET_DATA_SOURCE_USAGE_RESPONSE, NAMESPACE);
 
-  public static final QName CREATE_WAIT_SET_REQUEST =
-      QName.get(E_CREATE_WAIT_SET_REQUEST, NAMESPACE);
-  public static final QName CREATE_WAIT_SET_RESPONSE =
-      QName.get(E_CREATE_WAIT_SET_RESPONSE, NAMESPACE);
   public static final QName WAIT_SET_REQUEST = QName.get(E_WAIT_SET_REQUEST, NAMESPACE);
   public static final QName WAIT_SET_RESPONSE = QName.get(E_WAIT_SET_RESPONSE, NAMESPACE);
-  public static final QName DESTROY_WAIT_SET_REQUEST =
-      QName.get(E_DESTROY_WAIT_SET_REQUEST, NAMESPACE);
-  public static final QName DESTROY_WAIT_SET_RESPONSE =
-      QName.get(E_DESTROY_WAIT_SET_RESPONSE, NAMESPACE);
 
   // account ACL
 
