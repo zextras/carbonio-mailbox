@@ -266,7 +266,6 @@ public class TrackCommandRequestService implements DocumentService {
           , MailConstants.GET_OUTGOING_FILTER_RULES_REQUEST
           , MailConstants.MODIFY_OUTGOING_FILTER_RULES_REQUEST
           , MailConstants.APPLY_OUTGOING_FILTER_RULES_REQUEST
-          , MailConstants.GET_APPT_SUMMARIES_REQUEST
           , MailConstants.GET_APPOINTMENT_REQUEST
           , MailConstants.SET_APPOINTMENT_REQUEST
           , MailConstants.CREATE_APPOINTMENT_REQUEST
@@ -274,24 +273,17 @@ public class TrackCommandRequestService implements DocumentService {
           , MailConstants.MODIFY_APPOINTMENT_REQUEST
           , MailConstants.CANCEL_APPOINTMENT_REQUEST
           , MailConstants.FORWARD_APPOINTMENT_REQUEST
-          , MailConstants.FORWARD_APPOINTMENT_INVITE_REQUEST
           , MailConstants.ADD_APPOINTMENT_INVITE_REQUEST
           , MailConstants.COUNTER_APPOINTMENT_REQUEST
           , MailConstants.DECLINE_COUNTER_APPOINTMENT_REQUEST
           , MailConstants.IMPORT_APPOINTMENTS_REQUEST
-          , MailConstants.GET_CALITEM_SUMMARIES_REQUEST
           , MailConstants.SEND_INVITE_REPLY_REQUEST
           , MailConstants.ICAL_REPLY_REQUEST
           , MailConstants.GET_FREE_BUSY_REQUEST
           , MailConstants.GET_WORKING_HOURS_REQUEST
-          , MailConstants.GET_ICAL_REQUEST
-          , MailConstants.ANNOUNCE_ORGANIZER_CHANGE_REQUEST
           , MailConstants.DISMISS_CALITEM_ALARM_REQUEST
           , MailConstants.SNOOZE_CALITEM_ALARM_REQUEST
           , MailConstants.GET_MINI_CAL_REQUEST
-          , MailConstants.GET_RECUR_REQUEST
-          , MailConstants.EXPAND_RECUR_REQUEST
-          , MailConstants.CHECK_RECUR_CONFLICTS_REQUEST
           , MailConstants.GET_DATA_SOURCES_REQUEST
           , MailConstants.CREATE_DATA_SOURCE_REQUEST
           , MailConstants.MODIFY_DATA_SOURCE_REQUEST
