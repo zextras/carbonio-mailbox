@@ -303,12 +303,6 @@ public final class AdminConstants {
   public static final String E_FIX_CALENDAR_PRIORITY_RESPONSE = "FixCalendarPriorityResponse";
 
   // Admin saved searches
-  public static final String E_GET_ADMIN_SAVED_SEARCHES_REQUEST = "GetAdminSavedSearchesRequest";
-  public static final String E_GET_ADMIN_SAVED_SEARCHES_RESPONSE = "GetAdminSavedSearchesResponse";
-  public static final String E_MODIFY_ADMIN_SAVED_SEARCHES_REQUEST =
-      "ModifyAdminSavedSearchesRequest";
-  public static final String E_MODIFY_ADMIN_SAVED_SEARCHES_RESPONSE =
-      "ModifyAdminSavedSearchesResponse";
 
   public static final String E_CHECK_DIRECTORY_REQUEST = "CheckDirectoryRequest";
   public static final String E_CHECK_DIRECTORY_RESPONSE = "CheckDirectoryResponse";
@@ -368,8 +362,6 @@ public final class AdminConstants {
   // rights
   public static final String E_GET_RIGHT_REQUEST = "GetRightRequest";
   public static final String E_GET_RIGHT_RESPONSE = "GetRightResponse";
-  public static final String E_GET_ADMIN_CONSOLE_UI_COMP_REQUEST = "GetAdminConsoleUICompRequest";
-  public static final String E_GET_ADMIN_CONSOLE_UI_COMP_RESPONSE = "GetAdminConsoleUICompResponse";
   public static final String E_GET_ALL_EFFECTIVE_RIGHTS_REQUEST = "GetAllEffectiveRightsRequest";
   public static final String E_GET_ALL_EFFECTIVE_RIGHTS_RESPONSE = "GetAllEffectiveRightsResponse";
   public static final String E_GET_ALL_RIGHTS_REQUEST = "GetAllRightsRequest";
@@ -877,14 +869,6 @@ public final class AdminConstants {
       QName.get(E_FIX_CALENDAR_PRIORITY_RESPONSE, NAMESPACE);
 
   // Admin saved searches
-  public static final QName GET_ADMIN_SAVED_SEARCHES_REQUEST =
-      QName.get(E_GET_ADMIN_SAVED_SEARCHES_REQUEST, NAMESPACE);
-  public static final QName GET_ADMIN_SAVED_SEARCHES_RESPONSE =
-      QName.get(E_GET_ADMIN_SAVED_SEARCHES_RESPONSE, NAMESPACE);
-  public static final QName MODIFY_ADMIN_SAVED_SEARCHES_REQUEST =
-      QName.get(E_MODIFY_ADMIN_SAVED_SEARCHES_REQUEST, NAMESPACE);
-  public static final QName MODIFY_ADMIN_SAVED_SEARCHES_RESPONSE =
-      QName.get(E_MODIFY_ADMIN_SAVED_SEARCHES_RESPONSE, NAMESPACE);
 
   public static final QName CHECK_DIRECTORY_REQUEST =
       QName.get(E_CHECK_DIRECTORY_REQUEST, NAMESPACE);
@@ -968,10 +952,6 @@ public final class AdminConstants {
   // rights
   public static final QName GET_RIGHT_REQUEST = QName.get(E_GET_RIGHT_REQUEST, NAMESPACE);
   public static final QName GET_RIGHT_RESPONSE = QName.get(E_GET_RIGHT_RESPONSE, NAMESPACE);
-  public static final QName GET_ADMIN_CONSOLE_UI_COMP_REQUEST =
-      QName.get(E_GET_ADMIN_CONSOLE_UI_COMP_REQUEST, NAMESPACE);
-  public static final QName GET_ADMIN_CONSOLE_UI_COMP_RESPONSE =
-      QName.get(E_GET_ADMIN_CONSOLE_UI_COMP_RESPONSE, NAMESPACE);
   public static final QName GET_ALL_EFFECTIVE_RIGHTS_REQUEST =
       QName.get(E_GET_ALL_EFFECTIVE_RIGHTS_REQUEST, NAMESPACE);
   public static final QName GET_ALL_EFFECTIVE_RIGHTS_RESPONSE =
@@ -1461,7 +1441,6 @@ public final class AdminConstants {
   public static final String A_DISINHERIT_SUB_GROUPS = "disinheritSubGroups";
   public static final String A_SUB_DOMAIN = "subDomain";
   public static final String A_EXPAND_ALL_ATTRS = "expandAllAttrs";
-  public static final String A_INHERITED = "inherited";
   public static final String A_RIGHT = "right";
   public static final String A_RIGHT_CLASS = "rightClass";
   public static final String A_TARGET_TYPE = "targetType";

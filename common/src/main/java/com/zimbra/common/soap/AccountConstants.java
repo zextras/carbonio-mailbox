@@ -51,8 +51,6 @@ public class AccountConstants {
   public static final String E_MODIFY_PROPERTIES_RESPONSE = "ModifyPropertiesResponse";
   public static final String E_MODIFY_WHITE_BLACK_LIST_REQUEST = "ModifyWhiteBlackListRequest";
   public static final String E_MODIFY_WHITE_BLACK_LIST_RESPONSE = "ModifyWhiteBlackListResponse";
-  public static final String E_MODIFY_ZIMLET_PREFS_REQUEST = "ModifyZimletPrefsRequest";
-  public static final String E_MODIFY_ZIMLET_PREFS_RESPONSE = "ModifyZimletPrefsResponse";
 
   // GAL
   public static final String E_AUTO_COMPLETE_GAL_REQUEST = "AutoCompleteGalRequest";
@@ -190,10 +188,6 @@ public class AccountConstants {
       QName.get(E_MODIFY_WHITE_BLACK_LIST_REQUEST, NAMESPACE);
   public static final QName MODIFY_WHITE_BLACK_LIST_RESPONSE =
       QName.get(E_MODIFY_WHITE_BLACK_LIST_RESPONSE, NAMESPACE);
-  public static final QName MODIFY_ZIMLET_PREFS_REQUEST =
-      QName.get(E_MODIFY_ZIMLET_PREFS_REQUEST, NAMESPACE);
-  public static final QName MODIFY_ZIMLET_PREFS_RESPONSE =
-      QName.get(E_MODIFY_ZIMLET_PREFS_RESPONSE, NAMESPACE);
 
   // GAL
   public static final QName AUTO_COMPLETE_GAL_REQUEST =

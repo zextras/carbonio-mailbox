@@ -133,8 +133,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.FIX_CALENDAR_TZ_REQUEST
           , AdminConstants.FIX_CALENDAR_END_TIME_REQUEST
           , AdminConstants.FIX_CALENDAR_PRIORITY_REQUEST
-          , AdminConstants.GET_ADMIN_SAVED_SEARCHES_REQUEST
-          , AdminConstants.MODIFY_ADMIN_SAVED_SEARCHES_REQUEST
           , AdminConstants.ADD_ACCOUNT_LOGGER_REQUEST
           , AdminConstants.REMOVE_ACCOUNT_LOGGER_REQUEST
           , AdminConstants.GET_ACCOUNT_LOGGERS_REQUEST
@@ -153,7 +151,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.GET_DELEGATED_ADMIN_CONSTRAINTS_REQUEST
           , AdminConstants.GET_RIGHTS_DOC_REQUEST
           , AdminConstants.GET_RIGHT_REQUEST
-          , AdminConstants.GET_ADMIN_CONSOLE_UI_COMP_REQUEST
           , AdminConstants.GET_ALL_EFFECTIVE_RIGHTS_REQUEST
           , AdminConstants.GET_ALL_RIGHTS_REQUEST
           , AdminConstants.GET_EFFECTIVE_RIGHTS_REQUEST
@@ -200,7 +197,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AccountConstants.SEARCH_GAL_REQUEST
           , AccountConstants.SYNC_GAL_REQUEST
           , AccountConstants.MODIFY_PROPERTIES_REQUEST
-          , AccountConstants.MODIFY_ZIMLET_PREFS_REQUEST
           , AccountConstants.GET_ALL_LOCALES_REQUEST
           , AccountConstants.GET_AVAILABLE_LOCALES_REQUEST
           , AccountConstants.GET_AVAILABLE_CSV_FORMATS_REQUEST

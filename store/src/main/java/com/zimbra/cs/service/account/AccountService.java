@@ -51,8 +51,6 @@ public class AccountService implements DocumentService {
     dispatcher.registerHandler(AccountConstants.SYNC_GAL_REQUEST, new SyncGal());
 
     dispatcher.registerHandler(AccountConstants.MODIFY_PROPERTIES_REQUEST, new ModifyProperties());
-    dispatcher.registerHandler(
-        AccountConstants.MODIFY_ZIMLET_PREFS_REQUEST, new ModifyZimletPrefs());
 
     dispatcher.registerHandler(AccountConstants.GET_ALL_LOCALES_REQUEST, new GetAllLocales());
     dispatcher.registerHandler(
