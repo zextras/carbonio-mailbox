@@ -10,7 +10,6 @@ import com.google.common.base.Strings;
 import com.zimbra.client.ZFolder;
 import com.zimbra.client.ZMailbox;
 import com.zimbra.common.account.Key.AccountBy;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mailbox.ExistingParentFolderStoreAndUnmatchedPart;
 import com.zimbra.common.mailbox.FolderStore;
 import com.zimbra.common.mailbox.ItemIdentifier;
@@ -260,9 +259,6 @@ public class ImapPath implements Comparable<ImapPath> {
   }
 
   protected boolean onLocalServer() throws ServiceException {
-    if (LC.imap_always_use_remote_store.booleanValue()) {
-      return false;
-    }
     Account acct = getOwnerAccount();
     return acct != null && Provisioning.getInstance().onLocalServer(acct);
   }
