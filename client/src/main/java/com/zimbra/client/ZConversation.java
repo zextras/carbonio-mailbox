@@ -218,10 +218,6 @@ public class ZConversation implements ZItem, ToZJSONObject {
             return String.format("[ZMessageSummary %s]", mId);
         }
 
-        public String dump() {
-            return ZJSONObject.toString(this);
-        }
-
         public long getDate() {
             return mDate;
         }

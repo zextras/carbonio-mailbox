@@ -289,10 +289,6 @@ public abstract class ZFilterCondition implements ToZJSONObject {
         return String.format("[ZFilterCondition %s]", getName());
     }
 
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
-
     public abstract String toConditionString();
 
     public static final class ZCommunityRequestsCondition extends ZFilterCondition {

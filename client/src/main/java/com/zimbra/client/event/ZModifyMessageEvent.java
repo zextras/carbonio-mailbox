@@ -77,8 +77,4 @@ public class ZModifyMessageEvent implements ZModifyItemEvent, ZModifyItemFolderE
             throw new RuntimeException(e);
         }
     }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
 }

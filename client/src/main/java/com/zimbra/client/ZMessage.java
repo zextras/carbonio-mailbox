@@ -340,10 +340,6 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
             return String.format("[ZMimePart %s]", mPartName);
         }
 
-        public String dump() {
-            return ZJSONObject.toString(this);
-        }
-
         public ZMimePart getParent() {
             return mParent;
         }

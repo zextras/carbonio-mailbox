@@ -409,10 +409,6 @@ public class ZAppointmentHit implements ZSearchHit {
     return String.format("[ZAppointmentHit %s]", mId);
   }
 
-  public String dump() {
-    return ZJSONObject.toString(this);
-  }
-
   // fba
   public String getFreeBusyActual() {
     return mFreeBusyActual;

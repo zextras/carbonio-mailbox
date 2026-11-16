@@ -132,10 +132,6 @@ public ZJSONObject toZJSONObject() throws JSONException {
         return String.format("[ZCalendarItem %s]", mId);
     }
 
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
-
     public String getFlags() {
         return mFlags;
     }

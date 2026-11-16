@@ -151,10 +151,6 @@ public class ZCreateMessageEvent implements ZCreateItemEvent, ToZJSONObject {
         }
     }
 
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
-
     public ZItem getItem() throws ServiceException {
         return null;
     }

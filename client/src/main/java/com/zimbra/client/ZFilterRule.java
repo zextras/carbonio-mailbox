@@ -144,10 +144,6 @@ public final class ZFilterRule implements ToZJSONObject {
         return String.format("[ZFilterRule %s]", name);
     }
 
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
-
     static String quotedString(String s) {
         return "\"" + s.replaceAll("\"", "\\\"") + "\"";
     }

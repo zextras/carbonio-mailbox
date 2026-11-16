@@ -185,10 +185,6 @@ public class ZSearchResult implements ToZJSONObject {
       return String.format("[ZConversationSummary %s]", mId);
     }
 
-    public String dump() {
-      return ZJSONObject.toString(this);
-    }
-
     public String getFlags() {
       return mFlags;
     }

@@ -98,10 +98,6 @@ public class ZShare implements ToZJSONObject {
         return String.format("[ZShare %s]", mGrantor);
     }
 
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
-
     public ZGrantee getGrantee() {
         return mGrantee;
     }
@@ -220,10 +216,6 @@ public class ZShare implements ToZJSONObject {
         public String toString() {
             return String.format("[ZGrantInfo id=%s email=%s name=%s]", mId, mEmail, mName);
         }
-
-        public String dump() {
-            return ZJSONObject.toString(this);
-        }
     }
 
     public static class ZGrantor extends ZGrantInfo {
@@ -327,10 +319,6 @@ public class ZShare implements ToZJSONObject {
         @Override
         public String toString() {
             return String.format("[ZLink id=%s name=%s]", mId, mName);
-        }
-
-        public String dump() {
-            return ZJSONObject.toString(this);
         }
     }
 }

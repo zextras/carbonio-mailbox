@@ -88,10 +88,6 @@ public class ZConversationHit implements ZSearchHit {
         return String.format("[ZConversationHit %s]", mId);
     }
 
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
-
     public String getFlags() {
         return mFlags;
     }

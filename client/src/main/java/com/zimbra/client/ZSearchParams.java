@@ -343,10 +343,6 @@ public class ZSearchParams implements ToZJSONObject, ZimbraSearchParams {
     return String.format("[ZSearchParams %s]", mQuery == null ? "" : mQuery);
   }
 
-  public String dump() {
-    return ZJSONObject.toString(this);
-  }
-
   /**
    * by default, text without an operator searches the CONTENT field. By setting the {field} value,
    * you can control the default operator. Specify any of the text operators that are available in
@@ -412,10 +408,6 @@ public class ZSearchParams implements ToZJSONObject, ZimbraSearchParams {
     @Override
     public String toString() {
       return String.format("[Cursor id=%s sort=%s]", mPreviousId, mPreviousSortValue);
-    }
-
-    public String dump() {
-      return ZJSONObject.toString(this);
     }
   }
 

@@ -102,8 +102,4 @@ public class ZModifyTagEvent implements ZModifyItemEvent, ToZJSONObject {
             throw new RuntimeException(e);
         }
     }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
 }

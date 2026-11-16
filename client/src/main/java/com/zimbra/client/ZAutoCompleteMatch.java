@@ -142,10 +142,6 @@ public class ZAutoCompleteMatch implements ToZJSONObject {
         return jo;
 	}
 
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
-
 	public static class MatchComparator implements Comparator<ZAutoCompleteMatch> {
 		public int compare(ZAutoCompleteMatch a, ZAutoCompleteMatch b) {
 			int r1 = Integer.parseInt(a.mRanking);

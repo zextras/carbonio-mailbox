@@ -48,10 +48,6 @@ public class ZModifyAppointmentEvent implements ZModifyItemEvent, ZModifyItemFol
         }
     }
 
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
-
     public ZItem getItem() throws ServiceException {
         return new ZAppointment(mApptEl);
     }

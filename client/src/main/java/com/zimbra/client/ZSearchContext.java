@@ -111,9 +111,4 @@ public class ZSearchContext implements ToZJSONObject {
     public String toString() {
        return String.format("[ZSearchContext count=%d more=%s]", mCount, mHasMore);
     }
-
-    public String dump() {
-       return ZJSONObject.toString(this);
-    }
-
 }

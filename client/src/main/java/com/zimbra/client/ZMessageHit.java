@@ -115,10 +115,6 @@ public class ZMessageHit implements ZImapSearchHit {
         return String.format("[ZMessageHit %s]", mId);
     }
 
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
-
     public String getFlags() {
         return mFlags;
     }

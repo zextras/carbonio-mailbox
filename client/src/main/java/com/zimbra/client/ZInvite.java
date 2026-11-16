@@ -109,10 +109,6 @@ public class ZInvite implements ToZJSONObject {
     return String.format("[ZInvite %s]", getComponent().getName());
   }
 
-  public String dump() {
-    return ZJSONObject.toString(this);
-  }
-
   public enum ZInviteType {
     appt,
     task;
@@ -652,10 +648,6 @@ public class ZInvite implements ToZJSONObject {
       return String.format("[ZComponent %s]", getName());
     }
 
-    public String dump() {
-      return ZJSONObject.toString(this);
-    }
-
     public static class ZReply implements ToZJSONObject {
 
       private long mDate;
@@ -677,10 +669,6 @@ public class ZInvite implements ToZJSONObject {
 
       public String toString() {
         return String.format("[ZReply %s]", mAttendee);
-      }
-
-      public String dump() {
-        return ZJSONObject.toString(this);
       }
 
       public ZReply(Element e) throws ServiceException {
@@ -877,10 +865,6 @@ public class ZInvite implements ToZJSONObject {
       return String.format("[ZTimeZone %s]", mId);
     }
 
-    public String dump() {
-      return ZJSONObject.toString(this);
-    }
-
     public static class ZTransitionRule implements ToZJSONObject {
       private int mWeek;
       private int mDayOfWeek;
@@ -984,10 +968,6 @@ public class ZInvite implements ToZJSONObject {
 
       public String toString() {
         return "[ZTransitionRule]";
-      }
-
-      public String dump() {
-        return ZJSONObject.toString(this);
       }
     }
   }
@@ -1102,10 +1082,6 @@ public class ZInvite implements ToZJSONObject {
 
     public String toString() {
       return "[ZDuration]"; // TODO
-    }
-
-    public String dump() {
-      return ZJSONObject.toString(this);
     }
   }
 
@@ -1509,10 +1485,6 @@ public class ZInvite implements ToZJSONObject {
     public String toString() {
       return String.format("[ZCalendarUser %s]", mAddress);
     }
-
-    public String dump() {
-      return ZJSONObject.toString(this);
-    }
   }
 
   public static class ZOrganizer extends ZCalendarUser {
@@ -1669,9 +1641,6 @@ public class ZInvite implements ToZJSONObject {
       return String.format("[ZAttendee %s]", getAddress());
     }
 
-    public String dump() {
-      return ZJSONObject.toString(this);
-    }
   }
 
   public static class ZRecurrenceDate implements ToZJSONObject {
@@ -1732,10 +1701,6 @@ public class ZInvite implements ToZJSONObject {
     public String toString() {
       return "[ZRecurrenceDate]"; // TODO
     }
-
-    public String dump() {
-      return ZJSONObject.toString(this);
-    }
   }
 
   public static class ZRecurrenceDates implements ToZJSONObject {
@@ -1786,10 +1751,6 @@ public class ZInvite implements ToZJSONObject {
 
     public String toString() {
       return "[ZRecurrenceDates]"; // TODO
-    }
-
-    public String dump() {
-      return ZJSONObject.toString(this);
     }
   }
 
@@ -2017,9 +1978,6 @@ public class ZInvite implements ToZJSONObject {
       return String.format("[ZByDayWeekDay weekOrd=%d day=%s]", mWeekOrd, mDay);
     }
 
-    public String dump() {
-      return ZJSONObject.toString(this);
-    }
   }
 
   public static class ZByRule implements ToZJSONObject {
@@ -2171,10 +2129,6 @@ public class ZInvite implements ToZJSONObject {
     public String toString() {
       return "[ZByRule]"; // TODO
     }
-
-    public String dump() {
-      return ZJSONObject.toString(this);
-    }
   }
 
   public static class ZRecurrenceRule implements ToZJSONObject {
@@ -2219,10 +2173,6 @@ public class ZInvite implements ToZJSONObject {
 
     public String toString() {
       return "[ZRecurrenceRule]"; // TODO
-    }
-
-    public String dump() {
-      return ZJSONObject.toString(this);
     }
 
     public Element toElement(Element parent) {
@@ -2412,10 +2362,6 @@ public class ZInvite implements ToZJSONObject {
 
     public String toString() {
       return "[ZRecurrence]";
-    }
-
-    public String dump() {
-      return ZJSONObject.toString(this);
     }
   }
 }

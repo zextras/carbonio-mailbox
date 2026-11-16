@@ -166,10 +166,6 @@ public class ZContactHit implements ZImapSearchHit {
         return String.format("[ZContactHit %s]", mId);
     }
 
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
-
     public boolean isGroup() {
         return ContactConstants.TYPE_GROUP.equalsIgnoreCase(getType());
     }

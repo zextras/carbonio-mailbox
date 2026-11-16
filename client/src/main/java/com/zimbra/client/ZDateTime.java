@@ -143,8 +143,4 @@ public class ZDateTime implements ToZJSONObject {
         return String.format("[ZDateTime %s]", getDate().toString());
     }
 
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
-
 }

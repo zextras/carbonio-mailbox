@@ -221,10 +221,6 @@ public class ZGetInfoResult implements ToZJSONObject {
     return String.format("[ZGetInfoResult %s]", getName());
   }
 
-  public String dump() {
-    return ZJSONObject.toString(this);
-  }
-
   public long getMailboxQuotaUsed() {
     return SystemUtil.coalesce(data.getQuotaUsed(), -1L);
   }

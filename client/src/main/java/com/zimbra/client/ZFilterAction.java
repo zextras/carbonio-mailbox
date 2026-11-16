@@ -409,8 +409,4 @@ public abstract class ZFilterAction implements ToZJSONObject {
     public String toString() {
         return MoreObjects.toStringHelper(this).add("name", name).toString();
     }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
 }

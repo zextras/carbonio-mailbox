@@ -149,10 +149,6 @@ public class ZEmailAddress implements ToZJSONObject {
         return String.format("[ZEmailAddress %s]", getFullAddressQuoted());
     }
 
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
-
     /**
     *
     * @param type type of addresses to create in the returned list.

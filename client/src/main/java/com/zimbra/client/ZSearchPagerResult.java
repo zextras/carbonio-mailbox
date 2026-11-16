@@ -39,8 +39,4 @@ public class ZSearchPagerResult implements ToZJSONObject {
     public String toString() {
         return String.format("[ZSearchPagerResult %s]", mActualPage);
     }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
 }

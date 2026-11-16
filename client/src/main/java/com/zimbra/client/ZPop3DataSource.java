@@ -138,8 +138,4 @@ public class ZPop3DataSource extends ZDataSource implements ToZJSONObject {
     public String toString() {
         return String.format("[ZPop3DataSource %s]", getName());
     }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
 }

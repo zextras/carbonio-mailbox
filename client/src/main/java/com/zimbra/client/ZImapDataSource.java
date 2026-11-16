@@ -140,10 +140,6 @@ public class ZImapDataSource extends ZDataSource implements ToZJSONObject {
         return String.format("[ZImapDataSource %s]", getName());
     }
 
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
-
     public void setImportOnly(boolean importOnly) {
         data.setImportOnly(importOnly);
     }

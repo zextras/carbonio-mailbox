@@ -39,10 +39,6 @@ public class ZDeleteEvent implements ToZJSONObject {
         return String.format("[ZDeleteEvent %s]", getIds());
     }
 
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
-
     public ZJSONObject toZJSONObject() throws JSONException {
         ZJSONObject zjo = new ZJSONObject();
         zjo.putList("ids", mList);
