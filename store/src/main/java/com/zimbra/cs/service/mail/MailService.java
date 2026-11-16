@@ -74,11 +74,8 @@ public class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.TAG_ACTION_REQUEST, new TagAction());
 
     // saved searches
-    dispatcher.registerHandler(MailConstants.GET_SEARCH_FOLDER_REQUEST, new GetSearchFolder());
     dispatcher.registerHandler(
         MailConstants.CREATE_SEARCH_FOLDER_REQUEST, new CreateSearchFolder());
-    dispatcher.registerHandler(
-        MailConstants.MODIFY_SEARCH_FOLDER_REQUEST, new ModifySearchFolder());
 
     // mountpoints
     dispatcher.registerHandler(MailConstants.CREATE_MOUNTPOINT_REQUEST, new CreateMountpoint());
@@ -198,7 +195,6 @@ public class MailService implements DocumentService {
         MailConstants.RESET_RECENT_MESSAGE_COUNT_REQUEST, new ResetRecentMessageCount());
 
     // SearchAction API
-    dispatcher.registerHandler(MailConstants.SEARCH_ACTION_REQUEST, new SearchAction());
 
     // Password reset API
     dispatcher.registerHandler(MailConstants.RECOVER_ACCOUNT_REQUEST, new RecoverAccount());

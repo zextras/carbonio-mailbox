@@ -248,9 +248,7 @@ public class TrackCommandRequestService implements DocumentService {
           , MailConstants.GET_TAG_REQUEST
           , MailConstants.CREATE_TAG_REQUEST
           , MailConstants.TAG_ACTION_REQUEST
-          , MailConstants.GET_SEARCH_FOLDER_REQUEST
           , MailConstants.CREATE_SEARCH_FOLDER_REQUEST
-          , MailConstants.MODIFY_SEARCH_FOLDER_REQUEST
           , MailConstants.CREATE_MOUNTPOINT_REQUEST
           , MailConstants.ENABLE_SHARED_REMINDER_REQUEST
           , MailConstants.GET_CONTACTS_REQUEST
@@ -310,7 +308,6 @@ public class TrackCommandRequestService implements DocumentService {
           , MailConstants.GET_LAST_ITEM_ID_IN_MAILBOX_REQUEST
           , MailConstants.GET_MODIFIED_ITEMS_IDS_REQUEST
           , MailConstants.RESET_RECENT_MESSAGE_COUNT_REQUEST
-          , MailConstants.SEARCH_ACTION_REQUEST
           , MailConstants.RECOVER_ACCOUNT_REQUEST
           , MailConstants.SET_RECOVERY_EMAIL_REQUEST
           , MailConstants.COPY_TO_DRIVE_REQUEST

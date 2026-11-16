@@ -100,10 +100,6 @@ public final class MailConstants {
   public static final String E_TAG_ACTION_RESPONSE = "TagActionResponse";
   public static final String E_CREATE_SEARCH_FOLDER_REQUEST = "CreateSearchFolderRequest";
   public static final String E_CREATE_SEARCH_FOLDER_RESPONSE = "CreateSearchFolderResponse";
-  public static final String E_GET_SEARCH_FOLDER_REQUEST = "GetSearchFolderRequest";
-  public static final String E_GET_SEARCH_FOLDER_RESPONSE = "GetSearchFolderResponse";
-  public static final String E_MODIFY_SEARCH_FOLDER_REQUEST = "ModifySearchFolderRequest";
-  public static final String E_MODIFY_SEARCH_FOLDER_RESPONSE = "ModifySearchFolderResponse";
   public static final String E_CREATE_MOUNTPOINT_REQUEST = "CreateMountpointRequest";
   public static final String E_CREATE_MOUNTPOINT_RESPONSE = "CreateMountpointResponse";
   public static final String E_ENABLE_SHARED_REMINDER_REQUEST = "EnableSharedReminderRequest";
@@ -334,14 +330,6 @@ public final class MailConstants {
       QName.get(E_CREATE_SEARCH_FOLDER_REQUEST, NAMESPACE);
   public static final QName CREATE_SEARCH_FOLDER_RESPONSE =
       QName.get(E_CREATE_SEARCH_FOLDER_RESPONSE, NAMESPACE);
-  public static final QName GET_SEARCH_FOLDER_REQUEST =
-      QName.get(E_GET_SEARCH_FOLDER_REQUEST, NAMESPACE);
-  public static final QName GET_SEARCH_FOLDER_RESPONSE =
-      QName.get(E_GET_SEARCH_FOLDER_RESPONSE, NAMESPACE);
-  public static final QName MODIFY_SEARCH_FOLDER_REQUEST =
-      QName.get(E_MODIFY_SEARCH_FOLDER_REQUEST, NAMESPACE);
-  public static final QName MODIFY_SEARCH_FOLDER_RESPONSE =
-      QName.get(E_MODIFY_SEARCH_FOLDER_RESPONSE, NAMESPACE);
   // mountpoints
   public static final QName CREATE_MOUNTPOINT_REQUEST =
       QName.get(E_CREATE_MOUNTPOINT_REQUEST, NAMESPACE);
@@ -1362,11 +1350,6 @@ public final class MailConstants {
   public static final String A_CONTACTS_BACKUP_FOLDER_NAME = "ContactsBackup";
 
   // SearchAction API
-  public static final String E_SEARCH_ACTION_REQUEST = "SearchActionRequest";
-  public static final String E_SEARCH_ACTION_RESPONSE = "SearchActionResponse";
-  public static final String E_BULK_ACTION = "BulkAction";
-  public static final QName SEARCH_ACTION_REQUEST = QName.get(E_SEARCH_ACTION_REQUEST, NAMESPACE);
-  public static final QName SEARCH_ACTION_RESPONSE = QName.get(E_SEARCH_ACTION_RESPONSE, NAMESPACE);
 
   // Password reset API
   public static final String E_SET_RECOVERY_ACCOUNT_REQUEST = "SetRecoveryAccountRequest";
