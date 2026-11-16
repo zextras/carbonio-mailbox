@@ -144,6 +144,8 @@ _package_systemd() {
     "${pkgdir}/usr/lib/systemd/system/carbonio-mailbox-internal-api-sidecar.service"
   install -Dm644 packages/appserver-service/carbonio-authz-sidecar.service \
     "${pkgdir}/usr/lib/systemd/system/carbonio-authz-sidecar.service"
+  install -Dm644 packages/appserver-service/carbonio-appserver-sidecars.conf \
+    "${pkgdir}/usr/lib/systemd/system/carbonio-appserver.service.d/carbonio-appserver-sidecars.conf"
 }
 
 package() {
