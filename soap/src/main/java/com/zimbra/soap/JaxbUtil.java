@@ -214,6 +214,8 @@ public final class JaxbUtil {
           com.zimbra.soap.admin.message.DeleteSystemRetentionPolicyResponse.class,
           com.zimbra.soap.admin.message.DeleteVolumeRequest.class,
           com.zimbra.soap.admin.message.DeleteVolumeResponse.class,
+          com.zimbra.soap.admin.message.DumpSessionsRequest.class,
+          com.zimbra.soap.admin.message.DumpSessionsResponse.class,
           com.zimbra.soap.admin.message.ExportAndDeleteItemsRequest.class,
           com.zimbra.soap.admin.message.ExportAndDeleteItemsResponse.class,
           com.zimbra.soap.admin.message.FixCalendarEndTimeRequest.class,

@@ -94,6 +94,7 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.GET_INDEX_STATS_REQUEST
           , AdminConstants.VERIFY_INDEX_REQUEST
           , AdminConstants.RECALCULATE_MAILBOX_COUNTS_REQUEST
+          , AdminConstants.DUMP_SESSIONS_REQUEST
           , AdminConstants.GET_SESSIONS_REQUEST
           , AdminConstants.CREATE_CALENDAR_RESOURCE_REQUEST
           , AdminConstants.DELETE_CALENDAR_RESOURCE_REQUEST

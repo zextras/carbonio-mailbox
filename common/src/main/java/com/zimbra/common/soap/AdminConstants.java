@@ -213,6 +213,8 @@ public final class AdminConstants {
       "SearchCalendarResourcesResponse";
 
 
+  public static final String E_DUMP_SESSIONS_REQUEST = "DumpSessionsRequest";
+  public static final String E_DUMP_SESSIONS_RESPONSE = "DumpSessionsResponse";
   public static final String E_GET_SESSIONS_REQUEST = "GetSessionsRequest";
   public static final String E_GET_SESSIONS_RESPONSE = "GetSessionsResponse";
 
@@ -664,6 +666,8 @@ public final class AdminConstants {
       QName.get(E_SEARCH_CALENDAR_RESOURCES_RESPONSE, NAMESPACE);
 
 
+  public static final QName DUMP_SESSIONS_REQUEST = QName.get(E_DUMP_SESSIONS_REQUEST, NAMESPACE);
+  public static final QName DUMP_SESSIONS_RESPONSE = QName.get(E_DUMP_SESSIONS_RESPONSE, NAMESPACE);
   public static final QName GET_SESSIONS_REQUEST = QName.get(E_GET_SESSIONS_REQUEST, NAMESPACE);
   public static final QName GET_SESSIONS_RESPONSE = QName.get(E_GET_SESSIONS_RESPONSE, NAMESPACE);
 
@@ -945,6 +949,10 @@ public final class AdminConstants {
   public static final String E_SESSION = "session";
   public static final String A_ZIMBRA_ID = "zid";
   public static final String A_SESSION_ID = "sid";
+  public static final String A_LIST_SESSIONS = "listSessions";
+  public static final String A_GROUP_BY_ACCOUNT = "groupByAccount";
+  public static final String A_ACTIVE_ACCOUNTS = "activeAccounts";
+  public static final String A_ACTIVE_SESSIONS = "activeSessions";
   public static final String A_CREATED_DATE = "cd";
   public static final String A_LAST_ACCESSED_DATE = "ld";
 

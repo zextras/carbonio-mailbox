@@ -182,6 +182,7 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(
         AdminConstants.RECALCULATE_MAILBOX_COUNTS_REQUEST, new RecalculateMailboxCounts());
 
+    dispatcher.registerHandler(AdminConstants.DUMP_SESSIONS_REQUEST, new DumpSessions());
     dispatcher.registerHandler(AdminConstants.GET_SESSIONS_REQUEST, new GetSessions());
 
     // calendar resources
