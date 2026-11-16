@@ -62,24 +62,12 @@ public final class MailConstants {
   public static final String E_GET_ITEM_RESPONSE = "GetItemResponse";
   public static final String E_ITEM_ACTION_REQUEST = "ItemActionRequest";
   public static final String E_ITEM_ACTION_RESPONSE = "ItemActionResponse";
-  public static final String E_GET_METADATA_REQUEST = "GetCustomMetadataRequest";
-  public static final String E_GET_METADATA_RESPONSE = "GetCustomMetadataResponse";
-  public static final String E_SET_METADATA_REQUEST = "SetCustomMetadataRequest";
-  public static final String E_SET_METADATA_RESPONSE = "SetCustomMetadataResponse";
-  public static final String E_GET_MAILBOX_METADATA_REQUEST = "GetMailboxMetadataRequest";
-  public static final String E_GET_MAILBOX_METADATA_RESPONSE = "GetMailboxMetadataResponse";
-  public static final String E_SET_MAILBOX_METADATA_REQUEST = "SetMailboxMetadataRequest";
-  public static final String E_SET_MAILBOX_METADATA_RESPONSE = "SetMailboxMetadataResponse";
-  public static final String E_MODIFY_MAILBOX_METADATA_REQUEST = "ModifyMailboxMetadataRequest";
-  public static final String E_MODIFY_MAILBOX_METADATA_RESPONSE = "ModifyMailboxMetadataResponse";
   public static final String E_GET_CONV_REQUEST = "GetConvRequest";
   public static final String E_GET_CONV_RESPONSE = "GetConvResponse";
   public static final String E_CONV_ACTION_REQUEST = "ConvActionRequest";
   public static final String E_CONV_ACTION_RESPONSE = "ConvActionResponse";
   public static final String E_GET_MSG_REQUEST = "GetMsgRequest";
   public static final String E_GET_MSG_RESPONSE = "GetMsgResponse";
-  public static final String E_GET_MSG_METADATA_REQUEST = "GetMsgMetadataRequest";
-  public static final String E_GET_MSG_METADATA_RESPONSE = "GetMsgMetadataResponse";
   public static final String E_MSG_ACTION_REQUEST = "MsgActionRequest";
   public static final String E_MSG_ACTION_RESPONSE = "MsgActionResponse";
   public static final String E_SEND_MSG_REQUEST = "SendMsgRequest";
@@ -308,22 +296,6 @@ public final class MailConstants {
   public static final QName GET_ITEM_RESPONSE = QName.get(E_GET_ITEM_RESPONSE, NAMESPACE);
   public static final QName ITEM_ACTION_REQUEST = QName.get(E_ITEM_ACTION_REQUEST, NAMESPACE);
   public static final QName ITEM_ACTION_RESPONSE = QName.get(E_ITEM_ACTION_RESPONSE, NAMESPACE);
-  public static final QName GET_METADATA_REQUEST = QName.get(E_GET_METADATA_REQUEST, NAMESPACE);
-  public static final QName GET_METADATA_RESPONSE = QName.get(E_GET_METADATA_RESPONSE, NAMESPACE);
-  public static final QName SET_METADATA_REQUEST = QName.get(E_SET_METADATA_REQUEST, NAMESPACE);
-  public static final QName SET_METADATA_RESPONSE = QName.get(E_SET_METADATA_RESPONSE, NAMESPACE);
-  public static final QName GET_MAILBOX_METADATA_REQUEST =
-      QName.get(E_GET_MAILBOX_METADATA_REQUEST, NAMESPACE);
-  public static final QName GET_MAILBOX_METADATA_RESPONSE =
-      QName.get(E_GET_MAILBOX_METADATA_RESPONSE, NAMESPACE);
-  public static final QName SET_MAILBOX_METADATA_REQUEST =
-      QName.get(E_SET_MAILBOX_METADATA_REQUEST, NAMESPACE);
-  public static final QName SET_MAILBOX_METADATA_RESPONSE =
-      QName.get(E_SET_MAILBOX_METADATA_RESPONSE, NAMESPACE);
-  public static final QName MODIFY_MAILBOX_METADATA_REQUEST =
-      QName.get(E_MODIFY_MAILBOX_METADATA_REQUEST, NAMESPACE);
-  public static final QName MODIFY_MAILBOX_METADATA_RESPONSE =
-      QName.get(E_MODIFY_MAILBOX_METADATA_RESPONSE, NAMESPACE);
 
   // conversations
   public static final QName GET_CONV_REQUEST = QName.get(E_GET_CONV_REQUEST, NAMESPACE);
@@ -333,10 +305,6 @@ public final class MailConstants {
   // messages
   public static final QName GET_MSG_REQUEST = QName.get(E_GET_MSG_REQUEST, NAMESPACE);
   public static final QName GET_MSG_RESPONSE = QName.get(E_GET_MSG_RESPONSE, NAMESPACE);
-  public static final QName GET_MSG_METADATA_REQUEST =
-      QName.get(E_GET_MSG_METADATA_REQUEST, NAMESPACE);
-  public static final QName GET_MSG_METADATA_RESPONSE =
-      QName.get(E_GET_MSG_METADATA_RESPONSE, NAMESPACE);
   public static final QName MSG_ACTION_REQUEST = QName.get(E_MSG_ACTION_REQUEST, NAMESPACE);
   public static final QName MSG_ACTION_RESPONSE = QName.get(E_MSG_ACTION_RESPONSE, NAMESPACE);
   //   SendMsg/AddMsg/SaveDraft

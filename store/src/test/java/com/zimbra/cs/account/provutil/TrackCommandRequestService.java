@@ -231,15 +231,9 @@ public class TrackCommandRequestService implements DocumentService {
           , MailConstants.EMPTY_DUMPSTER_REQUEST
           , MailConstants.GET_ITEM_REQUEST
           , MailConstants.ITEM_ACTION_REQUEST
-          , MailConstants.GET_METADATA_REQUEST
-          , MailConstants.SET_METADATA_REQUEST
-          , MailConstants.GET_MAILBOX_METADATA_REQUEST
-          , MailConstants.SET_MAILBOX_METADATA_REQUEST
-          , MailConstants.MODIFY_MAILBOX_METADATA_REQUEST
           , MailConstants.GET_CONV_REQUEST
           , MailConstants.CONV_ACTION_REQUEST
           , MailConstants.GET_MSG_REQUEST
-          , MailConstants.GET_MSG_METADATA_REQUEST
           , MailConstants.MSG_ACTION_REQUEST
           , MailConstants.SEND_MSG_REQUEST
           , MailConstants.SEND_SECURE_MSG_REQUEST

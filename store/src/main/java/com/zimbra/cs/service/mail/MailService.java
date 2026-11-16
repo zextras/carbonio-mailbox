@@ -46,14 +46,6 @@ public class MailService implements DocumentService {
     // items
     dispatcher.registerHandler(MailConstants.GET_ITEM_REQUEST, new GetItem());
     dispatcher.registerHandler(MailConstants.ITEM_ACTION_REQUEST, new ItemAction());
-    dispatcher.registerHandler(MailConstants.GET_METADATA_REQUEST, new GetCustomMetadata());
-    dispatcher.registerHandler(MailConstants.SET_METADATA_REQUEST, new SetCustomMetadata());
-    dispatcher.registerHandler(
-        MailConstants.GET_MAILBOX_METADATA_REQUEST, new GetMailboxMetadata());
-    dispatcher.registerHandler(
-        MailConstants.SET_MAILBOX_METADATA_REQUEST, new SetMailboxMetadata());
-    dispatcher.registerHandler(
-        MailConstants.MODIFY_MAILBOX_METADATA_REQUEST, new ModifyMailboxMetadata());
 
     // conversations
     dispatcher.registerHandler(MailConstants.GET_CONV_REQUEST, new GetConv());
@@ -61,7 +53,6 @@ public class MailService implements DocumentService {
 
     // messages
     dispatcher.registerHandler(MailConstants.GET_MSG_REQUEST, new GetMsg());
-    dispatcher.registerHandler(MailConstants.GET_MSG_METADATA_REQUEST, new GetMsgMetadata());
     dispatcher.registerHandler(MailConstants.MSG_ACTION_REQUEST, new MsgAction());
     dispatcher.registerHandler(MailConstants.SEND_MSG_REQUEST, new SendMsg());
     dispatcher.registerHandler(MailConstants.SEND_REPORT_REQUEST, new SendDeliveryReport());
