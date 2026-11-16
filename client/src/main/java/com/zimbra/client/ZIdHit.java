@@ -4,6 +4,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.json.JSONException;
 
@@ -34,10 +35,10 @@ public class ZIdHit implements ZImapSearchHit {
 
     @Override
     public ObjectNode toObjectNode() {
-        ZObjectNode zjo = new ZObjectNode();
-        zjo.put("id", id);
-        zjo.put("sortField", sortField);
-        return zjo.getObjectNode();
+        ObjectNode zjo = JsonNodeFactory.instance.objectNode();
+        if (id != null) zjo.put("id", id);
+        if (sortField != null) zjo.put("sortField", sortField);
+        return zjo;
     }
 
     @Override

@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -96,13 +97,13 @@ public class ZShare implements ToZJSONObject {
 
     @Override
     public ObjectNode toObjectNode() {
-        ZObjectNode zjo = new ZObjectNode();
-        zjo.put(A_VERSION, mVersion);
+        ObjectNode zjo = JsonNodeFactory.instance.objectNode();
+        if (mVersion != null) zjo.put(A_VERSION, mVersion);
         zjo.put(A_ACTION, mAction.name());
-        zjo.put(E_GRANTEE, mGrantee);
-        zjo.put(E_GRANTOR, mGrantor);
-        zjo.put(E_LINK, mLink);
-        return zjo.getObjectNode();
+        if (mGrantee != null) zjo.set(E_GRANTEE, mGrantee.toObjectNode());
+        if (mGrantor != null) zjo.set(E_GRANTOR, mGrantor.toObjectNode());
+        if (mLink != null) zjo.set(E_LINK, mLink.toObjectNode());
+        return zjo;
     }
 
     @Override
@@ -226,11 +227,11 @@ public class ZShare implements ToZJSONObject {
 
         @Override
         public ObjectNode toObjectNode() {
-            ZObjectNode zjo = new ZObjectNode();
-            zjo.put(A_ID, mId);
-            zjo.put(A_EMAIL, mEmail);
-            zjo.put(A_NAME, mName);
-            return zjo.getObjectNode();
+            ObjectNode zjo = JsonNodeFactory.instance.objectNode();
+            if (mId != null) zjo.put(A_ID, mId);
+            if (mEmail != null) zjo.put(A_EMAIL, mEmail);
+            if (mName != null) zjo.put(A_NAME, mName);
+            return zjo;
         }
 
         @Override
@@ -339,12 +340,12 @@ public class ZShare implements ToZJSONObject {
 
         @Override
         public ObjectNode toObjectNode() {
-            ZObjectNode zjo = new ZObjectNode();
-            zjo.put(A_ID, mId);
-            zjo.put(A_PERM, mPermission);
+            ObjectNode zjo = JsonNodeFactory.instance.objectNode();
+            if (mId != null) zjo.put(A_ID, mId);
+            if (mPermission != null) zjo.put(A_PERM, mPermission);
             zjo.put(A_VIEW, mView.name());
-            zjo.put(A_NAME, mName);
-            return zjo.getObjectNode();
+            if (mName != null) zjo.put(A_NAME, mName);
+            return zjo;
         }
 
         @Override

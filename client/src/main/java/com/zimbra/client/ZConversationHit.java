@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -86,18 +87,18 @@ public class ZConversationHit implements ZSearchHit {
 
     @Override
     public ObjectNode toObjectNode() {
-        ZObjectNode jo = new ZObjectNode();
-        jo.put("id", mId);
-        jo.put("flags", mFlags);
-        jo.put("tags", mTags);
-        jo.put("fragment", mFragment);
-        jo.put("subject", mSubject);
+        ObjectNode jo = JsonNodeFactory.instance.objectNode();
+        if (mId != null) jo.put("id", mId);
+        if (mFlags != null) jo.put("flags", mFlags);
+        if (mTags != null) jo.put("tags", mTags);
+        if (mFragment != null) jo.put("fragment", mFragment);
+        if (mSubject != null) jo.put("subject", mSubject);
         jo.put("date", mDate);
-        jo.put("sortField", mSortField);
+        if (mSortField != null) jo.put("sortField", mSortField);
         jo.put("messageCount", mMessageCount);
-        jo.putList("messageIds", mMessageIds);
-        jo.put("recipients", mRecipients);
-        return jo.getObjectNode();
+        ZObjectNode.putList(jo, "messageIds", mMessageIds);
+        ZObjectNode.put(jo, "recipients", mRecipients);
+        return jo;
     }
 
     @Override

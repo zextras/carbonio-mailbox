@@ -136,15 +136,15 @@ public class ZIdentity  implements ToZJSONObject {
 
     @Override
     public ObjectNode toObjectNode() {
-        ZObjectNode zjo = new ZObjectNode();
-        zjo.put("name", getName());
-        zjo.put("id", getId());
+        ObjectNode zjo = JsonNodeFactory.instance.objectNode();
+        if (getName() != null) zjo.put("name", getName());
+        if (getId() != null) zjo.put("id", getId());
         ObjectNode jo = JsonNodeFactory.instance.objectNode();
-        zjo.put("attrs",jo);
+        zjo.set("attrs", jo);
         for (Map.Entry<String, String> entry : data.getAttrsMultimap().entries()) {
-            ZObjectNode.putOrRemove(jo, entry.getKey(), entry.getValue());
+            if (entry.getValue() != null) jo.put(entry.getKey(), entry.getValue());
         }
-        return zjo.getObjectNode();
+        return zjo;
     }
 
     @Override

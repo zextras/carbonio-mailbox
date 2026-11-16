@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.soap.AccountConstants;
@@ -123,12 +124,12 @@ public class ZSignature implements Comparable<ZSignature>, ToZJSONObject {
 
     @Override
     public ObjectNode toObjectNode() {
-        ZObjectNode zjo = new ZObjectNode();
-        zjo.put("name", getName());
-        zjo.put("id", getId());
-        zjo.put("value", getValue());
+        ObjectNode zjo = JsonNodeFactory.instance.objectNode();
+        if (getName() != null) zjo.put("name", getName());
+        if (getId() != null) zjo.put("id", getId());
+        if (getValue() != null) zjo.put("value", getValue());
         zjo.put("type", getType());
-        return zjo.getObjectNode();
+        return zjo;
     }
 
     public String toString() {

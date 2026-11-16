@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -147,13 +148,13 @@ public class ZEmailAddress implements ToZJSONObject {
 
     @Override
     public ObjectNode toObjectNode() {
-        ZObjectNode jo = new ZObjectNode();
-        jo.put("address", address);
-        jo.put("display", display);
-        jo.put("personal", personal);
-        jo.put("type", type);
+        ObjectNode jo = JsonNodeFactory.instance.objectNode();
+        if (address != null) jo.put("address", address);
+        if (display != null) jo.put("display", display);
+        if (personal != null) jo.put("personal", personal);
+        if (type != null) jo.put("type", type);
         jo.put("fullAddressQuoted", getFullAddressQuoted());
-        return jo.getObjectNode();
+        return jo;
     }
 
     @Override

@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -176,13 +177,13 @@ public class ZAce implements ToZJSONObject {
 
     @Override
     public ObjectNode toObjectNode() {
-        ZObjectNode jo = new ZObjectNode();
+        ObjectNode jo = JsonNodeFactory.instance.objectNode();
         jo.put("type", mGranteeType.name());
-        jo.put("name", mGranteeName);
-        jo.put("id", mGranteeId);
-        jo.put("right", mRight);
+        if (mGranteeName != null) jo.put("name", mGranteeName);
+        if (mGranteeId != null) jo.put("id", mGranteeId);
+        if (mRight != null) jo.put("right", mRight);
         jo.put("deny", mDeny);
-        return jo.getObjectNode();
+        return jo;
     }
 
     public String toString() {

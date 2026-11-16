@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Arrays;
 
@@ -298,13 +299,13 @@ public class ZGrant implements ACLGrant, ToZJSONObject {
 
     @Override
     public ObjectNode toObjectNode() {
-        ZObjectNode jo = new ZObjectNode();
+        ObjectNode jo = JsonNodeFactory.instance.objectNode();
         jo.put("type", mGranteeType.name());
-        jo.put("name", mGranteeName);
-        jo.put("id", mGranteeId);
-        jo.put("permissions", mPermissions);
-        jo.put("args", mArgs);
-        return jo.getObjectNode();
+        if (mGranteeName != null) jo.put("name", mGranteeName);
+        if (mGranteeId != null) jo.put("id", mGranteeId);
+        if (mPermissions != null) jo.put("permissions", mPermissions);
+        if (mArgs != null) jo.put("args", mArgs);
+        return jo;
     }
 
     @Override

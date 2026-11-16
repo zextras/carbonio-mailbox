@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.InputStream;
 import java.util.Collections;
@@ -276,24 +277,24 @@ public class ZContact extends ZBaseItem implements ToZJSONObject {
 
     @Override
     public ObjectNode toObjectNode() {
-        ZObjectNode jo = new ZObjectNode();
-        jo.put("id", mId);
+        ObjectNode jo = JsonNodeFactory.instance.objectNode();
+        if (mId != null) jo.put("id", mId);
         if (imapUid >= 0) {
             jo.put("imapUid", imapUid);
         }
-        jo.put("folderId", mFolderId);
-        jo.put("flags", mFlags);
-        jo.put("tagIds", mTagIds);
+        if (mFolderId != null) jo.put("folderId", mFolderId);
+        if (mFlags != null) jo.put("flags", mFlags);
+        if (mTagIds != null) jo.put("tagIds", mTagIds);
         jo.put("date", mDate);
         jo.put("metaDataChangedDate", mMetaDataChangedDate);
-        jo.put("revision", mRevision);
+        if (mRevision != null) jo.put("revision", mRevision);
         jo.put("isFlagged", isFlagged());
         jo.put("isGalContact", isGalContact());
         jo.put("isGroup", isGroup());
         jo.put("hasFlags", hasFlags());
         jo.put("hasTags", hasTags());
-        jo.putMap("attrs", mAttrs);
-        return jo.getObjectNode();
+        ZObjectNode.putMap(jo, "attrs", mAttrs);
+        return jo;
     }
 
     @Override

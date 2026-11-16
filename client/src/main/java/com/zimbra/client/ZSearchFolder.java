@@ -71,11 +71,11 @@ public final class ZSearchFolder extends ZFolder implements SearchFolderStore {
 
     @Override
     public ObjectNode toObjectNode() {
-        ZObjectNode jo = new ZObjectNode(super.toObjectNode());
-        jo.put("query", query);
-        jo.put("types", types);
+        ObjectNode jo = super.toObjectNode();
+        if (query != null) jo.put("query", query);
+        if (types != null) jo.put("types", types);
         jo.put("sortBy", sortBy.name());
-        return jo.getObjectNode();
+        return jo;
     }
 
     @Override

@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.HashMap;
 import java.util.Map;
@@ -149,12 +150,12 @@ public class ZTag implements Comparable<ZTag>, ZItem, ZimbraTag, ToZJSONObject {
 
     @Override
     public ObjectNode toObjectNode() {
-        ZObjectNode zjo = new ZObjectNode();
-        zjo.put("id", mId);
-        zjo.put("name", mName);
+        ObjectNode zjo = JsonNodeFactory.instance.objectNode();
+        if (mId != null) zjo.put("id", mId);
+        if (mName != null) zjo.put("name", mName);
         zjo.put("color", mColor.name());
         zjo.put("unreadCount", mUnreadCount);
-        return zjo.getObjectNode();
+        return zjo;
     }
 
     @Override

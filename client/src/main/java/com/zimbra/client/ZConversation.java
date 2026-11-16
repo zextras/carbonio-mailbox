@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
@@ -122,14 +123,14 @@ public class ZConversation implements ZItem, ToZJSONObject {
 
     @Override
     public ObjectNode toObjectNode() {
-        ZObjectNode jo = new ZObjectNode();
-        jo.put("id", mId);
-        jo.put("tagIds", mTags);
-        jo.put("flags", mFlags);
-        jo.put("subject", mSubject);
+        ObjectNode jo = JsonNodeFactory.instance.objectNode();
+        if (mId != null) jo.put("id", mId);
+        if (mTags != null) jo.put("tagIds", mTags);
+        if (mFlags != null) jo.put("flags", mFlags);
+        if (mSubject != null) jo.put("subject", mSubject);
         jo.put("messageCount", mMessageCount);
-        jo.put("messageSummaries", mMessageSummaries);
-        return jo.getObjectNode();
+        ZObjectNode.put(jo, "messageSummaries", mMessageSummaries);
+        return jo;
     }
 
     @Override
@@ -228,14 +229,14 @@ public class ZConversation implements ZItem, ToZJSONObject {
 
         @Override
         public ObjectNode toObjectNode() {
-            ZObjectNode jo = new ZObjectNode();
-            jo.put("id", mId);
-            jo.put("folderId", mFolderId);
-            jo.put("flags", mFlags);
-            jo.put("fragment", mFragment);
-            jo.put("tags", mTags);
+            ObjectNode jo = JsonNodeFactory.instance.objectNode();
+            if (mId != null) jo.put("id", mId);
+            if (mFolderId != null) jo.put("folderId", mFolderId);
+            if (mFlags != null) jo.put("flags", mFlags);
+            if (mFragment != null) jo.put("fragment", mFragment);
+            if (mTags != null) jo.put("tags", mTags);
             jo.put("size", mSize);
-            jo.put("sender", mSender);
+            if (mSender != null) jo.set("sender", mSender.toObjectNode());
             jo.put("date", mDate);
             jo.put("hasAttachment", hasAttachment());
             jo.put("hasFlags", hasFlags());
@@ -250,8 +251,8 @@ public class ZConversation implements ZItem, ToZJSONObject {
             jo.put("isRepliedTo", isRepliedTo());
             jo.put("isSentByMe", isSentByMe());
             jo.put("isUnread", isUnread());
-            jo.put("subject", mSubject);
-            return jo.getObjectNode();
+            if (mSubject != null) jo.put("subject", mSubject);
+            return jo;
         }
 
         @Override

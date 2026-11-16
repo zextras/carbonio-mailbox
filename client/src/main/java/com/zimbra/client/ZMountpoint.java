@@ -71,11 +71,11 @@ public class ZMountpoint extends ZFolder implements MountpointStore {
 
     @Override
     public ObjectNode toObjectNode() {
-        ZObjectNode jo = new ZObjectNode(super.toObjectNode());
-        jo.put("ownerId", mOwnerId);
-        jo.put("ownerDisplayName", mOwnerDisplayName);
-        jo.put("remoteId", mRemoteId);
-        return jo.getObjectNode();
+        ObjectNode jo = super.toObjectNode();
+        if (mOwnerId != null) jo.put("ownerId", mOwnerId);
+        if (mOwnerDisplayName != null) jo.put("ownerDisplayName", mOwnerDisplayName);
+        if (mRemoteId != null) jo.put("remoteId", mRemoteId);
+        return jo;
     }
 
     /**

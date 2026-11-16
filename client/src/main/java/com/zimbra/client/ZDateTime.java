@@ -5,6 +5,7 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zimbra.common.calendar.TZIDMapper;
 import com.zimbra.common.service.ServiceException;
@@ -142,11 +143,11 @@ public class ZDateTime implements ToZJSONObject {
 
     @Override
     public ObjectNode toObjectNode() {
-        ZObjectNode zjo = new ZObjectNode();
+        ObjectNode zjo = JsonNodeFactory.instance.objectNode();
         zjo.put("time", getDate().getTime());
-        zjo.put("dateTime", mDateTime);
-        zjo.put("timeZoneId", mTimeZoneId);
-        return zjo.getObjectNode();
+        if (mDateTime != null) zjo.put("dateTime", mDateTime);
+        if (mTimeZoneId != null) zjo.put("timeZoneId", mTimeZoneId);
+        return zjo;
     }
 
     public String toString() {
