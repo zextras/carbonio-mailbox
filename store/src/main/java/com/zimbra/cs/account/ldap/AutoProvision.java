@@ -96,12 +96,6 @@ public abstract class AutoProvision {
 
         Map<String, Object> zimbraAttrs = mapAttrs(externalAttrs);
 
-        /*
-        // TODO: should we do this?
-        String zimbraPassword = RandomPassword.generate();
-        zimbraAttrs.put(Provisioning.A_zimbraPasswordMustChange, Provisioning.TRUE);
-        */
-
         // if password is provided, use it
         String zimbraPassword = null;
         if (password != null) {
