@@ -13,20 +13,6 @@ license=(
 )
 url="https://github.com/zextras"
 depends=(
-  "carbonio-core"
-  "service-discover"
-  "service-discover-base"
-  "pending-setups"
-)
-
-depends__ubuntu_noble=(
-  "carbonio-configd"
-  "carbonio-core"
-  "service-discover"
-  "service-discover-base"
-  "pending-setups"
-)
-depends__rocky_9=(
   "carbonio-configd"
   "carbonio-core"
   "service-discover"
@@ -131,7 +117,7 @@ _package() {
 
 _package_legacy() {
   # systemd unit
-  install -Dm644 packages/appserver-service/carbonio-appserver-legacy.service \
+  install -Dm644 packages/appserver-service/carbonio-appserver.service \
     "${pkgdir}/usr/lib/systemd/system/carbonio-appserver.service"
   install -Dm644 packages/appserver-service/carbonio-mailbox-sidecar-legacy.service \
     "${pkgdir}/usr/lib/systemd/system/carbonio-mailbox-sidecar.service"
