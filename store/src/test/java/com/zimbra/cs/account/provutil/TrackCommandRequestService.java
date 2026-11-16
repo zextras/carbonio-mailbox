@@ -221,7 +221,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AccountConstants.GET_DISTRIBUTION_LIST_REQUEST
           , AccountConstants.GET_DISTRIBUTION_LIST_MEMBERS_REQUEST
           , AccountConstants.CHECK_RIGHTS_REQUEST
-          , AccountConstants.DISCOVER_RIGHTS_REQUEST
           , AccountConstants.GET_RIGHTS_REQUEST
           , AccountConstants.GRANT_RIGHTS_REQUEST
           , AccountConstants.REVOKE_RIGHTS_REQUEST
@@ -315,10 +314,6 @@ public class TrackCommandRequestService implements DocumentService {
           , MailConstants.CREATE_WAIT_SET_REQUEST
           , MailConstants.WAIT_SET_REQUEST
           , MailConstants.DESTROY_WAIT_SET_REQUEST
-          , MailConstants.GET_PERMISSION_REQUEST
-          , MailConstants.CHECK_PERMISSION_REQUEST
-          , MailConstants.GRANT_PERMISSION_REQUEST
-          , MailConstants.REVOKE_PERMISSION_REQUEST
           , MailConstants.GET_EFFECTIVE_FOLDER_PERMS_REQUEST
           , MailConstants.AUTO_COMPLETE_REQUEST
           , MailConstants.FULL_AUTO_COMPLETE_REQUEST
