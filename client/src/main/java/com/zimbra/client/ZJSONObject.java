@@ -52,16 +52,6 @@ public class ZJSONObject {
         return this;
     }
 
-    public ZJSONObject put(String key, float value) throws JSONException {
-        mJO.put(key, value);
-        return this;
-    }
-
-    public ZJSONObject put(String key, double value) throws JSONException {
-        mJO.put(key, value);
-        return this;
-    }
-
     public ZJSONObject putMap(String key, Map<String,String> attrs) throws JSONException {
         JSONObject ja = new JSONObject();
         mJO.put(key, ja);
@@ -79,17 +69,6 @@ public class ZJSONObject {
         if (items != null) {
             for (ToZJSONObject item : items) {
                 ja.put(item.toZJSONObject().getJSONObject());
-            }
-        }
-        return this;
-    }
-
-    public ZJSONObject put(String key, String[] items) throws JSONException {
-        JSONArray ja = new JSONArray();
-        mJO.put(key, ja);
-        if (items != null) {
-            for (String item : items) {
-                ja.put(item);
             }
         }
         return this;
@@ -122,18 +101,6 @@ public class ZJSONObject {
         }
         return this;
     }
-    /*
-    public ZJSONObject putListObj(String key, List<Object> items) throws JSONException {
-        JSONArray ja = new JSONArray();
-        mJO.put(key, ja);
-        if (items != null) {
-            for (Object item : items) {
-                ja.put(item.toString());
-            }
-        }
-        return this;
-    }
-    */
 
     public String toString() {
         try {
