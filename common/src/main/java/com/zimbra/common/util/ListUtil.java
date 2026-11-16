@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -41,27 +40,6 @@ public class ListUtil {
      */
     public static <T> T getFirstElement(Iterable<T> iterable) {
         return iterable == null ? null : Iterables.getFirst(iterable, null);
-    }
-
-    /**
-     * Given two unsorted lists, return TRUE if they contain exactly the same things
-     * (regardless of order)
-     *
-     * @param <T>
-     * @param lhs
-     * @param rhs
-     * @return
-     */
-    public static <T> boolean listsEqual(List<T> lhs, List<T> rhs) {
-        if (lhs.size() != rhs.size())
-            return false;
-
-      HashSet<T> set = new HashSet<>(lhs);
-        for (T t: rhs) {
-            if (!set.remove(t))
-                return false;
-        }
-        return (set.size() == 0);
     }
 
     /**
@@ -101,7 +79,6 @@ public class ListUtil {
           iter[iterOffset++] = ts.iterator();
         }
       }
-
 
         int numItersActive = src.length;
 

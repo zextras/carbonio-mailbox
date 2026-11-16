@@ -107,17 +107,6 @@ public class ZimbraHttpClientManager {
     }
 
     /**
-     * @return instance of asynchronous HttpClient to be used for connections between Zimbra services
-     */
-    public CloseableHttpClient getInternalHttpClient() {
-        return internalClient;
-    }
-
-    public CloseableHttpClient getExternalHttpClient() {
-        return externalClient;
-    }
-
-    /**
      * orderly shutdown the client
      */
     @PreDestroy

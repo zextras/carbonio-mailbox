@@ -5,7 +5,6 @@
 
 package com.zimbra.common.mime;
 
-import com.google.common.collect.ImmutableSet;
 
 public class MimeConstants {
 
@@ -22,10 +21,7 @@ public class MimeConstants {
     public static final String CT_TEXT_RFC822_HEADERS = "text/rfc822-headers";
     public static final String CT_TEXT_XML_LEGACY = "application/xml";
     public static final String CT_MESSAGE_RFC822 = "message/rfc822";
-    public static final String CT_MESSAGE_DELIVERY_STATUS = "message/delivery-status";
-    public static final String CT_APPLICATION_BINARY = "application/binary";
     public static final String CT_APPLICATION_JSON = "application/json";
-    public static final String CT_APPLICATION_MSWORD = "application/msword";
     public static final String CT_APPLICATION_OCTET_STREAM = "application/octet-stream";
     public static final String CT_APPLICATION_PDF = "application/pdf";
     public static final String CT_APPLICATION_PGP = "application/pgp-encrypted";
@@ -33,7 +29,6 @@ public class MimeConstants {
     public static final String CT_APPLICATION_SMIME = "application/pkcs7-mime";
     public static final String CT_APPLICATION_SMIME_SIGNATURE = "application/pkcs7-signature";
     public static final String CT_APPLICATION_SMIME_OLD = "application/x-pkcs7-mime";
-    public static final String CT_APPLICATION_SMIME_SIGNATURE_OLD = "application/x-pkcs7-signature";
     public static final String CT_APPLICATION_XHTML = "application/xhtml+xml";
     public static final String CT_APPLICATION_ZIMBRA_DOC = "application/x-doc";
     public static final String CT_APPLICATION_ZIMBRA_SLIDES = "application/x-slides";
@@ -51,16 +46,8 @@ public class MimeConstants {
     public static final String CT_MULTIPART_PREFIX = "multipart/";
     public static final String CT_TEXT_PREFIX = "text/";
     public static final String CT_MESSAGE_PREFIX = "message/";
-    public static final String CT_APPLICATION_WILD = "application/.*";
     public static final String CT_IMAGE_WILD = "image/.*";
-    public static final String CT_IMAGE_BMP = "image/bmp";
     public static final String CT_IMAGE_SVG = "image/svg+xml";
-    public static final String CT_IMAGE_PNG = "image/png";
-    public static final String CT_IMAGE_GIF = "image/gif";
-    public static final String CT_IMAGE_JPEG = "image/jpeg";
-    public static final String CT_IMAGE_TIFF = "image/tiff";
-    public static final String CT_AUDIO_WILD = "audio/.*";
-    public static final String CT_VIDEO_WILD = "video/.*";
     public static final String CT_MULTIPART_WILD = "multipart/.*";
     public static final String CT_TEXT_WILD = "text/.*";
     public static final String CT_XML_WILD = "xml/.*";
@@ -76,7 +63,6 @@ public class MimeConstants {
     public static final String ET_BINARY = "binary";
     public static final String ET_QUOTED_PRINTABLE = "quoted-printable";
     public static final String ET_BASE64 = "base64";
-    public static final String ET_DEFAULT = ET_7BIT;
 
     // parameters
     public static final String P_CHARSET = "charset";
@@ -84,7 +70,6 @@ public class MimeConstants {
     public static final String P_CHARSET_UTF8 = "utf-8";
     public static final String P_CHARSET_LATIN1 = "iso-8859-1";
     public static final String P_CHARSET_WINDOWS_1252 = "windows-1252";
-    public static final String P_CHARSET_EUC_CN = "euc_cn";
     public static final String P_CHARSET_GB2312 = "gb2312";
     public static final String P_CHARSET_GBK = "gbk";
     public static final String P_CHARSET_WINDOWS_31J = "Windows-31J";
@@ -100,11 +85,4 @@ public class MimeConstants {
     public static final String ERR_DECRYPTION_FAILED = "DECRYPTION_FAILED";
     public static final String ERR_FEATURE_SMIME_DISABLED = "FEATURE_SMIME_DISABLED";
 
-    public static final ImmutableSet<String> ZIMBRA_DOC_CT_SET = ImmutableSet.of(
-            CT_APPLICATION_ZIMBRA_DOC, CT_APPLICATION_ZIMBRA_SLIDES, CT_APPLICATION_ZIMBRA_SPREADSHEET
-    );
-
-    public static boolean isZimbraDocument(String contentType) {
-        return ZIMBRA_DOC_CT_SET.contains(contentType);
-    }
 }

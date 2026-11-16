@@ -18,12 +18,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.FileChannel;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -297,22 +294,6 @@ public class FileUtil {
         }
     }
 
-    /**
-     * Returns a <tt>List</tt> that contains the given directory
-     * and all of its subdirectories.  Directories are returned in depth-first
-     * order.
-     *
-     * @return the list of files, or an empty <tt>List</tt> if <tt>dir</tt>
-     * is empty, does not exist, or is not a directory.
-     */
-    public static List<File> listDirsRecursively(File dir) {
-        List<File> dirs = new ArrayList<>();
-        if (dir.exists()) {
-            addDirsRecursively(dir, dirs);
-        }
-        return dirs;
-    }
-
     private static void addDirsRecursively(File dir, List<File> dirs) {
         File[] myFiles = dir.listFiles();
         if (myFiles != null) {
@@ -333,11 +314,6 @@ public class FileUtil {
     public static void ensureDirExists(String directory) throws IOException {
         File d = new File(directory);
         ensureDirExists(d);
-    }
-
-    public static String getTodayDir() {
-        DateFormat fmt = new SimpleDateFormat("yyyy.MM.dd");
-        return fmt.format(new Date());
     }
 
     private static class MTimeComparator implements Comparator<File> {
@@ -505,18 +481,6 @@ public class FileUtil {
         }
         return filename.substring(lastDot + 1);
     }
-    
-    /**
-     * Returns the total size of all files within a folder hierarchy.
-     */
-    public static long getTotalFileSizesRecursively(File dir) throws IOException {
-        List<File> files = listFilesRecursively(dir);
-        long bytes = 0;
-        for (File file: files) {
-            bytes += file.length();
-        }
-        return bytes;
-    }
 
     public static void rename(File src, File dst) throws IOException {
         if (src.renameTo(dst))
@@ -540,16 +504,4 @@ public class FileUtil {
         throw new IOException("file renaming failed: src=\"" + src.getPath() + "\" dst=\"" + dst.getPath() + "\"");
     }
 
-    /**
-     * Returns true if the IOException's message is a string that indicates out-of-disk error.
-     * The localconfig-configurable error strings are "No space left on device" (Linux, Mac) and
-     * "There is not enough space on the disk" (Windows).
-     * @param ioe
-     * @return
-     */
-    public static boolean isOutOfDiskError(IOException ioe) {
-        String msg = ioe.getMessage();
-        return msg != null &&
-               (msg.equalsIgnoreCase(LC.out_of_disk_error_unix.value()) || msg.equalsIgnoreCase(LC.out_of_disk_error_windows.value()));
-    }
 }

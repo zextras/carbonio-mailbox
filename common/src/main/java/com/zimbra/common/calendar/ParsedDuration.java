@@ -255,16 +255,8 @@ public final class ParsedDuration
         return addToDate(date, false);
     }
 
-    public Date subtractFromDate(Date date) {
-        return addToDate(date, true);
-    }
-
     public long addToTime(long utcTime) {
         return addToDate(new Date(utcTime), false).getTime();
-    }
-
-    public long subtractFromTime(long utcTime) {
-        return addToDate(new Date(utcTime), true).getTime();
     }
 
     public static ParsedDuration parse(String durationStr) throws ServiceException {

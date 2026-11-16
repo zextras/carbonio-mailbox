@@ -119,12 +119,8 @@ public class AccountConstants {
   public static final String E_GET_SMIME_PUBLIC_CERTS_REQUEST = "GetSMIMEPublicCertsRequest";
   public static final String E_GET_SMIME_PUBLIC_CERTS_RESPONSE = "GetSMIMEPublicCertsResponse";
 
-  public static final String E_GET_GCM_SENDER_ID_REQUEST = "GetGcmSenderIdRequest";
-  public static final String E_GET_GCM_SENDER_ID_RESPONSE = "GetGcmSenderIdResponse";
-
   // AddressList
   public static final String A_DESCRIPTION = "description";
-  public static final String E_ADDRESS_LIST_MEMBER = "member";
   public static final String A_COUNT_ONLY = "countOnly";
 
   // auth
@@ -280,7 +276,6 @@ public class AccountConstants {
   public static final QName GET_HAB_REQUEST = QName.get(E_GET_HAB_REQUEST, NAMESPACE);
   public static final QName GET_HAB_RESPONSE = QName.get(E_GET_HAB_RESPONSE, NAMESPACE);
 
-
   // users enabled to a particular feature
   public static final String E_SEARCH_USERS_BY_FEATURE_REQUEST = "SearchUsersByFeatureRequest";
   public static final QName SEARCH_USERS_BY_FEATURE_REQUEST =
@@ -300,15 +295,11 @@ public class AccountConstants {
   public static final String E_TRUST_LIFETIME = "trustLifetime";
   public static final String E_ACCOUNT = "account";
   public static final String E_CALENDAR_RESOURCE = "calresource";
-  public static final String E_CERT = "cert";
-  public static final String E_CERTS = "certs";
   public static final String E_DL = "dl";
   public static final String E_DL_OWNER = "owner";
   public static final String E_DL_OWNERS = "owners";
   public static final String E_DLM = "dlm";
   public static final String E_EMAIL = "email";
-  public static final String E_EMAIL2 = "email2";
-  public static final String E_EMAIL3 = "email3";
   public static final String E_FEATURE = "feature";
   public static final String E_VERSION = "version";
   public static final String E_NAME = "name";
@@ -346,8 +337,6 @@ public class AccountConstants {
   public static final String E_ENTRY_SEARCH_FILTER_SINGLECOND = "cond";
   public static final String E_LOCALE = "locale";
   public static final String E_VIRTUAL_HOST = "virtualHost";
-  public static final String E_HAB_ROOTS = "habRoots";
-  public static final String E_HAB = "hab";
   public static final String E_IDENTITIES = "identities";
   public static final String E_SIGNATURES = "signatures";
   public static final String E_IDENTITY = "identity";
@@ -365,10 +354,8 @@ public class AccountConstants {
   public static final String E_BLACK_LIST = "blackList";
   public static final String E_GRANTEE = "grantee";
   public static final String E_OWNER = "owner";
-  public static final String E_SENDER = "sender";
   public static final String E_SHARE = "share";
   public static final String E_CONTACT_ID = "cid";
-  public static final String E_STORE = "store";
   public static final String E_BOSH_URL = "boshURL";
   public static final String E_SUBSCRIPTION = "sub";
   public static final String E_IS_TRACKING_IMAP = "isTrackingIMAP";
@@ -379,8 +366,6 @@ public class AccountConstants {
   public static final String A_ACTIVE = "active";
   public static final String A_ATTRS = "attrs";
   public static final String A_ADDR = "addr";
-  public static final String A_BCC_OWNERS = "bccOwners";
-  public static final String A_DIRECT_ONLY = "directOnly";
   public static final String A_DYNAMIC = "dynamic";
   public static final String A_HOSTNAME = "hostname";
   public static final String A_KEY = "key";
@@ -388,7 +373,6 @@ public class AccountConstants {
   public static final String A_NAME = "name";
   public static final String A_ID = "id";
   public static final String A_ID_ONLY = "idOnly";
-  public static final String A_IS_DL = "isDL";
   public static final String A_IS_EXTERNAL = "isExternal";
   public static final String A_IS_MEMBER = "isMember";
   public static final String A_IS_OWNER = "isOwner";
@@ -417,14 +401,10 @@ public class AccountConstants {
   public static final String A_STATUS = "status";
   public static final String A_SORT_BY = "sortBy";
   public static final String A_SORT_ASCENDING = "sortAscending";
-  public static final String A_UTF8 = "utf8";
   public static final String A_VISIBLE = "visible";
   public static final String A_PERM_DENIED = "pd";
   public static final String A_EMAIL = "email";
   public static final String A_FIELD = "field";
-  public static final String A_STORE = "store";
-  public static final String A_SMIME_STORE_LOOKUP_OPT = "storeLookupOpt";
-  public static final String A_SMIME_SOURCE_LOOKUP_OPT = "sourceLookupOpt";
   public static final String A_VIA = "via";
   public static final String A_VERIFY_ACCOUNT = "verifyAccount";
   public static final String A_CSRF_SUPPORT = "csrfTokenSecured";
@@ -480,7 +460,6 @@ public class AccountConstants {
   public static final String A_RIGHTS = "rights";
   public static final String A_MOUNTPOINT_ID = "mid";
   // contact search
-  public static final String A_DEPARTMENT = "department";
 
   // calendar resource search
   public static final String A_ENTRY_SEARCH_FILTER_OR = "or";
@@ -520,33 +499,10 @@ public class AccountConstants {
   public static final QName RESET_PASSWORD_REQUEST = QName.get(E_RESET_PASSWORD_REQUEST, NAMESPACE);
 
   // Hab
-  public static final String A_HAB_ROOT_GROUP_ID = "habRootGroupId";
-  public static final String E_HAB_GROUP = "habGroup";
-  public static final String E_HAB_GROUPS = "habGroups";
-  public static final String A_ROOT_HAB_GROUP = "rootHabGroup";
-  public static final String A_PARENT_HAB_GROUP_ID = "parentHabGroupId";
-  public static final String A_HAB_GROUPS = "habGroups";
-  public static final String A_HAB_SENIORITY_INDEX = "seniorityIndex";
-  public static final String E_HAB_GROUP_MEMBERS = "groupMembers";
-  public static final String E_HAB_GROUP_MEMBER = "groupMember";
 
   // Session activity feature
   public static final String A_SESSION_ID = "sessionId";
 
   // Client Info
-  public static final String E_SKIN_LOGO_APP_BANNER = "zimbraSkinLogoAppBanner";
-  public static final String E_SKIN_LOGO_LOGIN_BANNER = "zimbraSkinLogoLoginBanner";
-  public static final String E_SKIN_LOGO_URL = "zimbraSkinLogoURL";
-  public static final String E_WEB_CLIENT_LOGIN_URL = "zimbraWebClientLoginURL";
-  public static final String E_WEB_CLIENT_LOGOUT_URL = "zimbraWebClientLogoutURL";
-  public static final String E_WEB_CLIENT_STAY_SIGNED_IN_DISABLED =
-      "zimbraFeatureStaySignedInDisabled";
-  public static final String E_WEB_CLIENT_FEATURE_PASSWORD_RESET =
-      "zimbraFeatureResetPasswordStatus";
-  public static final String E_SKIN_BACKGROUND_COLOR = "zimbraSkinBackgroundColor";
-  public static final String E_SKIN_FOREGROUND_COLOR = "zimbraSkinForegroundColor";
-  public static final String E_SKIN_SECONDARY_COLOR = "zimbraSkinSecondaryColor";
-  public static final String E_SKIN_SELECTION_COLOR = "zimbraSkinSelectionColor";
-  public static final String E_SKIN_FAVICON = "zimbraSkinFavicon";
   public static final String E_HOSTNAME = "hostname";
 }

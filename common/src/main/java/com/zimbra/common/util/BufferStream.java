@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.SequenceInputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 import com.zimbra.common.localconfig.LC;
@@ -128,17 +127,7 @@ public class BufferStream extends OutputStream {
             FileInputStream(file));
     }
     
-    public int getMaxMem() { return maxMem; }
-    
     public long getMaxSize() { return maxSize; }
-    
-    public byte[] getRawBuffer() {
-        try {
-            sync();
-        } catch (IOException e) {
-        }
-        return buf;
-    }
 
     public long getSize() {
         try {
@@ -150,13 +139,7 @@ public class BufferStream extends OutputStream {
     
     public boolean isPartial() { return size > maxMem && file == null; }
 
-    public boolean isSequenced() { return sequenced; }
-
     public boolean isSpooled() { return file != null; }
-
-    public static BufferStream newFixedBufferStream(int len) {
-        return new BufferStream(len, len, len);
-    }
 
     public long readFrom(InputStream is) throws IOException {
         return readFrom(is, Long.MAX_VALUE);
@@ -304,20 +287,6 @@ public class BufferStream extends OutputStream {
                 }
             }
             return newBuf;
-        }
-    }
-    
-    public ByteBuffer toByteBuffer() {
-        try {
-            sync();
-        } catch (IOException e) {
-        }
-        if (size == 0) {
-            return ByteBuffer.allocate(0);
-        } else if (size <= maxMem) {
-            return ByteBuffer.wrap(buf, 0, (int)size);
-        } else {
-            return ByteBuffer.wrap(toByteArray());
         }
     }
     

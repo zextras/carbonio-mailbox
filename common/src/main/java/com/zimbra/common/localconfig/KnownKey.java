@@ -110,14 +110,6 @@ public final class KnownKey {
         return kk.value;
     }
 
-    public static boolean needForceToEdit(String key) {
-        KnownKey kk = ALL.get(key);
-        if (kk == null) {
-            return false;
-        }
-        return kk.forceToEdit;
-    }
-
     private String key;
     private String defaultValue;
     private String value; //cached value after expansion
@@ -208,8 +200,6 @@ public final class KnownKey {
         this(key, null);
     }
 
-
-
     public KnownKey(String key, String defaultValue) {
         this.key = key;
         if (ALL.containsKey(key)) {
@@ -233,11 +223,6 @@ public final class KnownKey {
         return setDefault(String.valueOf(defaultValue));
     }
 
-    public KnownKey setForceToEdit(boolean value) {
-        forceToEdit = value;
-        return this;
-    }
-
     @VisibleForTesting
     void setValue(String value) {
         this.value = value;
@@ -247,8 +232,6 @@ public final class KnownKey {
         forceToEdit = true;
         return this;
     }
-
-
 
     private void expand(LocalConfig lc) throws ConfigException {
         try {

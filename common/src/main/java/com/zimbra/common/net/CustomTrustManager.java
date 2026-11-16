@@ -7,18 +7,14 @@ package com.zimbra.common.net;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
@@ -36,7 +32,6 @@ public class CustomTrustManager implements X509TrustManager {
     private final X509TrustManager defaultTrustManager;
     private X509TrustManager keyStoreTrustManager;
     private final KeyStore keyStore;
-    private final Map<String, X509Certificate> pendingCerts = new HashMap<>();
 
     protected CustomTrustManager(X509TrustManager defaultTrustManager) throws GeneralSecurityException {
         try {
@@ -87,8 +82,6 @@ public class CustomTrustManager implements X509TrustManager {
     public String handleCertificateCheckFailure(String hostname, X509Certificate cert, boolean isMismatch) {
         hostname = hostname.toLowerCase();
         String alias = hostname + ":" + cert.getSerialNumber().toString(16).toUpperCase();
-        if (LC.ssl_allow_accept_untrusted_certs.booleanValue())
-            cachePendingCertificate(alias, cert);
         String certInfo = "";
         try {
             certInfo = new SSLCertInfo(alias, hostname, cert, LC.ssl_allow_accept_untrusted_certs.booleanValue(), isMismatch).serialize();
@@ -101,29 +94,6 @@ public class CustomTrustManager implements X509TrustManager {
             return getKeyStoreTrustManager().getAcceptedIssuers();
         } catch (GeneralSecurityException x) {
             return new X509Certificate[0];
-        }
-    }
-
-    private synchronized void cachePendingCertificate(String alias, X509Certificate cert) {
-        pendingCerts.put(alias, cert);
-    }
-
-    public synchronized void acceptCertificates(String alias) throws GeneralSecurityException {
-        if (!NetConfig.getInstance().isAllowAcceptUntrustedCerts())
-            throw new SecurityException("accepting untrusted certificates not allowed: " + alias);
-
-        X509Certificate cert = pendingCerts.get(alias);
-        if (cert != null) {
-            try {
-                keyStore.setCertificateEntry(alias, cert);
-                saveKeyStore();
-                resetKeyStoreTrustManager();
-                pendingCerts.remove(alias);
-            } catch (KeyStoreException x) {
-                ZimbraLog.security.warn("failed to accept certificates of %s", alias);
-            }
-        } else {
-            ZimbraLog.security.warn("Alias %s not found in cache; no certificates accepted.", alias);
         }
     }
 
@@ -230,26 +200,5 @@ public class CustomTrustManager implements X509TrustManager {
         }
 
         return keyStore;
-    }
-
-    private synchronized void saveKeyStore() throws GeneralSecurityException {
-        OutputStream kout = null;
-        try {
-            kout = new FileOutputStream(LC.mailboxd_keystore.value());
-            try {
-                keyStore.store(kout, LC.mailboxd_keystore_password.value().toCharArray());
-            } catch (IOException x) {
-                throw new KeyStoreException(x);
-            }
-        } catch (FileNotFoundException x) {
-            throw new KeyStoreException(x);
-        } finally {
-            if (kout != null)
-                try {
-                    kout.close();
-                } catch (IOException x) {
-                    throw new KeyStoreException(x);
-                }
-        }
     }
 }

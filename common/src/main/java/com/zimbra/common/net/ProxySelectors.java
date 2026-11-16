@@ -11,7 +11,6 @@ import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.SocketAddress;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -56,24 +55,6 @@ public final class ProxySelectors {
      */
     public static ProxySelector systemProxySelector() {
         return systemProxySelector;
-    }
-
-    /**
-     * Returns a "dummy" ProxySelector whose select method always returns
-     * a DIRECT connection. Used for testing.
-     *
-     * @return the dummy ProxySelector
-     */
-    public static ProxySelector dummyProxySelector() {
-        return new ProxySelector() {
-            public List<Proxy> select(URI uri) {
-                return Arrays.asList(Proxy.NO_PROXY);
-            }
-
-            public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
-                // Do nothing...
-            }
-        };
     }
 
     /*
@@ -122,10 +103,6 @@ public final class ProxySelectors {
         default:
             return true;
         }
-    }
-
-    private static SocketAddress saddr(String host, int port) {
-        return new InetSocketAddress(host, port);
     }
 
     public static void main(String[] args) throws Exception {

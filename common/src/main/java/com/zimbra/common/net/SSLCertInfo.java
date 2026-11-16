@@ -172,18 +172,7 @@ public class SSLCertInfo {
     }
 
     public String getCommonName() {return commonName;}
-    public String getOrganizationUnit() {return organizationUnit;}
-    public String getOrganization() {return organization;}
     public String getSerialNumber() {return serialNumber;}
-
-    public String getIssuerCommonName() {return issuerCommonName;}
-    public String getIssuerOrganizationUnit() {return issuerOrganizationUnit;}
-    public String getIssuerOrganization() {return issuerOrganization;}
-
-    public Date getIssuedOn() {return issuedOn;}
-    public Date getExpiresOn() {return expiresOn;}
-
-    public String getSha1() {return sha1;}
     public String getMd5() {return md5;}
 
     public static void main(String[] args) {

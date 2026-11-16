@@ -19,13 +19,5 @@ public class SoapParseException extends java.io.IOException {
         super(message + ": " + soapMessage);
         mSoapMessage = soapMessage;
     }
-
-    public String getSoapMessage()
-    {
-        return mSoapMessage;
-    }
 }
-
-
-
 

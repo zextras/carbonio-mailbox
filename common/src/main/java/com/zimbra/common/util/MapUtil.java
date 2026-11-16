@@ -6,10 +6,8 @@
 package com.zimbra.common.util;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.common.base.Function;
 import com.google.common.cache.CacheBuilder;
@@ -38,19 +36,7 @@ public class MapUtil {
             .build(CacheLoader.from(listCreator));
         return cache;
     }
-    
-    /**
-     * Returns a new {@code LoadingCache} that maps a key to a {@code Set} of values.
-     * When {@code get()} is called on a key that does not exist in the map,
-     * the map implicitly creates a new key that maps to an empty {@code Set}. 
-     */
-    public static <K, V> LoadingCache<K, Set<V>> newValueSetMap() {
-        Function<K, Set<V>> setCreator = from -> new HashSet<>();
-        LoadingCache<K, Set<V>> cache = CacheBuilder.newBuilder()
-            .build(CacheLoader.from(setCreator));
-        return cache;
-    }
-    
+
     /**
      * Converts a Guava {@code Multimap} to a {@code Map} that maps a key to a
      * {@code List} of values.

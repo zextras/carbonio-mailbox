@@ -8,7 +8,6 @@ package com.zimbra.common.util;
 import com.google.common.base.Strings;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -400,10 +399,6 @@ public final class ZimbraLog {
   // this is called from offline and only at LC init, so we are taking chances with race
   private static final Set<String> CONTEXT_FILTER = new HashSet<>();
 
-  public static void addContextFilters(String filters) {
-    CONTEXT_FILTER.addAll(Arrays.asList(filters.split(",")));
-  }
-
   /**
    * Adds a key/value pair to the current thread's logging context. If <tt>key</tt> is null, does
    * nothing. If <tt>value</tt> is null, removes the context entry.
@@ -469,21 +464,11 @@ public final class ZimbraLog {
     sContextString.set(sb.toString());
   }
 
-  /** Adds a <tt>MailItem</tt> id to the current thread's logging context. */
-  public static void addItemToContext(int itemId) {
-    addToContext(C_ITEM, Integer.toString(itemId));
-  }
-
   /** Removes a key/value pair from the current thread's logging context. */
   public static void removeFromContext(String key) {
     if (key != null) {
       addToContext(key, null);
     }
-  }
-
-  /** Removes a <tt>MailItem</tt> id from the current thread's logging context. */
-  public static void removeItemFromContext(int itemId) {
-    removeFromContext(C_ITEM);
   }
 
   /** Adds account name to the current thread's logging context. */
@@ -521,24 +506,9 @@ public final class ZimbraLog {
     addToContext(C_MID, Integer.toString(mboxId));
   }
 
-  /** Removes mailbox id from the current thread's logging context. */
-  public static void removeMboxFromContext() {
-    removeFromContext(C_MID);
-  }
-
-  /** Adds message id to the current thread's logging context. */
-  public static void addMsgIdToContext(String messageId) {
-    addToContext(C_MSG_ID, messageId);
-  }
-
   /** Adds data source name to the current thread's logging context. */
   public static void addDataSourceNameToContext(String dataSourceName) {
     addToContext(C_DATA_SOURCE_NAME, dataSourceName);
-  }
-
-  /** Removes data source name from the current thread's logging context. */
-  public static void removeDataSourceNameFromContext() {
-    removeFromContext(C_DATA_SOURCE_NAME);
   }
 
   /** Adds port to the current thread's logging context. */
@@ -613,10 +583,6 @@ public final class ZimbraLog {
     sb.append(new SimpleDateFormat("HH:mm:ss.SSS").format(new Date(end)));
     sb.append(')');
     return sb.toString();
-  }
-
-  public static void toolSetupInfo() {
-    toolSetupLog4j("INFO", null, false);
   }
 
   /**

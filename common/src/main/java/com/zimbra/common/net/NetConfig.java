@@ -14,7 +14,6 @@ public final class NetConfig {
     private boolean socksEnabled;
     private boolean allowUntrustedCerts;
     private boolean allowMismatchedCerts;
-    private boolean allowAcceptUntrustedCerts;
 
     private static NetConfig INSTANCE = new NetConfig();
 
@@ -26,7 +25,6 @@ public final class NetConfig {
         socksEnabled = LC.socks_enabled.booleanValue();
         allowUntrustedCerts = LC.ssl_allow_untrusted_certs.booleanValue();
         allowMismatchedCerts = LC.ssl_allow_mismatched_certs.booleanValue();
-        allowAcceptUntrustedCerts = LC.ssl_allow_accept_untrusted_certs.booleanValue();
     }
 
     public boolean isSocksEnabled() {
@@ -42,26 +40,7 @@ public final class NetConfig {
         return allowUntrustedCerts;
     }
 
-    public NetConfig setAllowUntrustedCerts(boolean allowUntrustedCerts) {
-        this.allowUntrustedCerts = allowUntrustedCerts;
-        return this;
-    }
-
     public boolean isAllowMismatchedCerts() {
         return allowMismatchedCerts;
-    }
-
-    public NetConfig setAllowMismatchedCerts(boolean allowMismatchedCerts) {
-        this.allowMismatchedCerts = allowMismatchedCerts;
-        return this;
-    }
-
-    public boolean isAllowAcceptUntrustedCerts() {
-        return allowAcceptUntrustedCerts;
-    }
-
-    public NetConfig setAllowAcceptUntrustedCerts(boolean allowAcceptUntrustedCerts) {
-        this.allowAcceptUntrustedCerts = allowAcceptUntrustedCerts;
-        return this;
     }
 }

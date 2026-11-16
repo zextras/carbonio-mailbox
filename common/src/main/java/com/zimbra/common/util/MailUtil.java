@@ -5,65 +5,16 @@
 
 package com.zimbra.common.util;
 
-import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
 
 import javax.mail.Address;
-import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.URLName;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import com.sun.mail.smtp.SMTPTransport;
-import com.zimbra.common.mime.shim.JavaMailInternetAddress;
-import com.zimbra.common.service.ServiceException.Argument;
 
 public class MailUtil {
-    public static void populateFailureDeliveryMessageFields(MimeMessage failedDeliverymm, String subject, String to, List<Argument> addressArgs, InternetAddress iAddr) throws MessagingException, UnsupportedEncodingException {		
-        failedDeliverymm.setSubject("Send Partial Failure Notice");
-        failedDeliverymm.setSentDate(new Date());
-        failedDeliverymm.setFrom(iAddr);
-        failedDeliverymm.setRecipient(RecipientType.TO, new JavaMailInternetAddress(to));
-
-        StringBuilder text = new StringBuilder();
-        String sentDate = new SimpleDateFormat("MMMMM d, yyyy").format(new Date());
-        String sentTime = new SimpleDateFormat("h:mm a").format(new Date());
-
-        text.append("Your message \"").append(subject).append("\" sent on ").append(sentDate)
-            .append(" at ").append(sentTime).append(" ")
-            .append(TimeZone.getDefault().getDisplayName()).append(" ")
-            .append("could not be delivered to one or more recipients.\n\n")
-            .append("For further assistance, please send mail to postmaster.\n\n");
-
-        List<String> invalidAddrs = new ArrayList<>();
-        List<String> unsentAddrs = new ArrayList<>();
-
-        if (addressArgs != null) {
-            for (Argument arg : addressArgs) {
-                if (arg.name != null && arg.value != null && arg.value.length() > 0) {
-                    if (arg.name.equals("invalid"))
-                        invalidAddrs.add(arg.value);
-                    else if (arg.name.equals("unsent"))
-                        unsentAddrs.add(arg.value);
-                }
-            }
-        }
-
-        for (String addr : invalidAddrs)
-            text.append(addr).append(":").append("Invalid Address\n");
-
-        for (String addr : unsentAddrs)
-            text.append(addr).append(":").append("Unsent Address\n");
-
-        failedDeliverymm.setText(text.toString());
-        failedDeliverymm.saveChanges();
-    }
     
     /* 
      * This is a wrapper around SMTPTransport meant for validating the recipient addresses.

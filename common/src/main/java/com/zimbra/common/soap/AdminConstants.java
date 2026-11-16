@@ -27,7 +27,6 @@ public final class AdminConstants {
   public static final String E_GET_ALL_LOCALES_REQUEST = "GetAllLocalesRequest";
   public static final String E_GET_ALL_LOCALES_RESPONSE = "GetAllLocalesResponse";
 
-
   public static final String E_AUTH_REQUEST = "AuthRequest";
   public static final String E_AUTH_RESPONSE = "AuthResponse";
   public static final String E_CREATE_ACCOUNT_REQUEST = "CreateAccountRequest";
@@ -132,7 +131,6 @@ public final class AdminConstants {
   public static final String E_LOCKOUT_MAILBOX_REQUEST = "LockoutMailboxRequest";
   public static final String E_LOCKOUT_MAILBOX_RESPONSE = "LockoutMailboxResponse";
 
-
   public static final String E_CHECK_HOSTNAME_RESOLVE_REQUEST = "CheckHostnameResolveRequest";
   public static final String E_CHECK_HOSTNAME_RESOLVE_RESPONSE = "CheckHostnameResolveResponse";
   public static final String E_CHECK_AUTH_CONFIG_REQUEST = "CheckAuthConfigRequest";
@@ -235,7 +233,6 @@ public final class AdminConstants {
   public static final String E_SEARCH_CALENDAR_RESOURCES_REQUEST = "SearchCalendarResourcesRequest";
   public static final String E_SEARCH_CALENDAR_RESOURCES_RESPONSE =
       "SearchCalendarResourcesResponse";
-
 
   public static final String E_DUMP_SESSIONS_REQUEST = "DumpSessionsRequest";
   public static final String E_DUMP_SESSIONS_RESPONSE = "DumpSessionsResponse";
@@ -471,7 +468,6 @@ public final class AdminConstants {
   public static final QName GET_ALL_LOCALES_RESPONSE =
       QName.get(E_GET_ALL_LOCALES_RESPONSE, NAMESPACE);
 
-
   public static final QName AUTH_REQUEST = QName.get(E_AUTH_REQUEST, NAMESPACE);
   public static final QName AUTH_RESPONSE = QName.get(E_AUTH_RESPONSE, NAMESPACE);
   public static final QName CREATE_ACCOUNT_REQUEST = QName.get(E_CREATE_ACCOUNT_REQUEST, NAMESPACE);
@@ -620,7 +616,6 @@ public final class AdminConstants {
       QName.get(E_LOCKOUT_MAILBOX_REQUEST, NAMESPACE);
   public static final QName LOCKOUT_MAILBOX_RESPONSE =
       QName.get(E_LOCKOUT_MAILBOX_RESPONSE, NAMESPACE);
-
 
   public static final QName CHECK_HOSTNAME_RESOLVE_REQUEST =
       QName.get(E_CHECK_HOSTNAME_RESOLVE_REQUEST, NAMESPACE);
@@ -771,7 +766,6 @@ public final class AdminConstants {
       QName.get(E_SEARCH_CALENDAR_RESOURCES_REQUEST, NAMESPACE);
   public static final QName SEARCH_CALENDAR_RESOURCES_RESPONSE =
       QName.get(E_SEARCH_CALENDAR_RESOURCES_RESPONSE, NAMESPACE);
-
 
   public static final QName DUMP_SESSIONS_REQUEST = QName.get(E_DUMP_SESSIONS_REQUEST, NAMESPACE);
   public static final QName DUMP_SESSIONS_RESPONSE = QName.get(E_DUMP_SESSIONS_RESPONSE, NAMESPACE);
@@ -1134,7 +1128,6 @@ public final class AdminConstants {
   public static final String E_BINDDN = "bindDn";
   public static final String E_CACHE = "cache";
   public static final String E_CODE = "code";
-  public static final String E_CONFIG = "config";
   public static final String E_COOKIE = "cookie";
   public static final String E_COS = "cos";
   public static final String E_CN = "cn";
@@ -1146,7 +1139,6 @@ public final class AdminConstants {
   public static final String E_HOSTNAME = "hostname";
   public static final String E_LIFETIME = "lifetime";
   public static final String E_MESSAGE = "message";
-  public static final String E_USERNAME = "username";
   public static final String E_PASSWORD = "password";
   public static final String E_NEW_PASSWORD = "newPassword";
   public static final String E_QUERY = "query";
@@ -1156,21 +1148,11 @@ public final class AdminConstants {
   public static final String E_STATUS = "status";
   public static final String E_END_TIME = "endTime";
   public static final String E_START_TIME = "startTime";
-  public static final String E_STAT_NAME = "statName";
-  public static final String E_PERIOD = "period";
   public static final String E_A = "a";
-  public static final String E_S = "s";
   public static final String E_ALIAS = "alias";
   public static final String E_ID = "id";
-  public static final String E_PAGE_NUMBER = "pagenum";
-  public static final String E_ORDER_BY = "orderby";
-  public static final String E_IS_ASCENDING = "isascending";
-  public static final String E_RESULTS_PERPAGE = "pageresultsnum";
-  public static final String E_ATTRS_TO_GET = "attrstoget";
-  public static final String E_MAX_SEARCH_RESULTS = "maxsearchresults";
   public static final String E_MAILBOX = "mbox";
   public static final String E_NI = "ni";
-  public static final String E_NUM_OF_PAGES = "numpages";
   public static final String E_VOLUME = "volume";
   public static final String E_PROGRESS = "progress";
   public static final String E_SOAP_URL = "soapURL";
@@ -1190,9 +1172,6 @@ public final class AdminConstants {
   public static final String E_TOKEN = "token";
 
   public static final String A_ACCOUNT = "account";
-  public static final String A_CALENDAR_RESOURCE = "calresource";
-  public static final String A_COS = "cos";
-  public static final String A_DISTRIBUTION_LIST = "distributionlist";
   public static final String A_DOMAIN = "domain";
   public static final String A_SERVER = "server";
 
@@ -1222,14 +1201,11 @@ public final class AdminConstants {
   public static final String A_TOTAL = "total";
   public static final String A_TOKEN = "token";
   public static final String A_VIA = "via";
-  public static final String A_EXCLUDE = "exclude";
   public static final String A_REFRESH = "refresh";
   public static final String A_CARBONIO_SERVICES_ONLY = "carbonioServicesOnly";
   public static final String A_TARGETNAME = "targetName";
   public static final String A_FOLDER = "l"; // to be consistent with MailConstants.A_FOLDER
-  public static final String A_FOLDER_IDS = "folderIds";
   public static final String A_PATH = "path";
-  public static final String A_PATH_OR_ID = "pathOrId";
   public static final String A_CREATE = "create";
   public static final String A_EXISTS = "exists";
   public static final String A_IS_DEFAULT_COS = "isDefaultCos";
@@ -1268,11 +1244,9 @@ public final class AdminConstants {
   public static final String A_STATUS = "status";
   public static final String A_TIME = "time";
   public static final String A_TYPES = "types";
-  public static final String A_NUM_TABLES = "numTables";
 
   public static final String A_NUM_SUCCEEDED = "numSucceeded";
   public static final String A_NUM_FAILED = "numFailed";
-  public static final String A_NUM_SKIPPED = "numSkipped";
   public static final String A_NUM_REMAINING = "numRemaining";
   public static final String A_DURATION = "duration";
 
@@ -1296,7 +1270,6 @@ public final class AdminConstants {
   public static final String E_INCORRECT_SIZE = "incorrectSize";
   public static final String E_INCORRECT_REVISION = "incorrectRevision";
   public static final String E_USED_BLOBS = "usedBlobs";
-  public static final String A_FILE_DATA_SIZE = "fileDataSize";
   public static final String A_FILE_SIZE = "fileSize";
   public static final String A_CHECK_SIZE = "checkSize";
   public static final String A_REPORT_USED_BLOBS = "reportUsedBlobs";
@@ -1315,35 +1288,18 @@ public final class AdminConstants {
   public static final String A_VERSION_INFO_DATE = "buildDate";
   public static final String A_VERSION_INFO_HOST = "host";
   public static final String A_VERSION_INFO_TYPE = "type";
-  public static final String A_VERSION_INFO_RELCLASS = "relclass";
-  public static final String A_VERSION_INFO_RELNUM = "relnum";
-  public static final String A_VERSION_INFO_BUILDNUM = "buildnum";
 
   public static final String E_ZIMLET = "zimlet";
   public static final String E_ACL = "acl";
-  public static final String E_PRIORITY = "priority";
-  public static final String A_EXTENSION = "extension";
-  public static final String A_MAIL = "mail";
   public static final String A_VALUE = "value";
-  public static final String A_PRIORITY = "priority";
-  public static final String A_ACL = "acl";
-  public static final String A_NONE = "none";
 
   public static final String A_QUOTA_USED = "used";
   public static final String A_QUOTA_LIMIT = "limit";
 
-  public static final String E_TEMPLATE = "template";
   public static final String E_TEST = "test";
-  public static final String A_DEST = "dest";
-
-  public static final String A_CONCURRENCY = "concurrency";
-
-  public static final String A_DEPLOYALL = "deployall";
-  public static final String A_DEPLOYLOCAL = "deploylocal";
 
   public static final String A_TZFIXUP_AFTER = "after";
   public static final String A_TZFIXUP_SYNC = "sync";
-  public static final String A_FLUSH = "flush";
 
   // Account loggers
   public static final String E_LOGGER = "logger";
@@ -1429,7 +1385,6 @@ public final class AdminConstants {
 
   public static final String A_FULLSYNC = "fullSync";
   public static final String A_RESET = "reset";
-  public static final String A_HAS_KEYWORD = "hasKeyword";
 
   // memcached client
   public static final String A_MEMCACHED_CLIENT_CONFIG_SERVER_LIST = "serverList";
@@ -1449,13 +1404,6 @@ public final class AdminConstants {
 
   // flush cache
   public static final String A_ALLSERVERS = "allServers";
-
-  public static final String A_SYNCHRONOUS = "synchronous";
-
-
-
-  public static final String OP_MODIFY = "modify";
-  public static final String OP_REMOVE = "remove";
 
   public static final String A_OPERATION = "op";
   // XmlFixupRules (FixCalenderTZ)
@@ -1482,12 +1430,7 @@ public final class AdminConstants {
   // ZimbraLicenseExtenstion LicenseService and LicenseAdminService
   public static final String E_CONTENT = "content";
   public static final String A_ATTACHMENT_ID = "aid";
-  public static final String E_ACTIVATION = "activation";
   public static final String E_INFO = "info";
-  public static final String A_VALID_FROM = "validFrom";
-  public static final String A_VALID_UNTIL = "validUntil";
-  public static final String A_SERVER_TIME = "serverTime";
-  public static final String A_FEATURE = "feature";
 
   // Retention policy
   public static final String E_RETENTION_POLICY = "retentionPolicy";
@@ -1501,7 +1444,6 @@ public final class AdminConstants {
   public static final String A_COUNT_ONLY = "countOnly";
 
   // Two-Factor Auth
-  public static final String A_LAZY_DELETE = "lazyDelete";
 
   // Sieve editheader extension constants
   public static final String A_LAST = "last";
@@ -1520,9 +1462,6 @@ public final class AdminConstants {
   // cert
   public static final String A_CHAIN_TYPE = "chainType";
 
-  public static final String A_NEW_NAME = "newName";
-  public static final String A_FORCE_DELETE = "forceDelete";
-  public static final String E_MEMBERS = "members";
   public static final String A_CASCADE_DELETE = "cascadeDelete";
 
   // address list

@@ -5,7 +5,6 @@
 
 package com.zimbra.common.util;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -48,10 +47,6 @@ public final class HttpUtil {
         private final String userAgentStr;
         Browser(String userAgentStr) {
             this.userAgentStr = userAgentStr;
-        }
-
-        String getUserAgentStr() {
-            return userAgentStr;
         }
 
         /**
@@ -249,7 +244,6 @@ public final class HttpUtil {
             }
         }
 
-
       }
 
     // Encode ' ' to '%20' instead of '+' because IE doesn't decode '+' to ' '.
@@ -391,7 +385,6 @@ public final class HttpUtil {
                   .append(new String(URLCodec.encodeUrl(IE_URL_SAFE, filename.getBytes(Charsets.UTF_8)),
                           Charsets.ISO_8859_1));
         }
-
 
         return result.toString();
     }

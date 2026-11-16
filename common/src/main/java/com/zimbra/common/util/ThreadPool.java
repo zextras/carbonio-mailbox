@@ -43,15 +43,6 @@ public class ThreadPool implements Executor {
 
     public String getName() { return mName; }
 
-    /**
-     * Returns the number of currently active worker threads. An active worker
-     * thread is a thread that is currently executing a task, as opposed to a
-     * thread that is waiting for a new task to execute.
-     */
-    public int getNumActiveThreads() {
-        return mActiveThreadsCounter.getValue();
-    }
-
     public void execute(Runnable task) throws RejectedExecutionException {
         mPool.execute(new CountedTask(task, mActiveThreadsCounter));
     }

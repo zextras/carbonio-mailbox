@@ -8,7 +8,6 @@ package com.zimbra.common.soap;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,7 +80,6 @@ public abstract class Element implements Cloneable {
         }
         throw ServiceException.INVALID_REQUEST("Unknown SoapProtocol: " + proto, null);
     }
-
 
     /** Returns the appropriate {@link ElementFactory} for generating
      *  <tt>Element</tt>s of this <tt>Element</tt>'s type. */
@@ -345,10 +343,6 @@ public abstract class Element implements Cloneable {
         return parseLong(key, checkNull(key, getAttribute(key, null)));
     }
 
-    public double getAttributeDouble(String key) throws ServiceException {
-        return parseDouble(key, checkNull(key, getAttribute(key, null)));
-    }
-
     public boolean getAttributeBool(String key) throws ServiceException {
         return parseBool(key, checkNull(key, getAttribute(key, null)));
     }
@@ -363,11 +357,6 @@ public abstract class Element implements Cloneable {
     public int getAttributeInt(String key, int defaultValue) throws ServiceException {
         String raw = getAttribute(key, null);
         return raw == null ? defaultValue : parseInt(key, raw);
-    }
-
-    public double getAttributeDouble(String key, double defaultValue) throws ServiceException {
-        String raw = getAttribute(key, null);
-        return raw == null ? defaultValue : parseDouble(key, raw);
     }
 
     public boolean getAttributeBool(String key, boolean defaultValue) throws ServiceException {
@@ -581,23 +570,6 @@ public abstract class Element implements Cloneable {
         return cur.listElements(xpath[xpath.length-1]);
     }
 
-    /** Set the attribute at the specified path, throwing an exception if the
-     *  parent Element does not exist.
-     * @param xpath an array of names to traverse in the element tree */
-    public void setPathAttribute(String[] xpath, String value) throws ServiceException {
-        if (xpath == null || xpath.length == 0)
-            return;
-        int depth = 0;
-        Element cur = this;
-        while (depth < xpath.length - 1 && cur != null) {
-            cur = cur.getOptionalElement(xpath[depth++]);
-        }
-        if (cur == null) {
-            throw ServiceException.INVALID_REQUEST("could not find path", null);
-        }
-        cur.addAttribute(xpath[depth], value);
-    }
-
     /**
      * Parses a JSON element structure and closes the stream.
      */
@@ -793,7 +765,6 @@ public abstract class Element implements Cloneable {
         }
     }
 
-
     public static class JSONElement extends Element {
         public static final ElementFactory mFactory = new JSONFactory();
 
@@ -920,7 +891,6 @@ public abstract class Element implements Cloneable {
         public Element addNonUniqueElement(QName qname) throws ContainerException {
             return addNonUniqueElement(new JSONElement(qname));
         }
-
 
         @Override
         public Element addNonUniqueElement(Element elt) throws ContainerException {

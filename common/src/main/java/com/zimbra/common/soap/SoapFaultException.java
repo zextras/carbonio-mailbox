@@ -74,7 +74,6 @@ public class SoapFaultException extends ServiceException {
         mFault = fault;
     }
 
-
     private static String getCode(Element detail) {
         if (detail != null) {
             Element error = detail.getOptionalElement(ZimbraNamespace.E_ERROR);
@@ -86,14 +85,6 @@ public class SoapFaultException extends ServiceException {
 
     public Element getDetail() {
         return mDetail;
-    }
-
-    /** can only be called if mDetail is null. */
-    protected void initDetail(Element detail) throws IllegalStateException {
-        if (mDetail != null)
-            throw new IllegalStateException("mDetail is not null");
-
-        mDetail = detail;
     }
 
     /**
@@ -128,22 +119,6 @@ public class SoapFaultException extends ServiceException {
     }
 
     /**
-     * Retrieves the request that caused this exception
-     * @return the request, null if not available
-     */
-    public String getFaultRequest() {
-    	return mRequest;
-    }
-
-    /**
-     * Retrieves the response that contains this exception
-     * @return the response, null if not available
-     */
-    public String getFaultResponse() {
-    	return mResponse;
-    }
-
-    /**
      * dump out detailed debugging information about this mFault
      */
     public String dump() {
@@ -157,7 +132,6 @@ public class SoapFaultException extends ServiceException {
         sb.append("mFault=").append(mFault).append("\n");
         return sb.toString();
     }
-
 
     /**
      * Returns the arguments in the given SOAP fault, or an empty list.
