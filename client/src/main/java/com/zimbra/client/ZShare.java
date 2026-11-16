@@ -27,7 +27,6 @@ public class ZShare implements ToZJSONObject {
     public static final String E_GRANTEE = "grantee";
     public static final String E_GRANTOR = "grantor";
     public static final String E_LINK = "link";
-    public static final String E_NOTES = "notes";
 
     public static final String A_ID = "id";
     public static final String A_EMAIL = "email";
@@ -253,7 +252,6 @@ public class ZShare implements ToZJSONObject {
             return super.toElement(parent, E_GRANTEE);
         }
     }
-
 
     public static class ZLink implements ToZJSONObject {
 

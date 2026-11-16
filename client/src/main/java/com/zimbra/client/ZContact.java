@@ -25,23 +25,6 @@ import com.zimbra.common.zclient.ZClientException;
 
 public class ZContact extends ZBaseItem implements ToZJSONObject {
 
-    /** "File as" setting: &nbsp;<code>Last, First</code> */
-    public static final String FA_LAST_C_FIRST = "1";
-    /** "File as" setting: &nbsp;<code>First Last</code> */
-    public static final String FA_FIRST_LAST = "2";
-    /** "File as" setting: &nbsp;<code>Company</code> */
-    public static final String FA_COMPANY = "3";
-    /** "File as" setting: &nbsp;<code>Last, First (Company)</code> */
-    public static final String FA_LAST_C_FIRST_COMPANY = "4";
-    /** "File as" setting: &nbsp;<code>First Last (Company)</code> */
-    public static final String FA_FIRST_LAST_COMPANY = "5";
-    /** "File as" setting: &nbsp;<code>Company (Last, First)</code> */
-    public static final String FA_COMPANY_LAST_C_FIRST = "6";
-    /** "File as" setting: &nbsp;<code>Company (First Last)</code> */
-    public static final String FA_COMPANY_FIRST_LAST = "7";
-    /** "File as" setting: <i>[explicitly specified "file as" string]</i> */
-    public static final String FA_EXPLICIT = "8";
-
     public static class ZContactAttachmentInfo {
         private final String mContentType;
         private final String mFileName;

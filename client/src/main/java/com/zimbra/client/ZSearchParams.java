@@ -30,10 +30,6 @@ public class ZSearchParams implements ToZJSONObject, ZimbraSearchParams {
 
   public static final String TYPE_CONTACT = "contact";
 
-  public static final String TYPE_VOICE_MAIL = "voicemail";
-
-  public static final String TYPE_CALL = "calllog";
-
   public static final String TYPE_APPOINTMENT = "appointment";
 
   public static String getCanonicalTypes(String list) throws ServiceException {
