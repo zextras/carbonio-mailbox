@@ -8,7 +8,6 @@
  */
 package com.zimbra.cs.session;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -114,19 +113,6 @@ public final class SessionCache {
         ZimbraLog.session.trace("SessionCache.countActiveSessionsForAccount(%s,%s)=%d",
                 accountId, type, num);
         return num;
-    }
-
-    public static Collection<Session> getAllSessions(String accountId) {
-        if (sShutdown)
-            return null;
-        Collection<Session> ret = new ArrayList<>();
-        for (Session.Type type : Session.Type.values()) {
-            Collection<Session> sessions = getSessionMap(type).get(accountId);
-            if (sessions != null) {
-                ret.addAll(sessions);
-            }
-        }
-        return ret;
     }
 
     /** Immediately removes the {@link Session} from the session cache and
