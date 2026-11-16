@@ -13,7 +13,6 @@ public abstract class MimeProcessor {
 
     private Boolean sign = false;
     private Boolean encrypt = false;
-    private String certId = null;
 
     public abstract void process(MimeMessage mm, Mailbox mbox) throws ServiceException;
 
@@ -28,13 +27,5 @@ public abstract class MimeProcessor {
     }
     public void setEncrypt(Boolean encrypt) {
         this.encrypt = encrypt;
-    }
-
-    public String getCertId() {
-        return certId;
-    }
-
-    public void setCertId(String certId) {
-        this.certId = certId;
     }
 }

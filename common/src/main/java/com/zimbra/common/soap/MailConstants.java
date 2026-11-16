@@ -84,8 +84,6 @@ public final class MailConstants {
   public static final String E_MSG_ACTION_RESPONSE = "MsgActionResponse";
   public static final String E_SEND_MSG_REQUEST = "SendMsgRequest";
   public static final String E_SEND_MSG_RESPONSE = "SendMsgResponse";
-  public static final String E_SEND_SECURE_MSG_REQUEST = "SendSecureMsgRequest";
-  public static final String E_SEND_SECURE_MSG_RESPONSE = "SendSecureMsgResponse";
   public static final String E_SEND_REPORT_REQUEST = "SendDeliveryReportRequest";
   public static final String E_SEND_REPORT_RESPONSE = "SendDeliveryReportResponse";
   public static final String E_SEND_SHARE_NOTIFICATION_REQUEST = "SendShareNotificationRequest";
@@ -221,14 +219,6 @@ public final class MailConstants {
   public static final String E_WAIT_SET_RESPONSE = "WaitSetResponse";
   public static final String E_DESTROY_WAIT_SET_REQUEST = "DestroyWaitSetRequest";
   public static final String E_DESTROY_WAIT_SET_RESPONSE = "DestroyWaitSetResponse";
-  public static final String E_GET_PERMISSION_REQUEST = "GetPermissionRequest";
-  public static final String E_GET_PERMISSION_RESPONSE = "GetPermissionResponse";
-  public static final String E_CHECK_PERMISSION_REQUEST = "CheckPermissionRequest";
-  public static final String E_CHECK_PERMISSION_RESPONSE = "CheckPermissionResponse";
-  public static final String E_GRANT_PERMISSION_REQUEST = "GrantPermissionRequest";
-  public static final String E_GRANT_PERMISSION_RESPONSE = "GrantPermissionResponse";
-  public static final String E_REVOKE_PERMISSION_REQUEST = "RevokePermissionRequest";
-  public static final String E_REVOKE_PERMISSION_RESPONSE = "RevokePermissionResponse";
   public static final String E_GET_EFFECTIVE_FOLDER_PERMS_REQUEST =
       "GetEffectiveFolderPermsRequest";
   public static final String E_GET_EFFECTIVE_FOLDER_PERMS_RESPONSE =
@@ -350,8 +340,6 @@ public final class MailConstants {
   //   SendMsg/AddMsg/SaveDraft
   public static final QName SEND_MSG_REQUEST = QName.get(E_SEND_MSG_REQUEST, NAMESPACE);
   public static final QName SEND_MSG_RESPONSE = QName.get(E_SEND_MSG_RESPONSE, NAMESPACE);
-  public static final QName SEND_SECURE_MSG_REQUEST = QName.get(E_SEND_SECURE_MSG_REQUEST, NAMESPACE);
-  public static final QName SEND_SECURE_MSG_RESPONSE = QName.get(E_SEND_SECURE_MSG_RESPONSE, NAMESPACE);
   public static final QName SEND_REPORT_REQUEST = QName.get(E_SEND_REPORT_REQUEST, NAMESPACE);
   public static final QName SEND_REPORT_RESPONSE = QName.get(E_SEND_REPORT_RESPONSE, NAMESPACE);
   public static final QName SEND_SHARE_NOTIFICATION_REQUEST =
@@ -610,21 +598,6 @@ public final class MailConstants {
       QName.get(E_DESTROY_WAIT_SET_RESPONSE, NAMESPACE);
 
   // account ACL
-  public static final QName GET_PERMISSION_REQUEST = QName.get(E_GET_PERMISSION_REQUEST, NAMESPACE);
-  public static final QName GET_PERMISSION_RESPONSE =
-      QName.get(E_GET_PERMISSION_RESPONSE, NAMESPACE);
-  public static final QName CHECK_PERMISSION_REQUEST =
-      QName.get(E_CHECK_PERMISSION_REQUEST, NAMESPACE);
-  public static final QName CHECK_PERMISSION_RESPONSE =
-      QName.get(E_CHECK_PERMISSION_RESPONSE, NAMESPACE);
-  public static final QName GRANT_PERMISSION_REQUEST =
-      QName.get(E_GRANT_PERMISSION_REQUEST, NAMESPACE);
-  public static final QName GRANT_PERMISSION_RESPONSE =
-      QName.get(E_GRANT_PERMISSION_RESPONSE, NAMESPACE);
-  public static final QName REVOKE_PERMISSION_REQUEST =
-      QName.get(E_REVOKE_PERMISSION_REQUEST, NAMESPACE);
-  public static final QName REVOKE_PERMISSION_RESPONSE =
-      QName.get(E_REVOKE_PERMISSION_RESPONSE, NAMESPACE);
 
   // folder ACL
   public static final QName GET_EFFECTIVE_FOLDER_PERMS_REQUEST =

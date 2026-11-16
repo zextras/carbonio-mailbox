@@ -42,7 +42,7 @@ public class DocExcludedServicesTest {
 
     @Test
     void test_isExcludeRequest_returns_true_when_serviceName_is_exists() {
-        Assertions.assertTrue(DocExcludedServices.isExcludeRequest("CreateArchiveRequest"));
+        Assertions.assertTrue(DocExcludedServices.isExcludeRequest("UnregisterMailboxMoveOutRequest"));
     }
 
     @Test
@@ -52,6 +52,6 @@ public class DocExcludedServicesTest {
 
     @Test
     void test_isExclude_returns_true_when_serviceName_is_exists() {
-        Assertions.assertTrue(DocExcludedServices.isExclude("CreateArchive"));
+        Assertions.assertTrue(DocExcludedServices.isExclude("UnregisterMailboxMoveOut"));
     }
 }

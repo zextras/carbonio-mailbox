@@ -26,7 +26,6 @@ import java.util.ArrayList;
 public final class Body {
     private String part;
     private CAtom section;
-    private String[] fieldNames;
     private long origin = -1;
     private Object data;
 
@@ -68,7 +67,7 @@ public final class Body {
         case HEADER_FIELDS: case HEADER_FIELDS_NOT:
             is.skipChar(' ');
             is.skipSpaces();
-            fieldNames = readFieldNames(is);
+            readFieldNames(is);
             break;
         case MIME:
             if (part == null) {
@@ -107,7 +106,6 @@ public final class Body {
 
     public String getPart() { return part; }
     public CAtom getSection() { return section; }
-    public String[] getFieldNames() { return fieldNames; }
     public long getOrigin() { return origin; }
     public Object getData() { return data; }
 

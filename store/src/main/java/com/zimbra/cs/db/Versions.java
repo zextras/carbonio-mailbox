@@ -75,10 +75,6 @@ public final class Versions {
         return DB_VERSION;
     }
 
-    public static int getIndexVersion() {
-        return INDEX_VERSION;
-    }
-
     /////////////////////////////////////////////////////////////
     // main and command-line parsing
     /////////////////////////////////////////////////////////////

@@ -19,7 +19,6 @@ import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.security.auth.login.LoginException;
-import javax.security.sasl.Sasl;
 import javax.security.sasl.SaslException;
 
 import org.apache.commons.codec.binary.Base64;
@@ -269,18 +268,6 @@ public abstract class MailConnection {
         String data = Ascii.toString(Base64.encodeBase64(request));
         mailOut.writeLine(data);
         mailOut.flush();
-    }
-
-    /**
-     * If SASL authentication was used, then returns the negotiated quality
-     * of protection for the connection.
-     *
-     * @return the SASL quality of protection, or <tt>null</tt> if not yet
-     *         authenticated or SASL authentication was not used
-     */
-    public String getNegotiatedQop() {
-        return authenticator != null ?
-            authenticator.getNegotiatedProperty(Sasl.QOP) : null;
     }
 
     /**

@@ -6,17 +6,11 @@
 package com.zimbra.cs.service.mail;
 
 import com.zextras.carbonio.files.sdk.FilesInternalClient;
-import com.zextras.mailbox.smartlinks.FilesSmartLinksGenerator;
-import com.zextras.mailbox.tracking.PostHogTracking;
-import com.zextras.mailbox.tracking.Tracking;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.httpclient.HttpClientFactory;
 import com.zimbra.cs.service.MailboxAttachmentService;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
-import org.dom4j.QName;
 
 /**
  * @zm-service-description The Mail Service includes commands for managing mail and calendar
@@ -185,10 +179,6 @@ public class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.DESTROY_WAIT_SET_REQUEST, new DestroyWaitSet());
 
     // Account ACL
-    dispatcher.registerHandler(MailConstants.GET_PERMISSION_REQUEST, new GetPermission());
-    dispatcher.registerHandler(MailConstants.CHECK_PERMISSION_REQUEST, new CheckPermission());
-    dispatcher.registerHandler(MailConstants.GRANT_PERMISSION_REQUEST, new GrantPermission());
-    dispatcher.registerHandler(MailConstants.REVOKE_PERMISSION_REQUEST, new RevokePermission());
 
     // folder ACl
     dispatcher.registerHandler(
@@ -237,20 +227,6 @@ public class MailService implements DocumentService {
     dispatcher.registerHandler(
         MailConstants.COPY_TO_DRIVE_REQUEST, new CopyToFiles(filesCopyHandler));
 
-    dispatcher.registerHandler(
-        QName.get("CreateSmartLinksRequest", MailConstants.NAMESPACE),
-        new CreateSmartLinks(
-            getProvisioning(),
-            new FilesSmartLinksGenerator(getFilesClient(), filesCopyHandler),
-            getTracking()));
-  }
-
-  protected Provisioning getProvisioning() {
-    return Provisioning.getInstance();
-  }
-
-  protected Tracking getTracking() {
-    return new PostHogTracking("https://eu.posthog.com", new HttpClientFactory());
   }
 
   protected FilesInternalClient getFilesClient() {

@@ -56,7 +56,6 @@ import com.zimbra.soap.account.message.ModifyPrefsRequest;
 import com.zimbra.soap.account.type.Pref;
 import com.zimbra.soap.account.type.Session;
 import com.zimbra.soap.admin.message.CreateAccountRequest;
-import com.zimbra.soap.admin.message.CreateXMbxSearchRequest;
 import com.zimbra.soap.admin.message.MailQueueActionRequest;
 import com.zimbra.soap.admin.message.SearchAutoProvDirectoryResponse;
 import com.zimbra.soap.admin.type.Attr;
@@ -799,20 +798,6 @@ Caused by: javax.xml.bind.UnmarshalException: Namespace URIs and local names to 
     assertEquals(2, req.getDataSources().size(), "Number of datasources in JAXB");
   }
 
-  @Test
-  void KeyValuePairs() throws Exception {
-    try (InputStream is = JaxbToElementTest.class.getResourceAsStream("CreateXMbxSearchRequest.xml")) {
-      // String soapXml = streamToString(is, Charsets.UTF_8);
-      JAXBContext jaxb = JAXBContext.newInstance(CreateXMbxSearchRequest.class);
-      Unmarshaller kvpunmarshaller = jaxb.createUnmarshaller();
-      JAXBElement<CreateXMbxSearchRequest> jaxbElem =
-          kvpunmarshaller.unmarshal(new StreamSource(is), CreateXMbxSearchRequest.class);
-      assertNotNull(jaxbElem, "JAXBElement resulting from unmarshal");
-      CreateXMbxSearchRequest soapObj = jaxbElem.getValue();
-      assertNotNull(soapObj, "Unmarshal soap object");
-      assertEquals(10, soapObj.getKeyValuePairs().size(), "Number of attributes");
-    }
-  }
 
   // AutoProvDirectoryEntry contains 2 lists - one via extending AdminKeyValuePairs
   // No order is specified for elements via XmlType propOrder.  Checking how well this works.

@@ -77,10 +77,6 @@ public class ShareNotification {
         return granteeName;
     }
 
-    public String getGranteeEmail() {
-        return granteeEmail;
-    }
-
     public int getItemId() {
         return itemId;
     }

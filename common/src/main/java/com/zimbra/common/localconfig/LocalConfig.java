@@ -8,18 +8,17 @@ package com.zimbra.common.localconfig;
 import com.zimbra.common.soap.W3cDomUtil;
 import com.zimbra.common.soap.XmlParseException;
 import com.zimbra.common.util.FileUtil;
-import com.zimbra.common.util.L10nUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
 import java.util.*;
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 
 public class LocalConfig {
 
@@ -116,19 +115,23 @@ public class LocalConfig {
   // Load & save
   //
   public void save() throws IOException, ConfigException {
-    ConfigWriter xmlWriter = ConfigWriter.getInstance("xml", false, false);
+    Document doc = DocumentHelper.createDocument();
+    Element root = doc.addElement(E_LOCALCONFIG);
     for (String key : mConfiguredKeys.keySet()) {
       String value = getRaw(key);
-      xmlWriter.add(key, value);
+      if (value != null) {
+        root.addElement(E_KEY).addAttribute(A_NAME, key).addElement(E_VALUE).addText(value);
+      }
     }
 
     File configFile = new File(mConfigFile);
     File directory = configFile.getCanonicalFile().getParentFile();
     File tempFile = File.createTempFile("localconfig.xml.", "", directory);
-    FileWriter fileWriter = new FileWriter(tempFile);
-
-    xmlWriter.write(fileWriter);
-    fileWriter.close();
+    try (FileWriter fileWriter = new FileWriter(tempFile)) {
+      XMLWriter xmlWriter = new XMLWriter(fileWriter, OutputFormat.createPrettyPrint());
+      xmlWriter.write(doc);
+      xmlWriter.flush();
+    }
     configFile.delete();
     tempFile.renameTo(configFile);
   }
@@ -177,86 +180,6 @@ public class LocalConfig {
     mConfiguredKeys.remove(key);
   }
 
-  //
-  // Print
-  //
-  public static void printDoc(PrintStream ps, String[] keys, boolean printUnsupported) {
-    if (keys.length == 0) {
-      keys = KnownKey.getAll();
-      Arrays.sort(keys);
-    }
-    // Get the default keyset for the default system locale
-    Set<String> keySet = L10nUtil.getBundleKeySet(null);
-    for (int i = 0; i < keys.length; i++) {
-      KnownKey key = KnownKey.get(keys[i]);
-      if (key == null) {
-        Logging.warn("'" + keys[i] + "' is not a known key");
-        continue;
-      }
-
-      if (keySet.contains(key.key()) && (key.isSupported() || printUnsupported)) {
-        String doc = key.doc();
-        if (i > 0) {
-          ps.println();
-        }
-        ps.println(keys[i] + ':');
-        fmt(ps, doc, 80);
-        if (!key.isReloadable()) {
-          ps.println("* Changes are in effect after server restart.");
-        }
-      }
-    }
-  }
-
-  public void printChanged(OutputStream out, ConfigWriter writer, String[] keys)
-      throws ConfigException, IOException {
-
-    if (keys.length == 0) {
-      keys = mConfiguredKeys.keySet().toArray(new String[0]);
-      Arrays.sort(keys);
-    }
-    for (String key : keys) {
-      boolean add = true;
-      if (KnownKey.isKnown(key)) {
-        String configuredValue = get(key);
-        String defaultValue = KnownKey.getDefaultValue(key);
-        if (configuredValue.equals(defaultValue)) {
-          add = false;
-        }
-      }
-      if (add) {
-        String value = writer.expand() ? get(key) : getRaw(key);
-        if (value == null) {
-          Logging.warn("null valued key '" + key + "'");
-        } else {
-          writer.add(key, value);
-        }
-      }
-    }
-    writer.write(new OutputStreamWriter(out));
-  }
-
-  public void printDefaults(OutputStream out, ConfigWriter writer, String[] keys)
-      throws IOException, ConfigException {
-
-    if (keys.length == 0) {
-      keys = KnownKey.getAll();
-      Arrays.sort(keys);
-    }
-    for (String key : keys) {
-      if (!KnownKey.isKnown(key)) {
-        Logging.warn("not a known key '" + key + "'");
-      } else {
-        String value = KnownKey.getDefaultValue(key);
-        if (writer.expand()) {
-          value = expand(key, value);
-        }
-        writer.add(key, value);
-      }
-    }
-    writer.write(new OutputStreamWriter(out));
-  }
-
   /*
    * Return all keys - known or otherwise.
    */
@@ -271,53 +194,6 @@ public class LocalConfig {
     union.addAll(mConfiguredKeys.keySet());
 
     return union.toArray(new String[0]);
-  }
-
-  public void print(OutputStream out, ConfigWriter writer, String[] keys)
-      throws IOException, ConfigException {
-
-    if (keys.length == 0) {
-      keys = allKeys();
-      Arrays.sort(keys);
-      for (String key : keys) {
-        String value = writer.expand() ? get(key) : getRaw(key);
-        writer.add(key, value);
-      }
-    } else {
-      for (String key : keys) {
-        String value = writer.expand() ? get(key) : getRaw(key);
-        if (value == null) {
-          Logging.warn("null valued key '" + key + "'");
-        } else {
-          writer.add(key, value);
-        }
-      }
-    }
-    writer.write(new OutputStreamWriter(out));
-  }
-
-  private static void fmt(PrintStream ps, String str, int limit) {
-    String[] tokens = str.split("\\s");
-    int cols = 0;
-    for (String tok : tokens) {
-      if ((tok.length() + cols) > limit) {
-        cols = 0;
-        ps.println();
-      }
-      if (tok.length() >= limit) {
-        cols = 0;
-        ps.println(tok);
-      } else {
-        if (cols != 0) {
-          ps.print(" ");
-        }
-        ps.print(tok);
-        cols += tok.length() + 1;
-      }
-    }
-    if (cols != 0) {
-      ps.println();
-    }
   }
 
   //

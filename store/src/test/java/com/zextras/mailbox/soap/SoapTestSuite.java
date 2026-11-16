@@ -24,7 +24,7 @@ import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.account.AccountService;
 import com.zimbra.cs.service.admin.AdminService;
 import com.zimbra.cs.service.admin.TestableAdminService;
-import com.zimbra.cs.service.mail.MailServiceWithoutTracking;
+import com.zimbra.cs.service.mail.MailService;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CreateAppointmentRequest;
@@ -50,7 +50,7 @@ public class SoapTestSuite {
   private static final SoapExtension soapExtension = new SoapExtension.Builder()
       .addEngineHandler(TestableAdminService.class.getName())
       .addEngineHandler(AccountService.class.getName())
-      .addEngineHandler(MailServiceWithoutTracking.class.getName())
+      .addEngineHandler(MailService.class.getName())
       .create();
 
   protected static CreateAccount createAccount() {

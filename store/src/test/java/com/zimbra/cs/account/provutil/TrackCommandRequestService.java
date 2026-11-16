@@ -72,7 +72,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.PURGE_MESSAGES_REQUEST
           , AdminConstants.DELETE_MAILBOX_REQUEST
           , AdminConstants.GET_MAILBOX_REQUEST
-          , AdminConstants.RUN_UNIT_TESTS_REQUEST
           , AdminConstants.CHECK_AUTH_CONFIG_REQUEST
           , AdminConstants.CHECK_GAL_CONFIG_REQUEST
           , AdminConstants.CHECK_HOSTNAME_RESOLVE_REQUEST
@@ -221,7 +220,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AccountConstants.GET_DISTRIBUTION_LIST_REQUEST
           , AccountConstants.GET_DISTRIBUTION_LIST_MEMBERS_REQUEST
           , AccountConstants.CHECK_RIGHTS_REQUEST
-          , AccountConstants.DISCOVER_RIGHTS_REQUEST
           , AccountConstants.GET_RIGHTS_REQUEST
           , AccountConstants.GRANT_RIGHTS_REQUEST
           , AccountConstants.REVOKE_RIGHTS_REQUEST
@@ -247,7 +245,6 @@ public class TrackCommandRequestService implements DocumentService {
           , MailConstants.GET_MSG_METADATA_REQUEST
           , MailConstants.MSG_ACTION_REQUEST
           , MailConstants.SEND_MSG_REQUEST
-          , MailConstants.SEND_SECURE_MSG_REQUEST
           , MailConstants.SEND_REPORT_REQUEST
           , MailConstants.SEND_SHARE_NOTIFICATION_REQUEST
           , MailConstants.BOUNCE_MSG_REQUEST
@@ -315,10 +312,6 @@ public class TrackCommandRequestService implements DocumentService {
           , MailConstants.CREATE_WAIT_SET_REQUEST
           , MailConstants.WAIT_SET_REQUEST
           , MailConstants.DESTROY_WAIT_SET_REQUEST
-          , MailConstants.GET_PERMISSION_REQUEST
-          , MailConstants.CHECK_PERMISSION_REQUEST
-          , MailConstants.GRANT_PERMISSION_REQUEST
-          , MailConstants.REVOKE_PERMISSION_REQUEST
           , MailConstants.GET_EFFECTIVE_FOLDER_PERMS_REQUEST
           , MailConstants.AUTO_COMPLETE_REQUEST
           , MailConstants.FULL_AUTO_COMPLETE_REQUEST
@@ -339,8 +332,7 @@ public class TrackCommandRequestService implements DocumentService {
           , MailConstants.SEARCH_ACTION_REQUEST
           , MailConstants.RECOVER_ACCOUNT_REQUEST
           , MailConstants.SET_RECOVERY_EMAIL_REQUEST
-          , MailConstants.COPY_TO_DRIVE_REQUEST
-          , QName.get("CreateSmartLinksRequest", MailConstants.NAMESPACE));
+          , MailConstants.COPY_TO_DRIVE_REQUEST);
 
   @Override
   public void registerHandlers(DocumentDispatcher dispatcher) throws ServiceException {
