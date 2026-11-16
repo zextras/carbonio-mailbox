@@ -5,6 +5,10 @@
 
 package com.zimbra.cs.service.admin;
 
+import com.zimbra.common.account.Key;
+import com.zimbra.cs.account.AccountServiceException;
+import com.zimbra.cs.account.Cos;
+import com.zimbra.cs.account.accesscontrol.TargetType;
 import com.zimbra.cs.account.StoreAttributeManager;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +36,7 @@ public class ModifyDelegatedAdminConstraints extends AdminDocumentHandler {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
         Provisioning prov = Provisioning.getInstance();
 
-        Entry entry = GetDelegatedAdminConstraints.getEntry(request);
+        Entry entry = getEntry(request);
         
         AdminAccessControl.SetAttrsRight sar = new AdminAccessControl.SetAttrsRight();
         sar.addAttr(Provisioning.A_zimbraConstraint);
@@ -64,4 +68,50 @@ public class ModifyDelegatedAdminConstraints extends AdminDocumentHandler {
         notes.add("Need set attr right on attribute " + CONSTRAINT_ATTR);
     }
 
+    private static Entry getEntry(Element request) throws ServiceException {
+        Provisioning prov = Provisioning.getInstance();
+        
+        String typeStr = request.getAttribute(AdminConstants.A_TYPE);
+        TargetType type = TargetType.fromCode(typeStr);
+        
+        if (type == TargetType.config) {
+            if (request.getAttribute(AdminConstants.A_ID, null) != null)
+                throw ServiceException.INVALID_REQUEST("cannot specify id for type " + typeStr, null);
+            
+            if (request.getAttribute(AdminConstants.A_NAME, null) != null)
+                throw ServiceException.INVALID_REQUEST("cannot specify name for type " + typeStr, null);
+            
+            return prov.getConfig();
+        } else if (type == TargetType.cos) {
+            String id = request.getAttribute(AdminConstants.A_ID, null);
+            String name = request.getAttribute(AdminConstants.A_NAME, null);
+            
+            if (id != null) {
+                Cos cos = prov.get(Key.CosBy.id, id);
+                if (cos == null)
+                    throw AccountServiceException.NO_SUCH_COS(id);
+                
+                if (name != null) {
+                    if (!name.equals(cos.getName()))
+                        throw ServiceException.INVALID_REQUEST("Specified name " + name + " does not match entry name for the specified id " + id, null);
+                }
+                
+                return cos;
+            } else if (name != null) {
+                Cos cos = prov.get(Key.CosBy.name, name);
+                if (cos == null)
+                    throw AccountServiceException.NO_SUCH_COS(name);
+                
+                if (id != null) {
+                    if (!id.equals(cos.getId()))
+                        throw ServiceException.INVALID_REQUEST("Specified id " + id + " does not match id for the specified name " + name, null);
+                }
+                
+                return cos;
+            } else
+                throw ServiceException.INVALID_REQUEST("neither id or name is specified", null);
+            
+        } else
+            throw ServiceException.INVALID_REQUEST("invalid type " + typeStr, null);
+    }
 }

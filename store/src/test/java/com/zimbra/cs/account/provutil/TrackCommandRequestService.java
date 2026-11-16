@@ -23,7 +23,6 @@ public class TrackCommandRequestService implements DocumentService {
 
   static final List<QName> handlerNames = Arrays.asList(AdminConstants.PING_REQUEST
           , AdminConstants.CHECK_HEALTH_REQUEST
-          , AdminConstants.GET_ALL_LOCALES_REQUEST
           , AdminConstants.AUTH_REQUEST
           , AdminConstants.CREATE_ACCOUNT_REQUEST
           , AdminConstants.CREATE_GAL_SYNC_ACCOUNT_REQUEST
@@ -68,21 +67,16 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.GET_CONFIG_REQUEST
           , AdminConstants.GET_ALL_CONFIG_REQUEST
           , AdminConstants.MODIFY_CONFIG_REQUEST
-          , AdminConstants.GET_SERVICE_STATUS_REQUEST
           , AdminConstants.PURGE_MESSAGES_REQUEST
           , AdminConstants.DELETE_MAILBOX_REQUEST
           , AdminConstants.GET_MAILBOX_REQUEST
           , AdminConstants.RUN_UNIT_TESTS_REQUEST
           , AdminConstants.CHECK_AUTH_CONFIG_REQUEST
-          , AdminConstants.CHECK_GAL_CONFIG_REQUEST
-          , AdminConstants.CHECK_HOSTNAME_RESOLVE_REQUEST
-          , AdminConstants.CHECK_EXCHANGE_AUTH_REQUEST
           , AdminConstants.CREATE_VOLUME_REQUEST
           , AdminConstants.GET_VOLUME_REQUEST
           , AdminConstants.GET_ALL_VOLUMES_REQUEST
           , AdminConstants.MODIFY_VOLUME_REQUEST
           , AdminConstants.DELETE_VOLUME_REQUEST
-          , AdminConstants.GET_CURRENT_VOLUMES_REQUEST
           , AdminConstants.SET_CURRENT_VOLUME_REQUEST
           , AdminConstants.CHECK_BLOB_CONSISTENCY_REQUEST
           , AdminConstants.EXPORT_AND_DELETE_ITEMS_REQUEST
@@ -101,14 +95,11 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.AUTO_PROV_ACCOUNT_REQUEST
           , AdminConstants.AUTO_PROV_TASK_CONTROL_REQUEST
           , AdminConstants.SEARCH_AUTO_PROV_DIRECTORY_REQUEST
-          , AdminConstants.GET_VERSION_INFO_REQUEST
-          , AdminConstants.GET_ATTRIBUTE_INFO_REQUEST
           , AdminConstants.REINDEX_REQUEST
           , AdminConstants.COMPACT_INDEX_REQUEST
           , AdminConstants.GET_INDEX_STATS_REQUEST
           , AdminConstants.VERIFY_INDEX_REQUEST
           , AdminConstants.RECALCULATE_MAILBOX_COUNTS_REQUEST
-          , AdminConstants.DUMP_SESSIONS_REQUEST
           , AdminConstants.GET_SESSIONS_REQUEST
           , AdminConstants.CREATE_CALENDAR_RESOURCE_REQUEST
           , AdminConstants.DELETE_CALENDAR_RESOURCE_REQUEST
@@ -119,7 +110,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.SEARCH_CALENDAR_RESOURCES_REQUEST
           , AdminConstants.GET_QUOTA_USAGE_REQUEST
           , AdminConstants.GET_ALL_MAILBOXES_REQUEST
-          , AdminConstants.GET_MAILBOX_STATS_REQUEST
           , AdminConstants.GET_MAIL_QUEUE_INFO_REQUEST
           , AdminConstants.GET_MAIL_QUEUE_REQUEST
           , AdminConstants.MAIL_QUEUE_ACTION_REQUEST
@@ -138,17 +128,14 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.GET_ACCOUNT_LOGGERS_REQUEST
           , AdminConstants.GET_ALL_ACCOUNT_LOGGERS_REQUEST
           , AdminConstants.RESET_ALL_LOGGERS_REQUEST
-          , AdminConstants.CHECK_DIRECTORY_REQUEST
           , AdminConstants.FLUSH_CACHE_REQUEST
           , AdminConstants.COUNT_ACCOUNT_REQUEST
           , AdminConstants.GET_SHARE_INFO_REQUEST
-          , AdminConstants.GET_SERVER_NIFS_REQUEST
           , AdminConstants.GET_ALL_FREE_BUSY_PROVIDERS_REQUEST
           , AdminConstants.GET_FREE_BUSY_QUEUE_INFO_REQUEST
           , AdminConstants.PUSH_FREE_BUSY_REQUEST
           , AdminConstants.PURGE_FREE_BUSY_QUEUE_REQUEST
           , AdminConstants.PURGE_ACCOUNT_CALENDAR_CACHE_REQUEST
-          , AdminConstants.GET_DELEGATED_ADMIN_CONSTRAINTS_REQUEST
           , AdminConstants.GET_RIGHTS_DOC_REQUEST
           , AdminConstants.GET_RIGHT_REQUEST
           , AdminConstants.GET_ALL_EFFECTIVE_RIGHTS_REQUEST
@@ -163,21 +150,16 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.ADMIN_CREATE_WAIT_SET_REQUEST
           , AdminConstants.ADMIN_WAIT_SET_REQUEST
           , AdminConstants.ADMIN_DESTROY_WAIT_SET_REQUEST
-          , AdminConstants.GET_SERVER_STATS_REQUEST
-          , AdminConstants.GET_LOGGER_STATS_REQUEST
           , AdminConstants.SYNC_GAL_ACCOUNT_REQUEST
           , AdminConstants.RELOAD_MEMCACHED_CLIENT_CONFIG_REQUEST
           , AdminConstants.GET_MEMCACHED_CLIENT_CONFIG_REQUEST
-          , AdminConstants.RELOAD_LOCAL_CONFIG_REQUEST
           , AdminConstants.NO_OP_REQUEST
           , AdminConstants.CLEAR_COOKIE_REQUEST
           , AdminConstants.LOCKOUT_MAILBOX_REQUEST
           , AdminConstants.REFRESH_REGISTERED_AUTHTOKENS_REQUEST
-          , AdminConstants.GET_SYSTEM_RETENTION_POLICY_REQUEST
           , AdminConstants.CREATE_SYSTEM_RETENTION_POLICY_REQUEST
           , AdminConstants.MODIFY_SYSTEM_RETENTION_POLICY_REQUEST
           , AdminConstants.DELETE_SYSTEM_RETENTION_POLICY_REQUEST
-          , AdminConstants.VERIFY_STORE_MANAGER_REQUEST
           , AdminConstants.GET_FILTER_RULES_REQUEST
           , AdminConstants.MODIFY_FILTER_RULES_REQUEST
           , AdminConstants.GET_OUTGOING_FILTER_RULES_REQUEST
