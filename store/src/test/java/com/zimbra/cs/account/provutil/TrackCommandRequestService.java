@@ -339,8 +339,7 @@ public class TrackCommandRequestService implements DocumentService {
           , MailConstants.SEARCH_ACTION_REQUEST
           , MailConstants.RECOVER_ACCOUNT_REQUEST
           , MailConstants.SET_RECOVERY_EMAIL_REQUEST
-          , MailConstants.COPY_TO_DRIVE_REQUEST
-          , QName.get("CreateSmartLinksRequest", MailConstants.NAMESPACE));
+          , MailConstants.COPY_TO_DRIVE_REQUEST);
 
   @Override
   public void registerHandlers(DocumentDispatcher dispatcher) throws ServiceException {
