@@ -723,8 +723,6 @@ public final class AdminConstants {
 
   public static final QName GET_VERSION_INFO_REQUEST =
       QName.get(E_GET_VERSION_INFO_REQUEST, NAMESPACE);
-  public static final QName GET_VERSION_INFO_RESPONSE =
-      QName.get(E_GET_VERSION_INFO_RESPONSE, NAMESPACE);
 
   public static final QName GET_ATTRIBUTE_INFO_REQUEST =
       QName.get(E_GET_ATTRIBUTE_INFO_REQUEST, NAMESPACE);
