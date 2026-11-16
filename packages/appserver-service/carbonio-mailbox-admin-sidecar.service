@@ -3,7 +3,7 @@ Description=Carbonio Mailbox Admin Sidecar
 Documentation=https://docs.zextras.com/
 Requires=network-online.target
 After=network-online.target service-discover.service carbonio-appserver.service
-PartOf=service-discover.target
+PartOf=service-discover.target carbonio-appserver.service
 # The token is written by the pending setup ("carbonio-<svc> setup") once
 # Consul is bootstrapped. Without it the sidecar cannot start: skip it
 # instead of failing every 15 s and holding up units ordered after it.
