@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.json.JSONException;
 
 import com.google.common.base.Joiner;
 import com.zimbra.common.filter.Sieve;
@@ -21,7 +20,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.zclient.ZClientException;
 import com.zimbra.soap.mail.type.FilterTest;
 
-public abstract class ZFilterCondition implements ToZJSONObject {
+public abstract class ZFilterCondition {
 
     public static final String C_ADDRESS = "address";
     public static final String C_ADDRESSBOOK = "addressbook";
@@ -275,14 +274,6 @@ public abstract class ZFilterCondition implements ToZJSONObject {
 
     abstract FilterTest toJAXB();
     public abstract String getName();
-
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        // TODO: Implement in subclasses?
-        ZJSONObject jo = new ZJSONObject();
-        jo.put("name", getName());
-        return jo;
-    }
 
     @Override
     public String toString() {

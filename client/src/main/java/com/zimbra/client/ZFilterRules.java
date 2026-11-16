@@ -9,13 +9,12 @@ import com.google.common.collect.Lists;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.soap.mail.type.FilterRule;
 
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public final class ZFilterRules implements ToZJSONObject {
+public final class ZFilterRules {
 
     private final List<ZFilterRule> rules;
 
@@ -44,13 +43,6 @@ public final class ZFilterRules implements ToZJSONObject {
 
     public List<ZFilterRule> getRules() {
         return rules;
-    }
-
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject jo = new ZJSONObject();
-        jo.put("rules", rules);
-        return jo;
     }
 
     @Override

@@ -18,9 +18,8 @@ import com.zimbra.soap.type.SearchSortBy;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.TimeZone;
-import org.json.JSONException;
 
-public class ZSearchParams implements ToZJSONObject, ZimbraSearchParams {
+public class ZSearchParams implements ZimbraSearchParams {
 
   public static final String TYPE_CONVERSATION = "conversation";
 
@@ -316,29 +315,6 @@ public class ZSearchParams implements ToZJSONObject, ZimbraSearchParams {
   }
 
   @Override
-  public ZJSONObject toZJSONObject() throws JSONException {
-    ZJSONObject zjo = new ZJSONObject();
-    if (mFetch != null) zjo.put("fetch", mFetch.name());
-    zjo.put("limit", mLimit);
-    zjo.put("markAsRead", mMarkAsRead);
-    zjo.put("offset", mOffset);
-    zjo.put("preferHtml", mPreferHtml);
-    zjo.put("query", mQuery);
-    zjo.put("recipientMode", mRecipientMode);
-    if (mSortBy != null) zjo.put("sortBy", mSortBy.name());
-    zjo.put("types", mTypes);
-    zjo.put("field", mField);
-    zjo.put("convId", mConvId);
-    zjo.put("calExpandInstEnd", mCalExpandInstEnd);
-    zjo.put("calExpandInstStart", mCalExpandInstStart);
-    if (mTimeZone != null) zjo.put("timeZone", mTimeZone.getID());
-    if (mCursor != null) zjo.put("cursor", mCursor);
-    if (mInDumpster) zjo.put("inDumpster", true);
-    if (includeTagDeleted) zjo.put("includeTagDeleted", true);
-    return zjo;
-  }
-
-  @Override
   public String toString() {
     return String.format("[ZSearchParams %s]", mQuery == null ? "" : mQuery);
   }
@@ -356,7 +332,7 @@ public class ZSearchParams implements ToZJSONObject, ZimbraSearchParams {
     mField = field;
   }
 
-  public static class Cursor implements ToZJSONObject {
+  public static class Cursor {
 
     private final String mPreviousId;
 
@@ -395,14 +371,6 @@ public class ZSearchParams implements ToZJSONObject, ZimbraSearchParams {
       if (!StringUtil.equal(this.mPreviousId, that.mPreviousId)) return false;
       if (!StringUtil.equal(this.mPreviousSortValue, that.mPreviousSortValue)) return false;
       return true;
-    }
-
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-      ZJSONObject zjo = new ZJSONObject();
-      zjo.put("previousId", mPreviousId);
-      zjo.put("previousSortValue", mPreviousSortValue);
-      return zjo;
     }
 
     @Override

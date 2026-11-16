@@ -5,15 +5,12 @@
 
 package com.zimbra.client.event;
 
-import com.zimbra.client.ToZJSONObject;
 import com.zimbra.client.ZFolder;
-import com.zimbra.client.ZJSONObject;
 import com.zimbra.client.ZTag;
-import org.json.JSONException;
 
 import java.util.List;
 
-public class ZRefreshEvent implements ToZJSONObject {
+public class ZRefreshEvent {
 
     private long mSize;
     private ZFolder mUserRoot;
@@ -42,14 +39,6 @@ public class ZRefreshEvent implements ToZJSONObject {
 
     public List<ZTag> getTags() {
         return mTags;
-    }
-    
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put("size", getSize());
-    	zjo.put("userRoot", mUserRoot);
-    	zjo.put("tags", mTags);
-    	return zjo;
     }
 
     public String toString() {

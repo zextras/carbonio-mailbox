@@ -8,15 +8,12 @@ package com.zimbra.client.event;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.client.ToZJSONObject;
 import com.zimbra.client.ZEmailAddress;
-import com.zimbra.client.ZJSONObject;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ZConversationSummaryEvent implements ToZJSONObject {
+public class ZConversationSummaryEvent {
 
     protected Element mConvEl;
 
@@ -96,24 +93,6 @@ public class ZConversationSummaryEvent implements ToZJSONObject {
             result.add(new ZEmailAddress(emailEl));
         }
         return result == null ? defaultValue : result;
-    }
-
-    public ZJSONObject toZJSONObject() throws JSONException {
-        try {
-            ZJSONObject zjo = new ZJSONObject();
-            zjo.put("id", getId());
-            if (getFlags(null) != null) zjo.put("flags", getFlags(null));
-            if (getTagIds(null) != null) zjo.put("tags", getTagIds(null));
-            if (getSubject(null) != null) zjo.put("subject", getSubject(null));
-            if (getFragment(null) != null) zjo.put("fragment", getFragment(null));
-            if (getMessageCount(-1) != -1) zjo.put("messageCount", getMessageCount(-1));
-            if (getDate(-1) != -1) zjo.put("date", getDate(-1));
-            List<ZEmailAddress> addrs = getRecipients(null);
-            if (addrs != null) zjo.put("recipients", addrs);
-            return zjo;
-        } catch (ServiceException se) {
-            throw new JSONException(se);
-        }
     }
 
     public String toString() {

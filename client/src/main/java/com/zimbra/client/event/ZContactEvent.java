@@ -8,17 +8,14 @@ package com.zimbra.client.event;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.JSONException;
 
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.KeyValuePair;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.client.ToZJSONObject;
-import com.zimbra.client.ZJSONObject;
 
-public class ZContactEvent implements ToZJSONObject {
+public class ZContactEvent {
 
     protected Element mContactEl;
 
@@ -90,27 +87,6 @@ public class ZContactEvent implements ToZJSONObject {
 
         }
         return attrs != null ? attrs : defaultValue;
-    }
-
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        try {
-            zjo.put("id", getId());
-            if (getFlags(null) != null) zjo.put("flags", getFlags(null));
-            if (getTagIds(null) != null) zjo.put("tags", getTagIds(null));
-            if (getFolderId(null) != null) zjo.put("folderId", getFolderId(null));
-            if (getRevision(null) != null) zjo.put("revision", getRevision(null));
-            if (getFileAsStr(null) != null) zjo.put("fileAsStr", getFileAsStr(null));
-            if (getEmail(null) != null) zjo.put("email", getEmail(null));
-            if (getEmail2(null) != null) zjo.put("email2", getEmail2(null));
-            if (getEmail3(null) != null) zjo.put("email3", getEmail3(null));
-            Map<String, String> attrs = getAttrs(null);
-            if (attrs != null)
-                zjo.putMap("attrs", attrs);
-        } catch (ServiceException e) {
-            throw new RuntimeException(e);
-        }
-        return zjo;
     }
 
     public String toString() {

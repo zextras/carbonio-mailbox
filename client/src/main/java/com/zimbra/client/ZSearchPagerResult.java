@@ -5,9 +5,8 @@
 
 package com.zimbra.client;
 
-import org.json.JSONException;
 
-public class ZSearchPagerResult implements ToZJSONObject {
+public class ZSearchPagerResult {
 
     private ZSearchResult mSearchResult;
     private int mActualPage;
@@ -26,15 +25,6 @@ public class ZSearchPagerResult implements ToZJSONObject {
     public int getRequestedPage() { return mRequstedPage; }
 
     public int getOffset() { return mLimit * mActualPage; }
-
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put("result", mSearchResult);
-        zjo.put("requestedPage", mRequstedPage);
-        zjo.put("actualPage", mActualPage);
-        zjo.put("offset", getOffset());
-        return zjo;
-    }
 
     public String toString() {
         return String.format("[ZSearchPagerResult %s]", mActualPage);
