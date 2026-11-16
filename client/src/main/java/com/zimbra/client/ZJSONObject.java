@@ -37,13 +37,7 @@ public class ZJSONObject {
         return this;
     }
 
-    public ZJSONObject put(String key, ZJSONObject value) throws JSONException {
-        if (value != null)
-            mJO.put(key, value.getJSONObject());
-        return this;
-    }
-
-    public ZJSONObject put(String key, String value) throws JSONException {
+  public ZJSONObject put(String key, String value) throws JSONException {
         mJO.put(key, value);
         return this;
     }
