@@ -5,7 +5,7 @@
 
 package com.zimbra.client;
 
-import org.json.JSONException;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.google.common.base.Joiner;
 import com.zimbra.client.event.ZModifyEvent;
@@ -59,11 +59,11 @@ public final class ZSearchFolder extends ZFolder implements SearchFolderStore {
         }
     }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject jo = super.toZJSONObject();
-        jo.put("query", query);
-        jo.put("types", types);
+  @Override
+    public ObjectNode toObjectNode() {
+        ObjectNode jo = super.toObjectNode();
+        if (query != null) jo.put("query", query);
+        if (types != null) jo.put("types", types);
         jo.put("sortBy", sortBy.name());
         return jo;
     }

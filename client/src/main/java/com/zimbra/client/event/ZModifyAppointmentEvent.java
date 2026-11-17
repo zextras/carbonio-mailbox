@@ -8,13 +8,10 @@ package com.zimbra.client.event;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.client.ToZJSONObject;
 import com.zimbra.client.ZAppointment;
 import com.zimbra.client.ZItem;
-import com.zimbra.client.ZJSONObject;
-import org.json.JSONException;
 
-public class ZModifyAppointmentEvent implements ZModifyItemEvent, ZModifyItemFolderEvent, ToZJSONObject {
+public class ZModifyAppointmentEvent implements ZModifyItemEvent, ZModifyItemFolderEvent {
 
     protected Element mApptEl;
 
@@ -30,26 +27,12 @@ public class ZModifyAppointmentEvent implements ZModifyItemEvent, ZModifyItemFol
         return mApptEl.getAttribute(MailConstants.A_ID);
     }
 
-    public ZJSONObject toZJSONObject() throws JSONException {
-        try {
-            ZJSONObject zjo = new ZJSONObject();
-            zjo.put("id", getId());
-            return zjo;
-        } catch (ServiceException e) {
-            throw new JSONException(e);
-        }
-    }
-
     public String toString() {
         try {
             return String.format("[ZModifyAppointmentEvent %s]", getId());
         } catch (ServiceException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
     }
 
     public ZItem getItem() throws ServiceException {

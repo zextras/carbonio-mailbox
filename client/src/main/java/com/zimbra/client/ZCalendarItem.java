@@ -8,14 +8,13 @@ package com.zimbra.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONException;
 
 import com.zimbra.client.event.ZModifyMessageEvent;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 
-public class ZCalendarItem implements ZItem, ToZJSONObject {
+public class ZCalendarItem implements ZItem {
 
     public enum Flag {
         flagged('f'),
@@ -113,27 +112,9 @@ public class ZCalendarItem implements ZItem, ToZJSONObject {
         return mTags != null && mTags.length() > 0;
     }
 
-   @Override
-public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put("id", mId);
-        zjo.put("flags", mFlags);
-        zjo.put("tags", mTags);
-        zjo.put("date", mDate);
-        zjo.put("folderId", mFolderId);
-        zjo.put("size", mSize);
-        zjo.put("uid", mUID);
-        zjo.put("invites", mInvites);
-        return zjo;
-    }
-
     @Override
     public String toString() {
         return String.format("[ZCalendarItem %s]", mId);
-    }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
     }
 
     public String getFlags() {

@@ -5,7 +5,6 @@
 
 package com.zimbra.client;
 
-import org.json.JSONException;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -20,7 +19,7 @@ import com.zimbra.soap.type.DataSource.ConnectionType;
 import com.zimbra.soap.type.DataSources;
 import com.zimbra.soap.type.ImapDataSource;
 
-public class ZImapDataSource extends ZDataSource implements ToZJSONObject {
+public class ZImapDataSource extends ZDataSource {
 
     public ZImapDataSource(ImapDataSource data) {
         this.data = DataSources.newImapDataSource(data);
@@ -121,27 +120,9 @@ public class ZImapDataSource extends ZDataSource implements ToZJSONObject {
     public void setConnectionType(ConnectionType connectionType) {
         data.setConnectionType(connectionType);
     }
-    
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put("id", data.getId());
-        zjo.put("name", data.getName());
-        zjo.put("enabled", data.isEnabled());
-        zjo.put("host", data.getHost());
-        zjo.put("port", data.getPort());
-        zjo.put("username", data.getUsername());
-        zjo.put("folderId", data.getFolderId());
-        zjo.put("connectionType", data.getConnectionType().toString());
-        zjo.put("importOnly", data.isImportOnly());
-        return zjo;
-    }
 
     public String toString() {
         return String.format("[ZImapDataSource %s]", getName());
-    }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
     }
 
     public void setImportOnly(boolean importOnly) {

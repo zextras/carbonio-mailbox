@@ -8,20 +8,17 @@ package com.zimbra.client.event;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.client.ToZJSONObject;
 import com.zimbra.client.ZFolder;
 import com.zimbra.client.ZFolder.Color;
 import com.zimbra.client.ZFolder.View;
 import com.zimbra.client.ZGrant;
-import com.zimbra.client.ZJSONObject;
 import com.zimbra.soap.mail.type.RetentionPolicy;
 
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ZModifyFolderEvent implements ZModifyItemEvent, ToZJSONObject {
+public class ZModifyFolderEvent implements ZModifyItemEvent {
 
     protected Element mFolderEl;
 
@@ -233,32 +230,6 @@ public class ZModifyFolderEvent implements ZModifyItemEvent, ToZJSONObject {
         }
         return new RetentionPolicy(rpEl);
     }
-
-    public ZJSONObject toZJSONObject() throws JSONException {
-        try {
-            ZJSONObject zjo = new ZJSONObject ();
-            zjo.put("id", getId());
-            if (getName(null) != null) zjo.put("name", getName(null));
-            if (getParentId(null) != null) zjo.put("parentId", getParentId(null));
-            if (getFlags(null) != null) zjo.put("flags", getFlags(null));
-            if (getColor(null) != null) zjo.put("color", getColor(null).getName());
-            if (getUnreadCount(-1) != -1) zjo.put("unreadCount", getUnreadCount(-1));
-            if (getImapUnreadCount(-1) != -1) zjo.put("imapUnreadCount", getImapUnreadCount(-1));
-            if (getMessageCount(-1) != -1) zjo.put("messageCount", getMessageCount(-1));
-            if (getImapMessageCount(-1) != -1) zjo.put("imapMessageCount", getImapMessageCount(-1));
-            if (getDefaultView(null) != null) zjo.put("view", getDefaultView(null).name());
-            if (getImapUIDNEXT(-1) != -1) zjo.put("imapUIDNEXT", getImapUIDNEXT(-1));
-            if (getImapMODSEQ(-1) != -1) zjo.put("imapMODSEQ", getImapMODSEQ(-1));
-            if (getRemoteURL(null) != null) zjo.put("url", getRemoteURL(null));
-            zjo.put("activeSyncDisabled", isActiveSyncDisabled(false));
-            if (getEffectivePerm(null) != null) zjo.put("effectivePermissions", getEffectivePerm(null));
-            List<ZGrant> grants = getGrants(null);
-            if (grants != null) zjo.put("grants", grants);
-            return zjo;
-        } catch(ServiceException se) {
-            throw new JSONException(se);
-        }
-    }
     
     @Override public String toString() {
         try {
@@ -266,10 +237,6 @@ public class ZModifyFolderEvent implements ZModifyItemEvent, ToZJSONObject {
         } catch (ServiceException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
     }
 }
 

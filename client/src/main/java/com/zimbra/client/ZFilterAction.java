@@ -14,13 +14,12 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.zclient.ZClientException;
 import com.zimbra.soap.mail.type.FilterAction;
 
-import org.json.JSONException;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class ZFilterAction implements ToZJSONObject {
+public abstract class ZFilterAction {
 
     public static final String A_DISCARD = "discard";
     public static final String A_FILEINTO = "fileinto";
@@ -398,19 +397,7 @@ public abstract class ZFilterAction implements ToZJSONObject {
     }
 
     @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject jo = new ZJSONObject();
-        jo.put("name", name);
-        jo.putList("args", args);
-        return jo;
-    }
-
-    @Override
     public String toString() {
         return MoreObjects.toStringHelper(this).add("name", name).toString();
-    }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
     }
 }

@@ -5,6 +5,8 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import com.zimbra.client.event.ZModifyEvent;
 import com.zimbra.client.event.ZModifyFolderEvent;
@@ -31,7 +33,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.json.JSONException;
 
 public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONObject {
 
@@ -930,16 +931,16 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
   }
 
   @Override
-  public ZJSONObject toZJSONObject() throws JSONException {
-    ZJSONObject jo = new ZJSONObject();
-    jo.put("id", mId);
-    jo.put("uuid", mUuid);
-    jo.put("name", mName);
+  public ObjectNode toObjectNode() {
+    ObjectNode jo = JsonNodeFactory.instance.objectNode();
+    if (mId != null) jo.put("id", mId);
+    if (mUuid != null) jo.put("uuid", mUuid);
+    if (mName != null) jo.put("name", mName);
     jo.put("path", getPath());
     jo.put("pathURLEncoded", getPathURLEncoded());
-    jo.put("parentId", mParentId);
-    jo.put("flags", mFlags);
-    jo.put("color", mColor.getName());
+    if (mParentId != null) jo.put("parentId", mParentId);
+    if (mFlags != null) jo.put("flags", mFlags);
+    if (mColor.getName() != null) jo.put("color", mColor.getName());
     jo.put("unreadCount", mUnreadCount);
     jo.put("imapUnreadCount", mImapUnreadCount);
     jo.put("itemCount", mMessageCount);
@@ -948,12 +949,12 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     jo.put("imapUIDNEXT", mImapUIDNEXT);
     jo.put("imapMODSEQ", mImapMODSEQ);
     jo.put("defaultView", mDefaultView.name());
-    jo.put("remoteUrl", mRemoteURL);
+    if (mRemoteURL != null) jo.put("remoteUrl", mRemoteURL);
     jo.put("activeSyncDisabled", mActiveSyncDisabled);
-    jo.put("effectivePermissions", mEffectivePerms);
-    jo.put("grants", mGrants);
+    if (mEffectivePerms != null) jo.put("effectivePermissions", mEffectivePerms);
+    ZObjectNode.put(jo, "grants", mGrants);
     jo.put("size", mSize);
-    jo.put("subFolders", mSubFolders);
+    ZObjectNode.put(jo, "subFolders", mSubFolders);
     jo.put("isCheckedInUI", isCheckedInUI());
     jo.put("isExcludedFromFreeBusy", isExcludedFromFreeBusy());
     jo.put("isSyncEnabled", isSyncEnabled());
@@ -969,7 +970,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
   }
 
   public String dump() {
-    return ZJSONObject.toString(this);
+    return ToZJSONObject.toString(this);
   }
 
   public void delete() throws ServiceException {

@@ -11,9 +11,8 @@ import com.zimbra.soap.mail.type.DataSourceNameOrId;
 import com.zimbra.soap.mail.type.MailDataSource;
 import com.zimbra.soap.type.DataSource;
 import com.zimbra.soap.type.DataSources;
-import org.json.JSONException;
 
-public class ZDataSource implements ToZJSONObject {
+public class ZDataSource {
   protected DataSource data;
   public static String SOURCE_HOST_YAHOO = "yahoo.com";
 
@@ -54,19 +53,6 @@ public class ZDataSource implements ToZJSONObject {
   public DataSourceNameOrId toJaxbNameOrId() {
     DataSourceNameOrId jaxbObject = DataSourceNameOrId.createForId(data.getId());
     return jaxbObject;
-  }
-
-  @Override
-  public ZJSONObject toZJSONObject() throws JSONException {
-    ZJSONObject zjo = new ZJSONObject();
-    zjo.put("id", data.getId());
-    zjo.put("name", data.getName());
-    zjo.put("enabled", data.isEnabled());
-    zjo.put("folderId", data.getFolderId());
-    zjo.put("importOnly", data.isImportOnly());
-    zjo.put("importClass", data.getImportClass());
-    zjo.put("host", data.getHost());
-    return zjo;
   }
 
   public String getName() {

@@ -5,12 +5,13 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.XmlParseException;
 import com.zimbra.common.zclient.ZClientException;
 import com.zimbra.client.ZFolder.View;
-import org.json.JSONException;
 
 public class ZShare implements ToZJSONObject {
 
@@ -83,23 +84,19 @@ public class ZShare implements ToZJSONObject {
     }
 
     @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put(A_VERSION, mVersion);
+    public ObjectNode toObjectNode() {
+        ObjectNode zjo = JsonNodeFactory.instance.objectNode();
+        if (mVersion != null) zjo.put(A_VERSION, mVersion);
         zjo.put(A_ACTION, mAction.name());
-        zjo.put(E_GRANTEE, mGrantee);
-        zjo.put(E_GRANTOR, mGrantor);
-        zjo.put(E_LINK, mLink);
+        if (mGrantee != null) zjo.set(E_GRANTEE, mGrantee.toObjectNode());
+        if (mGrantor != null) zjo.set(E_GRANTOR, mGrantor.toObjectNode());
+        if (mLink != null) zjo.set(E_LINK, mLink.toObjectNode());
         return zjo;
     }
 
     @Override
     public String toString() {
         return String.format("[ZShare %s]", mGrantor);
-    }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
     }
 
     public ZGrantee getGrantee() {
@@ -207,22 +204,18 @@ public class ZShare implements ToZJSONObject {
             mName = name;
         }
 
-        @Override
-        public ZJSONObject toZJSONObject() throws JSONException {
-            ZJSONObject zjo = new ZJSONObject();
-            zjo.put(A_ID, mId);
-            zjo.put(A_EMAIL, mEmail);
-            zjo.put(A_NAME, mName);
+      @Override
+        public ObjectNode toObjectNode() {
+            ObjectNode zjo = JsonNodeFactory.instance.objectNode();
+            if (mId != null) zjo.put(A_ID, mId);
+            if (mEmail != null) zjo.put(A_EMAIL, mEmail);
+            if (mName != null) zjo.put(A_NAME, mName);
             return zjo;
         }
 
         @Override
         public String toString() {
             return String.format("[ZGrantInfo id=%s email=%s name=%s]", mId, mEmail, mName);
-        }
-
-        public String dump() {
-            return ZJSONObject.toString(this);
         }
     }
 
@@ -315,22 +308,18 @@ public class ZShare implements ToZJSONObject {
         }
 
         @Override
-        public ZJSONObject toZJSONObject() throws JSONException {
-            ZJSONObject zjo = new ZJSONObject();
-            zjo.put(A_ID, mId);
-            zjo.put(A_PERM, mPermission);
+        public ObjectNode toObjectNode() {
+            ObjectNode zjo = JsonNodeFactory.instance.objectNode();
+            if (mId != null) zjo.put(A_ID, mId);
+            if (mPermission != null) zjo.put(A_PERM, mPermission);
             zjo.put(A_VIEW, mView.name());
-            zjo.put(A_NAME, mName);
+            if (mName != null) zjo.put(A_NAME, mName);
             return zjo;
         }
 
         @Override
         public String toString() {
             return String.format("[ZLink id=%s name=%s]", mId, mName);
-        }
-
-        public String dump() {
-            return ZJSONObject.toString(this);
         }
     }
 }

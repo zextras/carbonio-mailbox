@@ -5,7 +5,7 @@
 
 package com.zimbra.client;
 
-import org.json.JSONException;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.zimbra.client.event.ZModifyEvent;
 import com.zimbra.client.event.ZModifyFolderEvent;
@@ -59,12 +59,12 @@ public class ZMountpoint extends ZFolder implements MountpointStore {
         return String.format("[ZMountpoint %s]", getPath());
     }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject jo = super.toZJSONObject();
-        jo.put("ownerId", mOwnerId);
-        jo.put("ownerDisplayName", mOwnerDisplayName);
-        jo.put("remoteId", mRemoteId);
+  @Override
+    public ObjectNode toObjectNode() {
+        ObjectNode jo = super.toObjectNode();
+        if (mOwnerId != null) jo.put("ownerId", mOwnerId);
+        if (mOwnerDisplayName != null) jo.put("ownerDisplayName", mOwnerDisplayName);
+        if (mRemoteId != null) jo.put("remoteId", mRemoteId);
         return jo;
     }
 

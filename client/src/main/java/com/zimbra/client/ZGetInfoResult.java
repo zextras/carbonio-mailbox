@@ -28,9 +28,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.json.JSONException;
 
-public class ZGetInfoResult implements ToZJSONObject {
+public class ZGetInfoResult {
 
   private final GetInfoResponse data;
   private final long expiration;
@@ -199,30 +198,8 @@ public class ZGetInfoResult implements ToZJSONObject {
   }
 
   @Override
-  public ZJSONObject toZJSONObject() throws JSONException {
-    ZJSONObject jo = new ZJSONObject();
-    jo.put("id", getId());
-    jo.put("name", getName());
-    jo.put("rest", getRestURLBase());
-    jo.put("expiration", getExpiration());
-    jo.put("lifetime", getLifetime());
-    jo.put("mailboxQuotaUsed", getMailboxQuotaUsed());
-    jo.put("recent", getRecent());
-    jo.putMapList("attrs", getAttrs());
-    jo.putMapList("prefs", getPrefAttrs());
-    jo.putList("mailURLs", getMailURL());
-    jo.put("publicURL", getPublicURL());
-    jo.put("boshURL", getBOSHURL());
-    return jo;
-  }
-
-  @Override
   public String toString() {
     return String.format("[ZGetInfoResult %s]", getName());
-  }
-
-  public String dump() {
-    return ZJSONObject.toString(this);
   }
 
   public long getMailboxQuotaUsed() {

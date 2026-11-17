@@ -47,12 +47,11 @@ import com.zimbra.soap.mail.type.FilterRule;
 import com.zimbra.soap.mail.type.FilterTest;
 import com.zimbra.soap.mail.type.FilterTests;
 
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ZFilterRule implements ToZJSONObject {
+public final class ZFilterRule {
 
     private final String name;
     private final boolean active;
@@ -129,23 +128,8 @@ public final class ZFilterRule implements ToZJSONObject {
     }
 
     @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject jo = new ZJSONObject();
-        jo.put("name", name);
-        jo.put("active", active);
-        jo.put("allConditions", allConditions);
-        jo.put("conditions", conditions);
-        jo.put("actions", actions);
-        return jo;
-    }
-
-    @Override
     public String toString() {
         return String.format("[ZFilterRule %s]", name);
-    }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
     }
 
     static String quotedString(String s) {

@@ -1,0 +1,223 @@
+{
+  "id" : "257",
+  "flags" : "au",
+  "tagIds" : "1,2",
+  "subject" : "Hello",
+  "fragment" : "fragment",
+  "messageIdHeader" : "<id@test>",
+  "receivedDate" : 1700000000000,
+  "sentDate" : 1699999999000,
+  "folderId" : "2",
+  "conversationId" : "-257",
+  "size" : 1234,
+  "addresses" : [ {
+    "address" : "alice@test.com",
+    "display" : "Alice",
+    "personal" : "Alice A",
+    "type" : "f",
+    "fullAddressQuoted" : "\"Alice A\" <alice@test.com>"
+  }, {
+    "address" : "bob@test.com",
+    "type" : "t",
+    "fullAddressQuoted" : "<bob@test.com>"
+  } ],
+  "mimeStructure" : {
+    "partName" : "TEXT",
+    "contentType" : "multipart/alternative",
+    "isBody" : false,
+    "size" : 0,
+    "children" : [ {
+      "partName" : "1",
+      "content" : "body",
+      "contentType" : "text/plain",
+      "isBody" : true,
+      "size" : 10,
+      "children" : [ ]
+    }, {
+      "partName" : "2",
+      "contentType" : "image/png",
+      "contentDisposition" : "attachment",
+      "contentId" : "<c1>",
+      "isBody" : false,
+      "size" : 20,
+      "fileName" : "a.png",
+      "children" : [ ]
+    } ]
+  },
+  "invite" : {
+    "type" : "appt",
+    "timezones" : [ {
+      "id" : "Europe/Rome",
+      "standardOffset" : 60,
+      "daylightOffset" : 120,
+      "standardRule" : {
+        "week" : -1,
+        "dayOfWeek" : 1,
+        "dayOfMonth" : 0,
+        "month" : 10,
+        "hour" : 3,
+        "minute" : 0,
+        "second" : 0
+      },
+      "daylightRule" : {
+        "week" : -1,
+        "dayOfWeek" : 1,
+        "dayOfMonth" : 0,
+        "month" : 3,
+        "hour" : 2,
+        "minute" : 0,
+        "second" : 0
+      },
+      "standardTzname" : "CET",
+      "daylightTzname" : "CEST"
+    } ],
+    "components" : [ {
+      "status" : "CONF",
+      "class" : "PUB",
+      "freeBusyStatus" : "B",
+      "actualFreeBusyStatus" : "B",
+      "transparency" : "O",
+      "isAllDay" : false,
+      "draft" : false,
+      "name" : "Meeting",
+      "method" : "PUBLISH",
+      "compNum" : "0",
+      "location" : "Room 1",
+      "categories" : [ "work" ],
+      "comments" : [ "bring laptop" ],
+      "contacts" : [ "Bob" ],
+      "url" : "http://x",
+      "isOrganizer" : true,
+      "sequenceNumber" : 2,
+      "priority" : "0",
+      "replies" : [ {
+        "date" : 1700000000000,
+        "attendee" : "bob@test.com",
+        "participantStatus" : "AC"
+      } ],
+      "start" : {
+        "time" : 1794819600000,
+        "dateTime" : "20261116T100000",
+        "timeZoneId" : "Europe/Rome"
+      },
+      "end" : {
+        "time" : 1794823200000,
+        "dateTime" : "20261116T110000",
+        "timeZoneId" : "Europe/Rome"
+      },
+      "organizer" : {
+        "address" : "alice@test.com",
+        "personalName" : "Alice",
+        "sentBy" : "carol@test.com"
+      },
+      "attendees" : [ {
+        "address" : "bob@test.com",
+        "personalName" : "Bob",
+        "role" : "REQ",
+        "participantStatus" : "NE",
+        "rsvp" : true,
+        "calendarUserType" : "IND"
+      } ],
+      "recurrence" : {
+        "rules" : [ {
+          "frequency" : "WEE",
+          "until" : {
+            "time" : 1798671600000,
+            "dateTime" : "20261231",
+            "timeZoneId" : "Europe/Rome"
+          },
+          "count" : 0,
+          "interval" : 1,
+          "byRules" : [ {
+            "type" : "BY_DAY",
+            "weekdays" : [ {
+              "weekOrd" : 0,
+              "day" : "MO"
+            }, {
+              "weekOrd" : 2,
+              "day" : "FR"
+            } ]
+          }, {
+            "type" : "BY_MONTH",
+            "list" : "1,2",
+            "weekdays" : [ ]
+          } ]
+        } ],
+        "dates" : [ {
+          "timeZoneId" : "Europe/Rome",
+          "dates" : [ {
+            "start" : {
+              "time" : 1795165200000,
+              "dateTime" : "20261120T100000",
+              "timeZoneId" : "Europe/Rome"
+            },
+            "duration" : {
+              "negative" : false,
+              "weeks" : 0,
+              "days" : 0,
+              "hours" : 1,
+              "minutes" : 30,
+              "seconds" : 0
+            }
+          } ]
+        } ],
+        "exRules" : [ ],
+        "exDates" : [ {
+          "timeZoneId" : "Europe/Rome",
+          "dates" : [ {
+            "start" : {
+              "time" : 1795424400000,
+              "dateTime" : "20261123T100000",
+              "timeZoneId" : "Europe/Rome"
+            },
+            "end" : {
+              "time" : 1795428000000,
+              "dateTime" : "20261123T110000",
+              "timeZoneId" : "Europe/Rome"
+            }
+          } ]
+        } ]
+      },
+      "desc" : "plain",
+      "deschtml" : "<b>html</b>",
+      "noblob" : false
+    } ]
+  },
+  "share" : {
+    "version" : "0.1",
+    "action" : "NEW",
+    "grantee" : {
+      "id" : "g1",
+      "email" : "bob@test.com",
+      "name" : "Bob"
+    },
+    "grantor" : {
+      "id" : "g2",
+      "email" : "alice@test.com",
+      "name" : "Alice"
+    },
+    "link" : {
+      "id" : "7",
+      "perm" : "r",
+      "view" : "appointment",
+      "name" : "Calendar"
+    }
+  },
+  "isInvite" : true,
+  "hasAttachment" : true,
+  "hasFlags" : true,
+  "hasTags" : true,
+  "isDeleted" : false,
+  "isDraft" : false,
+  "isFlagged" : false,
+  "isHighPriority" : false,
+  "isLowPriority" : false,
+  "isForwarded" : false,
+  "isNotificationSent" : false,
+  "isRepliedTo" : false,
+  "isSentByMe" : false,
+  "isUnread" : true,
+  "requestHeaders" : {
+    "X-Custom" : "value"
+  }
+}

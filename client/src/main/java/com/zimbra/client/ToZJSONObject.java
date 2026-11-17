@@ -5,9 +5,18 @@
 
 package com.zimbra.client;
 
-import org.json.JSONException;
-
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.zimbra.common.util.ExceptionToString;
 
 public interface ToZJSONObject {
-    ZJSONObject toZJSONObject() throws JSONException;
+
+  ObjectNode toObjectNode();
+
+  static String toString(ToZJSONObject zjo) {
+    try {
+      return zjo.toObjectNode().toString();
+    } catch (RuntimeException e) {
+      return ExceptionToString.ToString(e);
+    }
+  }
 }

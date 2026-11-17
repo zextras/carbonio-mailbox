@@ -5,6 +5,8 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
@@ -14,7 +16,6 @@ import com.zimbra.soap.account.type.SignatureContent;
 import com.zimbra.util.SignatureUtil;
 import java.util.HashMap;
 import java.util.Map;
-import org.json.JSONException;
 
 public class ZSignature implements Comparable<ZSignature>, ToZJSONObject {
 
@@ -111,11 +112,12 @@ public class ZSignature implements Comparable<ZSignature>, ToZJSONObject {
         return sig;
     }
 
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put("name", getName());
-        zjo.put("id", getId());
-        zjo.put("value", getValue());
+  @Override
+    public ObjectNode toObjectNode() {
+        ObjectNode zjo = JsonNodeFactory.instance.objectNode();
+        if (getName() != null) zjo.put("name", getName());
+        if (getId() != null) zjo.put("id", getId());
+        if (getValue() != null) zjo.put("value", getValue());
         zjo.put("type", getType());
         return zjo;
     }
@@ -125,7 +127,7 @@ public class ZSignature implements Comparable<ZSignature>, ToZJSONObject {
     }
 
     public String dump() {
-        return ZJSONObject.toString(this);
+        return ToZJSONObject.toString(this);
     }
 
     public int compareTo(ZSignature other) {

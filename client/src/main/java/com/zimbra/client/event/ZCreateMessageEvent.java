@@ -8,16 +8,13 @@ package com.zimbra.client.event;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.client.ToZJSONObject;
 import com.zimbra.client.ZEmailAddress;
 import com.zimbra.client.ZItem;
-import com.zimbra.client.ZJSONObject;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ZCreateMessageEvent implements ZCreateItemEvent, ToZJSONObject {
+public class ZCreateMessageEvent implements ZCreateItemEvent {
 
     protected Element mMessageEl;
 
@@ -122,37 +119,12 @@ public class ZCreateMessageEvent implements ZCreateItemEvent, ToZJSONObject {
         return result == null ? defaultValue : result;
     }
 
-    public ZJSONObject toZJSONObject() throws JSONException {
-        try {
-            ZJSONObject zjo = new ZJSONObject();
-            zjo.put("id", getId());
-            if (getFolderId(null) != null) zjo.put("folderId", getFolderId(null));
-            if (getConversationId(null) != null) zjo.put("conversationId", getConversationId(null));
-            if (getFlags(null) != null) zjo.put("flags", getFlags(null));
-            if (getTagIds(null) != null) zjo.put("tags", getTagIds(null));
-            if (getSubject(null) != null) zjo.put("subject", getSubject(null));
-            if (getFragment(null) != null) zjo.put("fragment", getFragment(null));
-            if (getSize(-1) != -1) zjo.put("size", getSize(-1));
-            if (getReceivedDate(-1) != -1) zjo.put("receivedDate", getReceivedDate(-1));
-            if (getSentDate(-1) != -1) zjo.put("sentDate", getSentDate(-1));
-            List<ZEmailAddress> addrs = getEmailAddresses(null);
-            if (addrs != null) zjo.put("addresses", addrs);
-            return zjo;
-        } catch (ServiceException se) {
-            throw new JSONException(se);
-        }
-    }
-
     public String toString() {
         try {
             return String.format("[ZCreateMessageEvent %s]", getId());
         } catch (ServiceException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
     }
 
     public ZItem getItem() throws ServiceException {

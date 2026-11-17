@@ -185,9 +185,8 @@ import org.apache.hc.client5.http.cookie.BasicCookieStore;
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.dom4j.QName;
-import org.json.JSONException;
 
-public class ZMailbox implements ToZJSONObject, MailboxStore {
+public class ZMailbox implements MailboxStore {
   public static final int MAX_NUM_CACHED_SEARCH_PAGERS = 5;
   public static final int MAX_NUM_CACHED_SEARCH_CONV_PAGERS = 5;
   public static final int MAX_NUM_CACHED_MESSAGES = LC.zmailbox_message_cachesize.intValue();
@@ -4762,21 +4761,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       }
     }
     return String.format("[ZMailbox %s%s]", main, aux);
-  }
-
-  @Override
-  public ZJSONObject toZJSONObject() throws JSONException {
-    try {
-      ZJSONObject jo = new ZJSONObject();
-      jo.put("name", getName());
-      jo.put("size", mSize);
-      jo.put("hasTags", hasTags());
-      jo.put("userRoot", getUserRoot());
-      jo.put("tags", getAllTags());
-      return jo;
-    } catch (ServiceException se) {
-      throw new JSONException(se);
-    }
   }
 
   public void logout() throws ZClientException {

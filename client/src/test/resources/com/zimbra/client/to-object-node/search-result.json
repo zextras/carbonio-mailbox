@@ -1,0 +1,81 @@
+{
+  "more" : true,
+  "sortBy" : "dateDesc",
+  "offset" : 0,
+  "hits" : [ {
+    "id" : "-1",
+    "flags" : "u",
+    "tags" : "1",
+    "fragment" : "frag",
+    "subject" : "conv",
+    "date" : 1700000000000,
+    "sortField" : "1700000000000",
+    "messageCount" : 2,
+    "messageIds" : [ "1", "2" ],
+    "recipients" : [ {
+      "address" : "alice@test.com",
+      "type" : "f",
+      "fullAddressQuoted" : "<alice@test.com>"
+    } ]
+  }, {
+    "id" : "5",
+    "conversationId" : "-5",
+    "flags" : "a",
+    "isInvite" : false,
+    "fragment" : "frag",
+    "subject" : "msg",
+    "date" : 1700000000000,
+    "size" : 10,
+    "sender" : {
+      "address" : "alice@test.com",
+      "type" : "f",
+      "fullAddressQuoted" : "<alice@test.com>"
+    },
+    "sortField" : "x",
+    "mimePartHits" : [ "1" ],
+    "addresses" : [ {
+      "address" : "alice@test.com",
+      "type" : "f",
+      "fullAddressQuoted" : "<alice@test.com>"
+    } ]
+  }, {
+    "id" : "6",
+    "sortField" : "doe",
+    "date" : 0,
+    "fileAsStr" : "Doe, John",
+    "revision" : "3",
+    "folderId" : "7",
+    "attrs" : {
+      "firstName" : "John"
+    }
+  }, {
+    "id" : "8",
+    "sortField" : "y"
+  }, {
+    "id" : "9",
+    "folderId" : "10",
+    "name" : "Appt",
+    "location" : "Room",
+    "categories" : [ "work" ],
+    "inviteId" : "9-1",
+    "inviteComponentNumber" : "0",
+    "freeBusyActual" : "B",
+    "transparency" : "O",
+    "status" : "CONF",
+    "class" : "PUB",
+    "participantStatus" : "AC",
+    "allDay" : false,
+    "draft" : false,
+    "otherAttendees" : false,
+    "alarm" : false,
+    "recurring" : false,
+    "isOrganizer" : true,
+    "priority" : "5",
+    "duration" : 3600000,
+    "startTime" : 1700000000000,
+    "timeZoneOffset" : 3600000,
+    "exception" : false,
+    "size" : 0,
+    "hitDate" : 1700000000000
+  } ]
+}

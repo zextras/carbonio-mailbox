@@ -5,14 +5,14 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.json.JSONException;
 
 import com.zimbra.client.event.ZModifyMessageEvent;
 import com.zimbra.common.mailbox.MailItemType;
@@ -160,29 +160,29 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
         return mId;
     }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put("id", mId);
-        zjo.put("flags", mFlags);
-        zjo.put("tagIds", mTagIds);
-        zjo.put("inReplyTo", mInReplyTo);
-        zjo.put("originalId", mOrigId);
-        zjo.put("subject", mSubject);
-        zjo.put("fragment", mFragment);
-        zjo.put("partName", mPartName);
-        zjo.put("messageIdHeader", mMessageIdHeader);
+  @Override
+    public ObjectNode toObjectNode() {
+        ObjectNode zjo = JsonNodeFactory.instance.objectNode();
+        if (mId != null) zjo.put("id", mId);
+        if (mFlags != null) zjo.put("flags", mFlags);
+        if (mTagIds != null) zjo.put("tagIds", mTagIds);
+        if (mInReplyTo != null) zjo.put("inReplyTo", mInReplyTo);
+        if (mOrigId != null) zjo.put("originalId", mOrigId);
+        if (mSubject != null) zjo.put("subject", mSubject);
+        if (mFragment != null) zjo.put("fragment", mFragment);
+        if (mPartName != null) zjo.put("partName", mPartName);
+        if (mMessageIdHeader != null) zjo.put("messageIdHeader", mMessageIdHeader);
         zjo.put("receivedDate", mReceivedDate);
         zjo.put("sentDate", mSentDate);
-        zjo.put("folderId", mFolderId);
-        zjo.put("conversationId", mConversationId);
+        if (mFolderId != null) zjo.put("folderId", mFolderId);
+        if (mConversationId != null) zjo.put("conversationId", mConversationId);
         zjo.put("size", mSize);
-        zjo.put("content", mContent);
-        zjo.put("contentURL", mContentURL);
-        zjo.put("addresses", mAddresses);
-        zjo.put("mimeStructure", mMimeStructure);
-        zjo.put("invite", mInvite);
-        zjo.put("share", mShare);
+        if (mContent != null) zjo.put("content", mContent);
+        if (mContentURL != null) zjo.put("contentURL", mContentURL);
+        ZObjectNode.put(zjo, "addresses", mAddresses);
+        if (mMimeStructure != null) zjo.set("mimeStructure", mMimeStructure.toObjectNode());
+        if (mInvite != null) zjo.set("invite", mInvite.toObjectNode());
+        if (mShare != null) zjo.set("share", mShare.toObjectNode());
         zjo.put("isInvite", getInvite() != null);
         zjo.put("hasAttachment", hasAttachment());
         zjo.put("hasFlags", hasFlags());
@@ -197,11 +197,11 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
         zjo.put("isRepliedTo", isRepliedTo());
         zjo.put("isSentByMe", isSentByMe());
         zjo.put("isUnread", isUnread());
-        zjo.put("idnt", mIdentityId);
+        if (mIdentityId != null) zjo.put("idnt", mIdentityId);
         if (imapUid >= 0) {
             zjo.put("imapUid", imapUid);
         }
-        zjo.putMap("requestHeaders", mReqHdrs);
+        ZObjectNode.putMap(zjo, "requestHeaders", mReqHdrs);
         return zjo;
     }
 
@@ -211,7 +211,7 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
     }
 
     public String dump() {
-        return ZJSONObject.toString(this);
+        return ToZJSONObject.toString(this);
     }
 
     /**
@@ -317,31 +317,27 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
             mTruncated = e.getAttributeBool(MailConstants.A_TRUNCATED_CONTENT, false);
         }
 
-        @Override
-        public ZJSONObject toZJSONObject() throws JSONException {
-            ZJSONObject zjo = new ZJSONObject();
-            zjo.put("partName", mPartName);
-            zjo.put("content", mContent);
-            zjo.put("contentType", mContentType);
-            zjo.put("contentDisposition", mContentDisposition);
-            zjo.put("contentId", mContentId);
-            zjo.put("contentLocation", mContentLocation);
-            zjo.put("contentDescription", mContentDescription);
+      @Override
+        public ObjectNode toObjectNode() {
+            ObjectNode zjo = JsonNodeFactory.instance.objectNode();
+            if (mPartName != null) zjo.put("partName", mPartName);
+            if (mContent != null) zjo.put("content", mContent);
+            if (mContentType != null) zjo.put("contentType", mContentType);
+            if (mContentDisposition != null) zjo.put("contentDisposition", mContentDisposition);
+            if (mContentId != null) zjo.put("contentId", mContentId);
+            if (mContentLocation != null) zjo.put("contentLocation", mContentLocation);
+            if (mContentDescription != null) zjo.put("contentDescription", mContentDescription);
             zjo.put("isBody", mIsBody);
             zjo.put("size", mSize);
-            zjo.put("name", mName);
-            zjo.put("fileName", mFileName);
-            zjo.put("children", mChildren);
+            if (mName != null) zjo.put("name", mName);
+            if (mFileName != null) zjo.put("fileName", mFileName);
+            ZObjectNode.put(zjo, "children", mChildren);
             return zjo;
         }
 
         @Override
         public String toString() {
             return String.format("[ZMimePart %s]", mPartName);
-        }
-
-        public String dump() {
-            return ZJSONObject.toString(this);
         }
 
         public ZMimePart getParent() {

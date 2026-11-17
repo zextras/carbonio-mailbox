@@ -5,10 +5,10 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.json.JSONException;
 
 import com.zimbra.client.event.ZModifyConversationEvent;
 import com.zimbra.client.event.ZModifyEvent;
@@ -107,15 +107,15 @@ public class ZConversation implements ZItem, ToZJSONObject {
         return mMailbox;
     }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject jo = new ZJSONObject();
-        jo.put("id", mId);
-        jo.put("tagIds", mTags);
-        jo.put("flags", mFlags);
-        jo.put("subject", mSubject);
+  @Override
+    public ObjectNode toObjectNode() {
+        ObjectNode jo = JsonNodeFactory.instance.objectNode();
+        if (mId != null) jo.put("id", mId);
+        if (mTags != null) jo.put("tagIds", mTags);
+        if (mFlags != null) jo.put("flags", mFlags);
+        if (mSubject != null) jo.put("subject", mSubject);
         jo.put("messageCount", mMessageCount);
-        jo.put("messageSummaries", mMessageSummaries);
+        ZObjectNode.put(jo, "messageSummaries", mMessageSummaries);
         return jo;
     }
 
@@ -125,7 +125,7 @@ public class ZConversation implements ZItem, ToZJSONObject {
     }
 
     public String dump() {
-        return ZJSONObject.toString(this);
+        return ToZJSONObject.toString(this);
     }
 
     public String getFlags() {
@@ -185,16 +185,16 @@ public class ZConversation implements ZItem, ToZJSONObject {
             }
         }
 
-        @Override
-        public ZJSONObject toZJSONObject() throws JSONException {
-            ZJSONObject jo = new ZJSONObject();
-            jo.put("id", mId);
-            jo.put("folderId", mFolderId);
-            jo.put("flags", mFlags);
-            jo.put("fragment", mFragment);
-            jo.put("tags", mTags);
+      @Override
+        public ObjectNode toObjectNode() {
+            ObjectNode jo = JsonNodeFactory.instance.objectNode();
+            if (mId != null) jo.put("id", mId);
+            if (mFolderId != null) jo.put("folderId", mFolderId);
+            if (mFlags != null) jo.put("flags", mFlags);
+            if (mFragment != null) jo.put("fragment", mFragment);
+            if (mTags != null) jo.put("tags", mTags);
             jo.put("size", mSize);
-            jo.put("sender", mSender);
+            if (mSender != null) jo.set("sender", mSender.toObjectNode());
             jo.put("date", mDate);
             jo.put("hasAttachment", hasAttachment());
             jo.put("hasFlags", hasFlags());
@@ -209,17 +209,13 @@ public class ZConversation implements ZItem, ToZJSONObject {
             jo.put("isRepliedTo", isRepliedTo());
             jo.put("isSentByMe", isSentByMe());
             jo.put("isUnread", isUnread());
-            jo.put("subject", mSubject);
+            if (mSubject != null) jo.put("subject", mSubject);
             return jo;
         }
 
         @Override
         public String toString() {
             return String.format("[ZMessageSummary %s]", mId);
-        }
-
-        public String dump() {
-            return ZJSONObject.toString(this);
         }
 
         public long getDate() {
