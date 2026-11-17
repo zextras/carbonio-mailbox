@@ -46,7 +46,7 @@ public class ProxyIpsCache {
     try {
       return cache.getUnchecked(KEY);
     } catch (UncheckedExecutionException e) {
-      ZimbraLog.misc.warn("failed to get proxy server IPs, none will be trusted", e.getCause());
+      ZimbraLog.misc.warn("failed to load proxy server IPs, returning none", e.getCause());
       return List.of();
     }
   }
