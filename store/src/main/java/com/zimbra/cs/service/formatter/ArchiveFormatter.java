@@ -1245,6 +1245,17 @@ public abstract class ArchiveFormatter extends Formatter {
     return fldr;
   }
 
+  private static boolean isSameOrDescendantPath(String path, String folderPath) {
+    return path.equals(folderPath) || path.startsWith(folderPath + '/');
+  }
+
+  private static String pathUnderFolder(String dir, String folderPath) {
+    String base = folderPath.endsWith("/") ? folderPath : folderPath + '/';
+    String relative = dir.substring(dir.startsWith(base) ? base.length() : 1);
+    String path = base + relative;
+    return path.length() > 1 && path.endsWith("/") ? path.substring(0, path.length() - 1) : path;
+  }
+
   private static final String[] NO_TAGS = new String[0];
 
   @VisibleForTesting
@@ -1314,7 +1325,7 @@ public abstract class ArchiveFormatter extends Formatter {
       boolean root =
           fldr.getId() == Mailbox.ID_FOLDER_ROOT
               || fldr.getId() == Mailbox.ID_FOLDER_USER_ROOT
-              || id.path.startsWith(fldr.getPath() + '/');
+              || isSameOrDescendantPath(id.path, fldr.getPath());
 
       if ((ids != null && Arrays.binarySearch(ids, id.ud.id) < 0)
           || (types != null && !types.contains(MailItem.Type.of(id.ud.type)))) return;
@@ -1797,11 +1808,7 @@ public abstract class ArchiveFormatter extends Formatter {
           throw FormatterServiceException.INVALID_TYPE(view.toString(), fldr.getPath());
         }
       } else {
-        String s = fldr.getPath();
-
-        if (!s.endsWith("/")) s += '/';
-        if (dir.startsWith(s)) dir = dir.substring(s.length());
-        fldr = createPath(context, fmap, fldr.getPath() + dir, view);
+        fldr = createPath(context, fmap, pathUnderFolder(dir, fldr.getPath()), view);
       }
       switch (type) {
         case APPOINTMENT:
