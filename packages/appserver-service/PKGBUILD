@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver-service"
-pkgver="4.40.13"
+pkgver="4.40.15"
 pkgrel="1"
 pkgdesc="Carbonio Mailbox Service"
 arch=('any')
@@ -13,6 +13,7 @@ license=(
 )
 url="https://github.com/zextras"
 depends=(
+  "carbonio-configd"
   "carbonio-core"
   "service-discover"
   "service-discover-base"
@@ -144,6 +145,8 @@ _package_systemd() {
     "${pkgdir}/usr/lib/systemd/system/carbonio-mailbox-internal-api-sidecar.service"
   install -Dm644 packages/appserver-service/carbonio-authz-sidecar.service \
     "${pkgdir}/usr/lib/systemd/system/carbonio-authz-sidecar.service"
+  install -Dm644 packages/appserver-service/carbonio-appserver-sidecars.conf \
+    "${pkgdir}/usr/lib/systemd/system/carbonio-appserver.service.d/carbonio-appserver-sidecars.conf"
 }
 
 package() {
