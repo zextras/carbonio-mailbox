@@ -34,7 +34,6 @@ class AutoProvisionLazy extends AutoProvision {
         this.authedByMech = authedByMech;
     }
 
-    @Override
     Account handle() throws ServiceException {
         if (domain == null) {
             domain = prov.getDefaultDomain();

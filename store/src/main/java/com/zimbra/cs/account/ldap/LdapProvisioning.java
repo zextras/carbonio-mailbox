@@ -177,7 +177,6 @@ import com.zimbra.soap.type.AutoProvPrincipalBy;
 import com.zimbra.soap.type.GalSearchType;
 import com.zimbra.soap.type.TargetBy;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -848,7 +847,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     return mimeTypeCache.getMimeTypes(this, mimeType);
   }
 
-  @Override
   public List<MimeTypeInfo> getMimeTypesByQuery(String mimeType) throws ServiceException {
     List<MimeTypeInfo> mimeTypes = new ArrayList<>();
 
@@ -3681,23 +3679,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
             private ZLdapContext toZLdapContext() {
               return ldapClient.toZLdapContext(mZlc);
-            }
-
-            @Override
-            public void createEntry(String dn, Map<String, Object> attrs) throws ServiceException {
-
-              ZMutableEntry entry = ldapClient.createMutableEntry();
-              entry.mapToAttrs(attrs);
-              entry.setDN(dn);
-
-              ZLdapContext ldapContext = toZLdapContext();
-              ldapContext.createEntry(entry);
-            }
-
-            @Override
-            public void deleteEntry(String dn) throws ServiceException {
-              ZLdapContext ldapContext = toZLdapContext();
-              ldapContext.deleteEntry(dn);
             }
 
             @Override
@@ -9111,26 +9092,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   @Override
   public LdapClient getLdapClient() {
     return ldapClient;
-  }
-
-  @Override
-  public void dumpLdapSchema(PrintWriter writer) throws ServiceException {
-    ZLdapContext zlc = null;
-    try {
-      zlc = ldapClient.getContext(LdapServerType.MASTER, LdapUsage.GET_SCHEMA);
-      ZLdapSchema schema = zlc.getSchema();
-
-      for (ZLdapSchema.ZObjectClassDefinition oc : schema.getObjectClasses()) {
-        writer.println(oc.getName());
-      }
-
-      // TODO print more stuff
-
-    } catch (ServiceException e) {
-      ZimbraLog.account.warn("unable to get LDAP schema", e);
-    } finally {
-      ldapClient.closeContext(zlc);
-    }
   }
 
   /*

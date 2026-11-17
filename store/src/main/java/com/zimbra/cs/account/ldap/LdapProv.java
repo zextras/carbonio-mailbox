@@ -16,7 +16,6 @@ import com.zimbra.cs.ldap.LdapTODO.TODO;
 import com.zimbra.cs.ldap.SearchLdapOptions;
 import com.zimbra.cs.ldap.ZLdapFilter;
 import com.zimbra.cs.mime.MimeTypeInfo;
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -85,9 +84,7 @@ public abstract class LdapProv extends Provisioning implements ProvisioningCache
 
   public abstract void alwaysUseMaster();
 
-  public abstract void dumpLdapSchema(PrintWriter pw) throws ServiceException;
-
-  public abstract void renameDomain(String domainId, String newDomainName) throws ServiceException;
+	public abstract void renameDomain(String domainId, String newDomainName) throws ServiceException;
 
   public abstract void searchOCsForSuperClasses(Map<String, Set<String>> ocs);
 
@@ -95,9 +92,7 @@ public abstract class LdapProv extends Provisioning implements ProvisioningCache
 
   public abstract List<MimeTypeInfo> getAllMimeTypesByQuery() throws ServiceException;
 
-  public abstract List<MimeTypeInfo> getMimeTypesByQuery(String mimeType) throws ServiceException;
-
-  public abstract void externalLdapAuth(
+	public abstract void externalLdapAuth(
       Domain domain, AuthMech authMech, Account acct, String password, Map<String, Object> authCtxt)
       throws ServiceException;
 
