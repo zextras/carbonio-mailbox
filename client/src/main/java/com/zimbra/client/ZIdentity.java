@@ -7,10 +7,8 @@ package com.zimbra.client;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.util.Collection;
 import java.util.Map;
 
-import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
@@ -55,58 +53,6 @@ public class ZIdentity  implements ToZJSONObject {
      */
     public String get(String name) {
         return data.getFirstMatchingAttr(name);
-    }
-    
-    public Map<String, Object> getAttrs() {
-        return StringUtil.toOldMultimap(data.getAttrsMultimap());
-    }
-
-    public boolean getBool(String name) {
-        return ProvisioningConstants.TRUE.equals(get(name));
-    }
-
-    public boolean getIsDefault() { return ProvisioningConstants.DEFAULT_IDENTITY_NAME.equals(getRawName()); }
-    
-    public String getFromAddress() { return get(ZAttrProvisioning.A_zimbraPrefFromAddress); }
-
-    public String getFromDisplay() { return get(ZAttrProvisioning.A_zimbraPrefFromDisplay); }
-
-    public ZEmailAddress getFromEmailAddress() {
-        return new ZEmailAddress(getFromAddress(), null, getFromDisplay(), ZEmailAddress.EMAIL_TYPE_FROM);
-    }
-
-    public String getSignatureId() { return get(ZAttrProvisioning.A_zimbraPrefDefaultSignatureId); }
-
-    public String getReplyToAddress() { return get(ZAttrProvisioning.A_zimbraPrefReplyToAddress); }
-
-    public String getReplyToDisplay() { return get(ZAttrProvisioning.A_zimbraPrefReplyToDisplay); }
-
-    public ZEmailAddress getReplyToEmailAddress() {
-        return new ZEmailAddress(getReplyToAddress(), null, getReplyToDisplay(), ZEmailAddress.EMAIL_TYPE_REPLY_TO);
-    }
-
-    public boolean getReplyToEnabled() { return getBool(ZAttrProvisioning.A_zimbraPrefReplyToEnabled); }
-
-    public String[] getMulti(String name) {
-        Collection<String> values = data.getAttrsMultimap().get(name);
-        String[] valArray = new String[values.size()];
-        values.toArray(valArray);
-        return valArray;
-    }
-    
-    public String[] getWhenInFolderIds() {
-        return getMulti(ZAttrProvisioning.A_zimbraPrefWhenInFolderIds);
-    }
-
-    public boolean getWhenInFoldersEnabled() { return getBool(ZAttrProvisioning.A_zimbraPrefWhenInFoldersEnabled); }
-
-    public boolean containsFolderId(String folderId) {
-        for (String id : getWhenInFolderIds()) {
-            if (id.equals(folderId)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public Element toElement(Element parent) {

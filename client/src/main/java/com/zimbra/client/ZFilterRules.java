@@ -18,11 +18,7 @@ public final class ZFilterRules {
 
     private final List<ZFilterRule> rules;
 
-    public ZFilterRules(List<ZFilterRule> rules) {
-        this.rules = rules;
-    }
-
-    public ZFilterRules(ZFilterRules rules) {
+	public ZFilterRules(ZFilterRules rules) {
         this.rules = new ArrayList<>(rules.getRules());
     }
 

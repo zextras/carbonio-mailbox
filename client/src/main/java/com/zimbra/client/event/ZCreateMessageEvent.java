@@ -8,11 +8,6 @@ package com.zimbra.client.event;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.client.ZEmailAddress;
-import com.zimbra.client.ZItem;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ZCreateMessageEvent implements ZCreateItemEvent {
 
@@ -26,44 +21,11 @@ public class ZCreateMessageEvent implements ZCreateItemEvent {
      * @return id
      * @throws com.zimbra.common.service.ServiceException on error
      */
-    public String getId() throws ServiceException {
+		private String getId() throws ServiceException {
         return mMessageEl.getAttribute(MailConstants.A_ID);
     }
 
-    /**
-     * @param defaultValue value to return if unchanged
-     * @return new flags or default value if flags didn't change
-     */
-    public String getFlags(String defaultValue) {
-        return mMessageEl.getAttribute(MailConstants.A_FLAGS, defaultValue);
-    }
-
-    /**
-     * @param defaultValue value to return if unchanged
-     * @return new tags or default value if tags didn't change
-     */
-    public String getTagIds(String defaultValue) {
-        return mMessageEl.getAttribute(MailConstants.A_TAGS, defaultValue);
-    }
-
-    /**
-     * @param defaultValue value to return if unchanged
-     * @return new message count, or defaultValue if unchanged
-     * @throws com.zimbra.common.service.ServiceException on error
-     */
-    public int getSize(int defaultValue) throws ServiceException {
-        return (int) mMessageEl.getAttributeLong(MailConstants.A_SIZE, defaultValue);
-    }
-
-    /**
-     * @param defaultValue value to return if unchanged
-     * @return new folder id or defaultValue if unchanged
-     */
-    public String getFolderId(String defaultValue) {
-        return mMessageEl.getAttribute(MailConstants.A_FOLDER, defaultValue);
-    }
-
-    /**
+	/**
      * @param defaultValue value to return if unchanged
      * @return new conv id or defaultValue if unchanged
      */
@@ -71,55 +33,7 @@ public class ZCreateMessageEvent implements ZCreateItemEvent {
         return mMessageEl.getAttribute(MailConstants.A_CONV_ID, defaultValue);
     }
 
-    /**
-     * @param defaultValue value to return if unchanged
-     * @return new subject or defaultValue if unchanged
-     */
-    public String getSubject(String defaultValue) {
-        return mMessageEl.getAttribute(MailConstants.E_SUBJECT, defaultValue);
-    }
-
-    /**
-     * @param defaultValue value to return if unchanged
-     * @return new fragment or defaultValue if unchanged
-     */
-    public String getFragment(String defaultValue) {
-        return mMessageEl.getAttribute(MailConstants.E_FRAG, defaultValue);
-    }
-
-    /**
-     * @param defaultValue value to return if unchanged
-     * @return new date or defaultValue if unchanged
-     * @throws com.zimbra.common.service.ServiceException on error
-     */
-    public long getReceivedDate(long defaultValue) throws ServiceException {
-        return mMessageEl.getAttributeLong(MailConstants.A_DATE, defaultValue);
-    }
-
-    /**
-     * @param defaultValue value to return if unchanged
-     * @return new date or defaultValue if unchanged
-     * @throws com.zimbra.common.service.ServiceException on error
-     */
-    public long getSentDate(long defaultValue) throws ServiceException {
-        return mMessageEl.getAttributeLong(MailConstants.A_SENT_DATE, defaultValue);
-    }
-
-    /**
-     * @param defaultValue value to return if unchanged
-     * @return grants or defaultValue if unchanged
-     * @throws com.zimbra.common.service.ServiceException on error
-     */
-    public List<ZEmailAddress> getEmailAddresses(List<ZEmailAddress> defaultValue) throws ServiceException {
-        List<ZEmailAddress> result  = null;
-        for (Element emailEl: mMessageEl.listElements(MailConstants.E_EMAIL)) {
-            if (result == null) result = new ArrayList<>();
-            result.add(new ZEmailAddress(emailEl));
-        }
-        return result == null ? defaultValue : result;
-    }
-
-    public String toString() {
+	public String toString() {
         try {
             return String.format("[ZCreateMessageEvent %s]", getId());
         } catch (ServiceException e) {
@@ -127,7 +41,4 @@ public class ZCreateMessageEvent implements ZCreateItemEvent {
         }
     }
 
-    public ZItem getItem() throws ServiceException {
-        return null;
-    }
 }

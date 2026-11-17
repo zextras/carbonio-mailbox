@@ -6,7 +6,6 @@
 package com.zimbra.client.event;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.client.ZItem;
 import com.zimbra.client.ZSearchFolder;
 
 public class ZCreateSearchFolderEvent implements ZCreateItemEvent {
@@ -17,23 +16,7 @@ public class ZCreateSearchFolderEvent implements ZCreateItemEvent {
         mSearchFolder = searchFolder;
     }
 
-    /**
-     * @return id of created search folder.
-     * @throws com.zimbra.common.service.ServiceException
-     */
-    public String getId() throws ServiceException {
-        return mSearchFolder.getId();
-    }
-
-    public ZItem getItem() throws ServiceException {
-        return mSearchFolder;
-    }
-
-    public ZSearchFolder getSearchFolder() {
-        return mSearchFolder;
-    }
-    
-    public String toString() {
+	public String toString() {
     	return mSearchFolder.toString();
     }
 }

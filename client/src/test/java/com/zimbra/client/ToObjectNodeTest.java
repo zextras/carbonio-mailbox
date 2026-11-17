@@ -168,7 +168,7 @@ class ToObjectNodeTest {
   }
 
   static ZTag createTag() throws Exception {
-    return new ZTag(Element.parseXML("<tag id='64' name='Important' color='2' u='3'/>"), null);
+    return new ZTag(Element.parseXML("<tag id='64' name='Important' color='2' u='3'/>"));
   }
 
   static ZSignature createSignature() {

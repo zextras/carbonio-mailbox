@@ -7,7 +7,6 @@ package com.zimbra.cs.account;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Maps;
-import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.Key.DistributionListBy;
 import com.zimbra.common.service.ServiceException;
@@ -45,12 +44,6 @@ public abstract class AccessManager {
     return Provisioning.getInstance().get(AccountBy.id, at.getAccountId(), at);
   }
 
-  protected Account getAdminAccount(AuthToken at) throws ServiceException {
-    String adminAcctId = at.getAdminAccountId();
-    if (adminAcctId == null) return null;
-    else return Provisioning.getInstance().get(AccountBy.id, adminAcctId, at);
-  }
-
   public Domain getDomain(AuthToken at) throws ServiceException {
     return Provisioning.getInstance().getDomain(getAccount(at));
   }
@@ -77,21 +70,13 @@ public abstract class AccessManager {
 
   public abstract boolean canAccessDomain(AuthToken at, String domainName) throws ServiceException;
 
-  public abstract boolean canAccessDomain(AuthToken at, Domain domain) throws ServiceException;
-
   public abstract boolean canAccessCos(AuthToken at, Cos cos) throws ServiceException;
-
-  public abstract boolean canCreateGroup(AuthToken at, String groupEmail) throws ServiceException;
 
   public abstract boolean canCreateGroup(Account credentials, String groupEmail)
       throws ServiceException;
 
-  public abstract boolean canAccessGroup(AuthToken at, Group group) throws ServiceException;
-
   public abstract boolean canAccessGroup(Account credentials, Group group, boolean asAdmin)
       throws ServiceException;
-
-  public abstract boolean canAccessEmail(AuthToken at, String email) throws ServiceException;
 
   /**
    * Returns true if authAccount should be allowed access to private data in appointments owned by
@@ -120,11 +105,6 @@ public abstract class AccessManager {
 
   protected void checkDomainStatus(Group group) throws ServiceException {
     Domain domain = group.getDomain();
-    checkDomainStatus(domain);
-  }
-
-  protected void checkDomainStatus(String domainName) throws ServiceException {
-    Domain domain = Provisioning.getInstance().get(Key.DomainBy.name, domainName);
     checkDomainStatus(domain);
   }
 
@@ -216,18 +196,6 @@ public abstract class AccessManager {
     return canDo(grantee, target, rightNeeded, asAdmin);
   }
 
-  public boolean canDo(
-      AuthToken grantee, Entry target, Right rightNeeded, boolean asAdmin, ViaGrant viaGrant)
-      throws ServiceException {
-    return canDo(grantee, target, rightNeeded, asAdmin);
-  }
-
-  public boolean canDo(
-      String granteeEmail, Entry target, Right rightNeeded, boolean asAdmin, ViaGrant viaGrant)
-      throws ServiceException {
-    return canDo(granteeEmail, target, rightNeeded, asAdmin);
-  }
-
   /**
    * returns if the specified account's credentials can get the specified attrs on target
    *
@@ -240,10 +208,6 @@ public abstract class AccessManager {
    */
   public abstract boolean canGetAttrs(
       Account credentials, Entry target, Set<String> attrs, boolean asAdmin)
-      throws ServiceException;
-
-  public abstract boolean canGetAttrs(
-      AuthToken credentials, Entry target, Set<String> attrs, boolean asAdmin)
       throws ServiceException;
 
   public interface AttrRightChecker {
@@ -271,11 +235,6 @@ public abstract class AccessManager {
     throw ServiceException.FAILURE("not supported", null);
   }
 
-  public AttrRightChecker getGetAttrsChecker(AuthToken credentials, Entry target, boolean asAdmin)
-      throws ServiceException {
-    throw ServiceException.FAILURE("not supported", null);
-  }
-
   /**
    * returns if the specified account's credentials can set the specified attrs on target
    * constraints are not checked
@@ -289,10 +248,6 @@ public abstract class AccessManager {
    */
   public abstract boolean canSetAttrs(
       Account credentials, Entry target, Set<String> attrs, boolean asAdmin)
-      throws ServiceException;
-
-  public abstract boolean canSetAttrs(
-      AuthToken credentials, Entry target, Set<String> attrs, boolean asAdmin)
       throws ServiceException;
 
   /**
@@ -310,10 +265,6 @@ public abstract class AccessManager {
    */
   public abstract boolean canSetAttrs(
       Account credentials, Entry target, Map<String, Object> attrs, boolean asAdmin)
-      throws ServiceException;
-
-  public abstract boolean canSetAttrs(
-      AuthToken credentials, Entry target, Map<String, Object> attrs, boolean asAdmin)
       throws ServiceException;
 
   public boolean canSetAttrsOnCreate(
@@ -335,20 +286,6 @@ public abstract class AccessManager {
   // instead.
   public boolean canPerform(
       MailTarget credentials,
-      Entry target,
-      Right rightNeeded,
-      boolean canDelegate,
-      Map<String, Object> attrs,
-      boolean asAdmin,
-      ViaGrant viaGrant)
-      throws ServiceException {
-    throw ServiceException.FAILURE("not supported", null);
-  }
-
-  // for access manager internal use and unittest only, do not call this API, use the canDo API
-  // instead.
-  public boolean canPerform(
-      AuthToken credentials,
       Entry target,
       Right rightNeeded,
       boolean canDelegate,

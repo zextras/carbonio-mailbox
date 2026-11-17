@@ -83,15 +83,7 @@ public class ZMessageHit implements ZImapSearchHit {
         return mId;
     }
 
-    public boolean getContentMatched() {
-        return mContentMatched;
-    }
-
-    public boolean getIsInvite() {
-        return mIsInvite;
-    }
-
-  @Override
+	@Override
     public ObjectNode toObjectNode() {
         ObjectNode zjo = JsonNodeFactory.instance.objectNode();
         if (mId != null) zjo.put("id", mId);
@@ -115,19 +107,11 @@ public class ZMessageHit implements ZImapSearchHit {
         return String.format("[ZMessageHit %s]", mId);
     }
 
-    public String getFlags() {
-        return mFlags;
-    }
-
-    public long getDate() {
+	public long getDate() {
         return mDate;
     }
 
-    public String getFragment() {
-        return mFragment;
-    }
-
-    @Override
+	@Override
     public String getSortField() {
         return mSortField;
     }
@@ -136,91 +120,12 @@ public class ZMessageHit implements ZImapSearchHit {
         return mSubject;
     }
 
-    public String getTagIds() {
-        return mTags;
-    }
-
-    public String getConversationId() {
-        return mConvId;
-    }
-
-    public List<String> getMimePartHits() {
-        return mMimePartHits;
-    }
-
-    public ZMessage getMessage() {
+	public ZMessage getMessage() {
         return mMessage;
     }
 
-    public List<ZEmailAddress> getAddresses() {
-        return mAddresses;
-    }
-
-    public ZEmailAddress getSender() {
+	public ZEmailAddress getSender() {
         return mSender;
-    }
-
-    public long getSize() {
-        return mSize;
-    }
-
-    public boolean hasFlags() {
-        return mFlags != null && mFlags.length() > 0;
-    }
-
-    public boolean hasTags() {
-        return mTags != null && mTags.length() > 0;
-    }
-    public boolean hasAttachment() {
-        return hasFlags() && mFlags.indexOf(ZMessage.Flag.ATTACHED.getFlagChar()) != -1;
-    }
-
-    public boolean isDeleted() {
-        return hasFlags() && mFlags.indexOf(ZMessage.Flag.DELETED.getFlagChar()) != -1;
-    }
-
-    public boolean isDraft() {
-        return hasFlags() && mFlags.indexOf(ZMessage.Flag.DRAFT.getFlagChar()) != -1;
-    }
-
-    public boolean isFlagged() {
-        return hasFlags() && mFlags.indexOf(ZMessage.Flag.FLAGGED.getFlagChar()) != -1;
-    }
-
-    public boolean isHighPriority() {
-        return hasFlags() && mFlags.indexOf(ZMessage.Flag.HIGH_PRIORITY.getFlagChar()) != -1;
-    }
-
-    public boolean isLowPriority() {
-        return hasFlags() && mFlags.indexOf(ZMessage.Flag.LOW_PRIORITY.getFlagChar()) != -1;
-    }
-
-    public boolean isForwarded() {
-        return hasFlags() && mFlags.indexOf(ZMessage.Flag.FORWARDED.getFlagChar()) != -1;
-    }
-
-    public boolean isNotificationSent() {
-        return hasFlags() && mFlags.indexOf(ZMessage.Flag.NOTIFIED.getFlagChar()) != -1;
-    }
-
-    public boolean isRepliedTo() {
-        return hasFlags() && mFlags.indexOf(ZMessage.Flag.REPLIED.getFlagChar()) != -1;
-    }
-
-    public boolean isSentByMe() {
-        return hasFlags() && mFlags.indexOf(ZMessage.Flag.FROM_ME.getFlagChar()) != -1;
-    }
-
-    public boolean isUnread() {
-        return hasFlags() && mFlags.indexOf(ZMessage.Flag.UNREAD.getFlagChar()) != -1;
-    }
-
-    public String getFolderId() {
-        return mFolderId;
-    }
-
-    public long getAutoSendTime() {
-        return mAutoSendTime;
     }
 
     @Override

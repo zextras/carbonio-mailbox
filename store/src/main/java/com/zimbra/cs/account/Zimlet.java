@@ -6,7 +6,6 @@
 package com.zimbra.cs.account;
 
 import java.util.Map;
-import java.util.Set;
 
 public class Zimlet extends NamedEntry {
 	public Zimlet(String name, String id, Map<String, Object> attrs, Provisioning prov) {
@@ -53,14 +52,5 @@ public class Zimlet extends NamedEntry {
     public String getServerIndexRegex() {
         return getAttr(Provisioning.A_zimbraZimletServerIndexRegex);
     }
-
-    public String getZimbraXCompatibleSemVer() {
-        return getAttr(Provisioning.A_zimbraXZimletCompatibleSemVer);
-    }
-
-	public boolean checkTarget(String target) {
-		Set<String> lTiers = getMultiAttrSet(Provisioning.A_zimbraZimletTarget); 
-		return ((lTiers == null) ? false : lTiers.contains(target));
-	}
 
 }

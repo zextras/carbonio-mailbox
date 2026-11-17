@@ -266,59 +266,20 @@ public class SoapProvisioning extends Provisioning {
 
     public Options() {}
 
-    public Options(String account, AccountBy accountBy, String password, String uri) {
-      mAccount = account;
-      mAccountBy = accountBy;
-      mPassword = password;
-      mUri = uri;
-    }
-
-    // AP-TODO-7: retire
-    public Options(String authToken, String uri) {
-      mAuthToken = new ZAuthToken(null, authToken, null);
-      mUri = uri;
-    }
-
-    public Options(ZAuthToken authToken, String uri) {
-      mAuthToken = authToken;
-      mUri = uri;
-    }
-
     public String getAccount() {
       return mAccount;
-    }
-
-    public void setAccount(String account) {
-      mAccount = account;
     }
 
     public AccountBy getAccountBy() {
       return mAccountBy;
     }
 
-    public void setAccountBy(AccountBy accountBy) {
-      mAccountBy = accountBy;
-    }
-
     public String getPassword() {
       return mPassword;
     }
 
-    public void setPassword(String password) {
-      mPassword = password;
-    }
-
     public ZAuthToken getAuthToken() {
       return mAuthToken;
-    }
-
-    public void setAuthToken(ZAuthToken authToken) {
-      mAuthToken = authToken;
-    }
-
-    // AP-TODO-8: retire
-    public void setAuthToken(String authToken) {
-      mAuthToken = new ZAuthToken(null, authToken, null);
     }
 
     public String getUri() {
@@ -333,24 +294,12 @@ public class SoapProvisioning extends Provisioning {
       return mTimeout;
     }
 
-    public void setTimeout(int timeout) {
-      mTimeout = timeout;
-    }
-
     public int getRetryCount() {
       return mRetryCount;
     }
 
-    public void setRetryCount(int retryCount) {
-      mRetryCount = retryCount;
-    }
-
     public SoapTransport.DebugListener getDebugListener() {
       return mDebugListener;
-    }
-
-    public void setDebugListener(SoapTransport.DebugListener liistener) {
-      mDebugListener = liistener;
     }
 
     public boolean getLocalConfigAuth() {
@@ -479,16 +428,6 @@ public class SoapProvisioning extends Provisioning {
     return mTransport.getURI();
   }
 
-  public void soapSetTransportTimeout(int timeout) {
-    mTimeout = timeout;
-    if (mTransport != null && timeout >= 0) mTransport.setTimeout(timeout);
-  }
-
-  public void soapSetTransportRetryCount(int retryCount) {
-    mRetryCount = retryCount;
-    if (mTransport != null && retryCount >= 0) mTransport.setRetryCount(retryCount);
-  }
-
   public void soapSetTransportDebugListener(DebugListener listener) {
     mDebugListener = listener;
     if (mTransport != null) mTransport.setDebugListener(mDebugListener);
@@ -509,11 +448,6 @@ public class SoapProvisioning extends Provisioning {
 
   public ZAuthToken getAuthToken() {
     return mAuthToken;
-  }
-
-  public void setAuthToken(ZAuthToken authToken) {
-    mAuthToken = authToken;
-    if (mTransport != null) mTransport.setAuthToken(authToken);
   }
 
   /**
@@ -848,8 +782,7 @@ public class SoapProvisioning extends Provisioning {
     this.changePassword(acct, currentPassword, newPassword, false);
   }
 
-  @Override
-  public void changePassword(
+  private void changePassword(
       Account acct, String currentPassword, String newPassword, boolean dryRun)
       throws ServiceException {
     this.changePassword(acct, currentPassword, newPassword, dryRun, null);
@@ -875,16 +808,6 @@ public class SoapProvisioning extends Provisioning {
     CreateAccountResponse resp =
         invokeJaxb(new CreateAccountRequest(emailAddress, password, attrs));
     return new SoapAccount(resp.getAccount(), this);
-  }
-
-  @Override
-  public Account restoreAccount(
-      String emailAddress,
-      String password,
-      Map<String, Object> attrs,
-      Map<String, Object> origAttrs)
-      throws ServiceException {
-    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -1030,13 +953,6 @@ public class SoapProvisioning extends Provisioning {
       return mAuthToken;
     }
 
-    public long getExpires() {
-      return mExpires;
-    }
-
-    public long getLifetime() {
-      return mLifetime;
-    }
   }
 
   public DelegateAuthResponse delegateAuth(AccountBy keyType, String key, int durationSeconds)
@@ -1296,10 +1212,6 @@ public class SoapProvisioning extends Provisioning {
       mUsed = jaxbMboxInfo.getSize();
     }
 
-    public MailboxInfo(String id, long used) {
-      mMboxId = id;
-      mUsed = used;
-    }
   }
 
   public MailboxInfo getMailbox(Account acct) throws ServiceException {
@@ -1349,8 +1261,6 @@ public class SoapProvisioning extends Provisioning {
       public long getNumRemaining() {
         return numRemaining;
       }
-
-      Progress() {}
 
       Progress(long succeeded, long failed, long remaining) {
         numSucceeded = succeeded;
@@ -2114,12 +2024,6 @@ public class SoapProvisioning extends Provisioning {
   }
 
   @Override
-  public Identity restoreIdentity(Account account, String identityName, Map<String, Object> attrs)
-      throws ServiceException {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
   public void deleteIdentity(Account account, String identityName) throws ServiceException {
     NameId identity = new NameId(identityName, null);
     DeleteIdentityRequest request = new DeleteIdentityRequest(identity);
@@ -2161,12 +2065,6 @@ public class SoapProvisioning extends Provisioning {
     Element response =
         invokeOnTargetAccount(req, account.getId()).getElement(AccountConstants.E_SIGNATURE);
     return new SoapSignature(account, response, this);
-  }
-
-  @Override
-  public Signature restoreSignature(
-      Account account, String signatureName, Map<String, Object> attrs) throws ServiceException {
-    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -2223,13 +2121,6 @@ public class SoapProvisioning extends Provisioning {
       String dsName,
       Map<String, Object> attrs,
       boolean passwdAlreadyEncrypted)
-      throws ServiceException {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public DataSource restoreDataSource(
-      Account account, DataSourceType dsType, String dsName, Map<String, Object> attrs)
       throws ServiceException {
     throw new UnsupportedOperationException();
   }
@@ -2632,7 +2523,6 @@ public class SoapProvisioning extends Provisioning {
     invoke(req);
   }
 
-  @Override
   public void reloadMemcachedClientConfig() throws ServiceException {
     XMLElement req = new XMLElement(AdminConstants.RELOAD_MEMCACHED_CLIENT_CONFIG_REQUEST);
     invoke(req);

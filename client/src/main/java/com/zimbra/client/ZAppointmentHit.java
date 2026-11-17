@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zimbra.client.ZInvite.ZComponent;
 import com.zimbra.client.ZInvite.ZStatus;
-import com.zimbra.client.ZMailbox.ZFreeBusyTimeSlot;
 import com.zimbra.client.event.ZModifyAppointmentEvent;
 import com.zimbra.client.event.ZModifyEvent;
 import com.zimbra.common.calendar.Geo;
@@ -18,7 +17,6 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
@@ -30,55 +28,6 @@ public class ZAppointmentHit implements ZSearchHit {
   public static final String FBA_TENTATIVE = "T";
   public static final String FBA_UNAVAILABLE = "U";
   public static final String FBA_NODATA = "N";
-
-  public static final String TRANSP_OPAQUE = "O";
-  public static final String TRANSP_TRANSPARENT = "T";
-
-  public static final String STATUS_TENTATIVE = "TENT";
-  public static final String STATUS_CONFIRMED = "CONF";
-  public static final String STATUS_CANCELLED = "CANC";
-
-  public static final String PSTATUS_NEEDS_ACTION = "NE";
-  public static final String PSTATUS_TENTATIVE = "TE";
-  public static final String PSTATUS_ACCEPT = "AC";
-  public static final String PSTATUS_DECLINED = "DE";
-  public static final String PSTATUS_DELEGATED = "DG";
-
-  public static final String CLASS_PUBLIC = "PUB";
-  public static final String CLASS_PRIVATE = "PRI";
-  public static final String CLASS_CONFIDENTIAL = "CON";
-
-  public enum Flag {
-    flagged('f'),
-    attachment('a');
-
-    private char mFlagChar;
-
-    public char getFlagChar() {
-      return mFlagChar;
-    }
-
-    public static String toNameList(String flags) {
-      if (flags == null || flags.length() == 0) return "";
-      StringBuilder sb = new StringBuilder();
-      for (int i = 0; i < flags.length(); i++) {
-        String v = null;
-        for (Flag f : Flag.values()) {
-          if (f.getFlagChar() == flags.charAt(i)) {
-            v = f.name();
-            break;
-          }
-        }
-        if (sb.length() > 0) sb.append(", ");
-        sb.append(v == null ? flags.substring(i, i + 1) : v);
-      }
-      return sb.toString();
-    }
-
-    Flag(char flagChar) {
-      mFlagChar = flagChar;
-    }
-  }
 
   private String mId;
   private String mFlags;
@@ -128,29 +77,6 @@ public class ZAppointmentHit implements ZSearchHit {
   private boolean mIsFromFreeBusy;
 
   ZAppointmentHit() {}
-
-  ZAppointmentHit(ZFreeBusyTimeSlot slot) {
-    switch (slot.getType()) {
-      case BUSY:
-        mFreeBusyActual = FBA_BUSY;
-        break;
-      case TENTATIVE:
-        mFreeBusyActual = FBA_TENTATIVE;
-        break;
-      case UNAVAILABLE:
-        mFreeBusyActual = FBA_UNAVAILABLE;
-        break;
-      case NODATA:
-        mFreeBusyActual = FBA_NODATA;
-        break;
-      default:
-        mFreeBusyActual = FBA_FREE;
-    }
-    mStartTime = slot.getStartTime();
-    mEndTime = slot.getEndTime();
-    mDuration = mEndTime - mStartTime;
-    mIsFromFreeBusy = true;
-  }
 
   static void addInstances(Element e, List<ZSearchHit> appts, TimeZone timeZone, boolean isTask)
       throws ServiceException {
@@ -321,10 +247,6 @@ public class ZAppointmentHit implements ZSearchHit {
     }
   }
 
-  public boolean getIsFromFreeBusy() {
-    return mIsFromFreeBusy;
-  }
-
   @Override
   public String getId() {
     return mId;
@@ -337,14 +259,6 @@ public class ZAppointmentHit implements ZSearchHit {
 
   public String getFolderId() {
     return mFolderId;
-  }
-
-  public long getSize() {
-    return mSize;
-  }
-
-  public String getConversationId() {
-    return mConvId;
   }
 
   public long getHitDate() {
@@ -404,169 +318,12 @@ public class ZAppointmentHit implements ZSearchHit {
     return String.format("[ZAppointmentHit %s]", mId);
   }
 
-  // fba
-  public String getFreeBusyActual() {
-    return mFreeBusyActual;
-  }
-
-  public boolean isFreeBusyActualFree() {
-    return FBA_FREE.equals(mFreeBusyActual);
-  }
-
-  public boolean isFreeBusyActualBusy() {
-    return FBA_BUSY.equals(mFreeBusyActual);
-  }
-
-  public boolean isFreeBusyActualTentative() {
-    return FBA_TENTATIVE.equals(mFreeBusyActual);
-  }
-
-  public boolean isFreeBusyActualUnavailable() {
-    return FBA_UNAVAILABLE.equals(mFreeBusyActual);
-  }
-
-  public boolean isFreeBusyActualNoData() {
-    return FBA_NODATA.equals(mFreeBusyActual);
-  }
-
-  // transp
-  public String getTransparency() {
-    return mTransparency;
-  }
-
-  public boolean isTransparencyOpaque() {
-    return TRANSP_OPAQUE.equals(mTransparency);
-  }
-
-  public boolean isTransparencyTransparent() {
-    return TRANSP_TRANSPARENT.equals(mTransparency);
-  }
-
-  // status
-  public String getStatus() {
-    return mStatus;
-  }
-
-  public boolean isStatusTentative() {
-    return STATUS_TENTATIVE.equals(mStatus);
-  }
-
-  public boolean isStatusCancelled() {
-    return STATUS_CANCELLED.equals(mStatus);
-  }
-
-  public boolean isStatusConfirmed() {
-    return STATUS_CONFIRMED.equals(mStatus);
-  }
-
-  // class
-  public String getClassProp() {
-    return mClass;
-  }
-
-  public boolean isClassPublic() {
-    return CLASS_PUBLIC.equals(mClass);
-  }
-
-  public boolean isClassPrivate() {
-    return CLASS_PRIVATE.equals(mClass);
-  }
-
-  public boolean isClassConfidential() {
-    return CLASS_CONFIDENTIAL.equals(mClass);
-  }
-
-  // ptst
-  public String getParticipantStatus() {
-    return mPartStatus;
-  }
-
-  public boolean isPartStatusAccept() {
-    return PSTATUS_ACCEPT.equals(mPartStatus);
-  }
-
-  public boolean isPartStatusDeclined() {
-    return PSTATUS_DECLINED.equals(mPartStatus);
-  }
-
-  public boolean isPartStatusDelegated() {
-    return PSTATUS_DELEGATED.equals(mPartStatus);
-  }
-
-  public boolean isPartStatusNeedsAction() {
-    return PSTATUS_NEEDS_ACTION.equals(mPartStatus);
-  }
-
-  public boolean isPartStatusTentative() {
-    return PSTATUS_TENTATIVE.equals(mPartStatus);
-  }
-
   public boolean isAllDay() {
     return mIsAllDay;
   }
 
-  public boolean isDraft() {
-    return mDraft;
-  }
-
-  public boolean isOtherAttendees() {
-    return mIsOtherAttendees;
-  }
-
-  public boolean isAlarm() {
-    return mIsAlarm;
-  }
-
-  public boolean isRecurring() {
-    return mIsRecurring;
-  }
-
-  public String getFlags() {
-    return mFlags;
-  }
-
   public String getName() {
     return mName;
-  }
-
-  public String getLocation() {
-    return mLocation;
-  }
-
-  public List<String> getCategories() {
-    return mCategories;
-  }
-
-  public Geo getGeo() {
-    return mGeo;
-  }
-
-  public String getInviteId() {
-    return mInviteId;
-  }
-
-  public String getSeriesInviteId() {
-    return mSeriesInviteId;
-  }
-
-  public String getSeriesComponentNumber() {
-    return mSeriesComponentNumber;
-  }
-
-  public String getInviteComponentNumber() {
-    return mInviteComponentNumber;
-  }
-
-  public boolean isOrganizer() {
-    return mIsOrganizer;
-  }
-
-  public String getPriority() {
-    return mPriority;
-  }
-
-  public String getPercentComplete() {
-    return mPercentComplete;
   }
 
   public long getDuration() {
@@ -577,114 +334,8 @@ public class ZAppointmentHit implements ZSearchHit {
     return mStartTime;
   }
 
-  public long getDueDateTime() {
-    return mDueDate;
-  }
-
-  public Date getDueDate() {
-    return new Date(mDueDate);
-  }
-
-  /* computed from start+duration */
-  public long getEndTime() {
-    return mEndTime;
-  }
-
-  public Date getStartDate() {
-    return new Date(mStartTime);
-  }
-
-  public Date getEndDate() {
-    return new Date(mEndTime);
-  }
-
-  public long getTimeZoneOffset() {
-    return mTimeZoneOffset;
-  }
-
-  public boolean isException() {
-    return mIsException;
-  }
-
-  public String getRecurrenceIdZ() {
-    return mRecurrenceIdZ;
-  }
-
-  public String getFragment() {
-    return mFragment;
-  }
-
-  public String getTagIds() {
-    return mTags;
-  }
-
-  public String getUid() {
-    return mUid;
-  }
-
-  public long getModifiedSeq() {
-    return mModifiedSeq;
-  }
-
-  public long getModifiedDate() {
-    return mModifiedDate;
-  }
-
-  public long getSavedSeq() {
-    return mSavedSeq;
-  }
-
-  public boolean hasFlags() {
-    return mFlags != null && mFlags.length() > 0;
-  }
-
-  public boolean getHasTags() {
-    return mTags != null && mTags.length() > 0;
-  }
-
-  public boolean getHasAttachment() {
-    return hasFlags() && mFlags.indexOf(ZAppointmentHit.Flag.attachment.getFlagChar()) != -1;
-  }
-
-  public boolean getIsFlagged() {
-    return hasFlags() && mFlags.indexOf(ZMessage.Flag.FLAGGED.getFlagChar()) != -1;
-  }
-
   public boolean isInRange(long start, long end) {
     return mStartTime < end && mEndTime > start;
-  }
-
-  public boolean isOverLapping(ZAppointmentHit that) {
-    return this.mStartTime < that.mEndTime && this.mEndTime > that.mStartTime;
-  }
-
-  public boolean isOverLapping(ZAppointmentHit that, long msecsIncr) {
-    long thisStart = (this.mStartTime / msecsIncr) * msecsIncr;
-    long thisEnd = ((this.mEndTime + msecsIncr - 1) / msecsIncr) * msecsIncr;
-
-    long thatStart = (that.mStartTime / msecsIncr) * msecsIncr;
-    long thatEnd = ((that.mEndTime + msecsIncr - 1) / msecsIncr) * msecsIncr;
-
-    return thisStart < thatEnd && thisEnd > thatStart;
-  }
-
-  public boolean isOverLapping(long thatStartTime, long thatEndTime) {
-    return this.mStartTime < thatEndTime && this.mEndTime > thatStartTime;
-  }
-
-  public static boolean isOverLapping(long start1, long end1, long start2, long end2) {
-    return start1 < end2 && end1 > start2;
-  }
-
-  public static boolean isOverLapping(
-      long start1, long end1, long start2, long end2, long msecsIncr) {
-    start1 = (start1 / msecsIncr) * msecsIncr;
-    end1 = ((end1 + msecsIncr - 1) / msecsIncr) * msecsIncr;
-
-    start2 = (start2 / msecsIncr) * msecsIncr;
-    end2 = ((end2 + msecsIncr - 1) / msecsIncr) * msecsIncr;
-
-    return start1 < end2 && end1 > start2;
   }
 
   /** sort two appt summaries by all day, start time, duration, folder id. */

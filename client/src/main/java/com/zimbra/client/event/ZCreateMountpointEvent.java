@@ -6,7 +6,6 @@
 package com.zimbra.client.event;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.client.ZItem;
 import com.zimbra.client.ZMountpoint;
 
 public class ZCreateMountpointEvent implements ZCreateItemEvent {
@@ -17,23 +16,7 @@ public class ZCreateMountpointEvent implements ZCreateItemEvent {
         mMountpoint = mountpoint;
     }
 
-    /**
-     * @return id of created mountpoint
-     * @throws com.zimbra.common.service.ServiceException
-     */
-    public String getId() throws ServiceException {
-        return mMountpoint.getId();
-    }
-
-    public ZItem getItem() throws ServiceException {
-        return mMountpoint;
-    }
-
-    public ZMountpoint getMountpoint() {
-        return mMountpoint;
-    }
-    
-    public String toString() {
+	public String toString() {
     	return mMountpoint.toString();
     }
 }

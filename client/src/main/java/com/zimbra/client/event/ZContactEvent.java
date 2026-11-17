@@ -71,14 +71,6 @@ public class ZContactEvent {
         return mContactEl.getAttribute(ContactConstants.A_email, defaultValue);
     }
 
-    public String getEmail2(String defaultValue) {
-        return mContactEl.getAttribute(ContactConstants.A_email2, defaultValue);
-    }
-
-    public String getEmail3(String defaultValue) {
-        return mContactEl.getAttribute(ContactConstants.A_email3, defaultValue);
-    }
-
     public Map<String, String> getAttrs(Map<String, String> defaultValue) throws ServiceException {
     	Map<String, String> attrs = null;
         for (KeyValuePair pair : mContactEl.listKeyValuePairs(MailConstants.E_ATTRIBUTE, MailConstants.A_ATTRIBUTE_NAME)) {

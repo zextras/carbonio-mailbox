@@ -61,16 +61,7 @@ public abstract class RightBearer {
         Domain mGranteeDomain;
         Set<String> mIdAndGroupIds;
 
-        @VisibleForTesting
-        public Grantee(NamedEntry grantee) throws ServiceException {
-            this(grantee, null, true);
-        }
-
-        protected Grantee(NamedEntry grantee, boolean adminOnly) throws ServiceException {
-            this(grantee, null, adminOnly);
-        }
-
-        protected Grantee(NamedEntry grantee, Set <Right> rights, boolean adminOnly) throws ServiceException {
+			protected Grantee(NamedEntry grantee, Set <Right> rights, boolean adminOnly) throws ServiceException {
             super(grantee);
 
             Provisioning prov = grantee.getProvisioning();

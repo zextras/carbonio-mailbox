@@ -6,7 +6,6 @@
 package com.zimbra.client.event;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.client.ZItem;
 import com.zimbra.client.ZTag;
 
 public class ZCreateTagEvent implements ZCreateItemEvent {
@@ -17,19 +16,7 @@ public class ZCreateTagEvent implements ZCreateItemEvent {
         mTag = tag;
     }
 
-    /**
-     * @return tag id of created tag.
-     * @throws com.zimbra.common.service.ServiceException
-     */
-    public String getId() throws ServiceException {
-        return mTag.getId();
-    }
-
-    public ZItem getItem() throws ServiceException {
-        return mTag;
-    }
-
-    public ZTag getTag() {
+	public ZTag getTag() {
         return mTag;
     }
     

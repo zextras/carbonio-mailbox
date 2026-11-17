@@ -18,21 +18,11 @@ import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 import org.apache.hc.client5.http.cookie.BasicCookieStore;
 import org.apache.hc.client5.http.cookie.CookieStore;
-import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
 import org.apache.hc.core5.http.ClassicHttpResponse;
-import org.apache.hc.core5.http.HttpHost;
-import org.apache.hc.client5.http.auth.AuthScope;
-import org.apache.hc.client5.http.auth.CredentialsStore;
-import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
-import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.protocol.HttpClientContext;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 
 import com.zimbra.common.auth.ZAuthToken;
-import com.zimbra.common.net.ProxyHostConfiguration;
 import com.zimbra.common.util.ZimbraHttpConnectionManager;
 
 public class HttpClientUtil {
@@ -45,51 +35,8 @@ public class HttpClientUtil {
     }
 
     public static ClassicHttpResponse executeMethod(HttpClient client, HttpUriRequestBase method, BasicCookieStore state, HttpClientContext context) throws IOException {
-        ProxyHostConfiguration proxyConfig = HttpProxyConfig.getProxyConfig(HttpClientUtil.requestUri(method).toString());
-        BasicCookieStore cookieStore = new  BasicCookieStore();
-        if (state != null) {
-            cookieStore = state;
-        }
-        if (proxyConfig != null && proxyConfig.getUsername() != null && proxyConfig.getPassword() != null) {
-            HttpHost proxy = new HttpHost(proxyConfig.getProxyHost(), proxyConfig.getProxyPort());
-            RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
-            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(proxyConfig.getUsername(), proxyConfig.getPassword().toCharArray());
-            CredentialsStore credsProvider = new BasicCredentialsProvider();
-            credsProvider.setCredentials(new AuthScope (proxy),credentials);
-            CloseableHttpClient httpClient = HttpClients.custom ()
-                .setDefaultCredentialsProvider (credsProvider)
-                .setDefaultRequestConfig(config)
-                .setDefaultCookieStore(cookieStore)
-                .build ();
-            return httpClient.execute(method);
-
-        }
-        return client.executeOpen(null, method, null);
-    }
-
-    public static ClassicHttpResponse executeMethod(HttpClientBuilder clientBuilder, HttpUriRequestBase method, BasicCookieStore state, HttpClientContext context) throws IOException {
-        ProxyHostConfiguration proxyConfig = HttpProxyConfig.getProxyConfig(HttpClientUtil.requestUri(method).toString());
-        BasicCookieStore cookieStore = new  BasicCookieStore();
-        if (state != null) {
-            cookieStore = state;
-            clientBuilder.setDefaultCookieStore(cookieStore);
-        }
-        CloseableHttpClient httpClient = clientBuilder.build();
-        if (proxyConfig != null && proxyConfig.getUsername() != null && proxyConfig.getPassword() != null) {
-            HttpHost proxy = new HttpHost(proxyConfig.getProxyHost(), proxyConfig.getProxyPort());
-            RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
-            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(proxyConfig.getUsername(), proxyConfig.getPassword().toCharArray());
-            CredentialsStore credsProvider = new BasicCredentialsProvider();
-            credsProvider.setCredentials(new AuthScope(proxy),credentials);
-            httpClient = clientBuilder
-                .setDefaultCredentialsProvider(credsProvider)
-                .setDefaultRequestConfig(config)
-                .setDefaultCookieStore(cookieStore)
-                .build();
-            return httpClient.execute(method);
-
-        }
-        return httpClient.execute(method);
+        HttpClientUtil.requestUri(method);
+			return client.executeOpen(null, method, null);
     }
 
     public static ClassicHttpResponse executeMethod(HttpClient client, HttpUriRequestBase method, HttpClientContext context) throws IOException {
@@ -140,14 +87,6 @@ public class HttpClientUtil {
     public static String entityToString(HttpEntity entity) throws IOException {
         try {
             return EntityUtils.toString(entity);
-        } catch (ParseException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    public static String entityToString(HttpEntity entity, String charset) throws IOException {
-        try {
-            return EntityUtils.toString(entity, charset);
         } catch (ParseException e) {
             throw new IllegalStateException(e);
         }

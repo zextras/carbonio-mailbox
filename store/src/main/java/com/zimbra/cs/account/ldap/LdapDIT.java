@@ -483,15 +483,6 @@ public class LdapDIT {
   }
 
   /*
-   * ==============
-   *   group (static and dynamic neutral)
-   * ==============
-   */
-  public String domainDNToGroupsBaseDN(String domainDN) throws ServiceException {
-    return domainDN;
-  }
-
-  /*
   public String filterGroupsByDomain(Domain domain, boolean includeObjectClass) {
       if (includeObjectClass)
           return "(|(objectclass=zimbraGroup)(objectclass=zimbraDistributionList))";

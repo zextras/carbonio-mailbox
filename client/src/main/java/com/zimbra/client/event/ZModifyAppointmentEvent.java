@@ -39,23 +39,7 @@ public class ZModifyAppointmentEvent implements ZModifyItemEvent, ZModifyItemFol
         return new ZAppointment(mApptEl);
     }
 
-    /**
-     * @param defaultValue value to return if unchanged
-     * @return new flags or default value if flags didn't change
-     */
-    public String getFlags(String defaultValue) {
-        return mApptEl.getAttribute(MailConstants.A_FLAGS, defaultValue);
-    }
-
-    /**
-     * @param defaultValue value to return if unchanged
-     * @return new tags or default value if tags didn't change
-     */
-    public String getTagIds(String defaultValue) {
-        return mApptEl.getAttribute(MailConstants.A_TAGS, defaultValue);
-    }
-
-    public String getFolderId(String defaultValue) {
+	public String getFolderId(String defaultValue) {
         return mApptEl.getAttribute(MailConstants.A_FOLDER, defaultValue);
     }
 

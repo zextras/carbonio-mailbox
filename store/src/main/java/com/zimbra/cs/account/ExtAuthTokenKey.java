@@ -36,15 +36,7 @@ public class ExtAuthTokenKey {
         return version;
     }
 
-    public long getCreated() {
-        return created;
-    }
-
-    void setKey(byte[] key) {
-        this.key = key;
-    }
-
-    ExtAuthTokenKey(long version, byte[] key) throws ServiceException {
+	ExtAuthTokenKey(long version, byte[] key) throws ServiceException {
         this.version = version;
         created = System.currentTimeMillis();
         if (key != null) {

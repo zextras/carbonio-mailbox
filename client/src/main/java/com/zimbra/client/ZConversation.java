@@ -10,13 +10,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.zimbra.client.event.ZModifyConversationEvent;
-import com.zimbra.client.event.ZModifyEvent;
-import com.zimbra.client.event.ZModifyMessageEvent;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.zclient.ZClientException;
 
 public class ZConversation implements ZItem, ToZJSONObject {
 
@@ -79,21 +75,7 @@ public class ZConversation implements ZItem, ToZJSONObject {
         }
     }
 
-    public void modifyNotification(ZModifyEvent event) throws ServiceException {
-    	if (event instanceof ZModifyConversationEvent) {
-    		ZModifyConversationEvent cevent = (ZModifyConversationEvent) event;
-            if (cevent.getId().equals(mId)) {
-                mFlags = cevent.getFlags(mFlags);
-                mTags = cevent.getTagIds(mTags);
-                mSubject = cevent.getSubject(mSubject);
-                //mFragment = cevent.getFragment(mFragment);
-                mMessageCount = cevent.getMessageCount(mMessageCount);
-                //mRecipients = cevent.getRecipients(mRecipients);
-            }
-        }
-    }
-
-    @Override
+	@Override
     public String getId() {
         return mId;
     }
@@ -103,11 +85,7 @@ public class ZConversation implements ZItem, ToZJSONObject {
         return null;
     }
 
-    public ZMailbox getMailbox() {
-        return mMailbox;
-    }
-
-  @Override
+    @Override
     public ObjectNode toObjectNode() {
         ObjectNode jo = JsonNodeFactory.instance.objectNode();
         if (mId != null) jo.put("id", mId);
@@ -175,17 +153,7 @@ public class ZConversation implements ZItem, ToZJSONObject {
             mSubject = e.getAttribute(MailConstants.E_SUBJECT, null);
         }
 
-        public Element getElement() { return mElement; }
-
-        public void modifyNotification(ZModifyMessageEvent mevent) throws ServiceException {
-            if (mevent.getId().equals(mId)) {
-                mFlags = mevent.getFlags(mFlags);
-                mTags = mevent.getTagIds(mTags);
-                mFolderId = mevent.getFolderId(mFolderId);
-            }
-        }
-
-      @Override
+			@Override
         public ObjectNode toObjectNode() {
             ObjectNode jo = JsonNodeFactory.instance.objectNode();
             if (mId != null) jo.put("id", mId);
@@ -222,11 +190,7 @@ public class ZConversation implements ZItem, ToZJSONObject {
             return mDate;
         }
 
-        public String getFlags() {
-            return mFlags;
-        }
-
-        public String getFragment() {
+			public String getFragment() {
             return mFragment;
         }
 
@@ -244,23 +208,7 @@ public class ZConversation implements ZItem, ToZJSONObject {
             return mSender;
         }
 
-        public long getSize() {
-            return mSize;
-        }
-
-        public String getFolderId() {
-            return mFolderId;
-        }
-
-        public String getTagIds() {
-            return mTags;
-        }
-
-        public String getSubject() {
-            return mSubject;
-        }
-
-        public boolean hasFlags() {
+			public boolean hasFlags() {
             return mFlags != null && mFlags.length() > 0;
         }
 
@@ -321,95 +269,4 @@ public class ZConversation implements ZItem, ToZJSONObject {
         return mTags != null && mTags.length() > 0;
     }
 
-    public boolean hasAttachment() {
-        return hasFlags() && mFlags.indexOf(ZConversation.Flag.attachment.getFlagChar()) != -1;
-    }
-
-    public boolean isFlagged() {
-        return hasFlags() && mFlags.indexOf(ZConversation.Flag.flagged.getFlagChar()) != -1;
-    }
-
-    public boolean isSentByMe() {
-        return hasFlags() && mFlags.indexOf(ZConversation.Flag.sentByMe.getFlagChar()) != -1;
-    }
-
-    public boolean isUnread() {
-        return hasFlags() && mFlags.indexOf(ZConversation.Flag.unread.getFlagChar()) != -1;
-    }
-
-    public boolean isForwarded() {
-        return hasFlags() && mFlags.indexOf(ZConversation.Flag.forwarded.getFlagChar()) != -1;
-    }
-
-    public boolean isRepliedTo() {
-        return hasFlags() && mFlags.indexOf(ZConversation.Flag.replied.getFlagChar()) != -1;
-    }
-
-    public boolean isDraft() {
-        return hasFlags() && mFlags.indexOf(ZConversation.Flag.draft.getFlagChar()) != -1;
-    }
-
-    public boolean isHighPriority() {
-        return hasFlags() && mFlags.indexOf(ZConversation.Flag.highPriority.getFlagChar()) != -1;
-    }
-
-    public boolean isLowPriority() {
-        return hasFlags() && mFlags.indexOf(ZConversation.Flag.lowPriority.getFlagChar()) != -1;
-    }
-
-    public void delete(String tc) throws ServiceException {
-        getMailbox().deleteConversation(getId(), tc);
-    }
-
-    public void deleteItem(String tc) throws ServiceException {
-        delete(tc);
-    }
-
-    public void trash(String tc) throws ServiceException {
-        getMailbox().trashConversation(getId(), tc);
-    }
-
-    public void markRead(boolean read, String tc) throws ServiceException {
-        getMailbox().markConversationRead(getId(), read, tc);
-    }
-
-    public void flag(boolean flag, String tc) throws ServiceException {
-        getMailbox().flagConversation(getId(), flag, tc);
-    }
-
-    public void tag(String nameOrId, boolean tagged, String tc) throws ServiceException {
-        ZTag tag = mMailbox.getTag(nameOrId);
-        if (tag == null)
-            throw ZClientException.CLIENT_ERROR("unknown tag: "+nameOrId, null);
-        else
-           tag(tag, tagged, tc);
-    }
-
-    public void tag(ZTag tag, boolean tagged, String tc) throws ServiceException {
-        mMailbox.tagConversation(mId, tag.getId(), tagged, tc);
-    }
-
-    public void move(String pathOrId, String tc) throws ServiceException {
-        ZFolder destFolder = mMailbox.getFolder(pathOrId);
-        if (destFolder == null)
-            throw ZClientException.CLIENT_ERROR("unknown folder: "+pathOrId, null);
-        else
-            move(destFolder, tc);
-    }
-
-    public void move(ZFolder destFolder, String tc) throws ServiceException {
-        mMailbox.moveConversation(mId, destFolder.getId(), tc);
-    }
-
-    public void markSpam(boolean spam, String pathOrId, String tc) throws ServiceException {
-        ZFolder destFolder = mMailbox.getFolder(pathOrId);
-        if (destFolder == null)
-            throw ZClientException.CLIENT_ERROR("unknown folder: "+pathOrId, null);
-        else
-            markSpam(spam, destFolder, tc);
-    }
-
-    public void markSpam(boolean spam, ZFolder destFolder, String tc) throws ServiceException {
-        getMailbox().markConversationSpam(getId(), spam, destFolder == null ? null : destFolder.getId(), tc);
-    }
 }

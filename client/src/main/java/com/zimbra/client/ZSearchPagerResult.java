@@ -10,23 +10,16 @@ public class ZSearchPagerResult {
 
     private ZSearchResult mSearchResult;
     private int mActualPage;
-    private int mRequstedPage;
-    private int mLimit;
 
-    ZSearchPagerResult(ZSearchResult result, int requestedPage, int actualPage, int limit) {
+    ZSearchPagerResult(ZSearchResult result, int requestedPage, int actualPage) {
         mSearchResult = result;
         mActualPage = actualPage;
-        mRequstedPage = requestedPage;
-        mLimit = limit;
     }
 
     public ZSearchResult getResult() { return mSearchResult; }
     public int getActualPage() { return mActualPage; }
-    public int getRequestedPage() { return mRequstedPage; }
 
-    public int getOffset() { return mLimit * mActualPage; }
-
-    public String toString() {
+	public String toString() {
         return String.format("[ZSearchPagerResult %s]", mActualPage);
     }
 }

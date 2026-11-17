@@ -17,7 +17,6 @@ import com.zimbra.cs.account.GuestAccount;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE.ExternalGroupInfo;
-import com.zimbra.soap.admin.type.GranteeSelector;
 import com.zimbra.soap.admin.type.GranteeSelector.GranteeBy;
 
 public enum GranteeType {
@@ -195,18 +194,7 @@ public enum GranteeType {
         return lookupGrantee(prov, granteeType, granteeBy,  grantee, true);
     }
 
-    public static NamedEntry lookupGrantee(Provisioning prov, GranteeSelector selector, boolean mustFind)
-    throws ServiceException {
-        return lookupGrantee(prov, GranteeType.fromJaxb(selector.getType()), selector.getBy(),  selector.getKey(),
-                mustFind);
-    }
-
-    public static NamedEntry lookupGrantee(Provisioning prov, GranteeSelector selector)
-    throws ServiceException {
-        return lookupGrantee(prov, selector, true);
-    }
-
-    public static GranteeType determineGranteeType(GranteeType granteeType,
+	public static GranteeType determineGranteeType(GranteeType granteeType,
             GranteeBy granteeBy, String grantee, String domainName)
     throws ServiceException {
 

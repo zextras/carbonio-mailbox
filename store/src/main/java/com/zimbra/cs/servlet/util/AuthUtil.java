@@ -32,7 +32,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.auth.AuthContext;
 import com.zimbra.cs.account.auth.AuthContext.Protocol;
-import com.zimbra.cs.dav.service.DavServlet;
 import com.zimbra.cs.httpclient.URLUtil;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.UserServletException;
@@ -64,17 +63,7 @@ public class AuthUtil {
         return false;
     }
 
-    public static AuthToken getAuthTokenFromCookie(HttpServletRequest req, HttpServletResponse resp)
-    throws IOException {
-        return getAuthTokenFromHttpReq(req, resp, false, false);
-    }
-
-    public static AuthToken getAuthTokenFromCookie(HttpServletRequest req, HttpServletResponse resp, boolean doNotSendHttpError)
-    throws IOException {
-        return getAuthTokenFromHttpReq(req, resp, false, doNotSendHttpError);
-    }
-
-    public static AuthToken getAuthTokenFromHttpReq(HttpServletRequest req, boolean isAdminReq) {
+    private static AuthToken getAuthTokenFromHttpReq(HttpServletRequest req, boolean isAdminReq) {
         AuthToken authToken = null;
         try {
             authToken = AuthProvider.getAuthToken(req, isAdminReq);
@@ -90,44 +79,8 @@ public class AuthUtil {
         }
     }
 
-    public static AuthToken getAuthTokenFromHttpReq(HttpServletRequest req,
-                                                    HttpServletResponse resp,
-                                                    boolean isAdminReq,
-                                                    boolean doNotSendHttpError) throws IOException {
-        AuthToken authToken = null;
-        try {
-            authToken = AuthProvider.getAuthToken(req, isAdminReq);
-            if (authToken == null) {
-                if (!doNotSendHttpError)
-                    resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "no authtoken cookie");
-                return null;
-            }
-
-            if (authToken.isExpired() || !authToken.isRegistered()) {
-                if (!doNotSendHttpError)
-                    resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "authtoken expired");
-                return null;
-            }
-            return authToken;
-        } catch (AuthTokenException e) {
-            if (!doNotSendHttpError)
-                resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "unable to parse authtoken");
-            return null;
-        }
-    }
-
-    public static AuthToken getAdminAuthTokenFromCookie(HttpServletRequest req) {
+    private static AuthToken getAdminAuthTokenFromCookie(HttpServletRequest req) {
         return getAuthTokenFromHttpReq(req, true);
-    }
-
-    public static AuthToken getAdminAuthTokenFromCookie(HttpServletRequest req, HttpServletResponse resp)
-    throws IOException {
-        return getAuthTokenFromHttpReq(req, resp, true, false);
-    }
-
-    public static AuthToken getAdminAuthTokenFromCookie(HttpServletRequest req, HttpServletResponse resp, boolean doNotSendHttpError)
-    throws IOException {
-        return getAuthTokenFromHttpReq(req, resp, true, doNotSendHttpError);
     }
 
     /**
@@ -145,39 +98,19 @@ public class AuthUtil {
         return basicAuthRequest(req, resp, sendChallenge);
     }
 
-    public static final class AuthResult {
-        public final boolean sendErrorCalled;
-        public final Account authorizedAccount;
-        public AuthResult(Account authAcct, boolean calledSendError) {
-            sendErrorCalled = calledSendError;
-            authorizedAccount = authAcct;
-        }
-    }
-
-    public static AuthResult basicAuthRequest(HttpServletRequest req, HttpServletResponse resp,
-                                           boolean sendChallenge, ZimbraServlet servlet)
-    throws IOException, ServiceException {
-        if (!AuthProvider.allowBasicAuth(req, servlet)) {
-            return new AuthResult(null, false);
-        }
-        boolean isDav = (servlet instanceof DavServlet);
-        Account acct = basicAuthRequest(req, resp, sendChallenge, isDav);
-        return new AuthResult(acct, (acct == null));
-    }
-
-    public static Account basicAuthRequest(HttpServletRequest req, HttpServletResponse resp, boolean sendChallenge)
+    private static Account basicAuthRequest(HttpServletRequest req, HttpServletResponse resp, boolean sendChallenge)
             throws IOException, ServiceException {
-        return basicAuthRequest(req, resp, sendChallenge, false);
+        return basicAuthRequest(req, resp, sendChallenge, Protocol.http_basic);
     }
 
     /**
      * If returns null, then resp.sendError has been called.
      */
-    public static Account basicAuthRequest(HttpServletRequest req, HttpServletResponse resp, boolean sendChallenge, boolean isDav)
+    public static Account basicAuthRequest(HttpServletRequest req, HttpServletResponse resp, boolean sendChallenge, Protocol protocol)
             throws IOException, ServiceException
     {
         try {
-            return basicAuthRequest(req, !sendChallenge, isDav);
+            return basicAuthRequest(req, !sendChallenge, protocol);
         } catch (UserServletException e) {
             if (e.getHttpStatusCode() == HttpServletResponse.SC_UNAUTHORIZED) {
                 if (sendChallenge) {
@@ -191,12 +124,7 @@ public class AuthUtil {
         }
     }
 
-    public static Account basicAuthRequest(HttpServletRequest req, boolean allowGuest)
-            throws IOException, ServiceException, UserServletException {
-        return basicAuthRequest(req, allowGuest, false);
-    }
-
-    public static Account basicAuthRequest(HttpServletRequest req, boolean allowGuest, boolean isDav)
+    private static Account basicAuthRequest(HttpServletRequest req, boolean allowGuest, Protocol proto)
         throws IOException, ServiceException, UserServletException
     {
         String auth = req.getHeader(HTTP_AUTH_HEADER);
@@ -243,7 +171,6 @@ public class AuthUtil {
             authCtxt.put(AuthContext.AC_REMOTE_IP, ZimbraServlet.getClientIp(req));
             authCtxt.put(AuthContext.AC_ACCOUNT_NAME_PASSEDIN, userPassedIn);
             authCtxt.put(AuthContext.AC_USER_AGENT, req.getHeader("User-Agent"));
-            Protocol proto = isDav? Protocol.http_dav: Protocol.http_basic;
             prov.authAccount(acct, pass, proto, authCtxt);
         } catch (ServiceException se) {
             throw new UserServletException(HttpServletResponse.SC_UNAUTHORIZED, "invalid username/password");
@@ -252,13 +179,7 @@ public class AuthUtil {
         return acct;
     }
 
-    public AuthToken cookieAuthRequest(HttpServletRequest req, HttpServletResponse resp)
-    throws IOException, ServiceException {
-        AuthToken at = AuthUtil.isAdminRequest(req) ? AuthUtil.getAdminAuthTokenFromCookie(req, resp, true) : AuthUtil.getAuthTokenFromCookie(req, resp, true);
-        return at;
-    }
-
-    public static String getRealmHeader(HttpServletRequest req, Domain domain)  {
+    private static String getRealmHeader(HttpServletRequest req, Domain domain)  {
         String realm = null;
 
         if (domain == null) {
@@ -280,7 +201,7 @@ public class AuthUtil {
         return getRealmHeader(realm);
     }
 
-    public static String getRealmHeader(String realm)  {
+    private static String getRealmHeader(String realm)  {
         if (realm == null)
             realm = "Zimbra";
         return "BASIC realm=\"" + realm + "\"";

@@ -15,11 +15,8 @@ public class SpecialAttrs {
     
     // special Zimbra attrs
     public static final String SA_zimbraId  = Provisioning.A_zimbraId;
-    
-    // pseudo attrs
-    public static final String PA_ldapBase    = "ldap.baseDN";
-    
-    private String mZimbraId;
+
+	private String mZimbraId;
     private String mLdapBaseDn;
     
     public String getZimbraId()     { return mZimbraId; }
@@ -58,14 +55,6 @@ public class SpecialAttrs {
             // remove it from the attr list
             attrs.remove(SA_zimbraId);
             mZimbraId = zimbraId;
-        }
-    }
-        
-    public void handleLdapBaseDn(Map<String, Object> attrs) throws ServiceException {
-        String baseDn = getSingleValuedAttr(attrs, PA_ldapBase);
-        if (baseDn != null) {
-            attrs.remove(PA_ldapBase);
-            mLdapBaseDn = baseDn;
         }
     }
 

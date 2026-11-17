@@ -5,6 +5,8 @@
 
 package com.zimbra.common.net;
 
+import com.google.common.collect.Sets;
+import com.zimbra.common.util.ZimbraLog;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -13,16 +15,10 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Set;
-
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
-
-import javax.security.cert.CertificateEncodingException;
 import org.bouncycastle.est.jcajce.JsseDefaultHostnameAuthorizer;
-
-import com.google.common.collect.Sets;
-import com.zimbra.common.util.ZimbraLog;
 
 public class CustomHostnameVerifier implements HostnameVerifier {
 

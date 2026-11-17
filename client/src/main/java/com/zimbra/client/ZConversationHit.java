@@ -89,19 +89,11 @@ public class ZConversationHit implements ZSearchHit {
         return String.format("[ZConversationHit %s]", mId);
     }
 
-    public String getFlags() {
-        return mFlags;
-    }
-
-    public long getDate() {
+	public long getDate() {
         return mDate;
     }
 
-    public String getFragment() {
-        return mFragment;
-    }
-
-    @Override
+	@Override
     public String getSortField() {
         return mSortField;
     }
@@ -110,56 +102,12 @@ public class ZConversationHit implements ZSearchHit {
         return mSubject;
     }
 
-    public String getTagIds() {
-        return mTags;
-    }
-
-    public int getMessageCount() {
+	public int getMessageCount() {
         return mMessageCount;
     }
 
-    public List<String> getMatchedMessageIds() {
-        return mMessageIds;
-    }
-
-    public List<ZEmailAddress> getRecipients() {
+	public List<ZEmailAddress> getRecipients() {
         return mRecipients;
-    }
-
-    public boolean hasFlags() {
-        return mFlags != null && mFlags.length() > 0;
-    }
-
-    public boolean hasTags() {
-        return mTags != null && mTags.length() > 0;
-    }
-
-    public boolean hasAttachment() {
-        return hasFlags() && mFlags.indexOf(ZConversation.Flag.attachment.getFlagChar()) != -1;
-    }
-
-    public boolean isFlagged() {
-        return hasFlags() && mFlags.indexOf(ZConversation.Flag.flagged.getFlagChar()) != -1;
-    }
-
-    public boolean isHighPriority() {
-        return hasFlags() && mFlags.indexOf(ZConversation.Flag.highPriority.getFlagChar()) != -1;
-    }
-
-    public boolean isLowPriority() {
-        return hasFlags() && mFlags.indexOf(ZConversation.Flag.lowPriority.getFlagChar()) != -1;
-    }
-
-    public boolean isSentByMe() {
-        return hasFlags() && mFlags.indexOf(ZConversation.Flag.sentByMe.getFlagChar()) != -1;
-    }
-
-    public boolean isUnread() {
-        return hasFlags() && mFlags.indexOf(ZConversation.Flag.unread.getFlagChar()) != -1;
-    }
-
-    public boolean isDraft() {
-        return hasFlags() && mFlags.indexOf(ZConversation.Flag.draft.getFlagChar()) != -1;
     }
 
 

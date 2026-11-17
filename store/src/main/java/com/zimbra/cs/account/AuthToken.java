@@ -18,7 +18,6 @@ import com.zimbra.cs.account.auth.AuthMechanism.AuthMech;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 import org.apache.hc.client5.http.cookie.BasicCookieStore;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
@@ -144,20 +143,7 @@ public abstract class AuthToken {
     return acct;
   }
 
-  /**
-   * Encode original auth info into an outgoing http request.
-   *
-   * @param client
-   * @param method
-   * @param isAdminReq
-   * @param cookieDomain
-   * @throws ServiceException
-   */
-  public abstract void encode(
-      HttpClient client, HttpUriRequestBase method, boolean isAdminReq, String cookieDomain)
-      throws ServiceException;
-
-  /**
+	/**
    * AP-TODO-4: This API is called only from ZimbraServlet.proxyServletRequest when the first hop is
    * http basic auth(REST basic auth and DAV). For the next hop we encode the String auth token in
    * cookie. For all other cases, the original cookies are copied "as is" to the next hop. See
@@ -290,11 +276,7 @@ public abstract class AuthToken {
       this.code = code;
     }
 
-    public String getCode() {
-      return code;
-    }
-
-    public static TokenType fromCode(String code) throws ServiceException {
+		public static TokenType fromCode(String code) throws ServiceException {
       if ("jwt".equalsIgnoreCase(code)) {
         return TokenType.JWT;
       } else {

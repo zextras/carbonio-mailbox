@@ -14,9 +14,6 @@ import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
 
-import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.util.ZimbraLog;
-
 /**
  * Factory class for various ProxySelector types.
  */
@@ -27,16 +24,6 @@ public final class ProxySelectors {
     static {
         systemProxySelector = ProxySelector.getDefault();
         defaultProxySelector = new CustomProxySelector(systemProxySelector);
-        String className = LC.zimbra_class_customproxyselector.value();
-        if (className != null && !className.equals("")) {
-            try {
-                CustomProxySelector selector = (CustomProxySelector) Class.forName(className).newInstance();
-                selector.setDefaultProxySelector(defaultProxySelector);
-                defaultProxySelector = selector;
-            } catch (Exception e) {
-                ZimbraLog.net.error("could not instantiate ConditionalProxySelector interface of class '" + className + "'; defaulting to system proxy settings", e);
-            }
-        }
     }
 
     /**
@@ -47,14 +34,6 @@ public final class ProxySelectors {
      */
     public static ProxySelector defaultProxySelector() {
         return defaultProxySelector;
-    }
-
-    /**
-     * Returns the original system default ProxySelector.
-     * @return the system default ProxySelector
-     */
-    public static ProxySelector systemProxySelector() {
-        return systemProxySelector;
     }
 
     /*

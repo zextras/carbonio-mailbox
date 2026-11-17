@@ -12,7 +12,6 @@ package com.zimbra.common.soap;
 import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.auth.ZJWToken;
 import com.zimbra.common.httpclient.HttpClientUtil;
-import com.zimbra.common.httpclient.HttpProxyConfig;
 import com.zimbra.common.httpclient.ZimbraHttpClientManager;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.net.ProxyHostConfiguration;
@@ -94,7 +93,7 @@ public class SoapHttpTransport extends SoapTransport {
     public SoapHttpTransport(String uri) {
         super();
         mUri = uri;
-        mHostConfig = HttpProxyConfig.getProxyConfig(uri);
+        mHostConfig = null;
     }
 
     /**
@@ -107,15 +106,11 @@ public class SoapHttpTransport extends SoapTransport {
         super();
         mUri = uri;
         mAuthToken = token;
-        mHostConfig = HttpProxyConfig.getProxyConfig(uri);
+        mHostConfig = null;
     }
 
     public void setHttpDebugListener(HttpDebugListener listener) {
         mHttpDebugListener = listener;
-    }
-
-    public HttpDebugListener getHttpDebugListener() {
-        return mHttpDebugListener;
     }
 
     /**

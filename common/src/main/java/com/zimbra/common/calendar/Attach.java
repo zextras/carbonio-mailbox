@@ -46,10 +46,6 @@ public class Attach {
         return fromEncodedAndContentType(encoded, contentType);
     }
 
-    public static Attach fromEncodedAndContentType(byte[] binaryB64Data, String contentType) {
-        return new Attach(binaryB64Data, contentType);
-    }
-
     public static Attach fromEncodedAndContentType(String binaryB64Data, String contentType) {
         Attach attach = new Attach(binaryB64Data);
         attach.setContentType(contentType);

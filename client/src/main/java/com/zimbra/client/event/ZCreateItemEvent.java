@@ -5,18 +5,6 @@
 
 package com.zimbra.client.event;
 
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.client.ZItem;
-
 public interface ZCreateItemEvent extends ZCreateEvent {
 
-    String getId() throws ServiceException;
-
-    /**
-     *
-     * @return the ZItem, if this event contains the full item, NULL otherwise.
-     *
-     * @throws ServiceException on error
-     */
-    public ZItem getItem() throws ServiceException;
 }

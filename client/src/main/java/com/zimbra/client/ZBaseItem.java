@@ -30,11 +30,7 @@ public class ZBaseItem implements ZItem, ZimbraMailItem {
                 0 /* modifiedSequence - constructor only used for inlined contacts, so not really meaningful */);
     }
 
-    public ZBaseItem(String id, int imapUid) {
-        this(id, imapUid, 0);
-    }
-
-    public ZBaseItem(String id, int imapUid, int modSequence) {
+	public ZBaseItem(String id, int imapUid, int modSequence) {
         mId = id;
         this.imapUid = imapUid;
         modifiedSequence = modSequence;
@@ -155,11 +151,7 @@ public class ZBaseItem implements ZItem, ZimbraMailItem {
         return imapUid;
     }
 
-    public void setImapUid(int imapUid) {
-        this.imapUid = imapUid;
-    }
-
-    /** @return item's ID.  IDs are unique within a Mailbox and are assigned in increasing
+	/** @return item's ID.  IDs are unique within a Mailbox and are assigned in increasing
      * (though not necessarily gap-free) order. */
     @Override
     public String getId() {

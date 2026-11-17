@@ -23,7 +23,6 @@ public class ZTag implements Comparable<ZTag>, ZItem, ZimbraTag, ToZJSONObject {
     private String mId;
     private String mName;
     private int mUnreadCount;
-    private ZMailbox mMailbox;
     private RetentionPolicy mRetentionPolicy = new RetentionPolicy();
 
     public enum Color {
@@ -73,8 +72,7 @@ public class ZTag implements Comparable<ZTag>, ZItem, ZimbraTag, ToZJSONObject {
         Color() {}
     }
 
-    public ZTag(Element e, ZMailbox mailbox) throws ServiceException {
-        mMailbox = mailbox;
+    public ZTag(Element e) throws ServiceException {
         String rgb = e.getAttribute(MailConstants.A_RGB, null);
         // Server reports color or rgb attribute on mail items but not both.
         // If rgb, map the color to the rgb value. If the attr is color, return the value as is.
@@ -111,11 +109,7 @@ public class ZTag implements Comparable<ZTag>, ZItem, ZimbraTag, ToZJSONObject {
         return null;
     }
 
-    public ZMailbox getMailbox() {
-        return mMailbox;
-    }
-
-    /** Returns the folder's name.  Note that this is the folder's
+	/** Returns the folder's name.  Note that this is the folder's
      *  name (e.g. <code>"foo"</code>), not its absolute pathname
      *  (e.g. <code>"/baz/bar/foo"</code>).
      *
@@ -158,24 +152,6 @@ public class ZTag implements Comparable<ZTag>, ZItem, ZimbraTag, ToZJSONObject {
     @Override
     public int compareTo(ZTag other) {
         return getName().compareToIgnoreCase(other.getName());
-    }
-
-    public void delete() throws ServiceException { mMailbox.deleteTag(mId); }
-
-    public void deleteItem() throws ServiceException { delete(); }
-
-    public void markRead() throws ServiceException { mMailbox.markTagRead(mId); }
-
-    public void modifyColor(ZTag.Color color) throws ServiceException { mMailbox.modifyTagColor(mId, color); }
-
-    public void rename(String newName) throws ServiceException { mMailbox.renameTag(mId, newName); }
-
-    public RetentionPolicy getRetentionPolicy() {
-        return mRetentionPolicy;
-    }
-
-    public void setRetentionPolicy(RetentionPolicy rp) {
-        mRetentionPolicy = rp;
     }
 
     @Override

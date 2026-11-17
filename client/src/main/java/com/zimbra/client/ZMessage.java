@@ -20,7 +20,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.common.zclient.ZClientException;
 
 public class ZMessage extends ZBaseItem implements ToZJSONObject {
 
@@ -114,11 +113,7 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
         }
     }
 
-    public  ZShare getShare() {
-        return mShare;
-    }
-
-    /**
+	/**
      *
      * @return invite object if this message contains an invite, null otherwise.
      */
@@ -126,31 +121,7 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
         return mInvite;
     }
 
-    /**
-     *
-     * @return Zimbra id of message we are replying to if this is a draft.
-     */
-    public String getOriginalId() {
-        return mOrigId;
-    }
-
-    /**
-     *
-     * @return message-id header of message we are replying to if this is a draft
-     */
-    public String getInReplyTo() {
-        return mInReplyTo;
-    }
-
-    /**
-     *
-     * @return reply type if this is a draft
-     */
-    public String getReplyType() {
-        return mReplyType;
-    }
-
-    @Override
+	@Override
     public long getSize() {
         return mSize;
     }
@@ -214,31 +185,15 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
         return ToZJSONObject.toString(this);
     }
 
-    /**
-     *
-     * @return the part name if this message is actually a part of another message
-     */
-    public String getPartName() {
-        return mPartName;
-    }
-
-    public String getSubject() {
+	public String getSubject() {
         return mSubject;
     }
 
-    public String getFragment() {
-        return mFragment;
-    }
-
-    public String getConversationId() {
+	public String getConversationId() {
         return mConversationId;
     }
 
-    public Map<String,String> getRequestHeader() {
-        return mReqHdrs;
-    }
-
-    public List<ZEmailAddress> getEmailAddresses() {
+	public List<ZEmailAddress> getEmailAddresses() {
         return mAddresses;
     }
 
@@ -251,11 +206,7 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
         return getIdInMailbox(getFolderId());
     }
 
-    public String getMessageIdHeader() {
-        return mMessageIdHeader;
-    }
-
-    public ZMimePart getMimeStructure() {
+	public ZMimePart getMimeStructure() {
         return mMimeStructure;
     }
 
@@ -263,25 +214,12 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
         return mReceivedDate;
     }
 
-    public long getSentDate() {
-        return mSentDate;
-    }
-
-    /** content of the message, if raw is specified. if message too big or not ASCII, a content servlet URL is returned */
+	/** content of the message, if raw is specified. if message too big or not ASCII, a content servlet URL is returned */
     public String getContent() {
         return mContent;
     }
 
-    /** if raw is specified and message too big or not ASCII, a content servlet URL is returned */
-    public String getContentURL() {
-        return mContentURL;
-    }
-
-    public String getIdentityId() {
-        return mIdentityId;
-    }
-
-    public static class ZMimePart implements ToZJSONObject {
+	public static class ZMimePart implements ToZJSONObject {
         private final String mPartName;
         private final String mName;
         private final String mContentType;
@@ -340,11 +278,7 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
             return String.format("[ZMimePart %s]", mPartName);
         }
 
-        public ZMimePart getParent() {
-            return mParent;
-        }
-
-        /** "" means top-level part, 1 first part, 1.1 first part of a multipart inside of 1. */
+		/** "" means top-level part, 1 first part, 1.1 first part of a multipart inside of 1. */
         public String getPartName() {
             return mPartName;
         }
@@ -354,37 +288,12 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
             return mName;
         }
 
-        /** MIME Content-Type */
-        public String getContentType() {
-            return mContentType;
-        }
-
-        /** MIME Content-Disposition */
-        public String getContentDisposition() {
-            return mContentDisposition;
-        }
-
-        /** filename attribute from the Content-Disposition param list */
+		/** filename attribute from the Content-Disposition param list */
         public String getFileName() {
             return mFileName;
         }
 
-        /** MIME Content-ID (for display of embedded images) */
-        public String getContentId() {
-            return mContentId;
-        }
-
-        /** MIME/Microsoft Content-Location (for display of embedded images) */
-        public String getContentLocation() {
-            return mContentLocation;
-        }
-
-        /** MIME Content-Description.  Note cont-desc is not currently used in the code. */
-        public String getContentDescription() {
-            return mContentDescription;
-        }
-
-        /** content of the part, if requested */
+		/** content of the part, if requested */
         public String getContent() {
             return mContent;
         }
@@ -399,14 +308,7 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
             return mChildren;
         }
 
-        public long getSize() {
-            return mSize;
-        }
-
-        public boolean wasTruncated() {
-            return mTruncated;
-        }
-    }
+	}
 
     public boolean hasAttachment() {
         return hasFlags() && mFlags.indexOf(ZMessage.Flag.ATTACHED.getFlagChar()) != -1;
@@ -452,71 +354,7 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
         return hasFlags() && mFlags.indexOf(ZMessage.Flag.LOW_PRIORITY.getFlagChar()) != -1;
     }
 
-    public void delete() throws ServiceException {
-        getMailbox().deleteMessage(getId());
-    }
-
-    public void deleteItem() throws ServiceException {
-        delete();
-    }
-
-    public void trash() throws ServiceException {
-        getMailbox().trashMessage(getId());
-    }
-
-    public void markRead(boolean read) throws ServiceException {
-        getMailbox().markMessageRead(getId(), read);
-    }
-
-    public void flag(boolean flag) throws ServiceException {
-        getMailbox().flagMessage(getId(), flag);
-    }
-
-    public void tag(String nameOrId, boolean tagged) throws ServiceException {
-        ZTag tag = mMailbox.getTag(nameOrId);
-        if (tag == null)
-            throw ZClientException.CLIENT_ERROR("unknown tag: "+nameOrId, null);
-        else
-           tag(tag, tagged);
-    }
-
-    public void tag(ZTag tag, boolean tagged) throws ServiceException {
-        mMailbox.tagMessage(mId, tag.getId(), tagged);
-    }
-
-    public void move(String pathOrId) throws ServiceException {
-        ZFolder destFolder = mMailbox.getFolder(pathOrId);
-        if (destFolder == null)
-            throw ZClientException.CLIENT_ERROR("unknown folder: "+pathOrId, null);
-        else
-            move(destFolder);
-    }
-
-    public void move(ZFolder destFolder) throws ServiceException {
-        mMailbox.moveMessage(mId, destFolder.getId());
-    }
-
-    public void markSpam(boolean spam, String pathOrId) throws ServiceException {
-        ZFolder destFolder = mMailbox.getFolder(pathOrId);
-        if (destFolder == null)
-            throw ZClientException.CLIENT_ERROR("unknown folder: "+pathOrId, null);
-        else
-            markSpam(spam, destFolder);
-    }
-
-    public void markSpam(boolean spam, ZFolder destFolder) throws ServiceException {
-        getMailbox().markMessageSpam(getId(), spam, destFolder == null ? null : destFolder.getId());
-    }
-
-    public void update(String destFolderId, String tagList, String flags) throws ServiceException {
-        getMailbox().updateMessage(getId(), destFolderId, tagList, flags); // TODO: simplify tags/folders
-    }
-
-    public long getAutoSendTime() {
-        return mAutoSendTime;
-    }
-
-    @Override
+  @Override
     public long getDate() {
         return this.getReceivedDate();
     }

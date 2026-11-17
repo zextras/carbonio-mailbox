@@ -772,16 +772,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
       return mMemberOf;
     }
 
-    public MemberOf getMemberOfForId(String grpId) {
-      for (MemberOf memberOf : mMemberOf) {
-        if (grpId.equals(memberOf.getId())) {
-          return memberOf;
-        }
-      }
-      return null;
-    }
-
-    public List<String> groupIds() {
+		public List<String> groupIds() {
       return mGroupIds;
     }
 
@@ -933,24 +924,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract Account createAccount(
       String emailAddress, String password, Map<String, Object> attrs) throws ServiceException;
 
-  /**
-   * @param emailAddress
-   * @param password
-   * @param attrs attributes to set while creating the account entry
-   * @param origAttrs original attributes when the account was backed, this is for license checking
-   *     purpose, none of the attrs in the origAttrs map will be set while creating the account
-   *     entry.
-   * @return
-   * @throws ServiceException
-   */
-  public abstract Account restoreAccount(
-      String emailAddress,
-      String password,
-      Map<String, Object> attrs,
-      Map<String, Object> origAttrs)
-      throws ServiceException;
-
-  /**
+	/**
    * deletes the specified account, removing the account and all email aliases. does not remove any
    * mailbox associated with the account.
    *
@@ -1073,11 +1047,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
     return get(AccountBy.id, id);
   }
 
-  public Account getAccountByForeignPrincipal(String name) throws ServiceException {
-    return get(AccountBy.foreignPrincipal, name);
-  }
-
-  /**
+	/**
    * Looks up an account by the specified key.
    *
    * <p>For implementations that do not support the loadFromMaster parameter, this method is
@@ -1107,11 +1077,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
     return get(keyType, key);
   }
 
-  public Account get(AccountSelector acctSel, AuthToken authToken) throws ServiceException {
-    return get(acctSel.getBy().toKeyAccountBy(), acctSel.getKey(), authToken);
-  }
-
-  public Account get(AccountBy keyType, String key, boolean loadFromMaster, AuthToken authToken)
+	public Account get(AccountBy keyType, String key, boolean loadFromMaster, AuthToken authToken)
       throws ServiceException {
     return get(keyType, key, loadFromMaster);
   }
@@ -1198,11 +1164,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract void changePassword(Account acct, String currentPassword, String newPassword)
       throws ServiceException;
 
-  public abstract void changePassword(
-      Account acct, String currentPassword, String newPassword, boolean dryRun)
-      throws ServiceException;
-
-  /**
+	/**
    * Changes password for an account
    *
    * @param acct account to change password for
@@ -1225,11 +1187,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
 
     public SetPasswordResult() {}
 
-    public SetPasswordResult(String msg) {
-      setMessage(msg);
-    }
-
-    public boolean hasMessage() {
+		public boolean hasMessage() {
       return msg != null;
     }
 
@@ -1552,19 +1510,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
     return get(keyType, key);
   }
 
-  /*
-   * ==============================
-   *
-   * Dynamic Group methods
-   *
-   * ==============================
-   */
-  public DynamicGroup createDynamicGroup(String listAddress, Map<String, Object> listAttrs)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  /*
+	/*
    * ==============================
    *
    * Group (static/dynamic neutral) methods
@@ -1735,15 +1681,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract CalendarResource get(Key.CalendarResourceBy keyType, String key)
       throws ServiceException;
 
-  public CalendarResource getCalendarResourceByName(String name) throws ServiceException {
-    return get(Key.CalendarResourceBy.name, name);
-  }
-
-  public CalendarResource getCalendarResourceById(String id) throws ServiceException {
-    return get(Key.CalendarResourceBy.id, id);
-  }
-
-  public CalendarResource get(Key.CalendarResourceBy keyType, String key, boolean loadFromMaster)
+	public CalendarResource get(Key.CalendarResourceBy keyType, String key, boolean loadFromMaster)
       throws ServiceException {
     return get(keyType, key);
   }
@@ -1950,11 +1888,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
       mHadMore = hadMore;
     }
 
-    public String getTokenizeKey() {
-      return mTokenizeKey;
-    }
-
-    public String getLdapTimeStamp() {
+		public String getLdapTimeStamp() {
       return ldapTimeStamp;
     }
 
@@ -2111,10 +2045,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract Identity createIdentity(
       Account account, String identityName, Map<String, Object> attrs) throws ServiceException;
 
-  public abstract Identity restoreIdentity(
-      Account account, String identityName, Map<String, Object> attrs) throws ServiceException;
-
-  public abstract void modifyIdentity(
+	public abstract void modifyIdentity(
       Account account, String identityName, Map<String, Object> attrs) throws ServiceException;
 
   public abstract void deleteIdentity(Account account, String identityName) throws ServiceException;
@@ -2131,10 +2062,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract Signature createSignature(
       Account account, String signatureName, Map<String, Object> attrs) throws ServiceException;
 
-  public abstract Signature restoreSignature(
-      Account account, String signatureName, Map<String, Object> attrs) throws ServiceException;
-
-  public abstract void modifySignature(
+	public abstract void modifySignature(
       Account account, String signatureId, Map<String, Object> attrs) throws ServiceException;
 
   public abstract void deleteSignature(Account account, String signatureId) throws ServiceException;
@@ -2156,11 +2084,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
       boolean passwdAlreadyEncrypted)
       throws ServiceException;
 
-  public abstract DataSource restoreDataSource(
-      Account account, DataSourceType type, String dataSourceName, Map<String, Object> attrs)
-      throws ServiceException;
-
-  public abstract void modifyDataSource(
+	public abstract void modifyDataSource(
       Account account, String dataSourceId, Map<String, Object> attrs) throws ServiceException;
 
   public abstract void deleteDataSource(Account account, String dataSourceId)
@@ -2437,11 +2361,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
     // do nothing by default
   }
 
-  public void reloadMemcachedClientConfig() throws ServiceException {
-    // do nothing by default
-  }
-
-  public interface PublishedShareInfoVisitor {
+	public interface PublishedShareInfoVisitor {
     void visit(ShareInfoData shareInfoData) throws ServiceException;
   }
 
@@ -2500,11 +2420,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
       return detail;
     }
 
-    public Object getDetail() {
-      return detail;
-    }
-
-    public Result(String status, String message, String detail) {
+		public Result(String status, String message, String detail) {
       this.code = status;
       this.message = message;
       this.detail = detail;
@@ -2566,5 +2482,22 @@ public abstract class Provisioning extends ZAttrProvisioning {
     for (ProvisioningValidator validator : validators) {
       validator.refresh();
     }
+  }
+
+  public CalendarResource getCalendarResourceByName(String name) throws ServiceException {
+    return get(Key.CalendarResourceBy.name, name);
+  }
+
+  public CalendarResource getCalendarResourceById(String id) throws ServiceException {
+    return get(Key.CalendarResourceBy.id, id);
+  }
+
+  public DynamicGroup createDynamicGroup(String listAddress, Map<String, Object> listAttrs)
+      throws ServiceException {
+    throw ServiceException.UNSUPPORTED();
+  }
+
+  public Account getAccountByForeignPrincipal(String name) throws ServiceException {
+    return get(AccountBy.foreignPrincipal, name);
   }
 }

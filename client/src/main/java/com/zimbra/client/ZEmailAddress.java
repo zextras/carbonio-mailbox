@@ -7,7 +7,6 @@ package com.zimbra.client;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,12 +17,10 @@ import com.zimbra.common.mime.shim.JavaMailInternetAddress;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.soap.base.EmailInfoInterface;
 
 public class ZEmailAddress implements ToZJSONObject {
 
-    public static final String EMAIL_TYPE_BCC = "b";
-    public static final String EMAIL_TYPE_CC = "c";
+	public static final String EMAIL_TYPE_CC = "c";
     public static final String EMAIL_TYPE_FROM = "f";
     public static final String EMAIL_TYPE_SENDER = "s";
     public static final String EMAIL_TYPE_TO = "t";
@@ -42,14 +39,7 @@ public class ZEmailAddress implements ToZJSONObject {
         this.type = type;
     }
 
-    public ZEmailAddress(EmailInfoInterface emailInfo) {
-        address = emailInfo.getAddress();
-        display = emailInfo.getDisplay();
-        personal = emailInfo.getPersonal();
-        type = emailInfo.getAddressType() != null ? emailInfo.getAddressType() : "";
-    }
-
-    public ZEmailAddress(Element e) {
+	public ZEmailAddress(Element e) {
         address = e.getAttribute(MailConstants.A_ADDRESS, null);
         display = e.getAttribute(MailConstants.A_DISPLAY, null);
         personal = e.getAttribute(MailConstants.A_PERSONAL, null);
@@ -108,32 +98,7 @@ public class ZEmailAddress implements ToZJSONObject {
         }
     }
 
-    public String getFullAddress() {
-        try {
-            if (personal == null)
-                return address;
-            else
-                return new JavaMailInternetAddress(address, personal).toUnicodeString();
-        } catch (UnsupportedEncodingException e) {
-            if (personal == null)
-                return address;
-            else {
-                String p = personal;
-                if (p.contains("\""))
-                    p = p.replaceAll("\"", "\\\"");
-                return p + " "+getAddress();
-            }
-        }
-    }
-
-    public boolean  isBcc()        { return ZEmailAddress.EMAIL_TYPE_BCC.equals(getType()); }
-    public boolean  isCc()         { return ZEmailAddress.EMAIL_TYPE_CC.equals(getType()); }
-    public boolean  isFrom()       { return ZEmailAddress.EMAIL_TYPE_FROM.equals(getType()); }
-    public boolean  isSender()     { return ZEmailAddress.EMAIL_TYPE_SENDER.equals(getType()); }
-    public boolean  isTo()         { return ZEmailAddress.EMAIL_TYPE_TO.equals(getType()); }
-    public boolean  isReplyTo()    { return ZEmailAddress.EMAIL_TYPE_REPLY_TO.equals(getType()); }
-
-  @Override
+	@Override
     public ObjectNode toObjectNode() {
         ObjectNode jo = JsonNodeFactory.instance.objectNode();
         if (address != null) jo.put("address", address);

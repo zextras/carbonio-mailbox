@@ -29,17 +29,7 @@ public class Signature extends AccountProperty implements Comparable {
         return EntryType.SIGNATURE;
     }
 
-    /**
-     * this should only be used internally by the server. it doesn't modify the real id, just
-     * the cached one.
-     * @param id
-     */
-    public void setId(String id) {
-        mId = id;
-        getRawAttrs().put(Provisioning.A_zimbraSignatureId, id);
-    }
-
-    public static class SignatureContent {
+	public static class SignatureContent {
         private String mMimeType;
         private String mContent;
 

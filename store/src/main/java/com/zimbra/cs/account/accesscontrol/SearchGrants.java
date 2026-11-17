@@ -70,15 +70,7 @@ public final class SearchGrants {
     this.onMaster = onMaster;
   }
 
-  void addFetchAttribute(String attr) {
-    fetchAttrs.add(attr);
-  }
-
-  void addFetchAttribute(Set<String> attrs) {
-    fetchAttrs.addAll(attrs);
-  }
-
-  static final class GrantsOnTarget {
+	static final class GrantsOnTarget {
     private final Entry targetEntry;
     private final ZimbraACL acl;
 

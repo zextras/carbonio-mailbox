@@ -19,13 +19,8 @@ import com.zimbra.common.util.MapUtil;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.common.util.ZimbraHttpConnectionManager;
 import com.zimbra.cs.account.auth.AuthMechanism.AuthMech;
-import com.zimbra.cs.ephemeral.EphemeralInput;
 import com.zimbra.cs.ephemeral.EphemeralInput.AbsoluteExpiration;
 import com.zimbra.cs.ephemeral.EphemeralInput.Expiration;
-import com.zimbra.cs.ephemeral.EphemeralKey;
-import com.zimbra.cs.ephemeral.EphemeralLocation;
-import com.zimbra.cs.ephemeral.EphemeralStore;
-import com.zimbra.cs.ephemeral.LdapEntryLocation;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -34,13 +29,18 @@ import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 import org.apache.hc.client5.http.cookie.BasicCookieStore;
 import org.apache.hc.client5.http.cookie.StandardCookieSpec;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
+import com.zimbra.cs.ephemeral.EphemeralInput;
+import com.zimbra.cs.ephemeral.EphemeralKey;
+import com.zimbra.cs.ephemeral.EphemeralLocation;
+import com.zimbra.cs.ephemeral.EphemeralStore;
+import com.zimbra.cs.ephemeral.LdapEntryLocation;
+import org.apache.hc.client5.http.classic.HttpClient;
 
 /**
  * @since May 30, 2004
@@ -198,11 +198,7 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
     System.out.println(finish - start);
   }
 
-  public AuthTokenProperties getProperties() {
-    return properties;
-  }
-
-  public void setProperties(AuthTokenProperties properties) {
+	public void setProperties(AuthTokenProperties properties) {
     this.properties = properties;
   }
 
@@ -429,36 +425,7 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
     return acct.hasAuthTokens(String.valueOf(properties.getTokenID()));
   }
 
-  @Override
-  public void encode(
-      HttpClient client, HttpUriRequestBase method, boolean isAdminReq, String cookieDomain)
-      throws ServiceException {
-    String origAuthData = AuthTokenUtil.getOrigAuthData(this);
-
-    BasicCookieStore state = new BasicCookieStore();
-    BasicClientCookie cookie =
-        new BasicClientCookie(ZimbraCookie.authTokenCookieName(isAdminReq), origAuthData);
-    cookie.setDomain(cookieDomain);
-    cookie.setPath("/");
-    cookie.setSecure(false);
-    state.addCookie(cookie);
-
-    HttpClientBuilder clientBuilder =
-        ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
-    clientBuilder.setDefaultCookieStore(state);
-
-    RequestConfig reqConfig =
-        RequestConfig.copy(
-                ZimbraHttpConnectionManager.getInternalHttpConnMgr()
-                    .getZimbraConnMgrParams()
-                    .getReqConfig())
-            .setCookieSpec(StandardCookieSpec.RELAXED)
-            .build();
-
-    clientBuilder.setDefaultRequestConfig(reqConfig);
-  }
-
-  @Override
+	@Override
   public void encode(
       HttpClientBuilder clientBuilder,
       HttpUriRequestBase method,
@@ -595,21 +562,7 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
     return at;
   }
 
-  /*
-   * Used when the auth token needs to be registered with a non-default
-   * ephemeral backend
-   */
-  public void registerWithEphemeralStore(EphemeralStore store) throws ServiceException {
-    Account acct = Provisioning.getInstance().get(AccountBy.id, properties.getAccountId());
-    Expiration expiration = new AbsoluteExpiration(properties.getExpires());
-    EphemeralLocation location = new LdapEntryLocation(acct);
-    EphemeralKey key =
-        new EphemeralKey(Provisioning.A_zimbraAuthTokens, String.valueOf(properties.getTokenID()));
-    EphemeralInput input = new EphemeralInput(key, properties.getServerVersion(), expiration);
-    store.update(input, location);
-  }
-
-  static class ByteKey implements SecretKey {
+	static class ByteKey implements SecretKey {
     private static final long serialVersionUID = -7237091299729195624L;
     private final byte[] mKey;
 
@@ -631,5 +584,9 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
     public String getFormat() {
       return "RAW";
     }
+  }
+
+  public AuthTokenProperties getProperties() {
+    return properties;
   }
 }

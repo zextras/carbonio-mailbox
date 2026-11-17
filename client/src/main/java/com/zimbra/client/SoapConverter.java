@@ -57,36 +57,11 @@ public class SoapConverter {
         return (to != null ? to : View.unknown);
       }
     };
-    
-    public static java.util.function.Function<View, Folder.@Nullable View> TO_SOAP_VIEW = new Function<>() {
-      @Override
-      public Folder.View apply(View from) {
-        Folder.View to = VIEW_MAP.inverse().get(from);
-        return (to != null ? to : Folder.View.UNKNOWN);
-      }
-    };
 
-    public static java.util.function.Function<Identity, @Nullable ZIdentity> FROM_SOAP_IDENTITY = ZIdentity::new;
+  public static java.util.function.Function<Identity, @Nullable ZIdentity> FROM_SOAP_IDENTITY = ZIdentity::new;
 
-    public static java.util.function.Function<ZIdentity, @Nullable Identity> TO_SOAP_IDENTITY = ZIdentity::getData;
-
-    public static java.util.function.Function<Signature, @Nullable ZSignature> FROM_SOAP_SIGNATURE = ZSignature::new;
+  public static java.util.function.Function<Signature, @Nullable ZSignature> FROM_SOAP_SIGNATURE = ZSignature::new;
 
     public static java.util.function.Function<ZSignature, @Nullable Signature> TO_SOAP_SIGNATURE = ZSignature::getData;
-    
-    public static java.util.function.Function<AccountBy, Key.@Nullable AccountBy> FROM_SOAP_ACCOUNT_BY =
-        new Function<>() {
-          @Override
-          public Key.AccountBy apply(AccountBy by) {
-            return ACCOUNT_BY_MAP.get(by);
-          }
-        };
-    
-    public static java.util.function.Function<Key.AccountBy, @Nullable AccountBy> TO_SOAP_ACCOUNT_BY =
-        new Function<>() {
-          @Override
-          public AccountBy apply(Key.AccountBy by) {
-            return ACCOUNT_BY_MAP.inverse().get(by);
-          }
-        };
+
 }

@@ -73,15 +73,7 @@ public final class ZSearchFolder extends ZFolder implements SearchFolderStore {
         return query;
     }
 
-    public SearchSortBy getSortBy() {
-        return sortBy;
-    }
-
-    public String getTypes() {
-        return types;
-    }
-
-    /** Returns the set of item types returned by this search, or <code>""</code> if none were specified. */
+  /** Returns the set of item types returned by this search, or <code>""</code> if none were specified. */
     @Override
     public String getReturnTypes() {
         return (types == null ? "" : types);
@@ -90,14 +82,6 @@ public final class ZSearchFolder extends ZFolder implements SearchFolderStore {
     @Override
     public String toString() {
         return String.format("[ZSearchFolder %s]", getPath());
-    }
-
-    @Override
-    public ZSearchContext getSearchContext() {
-        ZSearchParams params = new ZSearchParams(query);
-        params.setTypes(types);
-        params.setSortBy(sortBy);
-        return new ZSearchContext(params,getMailbox());
     }
 
 }

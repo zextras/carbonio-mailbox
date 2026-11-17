@@ -9,43 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import com.zimbra.client.event.ZModifyMessageEvent;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 
 public class ZCalendarItem implements ZItem {
-
-    public enum Flag {
-        flagged('f'),
-        attachment('a');
-
-        private char mFlagChar;
-
-        public char getFlagChar() { return mFlagChar; }
-
-        public static String toNameList(String flags) {
-            if (flags == null || flags.length() == 0) return "";
-            StringBuilder sb = new StringBuilder();
-            for (int i=0; i < flags.length(); i++) {
-                String v = null;
-                for (Flag f : Flag.values()) {
-                    if (f.getFlagChar() == flags.charAt(i)) {
-                        v = f.name();
-                        break;
-                    }
-                }
-                if (sb.length() > 0) sb.append(", ");
-                sb.append(v == null ? flags.substring(i, i+1) : v);
-            }
-            return sb.toString();
-        }
-
-        Flag(char flagChar) {
-            mFlagChar = flagChar;
-
-        }
-    }
 
     private String mId;
     private String mFlags;
@@ -70,26 +38,6 @@ public class ZCalendarItem implements ZItem {
         }
     }
 
-    public void modifyNotification(ZModifyMessageEvent mevent) throws ServiceException {
-        if (mevent.getId().equals(mId)) {
-            mFlags = mevent.getFlags(mFlags);
-            mTags = mevent.getTagIds(mTags);
-            mFolderId = mevent.getFolderId(mFolderId);
-        }
-    }
-
-    /**
-     *
-     * @return UID of item
-     */
-    public String getUid() {
-        return mUID;
-    }
-
-    public long getSize() {
-        return mSize;
-    }
-
     public List<ZInvite> getInvites() {
         return mInvites;
     }
@@ -102,14 +50,6 @@ public class ZCalendarItem implements ZItem {
     @Override
     public String getUuid() {
         return null;
-    }
-
-    public boolean hasFlags() {
-        return mFlags != null && mFlags.length() > 0;
-    }
-
-    public boolean hasTags() {
-        return mTags != null && mTags.length() > 0;
     }
 
     @Override
@@ -127,18 +67,6 @@ public class ZCalendarItem implements ZItem {
 
     public String getFolderId() {
         return mFolderId;
-    }
-
-    public long getDate() {
-        return mDate;
-    }
-
-    public boolean hasAttachment() {
-        return hasFlags() && mFlags.indexOf(ZMessage.Flag.ATTACHED.getFlagChar()) != -1;
-    }
-
-    public boolean isFlagged() {
-        return hasFlags() && mFlags.indexOf(ZMessage.Flag.FLAGGED.getFlagChar()) != -1;
     }
 
 }

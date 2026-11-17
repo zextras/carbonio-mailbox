@@ -14,17 +14,8 @@ public interface AliasedEntry {
     /*
      * entry with aliases
      */
-    
-    /**
-     * returns whether addr is the entry's primary address or 
-     * one of the aliases.
-     * 
-     * @param addr
-     * @return
-     */
-    boolean isAddrOfEntry(String addr);
-    
-    String[] getAliases() throws ServiceException;
+
+	String[] getAliases() throws ServiceException;
     
     /**
      * returns all addresses of the entry, including primary address and 

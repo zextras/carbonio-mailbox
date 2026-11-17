@@ -34,23 +34,7 @@ public class Cos extends ZAttrCos {
         return EntryType.COS;
     }
 
-    public void modify(Map<String, Object> attrs) throws ServiceException {
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    public Cos copyCos(String destCosName) throws ServiceException {
-        return getProvisioning().copyCos(getId(), destCosName);
-    }
-
-    public void renameCos(String newName) throws ServiceException {
-        getProvisioning().renameCos(getId(), newName);
-    }
-
-    public void deleteCos() throws ServiceException {
-        getProvisioning().deleteCos(getId());
-    }
-
-    @Override
+	@Override
     protected void resetData() {
         super.resetData();
         try {

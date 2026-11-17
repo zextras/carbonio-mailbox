@@ -31,11 +31,7 @@ public class SearchDirectoryOptions {
     return multipleBases;
   }
 
-  public void setMultipleBases(final List<Domain> multipleBases) {
-    this.multipleBases = multipleBases;
-  }
-
-  /*
+	/*
    * Option to not set account defaults or secondard defaults.
    * bug 36017, 41533
    *
@@ -81,15 +77,7 @@ public class SearchDirectoryOptions {
       return flag;
     }
 
-    public static int getAllTypesFlags() {
-      int flags = 0;
-      for (SearchDirectoryOptions.ObjectType type : ObjectType.values()) {
-        flags |= type.getFlag();
-      }
-      return flags;
-    }
-
-    public static int getFlags(Set<SearchDirectoryOptions.ObjectType> types) {
+		public static int getFlags(Set<SearchDirectoryOptions.ObjectType> types) {
       int flags = 0;
       for (SearchDirectoryOptions.ObjectType type : types) {
         flags |= type.getFlag();
@@ -460,23 +448,16 @@ public class SearchDirectoryOptions {
     return isUseControl;
   }
 
-  public void setUseControl(boolean isUseControl) {
-    this.isUseControl = isUseControl;
-  }
-
-  public boolean isManageDSAit() {
+	public boolean isManageDSAit() {
     return isManageDSAit;
   }
 
-  public void setManageDSAit(boolean isManageDSAit) {
-    this.isManageDSAit = isManageDSAit;
-  }
-
-  public String getHabRootGroupDn() {
+	public String getHabRootGroupDn() {
     return habRootGroupDn;
   }
 
-  public void setHabRootGroupDn(String baseDn) {
-    this.habRootGroupDn = baseDn;
+
+  public void setMultipleBases(final List<Domain> multipleBases) {
+    this.multipleBases = multipleBases;
   }
 }

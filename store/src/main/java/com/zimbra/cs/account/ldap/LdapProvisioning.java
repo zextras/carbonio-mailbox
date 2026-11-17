@@ -177,7 +177,6 @@ import com.zimbra.soap.type.AutoProvPrincipalBy;
 import com.zimbra.soap.type.GalSearchType;
 import com.zimbra.soap.type.TargetBy;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -848,7 +847,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     return mimeTypeCache.getMimeTypes(this, mimeType);
   }
 
-  @Override
   public List<MimeTypeInfo> getMimeTypesByQuery(String mimeType) throws ServiceException {
     List<MimeTypeInfo> mimeTypes = new ArrayList<>();
 
@@ -1193,17 +1191,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       throws ServiceException {
     return createAccount(
         emailAddress, password, attrs, mDIT.handleSpecialAttrs(attrs), null, false, null);
-  }
-
-  @Override
-  public Account restoreAccount(
-      String emailAddress,
-      String password,
-      Map<String, Object> attrs,
-      Map<String, Object> origAttrs)
-      throws ServiceException {
-    return createAccount(
-        emailAddress, password, attrs, mDIT.handleSpecialAttrs(attrs), null, true, origAttrs);
   }
 
   private Account createAccount(
@@ -3695,23 +3682,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             }
 
             @Override
-            public void createEntry(String dn, Map<String, Object> attrs) throws ServiceException {
-
-              ZMutableEntry entry = ldapClient.createMutableEntry();
-              entry.mapToAttrs(attrs);
-              entry.setDN(dn);
-
-              ZLdapContext ldapContext = toZLdapContext();
-              ldapContext.createEntry(entry);
-            }
-
-            @Override
-            public void deleteEntry(String dn) throws ServiceException {
-              ZLdapContext ldapContext = toZLdapContext();
-              ldapContext.deleteEntry(dn);
-            }
-
-            @Override
             public void renameEntry(String oldDn, String newDn) throws ServiceException {
               ZLdapContext ldapContext = toZLdapContext();
               ldapContext.renameEntry(oldDn, newDn);
@@ -5781,8 +5751,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     changePassword(acct, currentPassword, newPassword, false);
   }
 
-  @Override
-  public void changePassword(
+  private void changePassword(
       Account acct, String currentPassword, String newPassword, boolean dryRun)
       throws ServiceException {
     this.changePassword(acct, currentPassword, newPassword, dryRun, null);
@@ -7612,13 +7581,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     return createIdentity(account, identityName, identityAttrs, false);
   }
 
-  @Override
-  public Identity restoreIdentity(
-      Account account, String identityName, Map<String, Object> identityAttrs)
-      throws ServiceException {
-    return createIdentity(account, identityName, identityAttrs, true);
-  }
-
   private Identity createIdentity(
       Account account, String identityName, Map<String, Object> identityAttrs, boolean restoring)
       throws ServiceException {
@@ -7888,13 +7850,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       Account account, String signatureName, Map<String, Object> signatureAttrs)
       throws ServiceException {
     return createSignature(account, signatureName, signatureAttrs, false);
-  }
-
-  @Override
-  public Signature restoreSignature(
-      Account account, String signatureName, Map<String, Object> signatureAttrs)
-      throws ServiceException {
-    return createSignature(account, signatureName, signatureAttrs, true);
   }
 
   private Signature createSignature(
@@ -8278,13 +8233,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       boolean passwdAlreadyEncrypted)
       throws ServiceException {
     return createDataSource(account, type, dataSourceName, attrs, passwdAlreadyEncrypted, false);
-  }
-
-  @Override
-  public DataSource restoreDataSource(
-      Account account, DataSourceType dsType, String dsName, Map<String, Object> dataSourceAttrs)
-      throws ServiceException {
-    return createDataSource(account, dsType, dsName, dataSourceAttrs, true, true);
   }
 
   private DataSource createDataSource(
@@ -9144,26 +9092,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   @Override
   public LdapClient getLdapClient() {
     return ldapClient;
-  }
-
-  @Override
-  public void dumpLdapSchema(PrintWriter writer) throws ServiceException {
-    ZLdapContext zlc = null;
-    try {
-      zlc = ldapClient.getContext(LdapServerType.MASTER, LdapUsage.GET_SCHEMA);
-      ZLdapSchema schema = zlc.getSchema();
-
-      for (ZLdapSchema.ZObjectClassDefinition oc : schema.getObjectClasses()) {
-        writer.println(oc.getName());
-      }
-
-      // TODO print more stuff
-
-    } catch (ServiceException e) {
-      ZimbraLog.account.warn("unable to get LDAP schema", e);
-    } finally {
-      ldapClient.closeContext(zlc);
-    }
   }
 
   /*
@@ -10518,11 +10446,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   public Set<String> getDynamicGroupMembersSet(DynamicGroup group) throws ServiceException {
     List<String> members = searchDynamicGroupMembers(group);
     return Sets.newHashSet(members);
-  }
-
-  @Override
-  public boolean isCacheEnabled() {
-    return useCache;
   }
 
   @Override

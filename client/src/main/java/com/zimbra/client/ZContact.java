@@ -12,16 +12,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.zimbra.client.event.ZModifyContactEvent;
 import com.zimbra.common.mailbox.MailItemType;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.common.zclient.ZClientException;
 
 public class ZContact extends ZBaseItem implements ToZJSONObject {
 
@@ -38,18 +35,6 @@ public class ZContact extends ZBaseItem implements ToZJSONObject {
             mLength = length;
         }
 
-        public String getContentType() {
-            return mContentType;
-        }
-        public String getFileName() {
-            return mFileName;
-        }
-        public String getPart() {
-            return mPart;
-        }
-        public long getLength() {
-            return mLength;
-        }
     }
 
     private String mRefId;
@@ -102,22 +87,12 @@ public class ZContact extends ZBaseItem implements ToZJSONObject {
 
         private String contactMemberType;
 
-        public String getContactMemberType() { return contactMemberType;}
-
-        ContactMemberType(String type) {
+			ContactMemberType(String type) {
             contactMemberType = type;
         }
     }
 
-    /**
-     * Checks the type of the contact member.
-     * @return true if the contact member is an inline contact.
-     */
-    public boolean isTypeI() {
-        return (mContactMemberType == ContactMemberType.inlineContact);
-    }
-
-    /**
+	/**
      * Constructor called only in case of inline contacts
      * @param id email address of the inline contact
      * @throws ServiceException
@@ -194,47 +169,23 @@ public class ZContact extends ZBaseItem implements ToZJSONObject {
         return getIdInMailbox(getFolderId());
     }
 
-    public ZFolder getFolder() throws ServiceException {
-        return mMailbox.getFolderById(mFolderId);
-    }
-
-    @Override
+	@Override
     public String getId() {
         return mId;
     }
 
-    public String getRefId() {
-        return mRefId;
-    }
-
-    public boolean isGalContact() {
+	public boolean isGalContact() {
         return mGalContact;
     }
 
     public boolean isGroup() { return (getAttrs().get("type") != null && getAttrs().get("type").equals("group")); }
 
-    public boolean getIsGroup() { return isGroup(); }
-
-    @Deprecated
+	@Deprecated
     public List<ZEmailAddress> getGroupMembers() throws ServiceException {
         return ZEmailAddress.parseAddresses(getAttrs().get("dlist"), ZEmailAddress.EMAIL_TYPE_TO);
     }
 
-    /**
-     * @return first email from email/2/3 that is set, or an empty string
-     */
-    public String getDisplayEmail() {
-        if (!StringUtil.isNullOrEmpty(getAttrs().get("email")))
-            return getAttrs().get("email");
-        else if (!StringUtil.isNullOrEmpty(getAttrs().get("email2")))
-            return getAttrs().get("email2");
-        else if (!StringUtil.isNullOrEmpty(getAttrs().get("email3")))
-            return getAttrs().get("email3");
-        else
-            return "";
-    }
-
-  @Override
+	@Override
     public ObjectNode toObjectNode() {
         ObjectNode jo = JsonNodeFactory.instance.objectNode();
         if (mId != null) jo.put("id", mId);
@@ -272,32 +223,8 @@ public class ZContact extends ZBaseItem implements ToZJSONObject {
     public Map<String, ZContact> getMembers() {
         return mMembers;
     }
-    /**
-     * Returns the attachment names, or an empty set.
-     */
-    public Set<String> getAttachmentNames() {
-        return mAttachments.keySet();
-    }
 
-    public String getAttachmentPartName(String name) {
-        return mAttachments.get(name).getPart();
-    }
-
-    public InputStream getAttachmentData(String name)
-    throws ServiceException {
-        String part = mAttachments.get(name).getPart();
-        if (part == null) {
-            throw ZClientException.CLIENT_ERROR("Invalid attachment name: " + name, null);
-        }
-        String url = String.format("?id=%s&part=%s", getId(), part);
-        return mMailbox.getRESTResource(url);
-    }
-
-    public ZContactAttachmentInfo getAttachmentPartInfo(String name) {
-        return mAttachments.get(name);
-    }
-
-    @Override
+	@Override
     public long getDate() {
         return mDate;
     }
@@ -310,11 +237,7 @@ public class ZContact extends ZBaseItem implements ToZJSONObject {
         return mRevision;
     }
 
-    public boolean hasAttachment() {
-        return hasFlags() && mFlags.indexOf(Flag.attachment.getFlagChar()) != -1;
-    }
-
-    public boolean isFlagged() {
+	public boolean isFlagged() {
         return hasFlags() && mFlags.indexOf(Flag.flagged.getFlagChar()) != -1;
     }
 
@@ -335,62 +258,6 @@ public class ZContact extends ZBaseItem implements ToZJSONObject {
                 isDirty = true;
         }
 	}
-
-    public void delete() throws ServiceException {
-        if (isGalContact()) throw ZClientException.CLIENT_ERROR("can't modify GAL contact", null);
-        mMailbox.deleteContact(mId);
-    }
-
-    public void deleteItem() throws ServiceException {
-        delete();
-    }
-
-    public void trash() throws ServiceException {
-        if (isGalContact()) throw ZClientException.CLIENT_ERROR("can't modify GAL contact", null);
-        mMailbox.trashContact(mId);
-    }
-
-    public void flag(boolean flagged) throws ServiceException {
-        if (isGalContact()) throw ZClientException.CLIENT_ERROR("can't modify GAL contact", null);
-        mMailbox.flagContact(mId, flagged);
-    }
-
-    public void tag(String nameOrId, boolean tagged) throws ServiceException {
-        ZTag tag = mMailbox.getTag(nameOrId);
-        if (tag == null)
-            throw ZClientException.CLIENT_ERROR("unknown tag: "+nameOrId, null);
-        else
-           tag(tag, tagged);
-    }
-
-    public void tag(ZTag tag, boolean tagged) throws ServiceException {
-        if (isGalContact()) throw ZClientException.CLIENT_ERROR("can't modify GAL contact", null);
-        mMailbox.tagContact(mId, tag.getId(), tagged);
-    }
-
-    public void move(String pathOrId) throws ServiceException {
-        ZFolder destFolder = mMailbox.getFolder(pathOrId);
-        if (destFolder == null)
-            throw ZClientException.CLIENT_ERROR("unknown folder: "+pathOrId, null);
-        else
-            move(destFolder);
-    }
-
-    public void move(ZFolder destFolder) throws ServiceException {
-        if (isGalContact()) throw ZClientException.CLIENT_ERROR("can't modify GAL contact", null);
-        mMailbox.moveContact(mId, destFolder.getId());
-    }
-
-    public void modify(Map<String,String> attrs, boolean replace) throws ServiceException {
-        if (isGalContact()) throw ZClientException.CLIENT_ERROR("can't modify GAL contact", null);
-        mMailbox.modifyContact(mId, replace, attrs);
-    }
-
-    // TODO: better handling of folder/tag ids
-    public void update(String destFolderId, String tagList, String myflags) throws ServiceException {
-        if (isGalContact()) throw ZClientException.CLIENT_ERROR("can't modify GAL contact", null);
-        mMailbox.updateContact(mId, destFolderId, tagList, myflags);
-    }
 
     @Override
     public MailItemType getMailItemType() {

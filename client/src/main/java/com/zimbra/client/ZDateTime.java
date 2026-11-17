@@ -15,7 +15,6 @@ import com.zimbra.common.soap.MailConstants;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -27,27 +26,7 @@ public class ZDateTime implements ToZJSONObject {
     private String mDateTime;
     private String mTimeZoneId;
 
-    public ZDateTime() {
-
-    }
-
-    public ZDateTime(long utcMsecs, boolean dateOnly, TimeZone tz) {
-        DateFormat dateFmt = new SimpleDateFormat(dateOnly ? FMT_DATE : FMT_DATE_TIME);
-        dateFmt.setTimeZone(tz);
-        mTimeZoneId = TZIDMapper.canonicalize(tz.getID());
-        mDateTime = dateFmt.format(new Date(utcMsecs));
-    }
-
-    public ZDateTime(String dateTime) {
-        mDateTime = dateTime;
-    }
-
-    public ZDateTime(String dateTime, String timeZone) {
-        mDateTime = dateTime;
-        mTimeZoneId = timeZone;
-    }
-
-    public ZDateTime(Element e) throws ServiceException {
+	public ZDateTime(Element e) throws ServiceException {
         mDateTime = e.getAttribute(MailConstants.A_CAL_DATETIME);
         mTimeZoneId = e.getAttribute(MailConstants.A_CAL_TIMEZONE, null);
     }
@@ -60,42 +39,7 @@ public class ZDateTime implements ToZJSONObject {
         return dtEl;
     }
 
-    public boolean getHasNoTimeZone() {
-        return mTimeZoneId == null || mTimeZoneId.length() == 0;
-    }
-
-    public TimeZone getTimeZone() {
-        if (!getHasNoTimeZone()) {
-            return TimeZone.getTimeZone(TZIDMapper.canonicalize(mTimeZoneId));
-        } else {
-            return TimeZone.getTimeZone("GMT");
-        }
-    }
-
-    public Calendar getCalendar() {
-        DateFormat df =  new SimpleDateFormat((mDateTime.indexOf('T') == -1) ? FMT_DATE : FMT_DATE_TIME);
-        df.setLenient(false);
-        TimeZone tz = null;
-        if (mTimeZoneId != null && mTimeZoneId.length() > 0) {
-            tz = TimeZone.getTimeZone(TZIDMapper.canonicalize(mTimeZoneId));
-            df.setTimeZone(tz);
-        } else if (mDateTime.indexOf('Z') != -1) {
-            df.setTimeZone(TimeZone.getTimeZone("GMT"));
-        }
-
-        Date date = null;
-
-        try {
-            date = df.parse(mDateTime);
-        } catch (ParseException e) {
-            date = new Date();
-        }
-        Calendar cal = tz == null ? Calendar.getInstance() : Calendar.getInstance(tz);
-        cal.setTime(date);
-        return cal;
-    }
-
-    public Date getDate() {
+	public Date getDate() {
         DateFormat df =  new SimpleDateFormat((mDateTime.indexOf('T') == -1) ? FMT_DATE : FMT_DATE_TIME);
         df.setLenient(false);
         TimeZone tz = null;
@@ -116,23 +60,7 @@ public class ZDateTime implements ToZJSONObject {
         return date;
     }
 
-    public String getDateTime() {
-        return mDateTime;
-    }
-
-    public void setDateTime(String dateTime) {
-        mDateTime = dateTime;
-    }
-
-    public String getTimeZoneId() {
-        return mTimeZoneId;
-    }
-
-    public void setTimeZoneId(String timeZoneId) {
-        mTimeZoneId = timeZoneId;
-    }
-
-  @Override
+	@Override
     public ObjectNode toObjectNode() {
         ObjectNode zjo = JsonNodeFactory.instance.objectNode();
         zjo.put("time", getDate().getTime());

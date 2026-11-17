@@ -97,23 +97,6 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
       return mFlagChar;
     }
 
-    public static String toNameList(String flags) {
-      if (flags == null || flags.length() == 0) return "";
-      StringBuilder sb = new StringBuilder();
-      for (int i = 0; i < flags.length(); i++) {
-        String v = null;
-        for (Flag f : Flag.values()) {
-          if (f.getFlagChar() == flags.charAt(i)) {
-            v = f.name();
-            break;
-          }
-        }
-        if (sb.length() > 0) sb.append(", ");
-        sb.append(v == null ? flags.substring(i, i + 1) : v);
-      }
-      return sb.toString();
-    }
-
     Flag(char flagChar) {
       mFlagChar = flagChar;
     }
@@ -414,12 +397,6 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     }
   }
 
-  public ZSearchContext getSearchContext() {
-    ZSearchParams params = new ZSearchParams("inid:" + getId());
-    if (getDefaultView() != null) params.setTypes(getDefaultView().name());
-    return new ZSearchContext(params, getMailbox());
-  }
-
   public ZMailbox getMailbox() {
     return mMailbox;
   }
@@ -562,10 +539,6 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     return mName;
   }
 
-  public String getNameURLEncoded() {
-    return URLEncoder.encode(mName, StandardCharsets.UTF_8).replace("+", "%20");
-  }
-
   /**
    * Returns the folder's absolute path. Paths are UNIX-style with <code>'/'</code> as the path
    * delimiter. Paths are relative to the user root folder, which has the path <code>"/"</code>. So
@@ -615,29 +588,6 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
   }
 
   /**
-   * Returns the folder's path relative to the root
-   *
-   * @return path
-   */
-  public String getRootRelativePath() {
-    String path = getPath();
-    if (path.startsWith(ZMailbox.PATH_SEPARATOR)) {
-      return path.substring(ZMailbox.PATH_SEPARATOR.length());
-    } else {
-      return path;
-    }
-  }
-
-  public String getRootRelativePathURLEncoded() {
-    String path = getPathURLEncoded();
-    if (path.startsWith(ZMailbox.PATH_SEPARATOR)) {
-      return path.substring(ZMailbox.PATH_SEPARATOR.length());
-    } else {
-      return path;
-    }
-  }
-
-  /**
    * @return parent id of folder, or null if root folder.
    */
   public String getParentId() {
@@ -665,22 +615,6 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
   @Override
   public int getImapUnreadCount() {
     return mImapUnreadCount;
-  }
-
-  /**
-   * Sets unread count.
-   *
-   * @param count unread count.
-   */
-  void setUnreadCount(int count) {
-    mUnreadCount = count;
-  }
-
-  /**
-   * @return size of all items in folder (not including sub folders) in bytes
-   */
-  public long getSize() {
-    return mSize;
   }
 
   /**
@@ -722,15 +656,6 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
       }
     }
     return mImapRECENTCutoff;
-  }
-
-  /**
-   * Sets message count.
-   *
-   * @param count message count.
-   */
-  void setMessageCount(int count) {
-    mMessageCount = count;
   }
 
   /** Returns the "hint" as to which view to use to display the folder's contents. */
@@ -799,23 +724,6 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     return hasFlags() && mFlags.indexOf(Flag.syncEnabled.getFlagChar()) != -1;
   }
 
-  public boolean isNoInferiors() {
-    return hasFlags() && mFlags.indexOf(Flag.noInferiors.getFlagChar()) != -1;
-  }
-
-  /**
-   * range 0-127; defaults to 0 if not present; client can display only 0-7
-   *
-   * @return color
-   */
-  public Color getColor() {
-    return mColor;
-  }
-
-  public String getRgb() {
-    return mRgb;
-  }
-
   /**
    * remote URL (RSS, iCal, etc) this folder syncs to
    *
@@ -823,15 +731,6 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
    */
   public String getRemoteURL() {
     return mRemoteURL;
-  }
-
-  /** Last successful sync date from external URL in epoch seconds. */
-  public long getLastSyncDate() {
-    return mLastSyncDate;
-  }
-
-  public boolean isActiveSyncDisabled() {
-    return mActiveSyncDisabled;
   }
 
   /**
@@ -895,10 +794,6 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     }
   }
 
-  public RetentionPolicy getRetentionPolicy() {
-    return mRetentionPolicy;
-  }
-
   @Override
   public ObjectNode toObjectNode() {
     ObjectNode jo = JsonNodeFactory.instance.objectNode();
@@ -942,80 +837,10 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     return ToZJSONObject.toString(this);
   }
 
-  public void delete() throws ServiceException {
-    mMailbox.deleteFolder(mId);
-  }
-
-  public void deleteItem() throws ServiceException {
-    delete();
-  }
-
-  public void moveToTrash() throws ServiceException {
-    mMailbox.trashFolder(mId);
-  }
-
-  public void sync() throws ServiceException {
-    mMailbox.syncFolder(mId);
-  }
-
-  public void clearGrants() throws ServiceException {
-    mMailbox.updateFolder(mId, null, null, null, null, null, new ArrayList<>());
-  }
-
-  public void empty(boolean recursive) throws ServiceException {
-    mMailbox.emptyFolder(mId, recursive);
-  }
-
-  public void importURL(String url) throws ServiceException {
-    mMailbox.importURLIntoFolder(mId, url);
-  }
-
-  public void markRead() throws ServiceException {
-    mMailbox.markFolderRead(mId);
-  }
-
-  public void checked(boolean checked) throws ServiceException {
-    mMailbox.modifyFolderChecked(mId, checked);
-  }
-
-  public void modifySyncFlag(boolean checked) throws ServiceException {
-    mMailbox.modifyFolderSyncFlag(mId, checked);
-  }
-
-  public void modifyExcludeFreeBusy(boolean exclude) throws ServiceException {
-    mMailbox.modifyFolderExcludeFreeBusy(mId, exclude);
-  }
-
-  public void modifyColor(Color color) throws ServiceException {
-    mMailbox.modifyFolderColor(mId, color);
-  }
-
-  public void modifyFlags(String flags) throws ServiceException {
-    mMailbox.updateFolder(mId, null, null, null, null, flags, null);
-  }
-
-  public void modifyURL(String url) throws ServiceException {
-    mMailbox.modifyFolderURL(mId, url);
-  }
-
-  public void rename(String newPath) throws ServiceException {
-    mMailbox.renameFolder(mId, newPath);
-  }
-
   public void updateImapRECENTCutoff(int lastItemId) {
     if ((mImapRECENTCutoff == null) || (mImapRECENTCutoff < lastItemId)) {
       mImapRECENTCutoff = lastItemId;
     }
   }
 
-  public void updateFolder(
-      String name, String parentId, Color newColor, String rgbColor, String flags, List<ZGrant> acl)
-      throws ServiceException {
-    mMailbox.updateFolder(mId, name, parentId, newColor, rgbColor, flags, acl);
-  }
-
-  public int getFlagBitmask() {
-    // Also see comments in ZBaseItem::getFlagBitmask
-    throw new UnsupportedOperationException("ZFolder method not supported yet");
-  }
 }

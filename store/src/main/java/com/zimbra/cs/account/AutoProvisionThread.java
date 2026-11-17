@@ -20,11 +20,6 @@ public class AutoProvisionThread extends Thread implements Provisioning.EagerAut
     private static Object THREAD_CONTROL_LOCK = new Object();
     private boolean shutdownRequested = false;
 
-    @VisibleForTesting
-    protected AutoProvisionThread() {
-        setName("AutoProvision");
-    }
-
     /**
      * Starts up the auto provision thread.
      */

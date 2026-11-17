@@ -72,16 +72,7 @@ public class ZConversationSummaryEvent {
         return frag == null ? defaultValue : frag.getText();
     }
 
-    /**
-     * @param defaultValue value to return if unchanged
-     * @return new date or defaultValue if unchanged
-     * @throws com.zimbra.common.service.ServiceException on error
-     */
-    public long getDate(long defaultValue) throws ServiceException {
-        return mConvEl.getAttributeLong(MailConstants.A_DATE, defaultValue);
-    }
-
-    /**
+	/**
      * @param defaultValue value to return if unchanged
      * @return grants or defaultValue if unchanged
      * @throws com.zimbra.common.service.ServiceException on error

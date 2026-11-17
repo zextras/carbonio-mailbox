@@ -82,32 +82,11 @@ public class PseudoTarget {
       mPseudoDomain = pseudoDomain;
     }
 
-    /*
-     * create a pseudo account that is a member of the specified group.
-     *
-     * The acl groups this account belongs are essentially the acl groups
-     * of the specified group, plus the group.
-     */
-    PseudoAccount(
-        String name,
-        String id,
-        Map<String, Object> attrs,
-        Map<String, Object> defaults,
-        Provisioning prov,
-        DistributionList group)
-        throws ServiceException {
-      super(name, id, attrs, defaults, prov);
-      mAclGroups = prov.getGroupMembership(group, false);
-    }
-
-    Domain getPseudoDomain() {
+		Domain getPseudoDomain() {
       return mPseudoDomain;
     }
 
-    GroupMembership getAclGroups() {
-      return mAclGroups;
-    }
-  }
+	}
 
   static class PseudoCalendarResource extends CalendarResource {
     Domain mPseudoDomain;
@@ -202,24 +181,7 @@ public class PseudoTarget {
     return (Domain) createPseudoTarget(prov, TargetType.domain, null, null, false, null, null);
   }
 
-  /**
-   * creagte a pseudo domain with the real name.
-   *
-   * <p>This is only used for computing settable attrs when creating a domain. We need to be able to
-   * traverse the domain hierarchy for grants with the subDomain modifier.
-   *
-   * @param prov
-   * @param domainName
-   * @return
-   * @throws ServiceException
-   */
-  public static Domain createPseudoDomain(Provisioning prov, String domainName)
-      throws ServiceException {
-    return (Domain)
-        createPseudoTarget(prov, TargetType.domain, null, null, false, null, null, domainName);
-  }
-
-  public static Entry createPseudoTarget(
+	public static Entry createPseudoTarget(
       Provisioning prov,
       TargetType targetType,
       Key.DomainBy domainBy,

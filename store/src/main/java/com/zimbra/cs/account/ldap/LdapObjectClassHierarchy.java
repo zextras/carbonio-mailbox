@@ -10,9 +10,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.zimbra.common.util.StringUtil;
-import com.zimbra.cs.account.ldap.LdapProv;
-
 public class LdapObjectClassHierarchy {
 
     /*
@@ -110,26 +107,6 @@ public class LdapObjectClassHierarchy {
         }
 
         return mostSpecific;
-    }
-
-    /**
-     * returns whether oc2 is a superior OC of oc1
-     *
-     * returns true if oc2 is a superior OC of oc1
-     * returns false if oc2 is not a superior OC of oc1, or if oc1 and oc2 are unrelated
-     *
-     * e.g. returns true if oc1 is inetOrgPerson and oc2 is organizationalPerson
-     *      returns true if oc1 is organizationalPerson and oc2 is person
-     *      returns false if oc1 is amavisAccount and oc2 is inetOrgPerson
-     *
-     * @param prov
-     * @param oc1
-     * @param oc2
-     * @return
-     */
-    public static boolean isSuperiorOC(LdapProv prov, String oc1, String oc2) {
-        fetchAndCacheSuperiorOCsIfNecessary(prov, StringUtil.toStringArray(oc1));
-        return isSuperiorOC(oc1, oc2);
     }
 
 }

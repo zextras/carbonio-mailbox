@@ -8,7 +8,6 @@ package com.zimbra.client.event;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.client.ZItem;
 
 public class ZCreateAppointmentEvent implements ZCreateItemEvent {
 
@@ -22,7 +21,7 @@ public class ZCreateAppointmentEvent implements ZCreateItemEvent {
      * @return id
      * @throws com.zimbra.common.service.ServiceException on error
      */
-    public String getId() throws ServiceException {
+		private String getId() throws ServiceException {
         return mApptEl.getAttribute(MailConstants.A_ID);
     }
 
@@ -34,7 +33,4 @@ public class ZCreateAppointmentEvent implements ZCreateItemEvent {
         }
     }
 
-    public ZItem getItem() throws ServiceException {
-        return null;
-    }
 }

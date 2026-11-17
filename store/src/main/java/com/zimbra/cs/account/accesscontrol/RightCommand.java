@@ -552,10 +552,10 @@ public class RightCommand {
         void setCanGetAttrs(SortedMap<String, EffectiveAttr> canGetAttrs) { mCanGetAttrs = canGetAttrs; }
 
         public String targetType() { return mTargetType; }
-        public String targetId()   { return mTargetId; }
-        public String targetName() { return mTargetName; }
-        public String granteeId() { return mGranteeId; }
-        public String granteeName() { return mGranteeName; }
+
+			public String targetName() { return mTargetName; }
+
+			public String granteeName() { return mGranteeName; }
         public List<String> presetRights() { return mPresetRights; }
         public boolean canSetAllAttrs() { return mCanSetAllAttrs; }
         public SortedMap<String, EffectiveAttr> canSetAttrs() { return mCanSetAttrs; }

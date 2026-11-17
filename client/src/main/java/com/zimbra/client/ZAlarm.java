@@ -73,35 +73,10 @@ public class ZAlarm {
     
     public enum ZTriggerType {
         ABSOLUTE, RELATIVE;
-        public static ZTriggerType lookup(String str) {
-            if (str != null) {
-                try {
-                    str = str.replace('-', '_').toUpperCase();
-                    return ZTriggerType.valueOf(str);
-                } catch (IllegalArgumentException e) {}
-            }
-            return null;
-        }
 
-    }
+		}
 
-    private ZAction mAction;
-    private ZTriggerType mTriggerType = ZTriggerType.RELATIVE;
-    private ZRelated mTriggerRelated;
-    private ParsedDuration mTriggerRelative;
-    private ParsedDateTime mTriggerAbsolute;
-
-    private ParsedDuration mRepeatDuration;
-    private int mRepeatCount;
-    // SUMMARY (email subject when mAction=EMAIL)
-    private String mSummary;
-    private Attach mAttach;
     private List<ZAttendee> mAttendees;
-
-    private String mDescription;
-
-    public ZAlarm(){
-    }
 
     public ZAlarm(Element alarmElem) throws ServiceException{
         ZAction action = ZAction.DISPLAY;
@@ -185,113 +160,17 @@ public class ZAlarm {
 
     }
 
-    public ZAction getAction() {
-        return mAction;
-    }
+	public void setAction(ZAction mAction) {
+  }
 
-    public void setAction(ZAction mAction) {
-        this.mAction = mAction;
-    }
+	public void setDescription(String mDescription) {
+  }
 
-    public ZTriggerType getTriggerType() {
-        return mTriggerType;
-    }
+	public void setTriggerRelative(ParsedDuration dur){
+  }
 
-    public void setTriggerType(ZTriggerType triggerType) {
-        this.mTriggerType = triggerType;
-    }
-
-    public String getDescription() {
-        return mDescription;
-    }
-
-    public void setDescription(String mDescription) {
-        this.mDescription = mDescription;
-    }
-
-    public int getRepeatCount() {
-        return mRepeatCount;
-    }
-
-    public void setRepeatCount(int mRepeatCount) {
-        this.mRepeatCount = mRepeatCount;
-    }
-
-    public void setTriggerRelative(ParsedDuration dur){
-        this.mTriggerRelative = dur;
-    }
-
-    public ParsedDuration getTriggerRelated(){
-        return this.mTriggerRelative;
-    }
-
-    public void setTriggerAbsolute(ParsedDateTime abs){
-        this.mTriggerAbsolute = abs;
-    }
-
-    public ParsedDateTime getTriggerAbsolute(){
-        return this.mTriggerAbsolute;
-    }
-
-    public void setSummary(String summary){
-        this.mSummary = summary;
-    }
-
-    public String getSummary(){
-        return this.mSummary;                                        
-    }
-
-    public List<ZAttendee> getAttendees(){
-        return this.mAttendees;
-    }
-
-    public void setAttendees(List<ZAttendee> attendees){
-        this.mAttendees = attendees;
-    }
-
-    public void addAttendee(ZAttendee attendee){
-        if (this.mAttendees == null){
-            this.mAttendees = new ArrayList<>();
-        }
-        this.mAttendees.add(attendee);
-    }
+	public void setSummary(String summary){
+  }
 
 
-    public Element toElement(Element parent) {
-        Element alarm = parent.addElement(MailConstants.E_CAL_ALARM);
-        alarm.addAttribute(MailConstants.A_CAL_ALARM_ACTION, mAction.toString());
-        Element trigger = alarm.addElement(MailConstants.E_CAL_ALARM_TRIGGER);
-        if (ZTriggerType.ABSOLUTE.equals(mTriggerType)) {
-            Element absolute = trigger.addElement(MailConstants.E_CAL_ALARM_ABSOLUTE);
-            absolute.addAttribute(MailConstants.A_DATE, mTriggerAbsolute.toString());
-        } else {
-            Element relative = mTriggerRelative.toXml(trigger, MailConstants.E_CAL_ALARM_RELATIVE);
-            if (mTriggerRelated != null)
-                relative.addAttribute(MailConstants.A_CAL_ALARM_RELATED, mTriggerRelated.toString());
-        }
-        if (mRepeatDuration != null) {
-            Element repeat = mRepeatDuration.toXml(alarm, MailConstants.E_CAL_ALARM_REPEAT);
-            repeat.addAttribute(MailConstants.A_CAL_ALARM_COUNT, mRepeatCount);
-        }
-        if (!ZAction.AUDIO.equals(mAction) && mDescription != null) {
-            Element desc = alarm.addElement(MailConstants.E_CAL_ALARM_DESCRIPTION);
-            desc.setText(mDescription);
-        }
-        if (mAttach != null)
-            mAttach.toXml(alarm);
-        if (ZAction.EMAIL.equals(mAction) ||
-            ZAction.X_YAHOO_CALENDAR_ACTION_IM.equals(mAction) ||
-            ZAction.X_YAHOO_CALENDAR_ACTION_MOBILE.equals(mAction)) {
-            Element summary = alarm.addElement(MailConstants.E_CAL_ALARM_SUMMARY);
-            if (mSummary != null) {
-                summary.setText(mSummary);
-            }
-            if (mAttendees != null) {
-                for (ZAttendee attendee : mAttendees) {
-                    attendee.toElement(alarm);
-                }
-            }
-        }
-        return alarm;
-    }
 }

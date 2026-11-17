@@ -680,9 +680,6 @@ public final class LC {
       KnownKey.newKey("com.zimbra.soap.SoapSessionFactory");
   public static final KnownKey zimbra_class_dbconnfactory =
       KnownKey.newKey("com.zimbra.cs.db.ZimbraConnectionFactory");
-  public static final KnownKey zimbra_class_customproxyselector =
-      KnownKey.newKey(
-          ""); // intentionally has no value; set one if u want to use a custom proxy selector
   public static final KnownKey zimbra_class_galgroupinfoprovider =
       KnownKey.newKey("com.zimbra.cs.gal.GalGroupInfoProvider");
   public static final KnownKey zimbra_class_jsieve_comparators_ascii_casemap =
@@ -897,10 +894,6 @@ public final class LC {
 
   public static final KnownKey httpclient_convertd_so_timeout = KnownKey.newKey(-1);
   public static final KnownKey httpclient_convertd_keepalive_connections = KnownKey.newKey(true);
-
-  @Supported public static final KnownKey client_use_system_proxy = KnownKey.newKey(false);
-
-  @Supported public static final KnownKey client_use_native_proxy_selector = KnownKey.newKey(false);
 
   public static final KnownKey shared_mime_info_globs =
       KnownKey.newKey("${zimbra_home}/conf/globs2");
