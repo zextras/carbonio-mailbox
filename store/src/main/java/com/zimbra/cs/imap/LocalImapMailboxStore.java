@@ -211,8 +211,7 @@ public class LocalImapMailboxStore extends ImapMailboxStore {
         return mailbox.getAccountId();
     }
 
-    @Override
-    public Account getAccount() throws ServiceException {
+    private Account getAccount() throws ServiceException {
         return Provisioning.getInstance().getAccountByMailbox(mailbox);
     }
 

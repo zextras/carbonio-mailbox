@@ -21,7 +21,6 @@ import com.zimbra.common.mailbox.MountpointStore;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.InputStreamWithSize;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.Account;
 import com.zimbra.cs.imap.ImapFlagCache.ImapFlag;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.OperationContext;
@@ -83,9 +82,8 @@ public abstract class ImapMailboxStore {
     public abstract int getCurrentMODSEQ(ItemIdentifier folderId) throws ServiceException;
     public abstract boolean addressMatchesAccountOrSendAs(String givenAddress) throws ServiceException;
     public abstract MailboxStore getMailboxStore();
-    /** Returns this mailbox's Account. */
-    public abstract Account getAccount() throws ServiceException;
-    /** Returns the ID of this mailbox's Account. */
+
+	/** Returns the ID of this mailbox's Account. */
     public abstract String getAccountId();
     public abstract Collection<FolderStore> getVisibleFolders(OperationContext octxt, ImapCredentials credentials,
             String owner, ImapPath relativeTo)

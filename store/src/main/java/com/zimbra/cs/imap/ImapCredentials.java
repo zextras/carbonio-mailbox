@@ -82,11 +82,7 @@ public class ImapCredentials implements java.io.Serializable {
         }
       };
 
-  public ImapCredentials(Account acct) throws ServiceException {
-    this(acct, EnabledHack.NONE);
-  }
-
-  protected ImapCredentials(Account acct, EnabledHack hack) throws ServiceException {
+	protected ImapCredentials(Account acct, EnabledHack hack) throws ServiceException {
     mAccountId = acct.getId();
     mUsername = acct.getName();
     mIsLocal = Provisioning.getInstance().onLocalServer(acct);
@@ -97,11 +93,7 @@ public class ImapCredentials implements java.io.Serializable {
     return mUsername;
   }
 
-  protected boolean isLocal() {
-    return mIsLocal;
-  }
-
-  protected boolean isHackEnabled(EnabledHack hack) {
+	protected boolean isHackEnabled(EnabledHack hack) {
     if (hack == null) {
       return (mEnabledHack == null);
     }

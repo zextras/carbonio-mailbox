@@ -88,8 +88,8 @@ public abstract class ImapListener extends Session {
     }
 
     interface ImapFolderData {
-        int getId();
-        int getSize();
+
+			int getSize();
         boolean isWritable();
         boolean hasExpunges();
         boolean hasNotifications();
@@ -120,12 +120,7 @@ public abstract class ImapListener extends Session {
             pagedSessionData = i4folder.getSessionData() == null ? null : new PagedSessionData(i4folder);
         }
 
-        @Override
-        public int getId() {
-            return ImapListener.this.getFolderId();
-        }
-
-        @Override
+			@Override
         public int getSize() {
             return originalSize;
         }

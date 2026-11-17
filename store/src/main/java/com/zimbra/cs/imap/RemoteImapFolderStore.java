@@ -20,11 +20,6 @@ public class RemoteImapFolderStore implements ImapFolderStore {
     }
 
     @Override
-    public String getFolderIdAsString() {
-        return (folder == null) ? null : folder.getFolderIdAsString();
-    }
-
-    @Override
     public FolderStore getFolderStore() {
         return folder;
     }

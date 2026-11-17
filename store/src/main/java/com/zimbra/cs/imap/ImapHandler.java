@@ -290,14 +290,6 @@ public abstract class ImapHandler {
         return origRemoteIp;
     }
 
-    protected String getVia() {
-        return via;
-    }
-
-    protected String getUserAgent() {
-        return userAgent;
-    }
-
     protected void setLoggingContext() {
         ZimbraLog.clearContext();
         ImapListener i4selected = selectedFolderListener;
