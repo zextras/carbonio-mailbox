@@ -720,17 +720,7 @@ public abstract class Entry implements AttributeEntry {
   @Override
   public synchronized String toString() {
     return String.format("[%s]", getClass().getName());
-    /*
-    StringBuilder sb = new StringBuilder();
-    sb.append(getClass().getName()).append(": {  ");
-    //sb.append(getClass().getName()).append(": { name=").append(getName()).append(" ");
-    sb.append(mAttrs.toString());
-    sb.append("}");
-    return sb.toString();
-               */
   }
-
-  static Pattern regex = Pattern.compile("^/(.*)/(i)?$");
 
   private static final class SortByLabelAsc implements Comparator<Entry> {
     @Override
