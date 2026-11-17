@@ -28,14 +28,8 @@ public abstract class ProvisioningExt {
     
     private static final ArrayList<PostCreateAccountListener> 
                 postCreateAccountListeners = new ArrayList<>();
-    
-    public static void addPostCreateAccountListener(PostCreateAccountListener listener) {
-        synchronized (postCreateAccountListeners) {
-            postCreateAccountListeners.add(listener);
-        }
-    }
-    
-    public static ArrayList<PostCreateAccountListener> getPostCreateAccountListeners() {
+
+	public static ArrayList<PostCreateAccountListener> getPostCreateAccountListeners() {
         return postCreateAccountListeners;
     }
 }

@@ -37,12 +37,8 @@ public abstract class MailTarget extends NamedEntry {
     public String getDomainName() {
         return mDomain;
     }
-    
-    public String getUnicodeDomainName() {
-        return mUnicodeDomain;
-    }
-    
-    public String getUnicodeName() {
+
+	public String getUnicodeName() {
         return mUnicodeName;
     }
     

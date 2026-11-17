@@ -592,15 +592,7 @@ public enum Command {
     }
   }
 
-  public int getMinArgLength() {
-    return mMinArgLength;
-  }
-
-  public int getMaxArgLength() {
-    return mMaxArgLength;
-  }
-
-  public enum Via {
+	public enum Via {
     soap,
     ldap
   }

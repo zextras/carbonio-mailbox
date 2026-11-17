@@ -43,26 +43,14 @@ public abstract class ChannelProvider {
         }
     }
 
-    public static ChannelProvider getProviderForChannel(String channel) {
-        if (StringUtil.isNullOrEmpty(channel)) {
-            return null;
-        }
-        return providers.get(channel);
-    }
-
-    public static ChannelProvider getProviderForChannel(Channel channel) {
+	public static ChannelProvider getProviderForChannel(Channel channel) {
         if (channel == null) {
             return null;
         }
         return providers.get(channel.toString());
     }
 
-    // RecoverAccount API methods
-    public Map<String, String> getResetPasswordRecoveryCodeMap(Account account) throws ServiceException {
-        String encoded = account.getResetPasswordRecoveryCode();
-        return JWEUtil.getDecodedJWE(encoded);
-    }
-    public abstract String getRecoveryAccount(Account account) throws ServiceException;
+	public abstract String getRecoveryAccount(Account account) throws ServiceException;
     public abstract void sendAndStoreResetPasswordRecoveryCode(ZimbraSoapContext zsc, Account account,
             Map<String, String> recoveryCodeMap) throws ServiceException;
 

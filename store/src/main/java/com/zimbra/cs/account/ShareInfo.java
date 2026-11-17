@@ -33,7 +33,6 @@ import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Mailbox.FolderNode;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MetadataList;
 import com.zimbra.cs.mailbox.Mountpoint;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mailbox.acl.AclPushSerializer;
@@ -65,35 +64,11 @@ public class ShareInfo {
 
   protected ShareInfoData mData;
 
-  //
-  // Grants that are applicable to the entry the share info is for.
-  //
-  // It is a list(MetadataList) instead of a single object(Metadata) because the entry we are
-  // publishing share info for could belong to multiple groups, and each group can have different
-  // rights(e.g. r, w, a, ...) on the folder.  The effective folder rights is union of all grants.
-  // But when we publish share info we probably want to record where a right is from.   Ee keep
-  // a list of all grants that apply to the entry we are publishing share info for.   In the future
-  // when we support share info from cos/domain/all authed users, they will be added in the list
-  // too.
-  //
-  // e.g.
-  //    - group dl2 is a member of group dl1
-  //    - owner shares /Inbox to dl2 for rw rights
-  //    - owner shares /Inbox to dl1 for aid rights
-  //
-  //    If we are publishing share info on dl2, the mGrants will contain two shares for /Inbox
-  //
-  protected MetadataList mGrants;
-
-  public ShareInfo() {
+	public ShareInfo() {
     mData = new ShareInfoData();
   }
 
-  public boolean hasGrant() {
-    return (mGrants != null);
-  }
-
-  //    /**
+	//    /**
   //     * serialize this ShareInfo into String persisted in LDAP
   //     *
   //     * The format is:

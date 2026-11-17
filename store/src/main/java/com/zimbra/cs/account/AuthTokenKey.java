@@ -38,16 +38,8 @@ public class AuthTokenKey {
     public long getVersion() {
         return mVersion;
     }
-    
-    public long getCreated() {
-        return mCreated;
-    }
 
-    void setKey(byte[] key) {
-        mKey = key;
-    }
-
-    AuthTokenKey(long version, byte[] key) throws ServiceException {
+	AuthTokenKey(long version, byte[] key) throws ServiceException {
         mVersion = version;
         mCreated = System.currentTimeMillis();
         if (key != null) { 

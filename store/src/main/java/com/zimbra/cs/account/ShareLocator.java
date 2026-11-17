@@ -13,7 +13,4 @@ public class ShareLocator extends ZAttrShareLocator {
         super(id, attrs, prov);
     }
 
-    public String getUuid() {
-        return getCn();
-    }
 }

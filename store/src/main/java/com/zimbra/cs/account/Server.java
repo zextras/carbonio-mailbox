@@ -37,11 +37,7 @@ public class Server extends ZAttrServer {
     return EntryType.SERVER;
   }
 
-  public void deleteServer(String zimbraId) throws ServiceException {
-    getProvisioning().deleteServer(getId());
-  }
-
-  public void modify(Map<String, Object> attrs) throws ServiceException {
+	public void modify(Map<String, Object> attrs) throws ServiceException {
     getProvisioning().modifyAttrs(this, attrs);
   }
 
@@ -102,27 +98,12 @@ public class Server extends ZAttrServer {
     return ipAddress;
   }
 
-  public boolean hasWebClientService() {
-    return getMultiAttrSet(Provisioning.A_zimbraServiceEnabled)
-        .contains(Provisioning.SERVICE_WEBCLIENT);
-  }
-
-  public boolean hasAdminClientService() {
-    return getMultiAttrSet(Provisioning.A_zimbraServiceEnabled)
-        .contains(Provisioning.SERVICE_ADMINCLIENT);
-  }
-
-  public boolean hasMailClientService() {
+	public boolean hasMailClientService() {
     return getMultiAttrSet(Provisioning.A_zimbraServiceEnabled)
         .contains(Provisioning.SERVICE_MAILCLIENT);
   }
 
-  public boolean hasZimletService() {
-    return getMultiAttrSet(Provisioning.A_zimbraServiceEnabled)
-        .contains(Provisioning.SERVICE_ZIMLET);
-  }
-
-  public boolean isLocalServer() throws ServiceException {
+	public boolean isLocalServer() throws ServiceException {
     Server localServer = getProvisioning().getLocalServer();
     return getId() != null && getId().equals(localServer.getId());
   }

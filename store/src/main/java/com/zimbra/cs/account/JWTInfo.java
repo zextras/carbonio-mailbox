@@ -18,7 +18,4 @@ public class JWTInfo {
     public String getSalt() {
         return salt;
     }
-    public long getExpiryTime() {
-        return expiryTime;
-    }
 }

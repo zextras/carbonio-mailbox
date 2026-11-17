@@ -15,8 +15,8 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.List;
 
 /**
  * @author schemers
@@ -46,39 +46,7 @@ public class Domain extends ZAttrDomain {
         getProvisioning().modifyAttrs(this, attrs);
     }
 
-    public void deleteDomain(String zimbraId) throws ServiceException {
-        getProvisioning().deleteDomain(getId());
-    }
-    
-    public List getAllAccounts() throws ServiceException {
-            return getProvisioning().getAllAccounts(this);
-    }
-
-    public void getAllAccounts(NamedEntry.Visitor visitor) throws ServiceException {
-        getProvisioning().getAllAccounts(this, visitor);
-    }
-
-    public void getAllAccounts(Server s, NamedEntry.Visitor visitor) throws ServiceException {
-        getProvisioning().getAllAccounts(this, s, visitor);
-    }
-
-    public List getAllCalendarResources() throws ServiceException {
-        return getProvisioning().getAllCalendarResources(this);
-    }
-
-    public void getAllCalendarResources(NamedEntry.Visitor visitor) throws ServiceException {
-        getProvisioning().getAllCalendarResources(this, visitor);
-    }
-
-    public void getAllCalendarResources(Server s, NamedEntry.Visitor visitor) throws ServiceException {
-        getProvisioning().getAllCalendarResources(this, s, visitor);
-    }
-
-    public List getAllDistributionLists() throws ServiceException {
-        return getProvisioning().getAllDistributionLists(this);
-    }
-    
-    public String getGalSearchBase(String searchBaseSpec) throws ServiceException {
+	public String getGalSearchBase(String searchBaseSpec) throws ServiceException {
         throw ServiceException.FAILURE("unsupported", null);
     }
 
@@ -129,4 +97,8 @@ public class Domain extends ZAttrDomain {
     }
 
     
+
+    public List getAllAccounts() throws ServiceException {
+            return getProvisioning().getAllAccounts(this);
+    }
 }

@@ -129,11 +129,7 @@ public class DataSource extends AccountProperty {
     return ConnectionType.cleartext;
   }
 
-  public boolean isSslEnabled() {
-    return getConnectionType() == ConnectionType.ssl;
-  }
-
-  public int getFolderId() {
+	public int getFolderId() {
     return getIntAttr(Provisioning.A_zimbraDataSourceFolderId, -1);
   }
 
@@ -333,11 +329,7 @@ public class DataSource extends AccountProperty {
 
   boolean isRequestScopeDebugTraceOn = false;
 
-  public synchronized void setRequestScopeDebugTraceOn(boolean b) {
-    isRequestScopeDebugTraceOn = b;
-  }
-
-  public boolean isImportOnly() {
+	public boolean isImportOnly() {
     return getBooleanAttr(Provisioning.A_zimbraDataSourceImportOnly, false);
   }
 
@@ -395,11 +387,7 @@ public class DataSource extends AccountProperty {
     return false;
   }
 
-  public boolean isSyncEnabled(String localPath) {
-    return true;
-  }
-
-  // Overridden in OfflineDataSource
+	// Overridden in OfflineDataSource
   public boolean isSaveToSent() {
     return true;
   }
@@ -498,13 +486,7 @@ public class DataSource extends AccountProperty {
     return DataSourceManager.getInstance().isSyncCapable(this, folder);
   }
 
-  public boolean isSyncNeeded() throws ServiceException {
-    return false;
-  }
-
-  public void mailboxDeleted() {}
-
-  public Mailbox getMailbox() throws ServiceException {
+	public Mailbox getMailbox() throws ServiceException {
     return DataSourceManager.getInstance().getMailbox(this);
   }
 

@@ -1195,17 +1195,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         emailAddress, password, attrs, mDIT.handleSpecialAttrs(attrs), null, false, null);
   }
 
-  @Override
-  public Account restoreAccount(
-      String emailAddress,
-      String password,
-      Map<String, Object> attrs,
-      Map<String, Object> origAttrs)
-      throws ServiceException {
-    return createAccount(
-        emailAddress, password, attrs, mDIT.handleSpecialAttrs(attrs), null, true, origAttrs);
-  }
-
   private Account createAccount(
       String emailAddress,
       String password,
@@ -5781,8 +5770,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     changePassword(acct, currentPassword, newPassword, false);
   }
 
-  @Override
-  public void changePassword(
+  private void changePassword(
       Account acct, String currentPassword, String newPassword, boolean dryRun)
       throws ServiceException {
     this.changePassword(acct, currentPassword, newPassword, dryRun, null);
@@ -7612,13 +7600,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     return createIdentity(account, identityName, identityAttrs, false);
   }
 
-  @Override
-  public Identity restoreIdentity(
-      Account account, String identityName, Map<String, Object> identityAttrs)
-      throws ServiceException {
-    return createIdentity(account, identityName, identityAttrs, true);
-  }
-
   private Identity createIdentity(
       Account account, String identityName, Map<String, Object> identityAttrs, boolean restoring)
       throws ServiceException {
@@ -7888,13 +7869,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       Account account, String signatureName, Map<String, Object> signatureAttrs)
       throws ServiceException {
     return createSignature(account, signatureName, signatureAttrs, false);
-  }
-
-  @Override
-  public Signature restoreSignature(
-      Account account, String signatureName, Map<String, Object> signatureAttrs)
-      throws ServiceException {
-    return createSignature(account, signatureName, signatureAttrs, true);
   }
 
   private Signature createSignature(
@@ -8278,13 +8252,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       boolean passwdAlreadyEncrypted)
       throws ServiceException {
     return createDataSource(account, type, dataSourceName, attrs, passwdAlreadyEncrypted, false);
-  }
-
-  @Override
-  public DataSource restoreDataSource(
-      Account account, DataSourceType dsType, String dsName, Map<String, Object> dataSourceAttrs)
-      throws ServiceException {
-    return createDataSource(account, dsType, dsName, dataSourceAttrs, true, true);
   }
 
   private DataSource createDataSource(
@@ -10518,11 +10485,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   public Set<String> getDynamicGroupMembersSet(DynamicGroup group) throws ServiceException {
     List<String> members = searchDynamicGroupMembers(group);
     return Sets.newHashSet(members);
-  }
-
-  @Override
-  public boolean isCacheEnabled() {
-    return useCache;
   }
 
   @Override

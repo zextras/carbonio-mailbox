@@ -196,19 +196,11 @@ public class ShareInfoData {
         mUrl = url;
     }
 
-    public String getUrl() {
-        return mUrl;
-    }
-
-    public void setGuestPassword(String guestPassword) {
+	public void setGuestPassword(String guestPassword) {
         mGuestPassword = guestPassword;
     }
 
-    public String getGuestPassword() {
-        return mGuestPassword;
-    }
-
-    public void setExpiry(Long expiry) {
+	public void setExpiry(Long expiry) {
         mExpiry = expiry;
     }
 
@@ -344,9 +336,4 @@ public class ShareInfoData {
         return sb.toString();
     }
 
-    public void dump() {
-        System.out.println();
-        System.out.println(this);
-        System.out.println();
-    }
 }

@@ -12,16 +12,16 @@ import com.google.common.collect.Sets;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.Provisioning.GroupMembership;
-import com.zimbra.cs.account.Provisioning.SetPasswordResult;
-import com.zimbra.cs.account.auth.AuthContext;
-import com.zimbra.soap.admin.type.DataSourceType;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import com.zimbra.cs.account.Provisioning.GroupMembership;
+import com.zimbra.cs.account.Provisioning.SetPasswordResult;
+import com.zimbra.cs.account.auth.AuthContext;
+import com.zimbra.soap.admin.type.DataSourceType;
 
 /**
  * @author schemers
@@ -64,10 +64,6 @@ public class Account extends ZAttrAccount implements GroupedEntry, AliasedEntry 
     getProvisioning().deleteAccount(this.getId());
   }
 
-  public void rename(String newName) throws ServiceException {
-    getProvisioning().renameAccount(this.getId(), newName);
-  }
-
   public void modify(Map<String, Object> attrs) throws ServiceException {
     getProvisioning().modifyAttrs(this, attrs);
   }
@@ -76,112 +72,12 @@ public class Account extends ZAttrAccount implements GroupedEntry, AliasedEntry 
     getProvisioning().addAlias(this, alias);
   }
 
-  public void removeAlias(String alias) throws ServiceException {
-    getProvisioning().removeAlias(this, alias);
-  }
-
   public void resetDefaultCalendarId() throws ServiceException {
     this.setPrefDefaultCalendarId(ID_FOLDER_CALENDAR);
   }
 
-  public void authAccount(String password, AuthContext.Protocol proto) throws ServiceException {
-    getProvisioning().authAccount(this, password, proto);
-  }
-
-  public void changePassword(String currentPassword, String newPassword) throws ServiceException {
-    getProvisioning().changePassword(this, currentPassword, newPassword);
-  }
-
-  public void checkPasswordStrength(String password) throws ServiceException {
-    getProvisioning().checkPasswordStrength(this, password);
-  }
-
-  public SetPasswordResult setPassword(String password) throws ServiceException {
-    return getProvisioning().setPassword(this, password);
-  }
-
-  public GroupMembership getAclGroups(boolean adminGroupsOnly) throws ServiceException {
-    return getProvisioning().getGroupMembership(this, adminGroupsOnly);
-  }
-
-  /**
-   * @param zimbraId the zimbraId of the dl we are checking for
-   * @return true if this account (or one of the dl it belongs to) is a member of the specified dl.
-   * @throws ServiceException on error
-   */
-  public boolean inDistributionList(String zimbraId) throws ServiceException {
-    return getProvisioning().inDistributionList(this, zimbraId);
-  }
-
-  /**
-   * @return set of all the zimbraId's of lists this account belongs to, including any list in other
-   *     list.
-   * @throws ServiceException on error
-   */
-  public Set<String> getDistributionLists() throws ServiceException {
-    return getProvisioning().getDistributionLists(this);
-  }
-
-  /**
-   * @param directOnly return only DLs this account is a direct member of
-   * @param via if non-null and directOnly is false, this map will containing a mapping from a DL
-   *     name to the DL it was a member of, if member was indirect.
-   * @return all the DLs
-   * @throws ServiceException on error
-   */
-  public List<DistributionList> getDistributionLists(boolean directOnly, Map<String, String> via)
-      throws ServiceException {
-    return getProvisioning().getDistributionLists(this, directOnly, via);
-  }
-
-  public void preAuthAccount(
-      String accountName,
-      String accountBy,
-      long timestamp,
-      long expires,
-      String preAuth,
-      Map<String, Object> authCtxt)
-      throws ServiceException {
-    getProvisioning()
-        .preAuthAccount(this, accountName, accountBy, timestamp, expires, preAuth, authCtxt);
-  }
-
-  public void preAuthAccount(
-      String accountName,
-      String accountBy,
-      long timestamp,
-      long expires,
-      String preAuth,
-      boolean admin,
-      Map<String, Object> authCtxt)
-      throws ServiceException {
-    getProvisioning()
-        .preAuthAccount(this, accountName, accountBy, timestamp, expires, preAuth, admin, authCtxt);
-  }
-
   public Cos getCOS() throws ServiceException {
     return getProvisioning().getCOS(this);
-  }
-
-  public DataSource createDataSource(
-      DataSourceType type, String dataSourceName, Map<String, Object> attrs)
-      throws ServiceException {
-    return getProvisioning().createDataSource(this, type, dataSourceName, attrs);
-  }
-
-  public DataSource createDataSource(
-      DataSourceType type,
-      String dataSourceName,
-      Map<String, Object> attrs,
-      boolean passwdAlreadyEncrypted)
-      throws ServiceException {
-    return getProvisioning()
-        .createDataSource(this, type, dataSourceName, attrs, passwdAlreadyEncrypted);
-  }
-
-  public void modifyDataSource(String dataSourceId, Map<String, Object> attrs)
-      throws ServiceException {
-    getProvisioning().modifyDataSource(this, dataSourceId, attrs);
   }
 
   public void deleteDataSource(String dataSourceId) throws ServiceException {
@@ -204,30 +100,8 @@ public class Account extends ZAttrAccount implements GroupedEntry, AliasedEntry 
     return get(Key.DataSourceBy.id, id);
   }
 
-  public Identity createIdentity(String identityName, Map<String, Object> attrs)
-      throws ServiceException {
-    return getProvisioning().createIdentity(this, identityName, attrs);
-  }
-
-  public void modifyIdentity(String identityName, Map<String, Object> attrs)
-      throws ServiceException {
-    getProvisioning().modifyIdentity(this, identityName, attrs);
-  }
-
-  public void deleteIdentity(String identityName) throws ServiceException {
-    getProvisioning().deleteIdentity(this, identityName);
-  }
-
-  public List<Identity> getAllIdentities() throws ServiceException {
-    return getProvisioning().getAllIdentities(this);
-  }
-
   public Identity get(Key.IdentityBy keyType, String key) throws ServiceException {
     return getProvisioning().get(this, keyType, key);
-  }
-
-  public Identity getIdentityByName(String name) throws ServiceException {
-    return get(Key.IdentityBy.name, name);
   }
 
   public Identity getIdentityById(String id) throws ServiceException {
@@ -238,34 +112,8 @@ public class Account extends ZAttrAccount implements GroupedEntry, AliasedEntry 
     return getProvisioning().getDefaultIdentity(this);
   }
 
-  public Signature createSignature(String signatureName, Map<String, Object> attrs)
-      throws ServiceException {
-    return getProvisioning().createSignature(this, signatureName, attrs);
-  }
-
-  public void modifySignature(String signatureId, Map<String, Object> attrs)
-      throws ServiceException {
-    getProvisioning().modifySignature(this, signatureId, attrs);
-  }
-
-  public void deleteSignature(String signatureId) throws ServiceException {
-    getProvisioning().deleteSignature(this, signatureId);
-  }
-
-  public List<Signature> getAllSignatures() throws ServiceException {
-    return getProvisioning().getAllSignatures(this);
-  }
-
   public Signature get(Key.SignatureBy keyType, String key) throws ServiceException {
     return getProvisioning().get(this, keyType, key);
-  }
-
-  public Signature getSignatureByName(String key) throws ServiceException {
-    return get(Key.SignatureBy.name, key);
-  }
-
-  public Signature getSignatureById(String key) throws ServiceException {
-    return get(Key.SignatureBy.id, key);
   }
 
   public boolean isAccountStatusActive() {
@@ -490,17 +338,6 @@ public class Account extends ZAttrAccount implements GroupedEntry, AliasedEntry 
   }
 
   @Override
-  public boolean isAddrOfEntry(String addr) {
-    addr = addr.toLowerCase();
-    if (getName().equals(addr)) {
-      return true;
-    } else {
-      Set<String> aliases = getMultiAttrSet(Provisioning.A_zimbraMailAlias);
-      return aliases.contains(addr);
-    }
-  }
-
-  @Override
   public Set<String> getAllAddrsSet() {
     Set<String> addrs = Sets.newHashSet();
     addrs.add(getName());
@@ -552,4 +389,68 @@ public class Account extends ZAttrAccount implements GroupedEntry, AliasedEntry 
     }
     return this.getDomainName();
 	}
+
+  public List<Identity> getAllIdentities() throws ServiceException {
+    return getProvisioning().getAllIdentities(this);
+  }
+
+  public void modifyDataSource(String dataSourceId, Map<String, Object> attrs)
+      throws ServiceException {
+    getProvisioning().modifyDataSource(this, dataSourceId, attrs);
+  }
+
+  public Identity getIdentityByName(String name) throws ServiceException {
+    return get(Key.IdentityBy.name, name);
+  }
+
+  /**
+   * @param directOnly return only DLs this account is a direct member of
+   * @param via if non-null and directOnly is false, this map will containing a mapping from a DL
+   *     name to the DL it was a member of, if member was indirect.
+   * @return all the DLs
+   * @throws ServiceException on error
+   */
+  public List<DistributionList> getDistributionLists(boolean directOnly, Map<String, String> via)
+      throws ServiceException {
+    return getProvisioning().getDistributionLists(this, directOnly, via);
+  }
+
+  public List<Signature> getAllSignatures() throws ServiceException {
+    return getProvisioning().getAllSignatures(this);
+  }
+
+  public Signature createSignature(String signatureName, Map<String, Object> attrs)
+      throws ServiceException {
+    return getProvisioning().createSignature(this, signatureName, attrs);
+  }
+
+  public Signature getSignatureByName(String key) throws ServiceException {
+    return get(Key.SignatureBy.name, key);
+  }
+
+  public void modifySignature(String signatureId, Map<String, Object> attrs)
+      throws ServiceException {
+    getProvisioning().modifySignature(this, signatureId, attrs);
+  }
+
+  public DataSource createDataSource(
+      DataSourceType type, String dataSourceName, Map<String, Object> attrs)
+      throws ServiceException {
+    return getProvisioning().createDataSource(this, type, dataSourceName, attrs);
+  }
+
+  public DataSource createDataSource(
+      DataSourceType type,
+      String dataSourceName,
+      Map<String, Object> attrs,
+      boolean passwdAlreadyEncrypted)
+      throws ServiceException {
+    return getProvisioning()
+        .createDataSource(this, type, dataSourceName, attrs, passwdAlreadyEncrypted);
+  }
+
+  public Identity createIdentity(String identityName, Map<String, Object> attrs)
+      throws ServiceException {
+    return getProvisioning().createIdentity(this, identityName, attrs);
+  }
 }

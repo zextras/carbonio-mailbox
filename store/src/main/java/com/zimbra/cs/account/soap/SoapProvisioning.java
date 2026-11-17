@@ -848,8 +848,7 @@ public class SoapProvisioning extends Provisioning {
     this.changePassword(acct, currentPassword, newPassword, false);
   }
 
-  @Override
-  public void changePassword(
+  private void changePassword(
       Account acct, String currentPassword, String newPassword, boolean dryRun)
       throws ServiceException {
     this.changePassword(acct, currentPassword, newPassword, dryRun, null);
@@ -875,16 +874,6 @@ public class SoapProvisioning extends Provisioning {
     CreateAccountResponse resp =
         invokeJaxb(new CreateAccountRequest(emailAddress, password, attrs));
     return new SoapAccount(resp.getAccount(), this);
-  }
-
-  @Override
-  public Account restoreAccount(
-      String emailAddress,
-      String password,
-      Map<String, Object> attrs,
-      Map<String, Object> origAttrs)
-      throws ServiceException {
-    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -2114,12 +2103,6 @@ public class SoapProvisioning extends Provisioning {
   }
 
   @Override
-  public Identity restoreIdentity(Account account, String identityName, Map<String, Object> attrs)
-      throws ServiceException {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
   public void deleteIdentity(Account account, String identityName) throws ServiceException {
     NameId identity = new NameId(identityName, null);
     DeleteIdentityRequest request = new DeleteIdentityRequest(identity);
@@ -2161,12 +2144,6 @@ public class SoapProvisioning extends Provisioning {
     Element response =
         invokeOnTargetAccount(req, account.getId()).getElement(AccountConstants.E_SIGNATURE);
     return new SoapSignature(account, response, this);
-  }
-
-  @Override
-  public Signature restoreSignature(
-      Account account, String signatureName, Map<String, Object> attrs) throws ServiceException {
-    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -2223,13 +2200,6 @@ public class SoapProvisioning extends Provisioning {
       String dsName,
       Map<String, Object> attrs,
       boolean passwdAlreadyEncrypted)
-      throws ServiceException {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public DataSource restoreDataSource(
-      Account account, DataSourceType dsType, String dsName, Map<String, Object> attrs)
       throws ServiceException {
     throw new UnsupportedOperationException();
   }
@@ -2632,7 +2602,6 @@ public class SoapProvisioning extends Provisioning {
     invoke(req);
   }
 
-  @Override
   public void reloadMemcachedClientConfig() throws ServiceException {
     XMLElement req = new XMLElement(AdminConstants.RELOAD_MEMCACHED_CLIENT_CONFIG_REQUEST);
     invoke(req);
