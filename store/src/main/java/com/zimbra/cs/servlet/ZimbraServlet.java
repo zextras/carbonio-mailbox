@@ -9,6 +9,7 @@
 package com.zimbra.cs.servlet;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Ticker;
 import com.zextras.mailbox.servlet.ProxyIpsCache;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
@@ -44,7 +45,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.Clock;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,8 +87,8 @@ public class ZimbraServlet extends HttpServlet {
       new AtomicReference<>(
           new ProxyIpsCache(
               ZimbraServlet::loadProxyIps,
-              () -> Duration.ofSeconds(LC.proxy_ips_cache_ttl.longValue()),
-              Clock.systemUTC()));
+              Duration.ofSeconds(LC.proxy_ips_cache_ttl.longValue()),
+              Ticker.systemTicker()));
 
   public static final String QP_ZAUTHTOKEN = "zauthtoken";
   public static final String QP_ZJWT = "zjwt";

@@ -4,95 +4,83 @@
 
 package com.zextras.mailbox.servlet;
 
+import com.google.common.base.Ticker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.zimbra.common.util.ZimbraLog;
 import io.vavr.control.Try;
-import java.time.Clock;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 /**
  * Keeps the proxy server IPs for a configurable time, so resolving the client IP on every request
  * does not search LDAP for the proxy servers and resolve their hostnames each time.
  *
- * <p>Only one thread reloads an expired entry; the others keep using the previous one meanwhile.
- * When a reload fails the previous IPs are kept until the next attempt. {@code zmprov fc server}
- * (and {@code all}) invalidates it.
+ * <p>Once the time to live has passed, the next request reloads the IPs while concurrent requests
+ * keep using the previous ones. A failed reload keeps the previous IPs until the time to live
+ * passes again. A time to live of zero disables caching. {@code zmprov fc server} (and {@code all})
+ * invalidates it.
  */
 public class ProxyIpsCache {
 
-  private final Supplier<Try<List<String>>> loader;
-  private final Supplier<Duration> timeToLive;
-  private final Clock clock;
-  private final ReentrantLock reloading = new ReentrantLock();
-  private final AtomicReference<Snapshot> snapshot = new AtomicReference<>();
+  private static final String KEY = "proxyIps";
 
-  public ProxyIpsCache(
-      Supplier<Try<List<String>>> loader, Supplier<Duration> timeToLive, Clock clock) {
-    this.loader = loader;
-    this.timeToLive = timeToLive;
-    this.clock = clock;
+  private final LoadingCache<String, List<String>> cache;
+
+  public ProxyIpsCache(Supplier<Try<List<String>>> loader, Duration timeToLive, Ticker ticker) {
+    final CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder().ticker(ticker);
+    if (timeToLive.isZero() || timeToLive.isNegative()) {
+      builder.maximumSize(0);
+    } else {
+      builder.refreshAfterWrite(timeToLive);
+    }
+    this.cache = builder.build(new ProxyIpsLoader(loader));
   }
 
   public List<String> get() {
-    final Snapshot current = snapshot.get();
-    if (current != null && current.isFreshAt(clock.instant())) {
-      return current.proxyIps();
-    }
-    if (current != null && !reloading.tryLock()) {
-      return current.proxyIps();
-    }
-    if (current == null) {
-      reloading.lock();
-    }
     try {
-      return reload();
-    } finally {
-      reloading.unlock();
+      return cache.getUnchecked(KEY);
+    } catch (UncheckedExecutionException e) {
+      ZimbraLog.misc.warn("failed to get proxy server IPs, none will be trusted", e.getCause());
+      return List.of();
     }
   }
 
   /** Drops the cached IPs, so the next {@link #get()} loads them again. */
   public void invalidate() {
-    reloading.lock();
-    try {
-      snapshot.set(null);
-    } finally {
-      reloading.unlock();
-    }
+    cache.invalidateAll();
   }
 
-  private List<String> reload() {
-    final Snapshot current = snapshot.get();
-    final Instant now = clock.instant();
-    if (current != null && current.isFreshAt(now)) {
-      return current.proxyIps();
+  private static class ProxyIpsLoader extends CacheLoader<String, List<String>> {
+
+    private final Supplier<Try<List<String>>> loader;
+
+    ProxyIpsLoader(Supplier<Try<List<String>>> loader) {
+      this.loader = loader;
     }
-    final Instant expiry = now.plus(timeToLive.get());
-    return loader
-        .get()
-        .map(List::copyOf)
-        .peek(proxyIps -> snapshot.set(new Snapshot(proxyIps, expiry)))
-        .getOrElseGet(failure -> keepPrevious(current, expiry, failure));
-  }
 
-  private List<String> keepPrevious(Snapshot previous, Instant expiry, Throwable failure) {
-    if (previous == null) {
-      ZimbraLog.misc.warn("failed to get proxy server IPs, none will be trusted", failure);
-      return List.of();
+    @Override
+    public List<String> load(String key) {
+      return loader.get().map(List::copyOf).get();
     }
-    ZimbraLog.misc.warn("failed to reload proxy server IPs, keeping the previous ones", failure);
-    snapshot.set(new Snapshot(previous.proxyIps(), expiry));
-    return previous.proxyIps();
-  }
 
-  private record Snapshot(List<String> proxyIps, Instant expiry) {
-
-    boolean isFreshAt(Instant now) {
-      return now.isBefore(expiry);
+    /** Keeps the previous IPs on failure, so LDAP is not retried on every request. */
+    @Override
+    public ListenableFuture<List<String>> reload(String key, List<String> previous) {
+      return Futures.immediateFuture(
+          loader
+              .get()
+              .<List<String>>map(List::copyOf)
+              .onFailure(
+                  failure ->
+                      ZimbraLog.misc.warn(
+                          "failed to reload proxy server IPs, keeping the previous ones", failure))
+              .getOrElse(previous));
     }
   }
 }

@@ -7,12 +7,9 @@ package com.zextras.mailbox.servlet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.common.base.Ticker;
 import io.vavr.control.Try;
-import java.time.Clock;
 import java.time.Duration;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
@@ -22,10 +19,11 @@ import org.junit.jupiter.api.Test;
 class ProxyIpsCacheTest {
 
   private static final Duration TIME_TO_LIVE = Duration.ofMinutes(5);
+  private static final Duration PAST_TIME_TO_LIVE = TIME_TO_LIVE.plusSeconds(1);
   private static final List<String> PROXY_IPS = List.of("10.0.0.1");
   private static final List<String> NEW_PROXY_IPS = List.of("10.0.0.2");
 
-  private final MutableClock clock = new MutableClock();
+  private final FakeTicker ticker = new FakeTicker();
 
   @Test
   void shouldLoadOnceWhileFresh() {
@@ -33,7 +31,7 @@ class ProxyIpsCacheTest {
     final ProxyIpsCache cache = cacheWith(loader, TIME_TO_LIVE);
 
     cache.get();
-    clock.advance(TIME_TO_LIVE.minusSeconds(1));
+    ticker.advance(TIME_TO_LIVE.minusSeconds(1));
     cache.get();
 
     assertEquals(1, loader.loads());
@@ -46,7 +44,7 @@ class ProxyIpsCacheTest {
     final ProxyIpsCache cache = cacheWith(loader, TIME_TO_LIVE);
 
     cache.get();
-    clock.advance(TIME_TO_LIVE);
+    ticker.advance(PAST_TIME_TO_LIVE);
 
     assertEquals(NEW_PROXY_IPS, cache.get());
     assertEquals(2, loader.loads());
@@ -58,7 +56,7 @@ class ProxyIpsCacheTest {
     final ProxyIpsCache cache = cacheWith(loader, TIME_TO_LIVE);
 
     cache.get();
-    clock.advance(TIME_TO_LIVE);
+    ticker.advance(PAST_TIME_TO_LIVE);
 
     assertEquals(PROXY_IPS, cache.get());
   }
@@ -69,7 +67,7 @@ class ProxyIpsCacheTest {
     final ProxyIpsCache cache = cacheWith(loader, TIME_TO_LIVE);
 
     cache.get();
-    clock.advance(TIME_TO_LIVE);
+    ticker.advance(PAST_TIME_TO_LIVE);
     cache.get();
     cache.get();
 
@@ -108,7 +106,7 @@ class ProxyIpsCacheTest {
   }
 
   private ProxyIpsCache cacheWith(ScriptedLoader loader, Duration timeToLive) {
-    return new ProxyIpsCache(loader, () -> timeToLive, clock);
+    return new ProxyIpsCache(loader, timeToLive, ticker);
   }
 
   private static Try<List<String>> failure() {
@@ -137,27 +135,17 @@ class ProxyIpsCacheTest {
     }
   }
 
-  private static class MutableClock extends Clock {
+  private static class FakeTicker extends Ticker {
 
-    private Instant now = Instant.parse("2026-01-01T00:00:00Z");
+    private long nanos;
 
     void advance(Duration duration) {
-      now = now.plus(duration);
+      nanos += duration.toNanos();
     }
 
     @Override
-    public Instant instant() {
-      return now;
-    }
-
-    @Override
-    public ZoneId getZone() {
-      return ZoneOffset.UTC;
-    }
-
-    @Override
-    public Clock withZone(ZoneId zone) {
-      return this;
+    public long read() {
+      return nanos;
     }
   }
 }

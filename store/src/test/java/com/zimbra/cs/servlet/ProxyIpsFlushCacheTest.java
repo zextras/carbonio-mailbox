@@ -6,13 +6,13 @@ package com.zimbra.cs.servlet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.google.common.base.Ticker;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.servlet.ProxyIpsCache;
 import com.zimbra.cs.service.admin.FlushCache;
 import com.zimbra.soap.admin.type.CacheEntryType;
 import com.zimbra.soap.admin.type.CacheSelector;
 import io.vavr.control.Try;
-import java.time.Clock;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
@@ -34,8 +34,8 @@ class ProxyIpsFlushCacheTest extends MailboxTestSuite {
               loads.incrementAndGet();
               return Try.success(List.of("10.0.0.1"));
             },
-            () -> Duration.ofMinutes(5),
-            Clock.systemUTC());
+            Duration.ofMinutes(5),
+            Ticker.systemTicker());
     original = ZimbraServlet.replaceProxyIpsCache(counting);
   }
 
