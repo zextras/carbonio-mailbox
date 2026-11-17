@@ -10,6 +10,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
@@ -27,7 +28,7 @@ public class ProxyIpsCache {
   private final Supplier<Duration> timeToLive;
   private final Clock clock;
   private final ReentrantLock reloading = new ReentrantLock();
-  private volatile Snapshot snapshot;
+  private final AtomicReference<Snapshot> snapshot = new AtomicReference<>();
 
   public ProxyIpsCache(
       Supplier<Try<List<String>>> loader, Supplier<Duration> timeToLive, Clock clock) {
@@ -37,7 +38,7 @@ public class ProxyIpsCache {
   }
 
   public List<String> get() {
-    final Snapshot current = snapshot;
+    final Snapshot current = snapshot.get();
     if (current != null && current.isFreshAt(clock.instant())) {
       return current.proxyIps();
     }
@@ -58,14 +59,14 @@ public class ProxyIpsCache {
   public void invalidate() {
     reloading.lock();
     try {
-      snapshot = null;
+      snapshot.set(null);
     } finally {
       reloading.unlock();
     }
   }
 
   private List<String> reload() {
-    final Snapshot current = snapshot;
+    final Snapshot current = snapshot.get();
     final Instant now = clock.instant();
     if (current != null && current.isFreshAt(now)) {
       return current.proxyIps();
@@ -74,7 +75,7 @@ public class ProxyIpsCache {
     return loader
         .get()
         .map(List::copyOf)
-        .peek(proxyIps -> snapshot = new Snapshot(proxyIps, expiry))
+        .peek(proxyIps -> snapshot.set(new Snapshot(proxyIps, expiry)))
         .getOrElseGet(failure -> keepPrevious(current, expiry, failure));
   }
 
@@ -84,7 +85,7 @@ public class ProxyIpsCache {
       return List.of();
     }
     ZimbraLog.misc.warn("failed to reload proxy server IPs, keeping the previous ones", failure);
-    snapshot = new Snapshot(previous.proxyIps(), expiry);
+    snapshot.set(new Snapshot(previous.proxyIps(), expiry));
     return previous.proxyIps();
   }
 

@@ -55,6 +55,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -82,11 +83,12 @@ public class ZimbraServlet extends HttpServlet {
 
   private static final String PARAM_ALLOWED_PORTS = "allowed.ports";
 
-  private static volatile ProxyIpsCache proxyIpsCache =
-      new ProxyIpsCache(
-          ZimbraServlet::loadProxyIps,
-          () -> Duration.ofSeconds(LC.proxy_ips_cache_ttl.longValue()),
-          Clock.systemUTC());
+  private static final AtomicReference<ProxyIpsCache> PROXY_IPS_CACHE =
+      new AtomicReference<>(
+          new ProxyIpsCache(
+              ZimbraServlet::loadProxyIps,
+              () -> Duration.ofSeconds(LC.proxy_ips_cache_ttl.longValue()),
+              Clock.systemUTC()));
 
   public static final String QP_ZAUTHTOKEN = "zauthtoken";
   public static final String QP_ZJWT = "zjwt";
@@ -601,7 +603,7 @@ public class ZimbraServlet extends HttpServlet {
       final Server server = Provisioning.getInstance().getLocalServer();
       List<String> trustedIps =
           new ArrayList<>(Arrays.asList(server.getMultiAttr(Provisioning.A_zimbraMailTrustedIP)));
-      trustedIps.addAll(proxyIpsCache.get());
+      trustedIps.addAll(PROXY_IPS_CACHE.get().get());
       return new RemoteIP.TrustedIPs(trustedIps.toArray(new String[0]));
     } catch (ServiceException e) {
       ZimbraLog.misc.warn("failed to get trusted IPs, only localhost will be trusted", e);
@@ -611,14 +613,12 @@ public class ZimbraServlet extends HttpServlet {
 
   /** Makes the next request reload the proxy server IPs from LDAP. */
   public static void flushProxyIpsCache() {
-    proxyIpsCache.invalidate();
+    PROXY_IPS_CACHE.get().invalidate();
   }
 
   @VisibleForTesting
   static ProxyIpsCache replaceProxyIpsCache(ProxyIpsCache replacement) {
-    final ProxyIpsCache previous = proxyIpsCache;
-    proxyIpsCache = replacement;
-    return previous;
+    return PROXY_IPS_CACHE.getAndSet(replacement);
   }
 
   private static Try<List<String>> loadProxyIps() {
