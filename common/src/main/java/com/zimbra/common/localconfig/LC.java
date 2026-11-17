@@ -1145,20 +1145,6 @@ public final class LC {
       KnownKey.newKey(360); // 120 mins = 2 hours
 
   @Supported
-  public static final KnownKey external_store_local_cache_max_bytes =
-      KnownKey.newKey(1024 * 1024 * 1024); // 1GB
-
-  @Supported
-  public static final KnownKey external_store_local_cache_max_files = KnownKey.newKey(10000);
-
-  @Supported
-  public static final KnownKey external_store_local_cache_min_lifetime =
-      KnownKey.newKey(Constants.MILLIS_PER_MINUTE);
-
-  @Supported
-  public static final KnownKey external_store_delete_max_ioexceptions = KnownKey.newKey(25);
-
-  @Supported
   public static final KnownKey redis_service_uri = KnownKey.newKey("redis://zmc-redis:6379");
 
   @Supported public static final KnownKey redis_num_pubsub_channels = KnownKey.newKey(100);
@@ -1265,10 +1251,6 @@ public final class LC {
   public static final KnownKey public_share_advertising_scope =
       KnownKey.newKey(PUBLIC_SHARE_VISIBILITY.samePrimaryDomain.toString());
 
-  // Triton integration
-  public static final KnownKey triton_store_url = KnownKey.newKey("");
-  public static final KnownKey triton_hash_type = KnownKey.newKey("SHA0");
-  public static final KnownKey triton_upload_buffer_size = KnownKey.newKey(25000);
   public static final KnownKey uncompressed_cache_min_lifetime =
       KnownKey.newKey(Constants.MILLIS_PER_MINUTE);
   public static final KnownKey check_dl_membership_enabled = KnownKey.newKey(true);
