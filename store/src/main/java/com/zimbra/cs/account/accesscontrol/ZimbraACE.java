@@ -361,11 +361,6 @@ public class ZimbraACE {
         mRightModifier = rightModifier;
     }
 
-    // or setting right in pseudo ZimbraACE expaneded from a combo right for attr rights
-    void setRight(Right right) {
-        mRight = right;
-    }
-
     TargetType getTargetType() {
         return mTargetType;
     }

@@ -7,23 +7,12 @@ package com.zimbra.cs.account.accesscontrol;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.Entry;
-import com.zimbra.cs.account.Identity;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.accesscontrol.generated.UserRights;
 
 public final class ACLUtil {
     private static final String ACL_CACHE_KEY = "ENTRY.ACL_CACHE";
@@ -71,46 +60,6 @@ public final class ACLUtil {
     throws ServiceException {
         ZimbraACL acl = getACL(entry);
         return acl != null ? acl.getACEs(rights) : null;
-    }
-
-    private static Multimap<Right, Entry> getGrantedRights(Account grantee, Set<String> fetchAttrs)
-            throws ServiceException {
-        SearchGrants search = new SearchGrants(grantee.getProvisioning(), EnumSet.of(TargetType.account),
-                RightBearer.Grantee.getGrantee(grantee, false).getIdAndGroupIds());
-        search.addFetchAttribute(fetchAttrs);
-        Set<SearchGrants.GrantsOnTarget> results = search.doSearch().getResults();
-        Multimap<Right, Entry> map = HashMultimap.create();
-        for (SearchGrants.GrantsOnTarget grants : results) {
-            ZimbraACL acl = grants.getAcl();
-            for (ZimbraACE ace : acl.getAllACEs()) {
-                if (ace.getGrantee().equals(grantee.getId())) {
-                    map.put(ace.getRight(), grants.getTargetEntry());
-                }
-            }
-        }
-        return map;
-    }
-
-    /**
-     * Returns {@link UserRights#R_sendOnBehalfOf} rights granted to the grantee.
-     */
-    public static List<Identity> getSendOnBehalfOf(Account grantee) throws ServiceException {
-        Multimap<Right, Entry> rights = getGrantedRights(grantee, Collections.singleton(Provisioning.A_displayName));
-        ImmutableList.Builder<Identity> result = ImmutableList.<Identity>builder();
-        for (Entry entry : rights.get(UserRights.R_sendOnBehalfOf)) {
-            Account grantor = (Account) entry;
-            String mail = grantor.getName();
-            String name = MoreObjects.firstNonNull(grantor.getDisplayName(), mail);
-            Map<String, Object> attrs = ImmutableMap.<String, Object>builder()
-                .put(Provisioning.A_zimbraPrefIdentityId, grantor.getId())
-                .put(Provisioning.A_zimbraPrefIdentityName, name)
-                .put(Provisioning.A_zimbraPrefFromDisplay, name)
-                .put(Provisioning.A_zimbraPrefFromAddress, mail)
-                .put(Provisioning.A_objectClass, AttributeClass.OC_zimbraAclTarget)
-                .build();
-            result.add(new Identity(grantee, name, grantor.getId(), attrs, grantee.getProvisioning()));
-        }
-        return result.build();
     }
 
 

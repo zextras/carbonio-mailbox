@@ -8,7 +8,6 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeEntry;
-import com.zimbra.cs.account.AttributeManager;
 import com.zimbra.cs.account.CalendarResource;
 import com.zimbra.cs.account.Config;
 import com.zimbra.cs.account.Cos;
@@ -24,7 +23,6 @@ import com.zimbra.cs.account.StoreAttributeManager;
 import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.account.ldap.LdapDIT;
 import com.zimbra.cs.account.ldap.LdapProv;
-import com.zimbra.soap.admin.type.EffectiveRightsTargetSelector;
 import com.zimbra.soap.type.TargetBy;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,18 +32,6 @@ import java.util.Set;
 
 public enum TargetTypeLookup {
 	;
-
-	public static Entry lookupTarget(Provisioning prov, EffectiveRightsTargetSelector targSel)
-			throws ServiceException {
-		return lookupTarget(prov, targSel, true);
-	}
-
-	public static Entry lookupTarget(
-			Provisioning prov, EffectiveRightsTargetSelector targSel, boolean mustFind)
-			throws ServiceException {
-		return lookupTarget(
-				prov, TargetType.fromJaxb(targSel.getType()), targSel.getBy(), targSel.getValue(), mustFind);
-	}
 
 	public static Entry lookupTarget(
 			Provisioning prov, TargetType targetType, TargetBy targetBy, String target)
