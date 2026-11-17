@@ -8,14 +8,11 @@ package com.zimbra.client.event;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.client.ToZJSONObject;
-import com.zimbra.client.ZJSONObject;
 import com.zimbra.client.ZTag.Color;
 import com.zimbra.soap.mail.type.RetentionPolicy;
 
-import org.json.JSONException;
 
-public class ZModifyTagEvent implements ZModifyItemEvent, ToZJSONObject {
+public class ZModifyTagEvent implements ZModifyItemEvent {
 
     protected Element mTagEl;
 
@@ -81,29 +78,11 @@ public class ZModifyTagEvent implements ZModifyItemEvent, ToZJSONObject {
         return (int) mTagEl.getAttributeLong(MailConstants.A_UNREAD, defaultValue);
     }
 
-    public ZJSONObject toZJSONObject() throws JSONException {
-        try {
-            ZJSONObject zjo = new ZJSONObject();
-            zjo.put("id", getId());
-            String name = getName(null);
-            if (name != null) zjo.put("name", name);
-            if (getColor(null) != null) zjo.put("color", getColor(null).name());
-            if (getUnreadCount(-1) != -1) zjo.put("unreadCount", getUnreadCount(-1));
-            return zjo;
-        } catch (ServiceException se) {
-            throw new JSONException(se);
-        }
-    }
-
     public String toString() {
         try {
             return String.format("[ZModifyTagEvent %s]", getId());
         } catch (ServiceException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
     }
 }

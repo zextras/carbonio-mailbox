@@ -5,7 +5,6 @@
 
 package com.zimbra.client;
 
-import org.json.JSONException;
 
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -18,7 +17,7 @@ import com.zimbra.soap.type.DataSources;
 import com.zimbra.soap.type.RssDataSource;
 
 
-public class ZRssDataSource extends ZDataSource implements ToZJSONObject {
+public class ZRssDataSource extends ZDataSource {
 
     public ZRssDataSource(String name, String folderId, boolean enabled) {
         data = DataSources.newRssDataSource();
@@ -71,14 +70,5 @@ public class ZRssDataSource extends ZDataSource implements ToZJSONObject {
     public DataSourceNameOrId toJaxbNameOrId() {
         RssDataSourceNameOrId jaxbObject = RssDataSourceNameOrId.createForId(data.getId());
         return jaxbObject;
-    }
-
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put("id", data.getId());
-        zjo.put("name", data.getName());
-        zjo.put("enabled", data.isEnabled());
-        zjo.put("folderId", data.getFolderId());
-        return zjo;
     }
 }

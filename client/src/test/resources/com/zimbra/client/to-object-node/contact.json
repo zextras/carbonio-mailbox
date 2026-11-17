@@ -1,0 +1,18 @@
+{
+  "id" : "6",
+  "folderId" : "7",
+  "flags" : "f",
+  "tagIds" : "1",
+  "date" : 1700000000000,
+  "metaDataChangedDate" : 1700000000000,
+  "revision" : "3",
+  "isFlagged" : true,
+  "isGalContact" : false,
+  "isGroup" : false,
+  "hasFlags" : true,
+  "hasTags" : true,
+  "attrs" : {
+    "firstName" : "John",
+    "email" : "john@test.com"
+  }
+}

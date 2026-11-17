@@ -5,15 +5,12 @@
 
 package com.zimbra.client.event;
 
-import com.zimbra.client.ToZJSONObject;
-import com.zimbra.client.ZJSONObject;
 import java.util.Arrays;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ZDeleteEvent implements ToZJSONObject {
+public class ZDeleteEvent {
 
     private String mIds;
     private List<String> mList;
@@ -37,15 +34,5 @@ public class ZDeleteEvent implements ToZJSONObject {
     
     public String toString() {
         return String.format("[ZDeleteEvent %s]", getIds());
-    }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
-    }
-
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.putList("ids", mList);
-        return zjo;
     }
 }

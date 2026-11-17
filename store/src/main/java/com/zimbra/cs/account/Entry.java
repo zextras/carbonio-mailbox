@@ -9,8 +9,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.TreeMultimap;
-import com.zimbra.client.ToZJSONObject;
-import com.zimbra.client.ZJSONObject;
 import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ByteUtil;
@@ -41,11 +39,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.json.JSONException;
 
-public abstract class Entry implements ToZJSONObject, AttributeEntry {
+public abstract class Entry implements AttributeEntry {
 
   private Map<String, Object> mAttrs;
   private Map<String, Object> mDefaults;
@@ -724,68 +720,6 @@ public abstract class Entry implements ToZJSONObject, AttributeEntry {
   @Override
   public synchronized String toString() {
     return String.format("[%s]", getClass().getName());
-    /*
-    StringBuilder sb = new StringBuilder();
-    sb.append(getClass().getName()).append(": {  ");
-    //sb.append(getClass().getName()).append(": { name=").append(getName()).append(" ");
-    sb.append(mAttrs.toString());
-    sb.append("}");
-    return sb.toString();
-               */
-  }
-
-  @Override
-  public ZJSONObject toZJSONObject() throws JSONException {
-    return toZJSONObject(null, true);
-  }
-
-  static Pattern regex = Pattern.compile("^/(.*)/(i)?$");
-
-  public ZJSONObject toZJSONObject(String filter, boolean applyDefaults) throws JSONException {
-    Map<String, Object> attrs = getAttrs(applyDefaults);
-
-    if (this instanceof NamedEntry) {
-      NamedEntry ne = (NamedEntry) this;
-      attrs.put("id", ne.getId());
-      attrs.put("name", ne.getName());
-    }
-
-    Pattern pattern = null;
-    if (filter != null) {
-      Matcher rm = regex.matcher(filter);
-      if (rm.matches())
-        pattern =
-            Pattern.compile(rm.group(1), "i".equals(rm.group(2)) ? Pattern.CASE_INSENSITIVE : 0);
-      else filter = filter.toLowerCase();
-    }
-
-    ZJSONObject zj = new ZJSONObject();
-    for (Map.Entry<String, Object> entry : attrs.entrySet()) {
-      if (pattern != null) {
-        if (!pattern.matcher(entry.getKey()).find()) continue;
-      } else if (filter != null) {
-        if (!entry.getKey().toLowerCase().contains(filter)) continue;
-      }
-      Object o = entry.getValue();
-      if (o instanceof String) {
-        zj.put(entry.getKey(), (String) o);
-      } else if (o instanceof String[]) {
-        zj.put(entry.getKey(), (String[]) o);
-      }
-    }
-    return zj;
-  }
-
-  public String dump() throws JSONException {
-    return dump(null, true);
-  }
-
-  public String dump(String filter) throws JSONException {
-    return dump(filter, true);
-  }
-
-  public String dump(String filter, boolean applyDefaults) throws JSONException {
-    return toZJSONObject(filter, applyDefaults).toString();
   }
 
   private static final class SortByLabelAsc implements Comparator<Entry> {

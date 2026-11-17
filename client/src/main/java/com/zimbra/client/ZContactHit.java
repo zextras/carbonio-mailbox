@@ -5,12 +5,12 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.json.JSONException;
 
 import com.zimbra.client.ZContact.Flag;
 import com.zimbra.client.event.ZModifyContactEvent;
@@ -137,37 +137,33 @@ public class ZContactHit implements ZImapSearchHit {
         mType = attrs.get(ContactConstants.A_type);
     }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject jo = new ZJSONObject();
-        jo.put("id", mId);
-        jo.put("tags", mTagIds);
-        jo.put("flags", mFlags);
-        jo.put("sortField", mSortField);
-        jo.put("type", mType);
+  @Override
+    public ObjectNode toObjectNode() {
+        ObjectNode jo = JsonNodeFactory.instance.objectNode();
+        if (mId != null) jo.put("id", mId);
+        if (mTagIds != null) jo.put("tags", mTagIds);
+        if (mFlags != null) jo.put("flags", mFlags);
+        if (mSortField != null) jo.put("sortField", mSortField);
+        if (mType != null) jo.put("type", mType);
         jo.put("date", mDate);
-        jo.put("fileAsStr", mFileAsStr);
-        jo.put("revision", mRevision);
-        jo.put("folderId", mFolderId);
-        jo.put(ContactConstants.A_dlist, mDlist);
-        jo.put(ContactConstants.A_email, mEmail);
-        jo.put(ContactConstants.A_email2, mEmail2);
-        jo.put(ContactConstants.A_email3, mEmail3);
-        jo.put(ContactConstants.A_workEmail1, mWorkEmail1);
-        jo.put(ContactConstants.A_workEmail2, mWorkEmail2);
-        jo.put(ContactConstants.A_workEmail3, mWorkEmail3);
-        jo.put(ContactConstants.A_fullName, mFullName);
-        jo.putMap("attrs", mAttrs);
+        if (mFileAsStr != null) jo.put("fileAsStr", mFileAsStr);
+        if (mRevision != null) jo.put("revision", mRevision);
+        if (mFolderId != null) jo.put("folderId", mFolderId);
+        if (mDlist != null) jo.put(ContactConstants.A_dlist, mDlist);
+        if (mEmail != null) jo.put(ContactConstants.A_email, mEmail);
+        if (mEmail2 != null) jo.put(ContactConstants.A_email2, mEmail2);
+        if (mEmail3 != null) jo.put(ContactConstants.A_email3, mEmail3);
+        if (mWorkEmail1 != null) jo.put(ContactConstants.A_workEmail1, mWorkEmail1);
+        if (mWorkEmail2 != null) jo.put(ContactConstants.A_workEmail2, mWorkEmail2);
+        if (mWorkEmail3 != null) jo.put(ContactConstants.A_workEmail3, mWorkEmail3);
+        if (mFullName != null) jo.put(ContactConstants.A_fullName, mFullName);
+        ZObjectNode.putMap(jo, "attrs", mAttrs);
         return jo;
     }
 
     @Override
     public String toString() {
         return String.format("[ZContactHit %s]", mId);
-    }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
     }
 
     public boolean isGroup() {

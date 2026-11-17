@@ -5,10 +5,10 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.json.JSONException;
 
 import com.zimbra.client.event.ZModifyEvent;
 import com.zimbra.client.event.ZModifyMessageEvent;
@@ -91,32 +91,28 @@ public class ZMessageHit implements ZImapSearchHit {
         return mIsInvite;
     }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put("id", mId);
-        zjo.put("conversationId", mConvId);
-        zjo.put("flags", mFlags);
+  @Override
+    public ObjectNode toObjectNode() {
+        ObjectNode zjo = JsonNodeFactory.instance.objectNode();
+        if (mId != null) zjo.put("id", mId);
+        if (mConvId != null) zjo.put("conversationId", mConvId);
+        if (mFlags != null) zjo.put("flags", mFlags);
         zjo.put("isInvite", mIsInvite);
-        zjo.put("fragment", mFragment);
-        zjo.put("subject", mSubject);
+        if (mFragment != null) zjo.put("fragment", mFragment);
+        if (mSubject != null) zjo.put("subject", mSubject);
         zjo.put("date", mDate);
         zjo.put("size", mSize);
-        zjo.put("sender", mSender);
-        zjo.put("sortField", mSortField);
-        zjo.putList("mimePartHits", mMimePartHits);
-        zjo.put("addresses", mAddresses);
-        zjo.put("message", mMessage);
+        if (mSender != null) zjo.set("sender", mSender.toObjectNode());
+        if (mSortField != null) zjo.put("sortField", mSortField);
+        ZObjectNode.putList(zjo, "mimePartHits", mMimePartHits);
+        ZObjectNode.put(zjo, "addresses", mAddresses);
+        if (mMessage != null) zjo.set("message", mMessage.toObjectNode());
         return zjo;
     }
 
     @Override
     public String toString() {
         return String.format("[ZMessageHit %s]", mId);
-    }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
     }
 
     public String getFlags() {

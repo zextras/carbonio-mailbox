@@ -8,12 +8,9 @@ package com.zimbra.client.event;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.client.ToZJSONObject;
-import com.zimbra.client.ZJSONObject;
 import com.zimbra.soap.type.SearchSortBy;
-import org.json.JSONException;
 
-public class ZModifySearchFolderEvent extends ZModifyFolderEvent implements ToZJSONObject {
+public class ZModifySearchFolderEvent extends ZModifyFolderEvent {
 
 
     public ZModifySearchFolderEvent(Element e) throws ServiceException {
@@ -47,15 +44,6 @@ public class ZModifySearchFolderEvent extends ZModifyFolderEvent implements ToZJ
         } catch (ServiceException se) {
             return defaultValue;
         }
-    }
-    
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = super.toZJSONObject();
-        if (getQuery(null) != null) zjo.put("query", getQuery(null));
-        if (getTypes(null) != null) zjo.put("types", getTypes(null));
-        if (getSortBy(null) != null) zjo.put("sortBy", getSortBy(null).name());
-        return zjo;
     }
 }
 

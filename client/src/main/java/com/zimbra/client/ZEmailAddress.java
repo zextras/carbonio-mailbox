@@ -5,14 +5,14 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
-
-import org.json.JSONException;
 
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
 import com.zimbra.common.service.ServiceException;
@@ -133,13 +133,13 @@ public class ZEmailAddress implements ToZJSONObject {
     public boolean  isTo()         { return ZEmailAddress.EMAIL_TYPE_TO.equals(getType()); }
     public boolean  isReplyTo()    { return ZEmailAddress.EMAIL_TYPE_REPLY_TO.equals(getType()); }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject jo = new ZJSONObject();
-        jo.put("address", address);
-        jo.put("display", display);
-        jo.put("personal", personal);
-        jo.put("type", type);
+  @Override
+    public ObjectNode toObjectNode() {
+        ObjectNode jo = JsonNodeFactory.instance.objectNode();
+        if (address != null) jo.put("address", address);
+        if (display != null) jo.put("display", display);
+        if (personal != null) jo.put("personal", personal);
+        if (type != null) jo.put("type", type);
         jo.put("fullAddressQuoted", getFullAddressQuoted());
         return jo;
     }
@@ -147,10 +147,6 @@ public class ZEmailAddress implements ToZJSONObject {
     @Override
     public String toString() {
         return String.format("[ZEmailAddress %s]", getFullAddressQuoted());
-    }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
     }
 
     /**

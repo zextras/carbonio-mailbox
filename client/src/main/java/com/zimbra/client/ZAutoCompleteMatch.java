@@ -5,7 +5,6 @@
 
 package com.zimbra.client;
 
-import org.json.JSONException;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -13,7 +12,7 @@ import com.zimbra.common.soap.MailConstants;
 
 import java.util.Comparator;
 
-public class ZAutoCompleteMatch implements ToZJSONObject {
+public class ZAutoCompleteMatch {
 	
 	private String mRanking;
 	private String mType;
@@ -120,30 +119,6 @@ public class ZAutoCompleteMatch implements ToZJSONObject {
 
     public String getFileAs() {
         return mFileAs;
-    }
-
-	public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject jo = new ZJSONObject();
-        jo.put("ranking", mRanking);
-        jo.put("type", mType);
-        if (mEmail != null) jo.put("email", mEmail);
-        if (mFolderId != null) jo.put("l", mFolderId);
-        if (mId != null)       jo.put("id", mId);
-        if (mDisplay != null)  jo.put("display", mDisplay);
-        if (isGroup)           jo.put("isGroup", isGroup);
-        if (exp)               jo.put("exp", exp);
-        if (mFirstName  != null) jo.put("first", mFirstName);
-        if (mMiddleName != null) jo.put("middle", mMiddleName);
-        if (mLastName   != null) jo.put("last", mLastName);
-        if (mFullName   != null) jo.put("full", mFullName);
-        if (mNickname   != null) jo.put("nick", mNickname);
-        if (mCompany    != null) jo.put("company", mCompany);
-        if (mFileAs     != null) jo.put("fileas", mFileAs);
-        return jo;
-	}
-
-    public String dump() {
-        return ZJSONObject.toString(this);
     }
 
 	public static class MatchComparator implements Comparator<ZAutoCompleteMatch> {

@@ -5,6 +5,8 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
 import com.zimbra.client.event.ZModifyConversationEvent;
 import com.zimbra.client.event.ZModifyEvent;
@@ -14,7 +16,6 @@ import com.zimbra.common.soap.MailConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
-import org.json.JSONException;
 
 public class ZSearchResult implements ToZJSONObject {
 
@@ -112,12 +113,12 @@ public class ZSearchResult implements ToZJSONObject {
   }
 
   @Override
-  public ZJSONObject toZJSONObject() throws JSONException {
-    ZJSONObject zjo = new ZJSONObject();
+  public ObjectNode toObjectNode() {
+    ObjectNode zjo = JsonNodeFactory.instance.objectNode();
     zjo.put("more", hasMore);
-    zjo.put("sortBy", sortBy);
+    if (sortBy != null) zjo.put("sortBy", sortBy);
     zjo.put("offset", offset);
-    zjo.put("hits", hits);
+    ZObjectNode.put(zjo, "hits", hits);
     return zjo;
   }
 
@@ -130,7 +131,7 @@ public class ZSearchResult implements ToZJSONObject {
   }
 
   public String dump() {
-    return ZJSONObject.toString(this);
+    return ToZJSONObject.toString(this);
   }
 
   /*
@@ -171,11 +172,11 @@ public class ZSearchResult implements ToZJSONObject {
     }
 
     @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-      ZJSONObject zjo = new ZJSONObject();
-      zjo.put("id", mId);
-      zjo.put("flags", mFlags);
-      zjo.put("tags", mTags);
+    public ObjectNode toObjectNode() {
+      ObjectNode zjo = JsonNodeFactory.instance.objectNode();
+      if (mId != null) zjo.put("id", mId);
+      if (mFlags != null) zjo.put("flags", mFlags);
+      if (mTags != null) zjo.put("tags", mTags);
       zjo.put("messageCount", mMessageCount);
       return zjo;
     }
@@ -183,10 +184,6 @@ public class ZSearchResult implements ToZJSONObject {
     @Override
     public String toString() {
       return String.format("[ZConversationSummary %s]", mId);
-    }
-
-    public String dump() {
-      return ZJSONObject.toString(this);
     }
 
     public String getFlags() {

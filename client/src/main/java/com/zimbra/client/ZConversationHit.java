@@ -5,12 +5,13 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.client.event.ZModifyConversationEvent;
 import com.zimbra.client.event.ZModifyEvent;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,29 +68,25 @@ public class ZConversationHit implements ZSearchHit {
         return mId;
     }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject jo = new ZJSONObject();
-        jo.put("id", mId);
-        jo.put("flags", mFlags);
-        jo.put("tags", mTags);
-        jo.put("fragment", mFragment);
-        jo.put("subject", mSubject);
+  @Override
+    public ObjectNode toObjectNode() {
+        ObjectNode jo = JsonNodeFactory.instance.objectNode();
+        if (mId != null) jo.put("id", mId);
+        if (mFlags != null) jo.put("flags", mFlags);
+        if (mTags != null) jo.put("tags", mTags);
+        if (mFragment != null) jo.put("fragment", mFragment);
+        if (mSubject != null) jo.put("subject", mSubject);
         jo.put("date", mDate);
-        jo.put("sortField", mSortField);
+        if (mSortField != null) jo.put("sortField", mSortField);
         jo.put("messageCount", mMessageCount);
-        jo.putList("messageIds", mMessageIds);
-        jo.put("recipients", mRecipients);
+        ZObjectNode.putList(jo, "messageIds", mMessageIds);
+        ZObjectNode.put(jo, "recipients", mRecipients);
         return jo;
     }
 
     @Override
     public String toString() {
         return String.format("[ZConversationHit %s]", mId);
-    }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
     }
 
     public String getFlags() {

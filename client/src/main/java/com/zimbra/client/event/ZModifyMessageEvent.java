@@ -8,11 +8,8 @@ package com.zimbra.client.event;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.client.ToZJSONObject;
-import com.zimbra.client.ZJSONObject;
-import org.json.JSONException;
 
-public class ZModifyMessageEvent implements ZModifyItemEvent, ZModifyItemFolderEvent, ToZJSONObject {
+public class ZModifyMessageEvent implements ZModifyItemEvent, ZModifyItemFolderEvent {
 
     protected Element mMessageEl;
 
@@ -56,29 +53,11 @@ public class ZModifyMessageEvent implements ZModifyItemEvent, ZModifyItemFolderE
         return mMessageEl.getAttribute(MailConstants.A_CONV_ID, defaultValue);
     }
 
-    public ZJSONObject toZJSONObject() throws JSONException {
-        try {
-            ZJSONObject zjo = new ZJSONObject();
-            zjo.put("id", getId());
-            if (getConversationId(null) != null) zjo.put("conversationId", getConversationId(null));
-            if (getFlags(null) != null) zjo.put("flags", getFlags(null));
-            if (getTagIds(null) != null) zjo.put("tags", getTagIds(null));
-            if (getFolderId(null) != null) zjo.put("folderId", getFolderId(null));            
-            return zjo;
-        } catch (ServiceException se) {
-            throw new JSONException(se);
-        }
-    }
-
     public String toString() {
         try {
             return String.format("[ZModifyMessageEvent %s]", getId());
         } catch (ServiceException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
     }
 }

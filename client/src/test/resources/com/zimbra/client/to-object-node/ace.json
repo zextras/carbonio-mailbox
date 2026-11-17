@@ -1,0 +1,7 @@
+{
+  "type" : "usr",
+  "name" : "bob@test.com",
+  "id" : "z1",
+  "right" : "sendAs",
+  "deny" : false
+}

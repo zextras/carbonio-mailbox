@@ -5,7 +5,6 @@
 
 package com.zimbra.client;
 
-import org.json.JSONException;
 
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -21,7 +20,7 @@ import com.zimbra.soap.type.DataSource.ConnectionType;
 import com.zimbra.soap.type.DataSources;
 import com.zimbra.soap.type.Pop3DataSource;
 
-public class ZPop3DataSource extends ZDataSource implements ToZJSONObject {
+public class ZPop3DataSource extends ZDataSource {
 
     public ZPop3DataSource(Pop3DataSource data) {
         this.data = DataSources.newPop3DataSource(data);
@@ -120,26 +119,8 @@ public class ZPop3DataSource extends ZDataSource implements ToZJSONObject {
     }
     
     public void setLeaveOnServer(boolean leaveOnServer) { getData().setLeaveOnServer(leaveOnServer); }
-    
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put("id", data.getId());
-        zjo.put("name", data.getName());
-        zjo.put("enabled", data.isEnabled());
-        zjo.put("host", data.getHost());
-        zjo.put("port", data.getPort());
-        zjo.put("username", data.getUsername());
-        zjo.put("folderId", data.getFolderId());
-        zjo.put("connectionType", data.getConnectionType().toString());
-        zjo.put("leaveOnServer", leaveOnServer());
-        return zjo;
-    }
 
     public String toString() {
         return String.format("[ZPop3DataSource %s]", getName());
-    }
-
-    public String dump() {
-        return ZJSONObject.toString(this);
     }
 }

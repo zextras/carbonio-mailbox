@@ -5,12 +5,12 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.zclient.ZClientException;
-
-import org.json.JSONException;
 
 import java.util.Arrays;
 
@@ -163,12 +163,13 @@ public class ZAce implements ToZJSONObject {
         return this.getGranteeType().equals(ZAce.GranteeType.pub);
     }
 
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject jo = new ZJSONObject();
+  @Override
+    public ObjectNode toObjectNode() {
+        ObjectNode jo = JsonNodeFactory.instance.objectNode();
         jo.put("type", mGranteeType.name());
-        jo.put("name", mGranteeName);
-        jo.put("id", mGranteeId);
-        jo.put("right", mRight);
+        if (mGranteeName != null) jo.put("name", mGranteeName);
+        if (mGranteeId != null) jo.put("id", mGranteeId);
+        if (mRight != null) jo.put("right", mRight);
         jo.put("deny", mDeny);
         return jo;
     }
@@ -178,7 +179,7 @@ public class ZAce implements ToZJSONObject {
     }
 
     public String dump() {
-        return ZJSONObject.toString(this);
+        return ToZJSONObject.toString(this);
     }
 
     public String getGranteeTypeDisplay() {

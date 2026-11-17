@@ -7,12 +7,11 @@ package com.zimbra.client;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.client.ZSearchParams.Cursor;
-import org.json.JSONException;
 
 import java.util.List;
 
 
-public class ZSearchContext implements ToZJSONObject {
+public class ZSearchContext {
 
     private ZMailbox mMailbox;
     private ZSearchParams mParams;
@@ -97,23 +96,7 @@ public class ZSearchContext implements ToZJSONObject {
                 mResult.getHits().get(mIndex) : null;
     }
 
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put("more", mHasMore);
-        zjo.put("index", mIndex);
-        zjo.put("count", mCount);
-        zjo.put("maxHits", mMaxHits);
-        zjo.put("searchResult", mResult);
-        zjo.put("searchParams", mParams);
-        return zjo;
-    }
-
     public String toString() {
        return String.format("[ZSearchContext count=%d more=%s]", mCount, mHasMore);
     }
-
-    public String dump() {
-       return ZJSONObject.toString(this);
-    }
-
 }

@@ -5,11 +5,10 @@
 
 package com.zimbra.client;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Collection;
 import java.util.Map;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.account.ZAttrProvisioning;
@@ -119,15 +118,15 @@ public class ZIdentity  implements ToZJSONObject {
         return identity;
     }
 
-    @Override
-    public ZJSONObject toZJSONObject() throws JSONException {
-        ZJSONObject zjo = new ZJSONObject();
-        zjo.put("name", getName());
-        zjo.put("id", getId());
-        JSONObject jo = new JSONObject();
-        zjo.put("attrs",jo);
+  @Override
+    public ObjectNode toObjectNode() {
+        ObjectNode zjo = JsonNodeFactory.instance.objectNode();
+        if (getName() != null) zjo.put("name", getName());
+        if (getId() != null) zjo.put("id", getId());
+        ObjectNode jo = JsonNodeFactory.instance.objectNode();
+        zjo.set("attrs", jo);
         for (Map.Entry<String, String> entry : data.getAttrsMultimap().entries()) {
-            jo.put(entry.getKey(), entry.getValue());
+            if (entry.getValue() != null) jo.put(entry.getKey(), entry.getValue());
         }
         return zjo;
     }
@@ -138,7 +137,7 @@ public class ZIdentity  implements ToZJSONObject {
     }
 
     public String dump() {
-        return ZJSONObject.toString(this);
+        return ToZJSONObject.toString(this);
     }
 
 }
