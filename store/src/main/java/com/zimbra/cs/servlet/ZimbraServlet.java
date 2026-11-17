@@ -8,9 +8,12 @@
  */
 package com.zimbra.cs.servlet;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.zextras.mailbox.servlet.ProxyIpsCache;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.httpclient.HttpClientUtil;
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapProtocol;
@@ -41,6 +44,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.Clock;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -76,6 +81,12 @@ public class ZimbraServlet extends HttpServlet {
   private static Log mLog = LogFactory.getLog(ZimbraServlet.class);
 
   private static final String PARAM_ALLOWED_PORTS = "allowed.ports";
+
+  private static volatile ProxyIpsCache proxyIpsCache =
+      new ProxyIpsCache(
+          ZimbraServlet::loadProxyIps,
+          () -> Duration.ofSeconds(LC.proxy_ips_cache_ttl.longValue()),
+          Clock.systemUTC());
 
   public static final String QP_ZAUTHTOKEN = "zauthtoken";
   public static final String QP_ZJWT = "zjwt";
@@ -587,28 +598,48 @@ public class ZimbraServlet extends HttpServlet {
 
   public static RemoteIP.TrustedIPs getTrustedIPs() {
     try {
-      final Provisioning prov = Provisioning.getInstance();
-      final Server server = prov.getLocalServer();
+      final Server server = Provisioning.getInstance().getLocalServer();
       List<String> trustedIps =
           new ArrayList<>(Arrays.asList(server.getMultiAttr(Provisioning.A_zimbraMailTrustedIP)));
-
-      prov.getAllServers(Provisioning.SERVICE_PROXY)
-          .forEach(
-              proxyServer ->
-                  Try.of(proxyServer::getIPAddress)
-                      .andThen(
-                          serverIp -> {
-                            if (!Objects.isNull(serverIp) && !Objects.equals(serverIp, "")) {
-                              trustedIps.add(serverIp);
-                            }
-                          })
-                      .onFailure(
-                          ex -> ZimbraLog.misc.warn("failed to get proxy IPs, skipping.", ex)));
+      trustedIps.addAll(proxyIpsCache.get());
       return new RemoteIP.TrustedIPs(trustedIps.toArray(new String[0]));
     } catch (ServiceException e) {
       ZimbraLog.misc.warn("failed to get trusted IPs, only localhost will be trusted", e);
     }
     return new RemoteIP.TrustedIPs(null);
+  }
+
+  /** Makes the next request reload the proxy server IPs from LDAP. */
+  public static void flushProxyIpsCache() {
+    proxyIpsCache.invalidate();
+  }
+
+  @VisibleForTesting
+  static ProxyIpsCache replaceProxyIpsCache(ProxyIpsCache replacement) {
+    final ProxyIpsCache previous = proxyIpsCache;
+    proxyIpsCache = replacement;
+    return previous;
+  }
+
+  private static Try<List<String>> loadProxyIps() {
+    return Try.of(
+        () -> {
+          List<String> proxyIps = new ArrayList<>();
+          Provisioning.getInstance()
+              .getAllServers(Provisioning.SERVICE_PROXY)
+              .forEach(
+                  proxyServer ->
+                      Try.of(proxyServer::getIPAddress)
+                          .andThen(
+                              serverIp -> {
+                                if (!Objects.isNull(serverIp) && !Objects.equals(serverIp, "")) {
+                                  proxyIps.add(serverIp);
+                                }
+                              })
+                          .onFailure(
+                              ex -> ZimbraLog.misc.warn("failed to get proxy IPs, skipping.", ex)));
+          return proxyIps;
+        });
   }
 
   public static void addUAToLoggingContext(HttpServletRequest req) {
