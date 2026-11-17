@@ -29,9 +29,6 @@ public class ZimbraNamespace {
     public static final QName E_CODE = QName.get("Code", ZIMBRA); 
     public static final QName E_ERROR = QName.get("Error", ZIMBRA); 
     public static final QName E_TRACE = QName.get("Trace", ZIMBRA);
-    public static final QName E_REASON = QName.get("Reason", ZIMBRA);
-    public static final QName E_TEXT = QName.get("Text", ZIMBRA);
-    public static final QName E_DETAIL = QName.get("Detail", ZIMBRA);
     public static final QName E_ARGUMENT = QName.get("a", ZIMBRA);
 
     public static final String A_ONERROR = "onerror";

@@ -38,28 +38,10 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
 
   public static final String ID_USER_ROOT =
       Integer.toString(FolderConstants.ID_FOLDER_USER_ROOT); // "1"
-  public static final String ID_INBOX = Integer.toString(FolderConstants.ID_FOLDER_INBOX); // "2"
-  public static final String ID_TRASH = Integer.toString(FolderConstants.ID_FOLDER_TRASH); // "3"
-  public static final String ID_SPAM = Integer.toString(FolderConstants.ID_FOLDER_SPAM); // "4"
-  public static final String ID_SENT = Integer.toString(FolderConstants.ID_FOLDER_SENT); // "5"
-  public static final String ID_DRAFTS = Integer.toString(FolderConstants.ID_FOLDER_DRAFTS); // "6"
-  public static final String ID_CONTACTS =
-      Integer.toString(FolderConstants.ID_FOLDER_CONTACTS); // "7"
-  public static final String ID_TAGS = Integer.toString(FolderConstants.ID_FOLDER_TAGS); // "8"
-  public static final String ID_CONVERSATIONS =
-      Integer.toString(FolderConstants.ID_FOLDER_CONVERSATIONS); // "9"
   public static final String ID_CALENDAR =
       Integer.toString(FolderConstants.ID_FOLDER_CALENDAR); // "10"
-  public static final String ID_ROOT = Integer.toString(FolderConstants.ID_FOLDER_ROOT); // "11"
-  public static final String ID_AUTO_CONTACTS =
-      Integer.toString(FolderConstants.ID_FOLDER_AUTO_CONTACTS); // "13"
-  public static final String ID_CHATS = Integer.toString(FolderConstants.ID_FOLDER_IM_LOGS); // "14"
-  public static final String ID_ARCHIVE = Integer.toString(FolderConstants.ID_FOLDER_ARCHIVE); // "20"
 
   public static final String ID_FIRST_USER_ID = "256";
-  public static final double BASE64_TO_NORMAL_RATIO = 1.34;
-
-  public static final String PERM_WRITE = "w";
 
   private Color mColor;
   private final String mRgb;
@@ -216,20 +198,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     }
   }
 
-  public static final String[] RGB_COLORS = {
-    // none,      blue,     cyan,      green,     purple
-    "#000000", "#5b9bf2", "#43eded", "#6acb9e", "#ba86e5",
-    // red,     yellow,     pink,     gray      orange
-    "#f66666", "#f8fa33", "#fe98d3", "#bebebe", "#fdbc55"
-  };
-
   /* This array is to get string property keys to be used from ZhMsg.properties. Note: colorNone is not used */
-  public static final String[] RGB_COLORS_MSG = {
-    // none,      blue,     cyan,      green,     purple
-    "colorNone", "colorBlue", "colorCyan", "colorGreen", "colorPurple",
-    // red,     yellow,     pink,     gray      orange
-    "colorRed", "colorYellow", "colorPink", "colorGray", "colorOrange"
-  };
 
   public enum View {
     appointment,

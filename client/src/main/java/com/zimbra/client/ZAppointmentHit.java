@@ -38,12 +38,6 @@ public class ZAppointmentHit implements ZSearchHit {
   public static final String STATUS_CONFIRMED = "CONF";
   public static final String STATUS_CANCELLED = "CANC";
 
-  public static final String STATUS_COMPLETED = "COMP";
-  public static final String STATUS_DEFERRED = "DEFERRED";
-  public static final String STATUS_INPROGRESS = "INPR";
-  public static final String STATUS_NOT_STARTED = "NEED";
-  public static final String STATUS_WAITING = "WAITING";
-
   public static final String PSTATUS_NEEDS_ACTION = "NE";
   public static final String PSTATUS_TENTATIVE = "TE";
   public static final String PSTATUS_ACCEPT = "AC";

@@ -459,9 +459,7 @@ public final class AdminConstants {
   public static final String E_VERIFY_STORE_MANAGER_RESPONSE = "VerifyStoreManagerResponse";
 
   public static final QName PING_REQUEST = QName.get(E_PING_REQUEST, NAMESPACE);
-  public static final QName PING_RESPONSE = QName.get(E_PING_RESPONSE, NAMESPACE);
   public static final QName CHECK_HEALTH_REQUEST = QName.get(E_CHECK_HEALTH_REQUEST, NAMESPACE);
-  public static final QName CHECK_HEALTH_RESPONSE = QName.get(E_CHECK_HEALTH_RESPONSE, NAMESPACE);
 
   public static final QName GET_ALL_LOCALES_REQUEST =
       QName.get(E_GET_ALL_LOCALES_REQUEST, NAMESPACE);
@@ -508,24 +506,17 @@ public final class AdminConstants {
   public static final QName DELETE_ACCOUNT_RESPONSE =
       QName.get(E_DELETE_ACCOUNT_RESPONSE, NAMESPACE);
   public static final QName SET_PASSWORD_REQUEST = QName.get(E_SET_PASSWORD_REQUEST, NAMESPACE);
-  public static final QName SET_PASSWORD_RESPONSE = QName.get(E_SET_PASSWORD_RESPONSE, NAMESPACE);
   public static final QName CHECK_PASSWORD_STRENGTH_REQUEST =
       QName.get(E_CHECK_PASSWORD_STRENGTH_REQUEST, NAMESPACE);
   public static final QName CHECK_PASSWORD_STRENGTH_RESPONSE =
       QName.get(E_CHECK_PASSWORD_STRENGTH_RESPONSE, NAMESPACE);
   public static final QName RESET_ACCOUNT_PASSWORD_REQUEST =
       QName.get(E_RESET_ACCOUNT_PASSWORD_REQUEST, NAMESPACE);
-  public static final QName RESET_ACCOUNT_PASSWORD_RESPONSE =
-      QName.get(E_RESET_ACCOUNT_PASSWORD_RESPONSE, NAMESPACE);
 
   public static final QName ADD_ACCOUNT_ALIAS_REQUEST =
       QName.get(E_ADD_ACCOUNT_ALIAS_REQUEST, NAMESPACE);
-  public static final QName ADD_ACCOUNT_ALIAS_RESPONSE =
-      QName.get(E_ADD_ACCOUNT_ALIAS_RESPONSE, NAMESPACE);
   public static final QName REMOVE_ACCOUNT_ALIAS_REQUEST =
       QName.get(E_REMOVE_ACCOUNT_ALIAS_REQUEST, NAMESPACE);
-  public static final QName REMOVE_ACCOUNT_ALIAS_RESPONSE =
-      QName.get(E_REMOVE_ACCOUNT_ALIAS_RESPONSE, NAMESPACE);
   public static final QName SEARCH_ACCOUNTS_REQUEST =
       QName.get(E_SEARCH_ACCOUNTS_REQUEST, NAMESPACE);
   public static final QName SEARCH_ACCOUNTS_RESPONSE =
@@ -601,17 +592,12 @@ public final class AdminConstants {
 
   public static final QName GET_SERVICE_STATUS_REQUEST =
       QName.get(E_GET_SERVICE_STATUS_REQUEST, NAMESPACE);
-  public static final QName GET_SERVICE_STATUS_RESPONSE =
-      QName.get(E_GET_SERVICE_STATUS_RESPONSE, NAMESPACE);
 
   public static final QName PURGE_MESSAGES_REQUEST = QName.get(E_PURGE_MESSAGES_REQUEST, NAMESPACE);
-  public static final QName PURGE_MESSAGES_RESPONSE =
-      QName.get(E_PURGE_MESSAGES_RESPONSE, NAMESPACE);
   public static final QName DELETE_MAILBOX_REQUEST = QName.get(E_DELETE_MAILBOX_REQUEST, NAMESPACE);
   public static final QName DELETE_MAILBOX_RESPONSE =
       QName.get(E_DELETE_MAILBOX_RESPONSE, NAMESPACE);
   public static final QName GET_MAILBOX_REQUEST = QName.get(E_GET_MAILBOX_REQUEST, NAMESPACE);
-  public static final QName GET_MAILBOX_RESPONSE = QName.get(E_GET_MAILBOX_RESPONSE, NAMESPACE);
   public static final QName LOCKOUT_MAILBOX_REQUEST =
       QName.get(E_LOCKOUT_MAILBOX_REQUEST, NAMESPACE);
   public static final QName LOCKOUT_MAILBOX_RESPONSE =
@@ -619,8 +605,6 @@ public final class AdminConstants {
 
   public static final QName CHECK_HOSTNAME_RESOLVE_REQUEST =
       QName.get(E_CHECK_HOSTNAME_RESOLVE_REQUEST, NAMESPACE);
-  public static final QName CHECK_HOSTNAME_RESOLVE_RESPONSE =
-      QName.get(E_CHECK_HOSTNAME_RESOLVE_RESPONSE, NAMESPACE);
   public static final QName CHECK_AUTH_CONFIG_REQUEST =
       QName.get(E_CHECK_AUTH_CONFIG_REQUEST, NAMESPACE);
   public static final QName CHECK_AUTH_CONFIG_RESPONSE =
@@ -642,25 +626,15 @@ public final class AdminConstants {
   public static final QName SEARCH_GAL_RESPONSE = QName.get(E_SEARCH_GAL_RESPONSE, NAMESPACE);
 
   public static final QName CREATE_VOLUME_REQUEST = QName.get(E_CREATE_VOLUME_REQUEST, NAMESPACE);
-  public static final QName CREATE_VOLUME_RESPONSE = QName.get(E_CREATE_VOLUME_RESPONSE, NAMESPACE);
   public static final QName GET_VOLUME_REQUEST = QName.get(E_GET_VOLUME_REQUEST, NAMESPACE);
-  public static final QName GET_VOLUME_RESPONSE = QName.get(E_GET_VOLUME_RESPONSE, NAMESPACE);
   public static final QName MODIFY_VOLUME_REQUEST = QName.get(E_MODIFY_VOLUME_REQUEST, NAMESPACE);
-  public static final QName MODIFY_VOLUME_RESPONSE = QName.get(E_MODIFY_VOLUME_RESPONSE, NAMESPACE);
   public static final QName DELETE_VOLUME_REQUEST = QName.get(E_DELETE_VOLUME_REQUEST, NAMESPACE);
-  public static final QName DELETE_VOLUME_RESPONSE = QName.get(E_DELETE_VOLUME_RESPONSE, NAMESPACE);
   public static final QName GET_ALL_VOLUMES_REQUEST =
       QName.get(E_GET_ALL_VOLUMES_REQUEST, NAMESPACE);
-  public static final QName GET_ALL_VOLUMES_RESPONSE =
-      QName.get(E_GET_ALL_VOLUMES_RESPONSE, NAMESPACE);
   public static final QName GET_CURRENT_VOLUMES_REQUEST =
       QName.get(E_GET_CURRENT_VOLUMES_REQUEST, NAMESPACE);
-  public static final QName GET_CURRENT_VOLUMES_RESPONSE =
-      QName.get(E_GET_CURRENT_VOLUMES_RESPONSE, NAMESPACE);
   public static final QName SET_CURRENT_VOLUME_REQUEST =
       QName.get(E_SET_CURRENT_VOLUME_REQUEST, NAMESPACE);
-  public static final QName SET_CURRENT_VOLUME_RESPONSE =
-      QName.get(E_SET_CURRENT_VOLUME_RESPONSE, NAMESPACE);
   public static final QName CHECK_BLOB_CONSISTENCY_REQUEST =
       QName.get(E_CHECK_BLOB_CONSISTENCY_REQUEST, NAMESPACE);
   public static final QName CHECK_BLOB_CONSISTENCY_RESPONSE =
@@ -670,7 +644,6 @@ public final class AdminConstants {
   public static final QName EXPORT_AND_DELETE_ITEMS_RESPONSE =
       QName.get(E_EXPORT_AND_DELETE_ITEMS_RESPONSE, NAMESPACE);
   public static final QName DEDUPE_BLOBS_REQUEST = QName.get(E_DEDUPE_BLOBS_REQUEST, NAMESPACE);
-  public static final QName DEDUPE_BLOBS_RESPONSE = QName.get(E_DEDUPE_BLOBS_RESPONSE, NAMESPACE);
 
   public static final QName CREATE_DISTRIBUTION_LIST_REQUEST =
       QName.get(E_CREATE_DISTRIBUTION_LIST_REQUEST, NAMESPACE);
@@ -686,28 +659,18 @@ public final class AdminConstants {
       QName.get(E_GET_ALL_DISTRIBUTION_LISTS_RESPONSE, NAMESPACE);
   public static final QName ADD_DISTRIBUTION_LIST_MEMBER_REQUEST =
       QName.get(E_ADD_DISTRIBUTION_LIST_MEMBER_REQUEST, NAMESPACE);
-  public static final QName ADD_DISTRIBUTION_LIST_MEMBER_RESPONSE =
-      QName.get(E_ADD_DISTRIBUTION_LIST_MEMBER_RESPONSE, NAMESPACE);
   public static final QName REMOVE_DISTRIBUTION_LIST_MEMBER_REQUEST =
       QName.get(E_REMOVE_DISTRIBUTION_LIST_MEMBER_REQUEST, NAMESPACE);
-  public static final QName REMOVE_DISTRIBUTION_LIST_MEMBER_RESPONSE =
-      QName.get(E_REMOVE_DISTRIBUTION_LIST_MEMBER_RESPONSE, NAMESPACE);
   public static final QName MODIFY_DISTRIBUTION_LIST_REQUEST =
       QName.get(E_MODIFY_DISTRIBUTION_LIST_REQUEST, NAMESPACE);
   public static final QName MODIFY_DISTRIBUTION_LIST_RESPONSE =
       QName.get(E_MODIFY_DISTRIBUTION_LIST_RESPONSE, NAMESPACE);
   public static final QName DELETE_DISTRIBUTION_LIST_REQUEST =
       QName.get(E_DELETE_DISTRIBUTION_LIST_REQUEST, NAMESPACE);
-  public static final QName DELETE_DISTRIBUTION_LIST_RESPONSE =
-      QName.get(E_DELETE_DISTRIBUTION_LIST_RESPONSE, NAMESPACE);
   public static final QName ADD_DISTRIBUTION_LIST_ALIAS_REQUEST =
       QName.get(E_ADD_DISTRIBUTION_LIST_ALIAS_REQUEST, NAMESPACE);
-  public static final QName ADD_DISTRIBUTION_LIST_ALIAS_RESPONSE =
-      QName.get(E_ADD_DISTRIBUTION_LIST_ALIAS_RESPONSE, NAMESPACE);
   public static final QName REMOVE_DISTRIBUTION_LIST_ALIAS_REQUEST =
       QName.get(E_REMOVE_DISTRIBUTION_LIST_ALIAS_REQUEST, NAMESPACE);
-  public static final QName REMOVE_DISTRIBUTION_LIST_ALIAS_RESPONSE =
-      QName.get(E_REMOVE_DISTRIBUTION_LIST_ALIAS_RESPONSE, NAMESPACE);
   public static final QName RENAME_DISTRIBUTION_LIST_REQUEST =
       QName.get(E_RENAME_DISTRIBUTION_LIST_REQUEST, NAMESPACE);
   public static final QName RENAME_DISTRIBUTION_LIST_RESPONSE =
@@ -715,8 +678,6 @@ public final class AdminConstants {
 
   public static final QName GET_VERSION_INFO_REQUEST =
       QName.get(E_GET_VERSION_INFO_REQUEST, NAMESPACE);
-  public static final QName GET_VERSION_INFO_RESPONSE =
-      QName.get(E_GET_VERSION_INFO_RESPONSE, NAMESPACE);
 
   public static final QName GET_ATTRIBUTE_INFO_REQUEST =
       QName.get(E_GET_ATTRIBUTE_INFO_REQUEST, NAMESPACE);
@@ -869,7 +830,6 @@ public final class AdminConstants {
       QName.get(E_CHECK_DIRECTORY_RESPONSE, NAMESPACE);
 
   public static final QName FLUSH_CACHE_REQUEST = QName.get(E_FLUSH_CACHE_REQUEST, NAMESPACE);
-  public static final QName FLUSH_CACHE_RESPONSE = QName.get(E_FLUSH_CACHE_RESPONSE, NAMESPACE);
 
   public static final QName COUNT_ACCOUNT_REQUEST = QName.get(E_COUNT_ACCOUNT_REQUEST, NAMESPACE);
   public static final QName COUNT_ACCOUNT_RESPONSE = QName.get(E_COUNT_ACCOUNT_RESPONSE, NAMESPACE);
@@ -878,14 +838,10 @@ public final class AdminConstants {
   public static final QName COUNT_OBJECTS_RESPONSE = QName.get(E_COUNT_OBJECTS_RESPONSE, NAMESPACE);
 
   public static final QName GET_SHARE_INFO_REQUEST = QName.get(E_GET_SHARE_INFO_REQUEST, NAMESPACE);
-  public static final QName GET_SHARE_INFO_RESPONSE =
-      QName.get(E_GET_SHARE_INFO_RESPONSE, NAMESPACE);
 
   // Account loggers
   public static final QName ADD_ACCOUNT_LOGGER_REQUEST =
       QName.get(E_ADD_ACCOUNT_LOGGER_REQUEST, NAMESPACE);
-  public static final QName ADD_ACCOUNT_LOGGER_RESPONSE =
-      QName.get(E_ADD_ACCOUNT_LOGGER_RESPONSE, NAMESPACE);
   public static final QName REMOVE_ACCOUNT_LOGGER_REQUEST =
       QName.get(E_REMOVE_ACCOUNT_LOGGER_REQUEST, NAMESPACE);
   public static final QName REMOVE_ACCOUNT_LOGGER_RESPONSE =
@@ -929,18 +885,12 @@ public final class AdminConstants {
   // admin-version of WaitSetRequest
   public static final QName ADMIN_CREATE_WAIT_SET_REQUEST =
       QName.get(E_ADMIN_CREATE_WAIT_SET_REQUEST, NAMESPACE);
-  public static final QName ADMIN_CREATE_WAIT_SET_RESPONSE =
-      QName.get(E_ADMIN_CREATE_WAIT_SET_RESPONSE, NAMESPACE);
   public static final QName ADMIN_WAIT_SET_REQUEST = QName.get(E_ADMIN_WAIT_SET_REQUEST, NAMESPACE);
-  public static final QName ADMIN_WAIT_SET_RESPONSE =
-      QName.get(E_ADMIN_WAIT_SET_RESPONSE, NAMESPACE);
   public static final QName ADMIN_DESTROY_WAIT_SET_REQUEST =
       QName.get(E_ADMIN_DESTROY_WAIT_SET_REQUEST, NAMESPACE);
   public static final QName ADMIN_DESTROY_WAIT_SET_RESPONSE =
       QName.get(E_ADMIN_DESTROY_WAIT_SET_RESPONSE, NAMESPACE);
   public static final QName QUERY_WAIT_SET_REQUEST = QName.get(E_QUERY_WAIT_SET_REQUEST, NAMESPACE);
-  public static final QName QUERY_WAIT_SET_RESPONSE =
-      QName.get(E_QUERY_WAIT_SET_RESPONSE, NAMESPACE);
 
   // rights
   public static final QName GET_RIGHT_REQUEST = QName.get(E_GET_RIGHT_REQUEST, NAMESPACE);
@@ -1013,22 +963,17 @@ public final class AdminConstants {
   // local config
   public static final QName RELOAD_LOCAL_CONFIG_REQUEST =
       QName.get(E_RELOAD_LOCAL_CONFIG_REQUEST, NAMESPACE);
-  public static final QName RELOAD_LOCAL_CONFIG_RESPONSE =
-      QName.get(E_RELOAD_LOCAL_CONFIG_RESPONSE, NAMESPACE);
 
   // wiki migration
 
   // noop
   public static final QName NO_OP_REQUEST = QName.get(E_NO_OP_REQUEST, NAMESPACE);
-  public static final QName NO_OP_RESPONSE = QName.get(E_NO_OP_RESPONSE, NAMESPACE);
 
   // cookie
   public static final QName CLEAR_COOKIE_REQUEST = QName.get(E_CLEAR_COOKIE_REQUEST, NAMESPACE);
   public static final QName CLEAR_COOKIE_RESPONSE = QName.get(E_CLEAR_COOKIE_RESPONSE, NAMESPACE);
   public static final QName REFRESH_REGISTERED_AUTHTOKENS_REQUEST =
       QName.get(E_REFRESH_REGISTERED_AUTHTOKENS_REQUEST, NAMESPACE);
-  public static final QName REFRESH_REGISTERED_AUTHTOKENS_RESPONSE =
-      QName.get(E_REFRESH_REGISTERED_AUTHTOKENS_RESPONSE, NAMESPACE);
 
   // Auto provision
   public static final QName AUTO_PROV_ACCOUNT_REQUEST =
@@ -1077,28 +1022,17 @@ public final class AdminConstants {
   public static final String E_CONTACT_BACKUP_RESPONSE = "ContactBackupResponse";
   public static final QName GET_FILTER_RULES_REQUEST =
       QName.get(E_GET_FILTER_RULES_REQUEST, NAMESPACE);
-  public static final QName GET_FILTER_RULES_RESPONSE =
-      QName.get(E_GET_FILTER_RULES_RESPONSE, NAMESPACE);
   public static final QName MODIFY_FILTER_RULES_REQUEST =
       QName.get(E_MODIFY_FILTER_RULES_REQUEST, NAMESPACE);
-  public static final QName MODIFY_FILTER_RULES_RESPONSE =
-      QName.get(E_MODIFY_FILTER_RULES_RESPONSE, NAMESPACE);
   public static final QName GET_OUTGOING_FILTER_RULES_REQUEST =
       QName.get(E_GET_OUTGOING_FILTER_RULES_REQUEST, NAMESPACE);
-  public static final QName GET_OUTGOING_FILTER_RULES_RESPONSE =
-      QName.get(E_GET_OUTGOING_FILTER_RULES_RESPONSE, NAMESPACE);
   public static final QName MODIFY_OUTGOING_FILTER_RULES_REQUEST =
       QName.get(E_MODIFY_OUTGOING_FILTER_RULES_REQUEST, NAMESPACE);
-  public static final QName MODIFY_OUTGOING_FILTER_RULES_RESPONSE =
-      QName.get(E_MODIFY_OUTGOING_FILTER_RULES_RESPONSE, NAMESPACE);
   public static final QName CONTACT_BACKUP_REQUEST = QName.get(E_CONTACT_BACKUP_REQUEST, NAMESPACE);
-  public static final QName CONTACT_BACKUP_RESPONSE =
-      QName.get(E_CONTACT_BACKUP_RESPONSE, NAMESPACE);
 
   // AddressList
 
   // DumpSessions
-  public static final String E_SESSION = "session";
   public static final String A_ZIMBRA_ID = "zid";
   public static final String A_SESSION_ID = "sid";
   public static final String A_LIST_SESSIONS = "listSessions";
@@ -1171,11 +1105,9 @@ public final class AdminConstants {
   public static final String E_PRINCIPAL = "principal";
   public static final String E_TOKEN = "token";
 
-  public static final String A_ACCOUNT = "account";
   public static final String A_DOMAIN = "domain";
   public static final String A_SERVER = "server";
 
-  public static final String A_ACTION = "action";
   public static final String A_APPLY_CONFIG = "applyConfig";
   public static final String A_APPLY_COS = "applyCos";
   public static final String A_ID = "id";
@@ -1289,8 +1221,6 @@ public final class AdminConstants {
   public static final String A_VERSION_INFO_HOST = "host";
   public static final String A_VERSION_INFO_TYPE = "type";
 
-  public static final String E_ZIMLET = "zimlet";
-  public static final String E_ACL = "acl";
   public static final String A_VALUE = "value";
 
   public static final String A_QUOTA_USED = "used";
@@ -1372,7 +1302,6 @@ public final class AdminConstants {
   public static final String A_SUB_DOMAIN = "subDomain";
   public static final String A_EXPAND_ALL_ATTRS = "expandAllAttrs";
   public static final String A_INHERITED = "inherited";
-  public static final String A_RIGHT = "right";
   public static final String A_RIGHT_CLASS = "rightClass";
   public static final String A_TARGET_TYPE = "targetType";
   public static final String A_SECRET = "secret";
@@ -1428,13 +1357,10 @@ public final class AdminConstants {
   public static final String A_MDAY = "mday";
 
   // ZimbraLicenseExtenstion LicenseService and LicenseAdminService
-  public static final String E_CONTENT = "content";
   public static final String A_ATTACHMENT_ID = "aid";
-  public static final String E_INFO = "info";
 
   // Retention policy
   public static final String E_RETENTION_POLICY = "retentionPolicy";
-  public static final String E_KEEP = "keep";
   public static final String E_PURGE = "purge";
   public static final String E_POLICY = "policy";
 

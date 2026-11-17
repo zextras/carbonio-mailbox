@@ -24,10 +24,6 @@ public class ZAce implements ToZJSONObject {
     private String mSecret; // password for guest grantee, accesskey for key grantee
 
     /** Stolen shamelessly from ACL.java. */
-    /** The pseudo-GUID signifying "all authenticated users". */
-    public static final String GUID_AUTHUSER = "00000000-0000-0000-0000-000000000000";
-    /** The pseudo-GUID signifying "all authenticated and unauthenticated users". */
-    public static final String GUID_PUBLIC   = "99999999-9999-9999-9999-999999999999";
 
     public enum GranteeType {
         /**

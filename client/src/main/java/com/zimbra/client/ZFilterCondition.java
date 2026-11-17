@@ -36,8 +36,6 @@ public abstract class ZFilterCondition {
     public static final String C_INVITE = "invite";
     public static final String C_ME = "me";
     public static final String C_MIME_HEADER = "mime_header";
-    public static final String C_NOT_ATTACHMENT = "not attachment";
-    public static final String C_NOT_EXISTS = "not exists";
     public static final String C_SIZE = "size";
     public static final String C_TRUE = "true";
 
@@ -1296,15 +1294,6 @@ public abstract class ZFilterCondition {
     }
 
     public static final class ZInviteCondition extends ZFilterCondition {
-        public static final String METHOD_ANYREQUEST = "anyrequest";
-        public static final String METHOD_ANYREPLY = "anyreply";
-        public static final String METHOD_PUBLISH = "publish";
-        public static final String METHOD_REQUEST = "request";
-        public static final String METHOD_REPLY = "reply";
-        public static final String METHOD_ADD = "add";
-        public static final String METHOD_CANCEL = "cancel";
-        public static final String METHOD_REFRESH = "refresh";
-        public static final String METHOD_DECLINECOUNTER = "declinecounter";
 
         private final boolean invite;
         private final List<String> methods = new ArrayList<>();

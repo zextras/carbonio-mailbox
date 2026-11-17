@@ -1,7 +1,6 @@
 package com.zimbra.common.soap;
 
 public final class SignatureConstants {
-    public static final String CERTIFICATE = "certificate";
     public static final String SIGNATURE = "signature";
     public static final String TYPE = "type";
     public static final String VALID = "valid";
@@ -39,6 +38,5 @@ public final class SignatureConstants {
 
     private SignatureConstants() {
     }
-
 
 }
