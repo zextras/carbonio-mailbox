@@ -8,15 +8,14 @@ PartOf=carbonio-mta.target
 User=zextras
 Type=notify
 NotifyAccess=main
-EnvironmentFile=-/opt/zextras/data/systemd.env
-ExecStart=/opt/zextras/common/lib/jvm/java/bin/java \
+ExecStart=/opt/zextras/bin/configd exec -- /opt/zextras/common/lib/jvm/java/bin/java \
   --enable-preview \
   --enable-native-access=ALL-UNNAMED \
   -XX:ErrorFile=/opt/zextras/log \
   -client \
-  $java_options \
+  $$java_options \
   -Dzimbra.home=/opt/zextras \
-  -classpath ${java_ext_dirs}:/opt/zextras/mailbox/jars/*:/opt/zextras/conf \
+  -classpath $${java_ext_dirs}:/opt/zextras/mailbox/jars/*:/opt/zextras/conf \
   -Dlog4j.configurationFile=file:/opt/zextras/conf/milter.log4j.properties \
   -Dzimbra.config=/opt/zextras/conf/localconfig.xml \
   com.zimbra.cs.milter.MilterServer
