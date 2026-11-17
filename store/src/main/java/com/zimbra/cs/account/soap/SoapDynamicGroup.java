@@ -6,7 +6,6 @@
 package com.zimbra.cs.account.soap;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,32 +21,12 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.admin.type.Attr;
 import com.zimbra.soap.admin.type.DLInfo;
 import com.zimbra.soap.admin.type.DistributionListInfo;
-import com.zimbra.soap.admin.type.DistributionListMembershipInfo;
 
 public class SoapDynamicGroup extends DynamicGroup implements SoapEntry {
     
     List<String> membersList;
 
-    SoapDynamicGroup(String name, String id, Map<String, Object> attrs, Provisioning prov) {
-        super(name, id, attrs, prov);
-    }
-
-    /**
-     * @param dlInfo contains information about a DL that another DL is
-     *        a member of.
-     * @throws ServiceException
-     */
-    SoapDynamicGroup(DistributionListMembershipInfo dlInfo,
-            Provisioning prov)
-    throws ServiceException {
-        // DistributionListMembershipInfo does not supply attributes
-        super(dlInfo.getName(), dlInfo.getId(),
-            new HashMap<>(), prov);
-        // DistributionListMembershipInfo does not supply membership info
-        addDlm(new ArrayList<>(), getRawAttrs());
-    }
-
-    SoapDynamicGroup(DistributionListInfo dlInfo, Provisioning prov)
+	SoapDynamicGroup(DistributionListInfo dlInfo, Provisioning prov)
     throws ServiceException {
         super(dlInfo.getName(), dlInfo.getId(), 
                 Attr.collectionToMap(dlInfo.getAttrList()), prov);
@@ -62,12 +41,7 @@ public class SoapDynamicGroup extends DynamicGroup implements SoapEntry {
         addDlm(new ArrayList<>(), getRawAttrs());
     }
 
-    SoapDynamicGroup(Element e, Provisioning prov) throws ServiceException {
-        super(e.getAttribute(AdminConstants.A_NAME), e.getAttribute(AdminConstants.A_ID), SoapProvisioning.getAttrs(e), prov);
-        addDlm(e, getRawAttrs());
-    }
-
-    @Override
+	@Override
     public String[] getAllMembers() throws ServiceException {
         if (membersList == null) {
             return new String[0];

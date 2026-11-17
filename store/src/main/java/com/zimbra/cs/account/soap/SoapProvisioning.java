@@ -266,59 +266,20 @@ public class SoapProvisioning extends Provisioning {
 
     public Options() {}
 
-    public Options(String account, AccountBy accountBy, String password, String uri) {
-      mAccount = account;
-      mAccountBy = accountBy;
-      mPassword = password;
-      mUri = uri;
-    }
-
-    // AP-TODO-7: retire
-    public Options(String authToken, String uri) {
-      mAuthToken = new ZAuthToken(null, authToken, null);
-      mUri = uri;
-    }
-
-    public Options(ZAuthToken authToken, String uri) {
-      mAuthToken = authToken;
-      mUri = uri;
-    }
-
     public String getAccount() {
       return mAccount;
-    }
-
-    public void setAccount(String account) {
-      mAccount = account;
     }
 
     public AccountBy getAccountBy() {
       return mAccountBy;
     }
 
-    public void setAccountBy(AccountBy accountBy) {
-      mAccountBy = accountBy;
-    }
-
     public String getPassword() {
       return mPassword;
     }
 
-    public void setPassword(String password) {
-      mPassword = password;
-    }
-
     public ZAuthToken getAuthToken() {
       return mAuthToken;
-    }
-
-    public void setAuthToken(ZAuthToken authToken) {
-      mAuthToken = authToken;
-    }
-
-    // AP-TODO-8: retire
-    public void setAuthToken(String authToken) {
-      mAuthToken = new ZAuthToken(null, authToken, null);
     }
 
     public String getUri() {
@@ -333,24 +294,12 @@ public class SoapProvisioning extends Provisioning {
       return mTimeout;
     }
 
-    public void setTimeout(int timeout) {
-      mTimeout = timeout;
-    }
-
     public int getRetryCount() {
       return mRetryCount;
     }
 
-    public void setRetryCount(int retryCount) {
-      mRetryCount = retryCount;
-    }
-
     public SoapTransport.DebugListener getDebugListener() {
       return mDebugListener;
-    }
-
-    public void setDebugListener(SoapTransport.DebugListener liistener) {
-      mDebugListener = liistener;
     }
 
     public boolean getLocalConfigAuth() {
@@ -479,16 +428,6 @@ public class SoapProvisioning extends Provisioning {
     return mTransport.getURI();
   }
 
-  public void soapSetTransportTimeout(int timeout) {
-    mTimeout = timeout;
-    if (mTransport != null && timeout >= 0) mTransport.setTimeout(timeout);
-  }
-
-  public void soapSetTransportRetryCount(int retryCount) {
-    mRetryCount = retryCount;
-    if (mTransport != null && retryCount >= 0) mTransport.setRetryCount(retryCount);
-  }
-
   public void soapSetTransportDebugListener(DebugListener listener) {
     mDebugListener = listener;
     if (mTransport != null) mTransport.setDebugListener(mDebugListener);
@@ -509,11 +448,6 @@ public class SoapProvisioning extends Provisioning {
 
   public ZAuthToken getAuthToken() {
     return mAuthToken;
-  }
-
-  public void setAuthToken(ZAuthToken authToken) {
-    mAuthToken = authToken;
-    if (mTransport != null) mTransport.setAuthToken(authToken);
   }
 
   /**
@@ -1019,13 +953,6 @@ public class SoapProvisioning extends Provisioning {
       return mAuthToken;
     }
 
-    public long getExpires() {
-      return mExpires;
-    }
-
-    public long getLifetime() {
-      return mLifetime;
-    }
   }
 
   public DelegateAuthResponse delegateAuth(AccountBy keyType, String key, int durationSeconds)
@@ -1285,10 +1212,6 @@ public class SoapProvisioning extends Provisioning {
       mUsed = jaxbMboxInfo.getSize();
     }
 
-    public MailboxInfo(String id, long used) {
-      mMboxId = id;
-      mUsed = used;
-    }
   }
 
   public MailboxInfo getMailbox(Account acct) throws ServiceException {
@@ -1338,8 +1261,6 @@ public class SoapProvisioning extends Provisioning {
       public long getNumRemaining() {
         return numRemaining;
       }
-
-      Progress() {}
 
       Progress(long succeeded, long failed, long remaining) {
         numSucceeded = succeeded;

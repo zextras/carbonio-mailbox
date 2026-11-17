@@ -16,12 +16,8 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.common.soap.Element;
 
 class SoapDataSource extends DataSource implements SoapEntry {
-        
-    SoapDataSource(Account acct, DataSourceType type, String name, String id, Map<String, Object> attrs, Provisioning prov) {
-        super(acct, type, name, id, attrs, prov);
-    }
 
-    SoapDataSource(Account acct, Element e, Provisioning prov) throws ServiceException {
+	SoapDataSource(Account acct, Element e, Provisioning prov) throws ServiceException {
         super(acct,
               DataSourceType.fromString(e.getAttribute(AccountConstants.A_TYPE)),
               e.getAttribute(AccountConstants.A_NAME), e.getAttribute(AccountConstants.A_ID), SoapProvisioning.getAttrs(e), prov);

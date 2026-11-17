@@ -18,21 +18,13 @@ import com.zimbra.soap.admin.type.Attr;
 import com.zimbra.soap.admin.type.CosInfo;
 
 class SoapCos extends Cos implements SoapEntry {
-    
-    SoapCos(String name, String id, Map<String, Object> attrs, Provisioning prov) {
-        super(name, id, attrs, prov);
-    }
 
-    SoapCos(CosInfo cosInfo, Provisioning prov) throws ServiceException {
+	SoapCos(CosInfo cosInfo, Provisioning prov) throws ServiceException {
         super(cosInfo.getName(), cosInfo.getId(),
                 Attr.collectionToMap(cosInfo.getAttrList()), prov);
     }
 
-    SoapCos(Element e, Provisioning prov) throws ServiceException {
-        super(e.getAttribute(AdminConstants.A_NAME), e.getAttribute(AdminConstants.A_ID), SoapProvisioning.getAttrs(e), prov);
-    }
-
-    public void modifyAttrs(SoapProvisioning prov, Map<String, ? extends Object> attrs, boolean checkImmutable) throws ServiceException {
+	public void modifyAttrs(SoapProvisioning prov, Map<String, ? extends Object> attrs, boolean checkImmutable) throws ServiceException {
         XMLElement req = new XMLElement(AdminConstants.MODIFY_COS_REQUEST);
         req.addElement(AdminConstants.E_ID).setText(getId());
         SoapProvisioning.addAttrElements(req, attrs);

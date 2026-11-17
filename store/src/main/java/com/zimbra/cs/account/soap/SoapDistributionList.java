@@ -24,11 +24,7 @@ import com.zimbra.soap.admin.type.DistributionListMembershipInfo;
 
 class SoapDistributionList extends DistributionList implements SoapEntry {
 
-    SoapDistributionList(String name, String id, Map<String, Object> attrs, Provisioning prov) {
-        super(name, id, attrs, prov);
-    }
-
-    /**
+	/**
      * @param dlInfo contains information about a DL that another DL is
      *        a member of.
      * @throws ServiceException
@@ -63,14 +59,7 @@ class SoapDistributionList extends DistributionList implements SoapEntry {
         addDlm(new ArrayList<>(), getRawAttrs());
     }
 
-    SoapDistributionList(Element e, Provisioning prov) throws ServiceException {
-        super(e.getAttribute(AdminConstants.A_NAME), 
-                e.getAttribute(AdminConstants.A_ID), 
-                SoapProvisioning.getAttrs(e), prov);
-        addDlm(e, getRawAttrs());
-    }
-
-    private void addDlm(List <String> members, Map<String, Object> attrs) {
+	private void addDlm(List <String> members, Map<String, Object> attrs) {
         attrs.put(Provisioning.A_zimbraMailForwardingAddress,
                 members.toArray(new String[0]));
     }

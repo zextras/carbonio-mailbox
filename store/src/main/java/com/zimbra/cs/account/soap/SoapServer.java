@@ -19,20 +19,12 @@ import com.zimbra.soap.admin.type.ServerInfo;
 
 class SoapServer extends Server implements SoapEntry {
 
-    SoapServer(String name, String id, Map<String, Object> attrs, Provisioning prov) {
-        super(name, id, attrs, null, prov);
-    }
-
-    SoapServer(ServerInfo serverInfo, Provisioning prov) throws ServiceException {
+	SoapServer(ServerInfo serverInfo, Provisioning prov) throws ServiceException {
         super(serverInfo.getName(), serverInfo.getId(),
                 Attr.collectionToMap(serverInfo.getAttrList()), null, prov);
     }
 
-    SoapServer(Element e, Provisioning prov) throws ServiceException {
-        super(e.getAttribute(AdminConstants.A_NAME), e.getAttribute(AdminConstants.A_ID), SoapProvisioning.getAttrs(e), null, prov);
-    }
-
-    public void modifyAttrs(SoapProvisioning prov, Map<String, ? extends Object> attrs, boolean checkImmutable) throws ServiceException {
+	public void modifyAttrs(SoapProvisioning prov, Map<String, ? extends Object> attrs, boolean checkImmutable) throws ServiceException {
         XMLElement req = new XMLElement(AdminConstants.MODIFY_SERVER_REQUEST);
         req.addElement(AdminConstants.E_ID).setText(getId());
         SoapProvisioning.addAttrElements(req, attrs);

@@ -20,12 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 class SoapSignature extends Signature implements SoapEntry {
-    
-    SoapSignature(Account acct, String name, String id, Map<String, Object> attrs, Provisioning prov) {
-        super(acct, name, id, attrs, prov);
-    }
 
-    SoapSignature(Account acct, Element e, Provisioning prov) throws ServiceException {
+	SoapSignature(Account acct, Element e, Provisioning prov) throws ServiceException {
         super(acct, e.getAttribute(AccountConstants.A_NAME), e.getAttribute(AccountConstants.A_ID), fromXML(e), prov);
     }
     
