@@ -7,13 +7,24 @@ package com.zimbra.common.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 
 public class StringUtilTest {
@@ -139,5 +150,379 @@ public class StringUtilTest {
     assertEquals(false, StringUtil.equal("abc", " abc "));
     assertEquals(false, StringUtil.equal(null, "abc"));
     assertEquals(false, StringUtil.equal("a bc", "abc"));
+  }
+
+  @Test
+  void equalIgnoreCase() {
+    assertTrue(StringUtil.equalIgnoreCase(null, null));
+    assertFalse(StringUtil.equalIgnoreCase(null, "a"));
+    assertFalse(StringUtil.equalIgnoreCase("a", null));
+    assertTrue(StringUtil.equalIgnoreCase("ABC", "abc"));
+    assertFalse(StringUtil.equalIgnoreCase("abc", "abd"));
+  }
+
+  @Test
+  void compareToSortsNullFirst() {
+    assertEquals(0, StringUtil.compareTo(null, null));
+    assertEquals(-1, StringUtil.compareTo(null, "a"));
+    assertEquals(1, StringUtil.compareTo("a", null));
+    assertTrue(StringUtil.compareTo("a", "b") < 0);
+    assertTrue(StringUtil.compareTo("B", "a") < 0);
+  }
+
+  @Test
+  void compareToIgnoreCaseSortsNullFirst() {
+    assertEquals(0, StringUtil.compareToIgnoreCase(null, null));
+    assertEquals(-1, StringUtil.compareToIgnoreCase(null, "a"));
+    assertEquals(1, StringUtil.compareToIgnoreCase("a", null));
+    assertEquals(0, StringUtil.compareToIgnoreCase("ABC", "abc"));
+    assertTrue(StringUtil.compareToIgnoreCase("a", "B") < 0);
+  }
+
+  @Test
+  void countOccurrences() {
+    assertEquals(0, StringUtil.countOccurrences(null, 'a'));
+    assertEquals(0, StringUtil.countOccurrences("bcd", 'a'));
+    assertEquals(3, StringUtil.countOccurrences("abaca", 'a'));
+  }
+
+  @Test
+  void indexOfAny() {
+    assertEquals(-1, StringUtil.indexOfAny(null, "a"));
+    assertEquals(-1, StringUtil.indexOfAny("abc", null));
+    assertEquals(-1, StringUtil.indexOfAny("", "a"));
+    assertEquals(-1, StringUtil.indexOfAny("abc", ""));
+    assertEquals(-1, StringUtil.indexOfAny("abc", "xyz"));
+    assertEquals(1, StringUtil.indexOfAny("abc", "cb"));
+  }
+
+  @Test
+  void sanitizeFilenameKeepsNullAndEmpty() {
+    assertNull(StringUtil.sanitizeFilename(null));
+    assertEquals("", StringUtil.sanitizeFilename(""));
+    assertEquals("a b c", StringUtil.sanitizeFilename("a\u0000b\nc"));
+  }
+
+  @Test
+  void stripControlCharactersKeepsTabCrLfAndValidSurrogatePairs() {
+    String allowed = "a\tb\rc\nd😀";
+    assertSame(allowed, StringUtil.stripControlCharacters(allowed));
+  }
+
+  @Test
+  void stripControlCharactersRemovesUnpairedHighSurrogate() {
+    assertEquals("ab", StringUtil.stripControlCharacters("a\uD800b"));
+    assertEquals("ab", StringUtil.stripControlCharacters("ab\uD800"));
+    assertEquals("ab", StringUtil.stripControlCharacters("ab￾"));
+  }
+
+  @Test
+  void removeSurrogatesReturnsSameInstanceWhenNothingToReplace() {
+    String noSurrogates = "plain";
+    assertSame(noSurrogates, StringUtil.removeSurrogates(noSurrogates));
+    assertEquals("a?b", StringUtil.removeSurrogates("a😀b"));
+  }
+
+  @Test
+  void containsSurrogates() {
+    assertFalse(StringUtil.containsSurrogates(null));
+    assertFalse(StringUtil.containsSurrogates(""));
+    assertFalse(StringUtil.containsSurrogates("abc\uE000"));
+    assertTrue(StringUtil.containsSurrogates("a😀"));
+  }
+
+  @Test
+  void isAsciiString() {
+    assertFalse(StringUtil.isAsciiString(null));
+    assertTrue(StringUtil.isAsciiString(""));
+    assertTrue(StringUtil.isAsciiString("Hello ~\r\n\t"));
+    assertFalse(StringUtil.isAsciiString("café"));
+    assertFalse(StringUtil.isAsciiString("a\u0001"));
+    assertFalse(StringUtil.isAsciiString("a\u007F"));
+  }
+
+  @Test
+  void trimTrailingSpaces() {
+    assertNull(StringUtil.trimTrailingSpaces(null));
+    String noTrailing = "  abc";
+    assertSame(noTrailing, StringUtil.trimTrailingSpaces(noTrailing));
+    assertEquals("  abc", StringUtil.trimTrailingSpaces("  abc \t\u0001\r\n"));
+    assertEquals("", StringUtil.trimTrailingSpaces("   "));
+  }
+
+  @Test
+  void addToMultiMapGrowsFromStringToArray() {
+    Map<String, Object> map = new HashMap<>();
+    StringUtil.addToMultiMap(map, "k", "v1");
+    assertEquals("v1", map.get("k"));
+    StringUtil.addToMultiMap(map, "k", "v2");
+    assertArrayEquals(new String[] {"v1", "v2"}, (String[]) map.get("k"));
+    StringUtil.addToMultiMap(map, "k", "v3");
+    assertArrayEquals(new String[] {"v1", "v2", "v3"}, (String[]) map.get("k"));
+  }
+
+  @Test
+  void addToMultiMapIgnoresUnsupportedExistingValue() {
+    Map<String, Object> map = new HashMap<>();
+    map.put("k", 42);
+    StringUtil.addToMultiMap(map, "k", "v");
+    assertEquals(42, map.get("k"));
+  }
+
+  @Test
+  void keyValueArrayToMultiMap() {
+    Map<String, Object> map =
+        StringUtil.keyValueArrayToMultiMap(new String[] {"skip", "a1", "v1", "a2", "v2", "a2", "v3"}, 1);
+    assertEquals(2, map.size());
+    assertEquals("v1", map.get("a1"));
+    assertArrayEquals(new String[] {"v2", "v3"}, (String[]) map.get("a2"));
+  }
+
+  @Test
+  void keyValueArrayToMultiMapRejectsOddArguments() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> StringUtil.keyValueArrayToMultiMap(new String[] {"a1", "v1", "a2"}, 0));
+  }
+
+  @Test
+  void toNewMultimap() {
+    Map<String, Object> oldMap = new LinkedHashMap<>();
+    oldMap.put("array", new String[] {"a", "b"});
+    oldMap.put("string", "s");
+    oldMap.put("number", 7);
+    oldMap.put("null", null);
+
+    Multimap<String, String> newMap = StringUtil.toNewMultimap(oldMap);
+
+    assertEquals(List.of("a", "b"), newMap.get("array"));
+    assertEquals(List.of("s"), newMap.get("string"));
+    assertEquals(List.of("7"), newMap.get("number"));
+    assertEquals(Arrays.asList((String) null), newMap.get("null"));
+  }
+
+  @Test
+  void toOldMultimap() {
+    Multimap<String, String> newMap = ArrayListMultimap.create();
+    newMap.put("single", "s");
+    newMap.put("multi", "m1");
+    newMap.put("multi", "m2");
+
+    Map<String, Object> oldMap = StringUtil.toOldMultimap(newMap);
+
+    assertEquals("s", oldMap.get("single"));
+    assertArrayEquals(new String[] {"m1", "m2"}, (String[]) oldMap.get("multi"));
+  }
+
+  @Test
+  void toStringArray() {
+    assertNull(StringUtil.toStringArray(null));
+    assertArrayEquals(new String[] {"a"}, StringUtil.toStringArray("a"));
+    String[] array = {"a", "b"};
+    assertSame(array, StringUtil.toStringArray(array));
+    assertThrows(UnsupportedOperationException.class, () -> StringUtil.toStringArray(1));
+  }
+
+  @Test
+  void readSingleLineFromFile(@TempDir Path tempDir) throws IOException {
+    Path file = tempDir.resolve("lines.txt");
+    Files.writeString(file, "first\nsecond\n");
+    assertEquals("first", StringUtil.readSingleLineFromFile(file.toString()));
+  }
+
+  @Test
+  void readLineJoinsContinuationLines() throws IOException {
+    BufferedReader reader = readerOf("a\\\nb\n\nc\nd\\");
+    assertEquals("ab", StringUtil.readLine(reader));
+    assertEquals("", StringUtil.readLine(reader));
+    assertEquals("c", StringUtil.readLine(reader));
+    assertEquals("d", StringUtil.readLine(reader));
+    assertNull(StringUtil.readLine(reader));
+  }
+
+  @Test
+  void readLineJoinsSeveralContinuationLines() throws IOException {
+    assertEquals("abc", StringUtil.readLine(readerOf("a\\\nb\\\nc")));
+  }
+
+  @Test
+  void readLineStopsContinuationAtEmptyLine() throws IOException {
+    BufferedReader reader = readerOf("a\\\n\nb");
+    assertEquals("a", StringUtil.readLine(reader));
+    assertEquals("b", StringUtil.readLine(reader));
+  }
+
+  @Test
+  void parseLineSplitsOnWhitespace() {
+    assertArrayEquals(new String[] {"this", "is", "a", "test"}, StringUtil.parseLine("this is  a\ttest"));
+    assertArrayEquals(new String[0], StringUtil.parseLine(""));
+    assertArrayEquals(new String[0], StringUtil.parseLine("   "));
+  }
+
+  @Test
+  void parseLineHonorsQuotes() {
+    assertArrayEquals(
+        new String[] {"first", "a nother", "double \"q\"", "end"},
+        StringUtil.parseLine("first 'a nother' \"double \\\"q\\\"\" end"));
+    assertArrayEquals(new String[] {"it's"}, StringUtil.parseLine("'it\\'s'"));
+  }
+
+  @Test
+  void parseLineHandlesEscapes() {
+    assertArrayEquals(new String[] {"this", "is test"}, StringUtil.parseLine("this is\\ test"));
+    assertArrayEquals(new String[] {"multi", "a\nb"}, StringUtil.parseLine("multi 'a\\nb'"));
+    assertArrayEquals(new String[] {"\t\r\"'"}, StringUtil.parseLine("\\t\\r\\\"\\'"));
+    assertArrayEquals(new String[] {"backslash", "\\"}, StringUtil.parseLine("backslash \\\\"));
+    assertArrayEquals(new String[] {"backslash", "f"}, StringUtil.parseLine("backslash \\f"));
+    assertArrayEquals(new String[] {"a\\"}, StringUtil.parseLine("a\\"));
+  }
+
+  @Test
+  void mainDumpsSampleLines() {
+    assertDoesNotThrow(() -> StringUtil.main(new String[0]));
+  }
+
+  @Test
+  void fillTemplateWithNullTemplate() {
+    assertNull(StringUtil.fillTemplate(null, Map.of()));
+  }
+
+  @Test
+  void fillTemplateReplacesMissingKeyWithEmptyString() {
+    assertEquals("Hello !", StringUtil.fillTemplate("Hello ${NAME}!", Map.of()));
+  }
+
+  @Test
+  void fillTemplateWithCustomPattern() {
+    assertEquals(
+        "Hello World", StringUtil.fillTemplate("Hello @NAME@", Map.of("NAME", "World"), StringUtil.atPattern));
+  }
+
+  @Test
+  void joinShorts() {
+    assertNull(StringUtil.join(",", (short[]) null));
+    assertEquals("", StringUtil.join(",", new short[0]));
+    assertEquals("1,2,3", StringUtil.join(",", new short[] {1, 2, 3}));
+  }
+
+  @Test
+  void joinNullArrays() {
+    assertNull(StringUtil.join(",", (Object[]) null));
+    assertNull(StringUtil.join(",", null, 0, 1));
+    assertNull(StringUtil.join(",", (Iterable<?>) null));
+  }
+
+  @Test
+  void joinArrayRange() {
+    assertEquals("b-c", StringUtil.join("-", new Object[] {"a", "b", "c", "d"}, 1, 2));
+  }
+
+  @Test
+  void isNullOrEmpty() {
+    assertTrue(StringUtil.isNullOrEmpty(null));
+    assertTrue(StringUtil.isNullOrEmpty(""));
+    assertFalse(StringUtil.isNullOrEmpty(" "));
+  }
+
+  @Test
+  void jsEncode() {
+    assertEquals("", StringUtil.jsEncode(null));
+    String safe = "safe";
+    assertSame(safe, StringUtil.jsEncode(safe));
+    assertEquals(
+        "\\u003Ca\\u003E\\\\\\\"\\u2028\\u2029\\n\\u0000x",
+        StringUtil.jsEncode("<a>\\\"  \n\u0000x"));
+    assertEquals("42", StringUtil.jsEncode(42));
+  }
+
+  @Test
+  void escapeHtml() {
+    assertEquals("", StringUtil.escapeHtml(null));
+    assertEquals("", StringUtil.escapeHtml(""));
+    assertEquals(
+        "&lt;a href=&quot;x&quot;&gt;Tom &amp; Jerry&#039;s  x&lt;/a&gt;",
+        StringUtil.escapeHtml("<a href=\"x\">Tom & Jerry's\r\nx</a>"));
+  }
+
+  @Test
+  void isJavaReservedWord() {
+    assertTrue(StringUtil.isJavaReservedWord("class"));
+    assertFalse(StringUtil.isJavaReservedWord("clazz"));
+  }
+
+  @Test
+  void capitalize() {
+    assertEquals("Hello", StringUtil.capitalize("hello"));
+    assertEquals("A", StringUtil.capitalize("a"));
+  }
+
+  @Test
+  void enclose() {
+    assertEquals("'abc'", StringUtil.enclose("abc", '\''));
+  }
+
+  @Test
+  void getCachedPatternReturnsSameInstance() {
+    Pattern pattern = StringUtil.getCachedPattern("cached-[0-9]+");
+    assertSame(pattern, StringUtil.getCachedPattern("cached-[0-9]+"));
+  }
+
+  @Test
+  void replaceAllWithNull() {
+    assertNull(StringUtil.replaceAll(null, "a", "b"));
+  }
+
+  @Test
+  void isUUID() {
+    assertTrue(StringUtil.isUUID("123e4567-e89b-12d3-a456-426614174000"));
+    assertFalse(StringUtil.isUUID("123e4567e89b12d3a456426614174000"));
+    assertFalse(StringUtil.isUUID("123e4567xe89b-12d3-a456-426614174000"));
+    assertFalse(StringUtil.isUUID("123e4567-e89bx12d3-a456-426614174000"));
+    assertFalse(StringUtil.isUUID("123e4567-e89b-12d3xa456-426614174000"));
+    assertFalse(StringUtil.isUUID("123e4567-e89b-12d3-a456x426614174000"));
+  }
+
+  @Test
+  void nonNull() {
+    assertEquals("", StringUtil.nonNull(null));
+    assertEquals("a", StringUtil.nonNull("a"));
+  }
+
+  @Test
+  void truncateIfRequiredDoesNotSplitMultiByteCharacters() {
+    String body = "héllo";
+    assertEquals("h", StringUtil.truncateIfRequired(body, 2));
+    assertEquals("hé", StringUtil.truncateIfRequired(body, 3));
+    assertEquals("", StringUtil.truncateIfRequired("é", 1));
+  }
+
+  @Test
+  void truncateIfRequiredLeavesShortOrUnlimitedBodies() {
+    String body = "hello";
+    assertSame(body, StringUtil.truncateIfRequired(body, 10));
+    assertSame(body, StringUtil.truncateIfRequired(body, -1));
+  }
+
+  @Test
+  void sanitizeString() {
+    assertNull(StringUtil.sanitizeString(null));
+    assertEquals(
+        "abcd e f g h😀",
+        StringUtil.sanitizeString(
+            "a\u0000b​c͸d e f g\uD800 h😀"));
+  }
+
+  @Test
+  void maskEmail() {
+    assertNull(StringUtil.maskEmail(null));
+    assertNull(StringUtil.maskEmail(""));
+    assertEquals("*@example.com", StringUtil.maskEmail("a@example.com"));
+    assertEquals("a*@example.com", StringUtil.maskEmail("ab@example.com"));
+    assertEquals("a**@example.com", StringUtil.maskEmail("abc@example.com"));
+    assertEquals("abc***@example.com", StringUtil.maskEmail("abcdef@example.com"));
+  }
+
+  private static BufferedReader readerOf(String text) {
+    return new BufferedReader(new StringReader(text));
   }
 }
