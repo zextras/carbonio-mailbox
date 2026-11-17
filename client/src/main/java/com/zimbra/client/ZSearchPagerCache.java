@@ -42,8 +42,8 @@ class ZSearchPagerCache extends ZEventHandler {
         ZSearchResult result = pager.search(mailbox, page, useCursor);
         return new ZSearchPagerResult(result,
                 page,
-                page >= pager.getNumberOfPages() ?  pager.getNumberOfPages()-1 : page,
-                params.getLimit());
+                page >= pager.getNumberOfPages() ?  pager.getNumberOfPages()-1 : page
+        );
     }
 
 	public synchronized void handleRefresh(ZRefreshEvent refreshEvent, ZMailbox mailbox) throws ServiceException {

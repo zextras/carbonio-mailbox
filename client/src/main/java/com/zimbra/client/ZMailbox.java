@@ -976,7 +976,7 @@ public class ZMailbox implements MailboxStore {
     List<ZTag> tagList = new ArrayList<>();
     if (tags != null) {
       for (Element t : tags.listElements(MailConstants.E_TAG)) {
-        ZTag tag = new ZTag(t, this);
+        ZTag tag = new ZTag(t);
         tagList.add(tag);
       }
     }
@@ -1078,7 +1078,7 @@ public class ZMailbox implements MailboxStore {
         event = new ZCreateSearchFolderEvent(child);
         parentFixup = parentCheck(parentFixup, child, parent);
       } else if (e.getName().equals(MailConstants.E_TAG)) {
-        event = new ZCreateTagEvent(new ZTag(e, this));
+        event = new ZCreateTagEvent(new ZTag(e));
         addTag(((ZCreateTagEvent) event).getTag());
       }
       if (event != null) {
@@ -1502,7 +1502,7 @@ public class ZMailbox implements MailboxStore {
     }
     Element createdTagEl = invoke(req).getElement(MailConstants.E_TAG);
     ZTag tag = getTagById(createdTagEl.getAttribute(MailConstants.A_ID));
-    return tag != null ? tag : new ZTag(createdTagEl, this);
+    return tag != null ? tag : new ZTag(createdTagEl);
   }
 
   /**
@@ -3717,7 +3717,7 @@ public class ZMailbox implements MailboxStore {
 		try {
 			Element response = invoke(newRequestElement(MailConstants.GET_TAG_REQUEST));
 			for (Element t : response.listElements(MailConstants.E_TAG)) {
-				tagList.add(new ZTag(t, this));
+				tagList.add(new ZTag(t));
 			}
 		} catch (SoapFaultException sfe) {
 			if (!sfe.getCode().equals(ServiceException.PERM_DENIED)) {

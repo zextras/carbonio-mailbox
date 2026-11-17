@@ -10,14 +10,10 @@ public class ZSearchPagerResult {
 
     private ZSearchResult mSearchResult;
     private int mActualPage;
-    private int mRequstedPage;
-    private int mLimit;
 
-    ZSearchPagerResult(ZSearchResult result, int requestedPage, int actualPage, int limit) {
+    ZSearchPagerResult(ZSearchResult result, int requestedPage, int actualPage) {
         mSearchResult = result;
         mActualPage = actualPage;
-        mRequstedPage = requestedPage;
-        mLimit = limit;
     }
 
     public ZSearchResult getResult() { return mSearchResult; }

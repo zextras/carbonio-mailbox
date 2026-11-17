@@ -23,7 +23,6 @@ public class ZShare implements ToZJSONObject {
     </share>
      */
 
-    public static final String E_SHARE = "share";
     public static final String E_GRANTEE = "grantee";
     public static final String E_GRANTOR = "grantor";
     public static final String E_LINK = "link";

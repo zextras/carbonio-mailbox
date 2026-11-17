@@ -23,7 +23,6 @@ public class ZTag implements Comparable<ZTag>, ZItem, ZimbraTag, ToZJSONObject {
     private String mId;
     private String mName;
     private int mUnreadCount;
-    private ZMailbox mMailbox;
     private RetentionPolicy mRetentionPolicy = new RetentionPolicy();
 
     public enum Color {
@@ -73,8 +72,7 @@ public class ZTag implements Comparable<ZTag>, ZItem, ZimbraTag, ToZJSONObject {
         Color() {}
     }
 
-    public ZTag(Element e, ZMailbox mailbox) throws ServiceException {
-        mMailbox = mailbox;
+    public ZTag(Element e) throws ServiceException {
         String rgb = e.getAttribute(MailConstants.A_RGB, null);
         // Server reports color or rgb attribute on mail items but not both.
         // If rgb, map the color to the rgb value. If the attr is color, return the value as is.

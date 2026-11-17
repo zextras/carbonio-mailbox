@@ -76,16 +76,9 @@ public class ZAlarm {
 
 		}
 
-    private ZAction mAction;
-    private ParsedDuration mTriggerRelative;
-
-    // SUMMARY (email subject when mAction=EMAIL)
-    private String mSummary;
     private List<ZAttendee> mAttendees;
 
-    private String mDescription;
-
-	public ZAlarm(Element alarmElem) throws ServiceException{
+    public ZAlarm(Element alarmElem) throws ServiceException{
         ZAction action = ZAction.DISPLAY;
         ZTriggerType triggerType = ZTriggerType.RELATIVE;
         ZRelated triggerRelated = null;
@@ -168,20 +161,16 @@ public class ZAlarm {
     }
 
 	public void setAction(ZAction mAction) {
-        this.mAction = mAction;
-    }
+  }
 
 	public void setDescription(String mDescription) {
-        this.mDescription = mDescription;
-    }
+  }
 
 	public void setTriggerRelative(ParsedDuration dur){
-        this.mTriggerRelative = dur;
-    }
+  }
 
 	public void setSummary(String summary){
-        this.mSummary = summary;
-    }
+  }
 
 
 }
