@@ -237,16 +237,6 @@ public abstract class ZimbraHit implements ZimbraQueryHit {
         return true;
     }
 
-    public ImapMessage getImapMessage() throws ServiceException {
-        if (cachedImapMessage == null) {
-            MailItem item = getMailItem();
-            if (item == null) {
-                return null;
-            }
-            cachedImapMessage = new ImapMessage(item);
-        }
-        return cachedImapMessage;
-    }
 
     @Override
     public int getModifiedSequence() throws ServiceException {
@@ -298,15 +288,6 @@ public abstract class ZimbraHit implements ZimbraQueryHit {
         cachedParentId = value;
     }
 
-    /**
-     * Return a comparator which sorts by the sort field, and THEN by the
-     * mail-item-id
-     *
-     * @param sortOrder
-     */
-    static Comparator<ZimbraHit> getSortAndIdComparator(SortBy sortOrder) {
-        return new ZimbraHitSortAndIdComparator(sortOrder);
-    }
 
     private static class ZimbraHitSortAndIdComparator implements Comparator<ZimbraHit> {
         private final SortBy sort;

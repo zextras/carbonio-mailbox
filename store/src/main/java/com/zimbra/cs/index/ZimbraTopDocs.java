@@ -25,16 +25,7 @@ public class ZimbraTopDocs {
         this.maxScore = maxScore;
     }
 
-    public static ZimbraTopDocs create(int totalHits, List<ZimbraScoreDoc> scoreDocs, float maxScore) {
-        return new ZimbraTopDocs(totalHits, scoreDocs, maxScore);
-    }
 
-    /**
-     * Create a ZimbraTopDocs object for search results where scores are not tracked.
-     */
-    public static ZimbraTopDocs create(int totalHits, List<ZimbraScoreDoc> scoreDocs) {
-        return new ZimbraTopDocs(totalHits, scoreDocs, Float.NaN);
-    }
 
     /**
      * Create equivalent ZimbraTopDocs object to a Lucene TopDocs object
@@ -44,12 +35,6 @@ public class ZimbraTopDocs {
                 ZimbraScoreDoc.listFromLuceneScoreDocs(luceneTopDocs.scoreDocs), luceneTopDocs.getMaxScore());
     }
 
-    /**
-     * Returns maximum score encountered or {@link Float#NaN} if scores are not tracked.
-     */
-    public float getMaxScore() {
-        return maxScore;
-    }
 
     /**
      * Returns total number of hits for the query.
@@ -58,12 +43,6 @@ public class ZimbraTopDocs {
         return totalHits;
     }
 
-    /**
-     * Returns top hits for the query.
-     */
-    public List<ZimbraScoreDoc> getScoreDocs() {
-        return scoreDocs;
-    }
 
     /**
      * Returns ScoreDoc at index {@code index}
