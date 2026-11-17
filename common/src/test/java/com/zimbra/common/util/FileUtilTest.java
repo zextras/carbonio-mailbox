@@ -350,28 +350,35 @@ class FileUtilTest {
 
   @Test
   void deleteDirContentsFailsWhenFileCannotBeRemoved() throws IOException {
-    File readOnlyDir = new File(tempDir, "readOnly");
-    assertTrue(readOnlyDir.mkdir());
-    Files.createFile(new File(readOnlyDir, "locked").toPath());
-    assertTrue(readOnlyDir.setWritable(false));
-    try {
-      assertThrows(IOException.class, () -> FileUtil.deleteDirContents(readOnlyDir));
-    } finally {
-      readOnlyDir.setWritable(true);
-    }
+    File dir = new File(tempDir, "dir");
+    assertTrue(dir.mkdir());
+    File locked = undeletable(writeFile("dir/locked", "content"));
+    File directory =
+        new File(dir.getPath()) {
+          @Override
+          public File[] listFiles() {
+            return new File[] {locked};
+          }
+        };
+
+    assertThrows(IOException.class, () -> FileUtil.deleteDirContents(directory));
   }
 
   @Test
-  void deleteDirFailsWhenDirectoryCannotBeRemoved() throws IOException {
-    File readOnlyParent = new File(tempDir, "parent");
-    File child = new File(readOnlyParent, "child");
-    assertTrue(child.mkdirs());
-    assertTrue(readOnlyParent.setWritable(false));
-    try {
-      assertThrows(IOException.class, () -> FileUtil.deleteDir(child));
-    } finally {
-      readOnlyParent.setWritable(true);
-    }
+  void deleteDirFailsWhenDirectoryCannotBeRemoved() {
+    File child = undeletable(new File(tempDir, "child"));
+    assertTrue(child.mkdir());
+
+    assertThrows(IOException.class, () -> FileUtil.deleteDir(child));
+  }
+
+  private static File undeletable(File file) {
+    return new File(file.getPath()) {
+      @Override
+      public boolean delete() {
+        return false;
+      }
+    };
   }
 
   @Test
