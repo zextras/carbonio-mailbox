@@ -23,10 +23,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
-import org.junit.jupiter.api.BeforeAll;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -1248,10 +1249,10 @@ public class DefangFilterTest {
 	 */
 	@Test
 	void testBug100966() throws Exception {
-		String inputString = new String(
-				ByteUtil.getContent(new File(EMAIL_BASE_DIR + "bug_100966.txt")));
-		String expectedResult = new String(
-				ByteUtil.getContent(new File(EMAIL_BASE_DIR + "bug_100966_op.txt")));
+      String inputString = new String(
+          Files.readAllBytes(new File(EMAIL_BASE_DIR + "bug_100966.txt").toPath()));
+      String expectedResult = new String(
+          Files.readAllBytes(new File(EMAIL_BASE_DIR + "bug_100966_op.txt").toPath()));
 		String result = new DefangFilter(false).extractAndSanitizeAsciiData(inputString);
 		assertEquals(result, expectedResult);
 	}

@@ -5,16 +5,10 @@
 
 package com.zimbra.cs.account.ldap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Config;
 import com.zimbra.cs.account.Domain;
@@ -77,7 +71,7 @@ public class LdapGalMapRules {
         for (String rule: rules)
             add(rule);
         // load the correct default group handler class (bug 78755)
-        if (StringUtil.equal(groupHandlerClass, OLD_DEFAULT_GROUPHANDLER)) {
+        if (Objects.equals(groupHandlerClass, OLD_DEFAULT_GROUPHANDLER)) {
             groupHandlerClass = CURRENT_DEFAULT_GROUPHANDLER;
         }
         mGroupHandler = GroupHandler.getHandler(groupHandlerClass);

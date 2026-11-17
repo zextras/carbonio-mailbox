@@ -56,12 +56,7 @@ import com.zimbra.cs.store.StagedBlob;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.cs.util.AccountUtil.AccountAddressMatcher;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -102,11 +97,11 @@ public class Message extends MailItem {
     public boolean equals(Object obj) {
       if (obj instanceof DraftInfo) {
         DraftInfo dInfo = (DraftInfo) obj;
-        return StringUtil.equal(accountId, dInfo.accountId)
-            && StringUtil.equal(identityId, dInfo.identityId)
-            && StringUtil.equal(replyType, dInfo.replyType)
-            && StringUtil.equal(origId, dInfo.origId)
-            && autoSendTime == dInfo.autoSendTime;
+          if (!Objects.equals(accountId, dInfo.accountId)
+              || !Objects.equals(identityId, dInfo.identityId)
+              || !Objects.equals(replyType, dInfo.replyType)) return false;
+          return Objects.equals(origId, dInfo.origId)
+              && autoSendTime == dInfo.autoSendTime;
       }
       return false;
     }
@@ -1435,9 +1430,13 @@ public class Message extends MailItem {
 
   void updateBlobData(MailboxBlob mblob) throws IOException, ServiceException {
     long size = mblob.getSize();
-    if (getSize() == size
-        && StringUtil.equal(getDigest(), mblob.getDigest())
-        && StringUtil.equal(getLocator(), mblob.getLocator())) return;
+    if (getSize() == size) {
+        String s3 = getDigest();
+        if (Objects.equals(s3, mblob.getDigest())) {
+            String s1 = getLocator();
+            if (Objects.equals(s1, mblob.getLocator())) return;
+        }
+    }
 
     mMailbox.updateSize(size - mData.size, true);
     getFolder().updateSize(0, 0, size - mData.size);

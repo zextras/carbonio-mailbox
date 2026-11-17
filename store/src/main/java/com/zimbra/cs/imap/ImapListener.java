@@ -6,16 +6,11 @@
 package com.zimbra.cs.imap;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.primitives.Ints;
 import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.mailbox.BaseFolderInfo;
 import com.zimbra.common.mailbox.BaseItemInfo;
@@ -26,7 +21,6 @@ import com.zimbra.common.mailbox.MailboxStore;
 import com.zimbra.common.mailbox.ZimbraTag;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
-import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.imap.ImapFolder.DirtyMessage;
 import com.zimbra.cs.imap.ImapMessage.ImapMessageSet;
@@ -322,7 +316,7 @@ public abstract class ImapListener extends Session {
                 });
 
                 if (!sflags.isEmpty()) {
-                    mSessionFlags = ArrayUtil.toIntArray(sflags);
+                    mSessionFlags = Ints.toArray(sflags);
                 }
 
                 // kill references to ImapMessage objects, since they'll change after the restore

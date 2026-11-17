@@ -12,7 +12,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInput;
 import java.io.DataOutput;
-import java.io.File;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,17 +44,6 @@ public class ByteUtil {
      */
     public static void putContent(String path, byte[] data) throws IOException {
         Files.write(Paths.get(path), data);
-    }
-
-    /**
-     * read all the content in the specified file and
-     * return as byte array.
-     * @param file file to read
-     * @return content of the file
-     * @throws IOException
-     */
-    public static byte[] getContent(File file) throws IOException {
-        return Files.readAllBytes(file.toPath());
     }
 
     public static int countBytes(InputStream is) throws IOException {
@@ -450,10 +438,6 @@ public class ByteUtil {
 
     public static String encodeLDAPBase64(byte[] data) {
         return Base64.encodeBase64String(data);
-    }
-
-    public static byte[] decodeLDAPBase64(String str) {
-        return Base64.decodeBase64(str);
     }
 
     /**

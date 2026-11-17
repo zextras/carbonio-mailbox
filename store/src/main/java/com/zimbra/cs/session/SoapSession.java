@@ -22,7 +22,6 @@ import com.zimbra.common.soap.SoapTransport.NotificationFormat;
 import com.zimbra.common.soap.ZimbraNamespace;
 import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.Pair;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
@@ -58,6 +57,8 @@ import com.zimbra.soap.ProxyTarget;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.type.PendingFolderModifications;
 import com.zimbra.soap.type.AccountWithModifications;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -451,7 +452,7 @@ public class SoapSession extends Session {
     int getScaledNotificationCount() {
       if (count == -1) {
         count = 0;
-        if (deleted != null) count += StringUtil.countOccurrences(deleted, ',') / 4 + 1;
+        if (deleted != null) count += StringUtils.countMatches(deleted, ',') / 4 + 1;
         if (created != null) count += created.size();
         if (modified != null) count += modified.size();
         if (activities != null) count += activities.size();

@@ -7,12 +7,12 @@ package com.zimbra.cs.account.accesscontrol;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Group;
@@ -80,7 +80,8 @@ public class DiscoverUserRights {
                     // include the entry only if it is the designated target type for the right
                     if ((targetEntry instanceof Account || targetEntry instanceof Group)
                             && (ace.getGranteeType() == GranteeType.GT_USER)) {
-                        if (!StringUtil.equal(this.acct.getId(), ace.getGrantee())) {
+                        String s1 = this.acct.getId();
+                        if (!Objects.equals(s1, ace.getGrantee())) {
                          // bug 75512, if grantee is user, include entry only if grantee is target
                             continue;
                         }

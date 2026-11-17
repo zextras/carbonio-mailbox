@@ -12,7 +12,6 @@ import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Constants;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
@@ -39,14 +38,7 @@ import com.zimbra.cs.service.authenticator.ClientCertAuthenticator;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -1203,8 +1195,8 @@ public class NginxLookupExtension implements ZimbraExtension {
             resp.addHeader(AUTH_SERVER, addr);
             resp.addHeader(AUTH_PORT, port);
             try {
-                if (StringUtil.equal(prov.getDomainByEmailAddr(authUser).getName(),
-                        prov.getConfig().getDefaultDomainName())) {
+                String s1 = prov.getDomainByEmailAddr(authUser).getName();
+                if (Objects.equals(s1, prov.getConfig().getDefaultDomainName())) {
                     resp.addHeader(AUTH_CACHE_ALIAS, "TRUE");
                 } else {
                     resp.addHeader(AUTH_CACHE_ALIAS, "FALSE");

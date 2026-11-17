@@ -5,8 +5,6 @@
 
 package com.zimbra.cs.datasource.imap;
 
-import static com.zimbra.common.util.ArrayUtil.toIntArray;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.primitives.Ints;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.RemoteServiceException;
 import com.zimbra.common.service.ServiceException;
@@ -213,7 +212,7 @@ class ImapFolderSync {
     private void deleteAllMessagesExcept(Collection<Integer> messageIdsToPreserve) throws ServiceException {
         List<Integer> messageIds = mailbox.listItemIds(mailbox.getOperationContext(), MailItem.Type.MESSAGE, tracker.getItemId());
         messageIds.removeAll(messageIdsToPreserve);
-        mailbox.delete(mailbox.getOperationContext(), toIntArray(messageIds), MailItem.Type.MESSAGE, null);
+        mailbox.delete(mailbox.getOperationContext(), Ints.toArray(messageIds), MailItem.Type.MESSAGE, null);
     }
 
     private ImapFolder createRemoteFolderAndTracker(Folder folder) throws IOException, ServiceException {

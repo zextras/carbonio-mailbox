@@ -7,13 +7,13 @@ package com.zimbra.cs.mailbox;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
+import com.google.common.primitives.Ints;
 import com.zimbra.common.mailbox.ACLGrant;
 import com.zimbra.common.mailbox.Color;
 import com.zimbra.common.mailbox.FolderStore;
 import com.zimbra.common.mailbox.ItemIdentifier;
 import com.zimbra.common.mailbox.MailboxStore;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.common.util.ListUtil;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
@@ -28,18 +28,8 @@ import com.zimbra.cs.session.PendingModifications.Change;
 import com.zimbra.cs.session.Session;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.mail.type.RetentionPolicy;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 
 /**
  * @since Aug 18, 2004
@@ -1470,7 +1460,7 @@ public class Folder extends MailItem implements FolderStore {
     // when deleting a folder, need to purge conv cache!
     mMailbox.purge(Type.CONVERSATION);
     // fault modified conversations back in, thereby marking them dirty
-    mMailbox.getItemById(ArrayUtil.toIntArray(info.modifiedIds), Type.CONVERSATION);
+      mMailbox.getItemById(Ints.toArray(info.modifiedIds), Type.CONVERSATION);
     // remove this folder from the cache if needed
     super.purgeCache(info, purgeItem);
   }

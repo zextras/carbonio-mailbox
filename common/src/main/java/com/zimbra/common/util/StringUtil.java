@@ -8,9 +8,6 @@
  */
 package com.zimbra.common.util;
 
-import static org.apache.commons.lang3.Strings.CI;
-import static org.apache.commons.lang3.Strings.CS;
-
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,7 +19,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,7 +26,6 @@ import java.util.regex.Pattern;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.primitives.Shorts;
-import org.apache.commons.lang3.StringUtils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -38,37 +33,6 @@ import com.google.common.collect.Multimap;
  * @author schemers
  */
 public class StringUtil {
-
-    /** A user-friendly version of {@link String#equals(Object)} that handles
-     *  one or both nulls easily. */
-    public static boolean equal(String s1, String s2) {
-        return Objects.equals(s1, s2);
-    }
-
-    /** A user-friendly version of {@link String#equalsIgnoreCase(String)}
-     *  that handles one or both nulls easily. */
-    public static boolean equalIgnoreCase(String s1, String s2) {
-        return CI.equals(s1, s2);
-    }
-
-    /** A user-friendly compareTo that handles one or both nulls easily.
-     * @return 0 if s1 and s2 are equal, value less than 0 if s1 is before s2,
-     *         or value greater than 0 if s1 is after s2; null is considered
-     *         to come before any non-null value */
-    public static int compareTo(String s1, String s2) {
-        return CS.compare(s1, s2);
-    }
-
-    /** Compares two string ignoring case differences.
-     *
-     */
-    public static int compareToIgnoreCase(String s1, String s2) {
-        return CI.compare(s1, s2);
-    }
-
-    public static int countOccurrences(String str, char c) {
-        return StringUtils.countMatches(str, c);
-    }
 
     /** Returns the first instance in {@code str} of any character in {@code
      *  values}, or {@code -1} if no characters from {@code values} appear in
@@ -733,10 +697,6 @@ public class StringUtil {
         return sJavaReservedWords.contains(s);
     }
 
-    public static String capitalize(String s) {
-        return s.substring(0,1).toUpperCase() + s.substring(1);
-    }
-
     public static String enclose(String strToEnclose, char encloseWith) {
         return new StringBuilder().append(encloseWith).append(strToEnclose).append(encloseWith).toString();
     }
@@ -797,10 +757,6 @@ public class StringUtil {
             value.charAt(23) == '-')
             return true;
         return false;
-    }
-
-    public static String nonNull(String s) {
-        return Strings.nullToEmpty(s);
     }
 
     public static String truncateIfRequired(String body, int maxBodyBytes) {

@@ -34,7 +34,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.HeaderConstants;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.DateUtil;
 import com.zimbra.common.util.HttpUtil;
@@ -151,6 +150,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimePart;
 import javax.mail.internet.MimeUtility;
+
+import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONException;
 
 /**
@@ -846,7 +847,7 @@ public final class ToXML {
     }
     if (needToOutput(fields, Change.TAGS)) {
       String[] tags = item.getTags();
-      if (!ArrayUtil.isEmpty(tags) || fields != NOTIFY_FIELDS) {
+        if (!ArrayUtils.isEmpty(tags) || fields != NOTIFY_FIELDS) {
         elem.addAttribute(MailConstants.A_TAG_NAMES, TagUtil.encodeTags(tags));
         if (hasFullAccess(item.getMailbox(), octxt)) {
           elem.addAttribute(MailConstants.A_TAGS, TagUtil.getTagIdString(item));

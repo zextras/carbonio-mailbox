@@ -24,9 +24,11 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.InputStreamWithSize;
 import com.zimbra.common.util.StartOutOfBoundsException;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.mime.Mime;
+import org.apache.commons.lang3.Strings;
+
+import static org.apache.commons.lang3.Strings.CI;
 
 class ImapPartSpecifier {
     static class BinaryDecodingException extends Exception {
@@ -435,8 +437,9 @@ class ImapPartSpecifier {
     }
 
     public boolean isIgnoredExchangeHeader() {
-        return requestedHeaders != null && requestedHeaders.size() == 1 && StringUtil.equalIgnoreCase(requestedHeaders.get(0), "CONTENT-CLASS")
-                && StringUtil.equalIgnoreCase("BODY", command) && StringUtil.equalIgnoreCase("HEADER.FIELDS", modifier);
+        if (requestedHeaders == null || requestedHeaders.size() != 1 || !Strings.CI.equals(requestedHeaders.get(0), "CONTENT-CLASS")
+            || !Strings.CI.equals("BODY", command)) return false;
+        return CI.equals("HEADER.FIELDS", modifier);
     }
 
     @Override

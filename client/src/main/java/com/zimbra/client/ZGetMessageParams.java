@@ -5,7 +5,7 @@
 
 package com.zimbra.client;
 
-import com.zimbra.common.util.StringUtil;
+import java.util.Objects;
 
 public class ZGetMessageParams {
 
@@ -89,13 +89,13 @@ public class ZGetMessageParams {
 
         ZGetMessageParams that = (ZGetMessageParams) obj;
 
-        return this.mNeuterImages == that.mNeuterImages &&
-                this.mRawContent == that.mRawContent &&
-                this.mWantHtml == that.mWantHtml &&
-                this.mMarkRead == that.mMarkRead &&
-                StringUtil.equal(this.mId, that.mId) &&
-                StringUtil.equal(this.mPart, that.mPart) &&
-                this.mMax == that.mMax;
+        if (this.mNeuterImages != that.mNeuterImages ||
+            this.mRawContent != that.mRawContent ||
+            this.mWantHtml != that.mWantHtml ||
+            this.mMarkRead != that.mMarkRead ||
+            !Objects.equals(this.mId, that.mId)) return false;
+        return Objects.equals(this.mPart, that.mPart) &&
+            this.mMax == that.mMax;
     }
 
 }

@@ -11,7 +11,6 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.TreeMultimap;
 import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.DateUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AttributeManager.IDNType;
@@ -26,6 +25,8 @@ import com.zimbra.cs.ephemeral.LdapEntryLocation;
 import com.zimbra.cs.ephemeral.LdapEphemeralStore;
 import com.zimbra.cs.ldap.LdapDateUtil;
 import com.zimbra.cs.util.MemoryUnitUtil;
+import org.apache.commons.codec.binary.Base64;
+
 import java.text.CollationKey;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -370,7 +371,7 @@ public abstract class Entry implements AttributeEntry {
 
   protected byte[] getBinaryAttr(String name, boolean skipEphemeralCheck) {
     String v = getAttr(name, true, skipEphemeralCheck);
-    return v == null ? null : ByteUtil.decodeLDAPBase64(v);
+      return v == null ? null : Base64.decodeBase64(v);
   }
 
   /**
@@ -535,7 +536,7 @@ public abstract class Entry implements AttributeEntry {
     if (values.length > 0) {
       List<byte[]> list = new ArrayList<>();
       for (String value : values) {
-        list.add(ByteUtil.decodeLDAPBase64(value));
+          list.add(Base64.decodeBase64(value));
       }
       return list;
     } else {

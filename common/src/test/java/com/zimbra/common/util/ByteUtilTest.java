@@ -8,25 +8,11 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,7 +35,7 @@ class ByteUtilTest {
   void putAndGetFileContent(@TempDir Path tempDir) throws IOException {
     String path = tempDir.resolve("data.bin").toString();
     ByteUtil.putContent(path, HELLO);
-    assertArrayEquals(HELLO, ByteUtil.getContent(new java.io.File(path)));
+      assertArrayEquals(HELLO, Files.readAllBytes(new File(path).toPath()));
   }
 
   @Test
@@ -243,9 +229,9 @@ class ByteUtilTest {
 
   @Test
   void ldapBase64RoundTrip() {
-    String encoded = ByteUtil.encodeLDAPBase64(HELLO);
+      String encoded = org.apache.commons.codec.binary.Base64.encodeBase64String(HELLO);
     assertEquals(Base64.getEncoder().encodeToString(HELLO), encoded);
-    assertArrayEquals(HELLO, ByteUtil.decodeLDAPBase64(encoded));
+      assertArrayEquals(HELLO, org.apache.commons.codec.binary.Base64.decodeBase64(encoded));
   }
 
   @Test

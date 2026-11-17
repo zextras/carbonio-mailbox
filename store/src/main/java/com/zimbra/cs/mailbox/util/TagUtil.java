@@ -20,10 +20,10 @@ import com.google.common.collect.Sets;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.OperationContext;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class TagUtil {
     private static final String[] NO_TAGS = new String[0];
@@ -155,13 +155,15 @@ public class TagUtil {
     public static boolean tagsMatch(String[] tags1, String[] tags2) {
         if (tags1 == tags2) {
             return true;
-        } else if (ArrayUtil.isEmpty(tags1)) {
-            return ArrayUtil.isEmpty(tags2);
-        } else if (ArrayUtil.isEmpty(tags2)) {
-            return false;
+        } else if (ArrayUtils.isEmpty(tags1)) {
+            return ArrayUtils.isEmpty(tags2);
         } else {
-            Set<String> s1 = Sets.newHashSet(tags1), s2 = Sets.newHashSet(tags2);
-            return s1.size() == s2.size() && !s1.retainAll(s2);
+            if (ArrayUtils.isEmpty(tags2)) {
+                return false;
+            } else {
+                Set<String> s1 = Sets.newHashSet(tags1), s2 = Sets.newHashSet(tags2);
+                return s1.size() == s2.size() && !s1.retainAll(s2);
+            }
         }
     }
 

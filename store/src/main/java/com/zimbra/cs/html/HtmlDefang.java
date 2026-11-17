@@ -16,14 +16,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.file.Files;
 
 import org.apache.xerces.xni.parser.XMLDocumentFilter;
 import org.apache.xerces.xni.parser.XMLInputSource;
 import org.apache.xerces.xni.parser.XMLParserConfiguration;
 import org.cyberneko.html.HTMLConfiguration;
 import org.cyberneko.html.filters.Purifier;
-
-import com.zimbra.common.util.ByteUtil;
 
 public class HtmlDefang extends AbstractDefang
 {
@@ -75,7 +74,7 @@ public class HtmlDefang extends AbstractDefang
     }
 
     public static void main(String[] args) throws IOException {
-        String html = new String(ByteUtil.getContent(new File(args[0])));
+        String html = new String(Files.readAllBytes(new File(args[0]).toPath()));
         HtmlDefang defanger = new HtmlDefang();
         System.out.println(defanger.defang(html, true));
     }

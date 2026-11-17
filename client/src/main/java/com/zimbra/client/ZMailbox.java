@@ -156,19 +156,8 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -3097,7 +3086,8 @@ public class ZMailbox implements MailboxStore {
       folderEl.addAttribute(MailConstants.A_DEFAULT_VIEW, defaultView.name());
     }
     if (color != null) {
-      if (StringUtil.equal(color.getName(), Color.RGBCOLOR)) {
+      String s1 = color.getName();
+      if (Objects.equals(s1, Color.RGBCOLOR)) {
         folderEl.addAttribute(MailConstants.A_RGB, color.getRgbColorValue());
       } else {
         folderEl.addAttribute(MailConstants.A_COLOR, color.getValue());
@@ -3142,7 +3132,8 @@ public class ZMailbox implements MailboxStore {
       throws ServiceException {
     NewSearchFolderSpec spec = NewSearchFolderSpec.forNameQueryAndFolder(name, query, parentId);
     if (color != null) {
-      if (StringUtil.equal(color.getName(), Color.RGBCOLOR)) {
+      String s1 = color.getName();
+      if (Objects.equals(s1, Color.RGBCOLOR)) {
         spec.setRgb(color.getRgbColorValue());
       } else {
         spec.setColor((byte) color.getValue());
@@ -3792,7 +3783,8 @@ public class ZMailbox implements MailboxStore {
       linkEl.addAttribute(MailConstants.A_DEFAULT_VIEW, defaultView.name());
     }
     if (color != null) {
-      if (StringUtil.equal(color.getName(), Color.RGBCOLOR)) {
+      String s1 = color.getName();
+      if (Objects.equals(s1, Color.RGBCOLOR)) {
         linkEl.addAttribute(MailConstants.A_RGB, color.getRgbColorValue());
       } else {
         linkEl.addAttribute(MailConstants.A_COLOR, color.getValue());

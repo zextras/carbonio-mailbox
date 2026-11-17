@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,6 +25,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.Strings;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
 
@@ -492,9 +492,10 @@ public class SoapCommandUtil implements SoapTransport.DebugListener {
         }
 
         // Send request and print response.
-        if (!mType.equals(TYPE_ADMIN) && !StringUtil.isNullOrEmpty(mTargetAccountName) &&
-            !StringUtil.equalIgnoreCase(mAuthAccountName, mTargetAccountName)) {
-            getTransport(false).setTargetAcctName(mTargetAccountName);
+        if (!mType.equals(TYPE_ADMIN) && !StringUtil.isNullOrEmpty(mTargetAccountName)) {
+            if (!Strings.CI.equals(mAuthAccountName, mTargetAccountName)) {
+                getTransport(false).setTargetAcctName(mTargetAccountName);
+            }
         }
         Element response = null;
 

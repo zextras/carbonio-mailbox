@@ -11,7 +11,6 @@ import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ListUtil;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.imap.ImapMessage;
@@ -28,12 +27,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import static org.apache.commons.lang3.Strings.CS;
 
 /**
  * Search related DAO.
@@ -1578,11 +1574,11 @@ public final class DbSearch {
         case NAME_NATURAL_ORDER:
           String s1 = (String) o1.getSortValue();
           String s2 = (String) o2.getSortValue();
-          if (!StringUtil.equal(s1, s2)) {
+            if (!Objects.equals(s1, s2)) {
             if (sort.getDirection() == SortBy.Direction.DESC) {
-              return StringUtil.compareTo(s2, s1);
+                return CS.compare(s2, s1);
             } else {
-              return StringUtil.compareTo(s1, s2);
+                return CS.compare(s1, s2);
             }
           }
           break;

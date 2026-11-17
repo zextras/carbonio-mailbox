@@ -295,18 +295,6 @@ public class FileUtil {
         }
     }
 
-    private static void addDirsRecursively(File dir, List<File> dirs) {
-        File[] myFiles = dir.listFiles();
-        if (myFiles != null) {
-            for (File file : myFiles) {
-                if (file.isDirectory()) {
-                    addDirsRecursively(file, dirs);
-                }
-            }
-        }
-        dirs.add(dir);
-    }
-
     public static void ensureDirExists(File dir) throws IOException {
         if (!mkdirs(dir))
             throw new IOException("Unable to create directory " + dir.getPath());

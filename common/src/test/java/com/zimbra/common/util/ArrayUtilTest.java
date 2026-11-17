@@ -8,71 +8,26 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import com.google.common.primitives.Ints;
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.Test;
 
 class ArrayUtilTest {
 
   @Test
-  void reverseObjectsInPlace() {
-    String[] array = {"a", "b", "c"};
-    assertSame(array, ArrayUtil.reverse(array));
-    assertArrayEquals(new String[] {"c", "b", "a"}, array);
-  }
-
-  @Test
-  void reverseInts() {
-    assertArrayEquals(new int[] {4, 3, 2, 1}, ArrayUtil.reverse(new int[] {1, 2, 3, 4}));
-  }
-
-  @Test
-  void reverseBytes() {
-    assertArrayEquals(new byte[] {3, 2, 1}, ArrayUtil.reverse(new byte[] {1, 2, 3}));
-  }
-
-  @Test
-  void reverseChars() {
-    assertArrayEquals(new char[] {'b', 'a'}, ArrayUtil.reverse(new char[] {'a', 'b'}));
-  }
-
-  @Test
-  void reverseLeavesNullAndSingleElementArrays() {
-    assertNull(ArrayUtil.reverse((String[]) null));
-    assertNull(ArrayUtil.reverse((int[]) null));
-    assertNull(ArrayUtil.reverse((byte[]) null));
-    assertNull(ArrayUtil.reverse((char[]) null));
-    assertArrayEquals(new String[] {"a"}, ArrayUtil.reverse(new String[] {"a"}));
-    assertArrayEquals(new int[] {1}, ArrayUtil.reverse(new int[] {1}));
-    assertArrayEquals(new byte[] {1}, ArrayUtil.reverse(new byte[] {1}));
-    assertArrayEquals(new char[] {'a'}, ArrayUtil.reverse(new char[] {'a'}));
-  }
-
-  @Test
-  void toByteArray() {
-    assertArrayEquals(new byte[] {1, 2}, ArrayUtil.toByteArray(List.of((byte) 1, (byte) 2)));
-  }
-
-  @Test
   void toIntArray() {
-    assertArrayEquals(new int[] {1, 2}, ArrayUtil.toIntArray(List.of(1, 2)));
+      assertArrayEquals(new int[] {1, 2}, Ints.toArray(List.of(1, 2)));
   }
 
   @Test
   void isEmpty() {
-    assertTrue(ArrayUtil.isEmpty(null));
-    assertTrue(ArrayUtil.isEmpty(new Object[0]));
-    assertFalse(ArrayUtil.isEmpty(new Object[] {1}));
-  }
-
-  @Test
-  void byteArrayContains() {
-    ArrayUtil arrayUtil = new ArrayUtil();
-    assertTrue(arrayUtil.byteArrayContains(new byte[] {1, 2, 3}, (byte) 1));
-    assertFalse(arrayUtil.byteArrayContains(new byte[] {1, 2, 3}, (byte) 4));
+      assertTrue(ArrayUtils.isEmpty((Object[]) null));
+      assertTrue(ArrayUtils.isEmpty(new Object[0]));
+      assertFalse(ArrayUtils.isEmpty(new Object[]{1}));
   }
 
   @Test

@@ -12,17 +12,14 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -142,48 +139,48 @@ public class StringUtilTest {
 
   @Test
   void testEqual() {
-    assertEquals(true, StringUtil.equal(null, null));
-    assertEquals(false, StringUtil.equal(null, ""));
-    assertEquals(false, StringUtil.equal("", null));
-    assertEquals(false, StringUtil.equal(null, "  "));
-    assertEquals(false, StringUtil.equal("  ", null));
-    assertEquals(false, StringUtil.equal("abc", " abc "));
-    assertEquals(false, StringUtil.equal(null, "abc"));
-    assertEquals(false, StringUtil.equal("a bc", "abc"));
+      assertEquals(true, Objects.equals(null, null));
+      assertEquals(false, Objects.equals(null, ""));
+      assertEquals(false, Objects.equals("", null));
+      assertEquals(false, Objects.equals(null, "  "));
+      assertEquals(false, Objects.equals("  ", null));
+      assertEquals(false, Objects.equals("abc", " abc "));
+      assertEquals(false, Objects.equals(null, "abc"));
+      assertEquals(false, Objects.equals("a bc", "abc"));
   }
 
   @Test
   void equalIgnoreCase() {
-    assertTrue(StringUtil.equalIgnoreCase(null, null));
-    assertFalse(StringUtil.equalIgnoreCase(null, "a"));
-    assertFalse(StringUtil.equalIgnoreCase("a", null));
-    assertTrue(StringUtil.equalIgnoreCase("ABC", "abc"));
-    assertFalse(StringUtil.equalIgnoreCase("abc", "abd"));
+      assertTrue(Strings.CI.equals(null, null));
+      assertFalse(Strings.CI.equals(null, "a"));
+      assertFalse(Strings.CI.equals("a", null));
+      assertTrue(Strings.CI.equals("ABC", "abc"));
+      assertFalse(Strings.CI.equals("abc", "abd"));
   }
 
   @Test
   void compareToSortsNullFirst() {
-    assertEquals(0, StringUtil.compareTo(null, null));
-    assertEquals(-1, StringUtil.compareTo(null, "a"));
-    assertEquals(1, StringUtil.compareTo("a", null));
-    assertTrue(StringUtil.compareTo("a", "b") < 0);
-    assertTrue(StringUtil.compareTo("B", "a") < 0);
+      assertEquals(0, Strings.CS.compare(null, null));
+      assertEquals(-1, Strings.CS.compare(null, "a"));
+      assertEquals(1, Strings.CS.compare("a", null));
+      assertTrue(Strings.CS.compare("a", "b") < 0);
+      assertTrue(Strings.CS.compare("B", "a") < 0);
   }
 
   @Test
   void compareToIgnoreCaseSortsNullFirst() {
-    assertEquals(0, StringUtil.compareToIgnoreCase(null, null));
-    assertEquals(-1, StringUtil.compareToIgnoreCase(null, "a"));
-    assertEquals(1, StringUtil.compareToIgnoreCase("a", null));
-    assertEquals(0, StringUtil.compareToIgnoreCase("ABC", "abc"));
-    assertTrue(StringUtil.compareToIgnoreCase("a", "B") < 0);
+      assertEquals(0, Strings.CI.compare(null, null));
+      assertEquals(-1, Strings.CI.compare(null, "a"));
+      assertEquals(1, Strings.CI.compare("a", null));
+      assertEquals(0, Strings.CI.compare("ABC", "abc"));
+      assertTrue(Strings.CI.compare("a", "B") < 0);
   }
 
   @Test
   void countOccurrences() {
-    assertEquals(0, StringUtil.countOccurrences(null, 'a'));
-    assertEquals(0, StringUtil.countOccurrences("bcd", 'a'));
-    assertEquals(3, StringUtil.countOccurrences("abaca", 'a'));
+      assertEquals(0, StringUtils.countMatches(null, 'a'));
+      assertEquals(0, StringUtils.countMatches("bcd", 'a'));
+      assertEquals(3, StringUtils.countMatches("abaca", 'a'));
   }
 
   @Test
@@ -451,12 +448,6 @@ public class StringUtilTest {
   }
 
   @Test
-  void capitalize() {
-    assertEquals("Hello", StringUtil.capitalize("hello"));
-    assertEquals("A", StringUtil.capitalize("a"));
-  }
-
-  @Test
   void enclose() {
     assertEquals("'abc'", StringUtil.enclose("abc", '\''));
   }
@@ -482,13 +473,7 @@ public class StringUtilTest {
     assertFalse(StringUtil.isUUID("123e4567-e89b-12d3-a456x426614174000"));
   }
 
-  @Test
-  void nonNull() {
-    assertEquals("", StringUtil.nonNull(null));
-    assertEquals("a", StringUtil.nonNull("a"));
-  }
-
-  @Test
+      @Test
   void truncateIfRequiredDoesNotSplitMultiByteCharacters() {
     String body = "héllo";
     assertEquals("h", StringUtil.truncateIfRequired(body, 2));

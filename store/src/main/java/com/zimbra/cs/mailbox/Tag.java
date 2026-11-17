@@ -16,7 +16,6 @@ import com.google.common.collect.Sets;
 import com.zimbra.common.mailbox.Color;
 import com.zimbra.common.mailbox.ZimbraTag;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.db.DbMailItem;
@@ -24,6 +23,7 @@ import com.zimbra.cs.db.DbTag;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.session.PendingModifications.Change;
 import com.zimbra.soap.mail.type.RetentionPolicy;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * @since Jul 12, 2004
@@ -45,7 +45,7 @@ public class Tag extends MailItem implements ZimbraTag {
         NormalizedTags(Mailbox mbox, String[] tagsFromClient, boolean create, boolean imapVisible) throws ServiceException {
             assert mbox.isTransactionActive() : "cannot instantiate NormalizedTags outside of a transaction";
 
-            if (ArrayUtil.isEmpty(tagsFromClient)) {
+            if (ArrayUtils.isEmpty(tagsFromClient)) {
                 this.tags = NO_TAGS;
             } else {
                 Set<Tag> tlist = Sets.newLinkedHashSet();

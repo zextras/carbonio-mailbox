@@ -8,6 +8,7 @@ package com.zimbra.cs.mailbox.calendar;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -21,7 +22,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapFaultException;
-import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.CliUtil;
 import com.zimbra.cs.mailbox.calendar.tzfixup.XmlFixupRules;
 import com.zimbra.cs.util.SoapCLI;
@@ -99,7 +99,7 @@ public class FixCalendarTZUtil extends SoapCLI {
         if (!ruleFile.exists())
             throw new IOException("Missing rule file " + ruleFile.getAbsolutePath());
 
-        String docStr = new String(ByteUtil.getContent(ruleFile), StandardCharsets.UTF_8);
+        String docStr = new String(Files.readAllBytes(ruleFile.toPath()), StandardCharsets.UTF_8);
         Element tzfixupElem = Element.parseXML(docStr);
         tzfixupElem.detach();
         XmlFixupRules.parseTzFixup(tzfixupElem);  // parse it to make sure it's good
