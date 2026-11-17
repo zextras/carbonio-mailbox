@@ -7,7 +7,6 @@ package com.zimbra.client.event;
 
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.client.ZItem;
 
 public class ZCreateContactEvent extends ZContactEvent implements ZCreateItemEvent {
 
@@ -15,7 +14,4 @@ public class ZCreateContactEvent extends ZContactEvent implements ZCreateItemEve
         super(e);
     }
 
-    public ZItem getItem() throws ServiceException {
-        return null;
-    }
 }

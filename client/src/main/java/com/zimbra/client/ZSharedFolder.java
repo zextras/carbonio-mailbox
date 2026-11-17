@@ -23,11 +23,7 @@ public class ZSharedFolder extends ZFolder {
         this.targetId = targetId;
     }
 
-    public String getTargetId() {
-        return targetId;
-    }
-
-    public ItemIdentifier getTargetItemIdentifier() throws ServiceException {
+	public ItemIdentifier getTargetItemIdentifier() throws ServiceException {
         return new ItemIdentifier(targetId, null);
     }
 

@@ -22,11 +22,8 @@ public class ZSearchPagerResult {
 
     public ZSearchResult getResult() { return mSearchResult; }
     public int getActualPage() { return mActualPage; }
-    public int getRequestedPage() { return mRequstedPage; }
 
-    public int getOffset() { return mLimit * mActualPage; }
-
-    public String toString() {
+	public String toString() {
         return String.format("[ZSearchPagerResult %s]", mActualPage);
     }
 }

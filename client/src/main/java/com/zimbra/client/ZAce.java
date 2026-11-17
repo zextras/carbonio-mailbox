@@ -142,24 +142,8 @@ public class ZAce implements ToZJSONObject {
     public void setGranteeId(String granteeId) {
         mGranteeId = granteeId;
     }
-    
-    public String getPassword() {
-        return mSecret;
-    }
-    
-    public String getAccessKey() {
-        return mSecret;
-    }
 
-    /**
-     * Is this grant a public grant?
-     *
-     */
-    public boolean isPublic() {
-        return this.getGranteeType().equals(ZAce.GranteeType.pub);
-    }
-
-  @Override
+	@Override
     public ObjectNode toObjectNode() {
         ObjectNode jo = JsonNodeFactory.instance.objectNode();
         jo.put("type", mGranteeType.name());

@@ -7,7 +7,6 @@ package com.zimbra.client.event;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.client.ZFolder;
-import com.zimbra.client.ZItem;
 
 public class ZCreateFolderEvent implements ZCreateItemEvent {
 
@@ -17,23 +16,7 @@ public class ZCreateFolderEvent implements ZCreateItemEvent {
         mFolder = folder;
     }
 
-    /**
-     * @return id of created folder
-     * @throws com.zimbra.common.service.ServiceException
-     */
-    public String getId() throws ServiceException {
-        return mFolder.getId();
-    }
-
-    public ZItem getItem() throws ServiceException {
-        return mFolder;
-    }
-
-    public ZFolder getFolder() {
-        return mFolder;
-    }
-    
-    public String toString() {
+	public String toString() {
     	return mFolder.toString();
     }
 }

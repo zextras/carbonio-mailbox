@@ -5,7 +5,6 @@
 
 package com.zimbra.client;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import com.zimbra.common.service.ServiceException;
@@ -47,20 +46,7 @@ class ZSearchPagerCache extends ZEventHandler {
                 params.getLimit());
     }
 
-    public synchronized void clear(String type) {
-        if (type == null) {
-            mSearchPagerCache.clear();
-        } else {
-            Iterator<Map.Entry<ZSearchParams, ZSearchPager>> mi = mSearchPagerCache.entrySet().iterator();
-            while(mi.hasNext()) {
-                ZSearchParams params = mi.next().getKey();
-                if (params.getTypes() != null && params.getTypes().contains(type))
-                    mi.remove();
-            }
-        }
-    }
-    
-    public synchronized void handleRefresh(ZRefreshEvent refreshEvent, ZMailbox mailbox) throws ServiceException {
+	public synchronized void handleRefresh(ZRefreshEvent refreshEvent, ZMailbox mailbox) throws ServiceException {
         // clear cache on a refresh
         mSearchPagerCache.clear();
     }

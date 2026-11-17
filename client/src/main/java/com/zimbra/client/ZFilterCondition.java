@@ -280,93 +280,6 @@ public abstract class ZFilterCondition {
 
     public abstract String toConditionString();
 
-    public static final class ZCommunityRequestsCondition extends ZFilterCondition {
-        private final SimpleOp op;
-
-        public ZCommunityRequestsCondition(SimpleOp op) {
-            this.op = op;
-        }
-
-        ZCommunityRequestsCondition(FilterTest.CommunityRequestsTest test) {
-            this.op = test.isNegative() ? SimpleOp.NOT_IS : SimpleOp.IS;
-        }
-
-        @Override
-        public String getName() {
-            return "community_requests";
-        }
-
-        @Override
-        FilterTest.CommunityRequestsTest toJAXB() {
-            FilterTest.CommunityRequestsTest test = new FilterTest.CommunityRequestsTest();
-            test.setNegative(op == SimpleOp.NOT_IS);
-            return test;
-        }
-
-        @Override
-        public String toConditionString() {
-            return "community_requests" + (op == SimpleOp.IS ? "" : " not");
-        }
-    }
-
-    public static final class ZCommunityContentCondition extends ZFilterCondition {
-        private final SimpleOp op;
-
-        public ZCommunityContentCondition(SimpleOp op) {
-            this.op = op;
-        }
-
-        ZCommunityContentCondition(FilterTest.CommunityContentTest test) {
-            this.op = test.isNegative() ? SimpleOp.NOT_IS : SimpleOp.IS;
-        }
-
-        @Override
-        public String getName() {
-            return "community_content";
-        }
-
-        @Override
-        FilterTest.CommunityContentTest toJAXB() {
-            FilterTest.CommunityContentTest test = new FilterTest.CommunityContentTest();
-            test.setNegative(op == SimpleOp.NOT_IS);
-            return test;
-        }
-
-        @Override
-        public String toConditionString() {
-            return "community_content" + (op == SimpleOp.IS ? "" : " not");
-        }
-    }
-
-    public static final class ZCommunityConnectionsCondition extends ZFilterCondition {
-        private final SimpleOp op;
-
-        public ZCommunityConnectionsCondition(SimpleOp op) {
-            this.op = op;
-        }
-
-        ZCommunityConnectionsCondition(FilterTest.CommunityConnectionsTest test) {
-            this.op = test.isNegative() ? SimpleOp.NOT_IS : SimpleOp.IS;
-        }
-
-        @Override
-        public String getName() {
-            return "community_connections";
-        }
-
-        @Override
-        FilterTest.CommunityConnectionsTest toJAXB() {
-            FilterTest.CommunityConnectionsTest test = new FilterTest.CommunityConnectionsTest();
-            test.setNegative(op == SimpleOp.NOT_IS);
-            return test;
-        }
-
-        @Override
-        public String toConditionString() {
-            return "community_connections" + (op == SimpleOp.IS ? "" : " not");
-        }
-    }
-
     public static final class ZFacebookCondition extends ZFilterCondition {
         private final SimpleOp op;
 
@@ -658,15 +571,7 @@ public abstract class ZFilterCondition {
             return C_ADDRESSBOOK;
         }
 
-        public AddressBookOp getAddressBookOp() {
-            return op;
-        }
-
-        public String getHeader() {
-            return header;
-        }
-
-        @Override
+			@Override
         FilterTest.AddressBookTest toJAXB() {
             FilterTest.AddressBookTest test = new FilterTest.AddressBookTest(header);
             test.setNegative(op == AddressBookOp.NOT_IN);
@@ -750,11 +655,7 @@ public abstract class ZFilterCondition {
         private final boolean caseSensitive;
         private final String text;
 
-        public ZBodyCondition(BodyOp op, String text) {
-            this(op, false, text);
-        }
-
-        public ZBodyCondition(BodyOp op, boolean caseSensitive, String text) {
+			public ZBodyCondition(BodyOp op, boolean caseSensitive, String text) {
             this.op = op;
             this.caseSensitive = caseSensitive;
             this.text = text;
@@ -771,15 +672,7 @@ public abstract class ZFilterCondition {
             return C_BODY;
         }
 
-        public BodyOp getBodyOp() {
-            return op;
-        }
-
-        public boolean isCaseSensitive() {
-            return caseSensitive;
-        }
-
-        public String getText() {
+			public String getText() {
             return text;
         }
 
@@ -819,15 +712,7 @@ public abstract class ZFilterCondition {
             return C_CURRENT_DAY;
         }
 
-        public SimpleOp getOp() {
-            return op;
-        }
-
-        public String getDays() {
-            return days;
-        }
-
-        @Override
+			@Override
         public String toConditionString() {
             return "current_day_of_week " + (op == SimpleOp.IS ? "is " : "not_is ") + days;
         }
@@ -855,43 +740,11 @@ public abstract class ZFilterCondition {
             this.size = test.getSize();
         }
 
-        public SizeOp getSizeOp() {
-            return op;
-        }
-
-        public String getSize() {
+			public String getSize() {
             return size;
         }
 
-        public String getUnits() {
-            String val = getSize();
-            if (val != null) {
-                if (val.endsWith("M")) {
-                    return "M";
-                } else if (val.endsWith("K")) {
-                    return "K";
-                } else if (val.endsWith("G")) {
-                    return "G";
-                }
-            }
-            return "B";
-        }
-
-        public String getSizeNoUnits() {
-            String val = getSize();
-            if (val != null) {
-                if (val.endsWith("M")) {
-                    return val.substring(0, val.length()-1);
-                } else if (val.endsWith("K")) {
-                    return val.substring(0, val.length()-1);
-                } else if (val.endsWith("G")) {
-                    return val.substring(0, val.length()-1);
-                }
-            }
-            return val;
-        }
-
-        @Override
+			@Override
         public String toConditionString() {
             return "size " + op.name().toLowerCase() + " " + ZFilterRule.quotedString(getSize());
         }
@@ -915,12 +768,7 @@ public abstract class ZFilterCondition {
         private final DateOp op;
         private final Date date;
 
-        public ZDateCondition(DateOp op, Date date) {
-            this.op = op;
-            this.date = date;
-        }
-
-        public ZDateCondition(DateOp op, String dateStr) throws ServiceException {
+			public ZDateCondition(DateOp op, String dateStr) throws ServiceException {
             this.op = op;
             try {
                 this.date = new SimpleDateFormat("yyyyMMdd").parse(dateStr);
@@ -934,15 +782,7 @@ public abstract class ZFilterCondition {
             this.date = new Date(test.getDate() * 1000);
         }
 
-        public DateOp getDateOp() {
-            return op;
-        }
-
-        public Date getDate() {
-            return date;
-        }
-
-        public String getDateString() {
+			public String getDateString() {
             return Sieve.DATE_PARSER.format(date);
         }
 
@@ -980,15 +820,7 @@ public abstract class ZFilterCondition {
             this.time = test.getTime();
         }
 
-        public DateOp getDateOp() {
-            return op;
-        }
-
-        public String getTimeStr() {
-            return time;
-        }
-
-        @Override
+			@Override
         public String toConditionString() {
             return "current_time " + op.name().toLowerCase() + " " + time;
         }
@@ -1031,11 +863,7 @@ public abstract class ZFilterCondition {
         private final String headerName;
         private final String value;
 
-        public ZHeaderCondition(String headerName, HeaderOp op, String value) {
-            this(headerName, op, false, value);
-        }
-
-        public ZHeaderCondition(String headerName, HeaderOp op, boolean caseSensitive, String value) {
+			public ZHeaderCondition(String headerName, HeaderOp op, boolean caseSensitive, String value) {
             this.headerName = headerName;
             this.op = op;
             this.caseSensitive = caseSensitive;
@@ -1049,15 +877,7 @@ public abstract class ZFilterCondition {
             this.value = test.getValue();
         }
 
-        public HeaderOp getHeaderOp() {
-            return op;
-        }
-
-        public boolean isCaseSensitive() {
-            return caseSensitive;
-        }
-
-        public String getHeaderName() {
+			public String getHeaderName() {
             return headerName;
         }
 
@@ -1094,11 +914,7 @@ public abstract class ZFilterCondition {
         private final String headerName;
         private final String value;
 
-        public ZMimeHeaderCondition(String headerName, HeaderOp op, String value) {
-            this(headerName, op, false, value);
-        }
-
-        public ZMimeHeaderCondition(String headerName, HeaderOp op, boolean caseSensitive, String value) {
+			public ZMimeHeaderCondition(String headerName, HeaderOp op, boolean caseSensitive, String value) {
             this.headerName = headerName;
             this.op = op;
             this.caseSensitive = caseSensitive;
@@ -1112,15 +928,7 @@ public abstract class ZFilterCondition {
             this.value = test.getValue();
         }
 
-        public HeaderOp getHeaderOp() {
-            return op;
-        }
-
-        public boolean isCaseSensitive() {
-            return caseSensitive;
-        }
-
-        public String getHeaderName() {
+			public String getHeaderName() {
             return headerName;
         }
 
@@ -1167,15 +975,7 @@ public abstract class ZFilterCondition {
             this.value = value;
         }
 
-        public ZAddressCondition(String headerName, Sieve.AddressPart part, HeaderOp op, String value) {
-            this.headerName = headerName;
-            this.part = part;
-            this.op = op;
-            this.caseSensitive = false;
-            this.value = value;
-        }
-
-        ZAddressCondition(FilterTest.AddressTest test) throws ServiceException{
+			ZAddressCondition(FilterTest.AddressTest test) throws ServiceException{
             this.headerName = test.getHeader();
             this.part = Sieve.AddressPart.fromString(test.getPart());
             this.op = HeaderOp.of(Sieve.StringComparison.fromString(test.getStringComparison()), test.isNegative());
@@ -1195,19 +995,7 @@ public abstract class ZFilterCondition {
             return C_ADDRESS;
         }
 
-        public HeaderOp getHeaderOp() {
-            return op;
-        }
-
-        public String getHeaderName() {
-            return headerName;
-        }
-
-        public String getHeaderValue() {
-            return value;
-        }
-
-        @Override
+			@Override
         FilterTest.AddressTest toJAXB() {
             FilterTest.AddressTest test = new FilterTest.AddressTest();
             test.setHeader(headerName);
@@ -1234,11 +1022,7 @@ public abstract class ZFilterCondition {
             this.headerName = test.getHeader();
         }
 
-        public boolean getExists() {
-            return exists;
-        }
-
-        public String getHeaderName() {
+			public String getHeaderName() {
             return headerName;
         }
 
@@ -1271,11 +1055,7 @@ public abstract class ZFilterCondition {
             this.exists = !test.isNegative();
         }
 
-        public boolean getExists() {
-            return exists;
-        }
-
-        @Override
+			@Override
         public String toConditionString() {
             return exists ? "attachment exists" : "attachment not_exists";
         }
@@ -1302,17 +1082,6 @@ public abstract class ZFilterCondition {
             this.invite = isInvite;
         }
 
-        public ZInviteCondition(boolean invite, String method) {
-            this(invite, Collections.singletonList(method));
-        }
-
-        public ZInviteCondition(boolean invite, List<String> methods) {
-            this.invite = invite;
-            if (methods != null) {
-                this.methods.addAll(methods);
-            }
-        }
-
         ZInviteCondition(FilterTest.InviteTest test) {
             this.invite = !test.isNegative();
             this.methods.addAll(test.getMethods());
@@ -1323,11 +1092,7 @@ public abstract class ZFilterCondition {
             Collections.addAll(methods, args);
         }
 
-        public boolean isInvite() {
-            return invite;
-        }
-
-        @Override
+			@Override
         public String toConditionString() {
             StringBuilder buf = new StringBuilder("invite ");
             if (!invite) {

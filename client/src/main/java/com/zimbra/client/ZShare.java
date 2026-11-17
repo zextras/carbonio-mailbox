@@ -11,7 +11,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.XmlParseException;
 import com.zimbra.common.zclient.ZClientException;
-import com.zimbra.client.ZFolder.View;
 
 public class ZShare implements ToZJSONObject {
 
@@ -43,11 +42,7 @@ public class ZShare implements ToZJSONObject {
     private String mVersion;
     private ZShareAction mAction;
 
-    public ZShare() {
-
-    }
-
-    public static ZShare parseXml(String xml) throws ServiceException {
+	public static ZShare parseXml(String xml) throws ServiceException {
         try {
             return new ZShare(Element.parseXML(xml));
         } catch (XmlParseException e) {
@@ -72,17 +67,7 @@ public class ZShare implements ToZJSONObject {
         mAction = ZShareAction.fromString(e.getAttribute(A_ACTION));
     }
 
-    public Element toElement(Element parent) {
-        Element e = parent.addElement(E_SHARE);
-        e.addAttribute(A_VERSION, mVersion);
-        e.addAttribute(A_ACTION, mAction.toString());
-        if (mGrantee != null) mGrantee.toElement(e);
-        if (mGrantor != null) mGrantor.toElement(e);
-        if (mLink != null) return mLink.toElement(e);
-        return e;
-    }
-
-    @Override
+	@Override
     public ObjectNode toObjectNode() {
         ObjectNode zjo = JsonNodeFactory.instance.objectNode();
         if (mVersion != null) zjo.put(A_VERSION, mVersion);
@@ -98,47 +83,7 @@ public class ZShare implements ToZJSONObject {
         return String.format("[ZShare %s]", mGrantor);
     }
 
-    public ZGrantee getGrantee() {
-        return mGrantee;
-    }
-
-    public void setGrantee(ZGrantee grantee) {
-        mGrantee = grantee;
-    }
-
-    public ZGrantor getGrantor() {
-        return mGrantor;
-    }
-
-    public void setGrantor(ZGrantor grantor) {
-        mGrantor = grantor;
-    }
-
-    public ZLink getLink() {
-        return mLink;
-    }
-
-    public void setLink(ZLink link) {
-        mLink = link;
-    }
-
-    public String getVersion() {
-        return mVersion;
-    }
-
-    public void setVersion(String version) {
-        mVersion = version;
-    }
-
-    public ZShareAction getAction() {
-        return mAction;
-    }
-
-    public void setAction(ZShareAction action) {
-        mAction = action;
-    }
-
-    public enum ZShareAction {
+	public enum ZShareAction {
         NEW, EDIT, DELETE, ACCEPT, DECLINE;
 
         public static ZShareAction fromString(String s) throws ServiceException {
@@ -161,49 +106,13 @@ public class ZShare implements ToZJSONObject {
         private String mEmail;
         private String mName;
 
-        public ZGrantInfo() {
-
-        }
-
         public ZGrantInfo(Element e) throws ServiceException {
             mId = e.getAttribute(A_ID);
             mEmail = e.getAttribute(A_EMAIL);
             mName =  e.getAttribute(A_NAME);
         }
 
-        protected Element toElement(Element parent, String name) {
-            Element el = parent.addElement(name);
-            el.addAttribute(A_ID, mId);
-            el.addAttribute(A_EMAIL, mEmail);
-            el.addAttribute(A_NAME, mName);
-            return el;
-        }
-
-        public String getId() {
-            return mId;
-        }
-
-        public void setId(String id) {
-            mId = id;
-        }
-
-        public String getEmail() {
-            return mEmail;
-        }
-
-        public void setEmail(String email) {
-            mEmail = email;
-        }
-
-        public String getName() {
-            return mName;
-        }
-
-        public void setName(String name) {
-            mName = name;
-        }
-
-      @Override
+        @Override
         public ObjectNode toObjectNode() {
             ObjectNode zjo = JsonNodeFactory.instance.objectNode();
             if (mId != null) zjo.put(A_ID, mId);
@@ -219,31 +128,19 @@ public class ZShare implements ToZJSONObject {
     }
 
     public static class ZGrantor extends ZGrantInfo {
-        public ZGrantor() {
 
-        }
-
-        public ZGrantor(Element e) throws ServiceException {
+			public ZGrantor(Element e) throws ServiceException {
             super(e);
         }
 
-        public Element toElement(Element parent) {
-            return super.toElement(parent, E_GRANTOR);
-        }
     }
 
     public static class ZGrantee extends ZGrantInfo {
-        public ZGrantee() {
 
-        }
-
-        public ZGrantee(Element e) throws ServiceException {
+			public ZGrantee(Element e) throws ServiceException {
             super(e);
         }
 
-        public Element toElement(Element parent) {
-            return super.toElement(parent, E_GRANTEE);
-        }
     }
 
     public static class ZLink implements ToZJSONObject {
@@ -253,56 +150,11 @@ public class ZShare implements ToZJSONObject {
         private String mName;
         private String mPermission;
 
-        public ZLink() {
-
-        }
-
-        public ZLink(Element e) throws ServiceException {
+			public ZLink(Element e) throws ServiceException {
             mId = e.getAttribute(A_ID);
             mPermission = e.getAttribute(A_PERM);
             mName =  e.getAttribute(A_NAME);
             mView = ZFolder.View.fromString(e.getAttribute(A_VIEW));
-        }
-
-        protected Element toElement(Element parent) {
-            Element el = parent.addElement(E_LINK);
-            el.addAttribute(A_ID, mId);
-            el.addAttribute(A_NAME, mName);
-            el.addAttribute(A_VIEW, mView.name());
-            el.addAttribute(A_PERM, mPermission);
-            return el;
-        }
-
-        public View getView() {
-            return mView;
-        }
-
-        public void setView(View view) {
-            mView = view;
-        }
-
-        public String getId() {
-            return mId;
-        }
-
-        public void setId(String id) {
-            mId = id;
-        }
-
-        public String getPermission() {
-            return mPermission;
-        }
-
-        public void setPermission(String perm) {
-            mPermission = perm;
-        }
-
-        public String getName() {
-            return mName;
-        }
-
-        public void setName(String name) {
-            mName = name;
         }
 
         @Override

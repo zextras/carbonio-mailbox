@@ -171,17 +171,6 @@ public class ZSearchParams implements ZimbraSearchParams {
     mQuery = query;
   }
 
-  /**
-   * init search params (query, types, sortBy) from a search folder.
-   *
-   * @param folder init from a search folder.
-   */
-  public ZSearchParams(ZSearchFolder folder) {
-    mQuery = folder.getQuery();
-    mTypes = folder.getTypes();
-    mSortBy = folder.getSortBy();
-  }
-
   @Override
   public void setTimeZone(TimeZone tz) {
     this.mTimeZone = tz;
@@ -204,10 +193,6 @@ public class ZSearchParams implements ZimbraSearchParams {
     return mFetch;
   }
 
-  public void setFetch(ZMailbox.Fetch fetch) {
-    mFetch = fetch;
-  }
-
   @Override
   public int getLimit() {
     return mLimit;
@@ -220,14 +205,6 @@ public class ZSearchParams implements ZimbraSearchParams {
 
   public boolean isMarkAsRead() {
     return mMarkAsRead;
-  }
-
-  public void setMarkAsRead(boolean markAsRead) {
-    mMarkAsRead = markAsRead;
-  }
-
-  public void setConvId(String convId) {
-    mConvId = convId;
   }
 
   public String getConvId() {
@@ -246,10 +223,6 @@ public class ZSearchParams implements ZimbraSearchParams {
     return mPreferHtml;
   }
 
-  public void setPeferHtml(boolean preferHtml) {
-    mPreferHtml = preferHtml;
-  }
-
   public String getQuery() {
     return mQuery;
   }
@@ -260,10 +233,6 @@ public class ZSearchParams implements ZimbraSearchParams {
 
   public boolean isRecipientMode() {
     return mRecipientMode;
-  }
-
-  public void setRecipientMode(boolean recipientMode) {
-    mRecipientMode = recipientMode;
   }
 
   public SearchSortBy getSortBy() {
@@ -313,19 +282,6 @@ public class ZSearchParams implements ZimbraSearchParams {
   @Override
   public String toString() {
     return String.format("[ZSearchParams %s]", mQuery == null ? "" : mQuery);
-  }
-
-  /**
-   * by default, text without an operator searches the CONTENT field. By setting the {field} value,
-   * you can control the default operator. Specify any of the text operators that are available in
-   * query.txt, e.g. 'content:' [the default] or 'subject:', etc. The date operators (date, after,
-   * before) and the "item:" operator should not be specified as default fields because of quirks in
-   * the search grammar.
-   *
-   * @param field
-   */
-  public void setField(String field) {
-    mField = field;
   }
 
   public static class Cursor {

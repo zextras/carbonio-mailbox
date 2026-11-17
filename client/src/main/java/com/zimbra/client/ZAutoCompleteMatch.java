@@ -51,11 +51,7 @@ public class ZAutoCompleteMatch {
         mFileAs = e.getAttribute(MailConstants.A_FILEAS, null);
     }
 
-    public ZMailbox getMailbox() {
-        return mMailbox;
-    }
-
-    public String getRanking() {
+	public String getRanking() {
         return mRanking;
     }
 
@@ -67,11 +63,7 @@ public class ZAutoCompleteMatch {
         return mFolderId;
     }
 
-    public ZFolder getFolder() throws ServiceException {
-        return mMailbox.getFolderById(mFolderId);
-    }
-
-    public String getId() {
+	public String getId() {
         return mId;
     }
 
@@ -91,34 +83,6 @@ public class ZAutoCompleteMatch {
         if (mDisplay != null)
             return mDisplay;
         return mEmail;
-    }
-
-    public String getFirstName() {
-        return mFirstName;
-    }
-
-    public String getMiddleName() {
-        return mMiddleName;
-    }
-
-    public String getLastName() {
-        return mLastName;
-    }
-
-    public String getFullName() {
-        return mFullName;
-    }
-
-    public String getNickname() {
-        return mNickname;
-    }
-
-    public String getCompany() {
-        return mCompany;
-    }
-
-    public String getFileAs() {
-        return mFileAs;
     }
 
 	public static class MatchComparator implements Comparator<ZAutoCompleteMatch> {
