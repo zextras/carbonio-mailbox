@@ -83,6 +83,10 @@ public class ZimbraServlet extends HttpServlet {
 
   private static final String PARAM_ALLOWED_PORTS = "allowed.ports";
 
+  /**
+   * Avoids an LDAP search and a DNS lookup per proxy on every request; flushed by {@code zmprov fc
+   * server} and {@code fc all} (see {@link com.zimbra.cs.service.admin.FlushCache}).
+   */
   private static final AtomicReference<ProxyIpsCache> PROXY_IPS_CACHE =
       new AtomicReference<>(
           new ProxyIpsCache(
@@ -637,7 +641,9 @@ public class ZimbraServlet extends HttpServlet {
                                 }
                               })
                           .onFailure(
-                              ex -> ZimbraLog.misc.warn("failed to get proxy IPs, skipping.", ex)));
+                              ex ->
+                                  ZimbraLog.misc.warn(
+                                      "failed to resolve proxy server IP, skipping it", ex)));
           return proxyIps;
         });
   }

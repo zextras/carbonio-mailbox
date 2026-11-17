@@ -18,13 +18,11 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * Keeps the proxy server IPs for a configurable time, so resolving the client IP on every request
- * does not search LDAP for the proxy servers and resolve their hostnames each time.
+ * Caches the proxy server IPs returned by the loader for a configurable time.
  *
- * <p>Once the time to live has passed, the next request reloads the IPs while concurrent requests
- * keep using the previous ones. A failed reload keeps the previous IPs until the time to live
- * passes again. A time to live of zero disables caching. {@code zmprov fc server} (and {@code all})
- * invalidates it.
+ * <p>Once the time to live has passed, the next {@link #get()} reloads them while concurrent calls
+ * keep the previous ones. A failed reload keeps the previous IPs until the time to live passes
+ * again. A time to live of zero disables caching.
  */
 public class ProxyIpsCache {
 
@@ -69,7 +67,7 @@ public class ProxyIpsCache {
       return loader.get().map(List::copyOf).get();
     }
 
-    /** Keeps the previous IPs on failure, so LDAP is not retried on every request. */
+    /** Keeps the previous IPs on failure, so a failing loader is not retried on every get. */
     @Override
     public ListenableFuture<List<String>> reload(String key, List<String> previous) {
       return Futures.immediateFuture(
