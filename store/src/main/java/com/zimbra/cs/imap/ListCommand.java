@@ -21,19 +21,7 @@ public class ListCommand extends AbstractListCommand {
         this.status = status;
     }
 
-    public byte getSelectOptions() {
-        return selectOptions;
-    }
-
-    public byte getReturnOptions() {
-        return returnOptions;
-    }
-
-    public byte getStatus() {
-        return status;
-    }
-
-    @Override
+	@Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();

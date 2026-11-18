@@ -590,10 +590,6 @@ public class DBQueryOperation extends QueryOperation {
     private static final long serialVersionUID = -8616556084756995676L;
     private final int mMaxSize;
 
-    LRUHashMap(int maxSize) {
-      super(maxSize, 0.75f, true);
-      mMaxSize = maxSize;
-    }
 
     LRUHashMap(int maxSize, int tableSize) {
       super(tableSize, 0.75f, true);

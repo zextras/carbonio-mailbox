@@ -5,15 +5,10 @@
 
 package com.zimbra.cs.imap;
 
-import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.util.EhcacheManager;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import org.ehcache.Cache;
 import org.ehcache.spi.loaderwriter.CacheLoadingException;
 import org.ehcache.spi.loaderwriter.CacheWritingException;
@@ -40,51 +35,7 @@ final class EhcacheImapCache implements ImapSessionManager.Cache<String, ImapFol
     if (active) {
       activeCacheUpdateTimes =
           new LinkedHashMap<String, Long>(ACTIVE_CACHE_THRESHOLD, 0.75f, true) {
-            private boolean isExpired(long timestamp) {
-              return (timestamp
-                  < (System.currentTimeMillis()
-                      - (LC.imap_authenticated_max_idle_time.intValue()
-                              * Constants.MILLIS_PER_SECOND
-                          + 5 * Constants.MILLIS_PER_MINUTE)));
-            }
 
-            private boolean removeIfExpired(Cache.Entry<String, Long> entry) {
-              if (isExpired(entry.getValue())) {
-                doRemove(entry.getKey());
-                return true;
-              } else {
-                return false;
-              }
-            }
-
-            private void doRemove(String key) {
-              ZimbraLog.imap.debug("removing expired active cache element %s", key);
-              ehcache.remove(key);
-              remove(key);
-            }
-
-            protected boolean removeEldestEntry(Cache.Entry<String, Long> eldest) {
-              if (removeIfExpired(eldest)) {
-                Set<String> keysToRemove = new HashSet<>();
-                if (size() > ACTIVE_CACHE_THRESHOLD) {
-                  // keep size under threshold when possible - can grow if there are many active
-                  // sessions but will shrink as they 'expire'
-                  for (Entry<String, Long> entry : this.entrySet()) {
-                    if (isExpired(entry.getValue())) {
-                      keysToRemove.add(entry.getKey());
-                    } else {
-                      break;
-                    }
-                  }
-                  for (String key : keysToRemove) {
-                    doRemove(key);
-                  }
-                }
-              }
-              return false; // always return false per LinkedHashMap:
-              // It is permitted for this method to modify the map directly, but if it does so, it
-              // must return false
-            }
           };
     }
   }

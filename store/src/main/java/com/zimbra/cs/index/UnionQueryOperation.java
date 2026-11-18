@@ -134,9 +134,6 @@ public final class UnionQueryOperation extends CombiningQueryOperation {
         }
     }
 
-    QueryTarget getQueryTarget(QueryTarget targetOfParent) {
-        return targetOfParent;
-    }
 
     @Override
     boolean hasNoResults() {

@@ -76,32 +76,7 @@ public final class ZimbraAnalyzer extends Analyzer {
         return SINGLETON;
     }
 
-    /**
-     * A custom Lucene Analyzer is registered with this API, usually by a Zimbra Extension.
-     * <p>
-     * Accounts are configured to use a particular analyzer by setting the "zimbraTextAnalyzer" key in the Account or
-     * COS setting.
-     *
-     * The custom analyzer is assumed to be a stateless single instance (although it can and probably should return a
-     * new TokenStream instance from it's APIs)
-     *
-     * @param name a unique name identifying the Analyzer, it is referenced by Account or COS settings in LDAP
-     * @param analyzer a Lucene analyzer instance which can be used by accounts that are so configured.
-     */
-    public static void registerAnalyzer(String name, Analyzer analyzer) throws ServiceException {
-        if (ANALYZERS.containsKey(name)) {
-            throw ServiceException.FAILURE("Cannot register analyzer: " + name +
-                    " because there is one already registered with that name.", null);
-        }
-        ANALYZERS.put(name, analyzer);
-    }
 
-    /**
-     * Remove a previously-registered custom Analyzer from the system.
-     */
-    public static void unregisterAnalyzer(String name) {
-        ANALYZERS.remove(name);
-    }
 
     public static String getAllTokensConcatenated(String fieldName, String text) {
         return getAllTokensConcatenated(fieldName, new StringReader(text));
@@ -158,9 +133,6 @@ public final class ZimbraAnalyzer extends Analyzer {
         }
     }
 
-    public static final TokenStream getTokenStream(String field, Reader reader) {
-        return SINGLETON.tokenStream(field, reader);
-    }
 
     @Override
     public TokenStream reusableTokenStream(String field, Reader reader) {

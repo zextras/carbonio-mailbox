@@ -36,14 +36,7 @@ abstract class Literal {
     public abstract Blob getBlob() throws IOException, ServiceException;
     public abstract void cleanup();
 
-    public int put(ByteBuffer bb) throws IOException {
-        assert bb.hasArray();
-        int len = put(bb.array(), bb.arrayOffset() + bb.position(), bb.remaining());
-        bb.position(bb.position() + len);
-        return len;
-    }
-
-    protected void checkComplete() {
+	protected void checkComplete() {
         if (remaining() > 0) {
             throw new IllegalStateException("Incomplete literal");
         }

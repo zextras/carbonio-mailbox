@@ -24,16 +24,7 @@ public final class ZimbraScoreDoc {
         this.score = score;
     }
 
-    public static ZimbraScoreDoc create(ZimbraIndexDocumentID documentID, float score) {
-        return new ZimbraScoreDoc(documentID, score);
-    }
 
-    /**
-     * Used when scores are not being used
-     */
-    public static ZimbraScoreDoc create(ZimbraIndexDocumentID documentID) {
-        return new ZimbraScoreDoc(documentID, Float.NaN);
-    }
 
     /**
      * Create equivalent ZimbraScoreDoc object to a Lucene ScoreDoc object
@@ -49,12 +40,6 @@ public final class ZimbraScoreDoc {
         return documentID;
     }
 
-    /**
-     * Returns the score of this document for the query
-     */
-    public float getScore() {
-        return score;
-    }
 
     public static List<ZimbraScoreDoc> listFromLuceneScoreDocs(ScoreDoc[] luceneScoreDocs) {
         if (luceneScoreDocs == null) {

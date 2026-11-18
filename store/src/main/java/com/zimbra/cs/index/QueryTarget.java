@@ -31,15 +31,6 @@ final class QueryTarget {
         return this == UNSPECIFIED || this == LOCAL;
     }
 
-    boolean isCompatible(String targetAcctId) {
-        if (isCompatibleLocal()) {
-            return false;
-        }
-        if (this == REMOTE) {
-            return false;
-        }
-        return target.equals(targetAcctId);
-    }
 
     @Override
     public String toString() {

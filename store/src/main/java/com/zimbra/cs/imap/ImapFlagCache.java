@@ -220,12 +220,7 @@ public class ImapFlagCache implements Iterable<ImapFlagCache.ImapFlag>, java.io.
         return null;
     }
 
-    void clear() {
-        mImapNames.clear();
-        mNames.clear();
-    }
-
-    @Override
+	@Override
     public Iterator<ImapFlag> iterator() {
         return mImapNames.values().iterator();
     }

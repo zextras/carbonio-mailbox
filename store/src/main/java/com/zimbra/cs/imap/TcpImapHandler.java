@@ -176,11 +176,7 @@ final class TcpImapHandler extends ProtocolHandler {
     dropConnection();
   }
 
-  void INFO(String message, Throwable e) {
-    if (ZimbraLog.imap.isInfoEnabled()) ZimbraLog.imap.info(withClientInfo(message), e);
-  }
-
-  void INFO(String message) {
+	void INFO(String message) {
     if (ZimbraLog.imap.isInfoEnabled()) ZimbraLog.imap.info(withClientInfo(message));
   }
 
