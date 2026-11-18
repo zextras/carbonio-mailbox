@@ -36,7 +36,13 @@ public final class LC {
   @Supported
   public static final KnownKey zimbra_log_directory = KnownKey.newKey("${zimbra_home}/log");
 
+  @Supported
+  public static final KnownKey zimbra_index_directory = KnownKey.newKey("${zimbra_home}/index");
+
   public static final KnownKey zimbra_index_disable_perf_counters = KnownKey.newKey(false);
+
+  @Supported
+  public static final KnownKey zimbra_store_directory = KnownKey.newKey("${zimbra_home}/store");
 
   @Supported
   public static final KnownKey zimbra_db_directory = KnownKey.newKey("${zimbra_home}/db");
@@ -57,6 +63,8 @@ public final class LC {
   @Supported
   public static final KnownKey zimbra_mysql_password = KnownKey.newKey("zextras").protect();
 
+  @Supported public static final KnownKey zimbra_mysql_shutdown_timeout = KnownKey.newKey(60);
+
   @Supported
   public static final KnownKey zimbra_ldap_userdn =
       KnownKey.newKey("uid=zimbra,cn=admins,cn=zimbra");
@@ -73,6 +81,12 @@ public final class LC {
 
   @Deprecated
   public static final KnownKey zimbra_attrs_directory = KnownKey.newKey(DEFAULT_ATTRS_DIRECTORY);
+
+  @Supported public static final KnownKey zimbra_user = KnownKey.newKey("zextras");
+
+  @Supported public static final KnownKey zimbra_uid = KnownKey.newKey(-1);
+
+  @Supported public static final KnownKey zimbra_gid = KnownKey.newKey(-1);
 
   @Supported
   public static final KnownKey zimbra_log4j_properties =
@@ -244,6 +258,9 @@ public final class LC {
       KnownKey.newKey("${zimbra_home}/data/ldap/state/run/ldapi");
 
   @Supported public static final KnownKey ldap_master_url = KnownKey.newKey("");
+  public static final KnownKey ldap_bind_url = KnownKey.newKey("");
+
+  @Supported public static final KnownKey ldap_is_master = KnownKey.newKey(false);
 
   @Supported public static final KnownKey ldap_root_password = KnownKey.newKey("zimbra").protect();
 
@@ -275,12 +292,41 @@ public final class LC {
   public static final KnownKey ldap_connect_pool_health_check_max_response_time_millis =
       KnownKey.newKey(30000);
 
+  @Supported public static final KnownKey ldap_replication_password = KnownKey.newKey("zmreplica");
+
+  @Supported public static final KnownKey ldap_postfix_password = KnownKey.newKey("zmpostfix");
+
+  @Supported public static final KnownKey ldap_amavis_password = KnownKey.newKey("zmamavis");
+  public static final KnownKey ldap_nginx_password = KnownKey.newKey("zmnginx");
+
   @Supported public static final KnownKey ldap_starttls_supported = KnownKey.newKey(0);
 
   @Supported public static final KnownKey ldap_starttls_required = KnownKey.newKey(true);
 
   @Supported
   public static final KnownKey zimbra_directory_max_search_result = KnownKey.newKey(5000);
+
+  public static final KnownKey ldap_common_loglevel = KnownKey.newKey(49152);
+  public static final KnownKey ldap_common_require_tls = KnownKey.newKey(0);
+  public static final KnownKey ldap_common_threads = KnownKey.newKey(8);
+  public static final KnownKey ldap_common_toolthreads = KnownKey.newKey(2);
+  public static final KnownKey ldap_common_writetimeout = KnownKey.newKey(360);
+  public static final KnownKey ldap_common_tlsprotocolmin = KnownKey.newKey("3.1");
+  public static final KnownKey ldap_common_tlsciphersuite = KnownKey.newKey("MEDIUM:HIGH");
+  public static final KnownKey ldap_db_envflags = KnownKey.newKey("writemap nometasync");
+  public static final KnownKey ldap_db_maxsize = KnownKey.newKey(85899345920L);
+  public static final KnownKey ldap_db_rtxnsize = KnownKey.newKey(0L);
+  public static final KnownKey ldap_accesslog_maxsize = KnownKey.newKey(85899345920L);
+  public static final KnownKey ldap_accesslog_envflags = KnownKey.newKey("writemap nometasync");
+  public static final KnownKey ldap_overlay_syncprov_checkpoint = KnownKey.newKey("20 10");
+  public static final KnownKey ldap_overlay_syncprov_sessionlog = KnownKey.newKey(10000000L);
+  public static final KnownKey ldap_overlay_accesslog_logpurge =
+      KnownKey.newKey("01+00:00  00+04:00");
+  public static final KnownKey ldap_monitor_mdb = KnownKey.newKey("true");
+  public static final KnownKey ldap_monitor_alert_only = KnownKey.newKey("true");
+  public static final KnownKey ldap_monitor_warning = KnownKey.newKey(80);
+  public static final KnownKey ldap_monitor_critical = KnownKey.newKey(90);
+  public static final KnownKey ldap_monitor_growth = KnownKey.newKey(25);
 
   public static final KnownKey empty_folder_batch_sleep_ms = KnownKey.newKey(1L);
 
@@ -332,17 +378,50 @@ public final class LC {
 
   public static final KnownKey calendar_resource_ldap_search_maxsize = KnownKey.newKey(1000);
 
+  // This value is stored here for use by zmmycnf program. Changing this
+  // setting does not immediately reflect in MySQL server. You will have to,
+  // with abundant precaution, re-generate my.cnf and restart MySQL server for
+  // the change to take effect.
+  @Supported
+  public static final KnownKey mysql_data_directory =
+      KnownKey.newKey("${zimbra_db_directory}/data");
+
+  @Supported public static final KnownKey mysql_mycnf = KnownKey.newKey("/opt/zextras/conf/my.cnf");
+
+  @Supported
+  public static final KnownKey mysql_errlogfile =
+      KnownKey.newKey("/opt/zextras/log/mysql_error.log");
+
   @Supported public static final KnownKey mysql_bind_address = KnownKey.newKey(null);
 
   @Supported public static final KnownKey mysql_port = KnownKey.newKey(7306);
 
   @Supported public static final KnownKey mysql_root_password = KnownKey.newKey("zimbra").protect();
 
+  @Supported public static final KnownKey mysql_memory_percent = KnownKey.newKey(30);
+
+  public static final KnownKey logger_data_directory =
+      KnownKey.newKey("${zimbra_home}/logger/db/data");
   public static final KnownKey logger_zmrrdfetch_port = KnownKey.newKey(10663);
+
+  public static final KnownKey cbpolicyd_log_file =
+      KnownKey.newKey("${zimbra_log_directory}/cbpolicyd.log");
+  public static final KnownKey cbpolicyd_db_file =
+      KnownKey.newKey("${zimbra_home}/data/cbpolicyd/db/cbpolicyd.sqlitedb");
+  public static final KnownKey cbpolicyd_cache_file =
+      KnownKey.newKey("${zimbra_home}/data/cbpolicyd/cbpolicyd.cache");
+  public static final KnownKey cbpolicyd_log_mail = KnownKey.newKey("main");
+  public static final KnownKey cbpolicyd_log_detail = KnownKey.newKey("modules");
 
   @Supported
   public static final KnownKey mailboxd_directory = KnownKey.newKey("${zimbra_home}/mailboxd");
   public static final KnownKey create_db_sql_file = KnownKey.newKey("${mailboxd_directory}/../db/create_database.sql");
+
+  @Supported public static final KnownKey mailboxd_java_heap_size = KnownKey.newKey(null);
+
+  @Supported public static final KnownKey mailboxd_java_heap_new_size_percent = KnownKey.newKey(25);
+
+  @Supported public static final KnownKey mailboxd_thread_stack_size = KnownKey.newKey("256k");
 
   @Supported
   public static final KnownKey mailboxd_java_options =
@@ -393,6 +472,8 @@ public final class LC {
   public static final KnownKey ssl_allow_accept_untrusted_certs = KnownKey.newKey(true);
 
   public static final KnownKey ssl_disable_dh_cipher_suite = KnownKey.newKey(true);
+
+  public static final KnownKey ssl_default_digest = KnownKey.newKey("sha256");
 
   @Supported
   public static final KnownKey zimlet_directory =
@@ -496,6 +577,17 @@ public final class LC {
 
   @Supported public static final KnownKey krb5_debug_enabled = KnownKey.newKey(false);
 
+  @Supported public static final KnownKey zimbra_mtareport_max_users = KnownKey.newKey(50);
+
+  @Supported public static final KnownKey zimbra_mtareport_max_hosts = KnownKey.newKey(50);
+
+  public static final KnownKey zmconfigd_enable_config_restarts = KnownKey.newKey("true");
+  public static final KnownKey zmconfigd_interval = KnownKey.newKey(60);
+  public static final KnownKey zmconfigd_log_level = KnownKey.newKey(3);
+  public static final KnownKey zmconfigd_listen_port = KnownKey.newKey(7171);
+
+  public static final KnownKey zimbra_configrewrite_timeout = KnownKey.newKey(120);
+
   @Supported public static final KnownKey zimbra_mailbox_groups = KnownKey.newKey(100);
 
   /*
@@ -555,6 +647,12 @@ public final class LC {
           1000); // beyond this limit server will not use join in the query while fetching unread
   // items
 
+  public static final KnownKey zmstat_interval = KnownKey.newKey(30);
+  public static final KnownKey zmstat_disk_interval = KnownKey.newKey(6000);
+  public static final KnownKey zmstat_max_retention = KnownKey.newKey(365);
+
+  public static final KnownKey zmstat_df_excludes = KnownKey.newKey("");
+
   public static final KnownKey zimbra_noop_default_timeout = KnownKey.newKey(300);
   public static final KnownKey zimbra_noop_min_timeout = KnownKey.newKey(30);
   public static final KnownKey zimbra_noop_max_timeout = KnownKey.newKey(1200);
@@ -566,6 +664,8 @@ public final class LC {
   public static final KnownKey zimbra_active_waitset_timeout_minutes = KnownKey.newKey(20);
 
   public static final KnownKey zimbra_waitset_max_per_account = KnownKey.newKey(5);
+  public static final KnownKey zmdisklog_warn_threshold = KnownKey.newKey(85);
+  public static final KnownKey zmdisklog_critical_threshold = KnownKey.newKey(95);
 
   // *_disable_timeout settings are here for bug 56458
   // This is a workaround for an issue in Jetty 6.1.22.zc6m when we upgrade
@@ -597,6 +697,14 @@ public final class LC {
   public static final KnownKey zimbra_deregistered_authtoken_queue_size = KnownKey.newKey(5000);
   public static final KnownKey zimbra_jwt_cookie_size_limit = KnownKey.newKey(4096);
   public static final KnownKey zimbra_authtoken_cookie_domain = KnownKey.newKey("");
+  public static final KnownKey zimbra_zmjava_options =
+      KnownKey.newKey(
+          "-Xmx256m"
+              + " -Dhttps.protocols=TLSv1.2,TLSv1.3"
+              + " -Djdk.tls.client.protocols=TLSv1.2,TLSv1.3"
+              + " -Djava.net.preferIPv4Stack=true");
+  public static final KnownKey zimbra_zmjava_java_library_path = KnownKey.newKey("");
+  public static final KnownKey zimbra_zmjava_java_ext_dirs = KnownKey.newKey("");
 
   @Supported @Reloadable
   public static final KnownKey zimbra_enable_text_extraction = KnownKey.newKey(true);
@@ -709,6 +817,8 @@ public final class LC {
   public static final KnownKey shared_mime_info_magic =
       KnownKey.newKey("${zimbra_home}/conf/magic");
 
+  public static final KnownKey xmpp_offline_quota = KnownKey.newKey(100 * 1024);
+
   public static final KnownKey zmailbox_message_cachesize = KnownKey.newKey(1);
 
   @Supported public static final KnownKey contact_ranking_enabled = KnownKey.newKey(true);
@@ -748,7 +858,31 @@ public final class LC {
 
   public static final KnownKey networkaddress_cache_ttl = KnownKey.newKey(60);
 
+  @Supported public static final KnownKey antispam_mysql_enabled = KnownKey.newKey(false);
+  public static final KnownKey antispam_mysql_data_directory =
+      KnownKey.newKey("${zimbra_home}/data/amavisd/mysql/data");
+  public static final KnownKey antispam_mysql_errlogfile =
+      KnownKey.newKey("${zimbra_home}/log/antispam-mysqld.log");
+  public static final KnownKey antispam_mysql_mycnf =
+      KnownKey.newKey("${zimbra_home}/conf/antispam-my.cnf");
+  public static final KnownKey antispam_mysql_host = KnownKey.newKey(null);
+  public static final KnownKey antispam_mysql_port = KnownKey.newKey(7308);
+  public static final KnownKey antispam_mysql_user = KnownKey.newKey("zimbra");
+  public static final KnownKey antispam_mysql_root_password = KnownKey.newKey("");
+  public static final KnownKey antispam_mysql_password = KnownKey.newKey("");
+
+  public static final KnownKey antispam_enable_restarts = KnownKey.newKey(true);
+  public static final KnownKey antispam_enable_rule_updates = KnownKey.newKey(true);
+  public static final KnownKey antispam_enable_rule_compilation = KnownKey.newKey(false);
+
+  public static final KnownKey av_notify_domain = KnownKey.newKey("");
+
   @Supported public static final KnownKey av_notify_user = KnownKey.newKey("");
+  public static final KnownKey postfix_mail_owner = KnownKey.newKey("postfix");
+  public static final KnownKey postfix_setgid_group = KnownKey.newKey("postdrop");
+
+  // LDAP Custom DIT base DN for config branch
+  public static final KnownKey ldap_dit_base_dn_config = KnownKey.newKey("");
 
   @Supported
   public static final KnownKey zmprov_tmp_directory =
@@ -759,6 +893,8 @@ public final class LC {
 
   // Remove this in 8.0.
   public static final KnownKey filter_null_env_sender_for_dsn_redirect = KnownKey.newKey(true);
+
+  public static final KnownKey zimbra_vami_password = KnownKey.newKey("vmware").protect();
 
   public static final KnownKey max_image_size_to_resize = KnownKey.newKey(10 * 1024 * 1024);
 
