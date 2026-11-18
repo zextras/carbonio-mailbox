@@ -3,15 +3,11 @@
 //
 // SPDX-License-Identifier: GPL-2.0-only
 
-/*
- * Created on Feb 17, 2005
- */
 package com.zimbra.cs.service.mail;
 
 import com.zimbra.common.calendar.Geo;
 import com.zimbra.common.calendar.ParsedDateTime;
 import com.zimbra.common.calendar.ParsedDuration;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -19,10 +15,9 @@ import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.Appointment;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.CalendarItem.AlarmData;
+import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.MailServiceException;
-import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mailbox.calendar.InviteInfo;
@@ -30,45 +25,20 @@ import com.zimbra.cs.mailbox.calendar.RecurId;
 import com.zimbra.cs.mailbox.calendar.ZOrganizer;
 import com.zimbra.cs.mailbox.calendar.cache.CacheToXML;
 import com.zimbra.cs.mailbox.calendar.cache.CalSummaryCache;
-import com.zimbra.cs.mailbox.calendar.cache.CalSummaryCache.CalendarDataResult;
 import com.zimbra.cs.mailbox.calendar.cache.CalendarItemData;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
+import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-/**
- * @author tim
- */
-public class GetCalendarItemSummaries extends CalendarRequest {
+final class CalendarItemInstanceEncoder {
 
-  private static Log mLog = LogFactory.getLog(GetCalendarItemSummaries.class);
+  private static Log mLog = LogFactory.getLog(CalendarItemInstanceEncoder.class);
 
-  private static final String[] TARGET_FOLDER_PATH = new String[] {MailConstants.A_FOLDER};
-  private static final String[] RESPONSE_ITEM_PATH = new String[] {};
-
-  @Override
-  protected String[] getProxiedIdPath(Element request) {
-    return TARGET_FOLDER_PATH;
+  private CalendarItemInstanceEncoder() {
   }
-
-  @Override
-  protected boolean checkMountpointProxy(Element request) {
-    return true;
-  }
-
-  @Override
-  protected String[] getResponseItemPath() {
-    return RESPONSE_ITEM_PATH;
-  }
-
-  private static final String DEFAULT_FOLDER = "" + Mailbox.ID_AUTO_INCREMENT;
-
-  private static final long MSEC_PER_DAY = 1000 * 60 * 60 * 24;
-  private static final long MAX_PERIOD_SIZE_IN_DAYS = 200;
 
   static class EncodeCalendarItemResult {
     Element element;
@@ -96,7 +66,7 @@ public class GetCalendarItemSummaries extends CalendarRequest {
       throws ServiceException {
     EncodeCalendarItemResult toRet = new EncodeCalendarItemResult();
     ItemIdFormatter ifmt = new ItemIdFormatter(lc);
-    Account authAccount = getAuthenticatedAccount(lc);
+    Account authAccount = DocumentHandler.getAuthenticatedAccount(lc);
     boolean hidePrivate = !calItem.allowPrivateAccess(authAccount, lc.isUsingAdminPrivileges());
 
     try {
@@ -442,81 +412,5 @@ public class GetCalendarItemSummaries extends CalendarRequest {
     }
 
     return toRet;
-  }
-
-  @Override
-  public Element handle(Element request, Map<String, Object> context) throws ServiceException {
-    ZimbraSoapContext zsc = getZimbraSoapContext(context);
-    Mailbox mbox = getRequestedMailbox(zsc);
-    Account acct = getRequestedAccount(zsc);
-
-    long rangeStart = request.getAttributeLong(MailConstants.A_CAL_START_TIME);
-    long rangeEnd = request.getAttributeLong(MailConstants.A_CAL_END_TIME);
-
-    if (rangeEnd < rangeStart) {
-      throw ServiceException.INVALID_REQUEST("End time must be after Start time", null);
-    }
-
-    long days = (rangeEnd - rangeStart) / MSEC_PER_DAY;
-    if (days > MAX_PERIOD_SIZE_IN_DAYS) {
-      throw ServiceException.INVALID_REQUEST(
-          "Requested range is too large (Maximum " + MAX_PERIOD_SIZE_IN_DAYS + " days)", null);
-    }
-
-    ItemId iidFolder =
-        new ItemId(request.getAttribute(MailConstants.A_FOLDER, DEFAULT_FOLDER), zsc);
-
-    Element response = getResponseElement(zsc);
-
-    OperationContext octxt = getOperationContext(zsc, context);
-
-    if (LC.calendar_cache_enabled.booleanValue()) {
-      ItemIdFormatter ifmt = new ItemIdFormatter(zsc);
-      int folderId = iidFolder.getId();
-      if (folderId != Mailbox.ID_AUTO_INCREMENT) {
-        CalendarDataResult result =
-            mbox.getCalendarSummaryForRange(octxt, folderId, getItemType(), rangeStart, rangeEnd);
-        if (result != null) {
-          for (Iterator<CalendarItemData> itemIter = result.data.calendarItemIterator();
-              itemIter.hasNext(); ) {
-            CalendarItemData calItemData = itemIter.next();
-            int numInstances = calItemData.getNumInstances();
-            if (numInstances > 0) {
-              Element calItemElem =
-                  CacheToXML.encodeCalendarItemData(
-                      zsc, ifmt, calItemData, result.allowPrivateAccess, true);
-              response.addElement(calItemElem);
-            }
-          }
-        }
-      } else {
-        List<CalendarDataResult> calDataResultList =
-            mbox.getAllCalendarsSummaryForRange(octxt, getItemType(), rangeStart, rangeEnd);
-        for (CalendarDataResult result : calDataResultList) {
-          for (Iterator<CalendarItemData> itemIter = result.data.calendarItemIterator();
-              itemIter.hasNext(); ) {
-            CalendarItemData calItemData = itemIter.next();
-            int numInstances = calItemData.getNumInstances();
-            if (numInstances > 0) {
-              Element calItemElem =
-                  CacheToXML.encodeCalendarItemData(
-                      zsc, ifmt, calItemData, result.allowPrivateAccess, true);
-              response.addElement(calItemElem);
-            }
-          }
-        }
-      }
-    } else {
-      Collection<CalendarItem> calItems =
-          mbox.getCalendarItemsForRange(
-              octxt, getItemType(), rangeStart, rangeEnd, iidFolder.getId(), null);
-      for (CalendarItem calItem : calItems) {
-        EncodeCalendarItemResult encoded =
-            encodeCalendarItemInstances(zsc, octxt, calItem, acct, rangeStart, rangeEnd, false);
-        if (encoded.element != null) response.addElement(encoded.element);
-      }
-    }
-
-    return response;
   }
 }
