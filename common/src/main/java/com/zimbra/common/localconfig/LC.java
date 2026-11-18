@@ -504,8 +504,6 @@ public final class LC {
 
   @Supported public static final KnownKey calendar_cache_range_months = KnownKey.newKey(3);
   public static final KnownKey calendar_cache_max_stale_items = KnownKey.newKey(10);
-  public static final KnownKey calendar_exchange_form_auth_url =
-      KnownKey.newKey("/exchweb/bin/auth/owaauth.dll");
   public static final KnownKey calendar_item_get_max_retries = KnownKey.newKey(100);
 
   public static final KnownKey text_attachments_base64 = KnownKey.newKey(true);
