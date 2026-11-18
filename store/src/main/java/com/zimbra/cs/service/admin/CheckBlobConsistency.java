@@ -16,8 +16,6 @@ import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.store.StoreManager;
-import com.zimbra.cs.store.external.ExternalBlobConsistencyChecker;
-import com.zimbra.cs.store.external.ExternalStoreManager;
 import com.zimbra.cs.store.file.BlobConsistencyChecker;
 import com.zimbra.cs.store.file.FileBlobStore;
 import com.zimbra.cs.volume.Volume;
@@ -55,17 +53,7 @@ public final class CheckBlobConsistency extends AdminDocumentHandler {
         Element response = zsc.createElement(AdminConstants.CHECK_BLOB_CONSISTENCY_RESPONSE);
 
         StoreManager sm = StoreManager.getInstance();
-        if (sm instanceof ExternalStoreManager) {
-
-            for (int mboxId : mailboxIds) {
-                ExternalBlobConsistencyChecker checker = new ExternalBlobConsistencyChecker();
-                BlobConsistencyChecker.Results results = checker.check(null, mboxId, checkSize, reportUsedBlobs);
-                if (results.hasInconsistency() || reportUsedBlobs) { //or checking used blobs
-                    Element mboxEl = response.addElement(AdminConstants.E_MAILBOX).addAttribute(AdminConstants.A_ID, mboxId);
-                    results.toElement(mboxEl);
-                }
-            }
-        } else if (sm instanceof FileBlobStore) {
+        if (sm instanceof FileBlobStore) {
 
             // Assemble the list of volumes.
             List<Short> volumeIds = new ArrayList<>();
@@ -102,7 +90,6 @@ public final class CheckBlobConsistency extends AdminDocumentHandler {
                 }
             }
         } else {
-            //neither ExternalStoreManager nor FileBlobStore..some third type we haven't coded for
             throw ServiceException.INVALID_REQUEST(sm.getClass().getName() + " is not supported", null);
         }
         return response;

@@ -762,20 +762,6 @@ public final class LC {
 
   public static final KnownKey max_image_size_to_resize = KnownKey.newKey(10 * 1024 * 1024);
 
-  @Supported
-  public static final KnownKey external_store_local_cache_max_bytes =
-      KnownKey.newKey(1024 * 1024 * 1024); // 1GB
-
-  @Supported
-  public static final KnownKey external_store_local_cache_max_files = KnownKey.newKey(10000);
-
-  @Supported
-  public static final KnownKey external_store_local_cache_min_lifetime =
-      KnownKey.newKey(Constants.MILLIS_PER_MINUTE);
-
-  @Supported
-  public static final KnownKey external_store_delete_max_ioexceptions = KnownKey.newKey(25);
-
   @Supported public static final KnownKey zimbra_listeners_maxsize = KnownKey.newKey(5);
 
   /**
@@ -794,10 +780,6 @@ public final class LC {
   public static final KnownKey public_share_advertising_scope =
       KnownKey.newKey(PUBLIC_SHARE_VISIBILITY.samePrimaryDomain.toString());
 
-  // Triton integration
-  public static final KnownKey triton_store_url = KnownKey.newKey("");
-  public static final KnownKey triton_hash_type = KnownKey.newKey("SHA0");
-  public static final KnownKey triton_upload_buffer_size = KnownKey.newKey(25000);
   public static final KnownKey uncompressed_cache_min_lifetime =
       KnownKey.newKey(Constants.MILLIS_PER_MINUTE);
   public static final KnownKey check_dl_membership_enabled = KnownKey.newKey(true);
