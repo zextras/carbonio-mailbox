@@ -575,34 +575,6 @@ public abstract class CalendarRequest extends MailDocumentHandler {
     return echoElem;
   }
 
-  protected static void sendOrganizerChangeMessage(
-      ZimbraSoapContext zsc,
-      OperationContext octxt,
-      CalendarItem calItem,
-      Account acct,
-      Mailbox mbox,
-      MailSendQueue sendQueue) {
-    try {
-      Account authAccount = getAuthenticatedAccount(zsc);
-      Invite[] invites = calItem.getInvites();
-      for (Invite inv : invites) {
-        List<Address> rcpts = CalendarMailSender.toListFromAttendees(inv.getAttendees());
-        if (!rcpts.isEmpty()) {
-          CalSendData csd = new CalSendData();
-          csd.mInvite = inv;
-          csd.mOrigId = new ItemId(mbox, inv.getMailItemId());
-          csd.mMm =
-              CalendarMailSender.createOrganizerChangeMessage(
-                  acct, authAccount, zsc.isUsingAdminPrivileges(), calItem, csd.mInvite, rcpts);
-          sendCalendarMessageInternal(
-              zsc, octxt, calItem.getFolderId(), acct, mbox, csd, null, false, true, sendQueue);
-        }
-      }
-    } catch (ServiceException e) {
-      ZimbraLog.calendar.warn("Ignoring error while sending organizer change message", e);
-    }
-  }
-
   private static String getAttendeesAddressList(List<ZAttendee> list) {
     StringBuilder sb = new StringBuilder();
     for (ZAttendee a : list) {

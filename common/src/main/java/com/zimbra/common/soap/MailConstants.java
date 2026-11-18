@@ -1054,7 +1054,6 @@ public final class MailConstants {
   public static final String A_APPT_FREEBUSY_EXCLUDE_UID = "excludeUid";
   public static final String A_APPT_TRANSPARENCY = "transp";
   public static final String A_CAL_CLASS = "class";
-  public static final String A_CAL_ALL = "all";
   public static final String A_CAL_ALLDAY = "allDay";
   public static final String A_CAL_DRAFT = "draft";
   public static final String A_CAL_NEVER_SENT = "neverSent";

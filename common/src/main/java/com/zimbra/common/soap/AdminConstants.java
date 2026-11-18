@@ -1044,7 +1044,6 @@ public final class AdminConstants {
   public static final String E_ALIAS = "alias";
   public static final String E_ID = "id";
   public static final String E_MAILBOX = "mbox";
-  public static final String E_NI = "ni";
   public static final String E_VOLUME = "volume";
   public static final String E_PROGRESS = "progress";
   public static final String E_SOAP_URL = "soapURL";
@@ -1313,9 +1312,6 @@ public final class AdminConstants {
   public static final String E_RETENTION_POLICY = "retentionPolicy";
   public static final String E_PURGE = "purge";
   public static final String E_POLICY = "policy";
-
-  // StoreManager verification
-  public static final String A_CHECK_BLOBS = "checkBlobs";
 
   public static final String A_COUNT_ONLY = "countOnly";
 

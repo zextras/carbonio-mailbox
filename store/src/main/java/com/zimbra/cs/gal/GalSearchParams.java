@@ -412,10 +412,6 @@ public class GalSearchParams {
         this.ldapHasMore = ldapHasMore;
     }
 
-    public void setGetCount(boolean getCount) {
-        this.getCount = getCount;
-    }
-
     public boolean isGetCount() {
         return getCount;
     }

@@ -204,8 +204,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public static final String LDAP_AM_SIMPLE = "simple";
   public static final String LDAP_AM_KERBEROS5 = "kerberos5";
 
-  public static final int MAX_ZIMBRA_ID_LEN = 127;
-
   private final List<ProvisioningValidator> validators = new ArrayList<>();
 
   private static volatile Provisioning singleton;
@@ -1591,11 +1589,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract Zimlet getZimlet(String name) throws ServiceException;
 
   public abstract List<Zimlet> listAllZimlets() throws ServiceException;
-
-  public abstract Zimlet createZimlet(String name, Map<String, Object> attrs)
-      throws ServiceException;
-
-  public abstract void deleteZimlet(String name) throws ServiceException;
 
   /**
    * Creates the specified calendar resource. The A_zimbraId and A_uid attributes are automatically

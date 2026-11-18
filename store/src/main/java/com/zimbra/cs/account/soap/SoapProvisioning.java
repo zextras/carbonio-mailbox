@@ -69,7 +69,6 @@ import com.zimbra.soap.account.message.ChangePasswordRequest;
 import com.zimbra.soap.account.message.CreateIdentityRequest;
 import com.zimbra.soap.account.message.CreateIdentityResponse;
 import com.zimbra.soap.account.message.DeleteIdentityRequest;
-import com.zimbra.soap.account.message.EndSessionRequest;
 import com.zimbra.soap.account.message.GetIdentitiesRequest;
 import com.zimbra.soap.account.message.GetIdentitiesResponse;
 import com.zimbra.soap.account.message.ModifyIdentityRequest;
@@ -506,23 +505,6 @@ public class SoapProvisioning extends Provisioning {
     soapAdminAuthenticate(LC.zimbra_ldap_user.value(), LC.zimbra_ldap_password.value());
   }
 
-  public void soapLogOut() throws ServiceException {
-    EndSessionRequest logout = new EndSessionRequest();
-    logout.setLogOff(true);
-    try {
-      invokeJaxb(logout);
-      mAuthTokenExpiration = 0;
-      mAuthTokenLifetime = 0;
-      mAuthToken = null;
-    } catch (ServiceException e) {
-      // do not thrown an exception if the authtoken has already expired
-      if (!ServiceException.AUTH_REQUIRED.equals(e.getCode())
-          && !ServiceException.AUTH_EXPIRED.equals(e.getCode())) {
-        throw ZClientException.CLIENT_ERROR("Failed to log out", e);
-      }
-    }
-  }
-
   private String serverName() {
     try {
       return new URI(mTransport.getURI()).getHost();
@@ -879,12 +861,6 @@ public class SoapProvisioning extends Provisioning {
     return new SoapServer(resp.getServer(), this);
   }
 
-  /** Unsupported */
-  @Override
-  public Zimlet createZimlet(String name, Map<String, Object> attrs) throws ServiceException {
-    throw new UnsupportedOperationException();
-  }
-
   @Override
   public void deleteAccount(String zimbraId) throws ServiceException {
     invokeJaxb(new DeleteAccountRequest(zimbraId));
@@ -928,12 +904,6 @@ public class SoapProvisioning extends Provisioning {
   @Override
   public void deleteServer(String zimbraId) throws ServiceException {
     invokeJaxb(new DeleteServerRequest(zimbraId));
-  }
-
-  /** Unsupported */
-  @Override
-  public void deleteZimlet(String name) throws ServiceException {
-    throw new UnsupportedOperationException();
   }
 
   public static class DelegateAuthResponse {

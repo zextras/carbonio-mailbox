@@ -22,13 +22,6 @@ import com.zimbra.cs.mailbox.MailboxManager;
 public class AccountTestUtil {
     public static final String DEFAULT_PASSWORD = "test123";
 
-    public static boolean accountExists(String userName)
-    throws ServiceException {
-        String address = getAddress(userName);
-        Account account = Provisioning.getInstance().get(AccountBy.name, address);
-        return (account != null);
-    }
-
     /**
      * @return the <code>Account</code>, or <code>null</code> if account does not exist.
      * @throws ServiceException if name is invalid or can't determine the default domain

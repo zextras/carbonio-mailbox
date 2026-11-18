@@ -359,31 +359,6 @@ public abstract class AdminDocumentHandler extends DocumentHandler implements Ad
     }
   }
 
-  protected class AccountHarvestingCheckerUsingCheckRight extends AccountHarvestingCheckerBase {
-    private final AdminRight adminRight;
-    private final Map<String, Object> context;
-
-    public AccountHarvestingCheckerUsingCheckRight(
-        ZimbraSoapContext zsc, Map<String, Object> context, AdminRight right) {
-      super(zsc);
-      this.adminRight = right;
-      this.context = context;
-    }
-
-    @Override
-    protected void doRightsCheck(Account account) throws ServiceException {
-      checkRight(zsc, context, account, adminRight);
-    }
-
-    @Override
-    public void check(Account account, String selectorKey) throws ServiceException {
-      if (hasRight(account, selectorKey)) {
-        return;
-      }
-      throw firstException;
-    }
-  }
-
   protected interface CalResourceHarvestingChecker {
     void check(CalendarResource account, String selectorKey) throws ServiceException;
   }
@@ -527,31 +502,6 @@ public abstract class AdminDocumentHandler extends DocumentHandler implements Ad
         if (hasRight(group, selectorKey)) {
           return;
         }
-      }
-      throw firstException;
-    }
-  }
-
-  protected class GroupHarvestingCheckerUsingCheckRight extends GroupHarvestingCheckerBase {
-    private final AdminRight adminRight;
-    private final Map<String, Object> context;
-
-    public GroupHarvestingCheckerUsingCheckRight(
-        ZimbraSoapContext zsc, Map<String, Object> context, AdminRight right) {
-      super(zsc);
-      this.adminRight = right;
-      this.context = context;
-    }
-
-    @Override
-    protected void doRightsCheck(Group group) throws ServiceException {
-      checkRight(zsc, context, group, adminRight);
-    }
-
-    @Override
-    public void check(Group group, String selectorKey) throws ServiceException {
-      if (hasRight(group, selectorKey)) {
-        return;
       }
       throw firstException;
     }

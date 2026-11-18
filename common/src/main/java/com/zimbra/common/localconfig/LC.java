@@ -486,7 +486,6 @@ public final class LC {
   public static final KnownKey calendar_max_desc_in_metadata = KnownKey.newKey(4096); // 4KB
   public static final KnownKey calendar_freebusy_max_days = KnownKey.newKey(366);
   public static final KnownKey calendar_search_max_days = KnownKey.newKey(400);
-  public static final KnownKey exchange_free_busy_interval_min = KnownKey.newKey(15);
 
   @Supported public static final KnownKey calendar_cache_enabled = KnownKey.newKey(true);
 
@@ -619,7 +618,6 @@ public final class LC {
   public static final KnownKey zimbra_archive_formatter_disable_timeout = KnownKey.newKey(true);
   public static final KnownKey zimbra_csv_formatter_disable_timeout = KnownKey.newKey(true);
   public static final KnownKey zimbra_archive_formatter_search_chunk_size = KnownKey.newKey(4096);
-  public static final KnownKey zimbra_gal_sync_disable_timeout = KnownKey.newKey(true);
 
   // for bug 79865
   /**
@@ -768,9 +766,6 @@ public final class LC {
 
   public static final KnownKey freebusy_queue_directory =
       KnownKey.newKey("${zimbra_home}/fbqueue/");
-  public static final KnownKey freebusy_exchange_cn1 = KnownKey.newKey(null);
-  public static final KnownKey freebusy_exchange_cn2 = KnownKey.newKey(null);
-  public static final KnownKey freebusy_exchange_cn3 = KnownKey.newKey(null);
   public static final KnownKey freebusy_disable_nodata_status = KnownKey.newKey(false);
 
   public static final KnownKey zimbra_lmtp_validate_messages = KnownKey.newKey(true);

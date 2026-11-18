@@ -120,21 +120,6 @@ public abstract class FreeBusyProvider {
       else hopcount += 1;
     }
 
-    public static long offsetInterval(long time, int intervalInMins) {
-      Calendar cal = GregorianCalendar.getInstance();
-      cal.setTimeInMillis(time);
-      int min = cal.get(Calendar.MINUTE);
-      int off = min % intervalInMins;
-      cal.set(Calendar.MINUTE, min - off);
-      return cal.getTimeInMillis();
-    }
-  }
-
-  @SuppressWarnings("serial")
-  public static class FreeBusyUserNotFoundException extends Exception {
-    public FreeBusyUserNotFoundException() {
-      // empty constructor
-    }
   }
 
   public abstract FreeBusyProvider getInstance();
@@ -142,7 +127,7 @@ public abstract class FreeBusyProvider {
   public abstract String getName();
 
   // free/busy lookup from 3rd party system
-  public abstract void addFreeBusyRequest(Request req) throws FreeBusyUserNotFoundException;
+  public abstract void addFreeBusyRequest(Request req);
 
   public abstract List<FreeBusy> getResults();
 
@@ -218,11 +203,8 @@ public abstract class FreeBusyProvider {
       Request req = new Request(requestor, emailAddr, start, end, folder, hopcount);
       boolean succeed = false;
       for (FreeBusyProvider prov : providers) {
-        try {
-          prov.addFreeBusyRequest(req);
-          succeed = true;
-        } catch (FreeBusyUserNotFoundException e) {
-        }
+        prov.addFreeBusyRequest(req);
+        succeed = true;
       }
       if (!succeed) {
         ZimbraLog.fb.error("can't find free/busy provider for user " + emailAddr);
@@ -290,12 +272,6 @@ public abstract class FreeBusyProvider {
     }
     if (acct == null) return null;
     return acct.getName();
-  }
-
-  protected List<FreeBusy> getEmptyList(ArrayList<Request> req) {
-    ArrayList<FreeBusy> ret = new ArrayList<>();
-    for (Request r : req) ret.add(FreeBusy.nodataFreeBusy(r.email, r.start, r.end));
-    return ret;
   }
 
   public FreeBusySyncQueue getSyncQueue() {
