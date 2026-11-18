@@ -11,7 +11,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.fb.ExchangeFreeBusyProvider;
 import java.io.IOException;
 import java.net.ConnectException;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
 import javax.net.ssl.SSLHandshakeException;
@@ -68,15 +67,6 @@ public class Check {
     throw ServiceException.INVALID_REQUEST("must specifiy: " + name, null);
   }
 
-  public static Provisioning.Result checkHostnameResolve(String hostname) {
-    try {
-      InetAddress.getByName(hostname);
-    } catch (UnknownHostException e) {
-      return new Provisioning.Result(STATUS_UNKNOWN_HOST, e, null);
-    }
-    return new Provisioning.Result(STATUS_OK, "", null);
-  }
-
   public static Provisioning.Result checkExchangeAuth(
       ExchangeFreeBusyProvider.ServerInfo sinfo, Account acct) throws ServiceException {
     try {
@@ -105,15 +95,5 @@ public class Check {
     } else {
       return new Provisioning.Result(STATUS_COMMUNICATION_FAILURE, e, dn);
     }
-  }
-
-  private static void testCheckHostnameResolve() {
-    Provisioning.Result r = checkHostnameResolve("slapshot");
-    System.out.println(r);
-  }
-
-  public static void main(String[] args) {
-    testCheckHostnameResolve();
-    // testCheckGal();
   }
 }

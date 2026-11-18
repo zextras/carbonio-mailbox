@@ -48,8 +48,6 @@ public final class MailConstants {
 
   public static final String E_NO_OP_REQUEST = "NoOpRequest";
   public static final String E_NO_OP_RESPONSE = "NoOpResponse";
-  public static final String E_GENERATE_UUID_REQUEST = "GenerateUUIDRequest";
-  public static final String E_GENERATE_UUID_RESPONSE = "GenerateUUIDResponse";
   public static final String E_SEARCH_REQUEST = "SearchRequest";
   public static final String E_SEARCH_RESPONSE = "SearchResponse";
   public static final String E_SEARCH_CONV_REQUEST = "SearchConvRequest";
@@ -221,8 +219,6 @@ public final class MailConstants {
   public static final String E_FULL_AUTO_COMPLETE_REQUEST = "FullAutocompleteRequest";
   public static final String E_FULL_AUTO_COMPLETE_RESPONSE = "FullAutocompleteResponse";
 
-  public static final String E_RANKING_ACTION_REQUEST = "RankingActionRequest";
-  public static final String E_RANKING_ACTION_RESPONSE = "RankingActionResponse";
   public static final String E_GET_SHARE_NOTIFICATIONS_REQUEST = "GetShareNotificationsRequest";
   public static final String E_GET_SHARE_NOTIFICATIONS_RESPONSE = "GetShareNotificationsResponse";
   public static final String E_GET_DATA_SOURCE_USAGE_REQUEST = "GetDataSourceUsageRequest";
@@ -277,8 +273,6 @@ public final class MailConstants {
   public static final QName NO_OP_RESPONSE = QName.get(E_NO_OP_RESPONSE, NAMESPACE);
 
   // UUID generation
-  public static final QName GENERATE_UUID_REQUEST = QName.get(E_GENERATE_UUID_REQUEST, NAMESPACE);
-  public static final QName GENERATE_UUID_RESPONSE = QName.get(E_GENERATE_UUID_RESPONSE, NAMESPACE);
 
   // searching
   public static final QName SEARCH_REQUEST = QName.get(E_SEARCH_REQUEST, NAMESPACE);
@@ -581,9 +575,6 @@ public final class MailConstants {
       QName.get(E_FULL_AUTO_COMPLETE_RESPONSE, NAMESPACE);
 
   // contact ranking mgmt
-  public static final QName RANKING_ACTION_REQUEST = QName.get(E_RANKING_ACTION_REQUEST, NAMESPACE);
-  public static final QName RANKING_ACTION_RESPONSE =
-      QName.get(E_RANKING_ACTION_RESPONSE, NAMESPACE);
 
   // sharing
   public static final QName GET_SHARE_NOTIFICATIONS_REQUEST =

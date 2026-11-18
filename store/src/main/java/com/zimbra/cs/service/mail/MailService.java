@@ -27,7 +27,6 @@ public class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.NO_OP_REQUEST, new NoOp());
 
     // UUID generation
-    dispatcher.registerHandler(MailConstants.GENERATE_UUID_REQUEST, new GenerateUUID());
 
     // searching
     dispatcher.registerHandler(MailConstants.BROWSE_REQUEST, new Browse());
@@ -186,7 +185,6 @@ public class MailService implements DocumentService {
 
     dispatcher.registerHandler(MailConstants.AUTO_COMPLETE_REQUEST, new AutoComplete());
     dispatcher.registerHandler(MailConstants.FULL_AUTO_COMPLETE_REQUEST, new FullAutoComplete());
-    dispatcher.registerHandler(MailConstants.RANKING_ACTION_REQUEST, new RankingAction());
 
     // share
     dispatcher.registerHandler(

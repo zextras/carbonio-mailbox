@@ -102,8 +102,6 @@ public final class AdminConstants {
   public static final String E_GET_SERVER_REQUEST = "GetServerRequest";
   public static final String E_GET_SERVER_RESPONSE = "GetServerResponse";
 
-  public static final String E_GET_SERVER_NIFS_REQUEST = "GetServerNIfsRequest";
-  public static final String E_GET_SERVER_NIFS_RESPONSE = "GetServerNIfsResponse";
 
   public static final String E_MODIFY_SERVER_REQUEST = "ModifyServerRequest";
   public static final String E_MODIFY_SERVER_RESPONSE = "ModifyServerResponse";
@@ -131,8 +129,6 @@ public final class AdminConstants {
   public static final String E_LOCKOUT_MAILBOX_REQUEST = "LockoutMailboxRequest";
   public static final String E_LOCKOUT_MAILBOX_RESPONSE = "LockoutMailboxResponse";
 
-  public static final String E_CHECK_HOSTNAME_RESOLVE_REQUEST = "CheckHostnameResolveRequest";
-  public static final String E_CHECK_HOSTNAME_RESOLVE_RESPONSE = "CheckHostnameResolveResponse";
   public static final String E_CHECK_AUTH_CONFIG_REQUEST = "CheckAuthConfigRequest";
   public static final String E_CHECK_AUTH_CONFIG_RESPONSE = "CheckAuthConfigResponse";
   public static final String E_CHECK_GAL_CONFIG_REQUEST = "CheckGalConfigRequest";
@@ -455,8 +451,6 @@ public final class AdminConstants {
       "DeleteSystemRetentionPolicyResponse";
 
   // StoreManager verification utility
-  public static final String E_VERIFY_STORE_MANAGER_REQUEST = "VerifyStoreManagerRequest";
-  public static final String E_VERIFY_STORE_MANAGER_RESPONSE = "VerifyStoreManagerResponse";
 
   public static final QName PING_REQUEST = QName.get(E_PING_REQUEST, NAMESPACE);
   public static final QName CHECK_HEALTH_REQUEST = QName.get(E_CHECK_HEALTH_REQUEST, NAMESPACE);
@@ -569,10 +563,6 @@ public final class AdminConstants {
   public static final QName GET_SERVER_REQUEST = QName.get(E_GET_SERVER_REQUEST, NAMESPACE);
   public static final QName GET_SERVER_RESPONSE = QName.get(E_GET_SERVER_RESPONSE, NAMESPACE);
 
-  public static final QName GET_SERVER_NIFS_REQUEST =
-      QName.get(E_GET_SERVER_NIFS_REQUEST, NAMESPACE);
-  public static final QName GET_SERVER_NIFS_RESPONSE =
-      QName.get(E_GET_SERVER_NIFS_RESPONSE, NAMESPACE);
 
   public static final QName MODIFY_SERVER_REQUEST = QName.get(E_MODIFY_SERVER_REQUEST, NAMESPACE);
   public static final QName MODIFY_SERVER_RESPONSE = QName.get(E_MODIFY_SERVER_RESPONSE, NAMESPACE);
@@ -603,8 +593,6 @@ public final class AdminConstants {
   public static final QName LOCKOUT_MAILBOX_RESPONSE =
       QName.get(E_LOCKOUT_MAILBOX_RESPONSE, NAMESPACE);
 
-  public static final QName CHECK_HOSTNAME_RESOLVE_REQUEST =
-      QName.get(E_CHECK_HOSTNAME_RESOLVE_REQUEST, NAMESPACE);
   public static final QName CHECK_AUTH_CONFIG_REQUEST =
       QName.get(E_CHECK_AUTH_CONFIG_REQUEST, NAMESPACE);
   public static final QName CHECK_AUTH_CONFIG_RESPONSE =
@@ -1000,10 +988,6 @@ public final class AdminConstants {
       QName.get(E_DELETE_SYSTEM_RETENTION_POLICY_REQUEST, NAMESPACE);
 
   // Store Manager Verifier
-  public static final QName VERIFY_STORE_MANAGER_REQUEST =
-      QName.get(E_VERIFY_STORE_MANAGER_REQUEST, NAMESPACE);
-  public static final QName VERIFY_STORE_MANAGER_RESPONSE =
-      QName.get(E_VERIFY_STORE_MANAGER_RESPONSE, NAMESPACE);
 
   public static final String E_FILTER_RULES = "filterRules";
   public static final String E_FILTER_RULE = "filterRule";
