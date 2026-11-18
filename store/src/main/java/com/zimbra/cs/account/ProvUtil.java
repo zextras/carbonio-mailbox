@@ -19,7 +19,6 @@ import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapHttpTransport.HttpDebugListener;
 import com.zimbra.common.soap.SoapTransport;
-import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.StringUtil;
@@ -49,6 +48,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -62,6 +62,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.hc.client5.http.cookie.BasicCookieStore;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -618,8 +619,8 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
       }
       if (needsBinaryIO(attrMgr, attrName) && v.length() > 0) {
         File file = new File(v);
-        byte[] bytes = ByteUtil.getContent(file);
-        v = ByteUtil.encodeLDAPBase64(bytes);
+          byte[] bytes = Files.readAllBytes(file.toPath());
+          v = Base64.encodeBase64String(bytes);
       }
       StringUtil.addToMultiMap(attrs, n, v);
     }

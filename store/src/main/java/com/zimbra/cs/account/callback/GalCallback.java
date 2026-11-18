@@ -7,9 +7,9 @@ package com.zimbra.cs.account.callback;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AttributeCallback;
 import com.zimbra.cs.account.Domain;
@@ -45,7 +45,7 @@ public class GalCallback extends AttributeCallback {
     public void postModify(CallbackContext context, String attrName, Entry entry) {
         if (entry instanceof Domain) {
             try {
-                if (!StringUtil.equal(oldValue, newValue)) {
+                if (!Objects.equals(oldValue, newValue)) {
                     ((Domain) entry).setGalDefinitionLastModifiedTime(new Date());
                 }
             } catch (ServiceException e) {

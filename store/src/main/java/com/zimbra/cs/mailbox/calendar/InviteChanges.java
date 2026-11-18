@@ -5,14 +5,10 @@
 
 package com.zimbra.cs.mailbox.calendar;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.zimbra.common.calendar.ParsedDateTime;
 import com.zimbra.common.calendar.ParsedDuration;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.mailbox.calendar.Recurrence.IRecurrence;
 
 // Captures differences between two Invite objects
@@ -89,11 +85,13 @@ public class InviteChanges {
 
     private void diffInvites(Invite inv1, Invite inv2) {
         // Subject
-        if (!StringUtil.equal(inv1.getName(), inv2.getName()))
+        String s4 = inv1.getName();
+        if (!Objects.equals(s4, inv2.getName()))
             mChanges |= SUBJECT;
 
         // LOCATION
-        if (!StringUtil.equal(inv1.getLocation(), inv2.getLocation()))
+        String s3 = inv1.getLocation();
+        if (!Objects.equals(s3, inv2.getLocation()))
             mChanges |= LOCATION;
 
         // DTSTART
@@ -102,8 +100,10 @@ public class InviteChanges {
         ParsedDateTime dtStart2 = inv2.getStartTime();
         if (dtStart1 == null || dtStart2 == null)
             dtStartChanged = dtStart1 != dtStart2;
-        else
-            dtStartChanged = !StringUtil.equal(dtStart1.getDateTimePartString(false), dtStart2.getDateTimePartString(false));
+        else {
+            String s1 = dtStart1.getDateTimePartString(false);
+            dtStartChanged = !Objects.equals(s1, dtStart2.getDateTimePartString(false));
+        }
         if (dtStartChanged) {
             mChanges |= TIME;
         } else {
@@ -113,8 +113,10 @@ public class InviteChanges {
             ParsedDateTime dtEnd2 = inv2.getEndTime();
             if (dtEnd1 == null || dtEnd2 == null)
                 dtEndChanged = dtEnd1 != dtEnd2;
-            else
-                dtEndChanged = !StringUtil.equal(dtEnd1.getDateTimePartString(false), dtEnd2.getDateTimePartString(false));
+            else {
+                String s1 = dtEnd1.getDateTimePartString(false);
+                dtEndChanged = !Objects.equals(s1, dtEnd2.getDateTimePartString(false));
+            }
             if (dtEndChanged) {
                 mChanges |= TIME;
             } else {

@@ -7,6 +7,7 @@ package com.zimbra.cs.account;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
@@ -14,7 +15,6 @@ import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ExceptionToString;
 import com.zimbra.common.util.L10nUtil;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
@@ -2428,7 +2428,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
 
     public Result(String status, Exception e, String detail) {
       this.code = status;
-      this.message = ExceptionToString.ToString(e);
+        this.message = Throwables.getStackTraceAsString(e);
       this.detail = detail;
     }
 

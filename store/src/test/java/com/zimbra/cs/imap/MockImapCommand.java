@@ -5,8 +5,7 @@
 
 package com.zimbra.cs.imap;
 
-import com.zimbra.common.util.StringUtil;
-import com.zimbra.cs.imap.ImapCommand;
+import java.util.Objects;
 
 public class MockImapCommand extends ImapCommand {
 
@@ -27,7 +26,8 @@ public class MockImapCommand extends ImapCommand {
             return false;
         }
         MockImapCommand mock = (MockImapCommand) obj;
-        return StringUtil.equal(param1, mock.param1) && StringUtil.equal(param2, mock.param2) && param3 == mock.param3;
+        if (!Objects.equals(param1, mock.param1)) return false;
+        return Objects.equals(param2, mock.param2) && param3 == mock.param3;
     }
 
 }

@@ -11,9 +11,10 @@ import static com.zimbra.cs.account.EmailValidator.validEmailAddress;
 
 import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.DateUtil;
 import com.zimbra.common.util.ZimbraLog;
+import org.apache.commons.codec.binary.Base64;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -90,7 +91,7 @@ public class LdapAttributeInfo {
 				}
 			case TYPE_BINARY:
 			case TYPE_CERTIFICATE:
-				byte[] binary = ByteUtil.decodeLDAPBase64(value);
+          byte[] binary = Base64.decodeBase64(value);
 				if (binary.length > attributeInfo.getmMax()) {
 					throw AccountServiceException.INVALID_ATTR_VALUE(
 							attributeInfo.getName() + " value length(" + binary.length + ") larger than max allowed: " + attributeInfo.getmMax(), null);

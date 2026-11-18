@@ -22,6 +22,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimePart;
 import javax.mail.internet.MimePartDataSource;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 
 import com.google.common.base.Strings;
@@ -320,7 +321,7 @@ public class CreateContact extends MailDocumentHandler  {
                 // No other validation is done here.
                 CertificateFactory factory = CertificateFactory.getInstance(SmimeConstants.PUB_CERT_TYPE);
                 factory.generateCertificate(new ByteArrayInputStream(certBytes));
-                result = ByteUtil.encodeLDAPBase64(certBytes);
+                result = Base64.encodeBase64String(certBytes);
             } catch (IOException | CertificateException e) {
                 ZimbraLog.contact.error("Exception in adding user certificate with aid=%s for account %s", attachId,
                     zsc.getRequestedAccountId());

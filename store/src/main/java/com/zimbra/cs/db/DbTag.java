@@ -21,7 +21,6 @@ import com.google.common.collect.Lists;
 import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.mailbox.Color;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.mailbox.Flag;
@@ -35,6 +34,7 @@ import com.zimbra.cs.mailbox.Metadata;
 import com.zimbra.cs.mailbox.RetentionPolicyManager;
 import com.zimbra.cs.mailbox.Tag;
 import com.zimbra.soap.mail.type.RetentionPolicy;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class DbTag {
     public static final String TABLE_TAG = "tag";
@@ -349,7 +349,7 @@ public class DbTag {
     }
 
     static void storeTagReferences(Mailbox mbox, int itemId, MailItem.Type type, String[] tags) throws ServiceException {
-        if (!type.isLeafNode() || ArrayUtil.isEmpty(tags))
+        if (!type.isLeafNode() || ArrayUtils.isEmpty(tags))
             return;
 
         DbConnection conn = mbox.getOperationConnection();

@@ -21,7 +21,6 @@ import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
@@ -29,6 +28,7 @@ import com.zimbra.cs.rmgmt.RemoteCommands;
 import com.zimbra.cs.rmgmt.RemoteManager;
 import com.zimbra.cs.rmgmt.RemoteResult;
 import com.zimbra.soap.ZimbraSoapContext;
+import org.apache.commons.lang3.Strings;
 
 /**
  * @author Greg Solovyev
@@ -47,15 +47,17 @@ public class GetServerNIFs extends AdminDocumentHandler {
 
 		String ipAddressType = request.getAttribute(AdminConstants.A_TYPE, null);
 		boolean ipV4 = false, ipV6 = false;
-		if (StringUtil.equalIgnoreCase(ipAddressType, IPV6)) {
-			ipV6 = true;
-		} else if (StringUtil.equalIgnoreCase(ipAddressType, "both")) {
-			ipV4 = true;
+      if (Strings.CI.equals(ipAddressType, IPV6)) {
 			ipV6 = true;
 		} else {
-			// ipv4 is the default type
-			ipV4 = true;
-		}
+          if (Strings.CI.equals(ipAddressType, "both")) {
+        ipV4 = true;
+        ipV6 = true;
+        } else {
+        // ipv4 is the default type
+        ipV4 = true;
+        }
+    }
 	    Element serverEl = request.getElement(AdminConstants.E_SERVER);
 	    String method = serverEl.getAttribute(AdminConstants.A_BY);
 	    String serverName = serverEl.getText();

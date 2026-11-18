@@ -12,10 +12,10 @@ import com.zimbra.common.mailbox.ZimbraFetchMode;
 import com.zimbra.common.mailbox.ZimbraSearchParams;
 import com.zimbra.common.mailbox.ZimbraSortBy;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.zclient.ZClientException;
 import com.zimbra.soap.type.SearchSortBy;
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -134,10 +134,10 @@ public class ZSearchParams implements ZimbraSearchParams {
         || this.mCalExpandInstEnd != that.mCalExpandInstEnd
         || this.mInDumpster != that.mInDumpster) return false;
 
-    if (!StringUtil.equal(this.mTypes, that.mTypes)
-        || !StringUtil.equal(this.mQuery, that.mQuery)
-        || !StringUtil.equal(this.mConvId, that.mConvId)
-        || !StringUtil.equal(this.mField, that.mField)) return false;
+      if (!Objects.equals(this.mTypes, that.mTypes)
+        || !Objects.equals(this.mQuery, that.mQuery)
+        || !Objects.equals(this.mConvId, that.mConvId)
+        || !Objects.equals(this.mField, that.mField)) return false;
 
     if ((this.mTimeZone == null && that.mTimeZone != null)
         || (this.mTimeZone != null && !this.mTimeZone.equals(that.mTimeZone))) return false;
@@ -320,8 +320,8 @@ public class ZSearchParams implements ZimbraSearchParams {
       if (obj == this) return true;
       if (!(obj instanceof Cursor)) return false;
       Cursor that = (Cursor) obj;
-      if (!StringUtil.equal(this.mPreviousId, that.mPreviousId)) return false;
-      if (!StringUtil.equal(this.mPreviousSortValue, that.mPreviousSortValue)) return false;
+        if (!Objects.equals(this.mPreviousId, that.mPreviousId)) return false;
+        if (!Objects.equals(this.mPreviousSortValue, that.mPreviousSortValue)) return false;
       return true;
     }
 

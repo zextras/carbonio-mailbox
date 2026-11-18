@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+
 import jline.ConsoleReader;
 import jline.ConsoleReaderInputStream;
 import jline.History;
@@ -84,7 +86,9 @@ public class CliUtil {
    */
   public static Option getOption(CommandLine cl, String name) {
     for (Option opt : cl.getOptions()) {
-      if (StringUtil.equal(opt.getOpt(), name) || StringUtil.equal(opt.getLongOpt(), name)) {
+        String s1 = opt.getLongOpt();
+        String s3 = opt.getOpt();
+        if (Objects.equals(s3, name) || Objects.equals(s1, name)) {
         return opt;
       }
     }

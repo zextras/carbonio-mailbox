@@ -92,6 +92,7 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.Strings;
 
 /**
  * @author schemers
@@ -1391,7 +1392,7 @@ public class ZMailboxUtil implements DebugListener {
     stdout.format(
         "mailbox: %s, size: %s, messages: %d, unread: %d%n",
         mMbox.getName(), ByteSizeFormatter.format(mMbox.getSize()), s.numMessages, s.numUnread);
-    if (StringUtil.equalIgnoreCase(mTargetAccountName, mAuthAccountName)
+    if (Strings.CI.equals(mTargetAccountName, mAuthAccountName)
         || !StringUtil.isNullOrEmpty(mAuthAccountName)) {
       stdout.format("authenticated as %s%n", mAuthAccountName);
     } else {

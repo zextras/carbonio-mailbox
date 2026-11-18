@@ -8,16 +8,7 @@ package com.zimbra.cs.filter;
 import static com.zimbra.cs.filter.JsieveConfigMapHandler.CAPABILITY_VARIABLES;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -417,12 +408,15 @@ public final class FilterUtil {
                 Enumeration enumeration = mimeMessage.getAllHeaders();
                 while (enumeration.hasMoreElements()) {
                     Header header = (Header) enumeration.nextElement();
-                    if (StringUtil.equal(header.getName(), HEADER_FORWARDED)) {
+                    String s4 = header.getName();
+                    if (Objects.equals(s4, HEADER_FORWARDED)) {
                         continue;
                     }
 
-                    if (StringUtil.equal(header.getName(), HEADER_CONTENT_TYPE)
-                        || StringUtil.equal(header.getName(), HEADER_CONTENT_DISPOSITION))  {
+                    String s1 = header.getName();
+                    String s3 = header.getName();
+                    if (Objects.equals(s3, HEADER_CONTENT_TYPE)
+                        || Objects.equals(s1, HEADER_CONTENT_DISPOSITION))  {
                         // Zimbra Mime parser will add the correct Content Type if absent
                         continue;
                     }
@@ -436,7 +430,7 @@ public final class FilterUtil {
                     if ("Subject".equalsIgnoreCase(header)) {
                         copySubject = true;
                     }
-                    if (StringUtil.equal(header, HEADER_FORWARDED)) {
+                    if (Objects.equals(header, HEADER_FORWARDED)) {
                         continue;
                     }
                     String[] hdrVals = mimeMessage.getHeader(header);
@@ -779,7 +773,7 @@ public final class FilterUtil {
             if (HEADER_FORWARDED.equals(header)) {
                 String[] forwards = Mime.getHeaders(msg, HEADER_FORWARDED);
                 for (String forward : forwards) {
-                    if (StringUtil.equal(userName, forward)) {
+                    if (Objects.equals(userName, forward)) {
                         return true;
                     }
                 }
