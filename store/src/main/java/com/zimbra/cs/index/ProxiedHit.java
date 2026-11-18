@@ -112,10 +112,6 @@ public class ProxiedHit extends ZimbraHit {
     return true;
   }
 
-  String getFragment() {
-    Element frag = element.getOptionalElement(MailConstants.E_FRAG);
-    return frag != null ? frag.getText() : "";
-  }
 
   @Override
   String getName() throws ServiceException {
@@ -127,9 +123,6 @@ public class ProxiedHit extends ZimbraHit {
     return element.toString();
   }
 
-  public String getServer() {
-    return ((ProxiedQueryResults) getResults()).getServer();
-  }
 
   public Element getElement() {
     return element;

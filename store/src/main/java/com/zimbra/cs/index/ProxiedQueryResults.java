@@ -85,20 +85,6 @@ public final class ProxiedQueryResults extends ZimbraQueryResultsImpl {
         this.responseProto = respProto;
     }
 
-    /**
-     * A search request in the current mailbox on a different server.
-     *
-     * @param encodedAuthToken (call ZimbraContext.getAuthToken().getEncoded() if necessary)
-     * @param server hostname of server
-     */
-    public ProxiedQueryResults(SoapProtocol respProto, AuthToken authToken, String server, SearchParams params,
-            SearchParams.Fetch fetch) {
-        super(params.getTypes(), params.getSortBy(), fetch);
-        setSearchParams(params);
-        this.authToken = authToken;
-        this.server = server;
-        this.responseProto = respProto;
-    }
 
     private void setSearchParams(SearchParams params) {
         searchParams = (SearchParams) params.clone();
@@ -127,9 +113,6 @@ public final class ProxiedQueryResults extends ZimbraQueryResultsImpl {
         searchParams.setQueryString(queryString);
     }
 
-    public void setTimeout(long timeout) {
-        mTimeout = timeout;
-    }
 
     @Override
     public long getCursorOffset() {

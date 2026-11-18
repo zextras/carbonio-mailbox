@@ -49,13 +49,7 @@ public final class ConversationHit extends ZimbraHit {
         return messageHits.values();
     }
 
-    public int getNumMessages() throws ServiceException {
-        return getConversation().getMessageCount();
-    }
 
-    public MessageHit getMessageHit(Long mailboxBlobId) {
-        return messageHits.get(mailboxBlobId);
-    }
 
     public MessageHit getFirstMessageHit() {
         Iterator<MessageHit> iter = getMessageHits().iterator();

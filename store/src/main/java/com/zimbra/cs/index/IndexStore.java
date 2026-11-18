@@ -56,10 +56,6 @@ public abstract class IndexStore {
      */
     public abstract boolean isPendingDelete();
 
-    /**
-     * Set Flag to indicate that the index is scheduled for deletion
-     */
-    public abstract void setPendingDelete(boolean pendingDelete);
 
     /**
      * Primes the index for the fastest available search if the underlying IndexStore supports (and benefits from)

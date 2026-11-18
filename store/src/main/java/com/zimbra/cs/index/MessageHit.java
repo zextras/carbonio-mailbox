@@ -50,9 +50,6 @@ public final class MessageHit extends ZimbraHit {
         document = doc;
     }
 
-    int getFolderId() throws ServiceException {
-        return getMessage().getFolderId();
-    }
 
     @Override
     public int getConversationId() throws ServiceException {
@@ -93,9 +90,6 @@ public final class MessageHit extends ZimbraHit {
         }
     }
 
-    public boolean isTagged(Tag tag) throws ServiceException {
-        return getMessage().isTagged(tag);
-    }
 
     @Override
     void setItem(MailItem item) {
@@ -135,21 +129,6 @@ public final class MessageHit extends ZimbraHit {
         return cachedName;
     }
 
-    public long getDateHeader() throws ServiceException {
-        if (message == null && document != null) {
-            String dateStr = document.get(LuceneFields.L_SORT_DATE);
-            if (dateStr != null) {
-                try {
-                    return DateTools.stringToTime(dateStr);
-                } catch (ParseException e) {
-                    return 0;
-                }
-            } else {
-                return 0;
-            }
-        }
-        return getMessage().getDate();
-    }
 
     public String getSender() throws ServiceException {
         return new ParsedAddress(getMessage().getSender()).getSortString();

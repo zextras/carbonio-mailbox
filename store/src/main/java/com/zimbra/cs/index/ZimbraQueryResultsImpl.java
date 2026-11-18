@@ -28,10 +28,6 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
 
     private final int max;
 
-    LRUHashMap(int max) {
-      super(max, 0.75f, true);
-      this.max = max;
-    }
 
     LRUHashMap(int max, int size) {
       super(size, 0.75f, true);

@@ -194,14 +194,6 @@ public final class LuceneQueryOperation extends QueryOperation {
     filterTerms = null;
   }
 
-  /**
-   * Sets the text query *representation* manually -- the thing that is output if we have to proxy
-   * this search somewhere else -- used when dealing with wildcard searches.
-   */
-  public void setQueryString(String value) {
-    assert (queryString.isEmpty());
-    queryString = value;
-  }
 
   @Override
   public String toQueryString() {
@@ -718,15 +710,6 @@ public final class LuceneQueryOperation extends QueryOperation {
     }
   }
 
-  /**
-   * Allows the parser (specifically the Query subclasses) to store some query result information so
-   * that it can be returned to the caller after the query has run. This is used for things like
-   * spelling suggestion correction, or wildcard expansion info: things that are not results per-se
-   * but still need to have some way to be sent back to the caller.
-   */
-  public void addQueryInfo(QueryInfo inf) {
-    queryInfo.add(inf);
-  }
 
   /** Can be called more than once recursively from {@link DBQueryOperation}. */
   @Override

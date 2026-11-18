@@ -48,7 +48,4 @@ public class HalfwidthKanaVoicedMappingFilter extends MappingCharFilter {
         super(normMap, in);
     }
 
-    public HalfwidthKanaVoicedMappingFilter(CharStream in) {
-        super(normMap, in);
-    }
 }
