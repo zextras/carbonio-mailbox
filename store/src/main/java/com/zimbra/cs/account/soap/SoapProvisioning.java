@@ -861,12 +861,6 @@ public class SoapProvisioning extends Provisioning {
     return new SoapServer(resp.getServer(), this);
   }
 
-  /** Unsupported */
-  @Override
-  public Zimlet createZimlet(String name, Map<String, Object> attrs) throws ServiceException {
-    throw new UnsupportedOperationException();
-  }
-
   @Override
   public void deleteAccount(String zimbraId) throws ServiceException {
     invokeJaxb(new DeleteAccountRequest(zimbraId));
@@ -910,12 +904,6 @@ public class SoapProvisioning extends Provisioning {
   @Override
   public void deleteServer(String zimbraId) throws ServiceException {
     invokeJaxb(new DeleteServerRequest(zimbraId));
-  }
-
-  /** Unsupported */
-  @Override
-  public void deleteZimlet(String name) throws ServiceException {
-    throw new UnsupportedOperationException();
   }
 
   public static class DelegateAuthResponse {

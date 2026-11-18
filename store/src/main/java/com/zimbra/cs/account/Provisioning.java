@@ -1590,11 +1590,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
 
   public abstract List<Zimlet> listAllZimlets() throws ServiceException;
 
-  public abstract Zimlet createZimlet(String name, Map<String, Object> attrs)
-      throws ServiceException;
-
-  public abstract void deleteZimlet(String name) throws ServiceException;
-
   /**
    * Creates the specified calendar resource. The A_zimbraId and A_uid attributes are automatically
    * created and should not be passed in.

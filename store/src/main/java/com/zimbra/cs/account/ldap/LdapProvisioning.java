@@ -6222,10 +6222,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     }
   }
 
-  Zimlet lookupZimlet(String name, ZLdapContext zlc) throws ServiceException {
-    return getZimlet(name, zlc, false);
-  }
-
   private Zimlet getZimlet(String name, ZLdapContext initZlc, boolean useZimletCache)
       throws ServiceException {
 
@@ -6279,65 +6275,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     Collections.sort(result);
     return result;
-  }
-
-  @Override
-  public Zimlet createZimlet(String name, Map<String, Object> zimletAttrs) throws ServiceException {
-    name = name.toLowerCase().trim();
-
-    CallbackContext callbackContext = new CallbackContext(CallbackContext.Op.CREATE);
-    LdapAttributeCallbackHelper.get(StoreAttributeManager.getInstance()).preModify(zimletAttrs, null, callbackContext, true);
-
-    ZLdapContext zlc = null;
-    try {
-      zlc = ldapClient.getContext(LdapServerType.MASTER, LdapUsage.CREATE_ZIMLET);
-
-      String hasKeyword = LdapConstants.LDAP_FALSE;
-      if (zimletAttrs.containsKey(A_zimbraZimletKeyword)) {
-        hasKeyword = ProvisioningConstants.TRUE;
-      }
-
-      ZMutableEntry entry = ldapClient.createMutableEntry();
-      entry.mapToAttrs(zimletAttrs);
-
-      entry.setAttr(A_objectClass, "zimbraZimletEntry");
-      entry.setAttr(A_zimbraZimletEnabled, ProvisioningConstants.FALSE);
-      entry.setAttr(A_zimbraZimletIndexingEnabled, hasKeyword);
-      entry.setAttr(A_zimbraCreateTimestamp, LdapDateUtil.toGeneralizedTime(new Date()));
-
-      String dn = mDIT.zimletNameToDN(name);
-      entry.setDN(dn);
-      zlc.createEntry(entry);
-
-      Zimlet zimlet = lookupZimlet(name, zlc);
-      LdapAttributeCallbackHelper.get(StoreAttributeManager.getInstance()).postModify(zimletAttrs, zimlet, callbackContext);
-      return zimlet;
-    } catch (LdapEntryAlreadyExistException nabe) {
-      throw AccountServiceException.ZIMLET_EXISTS(name);
-    } catch (LdapException | AccountServiceException e) {
-      throw e;
-    } catch (ServiceException e) {
-      throw ServiceException.FAILURE("unable to create zimlet: " + name, e);
-    } finally {
-      ldapClient.closeContext(zlc);
-    }
-  }
-
-  @Override
-  public void deleteZimlet(String name) throws ServiceException {
-    ZLdapContext zlc = null;
-    try {
-      zlc = ldapClient.getContext(LdapServerType.MASTER, LdapUsage.DELETE_ZIMLET);
-      LdapZimlet zimlet = (LdapZimlet) getZimlet(name, zlc, true);
-      if (zimlet != null) {
-        zimletCache.remove(zimlet);
-        zlc.deleteEntry(zimlet.getDN());
-      }
-    } catch (ServiceException e) {
-      throw ServiceException.FAILURE("unable to delete zimlet: " + name, e);
-    } finally {
-      ldapClient.closeContext(zlc);
-    }
   }
 
   @Override
