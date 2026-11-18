@@ -409,6 +409,9 @@ public final class LC {
 
   @Supported public static final KnownKey mailboxd_java_heap_size = KnownKey.newKey(null);
 
+  /** Initial heap (-Xms) in MB; configd caps it at mailboxd_java_heap_size. */
+  @Supported public static final KnownKey mailboxd_java_heap_min_size = KnownKey.newKey(256);
+
   @Supported public static final KnownKey mailboxd_java_heap_new_size_percent = KnownKey.newKey(25);
 
   @Supported public static final KnownKey mailboxd_thread_stack_size = KnownKey.newKey("256k");
