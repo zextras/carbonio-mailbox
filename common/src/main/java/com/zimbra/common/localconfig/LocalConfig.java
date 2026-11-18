@@ -200,8 +200,6 @@ public class LocalConfig {
   // Expand and cache all keys
   //
   private void expandAll() throws ConfigException {
-    String minimize = mConfiguredKeys.get(LC.zimbra_minimize_resources.key());
-
     KnownKey.expandAll(this);
     for (String key : mConfiguredKeys.keySet()) {
       mExpanded.put(key, expand(key, mConfiguredKeys.get(key)));

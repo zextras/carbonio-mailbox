@@ -25,8 +25,6 @@ import org.dom4j.DocumentException;
  */
 public final class LC {
 
-  public static final KnownKey zimbra_minimize_resources = KnownKey.newKey(false);
-
   @Supported public static final KnownKey zimbra_home = KnownKey.newKey("/opt/zextras").protect();
 
   @Supported
