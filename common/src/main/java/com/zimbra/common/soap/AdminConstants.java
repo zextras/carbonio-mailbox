@@ -133,8 +133,6 @@ public final class AdminConstants {
   public static final String E_CHECK_AUTH_CONFIG_RESPONSE = "CheckAuthConfigResponse";
   public static final String E_CHECK_GAL_CONFIG_REQUEST = "CheckGalConfigRequest";
   public static final String E_CHECK_GAL_CONFIG_RESPONSE = "CheckGalConfigResponse";
-  public static final String E_CHECK_EXCHANGE_AUTH_REQUEST = "CheckExchangeAuthRequest";
-  public static final String E_CHECK_EXCHANGE_AUTH_RESPONSE = "CheckExchangeAuthResponse";
 
   public static final String E_AUTO_COMPLETE_GAL_REQUEST = "AutoCompleteGalRequest";
   public static final String E_AUTO_COMPLETE_GAL_RESPONSE = "AutoCompleteGalResponse";
@@ -601,10 +599,6 @@ public final class AdminConstants {
       QName.get(E_CHECK_GAL_CONFIG_REQUEST, NAMESPACE);
   public static final QName CHECK_GAL_CONFIG_RESPONSE =
       QName.get(E_CHECK_GAL_CONFIG_RESPONSE, NAMESPACE);
-  public static final QName CHECK_EXCHANGE_AUTH_REQUEST =
-      QName.get(E_CHECK_EXCHANGE_AUTH_REQUEST, NAMESPACE);
-  public static final QName CHECK_EXCHANGE_AUTH_RESPONSE =
-      QName.get(E_CHECK_EXCHANGE_AUTH_RESPONSE, NAMESPACE);
 
   public static final QName AUTO_COMPLETE_GAL_REQUEST =
       QName.get(E_AUTO_COMPLETE_GAL_REQUEST, NAMESPACE);
@@ -1307,13 +1301,6 @@ public final class AdminConstants {
       "defaultExpirySeconds";
   public static final String A_MEMCACHED_CLIENT_CONFIG_DEFAULT_TIMEOUT_MILLIS =
       "defaultTimeoutMillis";
-
-  // CheckExchangeAuth
-  public static final String E_AUTH = "auth";
-  public static final String A_URL = "url";
-  public static final String A_USER = "user";
-  public static final String A_PASS = "pass";
-  public static final String A_SCHEME = "scheme";
 
   // flush cache
   public static final String A_ALLSERVERS = "allServers";
