@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Set;
 import java.util.UUID;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -49,6 +50,11 @@ public class OwaspHtmlSanitizerTest {
 			+ "</style></head><body><h1>Hello World!</h1></body></html>";
 	private static String nonInlinedBackgroundImageURL = "url(\n" + "            \"paper.gif\"\n"
 			+ "            )";
+
+	@BeforeAll
+	static void loadPolicy() throws Exception {
+		OwaspPolicy.load("./conf/owasp_policy.xml");
+	}
 
 	@BeforeEach
 	void init() throws Exception {
