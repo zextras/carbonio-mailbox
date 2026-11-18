@@ -116,7 +116,6 @@ public class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.MODIFY_CALENDAR_GROUP_REQUEST, new ModifyCalendarGroup());
     dispatcher.registerHandler(MailConstants.DELETE_CALENDAR_REQUEST, new DeleteCalendar());
     dispatcher.registerHandler(MailConstants.EMPTY_CALENDAR_TRASH_REQUEST, new EmptyCalendarTrash());
-    dispatcher.registerHandler(MailConstants.GET_APPT_SUMMARIES_REQUEST, new GetApptSummaries());
     dispatcher.registerHandler(MailConstants.GET_APPOINTMENT_REQUEST, new GetAppointment());
     dispatcher.registerHandler(MailConstants.SET_APPOINTMENT_REQUEST, new SetAppointment());
     dispatcher.registerHandler(MailConstants.CREATE_APPOINTMENT_REQUEST, new CreateAppointment());
@@ -126,16 +125,12 @@ public class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.CANCEL_APPOINTMENT_REQUEST, new CancelAppointment());
     dispatcher.registerHandler(MailConstants.FORWARD_APPOINTMENT_REQUEST, new ForwardAppointment());
     dispatcher.registerHandler(
-        MailConstants.FORWARD_APPOINTMENT_INVITE_REQUEST, new ForwardAppointmentInvite());
-    dispatcher.registerHandler(
         MailConstants.ADD_APPOINTMENT_INVITE_REQUEST, new AddAppointmentInvite());
     dispatcher.registerHandler(MailConstants.COUNTER_APPOINTMENT_REQUEST, new CounterAppointment());
     dispatcher.registerHandler(
         MailConstants.DECLINE_COUNTER_APPOINTMENT_REQUEST, new DeclineCounterAppointment());
     dispatcher.registerHandler(MailConstants.IMPORT_APPOINTMENTS_REQUEST, new ImportAppointments());
 
-    dispatcher.registerHandler(
-        MailConstants.GET_CALITEM_SUMMARIES_REQUEST, new GetCalendarItemSummaries());
     //        dispatcher.registerHandler(GET_CALITEM_REQUEST, new GetCalendarItem());
     //        dispatcher.registerHandler(SET_CALITEM_REQUEST, new SetCalendarItem());
     //        dispatcher.registerHandler(CREATE_CALITEM_REQUEST, new CreateCalendarItem());
@@ -148,18 +143,11 @@ public class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.ICAL_REPLY_REQUEST, new ICalReply());
     dispatcher.registerHandler(MailConstants.GET_FREE_BUSY_REQUEST, new GetFreeBusy());
     dispatcher.registerHandler(MailConstants.GET_WORKING_HOURS_REQUEST, new GetWorkingHours());
-    dispatcher.registerHandler(MailConstants.GET_ICAL_REQUEST, new GetICal());
-    dispatcher.registerHandler(
-        MailConstants.ANNOUNCE_ORGANIZER_CHANGE_REQUEST, new AnnounceOrganizerChange());
     dispatcher.registerHandler(
         MailConstants.DISMISS_CALITEM_ALARM_REQUEST, new DismissCalendarItemAlarm());
     dispatcher.registerHandler(
         MailConstants.SNOOZE_CALITEM_ALARM_REQUEST, new SnoozeCalendarItemAlarm());
     dispatcher.registerHandler(MailConstants.GET_MINI_CAL_REQUEST, new GetMiniCal());
-    dispatcher.registerHandler(MailConstants.GET_RECUR_REQUEST, new GetRecur());
-    dispatcher.registerHandler(MailConstants.EXPAND_RECUR_REQUEST, new ExpandRecur());
-    dispatcher.registerHandler(
-        MailConstants.CHECK_RECUR_CONFLICTS_REQUEST, new CheckRecurConflicts());
 
     // data source
     dispatcher.registerHandler(MailConstants.GET_DATA_SOURCES_REQUEST, new GetDataSources());

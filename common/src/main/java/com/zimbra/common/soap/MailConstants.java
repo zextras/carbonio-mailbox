@@ -147,7 +147,6 @@ public final class MailConstants {
       "ApplyOutgoingFilterRulesRequest";
   public static final String E_APPLY_OUTGOING_FILTER_RULES_RESPONSE =
       "ApplyOutgoingFilterRulesResponse";
-  public static final String E_GET_APPT_SUMMARIES_REQUEST = "GetApptSummariesRequest";
   public static final String E_GET_APPOINTMENT_REQUEST = "GetAppointmentRequest";
   public static final String E_SET_APPOINTMENT_REQUEST = "SetAppointmentRequest";
   public static final String E_CREATE_APPOINTMENT_REQUEST = "CreateAppointmentRequest";
@@ -163,8 +162,6 @@ public final class MailConstants {
   public static final String E_CANCEL_APPOINTMENT_REQUEST = "CancelAppointmentRequest";
   public static final String E_FORWARD_APPOINTMENT_REQUEST = "ForwardAppointmentRequest";
   public static final String E_FORWARD_APPOINTMENT_RESPONSE = "ForwardAppointmentResponse";
-  public static final String E_FORWARD_APPOINTMENT_INVITE_REQUEST =
-      "ForwardAppointmentInviteRequest";
   public static final String E_ADD_APPOINTMENT_INVITE_REQUEST = "AddAppointmentInviteRequest";
   public static final String E_ADD_APPOINTMENT_INVITE_RESPONSE = "AddAppointmentInviteResponse";
   public static final String E_COUNTER_APPOINTMENT_REQUEST = "CounterAppointmentRequest";
@@ -175,20 +172,14 @@ public final class MailConstants {
       "DeclineCounterAppointmentResponse";
   public static final String E_IMPORT_APPOINTMENTS_REQUEST = "ImportAppointmentsRequest";
   public static final String E_IMPORT_APPOINTMENTS_RESPONSE = "ImportAppointmentsResponse";
-  public static final String E_GET_CALITEM_SUMMARIES_REQUEST = "GetCalendarItemSummariesRequest";
   public static final String E_SEND_INVITE_REPLY_REQUEST = "SendInviteReplyRequest";
   public static final String E_ICAL_REPLY_REQUEST = "ICalReplyRequest";
   public static final String E_GET_FREE_BUSY_REQUEST = "GetFreeBusyRequest";
   public static final String E_GET_FREE_BUSY_RESPONSE = "GetFreeBusyResponse";
   public static final String E_GET_WORKING_HOURS_REQUEST = "GetWorkingHoursRequest";
-  public static final String E_GET_ICAL_REQUEST = "GetICalRequest";
-  public static final String E_ANNOUNCE_ORGANIZER_CHANGE_REQUEST = "AnnounceOrganizerChangeRequest";
   public static final String E_DISMISS_CALITEM_ALARM_REQUEST = "DismissCalendarItemAlarmRequest";
   public static final String E_SNOOZE_CALITEM_ALARM_REQUEST = "SnoozeCalendarItemAlarmRequest";
   public static final String E_GET_MINI_CAL_REQUEST = "GetMiniCalRequest";
-  public static final String E_GET_RECUR_REQUEST = "GetRecurRequest";
-  public static final String E_EXPAND_RECUR_REQUEST = "ExpandRecurRequest";
-  public static final String E_CHECK_RECUR_CONFLICTS_REQUEST = "CheckRecurConflictsRequest";
   public static final String E_CREATE_DATA_SOURCE_REQUEST = "CreateDataSourceRequest";
   public static final String E_CREATE_DATA_SOURCE_RESPONSE = "CreateDataSourceResponse";
   public static final String E_GET_DATA_SOURCES_REQUEST = "GetDataSourcesRequest";
@@ -447,8 +438,6 @@ public final class MailConstants {
   public static final QName EMPTY_CALENDAR_TRASH_RESPONSE =
           QName.get(E_EMPTY_CALENDAR_TRASH_RESPONSE, NAMESPACE);
 
-  public static final QName GET_APPT_SUMMARIES_REQUEST =
-      QName.get(E_GET_APPT_SUMMARIES_REQUEST, NAMESPACE);
   public static final QName GET_APPOINTMENT_REQUEST =
       QName.get(E_GET_APPOINTMENT_REQUEST, NAMESPACE);
   public static final QName SET_APPOINTMENT_REQUEST =
@@ -470,8 +459,6 @@ public final class MailConstants {
       QName.get(E_CANCEL_APPOINTMENT_REQUEST, NAMESPACE);
   public static final QName FORWARD_APPOINTMENT_REQUEST =
       QName.get(E_FORWARD_APPOINTMENT_REQUEST, NAMESPACE);
-  public static final QName FORWARD_APPOINTMENT_INVITE_REQUEST =
-      QName.get(E_FORWARD_APPOINTMENT_INVITE_REQUEST, NAMESPACE);
   public static final QName ADD_APPOINTMENT_INVITE_REQUEST =
       QName.get(E_ADD_APPOINTMENT_INVITE_REQUEST, NAMESPACE);
   public static final QName COUNTER_APPOINTMENT_REQUEST =
@@ -483,8 +470,6 @@ public final class MailConstants {
   public static final QName IMPORT_APPOINTMENTS_RESPONSE =
       QName.get(E_IMPORT_APPOINTMENTS_RESPONSE, NAMESPACE);
 
-  public static final QName GET_CALITEM_SUMMARIES_REQUEST =
-      QName.get(E_GET_CALITEM_SUMMARIES_REQUEST, NAMESPACE);
 
   //    public static final QName GET_CALITEM_REQUEST = QName.get("GetCalendarItemRequest",
   // NAMESPACE);
@@ -505,19 +490,12 @@ public final class MailConstants {
   public static final QName GET_FREE_BUSY_REQUEST = QName.get(E_GET_FREE_BUSY_REQUEST, NAMESPACE);
   public static final QName GET_WORKING_HOURS_REQUEST =
       QName.get(E_GET_WORKING_HOURS_REQUEST, NAMESPACE);
-  public static final QName GET_ICAL_REQUEST = QName.get(E_GET_ICAL_REQUEST, NAMESPACE);
-  public static final QName ANNOUNCE_ORGANIZER_CHANGE_REQUEST =
-      QName.get(E_ANNOUNCE_ORGANIZER_CHANGE_REQUEST, NAMESPACE);
   public static final QName DISMISS_CALITEM_ALARM_REQUEST =
       QName.get(E_DISMISS_CALITEM_ALARM_REQUEST, NAMESPACE);
   public static final QName SNOOZE_CALITEM_ALARM_REQUEST =
       QName.get(E_SNOOZE_CALITEM_ALARM_REQUEST, NAMESPACE);
   public static final QName GET_MINI_CAL_REQUEST = QName.get(E_GET_MINI_CAL_REQUEST, NAMESPACE);
 
-  public static final QName GET_RECUR_REQUEST = QName.get(E_GET_RECUR_REQUEST, NAMESPACE);
-  public static final QName EXPAND_RECUR_REQUEST = QName.get(E_EXPAND_RECUR_REQUEST, NAMESPACE);
-  public static final QName CHECK_RECUR_CONFLICTS_REQUEST =
-      QName.get(E_CHECK_RECUR_CONFLICTS_REQUEST, NAMESPACE);
 
   // data sources
   public static final QName CREATE_DATA_SOURCE_REQUEST =
