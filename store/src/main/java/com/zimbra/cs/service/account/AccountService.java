@@ -37,7 +37,6 @@ public class AccountService implements DocumentService {
     // client info
 
     // prefs
-    dispatcher.registerHandler(AccountConstants.GET_PREFS_REQUEST, new GetPrefs());
     dispatcher.registerHandler(AccountConstants.MODIFY_PREFS_REQUEST, new ModifyPrefs());
 
     dispatcher.registerHandler(AccountConstants.GET_INFO_REQUEST, new GetInfo());
@@ -47,13 +46,9 @@ public class AccountService implements DocumentService {
     dispatcher.registerHandler(
         AccountConstants.SEARCH_CALENDAR_RESOURCES_REQUEST, new SearchCalendarResources());
     dispatcher.registerHandler(AccountConstants.SEARCH_GAL_REQUEST, new SearchGal());
-    dispatcher.registerHandler(AccountConstants.SYNC_GAL_REQUEST, new SyncGal());
 
     dispatcher.registerHandler(AccountConstants.MODIFY_PROPERTIES_REQUEST, new ModifyProperties());
 
-    dispatcher.registerHandler(AccountConstants.GET_ALL_LOCALES_REQUEST, new GetAllLocales());
-    dispatcher.registerHandler(
-        AccountConstants.GET_AVAILABLE_LOCALES_REQUEST, new GetAvailableLocales());
 
     // identity
     dispatcher.registerHandler(AccountConstants.CREATE_IDENTITY_REQUEST, new CreateIdentity());
@@ -71,8 +66,6 @@ public class AccountService implements DocumentService {
     dispatcher.registerHandler(AccountConstants.GET_SHARE_INFO_REQUEST, new GetShareInfo());
 
     // white/black list
-    dispatcher.registerHandler(
-        AccountConstants.GET_WHITE_BLACK_LIST_REQUEST, new GetWhiteBlackList());
     dispatcher.registerHandler(
         AccountConstants.MODIFY_WHITE_BLACK_LIST_REQUEST, new ModifyWhiteBlackList());
 
@@ -96,7 +89,6 @@ public class AccountService implements DocumentService {
     dispatcher.registerHandler(AccountConstants.REVOKE_RIGHTS_REQUEST, new RevokeRights());
 
     // misc
-    dispatcher.registerHandler(AccountConstants.GET_VERSION_INFO_REQUEST, new GetVersionInfo());
 
     // reset password
     dispatcher.registerHandler(AccountConstants.RESET_PASSWORD_REQUEST, new ResetPassword());
