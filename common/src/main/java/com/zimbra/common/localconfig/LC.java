@@ -76,12 +76,6 @@ public final class LC {
 
   @Supported public static final KnownKey zimbra_server_hostname = KnownKey.newKey("localhost");
 
-  public static final String DEFAULT_ATTRS_DIRECTORY = "";
-  public static final String DEFAULT_RIGHTS_DIRECTORY = "";
-
-  @Deprecated
-  public static final KnownKey zimbra_attrs_directory = KnownKey.newKey(DEFAULT_ATTRS_DIRECTORY);
-
   @Supported public static final KnownKey zimbra_user = KnownKey.newKey("zextras");
 
   @Supported public static final KnownKey zimbra_uid = KnownKey.newKey(-1);
@@ -599,10 +593,6 @@ public final class LC {
       KnownKey.newKey("com.zimbra.cs.ldap.LdapClient");
   public static final KnownKey zimbra_class_provisioning =
       KnownKey.newKey("com.zimbra.cs.account.ldap.LdapProvisioning");
-
-  @Deprecated(since = "23.9.0", forRemoval = true)
-  public static final KnownKey zimbra_class_accessmanager =
-      KnownKey.newKey("com.zimbra.cs.account.accesscontrol.ACLAccessManager");
 
   public static final KnownKey zimbra_class_mboxmanager =
       KnownKey.newKey("com.zimbra.cs.mailbox.MailboxManager");
