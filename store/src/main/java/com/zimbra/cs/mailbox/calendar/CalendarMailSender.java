@@ -162,53 +162,6 @@ public class CalendarMailSender {
     else return prefix + subject;
   }
 
-  public static MimeMessage createOrganizerChangeMessage(
-      Account fromAccount,
-      Account authAccount,
-      boolean asAdmin,
-      CalendarItem calItem,
-      Invite inv,
-      List<Address> rcpts)
-      throws ServiceException {
-    ZOrganizer organizer = inv.getOrganizer();
-    assert (organizer != null);
-    boolean onBehalfOf = organizer.hasSentBy();
-    String senderAddr = onBehalfOf ? organizer.getSentBy() : organizer.getAddress();
-
-    Locale locale = fromAccount.getLocale();
-
-    boolean hidePrivate = !calItem.isPublic() && !calItem.allowPrivateAccess(authAccount, asAdmin);
-    String subject;
-    if (hidePrivate) {
-      subject = L10nUtil.getMessage(MsgKey.calendarSubjectWithheld, locale);
-    } else {
-      subject = inv.getName();
-    }
-    StringBuilder sb = new StringBuilder("Organizer has been changed to " + fromAccount.getName());
-    sb.append("\r\n\r\n");
-
-    if (!hidePrivate) {
-      MimeMessage mmInv = inv.getMimeMessage();
-      if (mmInv != null) {
-        attachInviteSummary(sb, inv, mmInv, locale);
-      }
-    }
-
-    ZVCalendar iCal = inv.newToICalendar(true);
-
-    Address from = AccountUtil.getFriendlyEmailAddress(fromAccount);
-    Address sender = null;
-    if (onBehalfOf) {
-      try {
-        sender = new JavaMailInternetAddress(senderAddr);
-      } catch (AddressException e) {
-        throw MailServiceException.ADDRESS_PARSE_ERROR(e);
-      }
-    }
-    return createCalendarMessage(
-        authAccount, from, sender, rcpts, subject, sb.toString(), null, inv.getUid(), iCal);
-  }
-
   public static MimeMessage createDefaultReply(
       Account fromAccount,
       String fromIdentityId,

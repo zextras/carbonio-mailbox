@@ -766,9 +766,6 @@ public final class LC {
 
   public static final KnownKey freebusy_queue_directory =
       KnownKey.newKey("${zimbra_home}/fbqueue/");
-  public static final KnownKey freebusy_exchange_cn1 = KnownKey.newKey(null);
-  public static final KnownKey freebusy_exchange_cn2 = KnownKey.newKey(null);
-  public static final KnownKey freebusy_exchange_cn3 = KnownKey.newKey(null);
   public static final KnownKey freebusy_disable_nodata_status = KnownKey.newKey(false);
 
   public static final KnownKey zimbra_lmtp_validate_messages = KnownKey.newKey(true);
