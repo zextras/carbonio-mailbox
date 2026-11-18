@@ -13,9 +13,7 @@ import java.util.UUID;
 import javax.naming.ldap.Rdn;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.UUIDUtil;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.ldap.LdapTODO.TODO;
 
 
@@ -52,10 +50,6 @@ public class LdapUtil {
             }
         }
         return false;
-    }
-
-    public static Object decodeBase64IfBinary(boolean isBinary, String value) {
-        return isBinary ? ByteUtil.decodeLDAPBase64(value) : value;
     }
 
     /*
@@ -100,31 +94,6 @@ public class LdapUtil {
 
     public static String generateUUID() {
         return UUIDUtil.generateUUID();
-    }
-
-    /*
-     * we want to throw the IllegalArgumentException instead of catching it so the cause
-     * can be logged with the callers catcher.
-     */
-    public static boolean isValidUUID(String strRep) throws IllegalArgumentException {
-        /*
-        if (strRep.length() > 36)
-            throw new IllegalArgumentException("uuid must be no longer than 36 characters");
-
-        UUID uuid = UUID.fromString(strRep);
-        return (uuid != null);
-        */
-
-        if (strRep.length() > Provisioning.MAX_ZIMBRA_ID_LEN) {
-            throw new IllegalArgumentException("uuid must be no longer than " +
-                    Provisioning.MAX_ZIMBRA_ID_LEN + " characters");
-        }
-
-        if (strRep.contains(":")) {
-            throw new IllegalArgumentException("uuid must not contain ':'");
-        }
-
-        return true;
     }
 
     public static void validateZimbraId(String zimbraId) throws ServiceException {
@@ -240,38 +209,6 @@ public class LdapUtil {
      */
     public static String domainToDN(String domain) {
         return domainToDN(domain.split("\\."), 0);
-    }
-
-    public static String domainToTopLevelDN(String domain) {
-        String[] segments = domain.split("\\.");
-        return domainToDN(segments, segments.length -1);
-    }
-
-    /**
-     * given a dn like "uid=foo,ou=people,dc=widgets,dc=com", return the String[]
-     * [0] = uid=foo
-     * [1] = ou=people,dc=widgets,dc=com
-     *
-     * if the dn cannot be split into rdn and dn:
-     * [0] = the input dn
-     * [1] = the input dn
-     *
-     * @param dn
-     * @return
-     */
-    public static String[] dnToRdnAndBaseDn(String dn) {
-        String[] values = new String[2];
-        int baseDnIdx = dn.indexOf(",");
-
-        if (baseDnIdx!=-1 && dn.length()>baseDnIdx+1) {
-            values[0] = dn.substring(0, baseDnIdx);
-            values[1] = dn.substring(baseDnIdx+1);
-        } else {
-            values[0] = dn;
-            values[1] = dn;
-        }
-
-        return values;
     }
 
     /**

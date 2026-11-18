@@ -6,18 +6,7 @@
 package com.zimbra.cs.mailbox.calendar;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.zimbra.common.calendar.ICalTimeZone;
 import com.zimbra.common.calendar.ParsedDateTime;
@@ -30,7 +19,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ListUtil;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.CalendarItem.Instance;
@@ -1679,7 +1667,8 @@ public class Recurrence
             }
         }
         if (rule1 != null && rule2 != null) {
-            return StringUtil.equal(rule1.toString(), rule2.toString());
+            String s1 = rule1.toString();
+            return Objects.equals(s1, rule2.toString());
         } else {
             return rule1 == rule2;
         }

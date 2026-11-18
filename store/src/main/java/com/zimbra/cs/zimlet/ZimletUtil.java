@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -1465,7 +1466,7 @@ public class ZimletUtil {
                 dumpConfig(zimlet);
                 break;
             case INSTALL_CONFIG:
-                installConfig(new String(ByteUtil.getContent(new File(zimlet))));
+                installConfig(new String(Files.readAllBytes(new File(zimlet).toPath())));
                 break;
             case INFO:
                 showInfo(zimlet);

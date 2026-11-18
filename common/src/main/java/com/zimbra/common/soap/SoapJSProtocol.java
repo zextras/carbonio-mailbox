@@ -8,13 +8,12 @@
  */
 package com.zimbra.common.soap;
 
+import com.google.common.base.Throwables;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.ZimbraNamespace;
-import com.zimbra.common.util.ExceptionToString;
 
 /**
  * @author dkarp
@@ -71,7 +70,7 @@ public class SoapJSProtocol extends SoapProtocol {
         Element eError = eFault.addUniqueElement(DETAIL).addUniqueElement(ZimbraNamespace.E_ERROR);
         eError.addAttribute(ZimbraNamespace.E_CODE.getName(), e.getCode());
         if (LC.soap_fault_include_stack_trace.booleanValue())
-            eError.addAttribute(ZimbraNamespace.E_TRACE.getName(), ExceptionToString.ToString(e));
+            eError.addAttribute(ZimbraNamespace.E_TRACE.getName(), Throwables.getStackTraceAsString(e));
         else
             eError.addAttribute(ZimbraNamespace.E_TRACE.getName(), e.getThreadName());
 

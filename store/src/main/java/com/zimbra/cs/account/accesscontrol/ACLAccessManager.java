@@ -10,7 +10,6 @@ import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.CosBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.EmailUtil;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
@@ -80,7 +79,8 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
   public boolean canAccessAccount(AuthToken at, Account target, boolean asAdmin)
       throws ServiceException {
 
-    if (!StringUtil.equal(at.getAccount().getDomainId(), target.getDomainId())) {
+      String s1 = at.getAccount().getDomainId();
+      if (!Objects.equals(s1, target.getDomainId())) {
       checkDomainStatus(target);
     }
 

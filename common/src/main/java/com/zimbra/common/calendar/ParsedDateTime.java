@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,7 +22,6 @@ import com.zimbra.common.calendar.ZCalendar.ZParameter;
 import com.zimbra.common.calendar.ZCalendar.ZProperty;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.StringUtil;
 
 public final class ParsedDateTime {
 
@@ -333,7 +333,8 @@ public final class ParsedDateTime {
             if (other.mICalTimeZone == null) {
                 return false;
             } else {
-                return StringUtil.equal(mICalTimeZone.getID(), other.mICalTimeZone.getID());
+                String s1 = mICalTimeZone.getID();
+                return Objects.equals(s1, other.mICalTimeZone.getID());
             }
         }
     }

@@ -9,7 +9,6 @@ import com.zimbra.common.calendar.Geo;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.cs.account.IDNUtil;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.calendar.Alarm;
@@ -17,6 +16,8 @@ import com.zimbra.cs.mailbox.calendar.ZOrganizer;
 import com.zimbra.cs.mailbox.util.TagUtil;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.soap.ZimbraSoapContext;
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -277,7 +278,7 @@ public class CacheToXML {
       if (flags != null && !flags.equals(""))
         calItemElem.addAttribute(MailConstants.A_FLAGS, flags);
       String[] tags = calItemData.getTags();
-      if (!ArrayUtil.isEmpty(tags)) {
+        if (!ArrayUtils.isEmpty(tags)) {
         calItemElem.addAttribute(MailConstants.A_TAG_NAMES, TagUtil.encodeTags(tags));
         // FIXME: want to serialize tag IDs for backwards compatibility
         calItemElem.addAttribute(MailConstants.A_TAGS, calItemData.getTagIds());

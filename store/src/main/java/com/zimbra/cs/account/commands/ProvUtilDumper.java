@@ -305,7 +305,7 @@ class ProvUtilDumper {
           String attrName, String value, Integer idx, boolean isBinary, String timestamp)
           throws ServiceException {
     if (isBinary) {
-      byte[] binary = ByteUtil.decodeLDAPBase64(value);
+        byte[] binary = Base64.decodeBase64(value);
       if (options.outputBinaryToFile()) {
         outputBinaryAttrToFile(attrName, idx, binary, timestamp);
       } else {

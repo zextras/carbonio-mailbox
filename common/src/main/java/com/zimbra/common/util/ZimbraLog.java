@@ -424,7 +424,7 @@ public final class ZimbraLog {
         sContextMap.set(contextMap);
       }
       String oldValue = contextMap.put(key, value);
-      if (!StringUtil.equal(oldValue, value)) {
+        if (!Objects.equals(oldValue, value)) {
         contextChanged = true;
       }
     }

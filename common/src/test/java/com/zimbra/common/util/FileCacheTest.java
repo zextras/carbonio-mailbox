@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableMap;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Map;
 import java.util.Random;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ public class FileCacheTest {
     byte[] data = getRandomBytes(100);
     cache.put(1, new ByteArrayInputStream(data));
     FileCache.Item item = cache.get(1);
-    assertArrayEquals(data, ByteUtil.getContent(item.file));
+      assertArrayEquals(data, Files.readAllBytes(item.file.toPath()));
 
     File dataDir = new File(tmpDir, "data");
     assertEquals(dataDir, item.file.getParentFile());
@@ -302,7 +303,7 @@ public class FileCacheTest {
     assertTrue(cache.contains(key2));
     FileCache.Item item = cache.get(key1);
     assertEquals(item, cache.get(key2));
-    assertArrayEquals(data, ByteUtil.getContent(item.file));
+      assertArrayEquals(data, Files.readAllBytes(item.file.toPath()));
   }
 
   /** Confirms that the cache properly replaces a value for an existing key (HS-7363). */
@@ -320,7 +321,7 @@ public class FileCacheTest {
 
     // Verify that we have the latest version of the data;
     FileCache.Item item = cache.get(1);
-    assertArrayEquals(data, ByteUtil.getContent(item.file));
+      assertArrayEquals(data, Files.readAllBytes(item.file.toPath()));
   }
 
   /** Confirms that both the data file and the property file are deleted when an item is removed. */

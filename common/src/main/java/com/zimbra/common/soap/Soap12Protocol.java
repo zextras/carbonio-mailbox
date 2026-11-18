@@ -9,9 +9,9 @@
 
 package com.zimbra.common.soap;
 
+import com.google.common.base.Throwables;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ExceptionToString;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
 
@@ -98,7 +98,7 @@ class Soap12Protocol extends SoapProtocol {
         // FIXME: should really be a qualified "attribute"
         error.addUniqueElement(ZimbraNamespace.E_CODE).setText(e.getCode());
         if (LC.soap_fault_include_stack_trace.booleanValue())
-            error.addUniqueElement(ZimbraNamespace.E_TRACE).setText(ExceptionToString.ToString(e));
+            error.addUniqueElement(ZimbraNamespace.E_TRACE).setText(Throwables.getStackTraceAsString(e));
         else
             error.addUniqueElement(ZimbraNamespace.E_TRACE).setText(e.getThreadName());
 

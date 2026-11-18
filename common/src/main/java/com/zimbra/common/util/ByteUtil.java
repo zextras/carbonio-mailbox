@@ -12,9 +12,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInput;
 import java.io.DataOutput;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,13 +20,16 @@ import java.io.PipedInputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
+import com.google.common.io.ByteStreams;
 
 /**
  * @author schemers
@@ -43,36 +43,7 @@ public class ByteUtil {
      * @throws IOException
      */
     public static void putContent(String path, byte[] data) throws IOException {
-      try (FileOutputStream fos = new FileOutputStream(path)) {
-        fos.write(data);
-      }
-    }
-
-    /**
-     * read all the content in the specified file and
-     * return as byte array.
-     * @param file file to read
-     * @return content of the file
-     * @throws IOException
-     */
-    public static byte[] getContent(File file) throws IOException {
-        byte[] buffer = new byte[(int) file.length()];
-
-        InputStream is = null;
-        try {
-            is = new FileInputStream(file);
-            int total_read = 0, num_read;
-
-            int num_left = buffer.length;
-
-            while (num_left > 0 && (num_read = is.read(buffer, total_read, num_left)) != -1) {
-                total_read += num_read;
-                num_left -= num_read;
-            }
-        } finally {
-            closeStream(is);
-        }
-        return buffer;
+        Files.write(Paths.get(path), data);
     }
 
     public static int countBytes(InputStream is) throws IOException {
@@ -87,13 +58,7 @@ public class ByteUtil {
      */
     public static int countBytes(InputStream is, boolean closeStream) throws IOException {
         try {
-            byte[] buf = new byte[8192];
-            int count = 0;
-            int num = 0;
-            // if you tweak this implementation, make sure drain() still works...
-            while ((num = is.read(buf)) != -1)
-                count += num;
-            return count;
+            return (int) ByteStreams.exhaust(is);
         } finally {
             if (closeStream) {
                 ByteUtil.closeStream(is);
@@ -472,11 +437,7 @@ public class ByteUtil {
     }
 
     public static String encodeLDAPBase64(byte[] data) {
-        return new String(Base64.encodeBase64(data));
-    }
-
-    public static byte[] decodeLDAPBase64(String str) {
-        return Base64.decodeBase64(str);
+        return Base64.encodeBase64String(data);
     }
 
     /**
@@ -488,18 +449,7 @@ public class ByteUtil {
      * @return hex or base64 string
      */
     public static String getDigest(String algorithm, byte[] data, boolean base64) {
-        try {
-            MessageDigest md = MessageDigest.getInstance(algorithm);
-            byte[] digest = md.digest(data);
-            if (base64)
-                return encodeFSSafeBase64(digest);
-            else
-                return new String(Hex.encodeHex(digest));
-        } catch (NoSuchAlgorithmException e) {
-            // this should never happen unless the JDK is foobar
-            //	e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        return encodeDigest(DigestUtils.getDigest(algorithm).digest(data), base64);
     }
 
     /**
@@ -514,24 +464,15 @@ public class ByteUtil {
     public static String getDigest(String algorithm, InputStream in, boolean base64)
     throws IOException {
         try {
-            MessageDigest md = MessageDigest.getInstance(algorithm);
-            byte[] buffer = new byte[1024];
-            int numBytes;
-            while ((numBytes = in.read(buffer)) >= 0) {
-                md.update(buffer, 0, numBytes);
-            }
-            byte[] digest = md.digest();
-            if (base64)
-                return encodeFSSafeBase64(digest);
-            else
-                return new String(Hex.encodeHex(digest));
-        } catch (NoSuchAlgorithmException e) {
-            // this should never happen unless the JDK is foobar
-            //  e.printStackTrace();
-            throw new RuntimeException(e);
+            MessageDigest md = DigestUtils.getDigest(algorithm);
+            return encodeDigest(DigestUtils.updateDigest(md, in).digest(), base64);
         } finally {
             ByteUtil.closeStream(in);
         }
+    }
+
+    private static String encodeDigest(byte[] digest, boolean base64) {
+        return base64 ? encodeFSSafeBase64(digest) : Hex.encodeHexString(digest);
     }
 
     /**

@@ -7,8 +7,8 @@ package com.zimbra.cs.imap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 
 public class FetchCommand extends ImapCommand {
@@ -31,7 +31,7 @@ public class FetchCommand extends ImapCommand {
         FetchCommand fetch = (FetchCommand) obj;
         if (super.equals(obj)) {
             return true;
-        } else if (attributes == fetch.attributes && StringUtil.equal(sequence, fetch.sequence)) {
+        } else if (attributes == fetch.attributes && Objects.equals(sequence, fetch.sequence)) {
             // special case since parts List could contain same args but
             // different order; we'll treat this as the same
             if (originalParts == null) {

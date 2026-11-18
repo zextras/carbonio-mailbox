@@ -5,8 +5,8 @@
 
 package com.zimbra.common.util;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import com.google.common.base.Throwables;
+import org.apache.commons.lang3.ObjectUtils;
 
 public class SystemUtil {
 
@@ -18,9 +18,7 @@ public class SystemUtil {
     }
     
     public static String getStackTrace(Throwable t) {
-        StringWriter writer = new StringWriter();
-        t.printStackTrace(new PrintWriter(writer));
-        return writer.toString();
+        return Throwables.getStackTraceAsString(t);
     }
     
     /**
@@ -32,27 +30,14 @@ public class SystemUtil {
      * is <tt>null</tt>.
      */
     public static Throwable getInnermostException(Throwable t) {
-        if (t == null) {
-            return null;
-        }
-        while (t.getCause() != null) {
-            t = t.getCause();
-        }
-        return t;
+        return t == null ? null : Throwables.getRootCause(t);
     }
     
     /**
      * Returns the first non-null value in the given list.
      */
     public static <E> E coalesce(E ... values) {
-        if (values != null) {
-            for (E value : values) {
-                if (value != null) {
-                    return value;
-                }
-            }
-        }
-        return null;
+        return ObjectUtils.firstNonNull(values);
     }
     
     public static String getProductVersion() {

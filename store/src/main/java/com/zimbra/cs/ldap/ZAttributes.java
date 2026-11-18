@@ -9,8 +9,9 @@ import com.unboundid.ldap.sdk.Attribute;
 import com.unboundid.ldap.sdk.Entry;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.zimbra.common.mailbox.ContactConstants;
-import com.zimbra.common.util.ByteUtil;
 import com.zimbra.cs.account.AttributeManager;
+import org.apache.commons.codec.binary.Base64;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -122,7 +123,7 @@ public class ZAttributes extends ZLdapElement implements IAttributes {
     private String getAttrStringInternal(Attribute attr, boolean containsBinaryData) {
         if (containsBinaryData) {
             byte[] bytes = attr.getValueByteArray();
-            return ByteUtil.encodeLDAPBase64(bytes);
+            return Base64.encodeBase64String(bytes);
         } else {
             return attr.getValue();
         }
@@ -134,7 +135,7 @@ public class ZAttributes extends ZLdapElement implements IAttributes {
         if (containsBinaryData) {
             byte[][] bytesArrays = attr.getValueByteArrays();
             for (int i = 0; i < bytesArrays.length; i++) {
-                result[i] = ByteUtil.encodeLDAPBase64(bytesArrays[i]);
+                result[i] = Base64.encodeBase64String(bytesArrays[i]);
             }
         } else {
             String[] values = attr.getValues();

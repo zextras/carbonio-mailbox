@@ -7,6 +7,7 @@ package com.zimbra.cs.service.mail;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import com.google.common.primitives.Ints;
 import com.zimbra.client.ZFolder;
 import com.zimbra.client.ZMailbox;
 import com.zimbra.client.ZMountpoint;
@@ -17,7 +18,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
-import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
@@ -45,13 +45,8 @@ import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.type.DataSourceType;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 
 /**
  * @since May 29, 2005
@@ -272,8 +267,8 @@ public class ItemAction extends MailDocumentHandler {
         localResults =
             ItemActionHelper.UNLOCK(octxt, mbox, responseProto, local, type, tcon).getResult();
       } else if (opStr.equals(MailConstants.OP_INHERIT)) {
-        mbox.alterTag(
-            octxt, ArrayUtil.toIntArray(local), type, Flag.FlagInfo.NO_INHERIT, false, tcon);
+          mbox.alterTag(
+            octxt, Ints.toArray(local), type, Flag.FlagInfo.NO_INHERIT, false, tcon);
         localResults = new ItemActionResult(local);
       } else if (opStr.equals(MailConstants.OP_MUTE) && type == MailItem.Type.CONVERSATION) {
         // note that "mute" ignores the tcon value

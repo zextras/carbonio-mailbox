@@ -68,6 +68,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.mail.MessagingException;
+
+import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.Assertions;
 
 /**
@@ -312,9 +314,12 @@ public class TestUtil {
                 return part;
             }
         }
-        if (StringUtil.equalIgnoreCase(mimeStructure.getName(), name)
-                || StringUtil.equalIgnoreCase(mimeStructure.getFileName(), name)
-                || StringUtil.equalIgnoreCase(mimeStructure.getPartName(), name)) {
+        String s1 = mimeStructure.getPartName();
+        String s3 = mimeStructure.getFileName();
+        String s4 = mimeStructure.getName();
+        if (Strings.CI.equals(s4, name)
+                || Strings.CI.equals(s3, name)
+                || Strings.CI.equals(s1, name)) {
             return mimeStructure;
         }
         return null;
