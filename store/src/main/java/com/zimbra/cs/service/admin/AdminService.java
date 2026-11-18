@@ -245,10 +245,6 @@ public class AdminService implements DocumentService {
         AdminConstants.FIX_CALENDAR_PRIORITY_REQUEST, new FixCalendarPriority());
 
     // admin saved searches
-    dispatcher.registerHandler(
-        AdminConstants.GET_ADMIN_SAVED_SEARCHES_REQUEST, new GetAdminSavedSearches());
-    dispatcher.registerHandler(
-        AdminConstants.MODIFY_ADMIN_SAVED_SEARCHES_REQUEST, new ModifyAdminSavedSearches());
 
     dispatcher.registerHandler(
         AdminConstants.ADD_ACCOUNT_LOGGER_REQUEST,
@@ -288,8 +284,6 @@ public class AdminService implements DocumentService {
         AdminConstants.GET_DELEGATED_ADMIN_CONSTRAINTS_REQUEST, new GetDelegatedAdminConstraints());
     dispatcher.registerHandler(AdminConstants.GET_RIGHTS_DOC_REQUEST, new GetRightsDoc());
     dispatcher.registerHandler(AdminConstants.GET_RIGHT_REQUEST, new GetRight());
-    dispatcher.registerHandler(
-        AdminConstants.GET_ADMIN_CONSOLE_UI_COMP_REQUEST, new GetAdminConsoleUIComp());
     dispatcher.registerHandler(
         AdminConstants.GET_ALL_EFFECTIVE_RIGHTS_REQUEST, new GetAllEffectiveRights());
     dispatcher.registerHandler(AdminConstants.GET_ALL_RIGHTS_REQUEST, new GetAllRights());
