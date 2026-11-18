@@ -38,12 +38,6 @@ public class LdapDIT {
   /*
    * This is our default ldap DIT.  All DNs/RDNs location is hardcoded to avoid
    * mis-configuration.
-   *
-   * To customize the DIT to a different layout, set the zimbra_class_provisioning
-   * localconfig key to com.zimbra.cs.account.ldap.custom.CustomLdapProvisioning,
-   * which will use the CustomLdapDIT class that can be customized by a set of
-   * localconfig keys.
-   *
    */
 
   /*

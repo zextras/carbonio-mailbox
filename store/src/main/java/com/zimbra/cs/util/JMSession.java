@@ -62,13 +62,11 @@ public final class JMSession {
    * @param session JavaMail {@link Session}
    */
   public static void setProviders(Session session) {
-    if (LC.javamail_zsmtp.booleanValue()) {
-      try {
-        session.setProvider(SmtpTransport.PROVIDER);
-        session.setProvider(SmtpsTransport.PROVIDER);
-      } catch (NoSuchProviderException e) {
-        assert (false);
-      }
+    try {
+      session.setProvider(SmtpTransport.PROVIDER);
+      session.setProvider(SmtpsTransport.PROVIDER);
+    } catch (NoSuchProviderException e) {
+      assert (false);
     }
   }
 

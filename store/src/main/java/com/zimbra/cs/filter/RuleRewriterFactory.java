@@ -9,10 +9,8 @@ import java.util.List;
 
 import org.apache.jsieve.parser.generated.Node;
 
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.ElementFactory;
-import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.mailbox.Mailbox;
 
 class RuleRewriterFactory {
@@ -21,16 +19,7 @@ class RuleRewriterFactory {
 	
     static synchronized RuleRewriterFactory getInstance() {
 		if (instance == null) {
-	        String className = LC.zimbra_class_rulerewriterfactory.value();
-	        if (className != null && !className.equals("")) {
-	            try {
-	                instance = (RuleRewriterFactory) Class.forName(className).newInstance();
-	            } catch (Exception e) {
-	                ZimbraLog.filter.error("could not instantiate RuleRewriterFactory interface of class '" + className + "'; defaulting to RuleRewriterFactory", e);
-	            }
-	        }
-	        if (instance == null)
-	            instance = new RuleRewriterFactory();
+			instance = new RuleRewriterFactory();
 		}
         return instance;
     }

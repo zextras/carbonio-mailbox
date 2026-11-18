@@ -8,6 +8,7 @@ package com.zextras.mailbox.util;
 
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
+import com.zimbra.cs.db.Db;
 import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.calendar.WellKnownTimeZones;
@@ -120,7 +121,7 @@ public class MailboxSetupHelper {
 		inMemoryLdapServer.start();
 		inMemoryLdapServer.initializeBasicData();
 
-		LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
+		Db.setInstance(new HSQLDB());
 		final UBIDLdapPoolConfig poolConfig = UBIDLdapPoolConfig.createNewPool(true);
 		ldapClient = LdapClient.createNew(poolConfig);
 		Provisioning.setInstance(new LdapProvisioningWithMockMime(ldapClient));

@@ -13,7 +13,6 @@ public final class LuceneIndexTest extends AbstractIndexStoreTest {
 
     @Override
     protected String getIndexStoreFactory() {
-        // Default for LC.zimbra_class_index_store_factory.value() is USUALLY this
         return "com.zimbra.cs.index.LuceneIndex$Factory";
     }
 }
