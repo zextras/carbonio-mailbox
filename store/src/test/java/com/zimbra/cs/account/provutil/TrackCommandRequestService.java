@@ -75,7 +75,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.CHECK_AUTH_CONFIG_REQUEST
           , AdminConstants.CHECK_GAL_CONFIG_REQUEST
           , AdminConstants.CHECK_HOSTNAME_RESOLVE_REQUEST
-          , AdminConstants.CHECK_EXCHANGE_AUTH_REQUEST
           , AdminConstants.CREATE_VOLUME_REQUEST
           , AdminConstants.GET_VOLUME_REQUEST
           , AdminConstants.GET_ALL_VOLUMES_REQUEST

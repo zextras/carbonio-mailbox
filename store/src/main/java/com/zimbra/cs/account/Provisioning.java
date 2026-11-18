@@ -369,7 +369,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
     // Never return password.
     if (name.equalsIgnoreCase(Provisioning.A_userPassword)
         || name.equalsIgnoreCase(Provisioning.A_zimbraDataSourcePassword)
-        || name.equalsIgnoreCase(Provisioning.A_zimbraFreebusyExchangeAuthPassword)
+        || name.equalsIgnoreCase("zimbraFreebusyExchangeAuthPassword")
         || name.equalsIgnoreCase(Provisioning.A_zimbraTwoFactorAuthSecret)
         || name.equalsIgnoreCase(Provisioning.A_zimbraTwoFactorAuthScratchCodes)
         || name.equalsIgnoreCase(Provisioning.A_zimbraAppSpecificPassword)

@@ -6,10 +6,7 @@
 package com.zimbra.cs.account.ldap;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.fb.ExchangeFreeBusyProvider;
-import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -73,24 +70,6 @@ public class Check {
       InetAddress.getByName(hostname);
     } catch (UnknownHostException e) {
       return new Provisioning.Result(STATUS_UNKNOWN_HOST, e, null);
-    }
-    return new Provisioning.Result(STATUS_OK, "", null);
-  }
-
-  public static Provisioning.Result checkExchangeAuth(
-      ExchangeFreeBusyProvider.ServerInfo sinfo, Account acct) throws ServiceException {
-    try {
-      int code = ExchangeFreeBusyProvider.checkAuth(sinfo, acct).getCode();
-      switch (code) {
-        case 400:
-        case 404:
-          return new Provisioning.Result(STATUS_BAD_URL, "", null);
-        case 401:
-        case 403:
-          return new Provisioning.Result(STATUS_AUTH_FAILED, "", null);
-      }
-    } catch (IOException e) {
-      return toResult(e, "");
     }
     return new Provisioning.Result(STATUS_OK, "", null);
   }
