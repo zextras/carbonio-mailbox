@@ -6,7 +6,7 @@
 
 package com.zimbra.cs.util;
 
-import com.zimbra.common.localconfig.LC;
+import com.zimbra.cs.db.Db;
 import com.zimbra.cs.db.DbConfig;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
@@ -26,7 +26,7 @@ class ConfigTest {
 
   @BeforeAll
   static void setUp() throws Exception {
-    LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
+    Db.setInstance(new HSQLDB());
     HSQLDB.createDatabase(tempDir.getAbsolutePath());
     DbPool.global();
   }

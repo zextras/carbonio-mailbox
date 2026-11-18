@@ -17,8 +17,6 @@ import org.apache.jsieve.ComparatorManager;
 import org.apache.jsieve.comparators.Comparator;
 import org.apache.jsieve.exception.LookupException;
 
-import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.util.ZimbraLog;
 
 public class ZimbraComparatorManagerImpl implements ComparatorManager {
 
@@ -60,31 +58,9 @@ public class ZimbraComparatorManagerImpl implements ComparatorManager {
         this.classNameMap = classNameMap;
         this.implicitlyDeclared = implicitlyDeclared;
 
-        String className = null;
-        try {
-            className = LC.zimbra_class_jsieve_comparators_ascii_casemap.value();
-            if (className != null && !className.equals("")) {
-                this.classNameMap.put(ASCII_CASEMAP_COMPARATOR, className);
-            }
-            ZimbraLog.filter.info("[%s] = [%s]",
-                ASCII_CASEMAP_COMPARATOR, getClassName(ASCII_CASEMAP_COMPARATOR));
-
-            className = LC.zimbra_class_jsieve_comparators_ascii_numeric.value();
-            if (className != null && !className.equals("")) {
-                this.classNameMap.put(ASCII_NUMERIC_COMPARATOR, className);
-            }
-            ZimbraLog.filter.info("[%s] = [%s]",
-                ASCII_NUMERIC_COMPARATOR, getClassName(ASCII_NUMERIC_COMPARATOR));
-
-            className = LC.zimbra_class_jsieve_comparators_octet.value();
-            if (className != null && !className.equals("")) {
-                this.classNameMap.put(OCTET_COMPARATOR, className);
-            }
-            ZimbraLog.filter.info("[%s] = [%s]",
-                ASCII_NUMERIC_COMPARATOR, getClassName(ASCII_NUMERIC_COMPARATOR));
-        } catch (Exception e) {
-            ZimbraLog.webclient.warn("exception classname: [%s] not found", className);
-        }
+        this.classNameMap.put(ASCII_CASEMAP_COMPARATOR, ZimbraAsciiCasemap.class.getName());
+        this.classNameMap.put(ASCII_NUMERIC_COMPARATOR, ZimbraAsciiNumeric.class.getName());
+        this.classNameMap.put(OCTET_COMPARATOR, ZimbraOctet.class.getName());
     }
 
     /**

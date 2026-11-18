@@ -6,7 +6,6 @@
 package com.zimbra.cs.util;
 
 import com.zimbra.common.calendar.WellKnownTimeZones;
-import com.zimbra.common.lmtp.SmtpToLmtp;
 import com.zimbra.common.localconfig.ConfigException;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.localconfig.LocalConfig;
@@ -315,13 +314,6 @@ public final class Zimbra {
 
       if (app.supports(AutoProvisionThread.class.getName())) {
         AutoProvisionThread.switchAutoProvThreadIfNecessary();
-      }
-
-      if (LC.smtp_to_lmtp_enabled.booleanValue()) {
-        int smtpPort = LC.smtp_to_lmtp_port.intValue();
-        int lmtpPort = Provisioning.getInstance().getLocalServer().getLmtpBindPort();
-        SmtpToLmtp smtpServer = SmtpToLmtp.startup(smtpPort, "localhost", lmtpPort);
-        smtpServer.setRecipientValidator(new SmtpRecipientValidator());
       }
 
       if (LC.support_timer.booleanValue() && app.supports(AclPushTask.class)) {

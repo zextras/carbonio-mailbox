@@ -730,10 +730,7 @@ public class Mailbox implements MailboxStore {
   }
 
   boolean requiresWriteLock() {
-    // mailbox currently forced to use write lock due to one of the following
-    // 1. pending tag/flag reload; i.e. cache flush or initial mailbox load
-    // 2. read/write disabled by LC for debugging
-    return requiresWriteLock || !LC.zimbra_mailbox_lock_readwrite.booleanValue();
+    return requiresWriteLock;
   }
 
   /**

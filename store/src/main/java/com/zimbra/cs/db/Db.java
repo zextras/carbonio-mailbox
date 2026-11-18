@@ -6,9 +6,7 @@
 package com.zimbra.cs.db;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -63,24 +61,21 @@ public abstract class Db {
 
     public static synchronized Db getInstance() {
         if (sDatabase == null) {
-            String className = LC.zimbra_class_database.value();
-            if (className != null && !className.equals("")) {
-                try {
-                    sDatabase = (Db) Class.forName(className).newInstance();
-                } catch (Exception e) {
-                    ZimbraLog.system.error("could not instantiate database configuration '" + className + "'; defaulting to MySQL", e);
-                }
-            }
-            if (sDatabase == null)
-                sDatabase = new MariaDB();
-            ESCAPE_SEQUENCE = sDatabase.escapeSequence();
+            setInstance(new MariaDB());
         }
         return sDatabase;
     }
 
     @VisibleForTesting
-    public static synchronized void setInstance(Db db) {
-        sDatabase = db ;
+    public static synchronized void setInstance(Db database) {
+        sDatabase = database;
+        if (database != null) {
+            ESCAPE_SEQUENCE = database.escapeSequence();
+        }
+    }
+
+    public String healthCheckQuery() {
+        return "SELECT 1";
     }
     /** Returns whether the currently-configured database supports the given
      *  {@link Db.Capability}. */

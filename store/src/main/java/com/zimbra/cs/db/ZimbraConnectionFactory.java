@@ -6,7 +6,6 @@
 package com.zimbra.cs.db;
 
 import com.google.common.annotations.VisibleForTesting;
-import java.lang.reflect.Constructor;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -14,8 +13,6 @@ import java.util.Properties;
 import org.apache.commons.dbcp2.ConnectionFactory;
 import org.apache.commons.dbcp2.DriverManagerConnectionFactory;
 
-import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.db.DbPool.PoolConfig;
 
 /**
@@ -32,19 +29,7 @@ public class ZimbraConnectionFactory extends DriverManagerConnectionFactory {
     }
     public static ConnectionFactory getConnectionFactory(PoolConfig pconfig) {
         if (sConnFactory == null) {
-            String className = LC.zimbra_class_dbconnfactory.value();
-            if (className != null && !className.equals("")) {
-                try {
-                    ZimbraLog.dbconn.debug("instantiating DB connection factory class "+className);
-                    Class clazz = Class.forName(className);
-                    Constructor constructor = clazz.getDeclaredConstructor(String.class, Properties.class);
-                    sConnFactory = (ConnectionFactory) constructor.newInstance(pconfig.mConnectionUrl, pconfig.mDatabaseProperties);
-                } catch (Exception e) {
-                    ZimbraLog.system.error("could not instantiate database connection pool '" + className + "'; defaulting to ZimbraConnectionFactory", e);
-                }
-            }
-            if (sConnFactory == null)
-                sConnFactory = new ZimbraConnectionFactory(pconfig.mConnectionUrl, pconfig.mDatabaseProperties);
+            sConnFactory = new ZimbraConnectionFactory(pconfig.mConnectionUrl, pconfig.mDatabaseProperties);
         }
         return sConnFactory;
     }
