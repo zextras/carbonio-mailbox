@@ -24,8 +24,6 @@ public class AccountConstants {
   public static final String E_AUTH_RESPONSE = "AuthResponse";
   public static final String E_CHANGE_PASSWORD_REQUEST = "ChangePasswordRequest";
   public static final String E_CHANGE_PASSWORD_RESPONSE = "ChangePasswordResponse";
-  public static final String E_CLIENT_INFO_REQUEST = "ClientInfoRequest";
-  public static final String E_CLIENT_INFO_RESPONSE = "ClientInfoResponse";
   public static final String E_END_SESSION_REQUEST = "EndSessionRequest";
   public static final String E_END_SESSION_RESPONSE = "EndSessionResponse";
   public static final String E_GET_PREFS_REQUEST = "GetPrefsRequest";
@@ -38,9 +36,6 @@ public class AccountConstants {
   public static final String E_GET_ALL_LOCALES_RESPONSE = "GetAllLocalesResponse";
   public static final String E_GET_AVAILABLE_LOCALES_REQUEST = "GetAvailableLocalesRequest";
   public static final String E_GET_AVAILABLE_LOCALES_RESPONSE = "GetAvailableLocalesResponse";
-  public static final String E_GET_AVAILABLE_CSV_FORMATS_REQUEST = "GetAvailableCsvFormatsRequest";
-  public static final String E_GET_AVAILABLE_CSV_FORMATS_RESPONSE =
-      "GetAvailableCsvFormatsResponse";
   public static final String E_GET_SHARE_INFO_REQUEST = "GetShareInfoRequest";
   public static final String E_GET_SHARE_INFO_RESPONSE = "GetShareInfoResponse";
   public static final String E_GET_WHITE_BLACK_LIST_REQUEST = "GetWhiteBlackListRequest";
@@ -124,8 +119,6 @@ public class AccountConstants {
       QName.get(E_CHANGE_PASSWORD_REQUEST, NAMESPACE);
   public static final QName CHANGE_PASSWORD_RESPONSE =
       QName.get(E_CHANGE_PASSWORD_RESPONSE, NAMESPACE);
-  public static final QName CLIENT_INFO_REQUEST = QName.get(E_CLIENT_INFO_REQUEST, NAMESPACE);
-  public static final QName CLIENT_INFO_RESPONSE = QName.get(E_CLIENT_INFO_RESPONSE, NAMESPACE);
   public static final QName END_SESSION_REQUEST = QName.get(E_END_SESSION_REQUEST, NAMESPACE);
   public static final QName END_SESSION_RESPONSE = QName.get(E_END_SESSION_RESPONSE, NAMESPACE);
 
@@ -146,10 +139,6 @@ public class AccountConstants {
       QName.get(E_GET_AVAILABLE_LOCALES_REQUEST, NAMESPACE);
   public static final QName GET_AVAILABLE_LOCALES_RESPONSE =
       QName.get(E_GET_AVAILABLE_LOCALES_RESPONSE, NAMESPACE);
-  public static final QName GET_AVAILABLE_CSV_FORMATS_REQUEST =
-      QName.get(E_GET_AVAILABLE_CSV_FORMATS_REQUEST, NAMESPACE);
-  public static final QName GET_AVAILABLE_CSV_FORMATS_RESPONSE =
-      QName.get(E_GET_AVAILABLE_CSV_FORMATS_RESPONSE, NAMESPACE);
   public static final QName GET_SHARE_INFO_REQUEST = QName.get(E_GET_SHARE_INFO_REQUEST, NAMESPACE);
   public static final QName GET_WHITE_BLACK_LIST_REQUEST =
       QName.get(E_GET_WHITE_BLACK_LIST_REQUEST, NAMESPACE);

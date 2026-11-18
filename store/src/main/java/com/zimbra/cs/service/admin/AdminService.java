@@ -142,8 +142,6 @@ public class AdminService implements DocumentService {
 
     dispatcher.registerHandler(AdminConstants.CHECK_AUTH_CONFIG_REQUEST, new CheckAuthConfig());
     dispatcher.registerHandler(AdminConstants.CHECK_GAL_CONFIG_REQUEST, new CheckGalConfig());
-    dispatcher.registerHandler(
-        AdminConstants.CHECK_HOSTNAME_RESOLVE_REQUEST, new CheckHostnameResolve());
     dispatcher.registerHandler(AdminConstants.CREATE_VOLUME_REQUEST, new CreateVolume());
     dispatcher.registerHandler(AdminConstants.GET_VOLUME_REQUEST, new GetVolume());
     dispatcher.registerHandler(AdminConstants.GET_ALL_VOLUMES_REQUEST, new GetAllVolumes());
@@ -264,8 +262,6 @@ public class AdminService implements DocumentService {
 
     dispatcher.registerHandler(AdminConstants.GET_SHARE_INFO_REQUEST, new GetShareInfo());
 
-    dispatcher.registerHandler(AdminConstants.GET_SERVER_NIFS_REQUEST, new GetServerNIFs());
-
     // f/b mgmt
     dispatcher.registerHandler(
         AdminConstants.GET_ALL_FREE_BUSY_PROVIDERS_REQUEST, new GetAllFreeBusyProviders());
@@ -340,8 +336,6 @@ public class AdminService implements DocumentService {
         AdminConstants.DELETE_SYSTEM_RETENTION_POLICY_REQUEST, new DeleteSystemRetentionPolicy());
 
     // store manager verifier
-    dispatcher.registerHandler(
-        AdminConstants.VERIFY_STORE_MANAGER_REQUEST, new VerifyStoreManager());
 
     // Filter rules
     dispatcher.registerHandler(AdminConstants.GET_FILTER_RULES_REQUEST, new GetFilterRules());

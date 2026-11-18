@@ -74,7 +74,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.GET_MAILBOX_REQUEST
           , AdminConstants.CHECK_AUTH_CONFIG_REQUEST
           , AdminConstants.CHECK_GAL_CONFIG_REQUEST
-          , AdminConstants.CHECK_HOSTNAME_RESOLVE_REQUEST
           , AdminConstants.CREATE_VOLUME_REQUEST
           , AdminConstants.GET_VOLUME_REQUEST
           , AdminConstants.GET_ALL_VOLUMES_REQUEST
@@ -140,7 +139,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.FLUSH_CACHE_REQUEST
           , AdminConstants.COUNT_ACCOUNT_REQUEST
           , AdminConstants.GET_SHARE_INFO_REQUEST
-          , AdminConstants.GET_SERVER_NIFS_REQUEST
           , AdminConstants.GET_ALL_FREE_BUSY_PROVIDERS_REQUEST
           , AdminConstants.GET_FREE_BUSY_QUEUE_INFO_REQUEST
           , AdminConstants.PUSH_FREE_BUSY_REQUEST
@@ -176,7 +174,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.CREATE_SYSTEM_RETENTION_POLICY_REQUEST
           , AdminConstants.MODIFY_SYSTEM_RETENTION_POLICY_REQUEST
           , AdminConstants.DELETE_SYSTEM_RETENTION_POLICY_REQUEST
-          , AdminConstants.VERIFY_STORE_MANAGER_REQUEST
           , AdminConstants.GET_FILTER_RULES_REQUEST
           , AdminConstants.MODIFY_FILTER_RULES_REQUEST
           , AdminConstants.GET_OUTGOING_FILTER_RULES_REQUEST
@@ -185,7 +182,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AccountConstants.AUTH_REQUEST
           , AccountConstants.CHANGE_PASSWORD_REQUEST
           , AccountConstants.END_SESSION_REQUEST
-          , AccountConstants.CLIENT_INFO_REQUEST
           , AccountConstants.GET_PREFS_REQUEST
           , AccountConstants.MODIFY_PREFS_REQUEST
           , AccountConstants.GET_INFO_REQUEST
@@ -197,7 +193,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AccountConstants.MODIFY_PROPERTIES_REQUEST
           , AccountConstants.GET_ALL_LOCALES_REQUEST
           , AccountConstants.GET_AVAILABLE_LOCALES_REQUEST
-          , AccountConstants.GET_AVAILABLE_CSV_FORMATS_REQUEST
           , AccountConstants.CREATE_IDENTITY_REQUEST
           , AccountConstants.MODIFY_IDENTITY_REQUEST
           , AccountConstants.DELETE_IDENTITY_REQUEST
@@ -222,7 +217,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AccountConstants.RESET_PASSWORD_REQUEST
           , AccountConstants.SEARCH_USERS_BY_FEATURE_REQUEST
           , MailConstants.NO_OP_REQUEST
-          , MailConstants.GENERATE_UUID_REQUEST
           , MailConstants.BROWSE_REQUEST
           , MailConstants.SEARCH_REQUEST
           , MailConstants.SEARCH_CONV_REQUEST
@@ -310,7 +304,6 @@ public class TrackCommandRequestService implements DocumentService {
           , MailConstants.GET_EFFECTIVE_FOLDER_PERMS_REQUEST
           , MailConstants.AUTO_COMPLETE_REQUEST
           , MailConstants.FULL_AUTO_COMPLETE_REQUEST
-          , MailConstants.RANKING_ACTION_REQUEST
           , MailConstants.GET_SHARE_NOTIFICATIONS_REQUEST
           , MailConstants.GET_SYSTEM_RETENTION_POLICY_REQUEST
           , MailConstants.GET_IMAP_RECENT_REQUEST
