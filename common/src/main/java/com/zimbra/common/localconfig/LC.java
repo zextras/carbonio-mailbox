@@ -486,7 +486,6 @@ public final class LC {
   public static final KnownKey calendar_max_desc_in_metadata = KnownKey.newKey(4096); // 4KB
   public static final KnownKey calendar_freebusy_max_days = KnownKey.newKey(366);
   public static final KnownKey calendar_search_max_days = KnownKey.newKey(400);
-  public static final KnownKey exchange_free_busy_interval_min = KnownKey.newKey(15);
 
   @Supported public static final KnownKey calendar_cache_enabled = KnownKey.newKey(true);
 

@@ -204,8 +204,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public static final String LDAP_AM_SIMPLE = "simple";
   public static final String LDAP_AM_KERBEROS5 = "kerberos5";
 
-  public static final int MAX_ZIMBRA_ID_LEN = 127;
-
   private final List<ProvisioningValidator> validators = new ArrayList<>();
 
   private static volatile Provisioning singleton;

@@ -5111,59 +5111,6 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  public void writeICalendarForRange(
-      Writer writer,
-      OperationContext octxt,
-      long start,
-      long end,
-      int folderId,
-      boolean useOutlookCompatMode,
-      boolean ignoreErrors,
-      boolean needAppleICalHacks)
-      throws ServiceException {
-    writeICalendarForRange(
-        writer,
-        octxt,
-        start,
-        end,
-        folderId,
-        useOutlookCompatMode,
-        ignoreErrors,
-        needAppleICalHacks,
-        false);
-  }
-
-  public void writeICalendarForRange(
-      Writer writer,
-      OperationContext octxt,
-      long start,
-      long end,
-      int folderId,
-      boolean useOutlookCompatMode,
-      boolean ignoreErrors,
-      boolean needAppleICalHacks,
-      boolean escapeHtmlTags)
-      throws ServiceException {
-    boolean success = false;
-    try {
-      beginTransaction("writeICalendarForRange", octxt);
-      Collection<CalendarItem> calItems =
-          getCalendarItemsForRange(octxt, start, end, folderId, null);
-      writeICalendarForCalendarItems(
-          writer,
-          octxt,
-          calItems,
-          null,
-          useOutlookCompatMode,
-          ignoreErrors,
-          needAppleICalHacks,
-          true,
-          escapeHtmlTags);
-    } finally {
-      endTransaction(success);
-    }
-  }
-
   public CalendarDataResult getCalendarSummaryForRange(
       OperationContext octxt, int folderId, MailItem.Type type, long start, long end)
       throws ServiceException {

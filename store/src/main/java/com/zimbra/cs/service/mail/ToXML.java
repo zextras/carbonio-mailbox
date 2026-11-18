@@ -3940,46 +3940,6 @@ public final class ToXML {
     return dtEndElem;
   }
 
-  public static void encodeCalendarItemRecur(Element parent, CalendarItem calItem) {
-    TimeZoneMap tzmap = calItem.getTimeZoneMap();
-    encodeTimeZoneMap(parent, tzmap);
-    Invite[] invites = calItem.getInvites();
-    for (Invite inv : invites) {
-      String elemName;
-      if (inv.isCancel()) {
-        elemName = MailConstants.E_CAL_CANCEL;
-      } else if (inv.hasRecurId()) {
-        elemName = MailConstants.E_CAL_EXCEPT;
-      } else {
-        elemName = MailConstants.E_INVITE_COMPONENT;
-      }
-      Element compElem = parent.addNonUniqueElement(elemName);
-      boolean allDay = inv.isAllDayEvent();
-      // RECURRENCE-ID
-      if (inv.hasRecurId()) encodeRecurId(compElem, inv.getRecurId(), allDay);
-      if (!inv.isCancel()) {
-        // DTSTART
-        ParsedDateTime dtStart = inv.getStartTime();
-        if (dtStart != null) encodeDtStart(compElem, dtStart, allDay, false);
-        // DTEND or DURATION
-        ParsedDateTime dtEnd = inv.getEndTime();
-        if (dtEnd != null) {
-          encodeDtEnd(compElem, dtEnd, allDay, inv.isTodo(), false);
-        } else {
-          ParsedDuration dur = inv.getDuration();
-          if (dur != null) dur.toXml(compElem);
-        }
-
-        // recurrence definition
-        IRecurrence recurrence = inv.getRecurrence();
-        if (recurrence != null) {
-          Element recurElem = compElem.addNonUniqueElement(MailConstants.E_CAL_RECUR);
-          recurrence.toXml(recurElem);
-        }
-      }
-    }
-  }
-
   public static Element encodeGalContact(Element response, GalContact contact) {
     return encodeGalContact(response, contact, null);
   }

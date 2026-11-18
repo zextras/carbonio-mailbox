@@ -16,8 +16,6 @@ public class RemoteCommands {
     
     public static final String COLLECT_LDAP_ZIMBRA = "zmcollectldapzimbra";
     
-    public static final String ZM_SERVER_IPS = "zmserverips";
-    
     public static final String START_MAILBOX = "start mailbox";
     
     public static final String STOP_MAILBOX = "stop mailbox";

@@ -322,7 +322,6 @@ public class AccountConstants {
   public static final String E_CHILD_ACCOUNT = "childAccount";
   public static final String E_CONTENT = "content";
   public static final String E_REST = "rest";
-  public static final String E_CSV = "csv";
   public static final String E_COS = "cos";
   public static final String E_WHITE_LIST = "whiteList";
   public static final String E_BLACK_LIST = "blackList";
