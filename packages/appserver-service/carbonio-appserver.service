@@ -27,7 +27,6 @@ ExecStart=/opt/zextras/bin/configd exec -- /opt/zextras/common/bin/java \
   --enable-native-access=ALL-UNNAMED \
   -Dfile.encoding=UTF-8 \
   $$mailboxd_java_options \
-  -Xms$${java_xms}m \
   -Xmx$${java_xmx}m \
   -XX:G1PeriodicGCInterval=60000 \
   -Djava.io.tmpdir=/opt/zextras/mailboxd/work \
