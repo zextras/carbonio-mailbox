@@ -312,7 +312,6 @@ public class AccountConstants {
   public static final String A_N = "n";
   public static final String A_NAME = "name";
   public static final String A_ID = "id";
-  public static final String A_ID_ONLY = "idOnly";
   public static final String A_IS_EXTERNAL = "isExternal";
   public static final String A_IS_MEMBER = "isMember";
   public static final String A_IS_OWNER = "isOwner";
@@ -401,7 +400,6 @@ public class AccountConstants {
   public static final String A_ENTRY_SEARCH_FILTER_VALUE = "value";
 
   // Version info
-  public static final String E_VERSION_INFO_INFO = "info";
   public static final String A_VERSION_INFO_VERSION = "version";
   public static final String A_VERSION_INFO_RELEASE = "release";
   public static final String A_VERSION_INFO_DATE = "buildDate";

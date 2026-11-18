@@ -618,7 +618,6 @@ public final class LC {
   public static final KnownKey zimbra_archive_formatter_disable_timeout = KnownKey.newKey(true);
   public static final KnownKey zimbra_csv_formatter_disable_timeout = KnownKey.newKey(true);
   public static final KnownKey zimbra_archive_formatter_search_chunk_size = KnownKey.newKey(4096);
-  public static final KnownKey zimbra_gal_sync_disable_timeout = KnownKey.newKey(true);
 
   // for bug 79865
   /**
