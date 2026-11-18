@@ -6,7 +6,6 @@
 
 package com.zimbra.cs.db;
 
-import com.zimbra.common.localconfig.LC;
 import java.io.File;
 import org.apache.commons.cli.Options;
 import org.junit.jupiter.api.AfterAll;
@@ -24,7 +23,7 @@ public class VersionsTest {
 
 	@BeforeAll
 	static void setUp() throws Exception {
-		LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
+		Db.setInstance(new HSQLDB());
 		HSQLDB.createDatabase(tempDir.getAbsolutePath());
 		DbPool.global();
 	}

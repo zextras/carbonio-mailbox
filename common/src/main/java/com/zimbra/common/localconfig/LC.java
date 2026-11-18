@@ -139,8 +139,6 @@ public final class LC {
   @Reloadable
   public static final KnownKey zimbra_mailbox_lock_timeout = KnownKey.newKey(60); // seconds
 
-  public static final KnownKey zimbra_mailbox_lock_readwrite = KnownKey.newKey(true);
-
   @Supported public static final KnownKey zimbra_index_threads = KnownKey.newKey(10);
 
   @Supported public static final KnownKey zimbra_reindex_threads = KnownKey.newKey(10);
@@ -524,7 +522,6 @@ public final class LC {
 
   // Default 3 days.  Without limit 1 server was needing to restart every 30 to 45 days
   public static final KnownKey imap_noninteractive_session_cache_maxage_days = KnownKey.newKey(3);
-  public static final KnownKey imap_use_ehcache = KnownKey.newKey(true);
   public static final KnownKey imap_write_timeout = KnownKey.newKey(10);
   public static final KnownKey imap_write_chunk_size = KnownKey.newKey(8 * 1024);
   public static final KnownKey imap_thread_keep_alive_time = KnownKey.newKey(60);
@@ -558,7 +555,6 @@ public final class LC {
    * default value is slightly longer than the max time the MTA should need.
    */
   public static final KnownKey milter_max_idle_time = KnownKey.newKey(3630);
-  public static final KnownKey milter_in_process_mode = KnownKey.newKey(false);
   public static final KnownKey milter_write_timeout = KnownKey.newKey(10);
   public static final KnownKey milter_write_chunk_size = KnownKey.newKey(1024);
   public static final KnownKey milter_thread_keep_alive_time = KnownKey.newKey(60);
@@ -583,35 +579,6 @@ public final class LC {
   public static final KnownKey zimbra_configrewrite_timeout = KnownKey.newKey(120);
 
   @Supported public static final KnownKey zimbra_mailbox_groups = KnownKey.newKey(100);
-
-  public static final KnownKey zimbra_class_provisioning =
-      KnownKey.newKey("com.zimbra.cs.account.ldap.LdapProvisioning");
-
-  public static final KnownKey zimbra_class_mboxmanager =
-      KnownKey.newKey("com.zimbra.cs.mailbox.MailboxManager");
-  public static final KnownKey zimbra_class_database = KnownKey.newKey("com.zimbra.cs.db.MariaDB");
-  public static final KnownKey zimbra_class_store =
-      KnownKey.newKey("com.zimbra.cs.store.file.FileBlobStore");
-  public static final KnownKey zimbra_class_index_store_factory =
-      KnownKey.newKey("com.zimbra.cs.index.LuceneIndex$Factory");
-  public static final KnownKey zimbra_class_application =
-      KnownKey.newKey("com.zimbra.cs.util.ZimbraApplication");
-  public static final KnownKey zimbra_class_rulerewriterfactory =
-      KnownKey.newKey("com.zimbra.cs.filter.RuleRewriterFactory");
-  public static final KnownKey zimbra_class_datasourcemanager =
-      KnownKey.newKey("com.zimbra.cs.datasource.DataSourceManager");
-  public static final KnownKey zimbra_class_soapsessionfactory =
-      KnownKey.newKey("com.zimbra.soap.SoapSessionFactory");
-  public static final KnownKey zimbra_class_dbconnfactory =
-      KnownKey.newKey("com.zimbra.cs.db.ZimbraConnectionFactory");
-  public static final KnownKey zimbra_class_galgroupinfoprovider =
-      KnownKey.newKey("com.zimbra.cs.gal.GalGroupInfoProvider");
-  public static final KnownKey zimbra_class_jsieve_comparators_ascii_casemap =
-      KnownKey.newKey("com.zimbra.cs.filter.ZimbraAsciiCasemap");
-  public static final KnownKey zimbra_class_jsieve_comparators_ascii_numeric =
-      KnownKey.newKey("com.zimbra.cs.filter.ZimbraAsciiNumeric");
-  public static final KnownKey zimbra_class_jsieve_comparators_octet =
-      KnownKey.newKey("com.zimbra.cs.filter.ZimbraOctet");
 
   public static final KnownKey data_source_fetch_size = KnownKey.newKey(5);
   public static final KnownKey data_source_xsync_class = KnownKey.newKey("");
@@ -693,11 +660,6 @@ public final class LC {
   public static final KnownKey zimbra_enable_text_extraction = KnownKey.newKey(true);
 
   /**
-   * {@code true} to use Zimbra's SMTP client implementation ({@code
-   * com.zimbra.cs.mailclient.smtp.SmtpTransport}), otherwise use JavaMail's default implementation
-   * ({@code com.sun.mail.smtp.SMTPTransport}).
-   */
-  public static final KnownKey javamail_zsmtp = KnownKey.newKey(true);
 
   /**
    * {@code true} to use Zimbra's MIME parser implementation ({@code
@@ -830,8 +792,6 @@ public final class LC {
   public static final KnownKey zimbra_slow_logging_threshold = KnownKey.newKey(5000);
 
   public static final KnownKey smtp_host_retry_millis = KnownKey.newKey(60000);
-  public static final KnownKey smtp_to_lmtp_enabled = KnownKey.newKey(false);
-  public static final KnownKey smtp_to_lmtp_port = KnownKey.newKey(7024);
 
   @Supported public static final KnownKey socks_enabled = KnownKey.newKey(false);
 
@@ -931,10 +891,6 @@ public final class LC {
   // list file for blocking common passwords
   public static final KnownKey common_passwords_txt =
       KnownKey.newKey("${zimbra_home}/conf/common-passwords.txt");
-  // imap folder pagination size
-  public static final KnownKey zimbra_imap_folder_pagination_size = KnownKey.newKey(2000);
-  // imap folder pagination enabled
-  public static final KnownKey zimbra_imap_folder_pagination_enabled = KnownKey.newKey(false);
   // imap different message size than postfix mta ( useful for import )
   public static final KnownKey imap_max_message_size = KnownKey.newKey(null);
   // imap uid range search

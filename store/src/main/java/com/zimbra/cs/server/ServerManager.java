@@ -16,8 +16,6 @@ import com.zimbra.cs.imap.TcpImapServer;
 import com.zimbra.cs.lmtpserver.LmtpConfig;
 import com.zimbra.cs.lmtpserver.LmtpServer;
 import com.zimbra.cs.lmtpserver.TcpLmtpServer;
-import com.zimbra.cs.milter.MilterConfig;
-import com.zimbra.cs.milter.MilterServer;
 import com.zimbra.cs.pop3.NioPop3Server;
 import com.zimbra.cs.pop3.Pop3Config;
 import com.zimbra.cs.pop3.Pop3Server;
@@ -30,7 +28,6 @@ public final class ServerManager {
     private Pop3Server pop3SSLServer;
     private ImapServer imapServer;
     private ImapServer imapSSLServer;
-    private MilterServer milterServer;
 
     private static final ServerManager INSTANCE = new ServerManager();
 
@@ -62,13 +59,6 @@ public final class ServerManager {
                 imapSSLServer = startImapServer(true);
             }
         }
-
-        // run milter service in the same process as mailtoxd. should be used only in dev environment
-        if (app.supports(MilterServer.class)) {
-            if (LC.milter_in_process_mode.booleanValue()) {
-                milterServer = startMilterServer();
-            }
-        }
     }
 
     private static boolean isEnabled(String key) throws ServiceException {
@@ -98,12 +88,6 @@ public final class ServerManager {
         return server;
     }
 
-    private MilterServer startMilterServer() throws ServiceException {
-        MilterServer server = new MilterServer(new MilterConfig());
-        server.start();
-        return server;
-    }
-
     public void stopServers() throws ServiceException {
         if (lmtpServer != null) {
             lmtpServer.stop();
@@ -119,9 +103,6 @@ public final class ServerManager {
         }
         if (imapSSLServer != null) {
             imapSSLServer.stop();
-        }
-        if (milterServer != null) {
-            milterServer.stop();
         }
     }
 

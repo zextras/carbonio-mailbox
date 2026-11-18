@@ -7,7 +7,6 @@ package com.zimbra.cs.imap;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mailbox.FolderStore;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
@@ -32,7 +31,6 @@ class ImapHandlerTest extends MailboxTestSuite {
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		LC.imap_use_ehcache.setDefault(false);
 		String[] hosts = {"localhost", "127.0.0.1"};
 		ServerThrottle.configureThrottle(new ImapConfig(false).getProtocol(), 100, 100,
 				Arrays.asList(hosts), Arrays.asList(hosts));

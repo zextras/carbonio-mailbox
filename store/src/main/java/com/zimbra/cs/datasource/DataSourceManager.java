@@ -14,7 +14,6 @@ import com.zimbra.common.account.ZAttrProvisioning.AccountStatus;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Pair;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.DataSource;
@@ -130,23 +129,7 @@ public class DataSourceManager {
 
   public static synchronized DataSourceManager getInstance() {
     if (sInstance == null) {
-      String className = LC.zimbra_class_datasourcemanager.value();
-      if (!StringUtil.isNullOrEmpty(className)) {
-        try {
-          try {
-            sInstance = (DataSourceManager) Class.forName(className).newInstance();
-          } catch (ClassNotFoundException cnfe) {
-            // ignore and look in extensions
-            sInstance = (DataSourceManager) ExtensionUtil.findClass(className).newInstance();
-          }
-        } catch (Exception e) {
-          ZimbraLog.system.error("Unable to initialize %s.", className, e);
-        }
-      }
-      if (sInstance == null) {
-        sInstance = new DataSourceManager();
-        ZimbraLog.datasource.info("Initialized %s.", sInstance.getClass().getName());
-      }
+      sInstance = new DataSourceManager();
     }
 
     return sInstance;

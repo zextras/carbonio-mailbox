@@ -13,7 +13,6 @@ import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.account.ZAttrProvisioning;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.L10nUtil;
 import com.zimbra.common.util.StringUtil;
@@ -25,7 +24,6 @@ import com.zimbra.cs.account.auth.AuthContext;
 import com.zimbra.cs.account.gal.GalOp;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.account.names.NameUtil;
-import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.gal.GalSearchParams;
 import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -304,45 +302,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
             cacheMode = CacheMode.DEFAULT;
           }
 
-          String className = LC.zimbra_class_provisioning.value();
-
-          if (className != null && !className.equals("")) {
-            Class<?> klass = null;
-            try {
-              try {
-                klass = Class.forName(className);
-              } catch (ClassNotFoundException cnfe) {
-                // ignore and look in extensions
-                klass = ExtensionUtil.findClass(className);
-              }
-
-              if (cacheMode != CacheMode.DEFAULT) {
-                try {
-                  singleton =
-                      (Provisioning) klass.getConstructor(CacheMode.class).newInstance(cacheMode);
-                } catch (NoSuchMethodException e) {
-                  ZimbraLog.account.error(
-                      "could not find constructor with CacheMode parameter '"
-                          + className
-                          + "'; defaulting to LdapProvisioning",
-                      e);
-                }
-              } else {
-                singleton = (Provisioning) klass.newInstance();
-              }
-            } catch (Exception e) {
-              ZimbraLog.account.error(
-                  "could not instantiate Provisioning interface of class '"
-                      + className
-                      + "'; defaulting to LdapProvisioning",
-                  e);
-            }
-          }
-
-          if (singleton == null) {
-            singleton = LdapProvisioning.create(cacheMode);
-            ZimbraLog.account.error("defaulting to " + singleton.getClass().getCanonicalName());
-          }
+          singleton = LdapProvisioning.create(cacheMode);
         }
       }
     }
