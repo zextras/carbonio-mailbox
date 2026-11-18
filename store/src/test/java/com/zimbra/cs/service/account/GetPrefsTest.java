@@ -4,16 +4,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.service.mail.ServiceTestUtil;
-import com.zimbra.soap.JaxbUtil;
-import com.zimbra.soap.account.message.GetPrefsRequest;
-import com.zimbra.soap.account.message.GetPrefsResponse;
-import com.zimbra.soap.account.type.Pref;
 import java.util.List;
-import java.util.Objects;
 import org.junit.jupiter.api.Test;
 
 class GetPrefsTest  extends MailboxTestSuite {
@@ -22,31 +17,28 @@ class GetPrefsTest  extends MailboxTestSuite {
     return createAccount().create();
   }
 
+  private static List<Element> getPrefs(Account account, String... names) throws ServiceException {
+    Element request = new Element.XMLElement(AccountConstants.E_PREFS);
+    for (String name : names) {
+      request.addNonUniqueElement(AccountConstants.E_PREF).addAttribute(AccountConstants.A_NAME, name);
+    }
+    Element response = new Element.XMLElement(AccountConstants.E_PREFS);
+    GetPrefs.handle(request, response, account);
+    return response.listElements(AccountConstants.E_PREF);
+  }
+
   @Test
   void shouldReturnEmptyResponseWhenNoPrefsAreSet() throws Exception {
     Account account = createGetRandomAccount();
 
-    GetPrefsRequest request = new GetPrefsRequest();
-    request.setPref(List.of());
-    Element req = JaxbUtil.jaxbToElement(request);
-    Element handle = new GetPrefs().handle(req, ServiceTestUtil.getRequestContext(account));
-    GetPrefsResponse response = JaxbUtil.elementToJaxb(handle);
-
-    // TODO: checkme, these tests were based on mocks
-    assertFalse(Objects.requireNonNull(response).getPref().isEmpty());
+    assertFalse(getPrefs(account).isEmpty());
   }
 
   @Test
   void shouldNotReturnPrefWhenNotSetButAsked() throws Exception {
     Account account = createGetRandomAccount();
 
-    GetPrefsRequest request = new GetPrefsRequest();
-    request.setPref(List.of(new Pref(Provisioning.A_carbonioPrefWebUiDarkMode)));
-    Element req = JaxbUtil.jaxbToElement(request);
-    Element handle = new GetPrefs().handle(req, ServiceTestUtil.getRequestContext(account));
-    GetPrefsResponse response = JaxbUtil.elementToJaxb(handle);
-
-    assertFalse(Objects.requireNonNull(response).getPref().isEmpty());
+    assertFalse(getPrefs(account, Provisioning.A_carbonioPrefWebUiDarkMode).isEmpty());
   }
 
   @Test
@@ -54,47 +46,32 @@ class GetPrefsTest  extends MailboxTestSuite {
     Account account = createGetRandomAccount();
     account.setCarbonioPrefWebUiDarkMode(true);
 
-    GetPrefsRequest request = new GetPrefsRequest();
-    request.setPref(List.of(new Pref(Provisioning.A_carbonioPrefWebUiDarkMode)));
-    Element req = JaxbUtil.jaxbToElement(request);
-    Element handle = new GetPrefs().handle(req, ServiceTestUtil.getRequestContext(account));
-    GetPrefsResponse response = JaxbUtil.elementToJaxb(handle);
+    List<Element> prefs = getPrefs(account, Provisioning.A_carbonioPrefWebUiDarkMode);
 
-    assertEquals(1, Objects.requireNonNull(response).getPref().size());
-    assertEquals(Provisioning.A_carbonioPrefWebUiDarkMode, response.getPref().get(0).getName());
+    assertEquals(1, prefs.size());
+    assertEquals(Provisioning.A_carbonioPrefWebUiDarkMode, prefs.get(0).getAttribute(AccountConstants.A_NAME));
   }
 
   @Test
   void shouldReturnMultiCardinalPrefWhenSetAndAsked() throws Exception {
     Account account = createGetRandomAccount();
-
-    GetPrefsRequest request = new GetPrefsRequest();
-
     String[] timezones = {"America/Los_Angeles", "Asia/Kolkata", "Europe/Paris"};
     account.setPrefTimeZoneId(timezones);
 
-    request.setPref(List.of(new Pref(Provisioning.A_zimbraPrefTimeZoneId)));
-    Element req = JaxbUtil.jaxbToElement(request);
-    Element handle = new GetPrefs().handle(req, ServiceTestUtil.getRequestContext(account));
-    GetPrefsResponse response = JaxbUtil.elementToJaxb(handle);
+    List<Element> prefs = getPrefs(account, Provisioning.A_zimbraPrefTimeZoneId);
 
-    assertEquals(3, Objects.requireNonNull(response).getPref().size());
-    response.getPref().forEach(pref -> assertEquals(Provisioning.A_zimbraPrefTimeZoneId, pref.getName()));
+    assertEquals(3, prefs.size());
+    for (Element pref : prefs) {
+      assertEquals(Provisioning.A_zimbraPrefTimeZoneId, pref.getAttribute(AccountConstants.A_NAME));
+    }
   }
 
   @Test
   void shouldReturnAllSetPrefsWhenPassedNull() throws Exception {
     Account account = createGetRandomAccount();
-
     account.setCarbonioPrefWebUiDarkMode(true);
     account.setPrefShowChatsFolderInMail(true);
 
-    GetPrefsRequest request = new GetPrefsRequest();
-    request.setPref(null);
-    Element req = JaxbUtil.jaxbToElement(request);
-    Element handle = new GetPrefs().handle(req, ServiceTestUtil.getRequestContext(account));
-    GetPrefsResponse response = JaxbUtil.elementToJaxb(handle);
-
-    assertFalse(response.getPref().isEmpty());
+    assertFalse(getPrefs(account).isEmpty());
   }
 }

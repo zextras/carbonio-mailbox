@@ -14,7 +14,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
-import com.zimbra.soap.ZimbraSoapContext;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -22,18 +21,9 @@ import java.util.Set;
 /**
  * @author schemers
  */
-public class GetPrefs extends AccountDocumentHandler  {
+public final class GetPrefs {
 
-	public Element handle(Element request, Map<String, Object> context) throws ServiceException {
-        ZimbraSoapContext zsc = getZimbraSoapContext(context);
-        Account account = getRequestedAccount(zsc);
-
-        if (!canAccessAccount(zsc, account))
-            throw ServiceException.PERM_DENIED("can not access account");
-
-        Element response = zsc.createElement(AccountConstants.GET_PREFS_RESPONSE);
-        handle(request, response, account);
-        return response;
+    private GetPrefs() {
     }
 
     /**
