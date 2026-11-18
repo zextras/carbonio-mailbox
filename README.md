@@ -11,7 +11,7 @@ and their roles:
 - **common**: provides classes of common use (utilities, constants, etc.)
 - **client**: client package to interact with the mailbox
 - **soap**: describes SOAP APIs and contains wsdl documentation
-- **store**: the mailbox service (API handlers, Milter, IMAP, POP3, CLI and others)
+- **store**: the mailbox service (API handlers, IMAP, POP3, CLI and others)
 
 ## Building Carbonio Mailbox from source
 Requirements:
