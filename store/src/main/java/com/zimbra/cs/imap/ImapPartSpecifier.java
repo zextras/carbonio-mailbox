@@ -219,16 +219,7 @@ class ImapPartSpecifier {
         return getContentOctetRangeFromFullContents(getContent(mimeMsg));
     }
 
-    InputStreamWithSize getContentOctetRange(ZimbraMailItem zimbraMailItem)
-            throws IOException, BinaryDecodingException, ServiceException {
-        if (!isEntireMessage()) {
-            throw ServiceException.FAILURE("called writeMessage on non-toplevel part", null);
-        }
-        InputStreamWithSize contents = ImapMessage.getContent(zimbraMailItem);
-        return getContentOctetRangeFromFullContents(contents);
-    }
-
-    private InputStreamWithSize getContentOctetRangeFromFullContents(InputStreamWithSize contents)
+	private InputStreamWithSize getContentOctetRangeFromFullContents(InputStreamWithSize contents)
     throws IOException, BinaryDecodingException, ServiceException {
         if (octetStart >= 0 && contents != null) {
             // if there is a "partial" octet start/length constraint on this

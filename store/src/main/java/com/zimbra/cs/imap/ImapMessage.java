@@ -9,7 +9,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -103,9 +102,6 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
 
     static final short MUTABLE_SESSION_FLAGS = FLAG_SPAM | FLAG_NONSPAM | FLAG_JUNKRECORDED;
 
-    static final short SESSION_FLAGS = FLAG_ADDED  | FLAG_EXPUNGED | FLAG_IS_CONTACT |
-                                       FLAG_RECENT | MUTABLE_SESSION_FLAGS;
-
     int   sequence;
     int   msgId;
     int   imapUid;
@@ -168,10 +164,6 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
 
     MailItemType getMailItemType() {
         return (sflags & FLAG_IS_CONTACT) == 0 ? MailItemType.MESSAGE : MailItemType.CONTACT;
-    }
-
-    boolean isTagged(ImapFlag i4flag) {
-        return i4flag == null ? false : i4flag.matches(this);
     }
 
     boolean isExpunged() {

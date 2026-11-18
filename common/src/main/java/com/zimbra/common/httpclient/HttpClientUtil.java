@@ -23,18 +23,14 @@ import org.apache.hc.client5.http.protocol.HttpClientContext;
 import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 
 import com.zimbra.common.auth.ZAuthToken;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
 
 public class HttpClientUtil {
 
-    public static ClassicHttpResponse executeMethod(HttpUriRequestBase method) throws IOException {
-        return executeMethod(ZimbraHttpConnectionManager.getInternalHttpConnMgr().getDefaultHttpClient().build(), method, null);
-    }
     public static ClassicHttpResponse executeMethod(HttpClient client, HttpUriRequestBase method) throws IOException {
         return executeMethod(client, method, null, null);
     }
 
-    public static ClassicHttpResponse executeMethod(HttpClient client, HttpUriRequestBase method, BasicCookieStore state, HttpClientContext context) throws IOException {
+    private static ClassicHttpResponse executeMethod(HttpClient client, HttpUriRequestBase method, BasicCookieStore state, HttpClientContext context) throws IOException {
         HttpClientUtil.requestUri(method);
 			return client.executeOpen(null, method, null);
     }

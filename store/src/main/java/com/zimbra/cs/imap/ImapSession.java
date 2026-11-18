@@ -10,7 +10,6 @@ import java.util.TreeMap;
 import com.zimbra.common.mailbox.BaseItemInfo;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.imap.ImapHandler.ImapExtension;
 import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
@@ -65,22 +64,7 @@ public class ImapSession extends ImapListener {
         return mFolder.hasNotifications();
     }
 
-    /** Returns whether a given SELECT option is active for this folder. */
-    boolean isExtensionActivated(ImapExtension ext) {
-        switch (ext) {
-            case CONDSTORE:
-                return !mIsVirtual && handler.sessionActivated(ext);
-            default:
-                return false;
-        }
-    }
-
-    synchronized int getFootprint() {
-        // FIXME: consider saved search results, in-memory data for paged sessions
-        return mFolder instanceof ImapFolder ? mFolder.getSize() : 0;
-    }
-
-    /** If the folder is selected READ-WRITE, updates its high-water RECENT
+	/** If the folder is selected READ-WRITE, updates its high-water RECENT
      *  change ID so that subsequent IMAP sessions do not see the loaded
      *  messages as \Recent. */
     @Override

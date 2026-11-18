@@ -18,12 +18,4 @@ public class ImapRenumberException extends RuntimeException {
         super();
     }
 
-    public ImapRenumberException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ImapRenumberException(String message) {
-        super(message);
-    }
-
 }
