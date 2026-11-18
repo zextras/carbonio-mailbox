@@ -210,6 +210,7 @@ public class TrackCommandRequestService implements DocumentService {
           , AccountConstants.GET_DISTRIBUTION_LIST_REQUEST
           , AccountConstants.GET_DISTRIBUTION_LIST_MEMBERS_REQUEST
           , AccountConstants.CHECK_RIGHTS_REQUEST
+          , AccountConstants.DISCOVER_RIGHTS_REQUEST
           , AccountConstants.GET_RIGHTS_REQUEST
           , AccountConstants.GRANT_RIGHTS_REQUEST
           , AccountConstants.REVOKE_RIGHTS_REQUEST
