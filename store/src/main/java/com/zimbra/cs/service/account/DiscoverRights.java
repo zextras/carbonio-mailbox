@@ -21,24 +21,52 @@ import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.accesscontrol.Right;
+import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.accesscontrol.TargetType;
+import com.zimbra.cs.account.accesscontrol.UserRight;
 import com.zimbra.cs.util.AccountUtil;
+import com.zimbra.soap.ZimbraSoapContext;
 
 /**
  * @author pshao
  */
-public final class DiscoverRights {
+public class DiscoverRights extends AccountDocumentHandler {
 
-    private static final Set<String> DELEGATED_SEND_RIGHTS =
+    private static final Set<String> DELEGATED_SEND_RIGHTS = 
         Sets.newHashSet(
                 Right.RT_sendAs,
                 Right.RT_sendOnBehalfOf,
                 Right.RT_sendAsDistList,
                 Right.RT_sendOnBehalfOfDistList);
+    
+    
+    @Override
+    public Element handle(Element request, Map<String, Object> context)
+            throws ServiceException {
+        ZimbraSoapContext zsc = getZimbraSoapContext(context);
+        Account account = getRequestedAccount(zsc);
 
-    private DiscoverRights() {
+        if (!canAccessAccount(zsc, account)) {
+            throw ServiceException.PERM_DENIED("can not access account");
+        }
+        
+        RightManager rightMgr = RightManager.getInstance();
+        Set<Right> rights = Sets.newHashSet();
+        for (Element eRight : request.listElements(AccountConstants.E_RIGHT)) {
+            UserRight r = rightMgr.getUserRight(eRight.getText());
+            rights.add(r); 
+        }
+        
+        if (rights.size() == 0) {
+            throw ServiceException.INVALID_REQUEST("no right is specified", null);
+        }
+
+        Element response = zsc.createElement(AccountConstants.DISCOVER_RIGHTS_RESPONSE);
+        discoverRights(account, rights, response, true);
+
+        return response;
     }
-
+    
     public static boolean isDelegatedSendRight(Right right) {
         return DELEGATED_SEND_RIGHTS.contains(right.getName());
     }
