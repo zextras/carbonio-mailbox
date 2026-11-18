@@ -16,7 +16,6 @@ User=zextras
 Type=notify
 NotifyAccess=main
 Environment=OTEL_JAVAAGENT_CONFIGURATION_FILE=/etc/carbonio/mailbox/otel.properties
-# jemalloc fragments less than glibc malloc arenas (same lib as carbonio-appserver-db).
 Environment=LD_PRELOAD=/opt/zextras/common/lib/libjemalloc.so
 # Only sasl and mailbox are zmconfigd.cf sections; configd ignores the
 # legacy zmtlsctl names (webxml, service, zextras, zextrasAdmin, zimlet).
