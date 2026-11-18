@@ -182,17 +182,13 @@ public class TrackCommandRequestService implements DocumentService {
           , AccountConstants.AUTH_REQUEST
           , AccountConstants.CHANGE_PASSWORD_REQUEST
           , AccountConstants.END_SESSION_REQUEST
-          , AccountConstants.GET_PREFS_REQUEST
           , AccountConstants.MODIFY_PREFS_REQUEST
           , AccountConstants.GET_INFO_REQUEST
           , AccountConstants.GET_ACCOUNT_INFO_REQUEST
           , AccountConstants.AUTO_COMPLETE_GAL_REQUEST
           , AccountConstants.SEARCH_CALENDAR_RESOURCES_REQUEST
           , AccountConstants.SEARCH_GAL_REQUEST
-          , AccountConstants.SYNC_GAL_REQUEST
           , AccountConstants.MODIFY_PROPERTIES_REQUEST
-          , AccountConstants.GET_ALL_LOCALES_REQUEST
-          , AccountConstants.GET_AVAILABLE_LOCALES_REQUEST
           , AccountConstants.CREATE_IDENTITY_REQUEST
           , AccountConstants.MODIFY_IDENTITY_REQUEST
           , AccountConstants.DELETE_IDENTITY_REQUEST
@@ -202,7 +198,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AccountConstants.DELETE_SIGNATURE_REQUEST
           , AccountConstants.GET_SIGNATURES_REQUEST
           , AccountConstants.GET_SHARE_INFO_REQUEST
-          , AccountConstants.GET_WHITE_BLACK_LIST_REQUEST
           , AccountConstants.MODIFY_WHITE_BLACK_LIST_REQUEST
           , AccountConstants.CREATE_DISTRIBUTION_LIST_REQUEST
           , AccountConstants.DISTRIBUTION_LIST_ACTION_REQUEST
@@ -214,7 +209,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AccountConstants.GET_RIGHTS_REQUEST
           , AccountConstants.GRANT_RIGHTS_REQUEST
           , AccountConstants.REVOKE_RIGHTS_REQUEST
-          , AccountConstants.GET_VERSION_INFO_REQUEST
           , AccountConstants.RESET_PASSWORD_REQUEST
           , AccountConstants.SEARCH_USERS_BY_FEATURE_REQUEST
           , MailConstants.NO_OP_REQUEST

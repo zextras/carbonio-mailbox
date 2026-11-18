@@ -51,7 +51,7 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.account.message.AuthRequest;
 import com.zimbra.soap.account.message.CreateIdentityRequest;
 import com.zimbra.soap.account.message.GetInfoResponse;
-import com.zimbra.soap.account.message.GetWhiteBlackListResponse;
+import com.zimbra.soap.account.message.ModifyWhiteBlackListRequest;
 import com.zimbra.soap.account.message.ModifyPrefsRequest;
 import com.zimbra.soap.account.type.Pref;
 import com.zimbra.soap.account.type.Session;
@@ -915,7 +915,7 @@ Caused by: javax.xml.bind.UnmarshalException: Namespace URIs and local names to 
 
   @Test
   void jaxbElementNameOrderXmlElementWrapperTest() throws Exception {
-    JaxbInfo jaxbInfo = JaxbInfo.getFromCache(GetWhiteBlackListResponse.class);
+    JaxbInfo jaxbInfo = JaxbInfo.getFromCache(ModifyWhiteBlackListRequest.class);
     List<List<org.dom4j.QName>> expectedOrder = Lists.newArrayList();
     expectedOrder.add(Lists.newArrayList(new org.dom4j.QName(AccountConstants.E_WHITE_LIST, AccountConstants.NAMESPACE)));
     expectedOrder.add(Lists.newArrayList(new org.dom4j.QName(AccountConstants.E_BLACK_LIST, AccountConstants.NAMESPACE)));
