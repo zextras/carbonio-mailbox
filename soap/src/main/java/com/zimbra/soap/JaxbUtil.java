@@ -174,8 +174,6 @@ public final class JaxbUtil {
           com.zimbra.soap.admin.message.ClearCookieResponse.class,
           com.zimbra.soap.admin.message.CompactIndexRequest.class,
           com.zimbra.soap.admin.message.CompactIndexResponse.class,
-          com.zimbra.soap.admin.message.ContactBackupRequest.class,
-          com.zimbra.soap.admin.message.ContactBackupResponse.class,
           com.zimbra.soap.admin.message.CopyCosRequest.class,
           com.zimbra.soap.admin.message.CopyCosResponse.class,
           com.zimbra.soap.admin.message.CountAccountRequest.class,

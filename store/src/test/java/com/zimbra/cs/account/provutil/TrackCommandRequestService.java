@@ -178,7 +178,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.MODIFY_FILTER_RULES_REQUEST
           , AdminConstants.GET_OUTGOING_FILTER_RULES_REQUEST
           , AdminConstants.MODIFY_OUTGOING_FILTER_RULES_REQUEST
-          , AdminConstants.CONTACT_BACKUP_REQUEST
           , AccountConstants.AUTH_REQUEST
           , AccountConstants.CHANGE_PASSWORD_REQUEST
           , AccountConstants.END_SESSION_REQUEST
