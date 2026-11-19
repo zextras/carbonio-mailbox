@@ -70,7 +70,7 @@ class GetPrefsTest  extends MailboxTestSuite {
   void shouldReturnAllSetPrefsWhenPassedNull() throws Exception {
     Account account = createGetRandomAccount();
     account.setCarbonioPrefWebUiDarkMode(true);
-    account.setPrefShowChatsFolderInMail(true);
+    account.setPrefSaveToSent(true);
 
     assertFalse(getPrefs(account).isEmpty());
   }
