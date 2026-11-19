@@ -49,7 +49,7 @@ public abstract class Entry implements AttributeEntry {
   private Map<String, Object> overrideDefaults;
   private Map<String, Object> mData;
   private Map<String, Set<String>> mMultiAttrSetCache;
-  private Locale mLocale;
+  private volatile Locale mLocale;
   private final Provisioning mProvisioning;
   private AttributeManager mAttrMgr;
 
@@ -414,14 +414,11 @@ public abstract class Entry implements AttributeEntry {
     // can recursively call LdapEntry.getLocale() on multiple entries.
     // If LdapEntry.getLocale() was synchronized, we might get into a
     // deadlock.
-    synchronized (this) {
-      if (mLocale != null) return mLocale;
-    }
+    Locale cached = mLocale;
+    if (cached != null) return cached;
     Locale lc = Provisioning.getInstance().getLocale(this);
-    synchronized (this) {
-      mLocale = lc;
-      return mLocale;
-    }
+    mLocale = lc;
+    return lc;
   }
 
   /**

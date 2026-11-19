@@ -435,6 +435,7 @@ public final class Zimbra {
     try {
       ZimbraLog.system.fatal(message);
     } finally {
+      flushLogs();
       Runtime.getRuntime().halt(1);
     }
   }
@@ -452,9 +453,18 @@ public final class Zimbra {
       // Fixme: there should be no need to halt the system. However this codebase has so many threads
       //  that during tests they keep the process live and maven surefire crashes because it does not receieve goodbye.
       if (!Objects.equals("true", System.getProperty("runningTests"))) {
+        flushLogs();
         Runtime.getRuntime().halt(1);
       }
       }
+  }
+
+  private static void flushLogs() {
+    try {
+      org.apache.logging.log4j.LogManager.shutdown();
+    } catch (Throwable ignored) {
+      // halting anyway
+    }
   }
 
   public static boolean isMailboxd() {
