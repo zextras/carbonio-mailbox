@@ -66,7 +66,7 @@ public class FileLogWriter implements LogWriter {
 
     private File mFile;
     private RandomAccessFile mRAF;
-    private long mFileSize;
+    private volatile long mFileSize;
     private long mLastLogTime;
 
     private long mFsyncIntervalMS;          // how many milliseconds fsync thread sleeps after each fync
@@ -111,9 +111,7 @@ public class FileLogWriter implements LogWriter {
      * @see com.zimbra.cs.redolog.LogWriter#getSize()
      */
     @Override public long getSize() {
-        synchronized (mLock) {
-            return mFileSize;
-        }
+        return mFileSize;
     }
 
     /* (non-Javadoc)

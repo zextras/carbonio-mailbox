@@ -23,6 +23,12 @@ appender.LOGFILE.policies.time.interval = 1
 appender.LOGFILE.policies.time.modulate = true
 appender.LOGFILE.strategy.type = DefaultRolloverStrategy
 
+appender.ASYNCLOG.type = Async
+appender.ASYNCLOG.name = mailboxAsync
+appender.ASYNCLOG.bufferSize = 8192
+appender.ASYNCLOG.appenderRef.type = AppenderRef
+appender.ASYNCLOG.appenderRef.ref = mailboxFile
+
 # Appender AUDIT writes to the file "audit.log".
 appender.AUDIT.type = RollingFile
 appender.AUDIT.name = auditFile
@@ -150,7 +156,7 @@ appender.EWS.strategy.type = DefaultRolloverStrategy
 logger.zimbra.name = zimbra.mailbox
 logger.zimbra.level = info
 logger.zimbra.additivity = false
-logger.zimbra.appenderRef.LOGFILE.ref = mailboxFile
+logger.zimbra.appenderRef.LOGFILE.ref = mailboxAsync
 
 # Save zimbra.security to AUDIT appender
 logger.security.name = zimbra.security
@@ -217,4 +223,4 @@ logger.slogger.additivity = false
 
 rootLogger.level=INFO
 
-rootLogger.appenderRef.LOGFILE.ref = mailboxFile
+rootLogger.appenderRef.LOGFILE.ref = mailboxAsync

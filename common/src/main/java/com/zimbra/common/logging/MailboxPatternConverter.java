@@ -39,6 +39,12 @@ public class MailboxPatternConverter extends LogEventPatternConverter {
 
   @Override
   public void format(LogEvent event, StringBuilder toAppendTo) {
-    toAppendTo.append(ZimbraLog.getContextString() == null ? "" : ZimbraLog.getContextString());
+    String context =
+        event.getContextData() == null
+            ? null
+            : event.getContextData().getValue(ZimbraLog.LOG_CONTEXT_KEY);
+    if (context != null) {
+      toAppendTo.append(context);
+    }
   }
 }

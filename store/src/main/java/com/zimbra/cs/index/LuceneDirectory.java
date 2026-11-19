@@ -180,6 +180,7 @@ public final class LuceneDirectory extends Directory {
     private static final class LuceneIndexInput extends IndexInput {
         private final IndexInput input;
         private boolean disableCounters = LC.zimbra_index_disable_perf_counters.booleanValue();
+        private long pendingBytes;
 
         LuceneIndexInput(IndexInput in) {
             input = in;
@@ -187,9 +188,7 @@ public final class LuceneDirectory extends Directory {
 
         @Override
         public byte readByte() throws IOException {
-            if (!disableCounters) {
-                ZimbraPerf.COUNTER_IDX_BYTES_READ.increment(1);
-            }
+            pendingBytes++;
             return input.readByte();
         }
 
@@ -210,6 +209,15 @@ public final class LuceneDirectory extends Directory {
             input.readBytes(b, offset, len, useBuffer);
         }
 
+        private void flushCounters() {
+            if (pendingBytes > 0) {
+                if (!disableCounters) {
+                    ZimbraPerf.COUNTER_IDX_BYTES_READ.increment(pendingBytes);
+                }
+                pendingBytes = 0;
+            }
+        }
+
         @Override
         public void setModifiedUTF8StringsMode() {
             input.setModifiedUTF8StringsMode();
@@ -217,6 +225,7 @@ public final class LuceneDirectory extends Directory {
 
         @Override
         public void close() throws IOException {
+            flushCounters();
             input.close();
         }
 
@@ -227,6 +236,7 @@ public final class LuceneDirectory extends Directory {
 
         @Override
         public void seek(long pos) throws IOException {
+            flushCounters();
             input.seek(pos);
         }
 
@@ -244,16 +254,24 @@ public final class LuceneDirectory extends Directory {
     private static final class LuceneIndexOutput extends IndexOutput {
         private final IndexOutput output;
         private boolean disableCounters = LC.zimbra_index_disable_perf_counters.booleanValue();
+        private long pendingBytes;
 
         LuceneIndexOutput(IndexOutput out) {
             output = out;
         }
 
+        private void flushCounters() {
+            if (pendingBytes > 0) {
+                if (!disableCounters) {
+                    ZimbraPerf.COUNTER_IDX_BYTES_WRITTEN.increment(pendingBytes);
+                }
+                pendingBytes = 0;
+            }
+        }
+
         @Override
         public void writeByte(byte b) throws IOException {
-            if (!disableCounters) {
-                ZimbraPerf.COUNTER_IDX_BYTES_WRITTEN.increment(1);
-            }
+            pendingBytes++;
             output.writeByte(b);
         }
 
@@ -275,11 +293,13 @@ public final class LuceneDirectory extends Directory {
 
         @Override
         public void flush() throws IOException {
+            flushCounters();
             output.flush();
         }
 
         @Override
         public void close() throws IOException {
+            flushCounters();
             output.close();
         }
 
