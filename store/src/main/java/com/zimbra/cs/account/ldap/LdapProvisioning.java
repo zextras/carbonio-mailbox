@@ -70,7 +70,6 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ShareLocator;
 import com.zimbra.cs.account.Signature;
 import com.zimbra.cs.account.StoreAttributeManager;
-import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.account.accesscontrol.GranteeType;
 import com.zimbra.cs.account.accesscontrol.PermissionCache;
 import com.zimbra.cs.account.accesscontrol.Right;
@@ -112,7 +111,6 @@ import com.zimbra.cs.account.ldap.entry.LdapMimeType;
 import com.zimbra.cs.account.ldap.entry.LdapServer;
 import com.zimbra.cs.account.ldap.entry.LdapShareLocator;
 import com.zimbra.cs.account.ldap.entry.LdapSignature;
-import com.zimbra.cs.account.ldap.entry.LdapZimlet;
 import com.zimbra.cs.account.names.NameUtil;
 import com.zimbra.cs.account.names.NameUtil.EmailAddress;
 import com.zimbra.cs.ephemeral.EphemeralInput;
@@ -167,8 +165,6 @@ import com.zimbra.cs.service.util.JWEUtil;
 import com.zimbra.cs.service.util.ResetPasswordUtil;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.cs.util.Zimbra;
-import com.zimbra.cs.zimlet.ZimletException;
-import com.zimbra.cs.zimlet.ZimletUtil;
 import com.zimbra.soap.admin.type.CacheEntryType;
 import com.zimbra.soap.admin.type.CountObjectsType;
 import com.zimbra.soap.admin.type.DataSourceType;
@@ -224,7 +220,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   private final IMimeTypeCache mimeTypeCache;
   private final INamedEntryCache<Server> serverCache;
   private final INamedEntryCache<ShareLocator> shareLocatorCache;
-  private final INamedEntryCache<LdapZimlet> zimletCache;
 
   private final UnmodifiableBloomFilter<String> commonPasswordFilter;
   private boolean blockCommonPasswordsEnabled;
@@ -261,7 +256,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     this.cache.accountCache().clear();
     this.cache.cosCache().clear();
     this.cache.groupCache().clear();
-    this.cache.zimletCache().clear();
   }
 
   protected LdapProvisioning(CacheMode cacheMode, LdapClient ldapClient) {
@@ -281,7 +275,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     mimeTypeCache = cache.mimeTypeCache();
     serverCache = cache.serverCache();
     shareLocatorCache = cache.shareLocatorCache();
-    zimletCache = cache.zimletCache();
 
     commonPasswordFilter =
         UnmodifiableBloomFilter.createLazyFilterFromFile(LC.common_passwords_txt.value());
@@ -342,16 +335,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   @Override
   public double getServerCacheHitRate() {
     return serverCache.getHitRate();
-  }
-
-  @Override
-  public int getZimletCacheSize() {
-    return zimletCache.getSize();
-  }
-
-  @Override
-  public double getZimletCacheHitRate() {
-    return zimletCache.getHitRate();
   }
 
   @Override
@@ -765,8 +748,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       domainCache.replace((Domain) entry);
     } else if (entry instanceof Server) {
       serverCache.replace((Server) entry);
-    } else if (entry instanceof LdapZimlet) {
-      zimletCache.replace((LdapZimlet) entry);
     } else if (entry instanceof Group) {
       /*
        * DLs returned by Provisioning.get(DistributionListBy) and
@@ -6207,77 +6188,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   }
 
   @Override
-  public Zimlet getZimlet(String name) throws ServiceException {
-    return getZimlet(name, null, true);
-  }
-
-  private Zimlet getFromCache(Key.ZimletBy keyType, String key) {
-    switch (keyType) {
-      case name:
-        return zimletCache.getByName(key);
-      case id:
-        return zimletCache.getById(key);
-      default:
-        return null;
-    }
-  }
-
-  private Zimlet getZimlet(String name, ZLdapContext initZlc, boolean useZimletCache)
-      throws ServiceException {
-
-    LdapZimlet zimlet = null;
-    if (useZimletCache) {
-      zimlet = zimletCache.getByName(name);
-    }
-
-    if (zimlet != null) {
-      return zimlet;
-    }
-
-    try {
-      String dn = mDIT.zimletNameToDN(name);
-      ZAttributes attrs =
-          helper.getAttributes(initZlc, LdapServerType.REPLICA, LdapUsage.GET_ZIMLET, dn, null);
-      zimlet = new LdapZimlet(dn, attrs, this);
-      if (useZimletCache) {
-        ZimletUtil.reloadZimlet(name);
-        zimletCache.put(
-            zimlet); // put LdapZimlet into the cache after successful ZimletUtil.reloadZimlet()
-      }
-      return zimlet;
-    } catch (LdapEntryNotFoundException e) {
-      return null;
-    } catch (ServiceException ne) {
-      throw ServiceException.FAILURE("unable to get zimlet: " + name, ne);
-    } catch (ZimletException ze) {
-      throw ServiceException.FAILURE("unable to load zimlet: " + name, ze);
-    }
-  }
-
-  @Override
-  public List<Zimlet> listAllZimlets() throws ServiceException {
-    List<Zimlet> result = new ArrayList<>();
-
-    try {
-      ZSearchResultEnumeration ne =
-          helper.searchDir(
-              mDIT.zimletBaseDN(),
-              filterFactory.allZimlets(),
-              ZSearchControls.SEARCH_CTLS_SUBTREE());
-      while (ne.hasMore()) {
-        ZSearchResultEntry sr = ne.next();
-        result.add(new LdapZimlet(sr.getDN(), sr.getAttributes(), this));
-      }
-      ne.close();
-    } catch (ServiceException e) {
-      throw ServiceException.FAILURE("unable to list all zimlets", e);
-    }
-
-    Collections.sort(result);
-    return result;
-  }
-
-  @Override
   public CalendarResource createCalendarResource(
       String emailAddress, String password, Map<String, Object> calResAttrs)
       throws ServiceException {
@@ -8558,7 +8468,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         flushCache(CacheEntryType.domain, null);
         flushCache(CacheEntryType.mime, null);
         flushCache(CacheEntryType.server, null);
-        flushCache(CacheEntryType.zimlet, null);
         break;
       case account:
         if (entries != null) {
@@ -8664,14 +8573,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         } else serverCache.clear();
         return;
       case zimlet:
-        if (entries != null) {
-          for (CacheEntry entry : entries) {
-            Key.ZimletBy zimletBy =
-                (entry.mEntryBy == Key.CacheEntryBy.id) ? Key.ZimletBy.id : Key.ZimletBy.name;
-            Zimlet zimlet = getFromCache(zimletBy, entry.mEntryIdentity);
-            if (zimlet != null) reload(zimlet, false);
-          }
-        } else zimletCache.clear();
         return;
       default:
         throw ServiceException.INVALID_REQUEST("invalid cache type " + type, null);

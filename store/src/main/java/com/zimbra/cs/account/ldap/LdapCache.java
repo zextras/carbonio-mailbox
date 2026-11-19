@@ -25,7 +25,6 @@ import com.zimbra.cs.account.cache.IMimeTypeCache;
 import com.zimbra.cs.account.cache.INamedEntryCache;
 import com.zimbra.cs.account.cache.NamedEntryCache;
 import com.zimbra.cs.account.ldap.entry.LdapCos;
-import com.zimbra.cs.account.ldap.entry.LdapZimlet;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,8 +45,6 @@ abstract class LdapCache {
   abstract IMimeTypeCache mimeTypeCache();
 
   abstract INamedEntryCache<Server> serverCache();
-
-  abstract INamedEntryCache<LdapZimlet> zimletCache();
 
   abstract INamedEntryCache<Group> groupCache();
 
@@ -82,11 +79,6 @@ abstract class LdapCache {
         new NamedEntryCache<>(
             LC.ldap_cache_server_maxsize.intValue(),
             LC.ldap_cache_server_maxage.intValue() * Constants.MILLIS_PER_MINUTE);
-
-    private final INamedEntryCache<LdapZimlet> zimletCache =
-        new NamedEntryCache<>(
-            LC.ldap_cache_zimlet_maxsize.intValue(),
-            LC.ldap_cache_zimlet_maxage.intValue() * Constants.MILLIS_PER_MINUTE);
 
     private final INamedEntryCache<Group> groupCache =
         new NamedEntryCache<>(
@@ -127,11 +119,6 @@ abstract class LdapCache {
     INamedEntryCache<ShareLocator> shareLocatorCache() {
       return shareLocatorCache;
     }
-
-    @Override
-    INamedEntryCache<LdapZimlet> zimletCache() {
-      return zimletCache;
-    }
   }
 
   /** NoopCache */
@@ -144,7 +131,6 @@ abstract class LdapCache {
     private final IDomainCache domainCache = new NoopDomainCache();
     private final IMimeTypeCache mimeTypeCache = new NoopMimeTypeCache();
     private final INamedEntryCache<Server> serverCache = new NoopNamedEntryCache<>();
-    private final INamedEntryCache<LdapZimlet> zimletCache = new NoopNamedEntryCache<>();
     private final INamedEntryCache<Group> groupCache = new NoopNamedEntryCache<>();
 
     static class NoopAccountCache implements IAccountCache {
@@ -333,11 +319,6 @@ abstract class LdapCache {
     @Override
     INamedEntryCache<ShareLocator> shareLocatorCache() {
       return shareLocatorCache;
-    }
-
-    @Override
-    INamedEntryCache<LdapZimlet> zimletCache() {
-      return zimletCache;
     }
   }
 }

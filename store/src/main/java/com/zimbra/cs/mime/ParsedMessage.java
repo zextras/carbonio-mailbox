@@ -73,7 +73,6 @@ import com.zimbra.cs.index.analysis.RFC822AddressTokenStream;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Threader;
-import com.zimbra.cs.object.ObjectHandlerException;
 import com.zimbra.cs.store.Blob;
 import com.zimbra.cs.store.BlobInputStream;
 import com.zimbra.cs.store.StoreManager;
@@ -1009,13 +1008,6 @@ public final class ParsedMessage {
         String text = contentPrepend + " " + fullContent.toString();
         doc.addContent(text);
 
-        try {
-            MimeHandler.getObjects(text, doc);
-        } catch (ObjectHandlerException e) {
-            ZimbraLog.index.warn("Unable to recognize searchable objects in message: msgid=%s,subject=%s",
-                    getMessageID(), getSubject(), e);
-        }
-
         // Get the list of attachment content types from this message
         doc.addAttachments(new MimeTypeTokenStream(Mime.getAttachmentTypeList(messageParts)));
         return doc;
@@ -1166,7 +1158,7 @@ public final class ParsedMessage {
                     ByteUtil.closeStream(is);
                 }
             }
-        } catch (MimeHandlerException | ObjectHandlerException e) {
+        } catch (MimeHandlerException e) {
             handleParseError(mpi, e);
         }
       return toRet;

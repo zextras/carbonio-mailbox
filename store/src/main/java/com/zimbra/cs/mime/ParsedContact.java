@@ -53,7 +53,6 @@ import com.zimbra.cs.mailbox.Contact.DerefGroupMembersOption;
 import com.zimbra.cs.mailbox.ContactGroup;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.object.ObjectHandlerException;
 import com.zimbra.cs.util.JMSession;
 
 public final class ParsedContact {
@@ -639,10 +638,6 @@ public final class ParsedContact {
                         conversionError = ServiceException.FAILURE("failed to analyze part", e.getCause());
                         mHasTemporaryAnalysisFailure = true;
                     }
-                } catch (ObjectHandlerException e) {
-                    String part = attach.getPartName();
-                    String ctype = attach.getContentType();
-                    ZimbraLog.index.warn("Parse error on attachment " + part + " (" + ctype + ")", e);
                 }
             }
         }
@@ -656,7 +651,7 @@ public final class ParsedContact {
     }
 
     private void analyzeAttachment(Attachment attach, StringBuilder contentText, boolean indexAttachments)
-    throws MimeHandlerException, ObjectHandlerException, ServiceException {
+    throws MimeHandlerException, ServiceException {
         String ctype = attach.getContentType();
         MimeHandler handler = MimeHandlerManager.getMimeHandler(ctype, attach.getFilename());
         assert(handler != null);

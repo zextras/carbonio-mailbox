@@ -53,7 +53,6 @@ public class ZLdapFilterFactory extends ZLdapElement {
   private static Filter FILTER_ALL_SERVERS;
   private static Filter FILTER_ALL_SHARE_LOCATORS;
   private static Filter FILTER_ALL_SIGNATURES;
-  private static Filter FILTER_ALL_ZIMLETS;
   private static Filter FILTER_ANY_ENTRY;
   private static Filter FILTER_DOMAIN_LABEL;
   private static Filter FILTER_HAS_SUBORDINATES;
@@ -139,10 +138,6 @@ public class ZLdapFilterFactory extends ZLdapElement {
     FILTER_ALL_SIGNATURES =
         Filter.createEqualityFilter(
             LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraSignature);
-
-    FILTER_ALL_ZIMLETS =
-        Filter.createEqualityFilter(
-            LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraZimletEntry);
 
     FILTER_ANY_ENTRY = Filter.createPresenceFilter(LdapConstants.ATTR_objectClass);
 
@@ -260,7 +255,6 @@ public class ZLdapFilterFactory extends ZLdapElement {
     ALL_NON_SYSTEM_INTERNAL_ACCOUNTS(SINGLETON.allNonSystemInternalAccounts()),
     ALL_SERVERS(SINGLETON.allServers()),
     ALL_SIGNATURES(SINGLETON.allSignatures()),
-    ALL_ZIMLETS(SINGLETON.allZimlets()),
     ANY_ENTRY(SINGLETON.anyEntry()),
     CALENDAR_RESOURCE_BY_FOREIGN_PRINCIPAL(
         SINGLETON.calendarResourceByForeignPrincipal("{FOREIGN-PRINCIPAL}")),
@@ -1053,13 +1047,6 @@ public class ZLdapFilterFactory extends ZLdapElement {
         Filter.createANDFilter(
             FILTER_ALL_SIGNATURES,
             Filter.createEqualityFilter(Provisioning.A_zimbraSignatureId, id)));
-  }
-
-  /*
-   * zimlet
-   */
-  public ZLdapFilter allZimlets() {
-    return new ZLdapFilter(FilterId.ALL_ZIMLETS, FILTER_ALL_ZIMLETS);
   }
 
   /*
