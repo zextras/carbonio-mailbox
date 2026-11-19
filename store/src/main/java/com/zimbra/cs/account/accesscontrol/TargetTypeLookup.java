@@ -20,7 +20,6 @@ import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.StoreAttributeManager;
-import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.account.ldap.LdapDIT;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.soap.type.TargetBy;
@@ -115,12 +114,7 @@ public enum TargetTypeLookup {
 				}
 				break;
 			case zimlet:
-				Key.ZimletBy zimletBy = Key.ZimletBy.fromString(targetBy.name());
-				if (zimletBy != Key.ZimletBy.name) {
-					throw ServiceException.INVALID_REQUEST("zimlet must be by name", null);
-				}
-				targetEntry = prov.getZimlet(target);
-				if (targetEntry == null && mustFind) {
+				if (mustFind) {
 					throw AccountServiceException.NO_SUCH_ZIMLET(target);
 				}
 				break;
@@ -336,7 +330,6 @@ public enum TargetTypeLookup {
 		else if (target instanceof Server) return TargetType.server;
 		else if (target instanceof Config) return TargetType.config;
 		else if (target instanceof GlobalGrant) return TargetType.global;
-		else if (target instanceof Zimlet) return TargetType.zimlet;
 		else
 			throw ServiceException.FAILURE(
 					"internal error, target is : "

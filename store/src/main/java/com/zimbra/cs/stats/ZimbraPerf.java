@@ -141,12 +141,6 @@ public class ZimbraPerf {
   @Description("LDAP server cache hit rate")
   public static final String RTS_SERVER_CACHE_HIT_RATE = "server_cache_hit_rate";
 
-  @Description("LDAP zimlet cache size")
-  public static final String RTS_ZIMLET_CACHE_SIZE = "zimlet_cache_size";
-
-  @Description("LDAP zimlet cache hit rate")
-  public static final String RTS_ZIMLET_CACHE_HIT_RATE = "zimlet_cache_hit_rate";
-
   @Description("LDAP group cache size")
   public static final String RTS_GROUP_CACHE_SIZE = "group_cache_size";
 
@@ -224,8 +218,6 @@ public class ZimbraPerf {
         RTS_DOMAIN_CACHE_HIT_RATE,
         RTS_SERVER_CACHE_SIZE,
         RTS_SERVER_CACHE_HIT_RATE,
-        RTS_ZIMLET_CACHE_SIZE,
-        RTS_ZIMLET_CACHE_HIT_RATE,
         RTS_GROUP_CACHE_SIZE,
         RTS_GROUP_CACHE_HIT_RATE
       };

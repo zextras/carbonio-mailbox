@@ -73,6 +73,16 @@ class GetInfoTest extends SoapTestSuite {
   }
 
   @Test
+  void zimletsSectionIsEmpty() throws Exception {
+    final var request = new GetInfoRequest().addSection("zimlets");
+
+    final var response = getSoapClient().executeSoap(account, request);
+
+    assertEquals(HttpStatus.SC_OK, response.statusCode());
+    assertTrue(response.body().contains("<zimlets/>"));
+  }
+
+  @Test
   void attributesSectionProvidesAmavisLists() throws Exception {
     final var account =
         createAccount()

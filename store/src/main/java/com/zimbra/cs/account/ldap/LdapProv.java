@@ -72,10 +72,6 @@ public abstract class LdapProv extends Provisioning implements ProvisioningCache
 
   public abstract double getServerCacheHitRate();
 
-  public abstract int getZimletCacheSize();
-
-  public abstract double getZimletCacheHitRate();
-
   public abstract int getGroupCacheSize();
 
   public abstract double getGroupCacheHitRate();
