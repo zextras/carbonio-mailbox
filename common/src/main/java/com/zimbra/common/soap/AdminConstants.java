@@ -976,8 +976,6 @@ public final class AdminConstants {
       "ModifyOutgoingFilterRulesRequest";
   public static final String E_MODIFY_OUTGOING_FILTER_RULES_RESPONSE =
       "ModifyOutgoingFilterRulesResponse";
-  public static final String E_CONTACT_BACKUP_REQUEST = "ContactBackupRequest";
-  public static final String E_CONTACT_BACKUP_RESPONSE = "ContactBackupResponse";
   public static final QName GET_FILTER_RULES_REQUEST =
       QName.get(E_GET_FILTER_RULES_REQUEST, NAMESPACE);
   public static final QName MODIFY_FILTER_RULES_REQUEST =
@@ -986,7 +984,6 @@ public final class AdminConstants {
       QName.get(E_GET_OUTGOING_FILTER_RULES_REQUEST, NAMESPACE);
   public static final QName MODIFY_OUTGOING_FILTER_RULES_REQUEST =
       QName.get(E_MODIFY_OUTGOING_FILTER_RULES_REQUEST, NAMESPACE);
-  public static final QName CONTACT_BACKUP_REQUEST = QName.get(E_CONTACT_BACKUP_REQUEST, NAMESPACE);
 
   // AddressList
 

@@ -345,8 +345,6 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(
         AdminConstants.MODIFY_OUTGOING_FILTER_RULES_REQUEST, new ModifyOutgoingFilterRules());
 
-    // ContactBackup API
-    dispatcher.registerHandler(AdminConstants.CONTACT_BACKUP_REQUEST, new ContactBackup());
   }
 
   /**

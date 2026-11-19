@@ -39,11 +39,11 @@ class ConfigTest {
   @Test
   void initLoadsRowsWithAndWithoutModifiedTimestamp() throws Exception {
     // Production seeds the version rows without a modified timestamp (store/db/versions-init.sql),
-    // while rows written at runtime, like contactBackup.lastMailboxId, carry one.
+    // while rows written at runtime, like purge.lastMailboxId, carry one.
     DbConnection conn = DbPool.getConnection();
     try {
       conn.prepareStatement("UPDATE config SET modified = NULL").executeUpdate();
-      DbConfig.set(conn, Config.CONTACT_BACKUP_LAST_MAILBOX_ID, "42");
+      DbConfig.set(conn, Config.KEY_PURGE_LAST_MAILBOX_ID, "42");
       conn.commit();
     } finally {
       DbPool.quietClose(conn);
@@ -52,6 +52,6 @@ class ConfigTest {
     Config.init();
 
     Assertions.assertEquals("111", Config.getString("db.version", null));
-    Assertions.assertEquals(42, Config.getInt(Config.CONTACT_BACKUP_LAST_MAILBOX_ID, 0));
+    Assertions.assertEquals(42, Config.getInt(Config.KEY_PURGE_LAST_MAILBOX_ID, 0));
   }
 }
