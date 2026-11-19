@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * <GetInfoRequest [sections="mbox,prefs,attrs,zimlets,props,idents,sigs,dsrcs,children"]/>
+ * <GetInfoRequest [sections="mbox,prefs,attrs,props,idents,sigs,dsrcs,children"]/>
  * @zm-api-command-auth-required true
  * @zm-api-command-admin-auth-required false
  * @zm-api-command-description Get information about an account.
@@ -40,7 +40,7 @@ public class GetInfoRequest {
     /**
      * @zm-api-field-description Comma separated list of sections to return information about.
      * <br />
-     * Sections are: mbox,prefs,attrs,zimlets,props,idents,sigs,dsrcs,children
+     * Sections are: mbox,prefs,attrs,props,idents,sigs,dsrcs,children
      */
     @XmlAttribute(name=AccountConstants.A_SECTIONS /* sections */, required=false)
     public String getSections() {

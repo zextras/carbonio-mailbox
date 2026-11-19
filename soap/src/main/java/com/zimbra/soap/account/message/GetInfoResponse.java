@@ -21,7 +21,6 @@ import com.zimbra.soap.account.type.AccountPop3DataSource;
 import com.zimbra.soap.account.type.AccountRssDataSource;
 import com.zimbra.soap.account.type.AccountUnknownDataSource;
 import com.zimbra.soap.account.type.AccountYabDataSource;
-import com.zimbra.soap.account.type.AccountZimletInfo;
 import com.zimbra.soap.account.type.Attr;
 import com.zimbra.soap.account.type.ChildAccount;
 import com.zimbra.soap.account.type.Cos;
@@ -72,7 +71,6 @@ import javax.xml.bind.annotation.XmlType;
       "cos",
       "prefs",
       "attrs",
-      "zimlets",
       "props",
       "identities",
       "signatures",
@@ -104,7 +102,6 @@ import javax.xml.bind.annotation.XmlType;
   "cos",
   "prefs",
   "attrs",
-  "zimlets",
   "props",
   "identities",
   "signatures",
@@ -260,13 +257,6 @@ public final class GetInfoResponse {
   @XmlElementWrapper(name = AccountConstants.E_ATTRS /* attrs */, required = false)
   @XmlElement(name = AccountConstants.E_ATTR /* attr */, required = false)
   private List<Attr> attrs = Lists.newArrayList();
-
-  /**
-   * @zm-api-field-description Zimlets
-   */
-  @XmlElementWrapper(name = AccountConstants.E_ZIMLETS /* zimlets */, required = false)
-  @XmlElement(name = AccountConstants.E_ZIMLET /* zimlet */, required = false)
-  private List<AccountZimletInfo> zimlets = Lists.newArrayList();
 
   /**
    * @zm-api-field-description Properties
@@ -462,17 +452,6 @@ public final class GetInfoResponse {
     this.attrs.add(attr);
   }
 
-  public void setZimlets(Iterable<AccountZimletInfo> zimlets) {
-    this.zimlets.clear();
-    if (zimlets != null) {
-      Iterables.addAll(this.zimlets, zimlets);
-    }
-  }
-
-  public void addZimlet(AccountZimletInfo zimlet) {
-    this.zimlets.add(zimlet);
-  }
-
   public void setProps(Iterable<Prop> props) {
     this.props.clear();
     if (props != null) {
@@ -632,10 +611,6 @@ public final class GetInfoResponse {
     return Collections.unmodifiableList(attrs);
   }
 
-  public List<AccountZimletInfo> getZimlets() {
-    return Collections.unmodifiableList(zimlets);
-  }
-
   public List<Prop> getProps() {
     return Collections.unmodifiableList(props);
   }
@@ -710,7 +685,6 @@ public final class GetInfoResponse {
         .add("cos", cos)
         .add("prefs", prefs)
         .add("attrs", attrs)
-        .add("zimlets", zimlets)
         .add("props", props)
         .add("identities", identities)
         .add("signatures", signatures)
