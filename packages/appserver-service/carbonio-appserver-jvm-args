@@ -14,7 +14,8 @@
 #    bytes: do not sort). mailbox.jar is listed once; a duplicate entry makes
 #    the JVM refuse AOT/CDS archives. -Dzal.flatClasspath=true tells ZAL's
 #    BootstrapClassLoader to delegate to this class path instead of loading the
-#    extension jars itself.
+#    extension jars itself; -DcarbonioJarDirectory points ZAL at the extension
+#    directory.
 #
 # 2. AOT cache (JEP 514), only when the JDK is >= 25 (JDK 21 rejects the
 #    options). With a valid cache the JVM maps it (-XX:AOTCache); without one the
@@ -58,6 +59,13 @@ major=$(sed -n 's/^JAVA_VERSION="\{0,1\}\([0-9]*\).*/\1/p' "$jdk/release" 2>/dev
 
 args="-cp $cp
 -Dzal.flatClasspath=true"
+# The class path loader canonicalizes its entries, so ZAL, which finds the
+# extension directory from the location of its own jar, would follow the
+# ext/carbonio/zal.jar symlink to /opt/zextras/zal and load no extension.
+if [ -d "$ext" ]; then
+  args="$args
+-DcarbonioJarDirectory=$ext"
+fi
 
 if [ "${major:-0}" -ge 25 ]; then
   cache=$state/mailboxd.aot
