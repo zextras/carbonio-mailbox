@@ -205,6 +205,10 @@ public class Auth extends AccountDocumentHandler {
     }
     authCtxt.put(Provisioning.AUTH_MODE_KEY, mode);
 
+    if (password == null && recoveryCode == null && preAuthEl == null) {
+      throw ServiceException.INVALID_REQUEST("must specify " + AccountConstants.E_PASSWORD, null);
+    }
+
     if (acct == null) {
       // try LAZY auto provision if it is enabled
       if (acctBy == AccountBy.name || acctBy == AccountBy.krb5Principal) {
