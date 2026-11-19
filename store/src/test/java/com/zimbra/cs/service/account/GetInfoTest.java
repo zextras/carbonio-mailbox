@@ -57,7 +57,6 @@ class GetInfoTest extends SoapTestSuite {
         "mbox",
         "prefs",
         "attrs",
-        "zimlets",
         "props",
         "idents",
         "sigs",
@@ -70,16 +69,6 @@ class GetInfoTest extends SoapTestSuite {
     final var response = getSoapClient().executeSoap(account, request);
 
     assertEquals(HttpStatus.SC_OK, response.statusCode());
-  }
-
-  @Test
-  void zimletsSectionIsEmpty() throws Exception {
-    final var request = new GetInfoRequest().addSection("zimlets");
-
-    final var response = getSoapClient().executeSoap(account, request);
-
-    assertEquals(HttpStatus.SC_OK, response.statusCode());
-    assertTrue(response.body().contains("<zimlets/>"));
   }
 
   @Test

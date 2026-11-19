@@ -73,7 +73,7 @@ public class GetInfo extends AccountDocumentHandler  {
     }
 
     private enum Section {
-        MBOX, PREFS, ATTRS, ZIMLETS, PROPS, IDENTS, SIGS, DSRCS, CHILDREN;
+        MBOX, PREFS, ATTRS, PROPS, IDENTS, SIGS, DSRCS, CHILDREN;
 
         static Section lookup(String value) throws ServiceException {
             try {
@@ -199,9 +199,6 @@ public class GetInfo extends AccountDocumentHandler  {
         if (sections.contains(Section.ATTRS)) {
             Element attrs = response.addUniqueElement(AccountConstants.E_ATTRS);
             doAttrs(account, locale.toString(), attrs, attrMap);
-        }
-        if (sections.contains(Section.ZIMLETS)) {
-            response.addUniqueElement(AccountConstants.E_ZIMLETS);
         }
         if (sections.contains(Section.PROPS)) {
             Element props = response.addUniqueElement(AccountConstants.E_PROPERTIES);
