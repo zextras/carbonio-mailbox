@@ -85,8 +85,7 @@ public class UserServletUtil {
      *
      */
     public static MailItem resolveItem(UserServletContext context, boolean checkExtension) throws ServiceException {
-        if (context.formatter != null && !context.formatter.requiresAuth() &&
-                !FormatType.FREE_BUSY.equals(context.formatter.getType())) {
+        if (context.formatter != null && !context.formatter.requiresAuth()) {
             return null;
         }
         if (context.formatter != null && context.formatter.getType() == FormatType.MOBILE_CONFIG) {
@@ -132,7 +131,7 @@ public class UserServletUtil {
             context.extraPath = null;
         }
 
-        if (FormatType.FREE_BUSY.equals(context.format) || FormatType.IFB.equals(context.format)) {
+        if (FormatType.IFB.equals(context.format)) {
             try {
                 // Do the get as mailbox owner to circumvent ACL system.
                 context.target = mbox.getItemByPath(null, context.itemPath);
