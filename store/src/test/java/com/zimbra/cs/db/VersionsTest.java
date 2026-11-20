@@ -23,8 +23,8 @@ public class VersionsTest {
 
 	@BeforeAll
 	static void setUp() throws Exception {
-		Db.setInstance(new HSQLDB());
-		HSQLDB.createDatabase(tempDir.getAbsolutePath());
+		TestDatabase.install();
+		TestDatabase.createDatabase(tempDir.getAbsolutePath());
 		DbPool.global();
 	}
 

@@ -388,6 +388,15 @@ public final class LC {
 
   @Supported public static final KnownKey mysql_root_password = KnownKey.newKey("zimbra").protect();
 
+  /** Mailbox database backend: {@code com.zimbra.cs.db.MariaDB} or {@code com.zimbra.cs.db.PostgreSQL}. */
+  public static final KnownKey zimbra_class_database = KnownKey.newKey("com.zimbra.cs.db.MariaDB");
+
+  public static final KnownKey postgres_host = KnownKey.newKey("localhost");
+  public static final KnownKey postgres_port = KnownKey.newKey(5432);
+  public static final KnownKey postgres_database = KnownKey.newKey("carbonio_mailbox");
+  public static final KnownKey postgres_user = KnownKey.newKey("carbonio_mailbox");
+  public static final KnownKey postgres_password = KnownKey.newKey("").protect();
+
   @Supported public static final KnownKey mysql_memory_percent = KnownKey.newKey(30);
 
   public static final KnownKey logger_data_directory =

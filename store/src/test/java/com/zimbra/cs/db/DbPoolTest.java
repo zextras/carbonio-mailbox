@@ -9,7 +9,7 @@ class DbPoolTest {
 
 	@Test
 	void whenPoolShutdown_CannotAcquireConnection() throws Exception {
-		DbPool dbPool = DbPool.newPool(new HSQLDB());
+		DbPool dbPool = DbPool.newPool(TestDatabase.install());
 		dbPool.shutdownInstance();
 		Assertions.assertThrows(IllegalStateException.class, dbPool::getConnectionInstance);
 	}

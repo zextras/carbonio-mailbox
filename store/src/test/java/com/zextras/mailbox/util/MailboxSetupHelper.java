@@ -8,7 +8,6 @@ package com.zextras.mailbox.util;
 
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
-import com.zimbra.cs.db.Db;
 import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.calendar.WellKnownTimeZones;
@@ -18,7 +17,7 @@ import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.auth.ZimbraCustomAuth;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.db.DbPool;
-import com.zimbra.cs.db.HSQLDB;
+import com.zimbra.cs.db.TestDatabase;
 import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.index.IndexStore;
 import com.zimbra.cs.index.ZimbraAnalyzer;
@@ -121,12 +120,12 @@ public class MailboxSetupHelper {
 		inMemoryLdapServer.start();
 		inMemoryLdapServer.initializeBasicData();
 
-		Db.setInstance(new HSQLDB());
+		TestDatabase.install();
 		final UBIDLdapPoolConfig poolConfig = UBIDLdapPoolConfig.createNewPool(true);
 		ldapClient = LdapClient.createNew(poolConfig);
 		Provisioning.setInstance(new LdapProvisioningWithMockMime(ldapClient));
 		this.initData(mailboxTestData);
-		HSQLDB.createDatabase(getVolumeDirectory());
+		TestDatabase.createDatabase(getVolumeDirectory());
 		DbPool.global();
 		MailboxManager.setInstance(new MailboxManager());
 		// RedoConfig caches the redolog paths in a singleton built from a static block, against the
@@ -167,7 +166,7 @@ public class MailboxSetupHelper {
 	public void clearData() throws Exception {
 		((LdapProvisioning) Provisioning.getInstance()).clearCache();
 		inMemoryLdapServer.clear();
-		HSQLDB.clearDatabase();
+		TestDatabase.clearDatabase();
 	}
 
 	public void tearDown() throws Exception {

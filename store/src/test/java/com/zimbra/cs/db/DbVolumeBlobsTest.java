@@ -51,8 +51,10 @@ public class DbVolumeBlobsTest extends MailboxTestSuite {
 	@BeforeAll
 	public static void init() throws Exception {
 		// need MVCC since the VolumeManager code creates connections internally
-		HSQLDB db = (HSQLDB) Db.getInstance();
-		db.useMVCC(null);
+		// PostgreSQL is MVCC already
+		if (Db.getInstance() instanceof HSQLDB db) {
+			db.useMVCC(null);
+		}
 	}
 
 	@BeforeEach

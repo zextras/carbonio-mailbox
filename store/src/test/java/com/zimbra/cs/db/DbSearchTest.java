@@ -327,11 +327,11 @@ public final class DbSearchTest extends MailboxTestSuite {
 		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item_dumpster " +
 						"(mailbox_id, id, type, flags, unread, tag_names, date, size, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, ?, ?, ?, ?, ?, 0, 0)",
-				mbox.getId(), 104, MailItem.Type.MESSAGE.toByte(), 0, 0, "\0test\0", 400, 4000);
+				mbox.getId(), 104, MailItem.Type.MESSAGE.toByte(), 0, 0, DbTag.serializeTags(new String[] {"test"}), 400, 4000);
 		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item_dumpster " +
 						"(mailbox_id, id, type, flags, unread, tag_names, date, size, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, ?, ?, ?, ?, ?, 0, 0)",
-				mbox.getId(), 105, MailItem.Type.MESSAGE.toByte(), 0, 0, "\0test\0", 500, 5000);
+				mbox.getId(), 105, MailItem.Type.MESSAGE.toByte(), 0, 0, DbTag.serializeTags(new String[] {"test"}), 500, 5000);
 		mbox.createTag(null, "test", (byte) 0);
 
 		DbSearchConstraints.Leaf constraints = new DbSearchConstraints.Leaf();

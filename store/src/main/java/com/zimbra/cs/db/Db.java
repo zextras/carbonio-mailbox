@@ -6,6 +6,7 @@
 package com.zimbra.cs.db;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import java.sql.SQLException;
@@ -61,9 +62,19 @@ public abstract class Db {
 
     public static synchronized Db getInstance() {
         if (sDatabase == null) {
-            setInstance(new MariaDB());
+            setInstance(fromClassName(LC.zimbra_class_database.value()));
         }
         return sDatabase;
+    }
+
+    static Db fromClassName(String className) {
+        if (PostgreSQL.class.getName().equals(className)) {
+            return new PostgreSQL();
+        }
+        if (className == null || className.isEmpty() || MariaDB.class.getName().equals(className)) {
+            return new MariaDB();
+        }
+        throw new IllegalArgumentException("unsupported zimbra_class_database: " + className);
     }
 
     @VisibleForTesting
@@ -219,6 +230,14 @@ public abstract class Db {
      */
     public String limit(int offset, int limit) {
         return "";
+    }
+
+    /**
+     * Delimiter around each name in the denormalized MAIL_ITEM.TAG_NAMES column. Item names cannot
+     * contain control characters, so any of them is unambiguous.
+     */
+    public String tagSeparator() {
+        return "\0";
     }
 
     protected String escapeSequence() {

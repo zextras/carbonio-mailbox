@@ -61,6 +61,7 @@
     <pact.version>4.6.17</pact.version>
     <json-unit.version>4.1.1</json-unit.version>
     <mariadb-java-client.version>2.7.14</mariadb-java-client.version>
+    <postgresql.version>42.7.12</postgresql.version>
   </properties>
 
   <profiles>
@@ -855,6 +856,11 @@
         <groupId>org.mariadb.jdbc</groupId>
         <artifactId>mariadb-java-client</artifactId>
         <version>${mariadb-java-client.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>${postgresql.version}</version>
       </dependency>
       <dependency>
         <groupId>zimbra</groupId>

@@ -28,14 +28,14 @@ public class DbMailboxTest {
 
 	@BeforeAll
 	public static void init() throws Exception {
-		HSQLDB.createDatabase(LC.zimbra_home.value() + "/build/test");
-		Db.setInstance(new HSQLDB());
+		TestDatabase.createDatabase(LC.zimbra_home.value() + "/build/test");
+		TestDatabase.install();
 		DbPool.global();
 	}
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		HSQLDB.clearDatabase();
+		TestDatabase.clearDatabase();
 		connection = DbPool.getConnection();
 	}
 

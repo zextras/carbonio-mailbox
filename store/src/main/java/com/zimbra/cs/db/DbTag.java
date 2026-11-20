@@ -12,6 +12,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.Set;
 
 
@@ -67,27 +68,36 @@ public class DbTag {
         return data;
     }
 
-    private static final String TAG_SEPARATOR = "\0";
-    private static final Joiner TAG_JOINER = Joiner.on(TAG_SEPARATOR).skipNulls();
+    /** Delimiter of the denormalized TAG_NAMES column; see {@link Db#tagSeparator()}. */
+    private static String tagSeparator() {
+        return Db.getInstance().tagSeparator();
+    }
+
+    /** {@link #tagSeparator()} as a SQL string literal. */
+    private static String tagSeparatorLiteral() {
+        return "'" + tagSeparator() + "'";
+    }
 
     public static String serializeTags(String[] tags) {
         if (tags == null || tags.length == 0) {
             return null;
         }
 
-        StringBuilder encoded = TAG_JOINER.appendTo(new StringBuilder(TAG_SEPARATOR), tags);
-        return encoded.length() == 1 ? null : encoded.append(TAG_SEPARATOR).toString();
+        String separator = tagSeparator();
+        StringBuilder encoded = Joiner.on(separator).skipNulls().appendTo(new StringBuilder(separator), tags);
+        return encoded.length() == 1 ? null : encoded.append(separator).toString();
     }
 
     public static String[] deserializeTags(String encoded) {
         if (encoded == null || encoded.isEmpty()) {
             return null;
         }
-        return encoded.substring(encoded.charAt(0) == '\0' ? 1 : 0).split(TAG_SEPARATOR);
+        String separator = tagSeparator();
+        return encoded.substring(encoded.startsWith(separator) ? 1 : 0).split(Pattern.quote(separator));
     }
 
     private static String delimitTagName(String name) {
-        return TAG_SEPARATOR + name + TAG_SEPARATOR;
+        return tagSeparator() + name + tagSeparator();
     }
 
     static String tagLIKEPattern(String tagName) {
@@ -395,7 +405,7 @@ public class DbTag {
                     primaryUpdate = "tag_names = CASE WHEN tag_names IS NULL THEN ? ELSE " + Db.getInstance().concat("tag_names", "?") + " END";
                     sanityCheckAnd = "(tag_names IS NULL OR tag_names NOT LIKE ?) AND ";
                 } else {
-                    primaryUpdate = "tag_names = CASE tag_names WHEN ? THEN NULL ELSE REPLACE(tag_names, ?, '\0') END";
+                    primaryUpdate = "tag_names = CASE tag_names WHEN ? THEN NULL ELSE REPLACE(tag_names, ?, " + tagSeparatorLiteral() + ") END";
                     sanityCheckAnd = "";
                 }
             }
@@ -650,7 +660,7 @@ public class DbTag {
                 String mailboxesMatchAnd = DebugConfig.disableMailboxGroups ? "" : "mi.mailbox_id = ti.mailbox_id AND ";
                 stmt = conn.prepareStatement("UPDATE " + DbMailItem.getMailItemTableName(mbox, "mi") +
                         " INNER JOIN " + getTaggedItemTableName(mbox, "ti") + " ON " + mailboxesMatchAnd + "mi.id = ti.item_id" +
-                        " SET mi.tag_names = CASE mi.tag_names WHEN ? THEN NULL ELSE REPLACE(mi.tag_names, ?, '" + Db.getEscapeSequence() + "0') END, mod_metadata = ?, change_date = ?" +
+                        " SET mi.tag_names = CASE mi.tag_names WHEN ? THEN NULL ELSE REPLACE(mi.tag_names, ?, " + tagSeparatorLiteral() + ") END, mod_metadata = ?, change_date = ?" +
                         " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id = ?");
                 stmt.setString(pos++, delimited);
                 stmt.setString(pos++, delimited);
@@ -660,7 +670,7 @@ public class DbTag {
                 stmt.setInt(pos++, tag.getId());
             } else {
                 stmt = conn.prepareStatement("UPDATE " + DbMailItem.getMailItemTableName(mbox) +
-                        " SET tag_names = CASE tag_names WHEN ? THEN NULL ELSE REPLACE(tag_names, ?, '" + Db.getEscapeSequence() + "0') END, mod_metadata = ?, change_date = ?" +
+                        " SET tag_names = CASE tag_names WHEN ? THEN NULL ELSE REPLACE(tag_names, ?, " + tagSeparatorLiteral() + ") END, mod_metadata = ?, change_date = ?" +
                         " WHERE " + DbMailItem.IN_THIS_MAILBOX_AND + "id IN" +
                         " (SELECT ti.item_id FROM " + getTaggedItemTableName(mbox, "ti") + " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id = ?)");
                 stmt.setString(pos++, delimited);

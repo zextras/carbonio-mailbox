@@ -577,7 +577,7 @@ public final class DbMailbox {
           conn.prepareStatement(
               "UPDATE "
                   + qualifyZimbraTableName(mbox, TABLE_MAILBOX)
-                  + " SET tracking_imap = 1 WHERE id = ?");
+                  + " SET tracking_imap = TRUE WHERE id = ?");
       stmt.setInt(1, mbox.getId());
       stmt.executeUpdate();
     } catch (SQLException e) {

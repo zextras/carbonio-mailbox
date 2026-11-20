@@ -2,7 +2,6 @@ package com.zextras.mailbox;
 
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
-import com.zimbra.cs.db.Db;
 import com.zextras.mailbox.server.MailboxServer;
 import com.zextras.mailbox.server.MailboxServerBuilder;
 import com.zextras.mailbox.util.InMemoryLdapServer;
@@ -13,7 +12,7 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
-import com.zimbra.cs.db.HSQLDB;
+import com.zimbra.cs.db.TestDatabase;
 import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.nio.file.Files;
@@ -79,7 +78,7 @@ public class MailboxEnvironmentSetupHelper {
 	public MailboxServer create() throws Exception {
 		setupTestKeyStore();
 
-		Db.setInstance(new HSQLDB());
+		TestDatabase.install();
 
 		LC.ldap_port.setDefault(LDAP_PORT);
 		LC.zimbra_home.setDefault(mailboxHome);
@@ -87,7 +86,7 @@ public class MailboxEnvironmentSetupHelper {
 
 		LC.zimbra_server_hostname.setDefault(APP_SERVER_NAME);
 		LC.timezone_file.setDefault(timeZoneFile);
-		HSQLDB.createDatabase(LC.zimbra_home.value() + "/build/test");
+		TestDatabase.createDatabase(LC.zimbra_home.value() + "/build/test");
 
 		if (sharedLdapServer == null) {
 			sharedLdapServer = new Builder()

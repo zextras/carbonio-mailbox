@@ -3674,7 +3674,8 @@ public class DbMailItem {
         }
       }
       if (unread != null) {
-        stmt.setBoolean(pos++, unread);
+        // unread is an INTEGER count column
+        stmt.setInt(pos++, unread ? 1 : 0);
       }
 
       PendingDelete info = accumulateDeletionInfo(mbox, stmt);
@@ -4061,8 +4062,10 @@ public class DbMailItem {
                   + IMAP_TYPES);
 
       if (hasCursor) {
-        query.append(" AND mi.id > ? ORDER BY mi.id");
+        query.append(" AND mi.id > ?");
       }
+      // InnoDB happens to return primary-key order; PostgreSQL returns heap order.
+      query.append(" ORDER BY mi.id");
       if (hasLimit && Db.supports(Db.Capability.LIMIT_CLAUSE)) {
         query.append(" ").append(Db.getInstance().limit(limit + 1));
       }
@@ -4459,7 +4462,8 @@ public class DbMailItem {
         stmt.setInt(pos++, currentSyncDate);
       }
       if (volumeId > -1) {
-        stmt.setInt(pos++, volumeId);
+        // locator is VARCHAR
+        stmt.setString(pos++, String.valueOf(volumeId));
       }
       rs = stmt.executeQuery();
       while (rs.next()) {
