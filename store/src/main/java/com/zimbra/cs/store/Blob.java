@@ -69,10 +69,15 @@ public class Blob {
 
     public InputStream getInputStream() throws IOException {
         InputStream in = new ZSharedFileInputStream(file);
-        if (isCompressed()) {
-            in = new GZIPInputStream(in);
+        try {
+            if (isCompressed()) {
+                in = new GZIPInputStream(in);
+            }
+            return in;
+        } catch (IOException e) {
+            ByteUtil.closeStream(in);
+            throw e;
         }
-        return in;
     }
 
     public boolean isCompressed() throws IOException {
