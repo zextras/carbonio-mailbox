@@ -65,6 +65,7 @@ public class ZimbraServletTest {
 		Mockito.when(mockProvisioning.getLocalServer()).thenReturn(localServer);
 		Mockito.when(mockProvisioning.getAllServers(Provisioning.SERVICE_PROXY))
 				.thenReturn(proxyServers);
+		ZimbraServlet.flushProxyIpsCache();
 		TrustedIPs trustedIPs = ZimbraServlet.getTrustedIPs();
 		Arrays.stream(proxyIps).forEach(ip -> assertTrue(trustedIPs.isIpTrusted(ip)));
 	}

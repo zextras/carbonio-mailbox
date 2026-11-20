@@ -345,6 +345,12 @@ public final class LC {
   public static final KnownKey ldap_cache_server_maxsize = KnownKey.newKey(100);
   public static final KnownKey ldap_cache_server_maxage = KnownKey.newKey(15);
 
+  /**
+   * Seconds the proxy server IPs trusted for X-Forwarded-For are cached; 0 disables. Read at
+   * mailbox startup.
+   */
+  @Supported public static final KnownKey proxy_ips_cache_ttl = KnownKey.newKey(300);
+
   @Supported public static final KnownKey ldap_cache_zimlet_maxsize = KnownKey.newKey(100);
 
   @Supported public static final KnownKey ldap_cache_zimlet_maxage = KnownKey.newKey(15);
