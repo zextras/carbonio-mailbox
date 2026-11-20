@@ -77,6 +77,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * @author zimbra
@@ -259,6 +261,23 @@ class UserServletTest extends MailboxTestSuite {
 
 		final ClassicHttpResponse response =
 				getUserServletRequest(server.getURI().toString() + "~/Inbox?auth=co&fmt=tgz");
+
+		assertEquals(HttpStatus.SC_OK, response.getCode());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"html", "freebusy"})
+	void shouldRejectFormatsOfTheRemovedWebClient(String format) throws Exception {
+		final ClassicHttpResponse response =
+				getUserServletRequest(server.getURI().toString() + "~/Calendar?auth=co&fmt=" + format);
+
+		assertEquals(HttpStatus.SC_NOT_IMPLEMENTED, response.getCode());
+	}
+
+	@Test
+	void shouldServeIcalendarFreeBusy() throws Exception {
+		final ClassicHttpResponse response =
+				getUserServletRequest(server.getURI().toString() + "~/Calendar?auth=co&fmt=ifb");
 
 		assertEquals(HttpStatus.SC_OK, response.getCode());
 	}
