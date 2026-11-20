@@ -6,11 +6,10 @@
 
 package com.zimbra.cs.util;
 
-import com.zimbra.cs.db.Db;
 import com.zimbra.cs.db.DbConfig;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
-import com.zimbra.cs.db.HSQLDB;
+import com.zimbra.cs.db.TestDatabase;
 import java.io.File;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -26,8 +25,8 @@ class ConfigTest {
 
   @BeforeAll
   static void setUp() throws Exception {
-    Db.setInstance(new HSQLDB());
-    HSQLDB.createDatabase(tempDir.getAbsolutePath());
+    TestDatabase.install();
+    TestDatabase.createDatabase(tempDir.getAbsolutePath());
     DbPool.global();
   }
 

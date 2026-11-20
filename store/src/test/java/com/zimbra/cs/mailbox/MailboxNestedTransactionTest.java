@@ -66,8 +66,10 @@ public class MailboxNestedTransactionTest extends MailboxTestSuite {
 	void nestedTxn() throws Exception {
 		Account acct = createAccount().create();
 		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
-		HSQLDB db = (HSQLDB) Db.getInstance();
-		db.useMVCC(mbox);
+		// PostgreSQL is MVCC already
+		if (Db.getInstance() instanceof HSQLDB db) {
+			db.useMVCC(mbox);
+		}
 
 		DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
 		mbox.lock.lock();
