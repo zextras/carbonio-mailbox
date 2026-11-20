@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Closeables;
+import com.google.common.primitives.Ints;
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import com.zextras.mailbox.quota.QuotaCheckSingleton;
 import com.zimbra.client.ZMailbox;
@@ -46,7 +47,6 @@ import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.mime.Rfc822ValidationInputStream;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.SoapProtocol;
-import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.common.util.BufferStream;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.Constants;
@@ -730,10 +730,7 @@ public class Mailbox implements MailboxStore {
   }
 
   boolean requiresWriteLock() {
-    // mailbox currently forced to use write lock due to one of the following
-    // 1. pending tag/flag reload; i.e. cache flush or initial mailbox load
-    // 2. read/write disabled by LC for debugging
-    return requiresWriteLock || !LC.zimbra_mailbox_lock_readwrite.booleanValue();
+    return requiresWriteLock;
   }
 
   /**
@@ -3218,7 +3215,7 @@ public class Mailbox implements MailboxStore {
    */
   public MailItem[] getItemById(OperationContext octxt, Collection<Integer> ids, MailItem.Type type)
       throws ServiceException {
-    return getItemById(octxt, ArrayUtil.toIntArray(ids), type);
+      return getItemById(octxt, Ints.toArray(ids), type);
   }
 
   /**
@@ -3251,7 +3248,7 @@ public class Mailbox implements MailboxStore {
   }
 
   MailItem[] getItemById(Collection<Integer> ids, MailItem.Type type) throws ServiceException {
-    return getItemById(ArrayUtil.toIntArray(ids), type);
+      return getItemById(Ints.toArray(ids), type);
   }
 
   MailItem[] getItemById(int[] ids, MailItem.Type type) throws ServiceException {
@@ -5111,59 +5108,6 @@ public class Mailbox implements MailboxStore {
       throw ServiceException.FAILURE("Error writing iCalendar", e);
     } finally {
       lock.release();
-    }
-  }
-
-  public void writeICalendarForRange(
-      Writer writer,
-      OperationContext octxt,
-      long start,
-      long end,
-      int folderId,
-      boolean useOutlookCompatMode,
-      boolean ignoreErrors,
-      boolean needAppleICalHacks)
-      throws ServiceException {
-    writeICalendarForRange(
-        writer,
-        octxt,
-        start,
-        end,
-        folderId,
-        useOutlookCompatMode,
-        ignoreErrors,
-        needAppleICalHacks,
-        false);
-  }
-
-  public void writeICalendarForRange(
-      Writer writer,
-      OperationContext octxt,
-      long start,
-      long end,
-      int folderId,
-      boolean useOutlookCompatMode,
-      boolean ignoreErrors,
-      boolean needAppleICalHacks,
-      boolean escapeHtmlTags)
-      throws ServiceException {
-    boolean success = false;
-    try {
-      beginTransaction("writeICalendarForRange", octxt);
-      Collection<CalendarItem> calItems =
-          getCalendarItemsForRange(octxt, start, end, folderId, null);
-      writeICalendarForCalendarItems(
-          writer,
-          octxt,
-          calItems,
-          null,
-          useOutlookCompatMode,
-          ignoreErrors,
-          needAppleICalHacks,
-          true,
-          escapeHtmlTags);
-    } finally {
-      endTransaction(success);
     }
   }
 
@@ -7368,9 +7312,9 @@ public class Mailbox implements MailboxStore {
   public void alterTag(
       OpContext octxt, Collection<ItemIdentifier> ids, String tagName, boolean addTag)
       throws ServiceException {
-    alterTag(
+      alterTag(
         OperationContext.asOperationContext(octxt),
-        ArrayUtil.toIntArray(ItemIdentifier.toIds(ids)),
+          Ints.toArray(ItemIdentifier.toIds(ids)),
         MailItem.Type.UNKNOWN,
         tagName,
         addTag,
@@ -7461,9 +7405,9 @@ public class Mailbox implements MailboxStore {
       OpContext octxt, Collection<ItemIdentifier> itemIds, int flags, Collection<String> tags)
       throws ServiceException {
     List<Integer> ids = ItemIdentifier.toIds(itemIds);
-    setTags(
+      setTags(
         OperationContext.asOperationContext(octxt),
-        ArrayUtil.toIntArray(ids),
+          Ints.toArray(ids),
         MailItem.Type.UNKNOWN,
         flags,
         tags.toArray(new String[0]),
@@ -8263,9 +8207,9 @@ public class Mailbox implements MailboxStore {
   @Override
   public void delete(OpContext octxt, List<Integer> itemIds, List<Integer> nonExistingItems)
       throws ServiceException {
-    delete(
+      delete(
         (OperationContext) octxt,
-        ArrayUtil.toIntArray(itemIds),
+          Ints.toArray(itemIds),
         MailItem.Type.UNKNOWN,
         null,
         nonExistingItems);
@@ -8346,7 +8290,7 @@ public class Mailbox implements MailboxStore {
           break;
         }
 
-        numDeleted += deleteFromDumpster(octxt, ArrayUtil.toIntArray(itemIds));
+          numDeleted += deleteFromDumpster(octxt, Ints.toArray(itemIds));
       } finally {
         lock.release();
       }
@@ -8360,7 +8304,7 @@ public class Mailbox implements MailboxStore {
 
     Set<Integer> itemIds = DbMailItem.getIds(this, getOperationConnection(), params, true);
     if (!itemIds.isEmpty()) {
-      return deleteFromDumpster(ArrayUtil.toIntArray(itemIds));
+        return deleteFromDumpster(Ints.toArray(itemIds));
     } else {
       return 0;
     }
@@ -9377,7 +9321,7 @@ public class Mailbox implements MailboxStore {
         if (info.itemIds.isEmpty()) {
           return false;
         }
-        redoRecorder.setIds(ArrayUtil.toIntArray(info.itemIds.getAllIds()));
+          redoRecorder.setIds(Ints.toArray(info.itemIds.getAllIds()));
         MailItem.delete(this, info, null, true /* writeTombstones */, false /* not fromDumpster */);
         success = true;
       } finally {
@@ -9464,9 +9408,9 @@ public class Mailbox implements MailboxStore {
           if (!folderIds.isEmpty()) {
             lock.lock();
             try {
-              delete(
+                delete(
                   octxt,
-                  ArrayUtil.toIntArray(folderIds),
+                    Ints.toArray(folderIds),
                   MailItem.Type.FOLDER,
                   tcon,
                   false /* don't useEmptyForFolders */,

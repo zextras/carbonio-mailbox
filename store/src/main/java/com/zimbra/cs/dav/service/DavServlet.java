@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.dav.service;
 
+import com.zimbra.cs.account.auth.AuthContext.Protocol;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,7 +41,6 @@ import com.zimbra.client.ZMailbox;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.httpclient.HttpClientUtil;
-import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.W3cDomUtil;
 import com.zimbra.common.soap.XmlParseException;
@@ -130,6 +130,18 @@ public class DavServlet extends ZimbraServlet {
     private static final Set<String> IGNORABLE_PROXY_RESPONSE_HEADERS = ImmutableSet.of(
         DavProtocol.HEADER_DATE,
         DavProtocol.HEADER_CONTENT_LENGTH);
+
+    private static AuthResult basicAuthRequest(HttpServletRequest req, HttpServletResponse resp,
+                                           boolean sendChallenge, ZimbraServlet servlet)
+    throws IOException, ServiceException {
+        if (!AuthProvider.allowBasicAuth(req, servlet)) {
+            return new AuthResult(null, false);
+        }
+        boolean isDav = (servlet instanceof DavServlet);
+        Account acct = AuthUtil.basicAuthRequest(req, resp, sendChallenge, Protocol.http_dav);
+        return new AuthResult(acct, (acct == null));
+    }
+
     @Override
     public void init() throws ServletException {
         super.init();
@@ -333,7 +345,7 @@ public class DavServlet extends ZimbraServlet {
             if (at != null && (rtype == RequestType.both || rtype == RequestType.authtoken)) {
                 authUser = Provisioning.getInstance().get(AccountBy.id, at.getAccountId());
             } else if (at == null && (rtype == RequestType.both || rtype == RequestType.password)) {
-                AuthUtil.AuthResult result = AuthUtil.basicAuthRequest(req, resp, true, this);
+                AuthResult result = basicAuthRequest(req, resp, true, this);
                 if (result.sendErrorCalled) {
                     logResponseInfo(resp);
                     return;
@@ -834,5 +846,14 @@ public class DavServlet extends ZimbraServlet {
         }
 
         return true;
+    }
+
+    public static final class AuthResult {
+        public final boolean sendErrorCalled;
+        public final Account authorizedAccount;
+        public AuthResult(Account authAcct, boolean calledSendError) {
+            sendErrorCalled = calledSendError;
+            authorizedAccount = authAcct;
+        }
     }
 }

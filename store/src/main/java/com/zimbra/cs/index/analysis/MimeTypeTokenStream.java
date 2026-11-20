@@ -30,9 +30,6 @@ public final class MimeTypeTokenStream extends TokenStream {
     private Iterator<String> itr;
     private final CharTermAttribute termAttr = addAttribute(CharTermAttribute.class);
 
-    public MimeTypeTokenStream() {
-        tokens.add(LuceneFields.L_ATTACHMENT_NONE);
-    }
 
     public MimeTypeTokenStream(String src) {
         add(src);

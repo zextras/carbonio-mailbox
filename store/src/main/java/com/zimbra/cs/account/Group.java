@@ -6,7 +6,6 @@
 package com.zimbra.cs.account;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -70,18 +69,7 @@ public abstract class Group extends MailTarget implements AliasedEntry {
         return getProvisioning().inACLGroup(acct, getId());
     }
 
-    @Override
-    public boolean isAddrOfEntry(String addr) {
-        addr = addr.toLowerCase();
-        if (getName().equals(addr)) {
-            return true;
-        } else {
-            Set<String> aliases = getMultiAttrSet(Provisioning.A_zimbraMailAlias);
-            return aliases.contains(addr);
-        }
-    }
-
-    @Override
+	@Override
     public Set<String> getAllAddrsSet() {
         Set<String> addrs = Sets.newHashSet();
         addrs.add(getName());
@@ -202,20 +190,6 @@ public abstract class Group extends MailTarget implements AliasedEntry {
             return owners;
         }
 
-        public static void getOwnerEmails(Group group, Collection<String> result)
-        throws ServiceException {
-            /*
-             * No need to check rights granted on the doamin or globalgrant,
-             * The ownDistList can only be granted on group target.
-             */
-            List<ZimbraACE> acl = ACLUtil.getACEs(group, Collections.singleton(GROUP_OWNER_RIGHT));
-            if (acl != null) {
-                for (ZimbraACE ace : acl) {
-                    Right right = ace.getRight();
-                    result.add(ace.getGranteeDisplayName());
-                }
-            }
-        }
-    }
+		}
 
 }

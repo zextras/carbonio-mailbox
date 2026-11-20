@@ -8,6 +8,8 @@ package com.zimbra.common.util;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.common.collect.Sets;
+
 public class SetUtil {
 
     
@@ -20,13 +22,7 @@ public class SetUtil {
      * @return
      */
     public static <T> Set<T> subtract(Set<T> lhs, Set<T> rhs) {
-        HashSet<T> out = new HashSet<>();
-        
-        for (T o : lhs) {
-            if (!rhs.contains(o))
-                out.add(o);
-        }
-        return out;
+        return new HashSet<>(Sets.difference(lhs, rhs));
     }
     
     /**
@@ -38,13 +34,7 @@ public class SetUtil {
      * @return
      */
     public static <T> Set<T> intersect(Set<T> lhs, Set<T> rhs) {
-        HashSet<T> out = new HashSet<>();
-        
-        for (T o : lhs) {
-            if (rhs.contains(o))
-                out.add(o);
-        }
-        return out;
+        return new HashSet<>(Sets.intersection(lhs, rhs));
     }
 	
 	/**
@@ -56,11 +46,7 @@ public class SetUtil {
 	 * @return
 	 */
 	public static <T> Set<T> intersect(Set<T> out, Set<T> lhs, Set<T> rhs) {
-		
-		for (T o : lhs) {
-			if (rhs.contains(o))
-				out.add(o);
-		}
+		out.addAll(Sets.intersection(lhs, rhs));
 		return out;
 	}
 	

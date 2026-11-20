@@ -19,20 +19,12 @@ import com.zimbra.soap.admin.type.DomainInfo;
 
 class SoapDomain extends Domain implements SoapEntry {
 
-    SoapDomain(String name, String id, Map<String, Object> attrs, Provisioning prov) {
-        super(name, id, attrs, null, prov);
-    }
-
-    SoapDomain(DomainInfo domainInfo, Provisioning prov) throws ServiceException {
+	SoapDomain(DomainInfo domainInfo, Provisioning prov) throws ServiceException {
         super(domainInfo.getName(), domainInfo.getId(),
                 Attr.collectionToMap(domainInfo.getAttrList()), null, prov);
     }
 
-    SoapDomain(Element e, Provisioning prov) throws ServiceException {
-        super(e.getAttribute(AdminConstants.A_NAME), e.getAttribute(AdminConstants.A_ID), SoapProvisioning.getAttrs(e), null, prov);
-    }
-
-    public void modifyAttrs(SoapProvisioning prov, Map<String, ? extends Object> attrs, boolean checkImmutable) throws ServiceException {
+	public void modifyAttrs(SoapProvisioning prov, Map<String, ? extends Object> attrs, boolean checkImmutable) throws ServiceException {
         XMLElement req = new XMLElement(AdminConstants.MODIFY_DOMAIN_REQUEST);
         req.addElement(AdminConstants.E_ID).setText(getId());
         SoapProvisioning.addAttrElements(req, attrs);

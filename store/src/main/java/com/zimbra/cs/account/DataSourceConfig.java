@@ -41,11 +41,7 @@ public final class DataSourceConfig {
         services = new ArrayList<>();
     }
 
-    public boolean isSyncAllFolders() {
-        return syncAllFolders;
-    }
-
-    public List<Service> getServices() {
+	public List<Service> getServices() {
         return services;
     }
 
@@ -101,19 +97,7 @@ public final class DataSourceConfig {
             return name;
         }
 
-        public boolean isSaveToSent() {
-            return saveToSent;
-        }
-
-        public String getCalDavTargetUrl() {
-            return calDavTargetUrl;
-        }
-
-        public String getCalDavPrincipalPath() {
-            return calDavPrincipalPath;
-        }
-
-        public List<Folder> getFolders() {
+			public List<Folder> getFolders() {
             return folders;
         }
 
@@ -193,11 +177,7 @@ public final class DataSourceConfig {
             return ignore;
         }
 
-        public boolean isSync() {
-            return sync;
-        }
-
-        public Atom getFolderNameFlag() {
+			public Atom getFolderNameFlag() {
             return folderNameFlag;
         }
 

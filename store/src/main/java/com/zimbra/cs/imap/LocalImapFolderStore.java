@@ -19,12 +19,7 @@ public class LocalImapFolderStore implements ImapFolderStore {
         this.folder = folder;
     }
 
-    @Override
-    public String getFolderIdAsString() {
-        return folder.getFolderIdAsString();
-    }
-
-    @Override
+	@Override
     public FolderStore getFolderStore() {
         return folder;
     }

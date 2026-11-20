@@ -1,7 +1,6 @@
 package com.zimbra.cs.account.ldap;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.ldap.LdapException;
 import com.zimbra.cs.ldap.ZAttributes;
@@ -25,11 +24,7 @@ class AutoProvisionTest {
         ServiceException serviceException = assertThrows(
                 ServiceException.class,
                 () -> new AutoProvision(null, domain) {
-                    @Override
-                    Account handle() throws ServiceException {
-                        return null;
-                    }
-                }.mapName(zAttributes, null),
+								}.mapName(zAttributes, null),
                 "Expected mapName() to throw, but it didn't"
         );
         assertEquals("system failure: AutoProvision: unable to get localPart: null"
@@ -44,11 +39,7 @@ class AutoProvisionTest {
         ServiceException serviceException = assertThrows(
                 ServiceException.class,
                 () -> new AutoProvision(null, domain) {
-                    @Override
-                    Account handle() throws ServiceException {
-                        return null;
-                    }
-                }.mapName(zAttributes, null),
+								}.mapName(zAttributes, null),
                 "Expected mapName() to throw, but it didn't"
         );
         assertEquals("system failure: AutoProvision: unable to map account name, must configure zimbraAutoProvAccountNameMap"
@@ -62,11 +53,7 @@ class AutoProvisionTest {
         ZAttributes zAttributes = mock(ZAttributes.class);
         when(domain.getName()).thenReturn("abc.com");
         assertEquals("test@abc.com", new AutoProvision(null, domain) {
-                    @Override
-                    Account handle() throws ServiceException {
-                        return null;
-                    }
-                }.mapName(zAttributes, "test@xyz.com"));
+				}.mapName(zAttributes, "test@xyz.com"));
 
     }
 
@@ -80,11 +67,7 @@ class AutoProvisionTest {
         ServiceException serviceException = assertThrows(
                 ServiceException.class,
                 () -> new AutoProvision(null, domain) {
-                    @Override
-                    Account handle() throws ServiceException {
-                        return null;
-                    }
-                }.mapName(zAttributes, null),
+								}.mapName(zAttributes, null),
                 "Expected mapName() to throw, but it didn't"
         );
         assertEquals("system failure: x@abc.com can not be provisioned for domain ab.commail value contains domain. " +
@@ -110,11 +93,7 @@ class AutoProvisionTest {
         when(domain.getName()).thenReturn(domainName);
 
         assertEquals("x@abc.com", new AutoProvision(null, domain) {
-            @Override
-            Account handle() {
-                return null;
-            }
-        }.mapName(zAttributes, null));
+				}.mapName(zAttributes, null));
     }
 
     @ParameterizedTest

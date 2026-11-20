@@ -14,7 +14,6 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.ThreaderTest;
 import com.zimbra.cs.mime.ParsedMessage;
-import com.zimbra.cs.store.external.ExternalStoreManager;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -241,27 +240,15 @@ public abstract class AbstractStoreManagerTest extends MailboxTestSuite {
 		IncomingBlob incoming = sm.newIncomingBlob("foo", null);
 		Blob blob = incoming.getBlob();
 		assertEquals(0, blob.getRawSize(), "blob size = incoming written");
-		if (sm instanceof ExternalStoreManager) {
-			((ExternalStoreManager) sm).clearCache();
-		}
 		StagedBlob staged = sm.stage(blob, mbox);
 		assertEquals(blob.getRawSize(), staged.getSize(), "staged size = blob size");
 
-		if (sm instanceof ExternalStoreManager) {
-			((ExternalStoreManager) sm).clearCache();
-		}
 		MailboxBlob mblob = sm.link(staged, mbox, 0, 0);
 		assertEquals(staged.getSize(), mblob.getSize(), "link size = staged size");
 
-		if (sm instanceof ExternalStoreManager) {
-			((ExternalStoreManager) sm).clearCache();
-		}
 		mblob = sm.getMailboxBlob(mbox, 0, 0, staged.getLocator());
 		assertEquals(staged.getSize(), mblob.getSize(), "mblob size = staged size");
 
-		if (sm instanceof ExternalStoreManager) {
-			((ExternalStoreManager) sm).clearCache();
-		}
 		assertEquals(0, mblob.getLocalBlob().getRawSize());
 
 		sm.delete(mblob);

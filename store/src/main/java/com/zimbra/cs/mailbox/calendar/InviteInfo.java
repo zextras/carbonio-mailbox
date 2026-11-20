@@ -8,8 +8,10 @@ package com.zimbra.cs.mailbox.calendar;
 import com.zimbra.common.calendar.TimeZoneMap;
 import com.zimbra.common.calendar.ZCalendar.ICalTok;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.mailbox.Metadata;
+import org.apache.commons.lang3.Strings;
+
+import java.util.Objects;
 
 /**
  * Within a calendar entry:<br />
@@ -55,12 +57,12 @@ public class InviteInfo implements Comparable<InviteInfo>, Cloneable {
     public boolean equals(Object o) {
         if (!(o instanceof InviteInfo)) return false;
         InviteInfo other = (InviteInfo) o;
+        if (mMsgId != other.mMsgId ||
+            mComponentId != other.mComponentId) return false;
         return
-            mMsgId == other.mMsgId &&
-            mComponentId == other.mComponentId &&
-            StringUtil.equal(mMethod, other.mMethod) &&
-            ((mRecurrenceId == null && other.mRecurrenceId == null) ||
-             (mRecurrenceId != null && mRecurrenceId.equals(other.mRecurrenceId)));
+            Objects.equals(mMethod, other.mMethod) &&
+                ((mRecurrenceId == null && other.mRecurrenceId == null) ||
+                    (mRecurrenceId != null && mRecurrenceId.equals(other.mRecurrenceId)));
     }
 
     @Override
@@ -72,9 +74,9 @@ public class InviteInfo implements Comparable<InviteInfo>, Cloneable {
             if (toRet == 0) {
                 String rid = mRecurrenceId != null ? mRecurrenceId.toString() : null;
                 String ridOther = other.mRecurrenceId != null ? other.mRecurrenceId.toString() : null;
-                toRet = StringUtil.compareTo(rid, ridOther);
+                toRet = Strings.CS.compare(rid, ridOther);
                 if (toRet == 0)
-                    toRet = StringUtil.compareTo(mMethod, other.mMethod);
+                    toRet = Strings.CS.compare(mMethod, other.mMethod);
             }
         }
         return toRet;

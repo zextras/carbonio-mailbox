@@ -102,8 +102,6 @@ public final class AdminConstants {
   public static final String E_GET_SERVER_REQUEST = "GetServerRequest";
   public static final String E_GET_SERVER_RESPONSE = "GetServerResponse";
 
-  public static final String E_GET_SERVER_NIFS_REQUEST = "GetServerNIfsRequest";
-  public static final String E_GET_SERVER_NIFS_RESPONSE = "GetServerNIfsResponse";
 
   public static final String E_MODIFY_SERVER_REQUEST = "ModifyServerRequest";
   public static final String E_MODIFY_SERVER_RESPONSE = "ModifyServerResponse";
@@ -131,14 +129,10 @@ public final class AdminConstants {
   public static final String E_LOCKOUT_MAILBOX_REQUEST = "LockoutMailboxRequest";
   public static final String E_LOCKOUT_MAILBOX_RESPONSE = "LockoutMailboxResponse";
 
-  public static final String E_CHECK_HOSTNAME_RESOLVE_REQUEST = "CheckHostnameResolveRequest";
-  public static final String E_CHECK_HOSTNAME_RESOLVE_RESPONSE = "CheckHostnameResolveResponse";
   public static final String E_CHECK_AUTH_CONFIG_REQUEST = "CheckAuthConfigRequest";
   public static final String E_CHECK_AUTH_CONFIG_RESPONSE = "CheckAuthConfigResponse";
   public static final String E_CHECK_GAL_CONFIG_REQUEST = "CheckGalConfigRequest";
   public static final String E_CHECK_GAL_CONFIG_RESPONSE = "CheckGalConfigResponse";
-  public static final String E_CHECK_EXCHANGE_AUTH_REQUEST = "CheckExchangeAuthRequest";
-  public static final String E_CHECK_EXCHANGE_AUTH_RESPONSE = "CheckExchangeAuthResponse";
 
   public static final String E_AUTO_COMPLETE_GAL_REQUEST = "AutoCompleteGalRequest";
   public static final String E_AUTO_COMPLETE_GAL_RESPONSE = "AutoCompleteGalResponse";
@@ -294,12 +288,6 @@ public final class AdminConstants {
   public static final String E_FIX_CALENDAR_PRIORITY_RESPONSE = "FixCalendarPriorityResponse";
 
   // Admin saved searches
-  public static final String E_GET_ADMIN_SAVED_SEARCHES_REQUEST = "GetAdminSavedSearchesRequest";
-  public static final String E_GET_ADMIN_SAVED_SEARCHES_RESPONSE = "GetAdminSavedSearchesResponse";
-  public static final String E_MODIFY_ADMIN_SAVED_SEARCHES_REQUEST =
-      "ModifyAdminSavedSearchesRequest";
-  public static final String E_MODIFY_ADMIN_SAVED_SEARCHES_RESPONSE =
-      "ModifyAdminSavedSearchesResponse";
 
   public static final String E_CHECK_DIRECTORY_REQUEST = "CheckDirectoryRequest";
   public static final String E_CHECK_DIRECTORY_RESPONSE = "CheckDirectoryResponse";
@@ -359,8 +347,6 @@ public final class AdminConstants {
   // rights
   public static final String E_GET_RIGHT_REQUEST = "GetRightRequest";
   public static final String E_GET_RIGHT_RESPONSE = "GetRightResponse";
-  public static final String E_GET_ADMIN_CONSOLE_UI_COMP_REQUEST = "GetAdminConsoleUICompRequest";
-  public static final String E_GET_ADMIN_CONSOLE_UI_COMP_RESPONSE = "GetAdminConsoleUICompResponse";
   public static final String E_GET_ALL_EFFECTIVE_RIGHTS_REQUEST = "GetAllEffectiveRightsRequest";
   public static final String E_GET_ALL_EFFECTIVE_RIGHTS_RESPONSE = "GetAllEffectiveRightsResponse";
   public static final String E_GET_ALL_RIGHTS_REQUEST = "GetAllRightsRequest";
@@ -455,8 +441,6 @@ public final class AdminConstants {
       "DeleteSystemRetentionPolicyResponse";
 
   // StoreManager verification utility
-  public static final String E_VERIFY_STORE_MANAGER_REQUEST = "VerifyStoreManagerRequest";
-  public static final String E_VERIFY_STORE_MANAGER_RESPONSE = "VerifyStoreManagerResponse";
 
   public static final QName PING_REQUEST = QName.get(E_PING_REQUEST, NAMESPACE);
   public static final QName CHECK_HEALTH_REQUEST = QName.get(E_CHECK_HEALTH_REQUEST, NAMESPACE);
@@ -569,10 +553,6 @@ public final class AdminConstants {
   public static final QName GET_SERVER_REQUEST = QName.get(E_GET_SERVER_REQUEST, NAMESPACE);
   public static final QName GET_SERVER_RESPONSE = QName.get(E_GET_SERVER_RESPONSE, NAMESPACE);
 
-  public static final QName GET_SERVER_NIFS_REQUEST =
-      QName.get(E_GET_SERVER_NIFS_REQUEST, NAMESPACE);
-  public static final QName GET_SERVER_NIFS_RESPONSE =
-      QName.get(E_GET_SERVER_NIFS_RESPONSE, NAMESPACE);
 
   public static final QName MODIFY_SERVER_REQUEST = QName.get(E_MODIFY_SERVER_REQUEST, NAMESPACE);
   public static final QName MODIFY_SERVER_RESPONSE = QName.get(E_MODIFY_SERVER_RESPONSE, NAMESPACE);
@@ -603,8 +583,6 @@ public final class AdminConstants {
   public static final QName LOCKOUT_MAILBOX_RESPONSE =
       QName.get(E_LOCKOUT_MAILBOX_RESPONSE, NAMESPACE);
 
-  public static final QName CHECK_HOSTNAME_RESOLVE_REQUEST =
-      QName.get(E_CHECK_HOSTNAME_RESOLVE_REQUEST, NAMESPACE);
   public static final QName CHECK_AUTH_CONFIG_REQUEST =
       QName.get(E_CHECK_AUTH_CONFIG_REQUEST, NAMESPACE);
   public static final QName CHECK_AUTH_CONFIG_RESPONSE =
@@ -613,10 +591,6 @@ public final class AdminConstants {
       QName.get(E_CHECK_GAL_CONFIG_REQUEST, NAMESPACE);
   public static final QName CHECK_GAL_CONFIG_RESPONSE =
       QName.get(E_CHECK_GAL_CONFIG_RESPONSE, NAMESPACE);
-  public static final QName CHECK_EXCHANGE_AUTH_REQUEST =
-      QName.get(E_CHECK_EXCHANGE_AUTH_REQUEST, NAMESPACE);
-  public static final QName CHECK_EXCHANGE_AUTH_RESPONSE =
-      QName.get(E_CHECK_EXCHANGE_AUTH_RESPONSE, NAMESPACE);
 
   public static final QName AUTO_COMPLETE_GAL_REQUEST =
       QName.get(E_AUTO_COMPLETE_GAL_REQUEST, NAMESPACE);
@@ -815,14 +789,6 @@ public final class AdminConstants {
       QName.get(E_FIX_CALENDAR_PRIORITY_RESPONSE, NAMESPACE);
 
   // Admin saved searches
-  public static final QName GET_ADMIN_SAVED_SEARCHES_REQUEST =
-      QName.get(E_GET_ADMIN_SAVED_SEARCHES_REQUEST, NAMESPACE);
-  public static final QName GET_ADMIN_SAVED_SEARCHES_RESPONSE =
-      QName.get(E_GET_ADMIN_SAVED_SEARCHES_RESPONSE, NAMESPACE);
-  public static final QName MODIFY_ADMIN_SAVED_SEARCHES_REQUEST =
-      QName.get(E_MODIFY_ADMIN_SAVED_SEARCHES_REQUEST, NAMESPACE);
-  public static final QName MODIFY_ADMIN_SAVED_SEARCHES_RESPONSE =
-      QName.get(E_MODIFY_ADMIN_SAVED_SEARCHES_RESPONSE, NAMESPACE);
 
   public static final QName CHECK_DIRECTORY_REQUEST =
       QName.get(E_CHECK_DIRECTORY_REQUEST, NAMESPACE);
@@ -895,10 +861,6 @@ public final class AdminConstants {
   // rights
   public static final QName GET_RIGHT_REQUEST = QName.get(E_GET_RIGHT_REQUEST, NAMESPACE);
   public static final QName GET_RIGHT_RESPONSE = QName.get(E_GET_RIGHT_RESPONSE, NAMESPACE);
-  public static final QName GET_ADMIN_CONSOLE_UI_COMP_REQUEST =
-      QName.get(E_GET_ADMIN_CONSOLE_UI_COMP_REQUEST, NAMESPACE);
-  public static final QName GET_ADMIN_CONSOLE_UI_COMP_RESPONSE =
-      QName.get(E_GET_ADMIN_CONSOLE_UI_COMP_RESPONSE, NAMESPACE);
   public static final QName GET_ALL_EFFECTIVE_RIGHTS_REQUEST =
       QName.get(E_GET_ALL_EFFECTIVE_RIGHTS_REQUEST, NAMESPACE);
   public static final QName GET_ALL_EFFECTIVE_RIGHTS_RESPONSE =
@@ -1000,10 +962,6 @@ public final class AdminConstants {
       QName.get(E_DELETE_SYSTEM_RETENTION_POLICY_REQUEST, NAMESPACE);
 
   // Store Manager Verifier
-  public static final QName VERIFY_STORE_MANAGER_REQUEST =
-      QName.get(E_VERIFY_STORE_MANAGER_REQUEST, NAMESPACE);
-  public static final QName VERIFY_STORE_MANAGER_RESPONSE =
-      QName.get(E_VERIFY_STORE_MANAGER_RESPONSE, NAMESPACE);
 
   public static final String E_FILTER_RULES = "filterRules";
   public static final String E_FILTER_RULE = "filterRule";
@@ -1018,8 +976,6 @@ public final class AdminConstants {
       "ModifyOutgoingFilterRulesRequest";
   public static final String E_MODIFY_OUTGOING_FILTER_RULES_RESPONSE =
       "ModifyOutgoingFilterRulesResponse";
-  public static final String E_CONTACT_BACKUP_REQUEST = "ContactBackupRequest";
-  public static final String E_CONTACT_BACKUP_RESPONSE = "ContactBackupResponse";
   public static final QName GET_FILTER_RULES_REQUEST =
       QName.get(E_GET_FILTER_RULES_REQUEST, NAMESPACE);
   public static final QName MODIFY_FILTER_RULES_REQUEST =
@@ -1028,7 +984,6 @@ public final class AdminConstants {
       QName.get(E_GET_OUTGOING_FILTER_RULES_REQUEST, NAMESPACE);
   public static final QName MODIFY_OUTGOING_FILTER_RULES_REQUEST =
       QName.get(E_MODIFY_OUTGOING_FILTER_RULES_REQUEST, NAMESPACE);
-  public static final QName CONTACT_BACKUP_REQUEST = QName.get(E_CONTACT_BACKUP_REQUEST, NAMESPACE);
 
   // AddressList
 
@@ -1086,7 +1041,6 @@ public final class AdminConstants {
   public static final String E_ALIAS = "alias";
   public static final String E_ID = "id";
   public static final String E_MAILBOX = "mbox";
-  public static final String E_NI = "ni";
   public static final String E_VOLUME = "volume";
   public static final String E_PROGRESS = "progress";
   public static final String E_SOAP_URL = "soapURL";
@@ -1301,7 +1255,6 @@ public final class AdminConstants {
   public static final String A_DISINHERIT_SUB_GROUPS = "disinheritSubGroups";
   public static final String A_SUB_DOMAIN = "subDomain";
   public static final String A_EXPAND_ALL_ATTRS = "expandAllAttrs";
-  public static final String A_INHERITED = "inherited";
   public static final String A_RIGHT_CLASS = "rightClass";
   public static final String A_TARGET_TYPE = "targetType";
   public static final String A_SECRET = "secret";
@@ -1323,13 +1276,6 @@ public final class AdminConstants {
       "defaultExpirySeconds";
   public static final String A_MEMCACHED_CLIENT_CONFIG_DEFAULT_TIMEOUT_MILLIS =
       "defaultTimeoutMillis";
-
-  // CheckExchangeAuth
-  public static final String E_AUTH = "auth";
-  public static final String A_URL = "url";
-  public static final String A_USER = "user";
-  public static final String A_PASS = "pass";
-  public static final String A_SCHEME = "scheme";
 
   // flush cache
   public static final String A_ALLSERVERS = "allServers";
@@ -1363,9 +1309,6 @@ public final class AdminConstants {
   public static final String E_RETENTION_POLICY = "retentionPolicy";
   public static final String E_PURGE = "purge";
   public static final String E_POLICY = "policy";
-
-  // StoreManager verification
-  public static final String A_CHECK_BLOBS = "checkBlobs";
 
   public static final String A_COUNT_ONLY = "countOnly";
 

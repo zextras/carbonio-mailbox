@@ -156,19 +156,8 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -316,14 +305,7 @@ public class ZMailbox implements MailboxStore {
 
     public Options() {}
 
-    public Options(String account, AccountBy accountBy, String password, String uri) {
-      mAccount = account;
-      mAccountBy = accountBy;
-      mPassword = password;
-      setUri(uri);
-    }
-
-    // AP-TODO-7: retire
+		// AP-TODO-7: retire
     public Options(String authToken, String uri) {
       mAuthToken = new ZAuthToken(null, authToken, null);
       setUri(uri);
@@ -334,14 +316,7 @@ public class ZMailbox implements MailboxStore {
       setUri(uri);
     }
 
-    public Options(ZAuthToken authToken, String uri, boolean forceAuth, boolean csrfSupported) {
-      mAuthToken = authToken;
-      mAuthAuthToken = forceAuth;
-      mCsrfSupported = csrfSupported;
-      setUri(uri);
-    }
-
-    public String getAccount() {
+		public String getAccount() {
       return mAccount;
     }
 
@@ -350,11 +325,7 @@ public class ZMailbox implements MailboxStore {
       return this;
     }
 
-    public AccountBy getAccountBy() {
-      return mAccountBy;
-    }
-
-    public Options setAccountBy(AccountBy accountBy) {
+		public Options setAccountBy(AccountBy accountBy) {
       mAccountBy = accountBy;
       return this;
     }
@@ -994,7 +965,7 @@ public class ZMailbox implements MailboxStore {
     List<ZTag> tagList = new ArrayList<>();
     if (tags != null) {
       for (Element t : tags.listElements(MailConstants.E_TAG)) {
-        ZTag tag = new ZTag(t, this);
+        ZTag tag = new ZTag(t);
         tagList.add(tag);
       }
     }
@@ -1096,7 +1067,7 @@ public class ZMailbox implements MailboxStore {
         event = new ZCreateSearchFolderEvent(child);
         parentFixup = parentCheck(parentFixup, child, parent);
       } else if (e.getName().equals(MailConstants.E_TAG)) {
-        event = new ZCreateTagEvent(new ZTag(e, this));
+        event = new ZCreateTagEvent(new ZTag(e));
         addTag(((ZCreateTagEvent) event).getTag());
       }
       if (event != null) {
@@ -1459,16 +1430,7 @@ public class ZMailbox implements MailboxStore {
     return result;
   }
 
-  /**
-   * @return true if mailbox has any tags
-   * @throws ServiceException
-   */
-  public boolean hasTags() throws ServiceException {
-    populateTagCache();
-    return !mNameToTag.isEmpty();
-  }
-
-  /**
+	/**
    * @return current list of all tags names in the mailbox, sorted
    * @throws ServiceException on error
    */
@@ -1477,19 +1439,6 @@ public class ZMailbox implements MailboxStore {
     ArrayList<String> names = new ArrayList<>(mNameToTag.keySet());
     Collections.sort(names);
     return names;
-  }
-
-  /**
-   * returns the tag the specified name/id, or null if no such tag exists. checks for tag by name
-   * first, then by id.
-   *
-   * @param name tag name
-   * @return the tag, or null if tag not found
-   * @throws ServiceException on error
-   */
-  public ZTag getTag(String nameOrId) throws ServiceException {
-    ZTag result = getTagByName(nameOrId);
-    return result != null ? result : getTagById(nameOrId);
   }
 
   /**
@@ -1542,7 +1491,7 @@ public class ZMailbox implements MailboxStore {
     }
     Element createdTagEl = invoke(req).getElement(MailConstants.E_TAG);
     ZTag tag = getTagById(createdTagEl.getAttribute(MailConstants.A_ID));
-    return tag != null ? tag : new ZTag(createdTagEl, this);
+    return tag != null ? tag : new ZTag(createdTagEl);
   }
 
   /**
@@ -1656,17 +1605,7 @@ public class ZMailbox implements MailboxStore {
       return this;
     }
 
-    public ZAttachmentInfo setPartName(String partName) {
-      mPartName = partName;
-      return this;
-    }
-
-    public ZAttachmentInfo setItemId(String itemId) {
-      mItemId = itemId;
-      return this;
-    }
-
-    public String getAttachmentId() {
+		public String getAttachmentId() {
       return mAttachmentId;
     }
 
@@ -1910,10 +1849,6 @@ public class ZMailbox implements MailboxStore {
     return doAction(contactAction("delete", ids));
   }
 
-  public ZActionResult trashContact(String ids) throws ServiceException {
-    return doAction(contactAction("trash", ids));
-  }
-
   public ZActionResult flagContact(String ids, boolean flag) throws ServiceException {
     return doAction(contactAction(flag ? "flag" : "!flag", ids));
   }
@@ -1921,31 +1856,6 @@ public class ZMailbox implements MailboxStore {
   public ZActionResult tagContact(String ids, String tagId, boolean tag) throws ServiceException {
     return doAction(
         contactAction(tag ? "tag" : "!tag", ids).addAttribute(MailConstants.A_TAG, tagId));
-  }
-
-  /**
-   * update items(s)
-   *
-   * @param ids list of contact ids to update
-   * @param destFolderId optional destination folder
-   * @param tagList optional new list of tag ids
-   * @param flags optional new value for flags
-   * @return action result
-   * @throws ServiceException on error
-   */
-  public ZActionResult updateContact(String ids, String destFolderId, String tagList, String flags)
-      throws ServiceException {
-    Element actionEl = contactAction("update", ids);
-    if (destFolderId != null && destFolderId.length() > 0) {
-      actionEl.addAttribute(MailConstants.A_FOLDER, destFolderId);
-    }
-    if (tagList != null) {
-      actionEl.addAttribute(MailConstants.A_TAGS, tagList);
-    }
-    if (flags != null) {
-      actionEl.addAttribute(MailConstants.A_FLAGS, flags);
-    }
-    return doAction(actionEl);
   }
 
   /**
@@ -1989,21 +1899,6 @@ public class ZMailbox implements MailboxStore {
   public ZActionResult deleteConversation(String ids, String targetConstraints)
       throws ServiceException {
     return doAction(convAction("delete", ids, targetConstraints));
-  }
-
-  /**
-   * moves conversation to trash folder.
-   *
-   * @param ids list of conversation ids to act on
-   * @param targetConstraints list of characters comprised of TC_INCLUDE_* strings. Constrains the
-   *     set of affected items in a conversation. A leading '-' means to negate the constraint(s).
-   *     Use null for no constraints.
-   * @return action result
-   * @throws ServiceException on error
-   */
-  public ZActionResult trashConversation(String ids, String targetConstraints)
-      throws ServiceException {
-    return doAction(convAction("trash", ids, targetConstraints));
   }
 
   /**
@@ -2668,17 +2563,6 @@ public class ZMailbox implements MailboxStore {
   }
 
   /**
-   * move message(s) to trash
-   *
-   * @param ids ids to act on
-   * @return action result
-   * @throws ServiceException on error
-   */
-  public ZActionResult trashMessage(String ids) throws ServiceException {
-    return doAction(messageAction("trash", ids));
-  }
-
-  /**
    * mark message(s) as read/unread
    *
    * @param ids ids to act on
@@ -2751,31 +2635,6 @@ public class ZMailbox implements MailboxStore {
    */
   public ZActionResult moveMessage(String ids, String destFolderId) throws ServiceException {
     return doAction(messageAction("move", ids).addAttribute(MailConstants.A_FOLDER, destFolderId));
-  }
-
-  /**
-   * update message(s)
-   *
-   * @param ids ids of messages to update
-   * @param destFolderId optional destination folder
-   * @param tagList optional new list of tag ids
-   * @param flags optional new value for flags
-   * @return action result
-   * @throws ServiceException on error
-   */
-  public ZActionResult updateMessage(String ids, String destFolderId, String tagList, String flags)
-      throws ServiceException {
-    Element actionEl = messageAction("update", ids);
-    if (destFolderId != null && destFolderId.length() > 0) {
-      actionEl.addAttribute(MailConstants.A_FOLDER, destFolderId);
-    }
-    if (tagList != null) {
-      actionEl.addAttribute(MailConstants.A_TAGS, tagList);
-    }
-    if (flags != null) {
-      actionEl.addAttribute(MailConstants.A_FLAGS, flags);
-    }
-    return doAction(actionEl);
   }
 
   // ------------------------
@@ -3227,7 +3086,8 @@ public class ZMailbox implements MailboxStore {
       folderEl.addAttribute(MailConstants.A_DEFAULT_VIEW, defaultView.name());
     }
     if (color != null) {
-      if (StringUtil.equal(color.getName(), Color.RGBCOLOR)) {
+      String s1 = color.getName();
+      if (Objects.equals(s1, Color.RGBCOLOR)) {
         folderEl.addAttribute(MailConstants.A_RGB, color.getRgbColorValue());
       } else {
         folderEl.addAttribute(MailConstants.A_COLOR, color.getValue());
@@ -3272,7 +3132,8 @@ public class ZMailbox implements MailboxStore {
       throws ServiceException {
     NewSearchFolderSpec spec = NewSearchFolderSpec.forNameQueryAndFolder(name, query, parentId);
     if (color != null) {
-      if (StringUtil.equal(color.getName(), Color.RGBCOLOR)) {
+      String s1 = color.getName();
+      if (Objects.equals(s1, Color.RGBCOLOR)) {
         spec.setRgb(color.getRgbColorValue());
       } else {
         spec.setColor((byte) color.getValue());
@@ -3357,18 +3218,6 @@ public class ZMailbox implements MailboxStore {
   @Override
   public void deleteFolder(OpContext octxt, String itemId) throws ServiceException {
     deleteFolder(itemId);
-  }
-
-  /**
-   * move the folder to the Trash, marking all contents as read and renaming the folder if a folder
-   * by that name is already present in the Trash
-   *
-   * @param ids ids to delete
-   * @return action result
-   * @throws ServiceException on error
-   */
-  public ZActionResult trashFolder(String ids) throws ServiceException {
-    return doAction(folderAction("trash", ids));
   }
 
   /**
@@ -3663,18 +3512,6 @@ public class ZMailbox implements MailboxStore {
     return doAction(folderAction("sync", ids));
   }
 
-  /**
-   * sets or unsets the folder's sync flag
-   *
-   * @param id folder id
-   * @param syncon turn sync flag on
-   * @throws ServiceException on error
-   * @return action result
-   */
-  public ZActionResult modifyFolderSyncFlag(String id, boolean syncon) throws ServiceException {
-    return doAction(folderAction(syncon ? "syncon" : "!syncon", id));
-  }
-
   // ------------------------
 
   private ZSearchResult internalSearch(String convId, ZSearchParams params, boolean nest)
@@ -3871,7 +3708,7 @@ public class ZMailbox implements MailboxStore {
 		try {
 			Element response = invoke(newRequestElement(MailConstants.GET_TAG_REQUEST));
 			for (Element t : response.listElements(MailConstants.E_TAG)) {
-				tagList.add(new ZTag(t, this));
+				tagList.add(new ZTag(t));
 			}
 		} catch (SoapFaultException sfe) {
 			if (!sfe.getCode().equals(ServiceException.PERM_DENIED)) {
@@ -3946,7 +3783,8 @@ public class ZMailbox implements MailboxStore {
       linkEl.addAttribute(MailConstants.A_DEFAULT_VIEW, defaultView.name());
     }
     if (color != null) {
-      if (StringUtil.equal(color.getName(), Color.RGBCOLOR)) {
+      String s1 = color.getName();
+      if (Objects.equals(s1, Color.RGBCOLOR)) {
         linkEl.addAttribute(MailConstants.A_RGB, color.getRgbColorValue());
       } else {
         linkEl.addAttribute(MailConstants.A_COLOR, color.getValue());
@@ -4033,23 +3871,7 @@ public class ZMailbox implements MailboxStore {
         mContentType = contentType;
       }
 
-      public String getContentType() {
-        return mContentType;
-      }
-
-      public void setContentType(String contentType) {
-        mContentType = contentType;
-      }
-
-      public String getContent() {
-        return mContent;
-      }
-
-      public void setContent(String content) {
-        mContentType = content;
-      }
-
-      public Element toElement(Element parent) {
+			public Element toElement(Element parent) {
         Element mpEl = parent.addNonUniqueElement(MailConstants.E_MIMEPART);
         mpEl.addAttribute(MailConstants.A_CONTENT_TYPE, mContentType);
         if (mContent != null) {
@@ -4088,19 +3910,11 @@ public class ZMailbox implements MailboxStore {
       return mMessageId;
     }
 
-    public void setMessageId(String messageId) {
-      mMessageId = messageId;
-    }
-
-    public String getReplyType() {
+		public String getReplyType() {
       return mReplyType;
     }
 
-    public void setReplyType(String replyType) {
-      mReplyType = replyType;
-    }
-
-    public String getSubject() {
+		public String getSubject() {
       return mSubject;
     }
 
@@ -4112,19 +3926,7 @@ public class ZMailbox implements MailboxStore {
       return mPriority;
     }
 
-    public void setPriority(String priority) {
-      mPriority = priority;
-    }
-
-    public String getIdentityId() {
-      return mIdentityId;
-    }
-
-    public void setIdentityId(String id) {
-      mIdentityId = id;
-    }
-
-  }
+	}
 
   public Element getMessageElement(Element req, ZOutgoingMessage message, ZMountpoint mountpoint) {
     Element m = req.addNonUniqueElement(MailConstants.E_MSG);
@@ -4624,30 +4426,6 @@ public class ZMailbox implements MailboxStore {
     NODATA
 
 	}
-
-  public static class ZFreeBusyTimeSlot {
-    private final ZFreeBusySlotType mType;
-    private final long mStart;
-    private final long mEnd;
-
-    public ZFreeBusyTimeSlot(ZFreeBusySlotType type, long start, long end) {
-      mType = type;
-      mStart = start;
-      mEnd = end;
-    }
-
-    public ZFreeBusySlotType getType() {
-      return mType;
-    }
-
-    public long getStartTime() {
-      return mStart;
-    }
-
-    public long getEndTime() {
-      return mEnd;
-    }
-  }
 
   private void updateSigs() {
     try {

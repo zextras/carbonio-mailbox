@@ -63,23 +63,7 @@ public final class ZFilterRule {
         return name;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public boolean isAllConditions() {
-        return allConditions;
-    }
-
-    public List<ZFilterCondition> getConditions() {
-        return conditions;
-    }
-
-    public List<ZFilterAction> getActions() {
-        return actions;
-    }
-
-    public ZFilterRule(String name, boolean active, boolean allConditions,
+	public ZFilterRule(String name, boolean active, boolean allConditions,
                        List<ZFilterCondition> conditions, List<ZFilterAction> actions) {
         this.name = name;
         this.active = active;

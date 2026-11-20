@@ -36,20 +36,7 @@ public class ZSearchResult implements ToZJSONObject {
     }
   }
 
-  public ZSearchResult(
-      List<ZSearchHit> hits,
-      ZConversationSummary convSummary,
-      boolean hasMore,
-      String sortBy,
-      int offset) {
-    this.hits = hits;
-    this.convSummary = convSummary;
-    this.hasMore = hasMore;
-    this.sortBy = sortBy;
-    this.offset = offset;
-  }
-
-  private void init(Element resp, Element el, TimeZone tz) throws ServiceException {
+	private void init(Element resp, Element el, TimeZone tz) throws ServiceException {
     sortBy = resp.getAttribute(MailConstants.A_SORTBY);
     hasMore = resp.getAttributeBool(MailConstants.A_QUERY_MORE);
     offset = (int) resp.getAttributeLong(MailConstants.A_QUERY_OFFSET, -1);
@@ -98,14 +85,7 @@ public class ZSearchResult implements ToZJSONObject {
     return hasMore;
   }
 
-  /**
-   * @return the sort by value
-   */
-  public String getSortBy() {
-    return sortBy;
-  }
-
-  /**
+	/**
    * @return offset of the search
    */
   public int getOffset() {
@@ -186,44 +166,5 @@ public class ZSearchResult implements ToZJSONObject {
       return String.format("[ZConversationSummary %s]", mId);
     }
 
-    public String getFlags() {
-      return mFlags;
-    }
-
-    public String getTagIds() {
-      return mTags;
-    }
-
-    public int getMessageCount() {
-      return mMessageCount;
-    }
-
-    public boolean hasFlags() {
-      return mFlags != null && mFlags.length() > 0;
-    }
-
-    public boolean hasTags() {
-      return mTags != null && mTags.length() > 0;
-    }
-
-    public boolean hasAttachment() {
-      return hasFlags() && mFlags.indexOf(ZConversation.Flag.attachment.getFlagChar()) != -1;
-    }
-
-    public boolean isFlagged() {
-      return hasFlags() && mFlags.indexOf(ZConversation.Flag.flagged.getFlagChar()) != -1;
-    }
-
-    public boolean isSentByMe() {
-      return hasFlags() && mFlags.indexOf(ZConversation.Flag.sentByMe.getFlagChar()) != -1;
-    }
-
-    public boolean isUnread() {
-      return hasFlags() && mFlags.indexOf(ZConversation.Flag.unread.getFlagChar()) != -1;
-    }
-
-    public boolean isDraft() {
-      return hasFlags() && mFlags.indexOf(ZConversation.Flag.draft.getFlagChar()) != -1;
-    }
   }
 }

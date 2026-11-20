@@ -5,17 +5,12 @@
 
 package com.zimbra.cs.account;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONException;
 
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.AccountConstants;
-import com.zimbra.common.soap.Element;
-import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 
 import com.zimbra.cs.gal.GalSearchConfig.GalType;
@@ -127,16 +122,5 @@ public class GalContact implements Comparable {
         GalContact other = (GalContact) obj;
         return getSortField().compareTo(other.getSortField());
     }
-    
-    public static GalContact fromElement(Element elm) throws ServiceException {
-        String dn = elm.getAttribute(AccountConstants.A_REF);
-        Map<String,Object> attrs = new HashMap<>();
-        for (Element attr : elm.listElements(MailConstants.E_ATTRIBUTE)) {
-            String name = attr.getAttribute(MailConstants.A_ATTRIBUTE_NAME);
-            String value = attr.getText();
-            StringUtil.addToMultiMap(attrs, name, value);
-        }
-        GalContact galContact = new GalContact(dn , attrs);
-        return galContact;
-    }
+
 }

@@ -56,7 +56,6 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ShareInfoData;
 import com.zimbra.cs.account.ShareLocator;
 import com.zimbra.cs.account.Signature;
-import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.account.accesscontrol.Right;
 import com.zimbra.cs.account.accesscontrol.RightCommand;
 import com.zimbra.cs.account.accesscontrol.RightModifier;
@@ -69,7 +68,6 @@ import com.zimbra.soap.account.message.ChangePasswordRequest;
 import com.zimbra.soap.account.message.CreateIdentityRequest;
 import com.zimbra.soap.account.message.CreateIdentityResponse;
 import com.zimbra.soap.account.message.DeleteIdentityRequest;
-import com.zimbra.soap.account.message.EndSessionRequest;
 import com.zimbra.soap.account.message.GetIdentitiesRequest;
 import com.zimbra.soap.account.message.GetIdentitiesResponse;
 import com.zimbra.soap.account.message.ModifyIdentityRequest;
@@ -266,59 +264,20 @@ public class SoapProvisioning extends Provisioning {
 
     public Options() {}
 
-    public Options(String account, AccountBy accountBy, String password, String uri) {
-      mAccount = account;
-      mAccountBy = accountBy;
-      mPassword = password;
-      mUri = uri;
-    }
-
-    // AP-TODO-7: retire
-    public Options(String authToken, String uri) {
-      mAuthToken = new ZAuthToken(null, authToken, null);
-      mUri = uri;
-    }
-
-    public Options(ZAuthToken authToken, String uri) {
-      mAuthToken = authToken;
-      mUri = uri;
-    }
-
     public String getAccount() {
       return mAccount;
-    }
-
-    public void setAccount(String account) {
-      mAccount = account;
     }
 
     public AccountBy getAccountBy() {
       return mAccountBy;
     }
 
-    public void setAccountBy(AccountBy accountBy) {
-      mAccountBy = accountBy;
-    }
-
     public String getPassword() {
       return mPassword;
     }
 
-    public void setPassword(String password) {
-      mPassword = password;
-    }
-
     public ZAuthToken getAuthToken() {
       return mAuthToken;
-    }
-
-    public void setAuthToken(ZAuthToken authToken) {
-      mAuthToken = authToken;
-    }
-
-    // AP-TODO-8: retire
-    public void setAuthToken(String authToken) {
-      mAuthToken = new ZAuthToken(null, authToken, null);
     }
 
     public String getUri() {
@@ -333,24 +292,12 @@ public class SoapProvisioning extends Provisioning {
       return mTimeout;
     }
 
-    public void setTimeout(int timeout) {
-      mTimeout = timeout;
-    }
-
     public int getRetryCount() {
       return mRetryCount;
     }
 
-    public void setRetryCount(int retryCount) {
-      mRetryCount = retryCount;
-    }
-
     public SoapTransport.DebugListener getDebugListener() {
       return mDebugListener;
-    }
-
-    public void setDebugListener(SoapTransport.DebugListener liistener) {
-      mDebugListener = liistener;
     }
 
     public boolean getLocalConfigAuth() {
@@ -479,16 +426,6 @@ public class SoapProvisioning extends Provisioning {
     return mTransport.getURI();
   }
 
-  public void soapSetTransportTimeout(int timeout) {
-    mTimeout = timeout;
-    if (mTransport != null && timeout >= 0) mTransport.setTimeout(timeout);
-  }
-
-  public void soapSetTransportRetryCount(int retryCount) {
-    mRetryCount = retryCount;
-    if (mTransport != null && retryCount >= 0) mTransport.setRetryCount(retryCount);
-  }
-
   public void soapSetTransportDebugListener(DebugListener listener) {
     mDebugListener = listener;
     if (mTransport != null) mTransport.setDebugListener(mDebugListener);
@@ -509,11 +446,6 @@ public class SoapProvisioning extends Provisioning {
 
   public ZAuthToken getAuthToken() {
     return mAuthToken;
-  }
-
-  public void setAuthToken(ZAuthToken authToken) {
-    mAuthToken = authToken;
-    if (mTransport != null) mTransport.setAuthToken(authToken);
   }
 
   /**
@@ -570,23 +502,6 @@ public class SoapProvisioning extends Provisioning {
    */
   public void soapZimbraAdminAuthenticate() throws ServiceException {
     soapAdminAuthenticate(LC.zimbra_ldap_user.value(), LC.zimbra_ldap_password.value());
-  }
-
-  public void soapLogOut() throws ServiceException {
-    EndSessionRequest logout = new EndSessionRequest();
-    logout.setLogOff(true);
-    try {
-      invokeJaxb(logout);
-      mAuthTokenExpiration = 0;
-      mAuthTokenLifetime = 0;
-      mAuthToken = null;
-    } catch (ServiceException e) {
-      // do not thrown an exception if the authtoken has already expired
-      if (!ServiceException.AUTH_REQUIRED.equals(e.getCode())
-          && !ServiceException.AUTH_EXPIRED.equals(e.getCode())) {
-        throw ZClientException.CLIENT_ERROR("Failed to log out", e);
-      }
-    }
   }
 
   private String serverName() {
@@ -848,8 +763,7 @@ public class SoapProvisioning extends Provisioning {
     this.changePassword(acct, currentPassword, newPassword, false);
   }
 
-  @Override
-  public void changePassword(
+  private void changePassword(
       Account acct, String currentPassword, String newPassword, boolean dryRun)
       throws ServiceException {
     this.changePassword(acct, currentPassword, newPassword, dryRun, null);
@@ -875,16 +789,6 @@ public class SoapProvisioning extends Provisioning {
     CreateAccountResponse resp =
         invokeJaxb(new CreateAccountRequest(emailAddress, password, attrs));
     return new SoapAccount(resp.getAccount(), this);
-  }
-
-  @Override
-  public Account restoreAccount(
-      String emailAddress,
-      String password,
-      Map<String, Object> attrs,
-      Map<String, Object> origAttrs)
-      throws ServiceException {
-    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -956,12 +860,6 @@ public class SoapProvisioning extends Provisioning {
     return new SoapServer(resp.getServer(), this);
   }
 
-  /** Unsupported */
-  @Override
-  public Zimlet createZimlet(String name, Map<String, Object> attrs) throws ServiceException {
-    throw new UnsupportedOperationException();
-  }
-
   @Override
   public void deleteAccount(String zimbraId) throws ServiceException {
     invokeJaxb(new DeleteAccountRequest(zimbraId));
@@ -1007,12 +905,6 @@ public class SoapProvisioning extends Provisioning {
     invokeJaxb(new DeleteServerRequest(zimbraId));
   }
 
-  /** Unsupported */
-  @Override
-  public void deleteZimlet(String name) throws ServiceException {
-    throw new UnsupportedOperationException();
-  }
-
   public static class DelegateAuthResponse {
     private final ZAuthToken mAuthToken;
     private final long mExpires;
@@ -1030,13 +922,6 @@ public class SoapProvisioning extends Provisioning {
       return mAuthToken;
     }
 
-    public long getExpires() {
-      return mExpires;
-    }
-
-    public long getLifetime() {
-      return mLifetime;
-    }
   }
 
   public DelegateAuthResponse delegateAuth(AccountBy keyType, String key, int durationSeconds)
@@ -1296,10 +1181,6 @@ public class SoapProvisioning extends Provisioning {
       mUsed = jaxbMboxInfo.getSize();
     }
 
-    public MailboxInfo(String id, long used) {
-      mMboxId = id;
-      mUsed = used;
-    }
   }
 
   public MailboxInfo getMailbox(Account acct) throws ServiceException {
@@ -1349,8 +1230,6 @@ public class SoapProvisioning extends Provisioning {
       public long getNumRemaining() {
         return numRemaining;
       }
-
-      Progress() {}
 
       Progress(long succeeded, long failed, long remaining) {
         numSucceeded = succeeded;
@@ -1613,22 +1492,10 @@ public class SoapProvisioning extends Provisioning {
     }
   }
 
-  /** Unsupported */
-  @Override
-  public Zimlet getZimlet(String name) throws ServiceException {
-    throw new UnsupportedOperationException();
-  }
-
   @Override
   public boolean healthCheck() throws ServiceException {
     CheckHealthResponse resp = invokeJaxb(new CheckHealthRequest());
     return resp.isHealthy();
-  }
-
-  /** Unsupported */
-  @Override
-  public List<Zimlet> listAllZimlets() throws ServiceException {
-    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -2114,12 +1981,6 @@ public class SoapProvisioning extends Provisioning {
   }
 
   @Override
-  public Identity restoreIdentity(Account account, String identityName, Map<String, Object> attrs)
-      throws ServiceException {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
   public void deleteIdentity(Account account, String identityName) throws ServiceException {
     NameId identity = new NameId(identityName, null);
     DeleteIdentityRequest request = new DeleteIdentityRequest(identity);
@@ -2161,12 +2022,6 @@ public class SoapProvisioning extends Provisioning {
     Element response =
         invokeOnTargetAccount(req, account.getId()).getElement(AccountConstants.E_SIGNATURE);
     return new SoapSignature(account, response, this);
-  }
-
-  @Override
-  public Signature restoreSignature(
-      Account account, String signatureName, Map<String, Object> attrs) throws ServiceException {
-    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -2223,13 +2078,6 @@ public class SoapProvisioning extends Provisioning {
       String dsName,
       Map<String, Object> attrs,
       boolean passwdAlreadyEncrypted)
-      throws ServiceException {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public DataSource restoreDataSource(
-      Account account, DataSourceType dsType, String dsName, Map<String, Object> attrs)
       throws ServiceException {
     throw new UnsupportedOperationException();
   }
@@ -2632,7 +2480,6 @@ public class SoapProvisioning extends Provisioning {
     invoke(req);
   }
 
-  @Override
   public void reloadMemcachedClientConfig() throws ServiceException {
     XMLElement req = new XMLElement(AdminConstants.RELOAD_MEMCACHED_CLIENT_CONFIG_REQUEST);
     invoke(req);

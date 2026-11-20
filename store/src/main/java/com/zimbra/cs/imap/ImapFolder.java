@@ -32,7 +32,6 @@ import com.zimbra.common.mailbox.SearchFolderStore;
 import com.zimbra.common.mailbox.ZimbraTag;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
-import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.imap.ImapFlagCache.ImapFlag;
@@ -42,6 +41,7 @@ import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.session.PendingModifications.Change;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * @since Apr 30, 2005
@@ -168,7 +168,6 @@ public final class ImapFolder implements ImapListener.ImapFolderData, java.io.Se
     }
 
     /** Returns the selected folder's zimbra ID. */
-    @Override
     public int getId() {
         return folderIdentifier.id;
     }
@@ -245,13 +244,7 @@ public final class ImapFolder implements ImapListener.ImapFolderData, java.io.Se
         return typeConstraint;
     }
 
-    /** Returns the types of items exposed in this IMAP folder.  Defaults to
-     *  {@link ImapHandler#ITEM_TYPES} except for search folders. */
-    protected Set<MailItemType> getMailItemTypeConstraint() {
-        return MailItem.Type.toCommon(typeConstraint);
-    }
-
-    /** Returns the folder's IMAP UID validity value.
+	/** Returns the folder's IMAP UID validity value.
      * @see #getUIDValidity(Folder) */
     protected int getUIDValidity() {
         return uidValidity;
@@ -475,7 +468,7 @@ public final class ImapFolder implements ImapListener.ImapFolderData, java.io.Se
     }
 
     protected void updateTagCache(ImapMessage i4msg) {
-        if (!ArrayUtil.isEmpty(i4msg.tags)) {
+        if (!ArrayUtils.isEmpty(i4msg.tags)) {
             for (String tag : i4msg.tags) {
                 if (tags.getByZimbraName(tag) == null) {
                     try {
@@ -569,11 +562,7 @@ public final class ImapFolder implements ImapListener.ImapFolderData, java.io.Se
         return (i4flag != null ? i4flag : tags.getByImapName(name));
     }
 
-    protected ImapFlag getTagByName(String name) {
-        return mailboxStore.getFlagByName(name);
-    }
-
-    protected List<String> getFlagList(boolean permanentOnly) {
+	protected List<String> getFlagList(boolean permanentOnly) {
         List<String> names = mailboxStore.getFlagList(permanentOnly);
         for (String tagname : tags.listNames(permanentOnly)) {
             if (mailboxStore.getFlagByName(tagname) == null) {
@@ -587,22 +576,13 @@ public final class ImapFolder implements ImapListener.ImapFolderData, java.io.Se
         return tags;
     }
 
-    protected void clearTagCache() {
-        tags.clear();
-    }
-
-    protected static final class DirtyMessage {
+	protected static final class DirtyMessage {
         protected final ImapMessage i4msg;
         protected int modseq;
         protected DirtyMessage(ImapMessage m, int s)  { i4msg = m;  modseq = s; }
     }
 
-    protected boolean isMessageDirty(ImapMessage i4msg) {
-        SessionData sdata = sessionData;
-        return sdata == null ? false : sdata.dirtyMessages.containsKey(i4msg.imapUid);
-    }
-
-    protected void dirtyMessage(ImapMessage i4msg, int modseq) {
+	protected void dirtyMessage(ImapMessage i4msg, int modseq) {
         SessionData sdata = sessionData;
         if (sdata == null) {
             return;

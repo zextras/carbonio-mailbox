@@ -20,7 +20,6 @@ import com.zimbra.common.mailbox.Color;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.mailbox.AutoSendDraftTask;
 import com.zimbra.cs.mailbox.MailItem;
@@ -38,6 +37,7 @@ import com.zimbra.cs.session.PendingModifications.Change;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.type.MsgContent;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * @since Jun 11, 2005
@@ -149,7 +149,7 @@ public class SaveDraft extends MailDocumentHandler {
         }
 
         // try to set the metadata on the new/revised draft
-        if (folderId != null || flags != null || !ArrayUtil.isEmpty(tags) || color != null) {
+        if (folderId != null || flags != null || !ArrayUtils.isEmpty(tags) || color != null) {
             try {
                 // best not to fail if there's an error here...
                 ItemActionHelper.UPDATE(octxt, mbox, zsc.getResponseProtocol(), Arrays.asList(msg.getId()),

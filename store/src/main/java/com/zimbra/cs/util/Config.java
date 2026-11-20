@@ -6,7 +6,6 @@
 package com.zimbra.cs.util;
 
 import java.io.File;
-import java.sql.Timestamp;
 import java.util.Map;
 
 import com.zimbra.common.localconfig.LC;
@@ -23,7 +22,6 @@ import com.zimbra.cs.db.DbPool.DbConnection;
 public final class Config {
 
     public static final String KEY_PURGE_LAST_MAILBOX_ID = "purge.lastMailboxId";
-    public static final String CONTACT_BACKUP_LAST_MAILBOX_ID = "contactBackup.lastMailboxId";
 
     public static final int D_LMTP_THREADS = 10;
 
@@ -38,20 +36,12 @@ public final class Config {
     public static final int D_SMTP_PORT = 25;
 
     private static Map<String, DbConfig> mConfigMap;
-    private static Timestamp mYoungest;
 
-    private static void init(Timestamp ts) throws ServiceException {
+    static void init() throws ServiceException {
         DbConnection conn = null;
         try {
             conn = DbPool.getConnection();
-            mConfigMap = DbConfig.getAll(conn, ts);
-          for (DbConfig c : mConfigMap.values()) {
-            if (mYoungest == null) {
-              mYoungest = c.getModified();
-            } else if (c.getModified().after(mYoungest)) {
-              mYoungest = c.getModified();
-            }
-          }
+            mConfigMap = DbConfig.getAll(conn);
         } finally {
             if (conn != null)
                 DbPool.quietClose(conn);
@@ -61,7 +51,7 @@ public final class Config {
     private static synchronized void initConfig() {
         if (mConfigMap == null) {
             try {
-                init(null);
+                init();
             } catch (Exception e) {
                 Zimbra.halt("Config initialization failed", e);
             }

@@ -6,9 +6,9 @@
 package com.zimbra.cs.account.callback;
 
 import java.util.Map;
+import java.util.Objects;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.AttributeCallback;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Provisioning;
@@ -26,7 +26,7 @@ public class AutoProvLdapSearchFilter extends AttributeCallback {
         }
         SingleValueMod mod = singleValueMod(attrsToModify, attrName);
         newValue = mod.value();
-        if (!StringUtil.equal(oldValue, newValue)) {
+        if (!Objects.equals(oldValue, newValue)) {
             attrsToModify.put(Provisioning.A_zimbraAutoProvLastPolledTimestamp, null);
         }
     }

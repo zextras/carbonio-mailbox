@@ -7,15 +7,11 @@ package com.zimbra.client;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.SystemUtil;
 import com.zimbra.soap.account.type.Signature;
 import com.zimbra.soap.account.type.SignatureContent;
-import com.zimbra.util.SignatureUtil;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ZSignature implements Comparable<ZSignature>, ToZJSONObject {
 
@@ -74,32 +70,7 @@ public class ZSignature implements Comparable<ZSignature>, ToZJSONObject {
         return data.getContent().get(0);
     }
 
-    public void setType(String type) {
-        SignatureContent content = getFirstContent();
-        if (content == null) {
-            content = new SignatureContent(null, type);
-            data.addContent(content);
-        }
-        content.setContentType(type);
-    }
-    
-    public Map<String, Object> getAttrs() {
-        Map<String, Object> attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_zimbraSignatureId, data.getId());
-        attrs.put(ZAttrProvisioning.A_zimbraSignatureName, data.getName());
-        
-        String type = null;
-        String value = null;
-        SignatureContent content = getFirstContent();
-        if (content != null) {
-            type = content.getContentType();
-            value = content.getContent();
-            attrs.put(SignatureUtil.mimeTypeToAttrName(type), value);
-        }
-        return attrs;
-    }
-    
-    public Element toElement(Element parent) {
+	public Element toElement(Element parent) {
         Element sig = parent.addElement(AccountConstants.E_SIGNATURE);
         sig.addAttribute(AccountConstants.A_NAME, getName());
         if (getId() != null) sig.addAttribute(AccountConstants.A_ID, getId());

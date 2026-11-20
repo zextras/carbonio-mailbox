@@ -10,7 +10,6 @@ import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.CosBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.EmailUtil;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
@@ -80,7 +79,8 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
   public boolean canAccessAccount(AuthToken at, Account target, boolean asAdmin)
       throws ServiceException {
 
-    if (!StringUtil.equal(at.getAccount().getDomainId(), target.getDomainId())) {
+      String s1 = at.getAccount().getDomainId();
+      if (!Objects.equals(s1, target.getDomainId())) {
       checkDomainStatus(target);
     }
 
@@ -125,25 +125,11 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
   }
 
   @Override
-  public boolean canCreateGroup(AuthToken at, String groupEmail) throws ServiceException {
-    Domain domain = Provisioning.getInstance().getDomainByEmailAddr(groupEmail);
-    checkDomainStatus(domain);
-
-    return canDo(at, domain, User.R_createDistList, true);
-  }
-
-  @Override
   public boolean canCreateGroup(Account credentials, String groupEmail) throws ServiceException {
     Domain domain = Provisioning.getInstance().getDomainByEmailAddr(groupEmail);
     checkDomainStatus(domain);
 
     return canDo(credentials, domain, User.R_createDistList, true);
-  }
-
-  @Override
-  public boolean canAccessGroup(AuthToken at, Group group) throws ServiceException {
-    checkDomainStatus(group);
-    return canDo(at, group, Group.GroupOwner.GROUP_OWNER_RIGHT, true);
   }
 
   @Override
@@ -155,16 +141,6 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
 
   @Override
   public boolean canAccessDomain(AuthToken at, String domainName) throws ServiceException {
-    throw ServiceException.FAILURE("internal error", null); // should never be called
-  }
-
-  @Override
-  public boolean canAccessDomain(AuthToken at, Domain domain) throws ServiceException {
-    throw ServiceException.FAILURE("internal error", null); // should never be called
-  }
-
-  @Override
-  public boolean canAccessEmail(AuthToken at, String email) throws ServiceException {
     throw ServiceException.FAILURE("internal error", null); // should never be called
   }
 
@@ -228,8 +204,7 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
     return checkPresetRight(grantee, target, rightNeeded, false, asAdmin, via);
   }
 
-  @Override
-  public boolean canDo(
+  private boolean canDo(
       AuthToken grantee, Entry target, Right rightNeeded, boolean asAdmin, ViaGrant via)
       throws ServiceException {
     try {
@@ -244,8 +219,7 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
     return false;
   }
 
-  @Override
-  public boolean canDo(
+  private boolean canDo(
       String granteeEmail, Entry target, Right rightNeeded, boolean asAdmin, ViaGrant via)
       throws ServiceException {
     try {
@@ -275,12 +249,6 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
   }
 
   @Override
-  public boolean canGetAttrs(AuthToken grantee, Entry target, Set<String> attrs, boolean asAdmin)
-      throws ServiceException {
-    return canGetAttrs(grantee.getAccount(), target, attrs, asAdmin);
-  }
-
-  @Override
   public AttrRightChecker getGetAttrsChecker(Account credentials, Entry target, boolean asAdmin)
       throws ServiceException {
     Boolean hardRulesResult = HardRules.checkHardRules(credentials, asAdmin, target, null);
@@ -295,12 +263,6 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
           CheckAttrRight.accessibleAttrs(grantee, target, AdminRight.PR_GET_ATTRS, false);
       return rightChecker;
     }
-  }
-
-  @Override
-  public AttrRightChecker getGetAttrsChecker(AuthToken credentials, Entry target, boolean asAdmin)
-      throws ServiceException {
-    return getGetAttrsChecker(credentials.getAccount(), target, asAdmin);
   }
 
   @Override
@@ -319,12 +281,6 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
   }
 
   @Override
-  public boolean canSetAttrs(AuthToken grantee, Entry target, Set<String> attrs, boolean asAdmin)
-      throws ServiceException {
-    return canSetAttrs(grantee.getAccount(), target, attrs, asAdmin);
-  }
-
-  @Override
   // this API does check constraints
   public boolean canSetAttrs(
       Account granteeAcct, Entry target, Map<String, Object> attrsNeeded, boolean asAdmin)
@@ -340,13 +296,6 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
     AllowedAttrs allowedAttrs =
         CheckAttrRight.accessibleAttrs(grantee, target, AdminRight.PR_SET_ATTRS, false);
     return allowedAttrs.canSetAttrsWithinConstraints(grantee, target, attrsNeeded);
-  }
-
-  @Override
-  public boolean canSetAttrs(
-      AuthToken grantee, Entry target, Map<String, Object> attrs, boolean asAdmin)
-      throws ServiceException {
-    return canSetAttrs(grantee.getAccount(), target, attrs, asAdmin);
   }
 
   @Override
@@ -554,20 +503,6 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
       }
     }
     return false;
-  }
-
-  @Override
-  public boolean canPerform(
-      AuthToken grantee,
-      Entry target,
-      Right rightNeeded,
-      boolean canDelegate,
-      Map<String, Object> attrs,
-      boolean asAdmin,
-      ViaGrant viaGrant)
-      throws ServiceException {
-    Account authedAcct = grantee.getAccount();
-    return canPerform(authedAcct, target, rightNeeded, canDelegate, attrs, asAdmin, viaGrant);
   }
 
   private static synchronized CheckRightFallback loadFallback(Right right) {

@@ -124,12 +124,7 @@ public class AutoProvisionEager extends AutoProvision {
         }
     }
 
-    @Override
-    Account handle() throws ServiceException {
-        throw new UnsupportedOperationException();
-    }
-
-    private static boolean autoProvisionEnabled(Domain domain) {
+	private static boolean autoProvisionEnabled(Domain domain) {
         return domain.getMultiAttrSet(Provisioning.A_zimbraAutoProvMode).contains(AutoProvMode.EAGER.name());
     }
 

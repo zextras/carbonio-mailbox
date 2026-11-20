@@ -25,43 +25,6 @@ public class ZGrant implements ACLGrant, ToZJSONObject {
     private final GranteeType mGranteeType;
     private final String mPermissions;
 
-    /** Stolen shamelessly from ACL.java. */
-
-    public enum Permission {
-        read('r'),
-        write('w'),
-        insert('i'),
-        delete('d'),
-        administer('a'),
-        workflow('x'),
-        freebusy('f');
-
-        private char mPermChar;
-
-        public char getPermissionChar() { return mPermChar; }
-
-        public static String toNameList(String perms) {
-            if (perms == null || perms.length() == 0) return "";
-            StringBuilder sb = new StringBuilder();
-            for (int i=0; i < perms.length(); i++) {
-                String v = null;
-                for (Permission f : Permission.values()) {
-                    if (f.getPermissionChar() == perms.charAt(i)) {
-                        v = f.name();
-                        break;
-                    }
-                }
-                if (sb.length() > 0) sb.append(", ");
-                sb.append(v == null ? perms.substring(i, i+1) : v);
-            }
-            return sb.toString();
-        }
-
-        Permission(char permChar) {
-            mPermChar = permChar;
-        }
-    }
-
     public enum GranteeType {
         // Need to keep JAXB class com.zimbra.soap.type.GrantGranteeType in sync with this class
         /**
@@ -112,20 +75,6 @@ public class ZGrant implements ACLGrant, ToZJSONObject {
                 throw ZClientException.CLIENT_ERROR(
                         "invalid grantee: " + s + ", valid values: " + Arrays.asList(GranteeType.values()), e);
             }
-        }
-
-        /* return equivalent JAXB enum */
-        public com.zimbra.soap.type.GrantGranteeType toJaxb() {
-            return jaxbGranteeType;
-        }
-
-        public static GranteeType fromJaxb(com.zimbra.soap.type.GrantGranteeType jaxbGT) {
-            for (GranteeType gt :GranteeType.values()) {
-                if (gt.toJaxb() == jaxbGT) {
-                    return gt;
-                }
-            }
-            throw new IllegalArgumentException("Unrecognised GranteeType:" + jaxbGT);
         }
 
         /* return equivalent zm-common enum */
@@ -195,38 +144,6 @@ public class ZGrant implements ACLGrant, ToZJSONObject {
         return mPermissions;
     }
 
-    private boolean hasPerm(Permission p) {
-        return (mPermissions != null) && mPermissions.indexOf(p.getPermissionChar()) != -1;
-    }
-
-    public boolean canAdminister() {
-        return hasPerm(Permission.administer);
-    }
-
-    public boolean canDelete() {
-        return hasPerm(Permission.delete);
-    }
-
-    public boolean canInsert() {
-        return hasPerm(Permission.insert);
-    }
-
-    public boolean canRead() {
-        return hasPerm(Permission.read);
-    }
-
-    public boolean canWorkflow() {
-        return hasPerm(Permission.workflow);
-    }
-
-    public boolean canWrite() {
-        return hasPerm(Permission.write);
-    }
-
-    public boolean canViewFreeBusy() {
-        return hasPerm(Permission.freebusy);
-    }
-
     /**
      * the type of grantee: "usr", "grp", "dom" (domain),
      * "all" (all authenticated users), "pub" (public authenticated and unauthenticated access),
@@ -259,26 +176,11 @@ public class ZGrant implements ACLGrant, ToZJSONObject {
         return mGranteeId;
     }
 
-    /**
-     *  optional argument.  password when {grantee-type} is "guest"
-     */
-    public String getArgs() {
-        return mArgs;
-    }
-
     void setAccessKey(String accesskey) {
         mArgs = accesskey;
     }
 
-    /**
-     * Is this grant a public grant?
-     *
-     */
-    public boolean isPublic() {
-        return this.getGranteeType().equals(GranteeType.pub);
-    }
-
-  @Override
+    @Override
     public ObjectNode toObjectNode() {
         ObjectNode jo = JsonNodeFactory.instance.objectNode();
         jo.put("type", mGranteeType.name());

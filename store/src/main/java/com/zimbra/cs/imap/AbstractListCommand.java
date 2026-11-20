@@ -18,15 +18,7 @@ public abstract class AbstractListCommand extends ImapCommand {
         this.mailboxNames = mailboxNames;
     }
 
-    public String getReferenceName() {
-        return referenceName;
-    }
-
-    public Set<String> getMailboxNames() {
-        return mailboxNames;
-    }
-
-    @Override
+	@Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;

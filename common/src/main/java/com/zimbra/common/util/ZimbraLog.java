@@ -19,6 +19,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 
@@ -333,6 +334,8 @@ public final class ZimbraLog {
   private static final ThreadLocal<Map<String, String>> sContextMap = new ThreadLocal<>();
   private static final ThreadLocal<String> sContextString = new ThreadLocal<>();
 
+  public static final String LOG_CONTEXT_KEY = "zimbra.context";
+
   private static final Set<String> CONTEXT_KEY_ORDER = new LinkedHashSet<>();
 
   static {
@@ -424,7 +427,7 @@ public final class ZimbraLog {
         sContextMap.set(contextMap);
       }
       String oldValue = contextMap.put(key, value);
-      if (!StringUtil.equal(oldValue, value)) {
+        if (!Objects.equals(oldValue, value)) {
         contextChanged = true;
       }
     }
@@ -438,6 +441,7 @@ public final class ZimbraLog {
     Map<String, String> contextMap = sContextMap.get();
     if (contextMap == null || contextMap.size() == 0) {
       sContextString.set(null);
+      ThreadContext.remove(LOG_CONTEXT_KEY);
       return;
     }
 
@@ -461,7 +465,9 @@ public final class ZimbraLog {
       }
     }
 
-    sContextString.set(sb.toString());
+    String contextString = sb.toString();
+    sContextString.set(contextString);
+    ThreadContext.put(LOG_CONTEXT_KEY, contextString);
   }
 
   /** Removes a key/value pair from the current thread's logging context. */
@@ -552,6 +558,7 @@ public final class ZimbraLog {
       contextMap.clear();
     }
     sContextString.remove();
+    ThreadContext.remove(LOG_CONTEXT_KEY);
   }
 
   public static String getStackTrace(int maxDepth) {

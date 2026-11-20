@@ -57,7 +57,6 @@ class GetInfoTest extends SoapTestSuite {
         "mbox",
         "prefs",
         "attrs",
-        "zimlets",
         "props",
         "idents",
         "sigs",

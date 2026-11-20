@@ -51,17 +51,6 @@ public class ZLdapHelper extends LdapHelper {
         zlc.searchPaged(searchOptions);
     }
 
-    @Override
-    public void deleteEntry(String dn, LdapUsage ldapUsage) throws ServiceException {
-        ZLdapContext zlc = null;
-        try {
-            zlc = getProv().getLdapClient().getContext(LdapServerType.MASTER, ldapUsage);
-            zlc.deleteEntry(dn);
-        } finally {
-            getProv().getLdapClient().closeContext(zlc);
-        }
-    }
-
     private ZModificationList getModList(ZLdapContext zlc, String dn,
             Map<String, ? extends Object> attrs, Entry entry) throws ServiceException {
         ZModificationList modList = zlc.createModificationList();
@@ -153,19 +142,6 @@ public class ZLdapHelper extends LdapHelper {
 
         if (!modList.isEmpty()) {
             zlc.modifyAttributes(dn, modList);
-        }
-    }
-
-    @Override
-    public void modifyEntry(String dn, Map<String, ? extends Object> attrs,
-            Entry entry, LdapUsage ldapUsage)
-    throws ServiceException {
-        ZLdapContext zlc = null;
-        try {
-            zlc = getProv().getLdapClient().getContext(LdapServerType.MASTER, ldapUsage);
-            modifyAttrs(zlc, dn, attrs, entry);
-        } finally {
-            getProv().getLdapClient().closeContext(zlc);
         }
     }
 

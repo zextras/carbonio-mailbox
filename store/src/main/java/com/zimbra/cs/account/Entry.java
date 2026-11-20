@@ -11,7 +11,6 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.TreeMultimap;
 import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.DateUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AttributeManager.IDNType;
@@ -26,6 +25,8 @@ import com.zimbra.cs.ephemeral.LdapEntryLocation;
 import com.zimbra.cs.ephemeral.LdapEphemeralStore;
 import com.zimbra.cs.ldap.LdapDateUtil;
 import com.zimbra.cs.util.MemoryUnitUtil;
+import org.apache.commons.codec.binary.Base64;
+
 import java.text.CollationKey;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -39,7 +40,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 public abstract class Entry implements AttributeEntry {
 
@@ -49,8 +49,7 @@ public abstract class Entry implements AttributeEntry {
   private Map<String, Object> overrideDefaults;
   private Map<String, Object> mData;
   private Map<String, Set<String>> mMultiAttrSetCache;
-  private Map<String, Set<byte[]>> mMultiBinaryAttrSetCache;
-  private Locale mLocale;
+  private volatile Locale mLocale;
   private final Provisioning mProvisioning;
   private AttributeManager mAttrMgr;
 
@@ -66,31 +65,6 @@ public abstract class Entry implements AttributeEntry {
     mProvisioning = provisioning;
     mAttrs = attrs;
     mDefaults = defaults;
-    setAttributeManager();
-  }
-
-  protected Entry(
-      Map<String, Object> attrs,
-      Map<String, Object> defaults,
-      Map<String, Object> secondaryDefaults,
-      Provisioning provisioning) {
-    mProvisioning = provisioning;
-    mAttrs = attrs;
-    mDefaults = defaults;
-    mSecondaryDefaults = secondaryDefaults;
-    setAttributeManager();
-  }
-
-  protected Entry(
-      Map<String, Object> attrs,
-      Map<String, Object> defaults,
-      Map<String, Object> secondaryDefaults,
-      Map<String, Object> overrideDefaults,
-      Provisioning provisioning) {
-    mProvisioning = provisioning;
-    mAttrs = attrs;
-    mDefaults = defaults;
-    mSecondaryDefaults = secondaryDefaults;
     setAttributeManager();
   }
 
@@ -142,16 +116,6 @@ public abstract class Entry implements AttributeEntry {
       Map<String, Object> defaults, Map<String, Object> secondaryDefaults) {
     mDefaults = defaults;
     mSecondaryDefaults = secondaryDefaults;
-    resetData();
-  }
-
-  public synchronized void setSecondaryDefaults(Map<String, Object> secondaryDefaults) {
-    mSecondaryDefaults = secondaryDefaults;
-    resetData();
-  }
-
-  public synchronized void setOverrideDefaults(Map<String, Object> overrideDefaults) {
-    this.overrideDefaults = overrideDefaults;
     resetData();
   }
 
@@ -405,13 +369,9 @@ public abstract class Entry implements AttributeEntry {
     return v == null ? defaultValue : ProvisioningConstants.TRUE.equals(v);
   }
 
-  public byte[] getBinaryAttr(String name) {
-    return getBinaryAttr(name, false);
-  }
-
   protected byte[] getBinaryAttr(String name, boolean skipEphemeralCheck) {
     String v = getAttr(name, true, skipEphemeralCheck);
-    return v == null ? null : ByteUtil.decodeLDAPBase64(v);
+      return v == null ? null : Base64.decodeBase64(v);
   }
 
   /**
@@ -454,14 +414,11 @@ public abstract class Entry implements AttributeEntry {
     // can recursively call LdapEntry.getLocale() on multiple entries.
     // If LdapEntry.getLocale() was synchronized, we might get into a
     // deadlock.
-    synchronized (this) {
-      if (mLocale != null) return mLocale;
-    }
+    Locale cached = mLocale;
+    if (cached != null) return cached;
     Locale lc = Provisioning.getInstance().getLocale(this);
-    synchronized (this) {
-      mLocale = lc;
-      return mLocale;
-    }
+    mLocale = lc;
+    return lc;
   }
 
   /**
@@ -488,10 +445,6 @@ public abstract class Entry implements AttributeEntry {
    */
   public String[] getMultiAttr(String name) {
     return getMultiAttr(name, true);
-  }
-
-  public List<byte[]> getMultiBinaryAttr(String name) {
-    return getMultiBinaryAttr(name, true);
   }
 
   /**
@@ -580,7 +533,7 @@ public abstract class Entry implements AttributeEntry {
     if (values.length > 0) {
       List<byte[]> list = new ArrayList<>();
       for (String value : values) {
-        list.add(ByteUtil.decodeLDAPBase64(value));
+          list.add(Base64.decodeBase64(value));
       }
       return list;
     } else {
@@ -597,17 +550,6 @@ public abstract class Entry implements AttributeEntry {
     if (result == null) {
       result = new HashSet<>(Arrays.asList(getMultiAttr(name)));
       mMultiAttrSetCache.put(name, result);
-    }
-    return result;
-  }
-
-  public Set<byte[]> getMultiBinaryAttrSet(String name) {
-    if (mMultiBinaryAttrSetCache == null)
-      mMultiBinaryAttrSetCache = new HashMap<>();
-    Set<byte[]> result = mMultiBinaryAttrSetCache.get(name);
-    if (result == null) {
-      result = new HashSet<>(getMultiBinaryAttr(name));
-      mMultiBinaryAttrSetCache.put(name, result);
     }
     return result;
   }
@@ -812,39 +754,12 @@ public abstract class Entry implements AttributeEntry {
     }
   }
 
-  public void modifyEphemeralAttr(EphemeralInput input, boolean update) throws ServiceException {
-    EphemeralLocation location = new LdapEntryLocation(this);
-    EphemeralStore store = EphemeralStore.getFactory().getStore();
-    if (update) {
-      store.update(input, location);
-    } else {
-      store.set(input, location);
-    }
-  }
-
   public void modifyEphemeralAttr(
       String key, String dynamicComponent, String value, boolean update, Expiration expiration)
       throws ServiceException {
     EphemeralLocation location = new LdapEntryLocation(this);
     EphemeralStore store = EphemeralStore.getFactory().getStore();
     modifyEphemeralAttrInternal(key, dynamicComponent, value, update, expiration, store, location);
-  }
-
-  public void modifyEphemeralAttr(
-      String key, String dynamicComponent, String[] values, boolean update, Expiration expiration)
-      throws ServiceException {
-    EphemeralLocation location = new LdapEntryLocation(this);
-    EphemeralStore store = EphemeralStore.getFactory().getStore();
-    for (String value : values) {
-      modifyEphemeralAttrInternal(
-          key, dynamicComponent, value, update, expiration, store, location);
-    }
-  }
-
-  protected long getEphemeralTimeInterval(String key, String dynamicComponent, long defaultValue)
-      throws ServiceException {
-    return DateUtil.getTimeInterval(
-        getEphemeralAttr(key, dynamicComponent).getValue(), defaultValue);
   }
 
   public void purgeEphemeralAttr(String key) throws ServiceException {

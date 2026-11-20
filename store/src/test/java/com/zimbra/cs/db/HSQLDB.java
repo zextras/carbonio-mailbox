@@ -6,12 +6,10 @@
 package com.zimbra.cs.db;
 
 import com.google.common.base.Joiner;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.db.DbPool.PoolConfig;
 import com.zimbra.cs.mailbox.Mailbox;
-import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -101,6 +99,11 @@ public class HSQLDB extends Db {
         sql.setConnection(conn);
         sql.execute();
         conn.commit();
+    }
+
+    @Override
+    public String healthCheckQuery() {
+        return "SELECT 1 FROM (VALUES(0)) AS t";
     }
 
     @Override

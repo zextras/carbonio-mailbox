@@ -23,7 +23,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import com.google.common.primitives.Shorts;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -31,77 +33,6 @@ import com.google.common.collect.Multimap;
  * @author schemers
  */
 public class StringUtil {
-
-    /** A user-friendly version of {@link String#equals(Object)} that handles
-     *  one or both nulls easily. */
-    public static boolean equal(String s1, String s2) {
-        if (s1 == null || s2 == null) {
-            return s1 == s2;
-        }
-        return s1.equals(s2);
-    }
-
-    /** A user-friendly version of {@link String#equalsIgnoreCase(String)}
-     *  that handles one or both nulls easily. */
-    public static boolean equalIgnoreCase(String s1, String s2) {
-        if (s1 == null || s2 == null) {
-            return s1 == s2;
-        }
-        return s1.equalsIgnoreCase(s2);
-    }
-
-    /** A user-friendly compareTo that handles one or both nulls easily.
-     * @return 0 if s1 and s2 are equal, value less than 0 if s1 is before s2,
-     *         or value greater than 0 if s1 is after s2; null is considered
-     *         to come before any non-null value */
-    public static int compareTo(String s1, String s2) {
-        if (s1 != null) {
-            if (s2 != null) {
-                return s1.compareTo(s2);
-            } else {
-                return 1;
-            }
-        } else {  // s1 == null
-            if (s2 != null) {
-                return -1;
-            } else {
-                return 0;
-            }
-        }
-    }
-
-    /** Compares two string ignoring case differences.
-     *
-     */
-    public static int compareToIgnoreCase(String s1, String s2) {
-        if (s1 != null) {
-            if (s2 != null) {
-                return s1.compareToIgnoreCase(s2);
-            } else {
-                return 1;
-            }
-        } else {  // s1 == null
-            if (s2 != null) {
-                return -1;
-            } else {
-                return 0;
-            }
-        }
-    }
-
-    public static int countOccurrences(String str, char c) {
-        if (str == null) {
-            return 0;
-        }
-
-        int count = 0;
-        for (int i = 0, len = str.length(); i < len; i++) {
-            if (str.charAt(i) == c) {
-                count++;
-            }
-        }
-        return count;
-    }
 
     /** Returns the first instance in {@code str} of any character in {@code
      *  values}, or {@code -1} if no characters from {@code values} appear in
@@ -597,26 +528,14 @@ public class StringUtil {
      * Joins an array of <code>short</code>s, separated by a delimiter.
      */
     public static String join(String delimiter, short[] array) {
-        if (array == null) {
-            return null;
-        }
-
-        StringBuilder buf = new StringBuilder();
-
-        for (int i = 0; i < array.length; i++) {
-            buf.append(array[i]);
-            if (i + 1 < array.length) {
-                buf.append(delimiter);
-            }
-        }
-        return buf.toString();
+        return array == null ? null : Shorts.join(delimiter, array);
     }
 
     /**
      * Joins an array of objects, separated by a delimiter.
      */
     public static String join(String delimiter, Object[] array) {
-        return (array == null ? null : join(delimiter, array, 0, array.length));
+        return array == null ? null : joiner(delimiter).join(array);
     }
 
     public static String join(String delimiter, Object[] array, final int start, final int count) {
@@ -635,21 +554,11 @@ public class StringUtil {
     }
 
     public static String join(String delimiter, Iterable<? extends Object> array) {
-        if (array == null) {
-            return null;
-        }
+        return array == null ? null : joiner(delimiter).join(array);
+    }
 
-        boolean firstTime = true;
-        StringBuilder buf = new StringBuilder();
-        for (Object obj : array) {
-            if (firstTime) {
-                firstTime = false;
-            } else {
-                buf.append(delimiter);
-            }
-            buf.append(obj);
-        }
-        return buf.toString();
+    private static Joiner joiner(String delimiter) {
+        return Joiner.on(delimiter).useForNull("null");
     }
 
     /**
@@ -657,7 +566,7 @@ public class StringUtil {
      * length is <code>0</code>.
      */
     public static boolean isNullOrEmpty(String s) {
-        return s == null || s.isEmpty();
+        return Strings.isNullOrEmpty(s);
     }
 
     private static final String[] JS_CHAR_ENCODINGS = {
@@ -788,10 +697,6 @@ public class StringUtil {
         return sJavaReservedWords.contains(s);
     }
 
-    public static String capitalize(String s) {
-        return s.substring(0,1).toUpperCase() + s.substring(1);
-    }
-
     public static String enclose(String strToEnclose, char encloseWith) {
         return new StringBuilder().append(encloseWith).append(strToEnclose).append(encloseWith).toString();
     }
@@ -852,10 +757,6 @@ public class StringUtil {
             value.charAt(23) == '-')
             return true;
         return false;
-    }
-
-    public static String nonNull(String s) {
-        return s == null ? "" : s;
     }
 
     public static String truncateIfRequired(String body, int maxBodyBytes) {

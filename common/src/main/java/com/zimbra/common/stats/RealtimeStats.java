@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * This implementation of <code>Accumulator</code> is used to retrieve
@@ -28,7 +28,7 @@ public class RealtimeStats implements Accumulator {
     private List<RealtimeStatsCallback> mCallbacks = new ArrayList<>();
     
     public RealtimeStats(String[] names) {
-        if (ArrayUtil.isEmpty(names)) {
+        if (ArrayUtils.isEmpty(names)) {
             throw new IllegalArgumentException("names cannot be null or empty");
         }
         mNames = new ArrayList<>();

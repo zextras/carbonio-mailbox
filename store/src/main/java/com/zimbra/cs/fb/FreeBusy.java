@@ -631,14 +631,6 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
     return mList.toString();
   }
 
-  public long getStartTime() {
-    return mStart;
-  }
-
-  public long getEndTime() {
-    return mEnd;
-  }
-
   public static class FBInstance implements Comparable<FBInstance> {
     private long mStartTime;
     private long mEndTime;

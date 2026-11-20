@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.extension.ExtensionUtil;
@@ -56,10 +55,6 @@ public abstract class IndexStore {
      */
     public abstract boolean isPendingDelete();
 
-    /**
-     * Set Flag to indicate that the index is scheduled for deletion
-     */
-    public abstract void setPendingDelete(boolean pendingDelete);
 
     /**
      * Primes the index for the fastest available search if the underlying IndexStore supports (and benefits from)
@@ -74,7 +69,7 @@ public abstract class IndexStore {
 
     public static Factory getFactory() {
         if (factory == null) {
-            setFactory(LC.zimbra_class_index_store_factory.value());
+            setFactory(LuceneIndex.Factory.class);
         }
         return factory;
     }

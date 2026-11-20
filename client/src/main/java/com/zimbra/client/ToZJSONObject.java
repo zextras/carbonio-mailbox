@@ -6,7 +6,7 @@
 package com.zimbra.client;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.zimbra.common.util.ExceptionToString;
+import com.google.common.base.Throwables;
 
 public interface ToZJSONObject {
 
@@ -16,7 +16,7 @@ public interface ToZJSONObject {
     try {
       return zjo.toObjectNode().toString();
     } catch (RuntimeException e) {
-      return ExceptionToString.ToString(e);
+        return Throwables.getStackTraceAsString(e);
     }
   }
 }

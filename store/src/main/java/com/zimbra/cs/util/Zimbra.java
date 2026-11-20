@@ -6,7 +6,6 @@
 package com.zimbra.cs.util;
 
 import com.zimbra.common.calendar.WellKnownTimeZones;
-import com.zimbra.common.lmtp.SmtpToLmtp;
 import com.zimbra.common.localconfig.ConfigException;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.localconfig.LocalConfig;
@@ -317,13 +316,6 @@ public final class Zimbra {
         AutoProvisionThread.switchAutoProvThreadIfNecessary();
       }
 
-      if (LC.smtp_to_lmtp_enabled.booleanValue()) {
-        int smtpPort = LC.smtp_to_lmtp_port.intValue();
-        int lmtpPort = Provisioning.getInstance().getLocalServer().getLmtpBindPort();
-        SmtpToLmtp smtpServer = SmtpToLmtp.startup(smtpPort, "localhost", lmtpPort);
-        smtpServer.setRecipientValidator(new SmtpRecipientValidator());
-      }
-
       if (LC.support_timer.booleanValue() && app.supports(AclPushTask.class)) {
         long pushInterval = server.getSharingUpdatePublishInterval();
         sTimer.schedule(new AclPushTask(), pushInterval, pushInterval);
@@ -443,7 +435,7 @@ public final class Zimbra {
     try {
       ZimbraLog.system.fatal(message);
     } finally {
-      Runtime.getRuntime().halt(1);
+      haltAfterFlushingLogs();
     }
   }
 
@@ -460,9 +452,17 @@ public final class Zimbra {
       // Fixme: there should be no need to halt the system. However this codebase has so many threads
       //  that during tests they keep the process live and maven surefire crashes because it does not receieve goodbye.
       if (!Objects.equals("true", System.getProperty("runningTests"))) {
-        Runtime.getRuntime().halt(1);
+        haltAfterFlushingLogs();
       }
       }
+  }
+
+  private static void haltAfterFlushingLogs() {
+    try {
+      org.apache.logging.log4j.LogManager.shutdown();
+    } finally {
+      Runtime.getRuntime().halt(1);
+    }
   }
 
   public static boolean isMailboxd() {

@@ -87,9 +87,7 @@ public abstract class AutoProvision {
         this.domain = domain;
     }
 
-    abstract Account handle() throws ServiceException;
-
-    protected Account createAccount(String acctZimbraName, ExternalEntry externalEntry,
+	protected Account createAccount(String acctZimbraName, ExternalEntry externalEntry,
             String password, AutoProvMode mode)
     throws ServiceException {
         ZAttributes externalAttrs = externalEntry.getAttrs();

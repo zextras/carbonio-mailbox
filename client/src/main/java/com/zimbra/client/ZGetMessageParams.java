@@ -5,7 +5,7 @@
 
 package com.zimbra.client;
 
-import com.zimbra.common.util.StringUtil;
+import java.util.Objects;
 
 public class ZGetMessageParams {
 
@@ -24,12 +24,8 @@ public class ZGetMessageParams {
         return mWantHtml;
     }
 
-    public void setWantHtml(boolean wantHtml) {
-        mWantHtml = wantHtml;
-    }
 
-
-    public String getId() {
+	public String getId() {
         return mId;
     }
 
@@ -49,11 +45,7 @@ public class ZGetMessageParams {
         return mNeuterImages;
     }
 
-    public void setNeuterImages(boolean neuterImages) {
-        this.mNeuterImages = neuterImages;
-    }
-
-    public boolean isRawContent() {
+	public boolean isRawContent() {
         return mRawContent;
     }
 
@@ -84,11 +76,7 @@ public class ZGetMessageParams {
             return mId.hashCode();
     }
 
-    public void setReqHeaders(String reqHeaders) {
-        this.mRequestHeaders = reqHeaders;
-    }
-
-    public String getReqHeaders() {
+	public String getReqHeaders() {
         return this.mRequestHeaders;
     }
     /**
@@ -101,21 +89,13 @@ public class ZGetMessageParams {
 
         ZGetMessageParams that = (ZGetMessageParams) obj;
 
-        return this.mNeuterImages == that.mNeuterImages &&
-                this.mRawContent == that.mRawContent &&
-                this.mWantHtml == that.mWantHtml &&
-                this.mMarkRead == that.mMarkRead &&
-                StringUtil.equal(this.mId, that.mId) &&
-                StringUtil.equal(this.mPart, that.mPart) &&
-                this.mMax == that.mMax;
+        if (this.mNeuterImages != that.mNeuterImages ||
+            this.mRawContent != that.mRawContent ||
+            this.mWantHtml != that.mWantHtml ||
+            this.mMarkRead != that.mMarkRead ||
+            !Objects.equals(this.mId, that.mId)) return false;
+        return Objects.equals(this.mPart, that.mPart) &&
+            this.mMax == that.mMax;
     }
 
-    public ZGetMessageParams(ZGetMessageParams that) {
-        this.mId = that.mId;
-        this.mWantHtml = that.mWantHtml;
-        this.mMarkRead = that.mMarkRead;
-        this.mNeuterImages = that.mNeuterImages;
-        this.mRawContent = that.mRawContent;
-        this.mPart = that.mPart;
-    }
 }

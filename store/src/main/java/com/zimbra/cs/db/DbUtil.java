@@ -10,17 +10,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.file.Files;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Collection;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ByteUtil;
 import com.zimbra.cs.db.DbPool.DbConnection;
 
 /**
@@ -39,23 +36,6 @@ import com.zimbra.cs.db.DbPool.DbConnection;
  */
 public final class DbUtil {
 
-    public static final int INTEGER_TRUE = 1;
-    public static final int INTEGER_FALSE = 0;
-
-    public static final int getBooleanIntValue(boolean b) {
-        return b ? INTEGER_TRUE : INTEGER_FALSE;
-    }
-
-    private static final Pattern PAT_ESCAPED_QUOTES1 = Pattern.compile("\\\\'");
-    private static final Pattern PAT_ESCAPED_QUOTES2 = Pattern.compile("''");
-    private static final Pattern PAT_STRING_CONSTANT = Pattern.compile("'[^']+'");
-    private static final Pattern PAT_INTEGER_CONSTANT = Pattern.compile("\\d+");
-    private static final Pattern PAT_NULL_CONSTANT = Pattern.compile("NULL");
-    private static final Pattern PAT_BEGIN_SPACE = Pattern.compile("^\\s+");
-    private static final Pattern PAT_TRAILING_SPACE = Pattern.compile("\\s+$");
-    private static final Pattern PAT_MULTIPLE_SPACES = Pattern.compile("\\s+");
-    private static final Pattern PAT_IN_CLAUSE = Pattern.compile("IN \\([^\\)]+\\)", Pattern.DOTALL);
-
     private DbUtil() {
     }
 
@@ -73,33 +53,6 @@ public final class DbUtil {
      */
     public static Date timestampToDate(Timestamp timestamp) {
         return timestamp == null ? null : new Date(timestamp.getTime());
-    }
-
-    /**
-     * Converts the given <code>SQL</code> string to a normalized version.
-     * Strips out any numbers, string constants and extra whitespace.  Flattens
-     * the contents of <code>IN</code> clauses.
-     */
-    public static String normalizeSql(String sql) {
-        Matcher matcher = PAT_ESCAPED_QUOTES1.matcher(sql);
-        sql = matcher.replaceAll("");
-        matcher = PAT_ESCAPED_QUOTES2.matcher(sql);
-        sql = matcher.replaceAll("XXX");
-        matcher = PAT_STRING_CONSTANT.matcher(sql);
-        sql = matcher.replaceAll("XXX");
-        matcher = PAT_INTEGER_CONSTANT.matcher(sql);
-        sql = matcher.replaceAll("XXX");
-        matcher = PAT_NULL_CONSTANT.matcher(sql);
-        sql = matcher.replaceAll("XXX");
-        matcher = PAT_BEGIN_SPACE.matcher(sql);
-        sql = matcher.replaceAll("");
-        matcher = PAT_TRAILING_SPACE.matcher(sql);
-        sql = matcher.replaceAll("");
-        matcher = PAT_MULTIPLE_SPACES.matcher(sql);
-        sql = matcher.replaceAll(" ");
-        matcher = PAT_IN_CLAUSE.matcher(sql);
-        sql = matcher.replaceAll("IN (...)");
-        return sql;
     }
 
     /**
@@ -183,18 +136,6 @@ public final class DbUtil {
      * @return the number of rows affected
      * @throws ServiceException if the update cannot be executed
      */
-    public static int executeUpdate(DbConnection conn, String sql, Object param)
-    throws ServiceException {
-        Object[] params = { param };
-        return executeUpdate(conn, sql, params);
-    }
-
-    /**
-     * Executes the specified update using the specified connection.
-     *
-     * @return the number of rows affected
-     * @throws ServiceException if the update cannot be executed
-     */
     public static int executeUpdate(DbConnection conn, String sql) throws ServiceException {
         return executeUpdate(conn, sql, (Object[]) null);
     }
@@ -215,57 +156,6 @@ public final class DbUtil {
             DbPool.quietClose(conn);
         }
     }
-
-    /**
-     * Executes the specified update using a connection from the connection pool.
-     *
-     * @return the number of rows affected
-     * @throws ServiceException if the update cannot be executed
-     */
-    public static int executeUpdate(String sql, Object param)
-    throws ServiceException {
-        Object[] params = { param };
-        return executeUpdate(sql, params);
-    }
-
-    public static int executeUpdate(String sql) throws ServiceException {
-        return executeUpdate(sql, (Object[]) null);
-    }
-
-    /**
-     * Returns a string with the form <code>(?, ?, ?, ...)</code>, which
-     * contains as many question marks as the number of elements in the
-     * given array.  Used for generating SQL IN clauses.
-     */
-    public static String suitableNumberOfVariables(byte[] array)        { return DbUtil.suitableNumberOfVariables(array.length); }
-
-    /**
-     * Returns a string with the form <code>(?, ?, ?, ...)</code>, which
-     * contains as many question marks as the number of elements in the
-     * given array.  Used for generating SQL IN clauses.
-     */
-    public static String suitableNumberOfVariables(short[] array)         { return DbUtil.suitableNumberOfVariables(array.length); }
-
-    /**
-     * Returns a string with the form <code>(?, ?, ?, ...)</code>, which
-     * contains as many question marks as the number of elements in the
-     * given array.  Used for generating SQL IN clauses.
-     */
-    public static String suitableNumberOfVariables(int[] array)         { return DbUtil.suitableNumberOfVariables(array.length); }
-
-    /**
-     * Returns a string with the form <code>(?, ?, ?, ...)</code>, which
-     * contains as many question marks as the number of elements in the
-     * given array.  Used for generating SQL IN clauses.
-     */
-    public static String suitableNumberOfVariables(Object[] array)      { return DbUtil.suitableNumberOfVariables(array.length); }
-
-    /**
-     * Returns a string with the form <code>(?, ?, ?, ...)</code>, which
-     * contains as many question marks as the number of elements in the
-     * given array.  Used for generating SQL IN clauses.
-     */
-    public static String suitableNumberOfVariables(Collection<?> c)        { return DbUtil.suitableNumberOfVariables(c.size()); }
 
     /**
      * Returns a string with the form <code>(?, ?, ?, ...)</code>.
@@ -340,7 +230,7 @@ public final class DbUtil {
                     line = line.substring(".read".length());
                     line = line.trim();
                     line = line.replace("\"", "");
-                    sql = new String(ByteUtil.getContent(new File(line)));
+                    sql = new String(Files.readAllBytes(new File(line).toPath()));
                     ret = addScript(ret, parseScript(new StringReader(sql)));
                 }
                 continue;

@@ -708,17 +708,6 @@ public class CalendarUtils {
       ParsedDateTime dtStart,
       ParsedDateTime dtEnd,
       ParsedDuration dur,
-      RecurId recurId)
-      throws ServiceException {
-    return parseRecur(recurElt, invTzMap, dtStart, dtEnd, dur, recurId, false);
-  }
-
-  static Recurrence.IRecurrence parseRecur(
-      Element recurElt,
-      TimeZoneMap invTzMap,
-      ParsedDateTime dtStart,
-      ParsedDateTime dtEnd,
-      ParsedDuration dur,
       RecurId recurId,
       boolean allDay)
       throws ServiceException {

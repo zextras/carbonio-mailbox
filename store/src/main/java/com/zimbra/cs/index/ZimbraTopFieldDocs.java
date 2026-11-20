@@ -31,17 +31,7 @@ public class ZimbraTopFieldDocs extends ZimbraTopDocs {
         this.sortFields = sortFields;
     }
 
-    public static ZimbraTopFieldDocs create(int totalHits, List<ZimbraScoreDoc> scoreDocs,
-            float maxScore, List<SortField> sortFields) {
-        return new ZimbraTopFieldDocs(totalHits, scoreDocs, maxScore, sortFields);
-    }
 
-    /**
-     * Create a ZimbraTopFielDocs object for search results where scores are not tracked.
-     */
-    public static ZimbraTopFieldDocs create(int totalHits, List<ZimbraScoreDoc> scoreDocs, List<SortField> sortFields) {
-        return new ZimbraTopFieldDocs(totalHits, scoreDocs, Float.NaN, sortFields);
-    }
 
     /**
      * Create equivalent ZimbraTopFieldDocs object to a Lucene TopFieldDocs object
@@ -52,19 +42,7 @@ public class ZimbraTopFieldDocs extends ZimbraTopDocs {
                 luceneTopFieldDocs.getMaxScore(), Arrays.asList(luceneTopFieldDocs.fields));
     }
 
-    /**
-     * Returns the sort criteria used to find the top hits.
-     */
-    public List<SortField> getSortFields() {
-        return sortFields;
-    }
 
-    /**
-     * Returns SortField at index {@code index}
-     */
-    public SortField getSortField(int index) {
-        return sortFields.get(index);
-    }
 
     @Override
     public String toString() {

@@ -5,12 +5,10 @@
 
 package com.zimbra.cs.store;
 
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
-import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.store.file.FileBlobStore;
@@ -32,11 +30,6 @@ public abstract class StoreManager {
    * @return an instance of store manager
    */
   public static StoreManager getInstance() {
-
-    return getInstance(LC.zimbra_class_store.value());
-  }
-
-  public static StoreManager getInstance(String className) {
     if (sInstance == null) {
       synchronized (StoreManager.class) {
         if (sInstance != null) {
@@ -44,15 +37,7 @@ public abstract class StoreManager {
         }
 
         try {
-          if (className != null && !className.equals("")) {
-            try {
-              sInstance = (StoreManager) Class.forName(className).newInstance();
-            } catch (ClassNotFoundException e) {
-              sInstance = (StoreManager) ExtensionUtil.findClass(className).newInstance();
-            }
-          } else {
-            sInstance = new FileBlobStore();
-          }
+          sInstance = new FileBlobStore();
         } catch (Throwable t) {
           Zimbra.halt("unable to initialize blob store", t);
         }

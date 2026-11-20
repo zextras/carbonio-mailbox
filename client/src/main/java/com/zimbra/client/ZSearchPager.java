@@ -63,32 +63,16 @@ public class ZSearchPager {
         else
             return mResults.get(mResults.size()-1);
     }
-    
-    public List<ZSearchResult> getResults() {
-        return mResults;
-    }
 
-    public int getNumberOfPages() {
+	public int getNumberOfPages() {
         return mResults.size();
     }
-    
-    public ZSearchResult get(int page) {
-        return mResults.get(page);
-    }
 
-    public boolean isDirty() {
+	public boolean isDirty() {
         return mDirty;
     }
 
-    /**
-     *
-     * @return conversation id if this pager holds result of a SearchConv
-     */
-    public String getConversationId() {
-        return mConvId;
-    }
-
-    /**
+	/**
      * @param event modify event
      * @throws com.zimbra.common.service.ServiceException on error
      */

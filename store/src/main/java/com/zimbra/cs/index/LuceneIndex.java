@@ -687,36 +687,12 @@ public final class LuceneIndex extends IndexStore {
     return config;
   }
 
-  public static ZimbraQueryResults search(ZimbraQuery zq) throws ServiceException {
-    SearchParams params = zq.getParams();
-    ZimbraLog.search.debug("query: %s", params.getQueryString());
-
-    // handle special-case localized sorts: re-sort results at the end
-    boolean isLocalizedSort = false;
-    SortBy originalSort = params.getSortBy();
-    switch (originalSort) {
-      case NAME_LOCALIZED_ASC:
-      case NAME_LOCALIZED_DESC:
-        isLocalizedSort = true;
-        break;
-    }
-
-    ZimbraQueryResults results = zq.execute();
-    if (isLocalizedSort) {
-      results = new ReSortingQueryResults(results, originalSort, params);
-    }
-    return results;
-  }
 
   @Override
   public boolean isPendingDelete() {
     return pendingDelete.get();
   }
 
-  @Override
-  public void setPendingDelete(boolean pendingDelete) {
-    this.pendingDelete.set(pendingDelete);
-  }
 
   public static final class Factory implements IndexStore.Factory {
     public Factory() {

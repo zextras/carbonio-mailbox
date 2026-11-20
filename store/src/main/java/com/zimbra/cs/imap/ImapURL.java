@@ -7,7 +7,6 @@ package com.zimbra.cs.imap;
 
 import com.zextras.mailbox.metric.Metrics;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
@@ -92,11 +91,7 @@ final class ImapURL {
         }
     }
 
-    String getURL() {
-        return mURL;
-    }
-
-    private void parse(String tag, ImapCredentials creds, String url) throws ImapParseException {
+	private void parse(String tag, ImapCredentials creds, String url) throws ImapParseException {
         String lcurl = url.toLowerCase();
         int pos = 0;
         // check to see if it's an absolute URL or a relative one...

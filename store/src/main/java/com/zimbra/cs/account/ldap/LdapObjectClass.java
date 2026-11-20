@@ -50,11 +50,7 @@ public class LdapObjectClass {
     return ocs;
   }
 
-  public static Set<String> getAccountObjectClasses(Provisioning prov) throws ServiceException {
-    return getAccountObjectClasses(prov, false);
-  }
-
-  public static Set<String> getCalendarResourceObjectClasses(Provisioning prov)
+	public static Set<String> getCalendarResourceObjectClasses(Provisioning prov)
       throws ServiceException {
     Set<String> ocs = new LinkedHashSet<>();
 
@@ -139,14 +135,7 @@ public class LdapObjectClass {
     return ocs;
   }
 
-  public static Set<String> getOrganizationUnitObjectClasses() throws ServiceException {
-    Set<String> ocs = new LinkedHashSet<>();
-    ocs.add("top");
-    ocs.add("organizationalUnit");
-    return ocs;
-  }
-
-  /**
+	/**
    * @param args
    */
   public static void main(String[] args) throws ServiceException {

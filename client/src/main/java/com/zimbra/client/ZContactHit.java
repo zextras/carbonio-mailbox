@@ -10,9 +10,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
-import com.zimbra.client.ZContact.Flag;
 import com.zimbra.client.event.ZModifyContactEvent;
 import com.zimbra.client.event.ZModifyEvent;
 import com.zimbra.common.mailbox.ContactConstants;
@@ -21,7 +19,6 @@ import com.zimbra.common.mailbox.MailItemType;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.zclient.ZClientException;
 
 public class ZContactHit implements ZImapSearchHit {
 
@@ -68,18 +65,6 @@ public class ZContactHit implements ZImapSearchHit {
             mLength = length;
         }
 
-        public String getContentType() {
-            return mContentType;
-        }
-        public String getFileName() {
-            return mFileName;
-        }
-        public String getPart() {
-            return mPart;
-        }
-        public long getLength() {
-            return mLength;
-        }
     }
 
     public ZContactHit(Element e) throws ServiceException {
@@ -166,31 +151,7 @@ public class ZContactHit implements ZImapSearchHit {
         return String.format("[ZContactHit %s]", mId);
     }
 
-    public boolean isGroup() {
-        return ContactConstants.TYPE_GROUP.equalsIgnoreCase(getType());
-    }
-
-    public boolean isContact() {
-        return !isGroup();
-    }
-
-    public String getDlist() {
-        return mDlist;
-    }
-
-    public String getType() {
-        return mType;
-    }
-
-    public String getTagIds() {
-        return mTagIds;
-    }
-
-    public boolean hasTags() {
-        return mTagIds != null && mTagIds.length() > 0;
-    }
-
-    public String getEmail() {
+  public String getEmail() {
         return mEmail;
     }
 
@@ -202,111 +163,25 @@ public class ZContactHit implements ZImapSearchHit {
         return mEmail3;
     }
 
-    public String getWorkEmail1() {
-        return mWorkEmail1;
-    }
-
-    public String getWorkEmail2() {
-        return mWorkEmail2;
-    }
-
-    public String getWorkEmail3() {
-        return mWorkEmail3;
-    }
-
-    public String getFileAsStr() {
+  public String getFileAsStr() {
         return mFileAsStr;
     }
 
-    public String getFolderId() {
-        return mFolderId;
-    }
-
-    @Override
+  @Override
     public String getId() {
         return mId;
     }
 
-    public String getFlags() {
-        return mFlags;
-    }
-
-    public Map<String, String> getAttrs() {
-        return mAttrs;
-    }
-
-    /**
-     * Returns the attachment names, or an empty set.
-     */
-    public Set<String> getAttachmentNames() {
-        return mAttachments.keySet();
-    }
-
-    public String getAttachmentPartName(String name) {
-        return mAttachments.get(name).getPart();
-    }
-
-    public String getAttachmentDataUrl(String name)
-    throws ServiceException {
-        String part = mAttachments.get(name).getPart();
-        if (part == null) {
-            throw ZClientException.CLIENT_ERROR("Invalid attachment name: " + name, null);
-        }
-        return String.format("?id=%s&part=%s", getId(), part);
-    }
-
-    public ZContactAttachmentInfo getAttachmentPartInfo(String name) {
-        return mAttachments.get(name);
-    }
-
-    public boolean hasFlags() {
-        return mFlags != null && mFlags.length() > 0;
-    }
-
-    public boolean hasAttachment() {
-        return hasFlags() && mFlags.indexOf(Flag.attachment.getFlagChar()) != -1;
-    }
-
-    public boolean isFlagged() {
-        return hasFlags() && mFlags.indexOf(ZContact.Flag.flagged.getFlagChar()) != -1;
-    }
-
-    public String getRevision() {
-        return mRevision;
-    }
-
-    @Override
+  @Override
     public String getSortField() {
         return mSortField;
     }
 
-    public long getMetaDataChangedDate() {
-        return mMetaDataDate;
-    }
-
-    public long getDate() {
+  public long getDate() {
         return mDate;
     }
 
-    public String getFullName() {
-        return mFullName;
-    }
-
-    public String getFileAs() { return mFileAs; }
-    public String getNickname() { return mNickname; }
-    public String getNamePrefix() { return mNamePrefix; }
-    public String getFirstName() { return mFirstName; }
-    public String getPhoneticFirstName() { return mPhoneticFirstName; }
-    public String getMiddleName() { return mMiddleName; }
-    public String getMaidenName() { return mMaidenName; }
-    public String getLastName() { return mLastName; }
-    public String getPhoneticLastName() { return mPhoneticLastName; }
-    public String getNameSuffix() { return mNameSuffix; }
-    public String getCompany() { return mCompany; }
-
-  public String getPhoneticCompany() { return mPhoneticCompany; }
-
-    @Override
+  @Override
     public void modifyNotification(ZModifyEvent event) throws ServiceException {
         if (event instanceof ZModifyContactEvent) {
             ZModifyContactEvent cevent = (ZModifyContactEvent) event;

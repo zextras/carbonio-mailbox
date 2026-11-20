@@ -30,7 +30,6 @@ public class AutoProvisionManual extends AutoProvision {
         this.password = password;
     }
 
-    @Override
     Account handle() throws ServiceException {
         if (!autoProvisionEnabled()) {
             throw ServiceException.FAILURE("MANUAL auto provision is not enabled on domain " 

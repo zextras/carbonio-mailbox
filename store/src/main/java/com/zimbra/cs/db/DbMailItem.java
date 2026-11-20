@@ -52,22 +52,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.EncoderException;
@@ -5485,7 +5470,7 @@ public class DbMailItem {
       if (data.folderId != dbdata.folderId) {
         failures += " FOLDER_ID";
       }
-      if (StringUtil.equal(data.getPrevFolders(), dbdata.getPrevFolders())) {
+        if (Objects.equals(data.getPrevFolders(), dbdata.getPrevFolders())) {
         failures += " PREV_FOLDERS";
       }
       if (data.indexId != dbdata.indexId) {
@@ -5494,7 +5479,7 @@ public class DbMailItem {
       if (data.imapId != dbdata.imapId) {
         failures += " IMAP_ID";
       }
-      if (!StringUtil.equal(data.locator, dbdata.locator)) {
+        if (!Objects.equals(data.locator, dbdata.locator)) {
         failures += " LOCATOR";
       }
       if (data.date != dbdata.date) {

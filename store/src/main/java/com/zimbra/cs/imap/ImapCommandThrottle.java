@@ -26,11 +26,7 @@ public class ImapCommandThrottle {
         this.repeatLimit = repeatLimit;
     }
 
-    public int getRepeatLimit() {
-        return repeatLimit;
-    }
-
-    private boolean isCommandRepeated(ImapCommand command) {
+	private boolean isCommandRepeated(ImapCommand command) {
         return command != null && lastCommand != null
                 && (command.getCreateTime() - lastCommand.getCreateTime() < REPEAT_TIME_THRESHOLD)
                 && command.isDuplicate(lastCommand);

@@ -37,15 +37,7 @@ public class CsrfTokenKey {
         return keyVersion;
     }
 
-    public long getCreated() {
-        return keyCreatedAt;
-    }
-
-    void setKey(byte[] key) {
-        csrfTokenKey = key;
-    }
-
-    /**
+	/**
      * @param version
      * @param key
      * @throws ServiceException

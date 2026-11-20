@@ -12,10 +12,10 @@ import com.zimbra.common.mailbox.ZimbraFetchMode;
 import com.zimbra.common.mailbox.ZimbraSearchParams;
 import com.zimbra.common.mailbox.ZimbraSortBy;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.zclient.ZClientException;
 import com.zimbra.soap.type.SearchSortBy;
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -134,10 +134,10 @@ public class ZSearchParams implements ZimbraSearchParams {
         || this.mCalExpandInstEnd != that.mCalExpandInstEnd
         || this.mInDumpster != that.mInDumpster) return false;
 
-    if (!StringUtil.equal(this.mTypes, that.mTypes)
-        || !StringUtil.equal(this.mQuery, that.mQuery)
-        || !StringUtil.equal(this.mConvId, that.mConvId)
-        || !StringUtil.equal(this.mField, that.mField)) return false;
+      if (!Objects.equals(this.mTypes, that.mTypes)
+        || !Objects.equals(this.mQuery, that.mQuery)
+        || !Objects.equals(this.mConvId, that.mConvId)
+        || !Objects.equals(this.mField, that.mField)) return false;
 
     if ((this.mTimeZone == null && that.mTimeZone != null)
         || (this.mTimeZone != null && !this.mTimeZone.equals(that.mTimeZone))) return false;
@@ -171,17 +171,6 @@ public class ZSearchParams implements ZimbraSearchParams {
     mQuery = query;
   }
 
-  /**
-   * init search params (query, types, sortBy) from a search folder.
-   *
-   * @param folder init from a search folder.
-   */
-  public ZSearchParams(ZSearchFolder folder) {
-    mQuery = folder.getQuery();
-    mTypes = folder.getTypes();
-    mSortBy = folder.getSortBy();
-  }
-
   @Override
   public void setTimeZone(TimeZone tz) {
     this.mTimeZone = tz;
@@ -204,10 +193,6 @@ public class ZSearchParams implements ZimbraSearchParams {
     return mFetch;
   }
 
-  public void setFetch(ZMailbox.Fetch fetch) {
-    mFetch = fetch;
-  }
-
   @Override
   public int getLimit() {
     return mLimit;
@@ -220,14 +205,6 @@ public class ZSearchParams implements ZimbraSearchParams {
 
   public boolean isMarkAsRead() {
     return mMarkAsRead;
-  }
-
-  public void setMarkAsRead(boolean markAsRead) {
-    mMarkAsRead = markAsRead;
-  }
-
-  public void setConvId(String convId) {
-    mConvId = convId;
   }
 
   public String getConvId() {
@@ -246,10 +223,6 @@ public class ZSearchParams implements ZimbraSearchParams {
     return mPreferHtml;
   }
 
-  public void setPeferHtml(boolean preferHtml) {
-    mPreferHtml = preferHtml;
-  }
-
   public String getQuery() {
     return mQuery;
   }
@@ -260,10 +233,6 @@ public class ZSearchParams implements ZimbraSearchParams {
 
   public boolean isRecipientMode() {
     return mRecipientMode;
-  }
-
-  public void setRecipientMode(boolean recipientMode) {
-    mRecipientMode = recipientMode;
   }
 
   public SearchSortBy getSortBy() {
@@ -315,19 +284,6 @@ public class ZSearchParams implements ZimbraSearchParams {
     return String.format("[ZSearchParams %s]", mQuery == null ? "" : mQuery);
   }
 
-  /**
-   * by default, text without an operator searches the CONTENT field. By setting the {field} value,
-   * you can control the default operator. Specify any of the text operators that are available in
-   * query.txt, e.g. 'content:' [the default] or 'subject:', etc. The date operators (date, after,
-   * before) and the "item:" operator should not be specified as default fields because of quirks in
-   * the search grammar.
-   *
-   * @param field
-   */
-  public void setField(String field) {
-    mField = field;
-  }
-
   public static class Cursor {
 
     private final String mPreviousId;
@@ -364,8 +320,8 @@ public class ZSearchParams implements ZimbraSearchParams {
       if (obj == this) return true;
       if (!(obj instanceof Cursor)) return false;
       Cursor that = (Cursor) obj;
-      if (!StringUtil.equal(this.mPreviousId, that.mPreviousId)) return false;
-      if (!StringUtil.equal(this.mPreviousSortValue, that.mPreviousSortValue)) return false;
+        if (!Objects.equals(this.mPreviousId, that.mPreviousId)) return false;
+        if (!Objects.equals(this.mPreviousSortValue, that.mPreviousSortValue)) return false;
       return true;
     }
 

@@ -8,7 +8,6 @@ package com.zimbra.cs.db;
 import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.db.DbPool.DbConnection;
@@ -20,6 +19,7 @@ import com.zimbra.cs.mailbox.Metadata;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.file.Files;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -340,7 +340,7 @@ public final class DbMailbox {
       // create the new database
       ZimbraLog.mailbox.info("Creating database " + dbname);
 
-      String template = new String(ByteUtil.getContent(file));
+        String template = new String(Files.readAllBytes(file.toPath()));
       Map<String, String> vars = new HashMap<>();
       vars.put("DATABASE_NAME", dbname);
       String script = StringUtil.fillTemplate(template, vars);

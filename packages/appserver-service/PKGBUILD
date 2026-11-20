@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver-service"
-pkgver="4.40.17"
+pkgver="4.40.27"
 pkgrel="1"
 pkgdesc="Carbonio Mailbox Service"
 arch=('any')
@@ -15,6 +15,7 @@ url="https://github.com/zextras"
 depends=(
   "carbonio-configd"
   "carbonio-core"
+  "carbonio-jemalloc"
   "service-discover"
   "service-discover-base"
   "pending-setups"

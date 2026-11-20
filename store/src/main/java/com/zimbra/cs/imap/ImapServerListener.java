@@ -20,7 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.client.ZMailbox;
 import com.zimbra.common.mailbox.ItemIdentifier;
 import com.zimbra.common.service.ServiceException;
@@ -74,20 +73,7 @@ public class ImapServerListener {
         }
     }
 
-    public void shutdown() throws ServiceException {
-        try {
-            deleteWaitSet();
-            sessionMap.clear();
-            catchupToKnownLastChangeId.clear();
-            lastSequence.set(0);
-        } finally {
-            synchronized(soapProv) {
-                soapProv.soapLogOut();
-            }
-        }
-    }
-
-    public void addListener(ImapRemoteSession listener) throws ServiceException {
+	public void addListener(ImapRemoteSession listener) throws ServiceException {
         ItemIdentifier folderIdent = listener.getFolderItemIdentifier();
         String accountId = (folderIdent.accountId != null) ? folderIdent.accountId : listener.getTargetAccountId();
         boolean alreadyListening = sessionMap.containsKey(accountId);
@@ -137,17 +123,7 @@ public class ImapServerListener {
         }
     }
 
-    public boolean isListeningOn(String accountId, Integer folderId) {
-        ConcurrentHashMap<Integer, Set<ImapRemoteSession>> folderSessions = sessionMap.get(accountId);
-        if(folderSessions != null) {
-            Set<ImapRemoteSession> sessions = folderSessions.get(folderId);
-            return sessions != null && !sessions.isEmpty();
-        } else {
-            return false;
-        }
-    }
-
-    public Set<ImapRemoteSession> getListeners(String accountId, int folderId) throws ServiceException {
+	public Set<ImapRemoteSession> getListeners(String accountId, int folderId) throws ServiceException {
         ConcurrentHashMap<Integer, Set<ImapRemoteSession>> folderSessions = sessionMap.get(accountId);
         if(folderSessions != null) {
             Set<ImapRemoteSession> sessions = folderSessions.get(folderId);
@@ -158,11 +134,7 @@ public class ImapServerListener {
         return Collections.emptySet();
     }
 
-    public int getLastKnownSequenceNumber() {
-        return lastSequence.intValue();
-    }
-
-    protected void addNotifyWhenCaughtUp(String accountId, int lastKnownChangeId, CountDownLatch cdl) {
+	protected void addNotifyWhenCaughtUp(String accountId, int lastKnownChangeId, CountDownLatch cdl) {
         catchupToKnownLastChangeId.putIfAbsent(accountId, new ConcurrentHashMap<>());
         ConcurrentHashMap<Integer, Set<CountDownLatch>> acctWaitList = catchupToKnownLastChangeId.get(accountId);
         acctWaitList.putIfAbsent(lastKnownChangeId, new HashSet<>());
@@ -377,12 +349,7 @@ public class ImapServerListener {
         }
     }
 
-    @VisibleForTesting
-    public String getWSId() {
-        return wsID;
-    }
-
-    private void cancelPendingRequest() {
+	private void cancelPendingRequest() {
         if (pendingRequest != null && !(pendingRequest.isCancelled() || pendingRequest.isDone())) {
             ZimbraLog.imap.debug("Canceling pending AdminWaitSetRequest for waitset %s. Sequence %s", wsID, lastSequence.toString());
             synchronized (pendingRequestGuard) {

@@ -19,7 +19,6 @@ import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Provisioning.GroupMembership;
 import com.zimbra.cs.account.Server;
-import com.zimbra.cs.account.Zimlet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,8 +50,7 @@ public class PseudoTarget {
         || entry instanceof PseudoDistributionList
         || entry instanceof PseudoCos
         || entry instanceof PseudoDomain
-        || entry instanceof PseudoServer
-        || entry instanceof PseudoZimlet;
+        || entry instanceof PseudoServer;
   }
 
   /*
@@ -82,32 +80,11 @@ public class PseudoTarget {
       mPseudoDomain = pseudoDomain;
     }
 
-    /*
-     * create a pseudo account that is a member of the specified group.
-     *
-     * The acl groups this account belongs are essentially the acl groups
-     * of the specified group, plus the group.
-     */
-    PseudoAccount(
-        String name,
-        String id,
-        Map<String, Object> attrs,
-        Map<String, Object> defaults,
-        Provisioning prov,
-        DistributionList group)
-        throws ServiceException {
-      super(name, id, attrs, defaults, prov);
-      mAclGroups = prov.getGroupMembership(group, false);
-    }
-
-    Domain getPseudoDomain() {
+		Domain getPseudoDomain() {
       return mPseudoDomain;
     }
 
-    GroupMembership getAclGroups() {
-      return mAclGroups;
-    }
-  }
+	}
 
   static class PseudoCalendarResource extends CalendarResource {
     Domain mPseudoDomain;
@@ -184,12 +161,6 @@ public class PseudoTarget {
     }
   }
 
-  static class PseudoZimlet extends Zimlet {
-    private PseudoZimlet(String name, String id, Map<String, Object> attrs, Provisioning prov) {
-      super(name, id, attrs, prov);
-    }
-  }
-
   /**
    * short hand for PseudoTarget.createPseudoTarget(prov, TargetType.domain, null, null, false,
    * null, null);
@@ -202,24 +173,7 @@ public class PseudoTarget {
     return (Domain) createPseudoTarget(prov, TargetType.domain, null, null, false, null, null);
   }
 
-  /**
-   * creagte a pseudo domain with the real name.
-   *
-   * <p>This is only used for computing settable attrs when creating a domain. We need to be able to
-   * traverse the domain hierarchy for grants with the subDomain modifier.
-   *
-   * @param prov
-   * @param domainName
-   * @return
-   * @throws ServiceException
-   */
-  public static Domain createPseudoDomain(Provisioning prov, String domainName)
-      throws ServiceException {
-    return (Domain)
-        createPseudoTarget(prov, TargetType.domain, null, null, false, null, null, domainName);
-  }
-
-  public static Entry createPseudoTarget(
+	public static Entry createPseudoTarget(
       Provisioning prov,
       TargetType targetType,
       Key.DomainBy domainBy,
@@ -355,9 +309,6 @@ public class PseudoTarget {
       case server:
         targetEntry =
             new PseudoServer("pseudo.pseudo", zimbraId, attrMap, config.getServerDefaults(), prov);
-        break;
-      case zimlet:
-        targetEntry = new PseudoZimlet("pseudo", zimbraId, attrMap, prov);
         break;
       default:
         throw ServiceException.INVALID_REQUEST(

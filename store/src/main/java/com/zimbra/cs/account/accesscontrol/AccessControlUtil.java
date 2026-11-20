@@ -20,13 +20,6 @@ public class AccessControlUtil {
         return isGlobalAdmin(acct, true);
     }
 
-    public static boolean isGlobalAdmin(MailTarget target, boolean asAdmin) {
-        if (!asAdmin || !(target instanceof Account)) {
-            return false;
-        }
-        return ((Account)target).isIsAdminAccount();
-    }
-
     public static boolean isGlobalAdmin(Account acct, boolean asAdmin) {
         return (asAdmin && acct != null && acct.isIsAdminAccount());
     }
@@ -86,28 +79,4 @@ public class AccessControlUtil {
         return grantee;
     }
 
-    public static Account emailAddrToAccount(String emailAddr, Right rightNeeded) {
-        Account granteeAcct = null;
-        try {
-            if (emailAddr != null) {
-                granteeAcct = Provisioning.getInstance().get(Key.AccountBy.name, emailAddr);
-            }
-
-            if (granteeAcct == null) {
-                // not an internal user
-                if (rightNeeded.isUserRight()) {
-                    if (emailAddr != null) {
-                        granteeAcct = new GuestAccount(emailAddr, null);
-                    } else {
-                        granteeAcct = GuestAccount.ANONYMOUS_ACCT;
-                    }
-                }
-            }
-
-        } catch (ServiceException e) {
-            ZimbraLog.acl.warn("unable to get account from email address: " + emailAddr, e);
-        }
-
-        return granteeAcct;
-    }
 }

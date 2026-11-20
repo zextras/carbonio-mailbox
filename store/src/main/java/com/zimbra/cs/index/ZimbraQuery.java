@@ -296,18 +296,6 @@ public final class ZimbraQuery {
     }
   }
 
-  private static final class CountCombiningOperations implements QueryOperation.RecurseCallback {
-    int num = 0;
-
-    @Override
-    public void recurseCallback(QueryOperation op) {
-      if (op instanceof CombiningQueryOperation) {
-        if (((CombiningQueryOperation) op).getNumSubOps() > 1) {
-          num++;
-        }
-      }
-    }
-  }
 
   /** Returns true if this query has at least one text query, false if it's entirely DB query. */
   public boolean hasTextOperation() {
@@ -329,17 +317,6 @@ public final class ZimbraQuery {
     return count.num;
   }
 
-  /**
-   * @return number of non-trivial (num sub-ops > 1) Combining operations (joins/unions)
-   */
-  int countNontrivialCombiningOperations() {
-    if (operation == null) {
-      return 0;
-    }
-    CountCombiningOperations count = new CountCombiningOperations();
-    operation.depthFirstRecurse(count);
-    return count.num;
-  }
 
   /** Parse the query string. */
   public ZimbraQuery(OperationContext octxt, SoapProtocol proto, Mailbox mbox, SearchParams params)

@@ -21,11 +21,7 @@ public class CalendarResource extends ZAttrCalendarResource {
         return EntryType.CALRESOURCE;
     }
 
-    public String getResourceType() {
-        return getAttr(Provisioning.A_zimbraCalResType, "Location");
-    }
-
-    public boolean autoAcceptDecline() {
+	public boolean autoAcceptDecline() {
         return getBooleanAttr(
                 Provisioning.A_zimbraCalResAutoAcceptDecline, true);
     }
@@ -48,40 +44,4 @@ public class CalendarResource extends ZAttrCalendarResource {
         return getIntAttr(Provisioning.A_zimbraCalResMaxPercentConflictsAllowed, 0);
     }
 
-    public String getLocationDisplayName() {
-        return getAttr(Provisioning.A_zimbraCalResLocationDisplayName);
-    }
-
-    public String getSite() {
-        return getAttr(Provisioning.A_zimbraCalResSite);
-    }
-
-    public String getBuilding() {
-        return getAttr(Provisioning.A_zimbraCalResBuilding);
-    }
-
-    public String getFloor() {
-        return getAttr(Provisioning.A_zimbraCalResFloor);
-    }
-
-    public String getRoom() {
-        return getAttr(Provisioning.A_zimbraCalResRoom);
-    }
-
-    public int getCapacity() {
-        return getIntAttr(Provisioning.A_zimbraCalResCapacity, 0);
-    }
-
-    public String getContactName() {
-        return getAttr(Provisioning.A_zimbraCalResContactName);
-    }
-
-    public String getContactEmail(){
-        return getAttr(Provisioning.A_zimbraCalResContactEmail);
-    }
-
-    public String getContactPhone(){
-        return getAttr(Provisioning.A_zimbraCalResContactPhone);
-    }    
-    
 }

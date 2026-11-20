@@ -7,8 +7,6 @@ package com.zimbra.cs.mime;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import javax.activation.DataSource;
@@ -25,9 +23,6 @@ import com.zimbra.cs.convert.AttachmentInfo;
 import com.zimbra.cs.convert.ConversionException;
 import com.zimbra.cs.index.IndexDocument;
 import com.zimbra.cs.index.analysis.MimeTypeTokenStream;
-import com.zimbra.cs.object.MatchedObject;
-import com.zimbra.cs.object.ObjectHandler;
-import com.zimbra.cs.object.ObjectHandlerException;
 
 /**
  * @since Apr 30, 2004
@@ -216,18 +211,16 @@ public abstract class MimeHandler {
      *
      * @return Lucene document
      * @throws MimeHandlerException if a MIME parser error occurred
-     * @throws ObjectHandlerException if a Zimlet error occurred
      * @throws ServiceException if other error occurred
      */
     public final Document getDocument()
-        throws MimeHandlerException, ObjectHandlerException, ServiceException {
+        throws MimeHandlerException, ServiceException {
 
         IndexDocument doc = new IndexDocument(new Document());
         doc.addMimeType(new MimeTypeTokenStream(getContentType()));
         addFields(doc.toDocument());
         String content = getContent();
         doc.addContent(content);
-        getObjects(content, doc);
 
         doc.addPartName(partName);
 
@@ -242,29 +235,6 @@ public abstract class MimeHandler {
             }
         }
         return doc.toDocument();
-    }
-
-    public static void getObjects(String text, IndexDocument doc)
-        throws ObjectHandlerException, ServiceException {
-
-        List<ObjectHandler> objects = ObjectHandler.getObjectHandlers();
-        StringBuffer l_objects = new StringBuffer();
-        for (ObjectHandler h : objects) {
-            if (!h.isIndexingEnabled()) {
-                continue;
-            }
-            List<MatchedObject> matchedObjects = new ArrayList<>();
-            h.parse(text, matchedObjects, true);
-            if (!matchedObjects.isEmpty()) {
-                if (l_objects.length() > 0) {
-                    l_objects.append(',');
-                }
-                l_objects.append(h.getType());
-            }
-        }
-        if (l_objects.length() > 0) {
-            doc.addObjects(l_objects.toString());
-        }
     }
 
     /**

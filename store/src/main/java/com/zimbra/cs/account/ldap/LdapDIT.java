@@ -20,7 +20,6 @@ import com.zimbra.cs.account.GlobalGrant;
 import com.zimbra.cs.account.Identity;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
-import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.ldap.IAttributes;
 import com.zimbra.cs.ldap.LdapConstants;
 import com.zimbra.cs.ldap.LdapUtil;
@@ -38,12 +37,6 @@ public class LdapDIT {
   /*
    * This is our default ldap DIT.  All DNs/RDNs location is hardcoded to avoid
    * mis-configuration.
-   *
-   * To customize the DIT to a different layout, set the zimbra_class_provisioning
-   * localconfig key to com.zimbra.cs.account.ldap.custom.CustomLdapProvisioning,
-   * which will use the CustomLdapDIT class that can be customized by a set of
-   * localconfig keys.
-   *
    */
 
   /*
@@ -483,15 +476,6 @@ public class LdapDIT {
   }
 
   /*
-   * ==============
-   *   group (static and dynamic neutral)
-   * ==============
-   */
-  public String domainDNToGroupsBaseDN(String domainDN) throws ServiceException {
-    return domainDN;
-  }
-
-  /*
   public String filterGroupsByDomain(Domain domain, boolean includeObjectClass) {
       if (includeObjectClass)
           return "(|(objectclass=zimbraGroup)(objectclass=zimbraDistributionList))";
@@ -573,10 +557,6 @@ public class LdapDIT {
     return BASE_DN_ZIMLET;
   }
 
-  public String zimletNameToDN(String name) {
-    return NAMING_RDN_ATTR_ZIMLET + "=" + LdapUtil.escapeRDNValue(name) + "," + BASE_DN_ZIMLET;
-  }
-
   /*
    * ==========
    *   filters
@@ -649,7 +629,6 @@ public class LdapDIT {
     else if (entry instanceof GlobalGrant) return NAMING_RDN_ATTR_GLOBALGRANT;
     else if (entry instanceof DynamicGroup) return NAMING_RDN_ATTR_DYNAMICGROUP;
     else if (entry instanceof Server) return NAMING_RDN_ATTR_SERVER;
-    else if (entry instanceof Zimlet) return NAMING_RDN_ATTR_ZIMLET;
     else
       throw ServiceException.FAILURE(
           "entry type "

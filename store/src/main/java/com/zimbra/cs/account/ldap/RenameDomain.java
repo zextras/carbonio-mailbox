@@ -55,9 +55,7 @@ public class RenameDomain {
         public abstract DistributionList getDistributionListById(String id) throws ServiceException;
         public abstract DynamicGroup getDynamicGroupById(String id) throws ServiceException;
 
-        public abstract void createEntry(String dn, Map<String, Object> attrs) throws ServiceException;
-        public abstract void deleteEntry(String dn) throws ServiceException;
-        public abstract void renameEntry(String oldDn, String newDn) throws ServiceException;
+			public abstract void renameEntry(String oldDn, String newDn) throws ServiceException;
 
         public abstract void searchDirectory(SearchDirectoryOptions options, NamedEntry.Visitor visitor)
         throws ServiceException;
@@ -1052,10 +1050,6 @@ public class RenameDomain {
     private static void debug(String format, Object ... objects) {
         if (sRenameDomainLog.isDebugEnabled())
             sRenameDomainLog.debug(String.format(format, objects));
-    }
-
-    private static void info(String format, Object ... objects) {
-        sRenameDomainLog.info(String.format(format, objects));
     }
 
 }

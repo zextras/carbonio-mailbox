@@ -51,14 +51,7 @@ public class EntrySearchFilter {
             mTerms = new ArrayList<>();
         }
 
-        public Multi(boolean negation, AndOr andOr, Term... terms) {
-            this(negation, andOr);
-            for (Term t: terms) {
-                add(t);
-            }
-        }
-
-        public List<Term> getTerms() { return mTerms; }
+			public List<Term> getTerms() { return mTerms; }
         public boolean isAnd() { return AndOr.and.equals(mAndOr); }
         public void add(Term t) { mTerms.add(t); }
 
@@ -131,76 +124,8 @@ public class EntrySearchFilter {
         mTerm = term;
     }
 
-    public void andWith(EntrySearchFilter other) {
-        Term otherTerm = other.mTerm;
-        if (mTerm instanceof Multi) {
-            Multi m = (Multi) mTerm;
-            if (m.isAnd()) {
-                m.add(otherTerm);
-                return;
-            }
-        }
-        Multi multi = new Multi(false, AndOr.and);
-        multi.add(mTerm);
-        multi.add(otherTerm);
-        mTerm = multi;
-    }
-
-    public void orWith(EntrySearchFilter other) {
-        Term otherTerm = other.mTerm;
-        if (mTerm instanceof Multi) {
-            Multi m = (Multi) mTerm;
-            if (!m.isAnd()) {
-                m.add(otherTerm);
-                return;
-            }
-        }
-        Multi multi = new Multi(false, AndOr.or);
-        multi.add(mTerm);
-        multi.add(otherTerm);
-        mTerm = multi;
-    }
-
-    public void traverse(Visitor visitor) {
+	public void traverse(Visitor visitor) {
         mTerm.visit(visitor);
     }
 
-    public boolean usesIndex() {
-        return possiblyUsesIndex(mTerm);
-    }
-
-    private static boolean possiblyUsesIndex(Term term) {
-        boolean result;
-        if (term instanceof Single) {
-            Single single = (Single) term;
-            result = sIndexedAttrs.contains(single.getLhs().toLowerCase());
-        } else {
-            assert(term instanceof Multi);
-            Multi multi = (Multi) term;
-            boolean anding = multi.isAnd();
-            List<Term> terms = multi.getTerms();
-            if (anding) {
-                // If any of the ANDed terms uses an index, the combined
-                // search is likely to use an index.
-                result = false;
-                for (Term t : terms) {
-                    if (possiblyUsesIndex(t)) {
-                        result = true;
-                        break;
-                    }
-                }
-            } else {
-                // If any of the ORed terms doesn't use an index, the combined
-                // search results in a full scan.
-                result = true;
-                for (Term t : terms) {
-                    if (!possiblyUsesIndex(t)) {
-                        result = false;
-                        break;
-                    }
-                }
-            }
-        }
-        return result;
-    }
 }

@@ -9,7 +9,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -51,7 +50,6 @@ import com.zimbra.common.mime.ContentType;
 import com.zimbra.common.mime.MimeCompoundHeader;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.InputStreamWithSize;
 import com.zimbra.common.util.ZimbraLog;
@@ -66,6 +64,7 @@ import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.service.formatter.VCard;
 import com.zimbra.cs.util.JMSession;
 import com.zimbra.soap.mail.type.ImapMessageInfo;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * @since Apr 30, 2005
@@ -102,9 +101,6 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
     static final short FLAG_EXPUNGED     = 0x0200;
 
     static final short MUTABLE_SESSION_FLAGS = FLAG_SPAM | FLAG_NONSPAM | FLAG_JUNKRECORDED;
-
-    static final short SESSION_FLAGS = FLAG_ADDED  | FLAG_EXPUNGED | FLAG_IS_CONTACT |
-                                       FLAG_RECENT | MUTABLE_SESSION_FLAGS;
 
     int   sequence;
     int   msgId;
@@ -168,10 +164,6 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
 
     MailItemType getMailItemType() {
         return (sflags & FLAG_IS_CONTACT) == 0 ? MailItemType.MESSAGE : MailItemType.CONTACT;
-    }
-
-    boolean isTagged(ImapFlag i4flag) {
-        return i4flag == null ? false : i4flag.matches(this);
     }
 
     boolean isExpunged() {
@@ -331,7 +323,7 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
     private static final String NO_FLAGS = "FLAGS ()";
 
     String getFlags(ImapFolder i4folder) {
-        if ((flags & IMAP_FLAGS) == Flag.BITMASK_UNREAD && ArrayUtil.isEmpty(tags) && sflags == 0) {
+        if ((flags & IMAP_FLAGS) == Flag.BITMASK_UNREAD && ArrayUtils.isEmpty(tags) && sflags == 0) {
             return NO_FLAGS;
         }
 
@@ -375,7 +367,7 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
         }
 
         ImapFlagCache i4cache = i4folder.getTagset();
-        if (!ArrayUtil.isEmpty(tags)) {
+        if (!ArrayUtils.isEmpty(tags)) {
             for (String tag : tags) {
                 ImapFlag i4flag = i4cache.getByZimbraName(tag);
                 if (i4flag != null) {

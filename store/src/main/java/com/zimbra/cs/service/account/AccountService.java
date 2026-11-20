@@ -35,10 +35,8 @@ public class AccountService implements DocumentService {
     dispatcher.registerHandler(AccountConstants.END_SESSION_REQUEST, new EndSession());
 
     // client info
-    dispatcher.registerHandler(AccountConstants.CLIENT_INFO_REQUEST, new ClientInfo());
 
     // prefs
-    dispatcher.registerHandler(AccountConstants.GET_PREFS_REQUEST, new GetPrefs());
     dispatcher.registerHandler(AccountConstants.MODIFY_PREFS_REQUEST, new ModifyPrefs());
 
     dispatcher.registerHandler(AccountConstants.GET_INFO_REQUEST, new GetInfo());
@@ -48,17 +46,9 @@ public class AccountService implements DocumentService {
     dispatcher.registerHandler(
         AccountConstants.SEARCH_CALENDAR_RESOURCES_REQUEST, new SearchCalendarResources());
     dispatcher.registerHandler(AccountConstants.SEARCH_GAL_REQUEST, new SearchGal());
-    dispatcher.registerHandler(AccountConstants.SYNC_GAL_REQUEST, new SyncGal());
 
     dispatcher.registerHandler(AccountConstants.MODIFY_PROPERTIES_REQUEST, new ModifyProperties());
-    dispatcher.registerHandler(
-        AccountConstants.MODIFY_ZIMLET_PREFS_REQUEST, new ModifyZimletPrefs());
 
-    dispatcher.registerHandler(AccountConstants.GET_ALL_LOCALES_REQUEST, new GetAllLocales());
-    dispatcher.registerHandler(
-        AccountConstants.GET_AVAILABLE_LOCALES_REQUEST, new GetAvailableLocales());
-    dispatcher.registerHandler(
-        AccountConstants.GET_AVAILABLE_CSV_FORMATS_REQUEST, new GetAvailableCsvFormats());
 
     // identity
     dispatcher.registerHandler(AccountConstants.CREATE_IDENTITY_REQUEST, new CreateIdentity());
@@ -77,8 +67,6 @@ public class AccountService implements DocumentService {
 
     // white/black list
     dispatcher.registerHandler(
-        AccountConstants.GET_WHITE_BLACK_LIST_REQUEST, new GetWhiteBlackList());
-    dispatcher.registerHandler(
         AccountConstants.MODIFY_WHITE_BLACK_LIST_REQUEST, new ModifyWhiteBlackList());
 
     // distribution list
@@ -95,12 +83,12 @@ public class AccountService implements DocumentService {
 
     // rights
     dispatcher.registerHandler(AccountConstants.CHECK_RIGHTS_REQUEST, new CheckRights());
+    dispatcher.registerHandler(AccountConstants.DISCOVER_RIGHTS_REQUEST, new DiscoverRights());
     dispatcher.registerHandler(AccountConstants.GET_RIGHTS_REQUEST, new GetRights());
     dispatcher.registerHandler(AccountConstants.GRANT_RIGHTS_REQUEST, new GrantRights());
     dispatcher.registerHandler(AccountConstants.REVOKE_RIGHTS_REQUEST, new RevokeRights());
 
     // misc
-    dispatcher.registerHandler(AccountConstants.GET_VERSION_INFO_REQUEST, new GetVersionInfo());
 
     // reset password
     dispatcher.registerHandler(AccountConstants.RESET_PASSWORD_REQUEST, new ResetPassword());

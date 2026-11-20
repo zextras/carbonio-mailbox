@@ -16,12 +16,12 @@ import com.zimbra.client.ZMailbox;
 import com.zimbra.client.ZTag;
 import com.zimbra.common.mailbox.ZimbraTag;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.Flag.FlagInfo;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mailbox.Tag;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class ImapFlagCache implements Iterable<ImapFlagCache.ImapFlag>, java.io.Serializable {
     private static final long serialVersionUID = -8938341239505513246L;
@@ -104,7 +104,7 @@ public class ImapFlagCache implements Iterable<ImapFlagCache.ImapFlag>, java.io.
         boolean matches(ImapMessage i4msg) {
             if (mId > 0) {
                 String[] tags = i4msg.tags;
-                if (!ArrayUtil.isEmpty(tags)) {
+                if (!ArrayUtils.isEmpty(tags)) {
                     for (String tag : tags) {
                         if (mName.equals(tag)) {
                             return true;
@@ -220,12 +220,7 @@ public class ImapFlagCache implements Iterable<ImapFlagCache.ImapFlag>, java.io.
         return null;
     }
 
-    void clear() {
-        mImapNames.clear();
-        mNames.clear();
-    }
-
-    @Override
+	@Override
     public Iterator<ImapFlag> iterator() {
         return mImapNames.values().iterator();
     }

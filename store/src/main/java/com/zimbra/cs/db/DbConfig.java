@@ -130,22 +130,16 @@ public class DbConfig {
      * Return all config items in a map, where name is the key and a
      * Config object is the value.
      * @param conn
-     * @param ts If not null return entries great than or equal to this Timestamp
      * @return Map containing config items.
      * @throws SQLException
      */
-    public static Map<String, DbConfig> getAll(DbConnection conn, Timestamp ts) throws ServiceException {
+    public static Map<String, DbConfig> getAll(DbConnection conn) throws ServiceException {
 
         PreparedStatement stmt = null;
         ResultSet rs = null;
         HashMap<String, DbConfig> result = new HashMap<>();
         try {
-            if (ts == null) {
-                stmt = conn.prepareStatement("SELECT * FROM config");
-            } else {
-                stmt = conn.prepareStatement("SELECT * FROM config WHERE modified >= ?");
-                stmt.setTimestamp(1, ts);
-            }
+            stmt = conn.prepareStatement("SELECT * FROM config");
             rs = stmt.executeQuery();
             while (rs.next()) {
                 DbConfig c = constructConfig(rs);

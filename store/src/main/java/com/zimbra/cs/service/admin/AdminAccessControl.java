@@ -58,8 +58,7 @@ import javax.management.AttributeNotFoundException;
  * This class serves as:
  *
  * <p>1. Compatibility layer between legacy domain based access manager and pure ACL based access
- * manager. This is so we can go back and forth between the two, by a LC
- * key(zimbra_class_accessmanager) change:
+ * manager.
  *
  * <p>DomainAccessControl should be deprecated at some point.
  *

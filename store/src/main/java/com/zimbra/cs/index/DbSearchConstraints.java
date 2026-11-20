@@ -1595,9 +1595,6 @@ public interface DbSearchConstraints extends Cloneable {
       return subfolderPath;
     }
 
-    public boolean getIncludeSubfolders() {
-      return includeSubfolders;
-    }
 
     @Override
     public int hashCode() {

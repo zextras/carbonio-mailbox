@@ -229,8 +229,7 @@ public class RemoteImapMailboxStore extends ImapMailboxStore {
         return zMailbox;
     }
 
-    @Override
-    public Account getAccount() throws ServiceException {
+    private Account getAccount() throws ServiceException {
         return Provisioning.getInstance().get(AccountBy.id, accountId);
     }
 

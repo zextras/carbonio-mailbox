@@ -66,11 +66,6 @@ public class SmtpToLmtp {
         this.lmtpPort = lmtpPort;
     }
 
-    public void setRecipientValidator(RecipientValidator validator) {
-        assert(validator != null);
-        this.validator = validator;
-    }
-
     private void run() {
         SmtpServer server = new SmtpServer();
         server.run();

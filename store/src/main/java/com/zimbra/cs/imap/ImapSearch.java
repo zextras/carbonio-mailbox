@@ -256,25 +256,6 @@ abstract class ImapSearch {
         }
     }
 
-    static class NoneSearch extends ImapSearch {
-        @Override
-        protected boolean canBeRunLocally()                     { return true; }
-        @Override
-        protected String toZimbraSearch(ImapFolder i4folder)    { return "item:none"; }
-        @Override
-        protected ImapMessageSet evaluate(ImapFolder i4folder)  { return new ImapMessageSet(); }
-
-        @Override
-        public boolean equals(Object obj) {
-            return obj instanceof NoneSearch;
-        }
-
-        @Override
-        public int hashCode() {
-            return getClass().hashCode();
-        }
-    }
-
     static class SequenceSearch extends ImapSearch {
         private String mTag;
         private String mSubSequence;

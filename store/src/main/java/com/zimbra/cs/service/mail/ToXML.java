@@ -34,7 +34,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.HeaderConstants;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.DateUtil;
 import com.zimbra.common.util.HttpUtil;
@@ -151,6 +150,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimePart;
 import javax.mail.internet.MimeUtility;
+
+import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONException;
 
 /**
@@ -846,7 +847,7 @@ public final class ToXML {
     }
     if (needToOutput(fields, Change.TAGS)) {
       String[] tags = item.getTags();
-      if (!ArrayUtil.isEmpty(tags) || fields != NOTIFY_FIELDS) {
+        if (!ArrayUtils.isEmpty(tags) || fields != NOTIFY_FIELDS) {
         elem.addAttribute(MailConstants.A_TAG_NAMES, TagUtil.encodeTags(tags));
         if (hasFullAccess(item.getMailbox(), octxt)) {
           elem.addAttribute(MailConstants.A_TAGS, TagUtil.getTagIdString(item));
@@ -3937,46 +3938,6 @@ public final class ToXML {
     }
     dtEndElem.addAttribute(MailConstants.A_CAL_DATETIME, dtEnd.getDateTimePartString(false));
     return dtEndElem;
-  }
-
-  public static void encodeCalendarItemRecur(Element parent, CalendarItem calItem) {
-    TimeZoneMap tzmap = calItem.getTimeZoneMap();
-    encodeTimeZoneMap(parent, tzmap);
-    Invite[] invites = calItem.getInvites();
-    for (Invite inv : invites) {
-      String elemName;
-      if (inv.isCancel()) {
-        elemName = MailConstants.E_CAL_CANCEL;
-      } else if (inv.hasRecurId()) {
-        elemName = MailConstants.E_CAL_EXCEPT;
-      } else {
-        elemName = MailConstants.E_INVITE_COMPONENT;
-      }
-      Element compElem = parent.addNonUniqueElement(elemName);
-      boolean allDay = inv.isAllDayEvent();
-      // RECURRENCE-ID
-      if (inv.hasRecurId()) encodeRecurId(compElem, inv.getRecurId(), allDay);
-      if (!inv.isCancel()) {
-        // DTSTART
-        ParsedDateTime dtStart = inv.getStartTime();
-        if (dtStart != null) encodeDtStart(compElem, dtStart, allDay, false);
-        // DTEND or DURATION
-        ParsedDateTime dtEnd = inv.getEndTime();
-        if (dtEnd != null) {
-          encodeDtEnd(compElem, dtEnd, allDay, inv.isTodo(), false);
-        } else {
-          ParsedDuration dur = inv.getDuration();
-          if (dur != null) dur.toXml(compElem);
-        }
-
-        // recurrence definition
-        IRecurrence recurrence = inv.getRecurrence();
-        if (recurrence != null) {
-          Element recurElem = compElem.addNonUniqueElement(MailConstants.E_CAL_RECUR);
-          recurrence.toXml(recurElem);
-        }
-      }
-    }
   }
 
   public static Element encodeGalContact(Element response, GalContact contact) {

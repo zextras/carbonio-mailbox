@@ -102,9 +102,6 @@ public final class IndexDocument {
         document.add(new Field(LuceneFields.L_H_CC, stream));
     }
 
-    public void removeCc() {
-        document.removeFields(LuceneFields.L_H_CC);
-    }
 
     public void addEnvFrom(RFC822AddressTokenStream stream) {
         document.add(new Field(LuceneFields.L_H_X_ENV_FROM, stream));

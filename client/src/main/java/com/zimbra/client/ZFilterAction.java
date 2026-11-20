@@ -78,15 +78,7 @@ public abstract class ZFilterAction {
         throw new IllegalArgumentException(action.getClass().getName());
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public List<String> getArgs() {
-        return args;
-    }
-
-    public abstract String toActionString();
+	public abstract String toActionString();
     abstract FilterAction toJAXB();
 
     public static final class ZKeepAction extends ZFilterAction {
@@ -197,11 +189,7 @@ public abstract class ZFilterAction {
             this(MarkOp.fromString(flag.getFlag()));
         }
 
-        public String getMarkOp() {
-            return op.name();
-        }
-
-        @Override
+			@Override
         public String toActionString() {
             return "mark " + op.name().toLowerCase();
         }
@@ -270,11 +258,8 @@ public abstract class ZFilterAction {
     }
 
     public static final class ZNotifyAction extends ZFilterAction {
-        public ZNotifyAction(String emailAddr, String subjectTemplate, String bodyTemplate) {
-            this(emailAddr, subjectTemplate, bodyTemplate, -1);
-        }
 
-        public ZNotifyAction(String emailAddr, String subjectTemplate, String bodyTemplate, int maxBodyBytes) {
+			public ZNotifyAction(String emailAddr, String subjectTemplate, String bodyTemplate, int maxBodyBytes) {
             this(emailAddr, subjectTemplate, bodyTemplate, maxBodyBytes, "");
         }
 
@@ -330,11 +315,8 @@ public abstract class ZFilterAction {
     }
  
     public static final class ZRFCCompliantNotifyAction extends ZFilterAction {
-        public ZRFCCompliantNotifyAction(String method) {
-            this("", "", "", "", method);
-        }
 
-        public ZRFCCompliantNotifyAction(String from, String message, String method) {
+			public ZRFCCompliantNotifyAction(String from, String message, String method) {
             this(from, "", "", message, method);
         }
 

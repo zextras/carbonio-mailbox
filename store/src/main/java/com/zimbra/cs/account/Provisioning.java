@@ -7,14 +7,13 @@ package com.zimbra.cs.account;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.account.ZAttrProvisioning;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ExceptionToString;
 import com.zimbra.common.util.L10nUtil;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
@@ -25,7 +24,6 @@ import com.zimbra.cs.account.auth.AuthContext;
 import com.zimbra.cs.account.gal.GalOp;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.account.names.NameUtil;
-import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.gal.GalSearchParams;
 import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -206,8 +204,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public static final String LDAP_AM_SIMPLE = "simple";
   public static final String LDAP_AM_KERBEROS5 = "kerberos5";
 
-  public static final int MAX_ZIMBRA_ID_LEN = 127;
-
   private final List<ProvisioningValidator> validators = new ArrayList<>();
 
   private static volatile Provisioning singleton;
@@ -304,45 +300,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
             cacheMode = CacheMode.DEFAULT;
           }
 
-          String className = LC.zimbra_class_provisioning.value();
-
-          if (className != null && !className.equals("")) {
-            Class<?> klass = null;
-            try {
-              try {
-                klass = Class.forName(className);
-              } catch (ClassNotFoundException cnfe) {
-                // ignore and look in extensions
-                klass = ExtensionUtil.findClass(className);
-              }
-
-              if (cacheMode != CacheMode.DEFAULT) {
-                try {
-                  singleton =
-                      (Provisioning) klass.getConstructor(CacheMode.class).newInstance(cacheMode);
-                } catch (NoSuchMethodException e) {
-                  ZimbraLog.account.error(
-                      "could not find constructor with CacheMode parameter '"
-                          + className
-                          + "'; defaulting to LdapProvisioning",
-                      e);
-                }
-              } else {
-                singleton = (Provisioning) klass.newInstance();
-              }
-            } catch (Exception e) {
-              ZimbraLog.account.error(
-                  "could not instantiate Provisioning interface of class '"
-                      + className
-                      + "'; defaulting to LdapProvisioning",
-                  e);
-            }
-          }
-
-          if (singleton == null) {
-            singleton = LdapProvisioning.create(cacheMode);
-            ZimbraLog.account.error("defaulting to " + singleton.getClass().getCanonicalName());
-          }
+          singleton = LdapProvisioning.create(cacheMode);
         }
       }
     }
@@ -409,7 +367,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
     // Never return password.
     if (name.equalsIgnoreCase(Provisioning.A_userPassword)
         || name.equalsIgnoreCase(Provisioning.A_zimbraDataSourcePassword)
-        || name.equalsIgnoreCase(Provisioning.A_zimbraFreebusyExchangeAuthPassword)
+        || name.equalsIgnoreCase("zimbraFreebusyExchangeAuthPassword")
         || name.equalsIgnoreCase(Provisioning.A_zimbraTwoFactorAuthSecret)
         || name.equalsIgnoreCase(Provisioning.A_zimbraTwoFactorAuthScratchCodes)
         || name.equalsIgnoreCase(Provisioning.A_zimbraAppSpecificPassword)
@@ -772,16 +730,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
       return mMemberOf;
     }
 
-    public MemberOf getMemberOfForId(String grpId) {
-      for (MemberOf memberOf : mMemberOf) {
-        if (grpId.equals(memberOf.getId())) {
-          return memberOf;
-        }
-      }
-      return null;
-    }
-
-    public List<String> groupIds() {
+		public List<String> groupIds() {
       return mGroupIds;
     }
 
@@ -933,24 +882,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract Account createAccount(
       String emailAddress, String password, Map<String, Object> attrs) throws ServiceException;
 
-  /**
-   * @param emailAddress
-   * @param password
-   * @param attrs attributes to set while creating the account entry
-   * @param origAttrs original attributes when the account was backed, this is for license checking
-   *     purpose, none of the attrs in the origAttrs map will be set while creating the account
-   *     entry.
-   * @return
-   * @throws ServiceException
-   */
-  public abstract Account restoreAccount(
-      String emailAddress,
-      String password,
-      Map<String, Object> attrs,
-      Map<String, Object> origAttrs)
-      throws ServiceException;
-
-  /**
+	/**
    * deletes the specified account, removing the account and all email aliases. does not remove any
    * mailbox associated with the account.
    *
@@ -1073,11 +1005,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
     return get(AccountBy.id, id);
   }
 
-  public Account getAccountByForeignPrincipal(String name) throws ServiceException {
-    return get(AccountBy.foreignPrincipal, name);
-  }
-
-  /**
+	/**
    * Looks up an account by the specified key.
    *
    * <p>For implementations that do not support the loadFromMaster parameter, this method is
@@ -1107,11 +1035,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
     return get(keyType, key);
   }
 
-  public Account get(AccountSelector acctSel, AuthToken authToken) throws ServiceException {
-    return get(acctSel.getBy().toKeyAccountBy(), acctSel.getKey(), authToken);
-  }
-
-  public Account get(AccountBy keyType, String key, boolean loadFromMaster, AuthToken authToken)
+	public Account get(AccountBy keyType, String key, boolean loadFromMaster, AuthToken authToken)
       throws ServiceException {
     return get(keyType, key, loadFromMaster);
   }
@@ -1198,11 +1122,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract void changePassword(Account acct, String currentPassword, String newPassword)
       throws ServiceException;
 
-  public abstract void changePassword(
-      Account acct, String currentPassword, String newPassword, boolean dryRun)
-      throws ServiceException;
-
-  /**
+	/**
    * Changes password for an account
    *
    * @param acct account to change password for
@@ -1225,11 +1145,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
 
     public SetPasswordResult() {}
 
-    public SetPasswordResult(String msg) {
-      setMessage(msg);
-    }
-
-    public boolean hasMessage() {
+		public boolean hasMessage() {
       return msg != null;
     }
 
@@ -1552,19 +1468,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
     return get(keyType, key);
   }
 
-  /*
-   * ==============================
-   *
-   * Dynamic Group methods
-   *
-   * ==============================
-   */
-  public DynamicGroup createDynamicGroup(String listAddress, Map<String, Object> listAttrs)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  /*
+	/*
    * ==============================
    *
    * Group (static/dynamic neutral) methods
@@ -1678,19 +1582,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
     throw ServiceException.UNSUPPORTED();
   }
 
-  /*
-   * Zimlet
-   */
-
-  public abstract Zimlet getZimlet(String name) throws ServiceException;
-
-  public abstract List<Zimlet> listAllZimlets() throws ServiceException;
-
-  public abstract Zimlet createZimlet(String name, Map<String, Object> attrs)
-      throws ServiceException;
-
-  public abstract void deleteZimlet(String name) throws ServiceException;
-
   /**
    * Creates the specified calendar resource. The A_zimbraId and A_uid attributes are automatically
    * created and should not be passed in.
@@ -1735,15 +1626,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract CalendarResource get(Key.CalendarResourceBy keyType, String key)
       throws ServiceException;
 
-  public CalendarResource getCalendarResourceByName(String name) throws ServiceException {
-    return get(Key.CalendarResourceBy.name, name);
-  }
-
-  public CalendarResource getCalendarResourceById(String id) throws ServiceException {
-    return get(Key.CalendarResourceBy.id, id);
-  }
-
-  public CalendarResource get(Key.CalendarResourceBy keyType, String key, boolean loadFromMaster)
+	public CalendarResource get(Key.CalendarResourceBy keyType, String key, boolean loadFromMaster)
       throws ServiceException {
     return get(keyType, key);
   }
@@ -1950,11 +1833,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
       mHadMore = hadMore;
     }
 
-    public String getTokenizeKey() {
-      return mTokenizeKey;
-    }
-
-    public String getLdapTimeStamp() {
+		public String getLdapTimeStamp() {
       return ldapTimeStamp;
     }
 
@@ -2111,10 +1990,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract Identity createIdentity(
       Account account, String identityName, Map<String, Object> attrs) throws ServiceException;
 
-  public abstract Identity restoreIdentity(
-      Account account, String identityName, Map<String, Object> attrs) throws ServiceException;
-
-  public abstract void modifyIdentity(
+	public abstract void modifyIdentity(
       Account account, String identityName, Map<String, Object> attrs) throws ServiceException;
 
   public abstract void deleteIdentity(Account account, String identityName) throws ServiceException;
@@ -2131,10 +2007,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract Signature createSignature(
       Account account, String signatureName, Map<String, Object> attrs) throws ServiceException;
 
-  public abstract Signature restoreSignature(
-      Account account, String signatureName, Map<String, Object> attrs) throws ServiceException;
-
-  public abstract void modifySignature(
+	public abstract void modifySignature(
       Account account, String signatureId, Map<String, Object> attrs) throws ServiceException;
 
   public abstract void deleteSignature(Account account, String signatureId) throws ServiceException;
@@ -2156,11 +2029,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
       boolean passwdAlreadyEncrypted)
       throws ServiceException;
 
-  public abstract DataSource restoreDataSource(
-      Account account, DataSourceType type, String dataSourceName, Map<String, Object> attrs)
-      throws ServiceException;
-
-  public abstract void modifyDataSource(
+	public abstract void modifyDataSource(
       Account account, String dataSourceId, Map<String, Object> attrs) throws ServiceException;
 
   public abstract void deleteDataSource(Account account, String dataSourceId)
@@ -2437,11 +2306,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
     // do nothing by default
   }
 
-  public void reloadMemcachedClientConfig() throws ServiceException {
-    // do nothing by default
-  }
-
-  public interface PublishedShareInfoVisitor {
+	public interface PublishedShareInfoVisitor {
     void visit(ShareInfoData shareInfoData) throws ServiceException;
   }
 
@@ -2500,11 +2365,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
       return detail;
     }
 
-    public Object getDetail() {
-      return detail;
-    }
-
-    public Result(String status, String message, String detail) {
+		public Result(String status, String message, String detail) {
       this.code = status;
       this.message = message;
       this.detail = detail;
@@ -2512,7 +2373,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
 
     public Result(String status, Exception e, String detail) {
       this.code = status;
-      this.message = ExceptionToString.ToString(e);
+        this.message = Throwables.getStackTraceAsString(e);
       this.detail = detail;
     }
 
@@ -2566,5 +2427,22 @@ public abstract class Provisioning extends ZAttrProvisioning {
     for (ProvisioningValidator validator : validators) {
       validator.refresh();
     }
+  }
+
+  public CalendarResource getCalendarResourceByName(String name) throws ServiceException {
+    return get(Key.CalendarResourceBy.name, name);
+  }
+
+  public CalendarResource getCalendarResourceById(String id) throws ServiceException {
+    return get(Key.CalendarResourceBy.id, id);
+  }
+
+  public DynamicGroup createDynamicGroup(String listAddress, Map<String, Object> listAttrs)
+      throws ServiceException {
+    throw ServiceException.UNSUPPORTED();
+  }
+
+  public Account getAccountByForeignPrincipal(String name) throws ServiceException {
+    return get(AccountBy.foreignPrincipal, name);
   }
 }

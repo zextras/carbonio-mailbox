@@ -13,10 +13,6 @@ import com.zimbra.cs.account.Entry;
 public abstract class CheckRightFallback {
     protected Right mRight;
 
-    void setRight(Right right) {
-        mRight = right;
-    }
-    
     public Boolean checkRight(Account authedAcct, Entry target, boolean asAdmin) {
         try {
             return doCheckRight(authedAcct, target, asAdmin);

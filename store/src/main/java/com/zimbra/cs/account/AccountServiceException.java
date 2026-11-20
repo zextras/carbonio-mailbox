@@ -32,7 +32,6 @@ public class AccountServiceException extends ServiceException {
   public static final String MULTIPLE_ACCOUNTS_MATCHED = "account.MULTIPLE_ACCOUNTS_MATCHED";
   public static final String MULTIPLE_DOMAINS_MATCHED = "account.MULTIPLE_DOMAINS_MATCHED";
   public static final String MULTIPLE_ENTRIES_MATCHED = "account.MULTIPLE_ENTRIES_MATCHED";
-  public static final String NO_SMIME_CONFIG = "account.NO_SMIME_CONFIG";
   public static final String NO_SUCH_ACCOUNT = "account.NO_SUCH_ACCOUNT";
   public static final String NO_SUCH_ALIAS = "account.NO_SUCH_ALIAS";
   public static final String NO_SUCH_COS = "account.NO_SUCH_COS";
@@ -41,11 +40,9 @@ public class AccountServiceException extends ServiceException {
   public static final String NO_SUCH_SIGNATURE = "account.NO_SUCH_SIGNATURE";
   public static final String NO_SUCH_DATA_SOURCE = "account.NO_SUCH_DATA_SOURCE";
   public static final String NO_SUCH_SERVER = "account.NO_SUCH_SERVER";
-  public static final String NO_SUCH_UC_SERVICE = "account.NO_SUCH_UC_SERVICE";
   public static final String NO_SUCH_SHARE_LOCATOR = "account.NO_SUCH_SHARE_LOCATOR";
   public static final String NO_SUCH_ZIMLET = "account.NO_SUCH_ZIMLET";
   public static final String NO_SUCH_DISTRIBUTION_LIST = "account.NO_SUCH_DISTRIBUTION_LIST";
-  public static final String NO_SUCH_ADDRESS_LIST = "account.NO_SUCH_ADDRESS_LIST";
   public static final String NO_SUCH_GROUP = "account.NO_SUCH_GROUP";
   public static final String NO_SUCH_CALENDAR_RESOURCE = "account.NO_SUCH_CALENDAR_RESOURCE";
   public static final String NO_SUCH_EXTERNAL_ENTRY = "account.NO_SUCH_EXTERNAL_ENTRY";
@@ -56,13 +53,10 @@ public class AccountServiceException extends ServiceException {
   public static final String DOMAIN_EXISTS = "account.DOMAIN_EXISTS";
   public static final String DOMAIN_NOT_EMPTY = "account.DOMAIN_NOT_EMPTY";
   public static final String COS_EXISTS = "account.COS_EXISTS";
-  public static final String RIGHT_EXISTS = "account.RIGHT_EXISTS";
   public static final String SERVER_EXISTS = "account.SERVER_EXISTS";
   public static final String SHARE_LOCATOR_EXISTS = "account.SHARE_LOCATOR_EXISTS";
   public static final String NO_SHARE_EXISTS = "account.NO_SHARE_EXISTS";
-  public static final String ZIMLET_EXISTS = "account.ZIMLET_EXISTS";
   public static final String DISTRIBUTION_LIST_EXISTS = "account.DISTRIBUTION_LIST_EXISTS";
-  public static final String UC_SERVICE_EXISTS = "account.UC_SERVICE_EXISTS";
   public static final String MAINTENANCE_MODE = "account.MAINTENANCE_MODE";
   public static final String ACCOUNT_INACTIVE = "account.ACCOUNT_INACTIVE";
   public static final String IDENTITY_EXISTS = "account.IDENTITY_EXISTS";
@@ -72,18 +66,11 @@ public class AccountServiceException extends ServiceException {
   public static final String TOO_MANY_ZIMLETUSERPROPERTIES =
       "account.TOO_MANY_ZIMLETUSERPROPERTIES";
   public static final String DATA_SOURCE_EXISTS = "account.DATA_SOURCE_EXISTS";
-  public static final String IM_COMPONENT_EXISTS = "account.IM_COMPONENT_EXISTS";
   public static final String TOO_MANY_DATA_SOURCES = "account.TOO_MANY_DATA_SOURCES";
   public static final String TOO_MANY_ACCOUNTS = "account.TOO_MANY_ACCOUNTS";
   public static final String TOO_MANY_SEARCH_RESULTS = "account.TOO_MANY_SEARCH_RESULTS";
   public static final String TOO_MANY_TRUSTED_SENDERS = "account.TOO_MANY_TRUSTED_SENDERS";
-  public static final String TWO_FACTOR_SETUP_REQUIRED = "account.TWO_FACTOR_SETUP_REQUIRED";
-  public static final String INVALID_TRUSTED_DEVICE_TOKEN = "account.INVALID_TRUSTED_DEVICE_TOKEN";
   public static final String TWO_FACTOR_AUTH_FAILED = "account.TWO_FACTOR_AUTH_FAILED";
-  public static final String TWO_FACTOR_AUTH_REQUIRED = "account.TWO_FACTOR_AUTH_REQUIRED";
-  public static final String NO_SUCH_ORG_UNIT = "account.NO_SUCH_ORG_UNIT";
-  public static final String WEB_CLIENT_ACCESS_NOT_ALLOWED =
-      "account.WEB_CLIENT_ACCESS_NOT_ALLOWED";
 
   private AccountServiceException(String message, String code, boolean isReceiversFault) {
     super(message, code, isReceiversFault);
@@ -234,11 +221,6 @@ public class AccountServiceException extends ServiceException {
     return new AccountServiceException(msg, INVALID_ATTR_VALUE, SENDERS_FAULT, t);
   }
 
-  public static AccountServiceException NO_SMIME_CONFIG(String desc) {
-    return new AccountServiceException(
-        "no SMIME config: " + desc, NO_SMIME_CONFIG, SENDERS_FAULT, null);
-  }
-
   public static AccountServiceException NO_SUCH_ACCOUNT(String name) {
     return new AccountServiceException(
         "no such account: " + name, NO_SUCH_ACCOUNT, SENDERS_FAULT, null);
@@ -252,11 +234,6 @@ public class AccountServiceException extends ServiceException {
   public static AccountServiceException NO_SUCH_DOMAIN(String name) {
     return new AccountServiceException(
         "no such domain: " + name, Constants.ERROR_CODE_NO_SUCH_DOMAIN, SENDERS_FAULT, null);
-  }
-
-  public static AccountServiceException NO_SUCH_ORG_UNIT(String name) {
-    return new AccountServiceException(
-        "no such organizational unit: " + name, NO_SUCH_ORG_UNIT, SENDERS_FAULT, null);
   }
 
   public static AccountServiceException DOMAIN_NOT_EMPTY(String name, Exception e) {
@@ -283,11 +260,6 @@ public class AccountServiceException extends ServiceException {
         "no such server: " + name, NO_SUCH_SERVER, SENDERS_FAULT, null);
   }
 
-  public static AccountServiceException NO_SUCH_UC_SERVICE(String name) {
-    return new AccountServiceException(
-        "no such uc service: " + name, NO_SUCH_UC_SERVICE, SENDERS_FAULT, null);
-  }
-
   public static AccountServiceException NO_SUCH_IDENTITY(String name) {
     return new AccountServiceException(
         "no such identity: " + name, NO_SUCH_IDENTITY, SENDERS_FAULT, null);
@@ -311,11 +283,6 @@ public class AccountServiceException extends ServiceException {
   public static AccountServiceException NO_SUCH_DISTRIBUTION_LIST(String name) {
     return new AccountServiceException(
         "no such distribution list: " + name, NO_SUCH_DISTRIBUTION_LIST, SENDERS_FAULT, null);
-  }
-
-  public static AccountServiceException NO_SUCH_ADDRESS_LIST(String name) {
-    return new AccountServiceException(
-        "no such address list: " + name, NO_SUCH_ADDRESS_LIST, SENDERS_FAULT, null);
   }
 
   public static AccountServiceException NO_SUCH_GROUP(String name) {
@@ -364,11 +331,6 @@ public class AccountServiceException extends ServiceException {
         "cos already exists: " + name, COS_EXISTS, SENDERS_FAULT, null);
   }
 
-  public static AccountServiceException RIGHT_EXISTS(String name) {
-    return new AccountServiceException(
-        "right already exists: " + name, RIGHT_EXISTS, SENDERS_FAULT, null);
-  }
-
   public static AccountServiceException SERVER_EXISTS(String name) {
     return new AccountServiceException(
         "server already exists: " + name, SERVER_EXISTS, SENDERS_FAULT, null);
@@ -383,11 +345,6 @@ public class AccountServiceException extends ServiceException {
     return new AccountServiceException("no share exists: ", NO_SHARE_EXISTS, SENDERS_FAULT, null);
   }
 
-  public static AccountServiceException ZIMLET_EXISTS(String name) {
-    return new AccountServiceException(
-        "zimlet already exists: " + name, ZIMLET_EXISTS, SENDERS_FAULT, null);
-  }
-
   public static AccountServiceException DISTRIBUTION_LIST_EXISTS(String name) {
     return new AccountServiceException(
         "email address already exists: " + name, DISTRIBUTION_LIST_EXISTS, SENDERS_FAULT, null);
@@ -396,11 +353,6 @@ public class AccountServiceException extends ServiceException {
   public static AccountServiceException IDENTITY_EXISTS(String name) {
     return new AccountServiceException(
         "identity already exists: " + name, IDENTITY_EXISTS, SENDERS_FAULT, null);
-  }
-
-  public static AccountServiceException UC_SERVICE_EXISTS(String name) {
-    return new AccountServiceException(
-        "uc service already exists: " + name, UC_SERVICE_EXISTS, SENDERS_FAULT, null);
   }
 
   public static AccountServiceException TOO_MANY_IDENTITIES() {
@@ -436,11 +388,6 @@ public class AccountServiceException extends ServiceException {
         "too many data sources. can't create any more", TOO_MANY_DATA_SOURCES, SENDERS_FAULT, null);
   }
 
-  public static AccountServiceException IM_COMPONENT_EXISTS(String name) {
-    return new AccountServiceException(
-        "IM Component already exists: " + name, IM_COMPONENT_EXISTS, SENDERS_FAULT, null);
-  }
-
   public static AccountServiceException MAINTENANCE_MODE() {
     return new AccountServiceException(
         "account is in maintenance mode", MAINTENANCE_MODE, RECEIVERS_FAULT, null);
@@ -473,37 +420,9 @@ public class AccountServiceException extends ServiceException {
     return new AccountServiceException(message, TOO_MANY_TRUSTED_SENDERS, SENDERS_FAULT, null);
   }
 
-  public static AccountServiceException TWO_FACTOR_SETUP_REQUIRED() {
-    return new AccountServiceException(
-        "two-factor authentication setup required", TWO_FACTOR_SETUP_REQUIRED, SENDERS_FAULT, null);
-  }
-
-  public static AccountServiceException INVALID_TRUSTED_DEVICE_TOKEN() {
-    return new AccountServiceException(
-        "invalid trusted device token", INVALID_TRUSTED_DEVICE_TOKEN, SENDERS_FAULT, null);
-  }
-
-  public static AuthFailedServiceException TWO_FACTOR_AUTH_FAILED(
-      String acctName, String namePassedIn, String reason) {
-    return new AuthFailedServiceException(
-        acctName, namePassedIn, reason, TWO_FACTOR_AUTH_FAILED, SENDERS_FAULT, null);
-  }
-
-  public static AccountServiceException TWO_FACTOR_AUTH_REQUIRED() {
-    return new AccountServiceException(
-        "two-factor auth required", TWO_FACTOR_AUTH_REQUIRED, SENDERS_FAULT, null);
-  }
-
   public static AccountServiceException ALIAS_EXISTS(String name) {
     return new AccountServiceException(
         "email address alias already exists: " + name, ALIAS_EXISTS, SENDERS_FAULT, null);
   }
 
-  public static AccountServiceException WEB_CLIENT_ACCESS_NOT_ALLOWED(String name) {
-    return new AccountServiceException(
-        "web client access not allowed: " + name,
-        WEB_CLIENT_ACCESS_NOT_ALLOWED,
-        SENDERS_FAULT,
-        null);
-  }
 }

@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -294,18 +295,6 @@ public class FileUtil {
         }
     }
 
-    private static void addDirsRecursively(File dir, List<File> dirs) {
-        File[] myFiles = dir.listFiles();
-        if (myFiles != null) {
-            for (File file : myFiles) {
-                if (file.isDirectory()) {
-                    addDirsRecursively(file, dirs);
-                }
-            }
-        }
-        dirs.add(dir);
-    }
-
     public static void ensureDirExists(File dir) throws IOException {
         if (!mkdirs(dir))
             throw new IOException("Unable to create directory " + dir.getPath());
@@ -316,21 +305,9 @@ public class FileUtil {
         ensureDirExists(d);
     }
 
-    private static class MTimeComparator implements Comparator<File> {
-        private boolean mReverse;
-
-        private MTimeComparator(boolean reverse) {
-            mReverse = reverse;
-        }
-        public int compare(File f1, File f2) {
-            long diff = mReverse ? f2.lastModified() - f1.lastModified() : f1.lastModified() - f2.lastModified();
-            if (diff < 0)
-                return -1;
-            else if (diff == 0)
-                return 0;
-            else
-                return 1;
-        }
+    private static Comparator<File> byModifiedTime(boolean reverse) {
+        Comparator<File> comparator = Comparator.comparingLong(File::lastModified);
+        return reverse ? comparator.reversed() : comparator;
     }
 
     public static void sortFilesByModifiedTime(File[] files) {
@@ -338,8 +315,7 @@ public class FileUtil {
     }
 
     public static void sortFilesByModifiedTime(File[] files, boolean reverse) {
-        MTimeComparator comp = new MTimeComparator(reverse);
-        Arrays.sort(files, comp);
+        Arrays.sort(files, byModifiedTime(reverse));
     }
 
     public static void sortFilesByModifiedTime(List<File> files) {
@@ -347,8 +323,7 @@ public class FileUtil {
     }
 
     public static void sortFilesByModifiedTime(List<File> files, boolean reverse) {
-        MTimeComparator comp = new MTimeComparator(reverse);
-        files.sort(comp);
+        files.sort(byModifiedTime(reverse));
     }
 
     public static void delete(File file) throws IOException {
@@ -414,24 +389,12 @@ public class FileUtil {
         if (path.exists()) {
             return true;
         }
-        // mkdir() may return false if another thread creates the directory
-        // after the above exists() check but before the mkdir() call.
-        // As far as this thread is concerned it's a successful mkdirs().
-        if (path.mkdir() || path.exists()) {
-            return true;
-        }
-        File canonFile = null;
         try {
-            canonFile = path.getCanonicalFile();
+            Files.createDirectories(path.toPath());
+            return true;
         } catch (IOException e) {
             return false;
         }
-        String parent = canonFile.getParent();
-        if (parent != null) {
-            File pf = new File(parent);
-            return mkdirs(pf) && (canonFile.mkdir() || canonFile.exists());
-        } else
-            return false;
     }
 
     /**

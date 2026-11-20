@@ -8,6 +8,7 @@ package com.zimbra.cs.mailbox;
 import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.codec.binary.Hex;
@@ -465,9 +466,10 @@ public final class ACL {
         if (!mGrants.isEmpty()) {
             for (Grant grant : mGrants) {
                 if (grant.isGrantee(zimbraId)) {
+                    String s1 = grant.getPassword();
                     if (grant.getGrantedRights() == rights &&
                             ((type != GRANTEE_GUEST && type != GRANTEE_KEY) ||
-                                    StringUtil.equal(grant.getPassword(), secret)) &&
+                                Objects.equals(s1, secret)) &&
                             (grant.getExpiry() == expiry)) {
                         // same grant is already in the ACL
                         throw MailServiceException.GRANTEE_EXISTS(zimbraId, null);

@@ -15,15 +15,7 @@ public class SearchCommand extends ImapCommand {
         this.options = options;
     }
 
-    public ImapSearch getSearch() {
-        return search;
-    }
-
-    public Integer getOptions() {
-        return options;
-    }
-
-    @Override
+	@Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;

@@ -19,21 +19,13 @@ import com.zimbra.soap.admin.type.Attr;
 import com.zimbra.soap.admin.type.AccountInfo;
 
 class SoapAccount extends Account implements SoapEntry {
-        
-    SoapAccount(String name, String id, Map<String, Object> attrs, Provisioning prov) {
-        super(name, id, attrs, null, prov);
-    }
 
-    SoapAccount(AccountInfo accountInfo, Provisioning prov) throws ServiceException {
+	SoapAccount(AccountInfo accountInfo, Provisioning prov) throws ServiceException {
         super(accountInfo.getName(), accountInfo.getId(),
                 Attr.collectionToMap(accountInfo.getAttrList()), null, prov);
     }
 
-    SoapAccount(Element e, Provisioning prov) throws ServiceException {
-        super(e.getAttribute(AdminConstants.A_NAME), e.getAttribute(AdminConstants.A_ID), SoapProvisioning.getAttrs(e), null, prov);
-    }
-
-    public void modifyAttrs(SoapProvisioning prov, Map<String, ? extends Object> attrs, boolean checkImmutable) throws ServiceException {
+	public void modifyAttrs(SoapProvisioning prov, Map<String, ? extends Object> attrs, boolean checkImmutable) throws ServiceException {
         XMLElement req = new XMLElement(AdminConstants.MODIFY_ACCOUNT_REQUEST);
         req.addElement(AdminConstants.E_ID).setText(getId());
         SoapProvisioning.addAttrElements(req, attrs);
