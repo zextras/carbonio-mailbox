@@ -16,15 +16,9 @@ import java.io.File;
 public class ZimbraCertMgrService implements DocumentService {
 
     public void registerHandlers(DocumentDispatcher dispatcher) {
-        dispatcher.registerHandler(CertMgrConstants.INSTALL_CERT_REQUEST, new InstallCert());
-        dispatcher.registerHandler(CertMgrConstants.GET_CERT_REQUEST, new GetCert());
         dispatcher.registerHandler(CertMgrConstants.GET_DOMAIN_CERT_REQUEST, new GetDomainCert());
-        dispatcher.registerHandler(CertMgrConstants.GEN_CSR_REQUEST, new GenerateCSR());
-        dispatcher.registerHandler(CertMgrConstants.GET_CSR_REQUEST, new GetCSR());
 	      dispatcher.registerHandler(CertMgrConstants.VERIFY_CERTKEY_REQUEST, new VerifyCertKey(
           new ProcessStarterProvider(), () -> LC.zimbra_tmp_directory.value() +
           File.separator + LdapUtil.generateUUID() + File.separator));
-        dispatcher.registerHandler(CertMgrConstants.UPLOAD_DOMCERT_REQUEST, new UploadDomCert());
-        dispatcher.registerHandler(CertMgrConstants.UPLOAD_PROXYCA_REQUEST, new UploadProxyCA());
     }
 }

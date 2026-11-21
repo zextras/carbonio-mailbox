@@ -1,6 +1,5 @@
 package com.zimbra.doc.soap;
 
-import com.zimbra.soap.admin.message.InstallCertRequest;
 import com.zimbra.soap.admin.message.UnregisterMailboxMoveOutRequest;
 
 import java.util.HashSet;
@@ -13,7 +12,6 @@ public final class DocExcludedServices {
 
     static {
         SERVICE_SET = new HashSet<>(63);
-        SERVICE_SET.add(removeRequest(InstallCertRequest.class));
         SERVICE_SET.add(removeRequest(UnregisterMailboxMoveOutRequest.class));
     }
 
