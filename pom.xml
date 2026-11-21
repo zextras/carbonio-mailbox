@@ -42,7 +42,7 @@
     <lucene.version>3.5.0</lucene.version>
     <jackson.version>2.15.4</jackson.version>
     <bouncycastle.version>1.86</bouncycastle.version>
-    <asm.version>8.0.1</asm.version>
+    <asm.version>9.5</asm.version>
     <guava.version>33.3.1-jre</guava.version>
 
     <nekohtml.version>1.9.22</nekohtml.version>
@@ -50,9 +50,9 @@
     <dom4j.version>2.1.4</dom4j.version>
     <hsqldb.version>2.7.4</hsqldb.version>
     <mockito.version>5.21.0</mockito.version>
-    <unboundid-ldapsdk.version>4.0.5</unboundid-ldapsdk.version>
+    <unboundid-ldapsdk.version>5.0.1</unboundid-ldapsdk.version>
     <jsr305.version>3.0.2</jsr305.version>
-    <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
+    <error_prone_annotations.version>2.3.4</error_prone_annotations.version>
     <resteasy.version>4.7.10.Final</resteasy.version>
     <swagger.version>2.2.52</swagger.version>
     <javassist.version>3.30.2-GA</javassist.version>
@@ -687,9 +687,9 @@
         <version>3.2.2</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.woodstox</groupId>
-        <artifactId>woodstox-core-asl</artifactId>
-        <version>4.4.1</version>
+        <groupId>com.fasterxml.woodstox</groupId>
+        <artifactId>woodstox-core</artifactId>
+        <version>6.6.2</version>
       </dependency>
       <dependency>
         <groupId>wsdl4j</groupId>
@@ -729,12 +729,12 @@
       <dependency>
         <groupId>org.tukaani</groupId>
         <artifactId>xz</artifactId>
-        <version>1.8</version>
+        <version>1.9</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.woodstox</groupId>
         <artifactId>stax2-api</artifactId>
-        <version>3.1.4</version>
+        <version>4.2.2</version>
       </dependency>
       <dependency>
         <groupId>org.apache.xmlgraphics</groupId>
@@ -789,7 +789,7 @@
       <dependency>
         <groupId>com.google.inject</groupId>
         <artifactId>guice</artifactId>
-        <version>5.0.1</version>
+        <version>6.0.0</version>
       </dependency>
       <dependency>
         <groupId>io.prometheus</groupId>
@@ -875,7 +875,7 @@
        <dependency>
          <groupId>commons-net</groupId>
          <artifactId>commons-net</artifactId>
-         <version>3.10.0</version>
+         <version>3.12.0</version>
       </dependency>
       <!-- Source: https://mvnrepository.com/artifact/org.testcontainers/testcontainers-bom -->
       <dependency>
