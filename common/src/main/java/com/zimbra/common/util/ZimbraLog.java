@@ -140,9 +140,6 @@ public final class ZimbraLog {
   /** the "zimbra.pop" logger. For POP3 server related events. */
   public static final Log pop = LogFactory.getLog("zimbra.pop");
 
-  /** the "zimbra.milter" logger. For MILTER-related events */
-  public static final Log milter = LogFactory.getLog("zimbra.milter");
-
   /** the "zimbra.mailbox" logger. For mailbox-related events. */
   public static final Log mailbox = LogFactory.getLog("zimbra.mailbox");
 
@@ -355,7 +352,6 @@ public final class ZimbraLog {
     descriptions.put(smtp.getCategory(), "SMTP client (outgoing mail)");
     descriptions.put(imap_client.getCategory(), "IMAP client");
     descriptions.put(imap.getCategory(), "IMAP server");
-    descriptions.put(milter.getCategory(), "MILTER protocol operations");
     descriptions.put(pop_client.getCategory(), "POP client");
     descriptions.put(pop.getCategory(), "POP server");
     descriptions.put(mailbox.getCategory(), "General mailbox operations");

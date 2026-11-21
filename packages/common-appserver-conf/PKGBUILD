@@ -48,10 +48,6 @@ _package() {
   install -D "attribute-manager/conf/rights/user-rights.xml" \
     "${pkgdir}/opt/zextras/conf/rights/user-rights.xml"
 
-  install -D "store/milter/conf/milter.log4j.properties" \
-    "${pkgdir}/opt/zextras/conf/milter.log4j.properties"
-  install -D "store/milter/conf/mta_milter_options.in" \
-    "${pkgdir}/opt/zextras/conf/mta_milter_options.in"
   install -D "store/conf/datasource.xml" \
     "${pkgdir}/opt/zextras/conf/datasource.xml"
   install -D "store/conf/localconfig.xml.production" \
@@ -202,12 +198,6 @@ _package() {
 
 }
 
-_package_systemd() {
-  # systemd unit
-  install -Dm644 packages/common-appserver-conf/carbonio-milter.service \
-    "${pkgdir}/usr/lib/systemd/system/carbonio-milter.service"
-}
-
 _postinst_upgrade_java_options() {
   echo -n "*Updating mailboxd_java_options for JDK17..."
   java_options=$(su - zextras -c "/opt/zextras/bin/configd localconfig -m nokey mailboxd_java_options 2> /dev/null")
@@ -234,22 +224,8 @@ _postinst_upgrade_java_options() {
   fi
 }
 
-_postinst_systemd() {
-  if [ -d /run/systemd/system ]; then
-    systemctl daemon-reload &>/dev/null || :
-    systemctl enable carbonio-milter.service &>/dev/null || :
-  fi
-}
-
-_prerm_systemd() {
-  if [ -d /run/systemd/system ]; then
-    systemctl --no-reload disable --now carbonio-milter.service &>/dev/null || :
-  fi
-}
-
 package() {
   _package
-  _package_systemd
 }
 
 package__rocky_8() {
@@ -258,7 +234,6 @@ package__rocky_8() {
 
 package__rocky_9() {
   _package
-  _package_systemd
 }
 
 package__ubuntu_jammy() {
@@ -267,7 +242,6 @@ package__ubuntu_jammy() {
 
 package__ubuntu_noble() {
   _package
-  _package_systemd
 }
 
 postinst__ubuntu_jammy() {
@@ -282,8 +256,6 @@ postinst__ubuntu_noble() {
   if [ "$1" = "configure" ] && [ ! -z "$2" ]; then
     _postinst_upgrade_java_options
   fi
-
-  _postinst_systemd
 }
 
 postinst__rocky_8() {
@@ -298,26 +270,5 @@ postinst__rocky_9() {
   if [ "$1" -eq 2 ]; then
     _postinst_upgrade_java_options
   fi
-
-  _postinst_systemd
 }
 
-prerm__ubuntu_noble() {
-  _prerm_systemd
-}
-
-prerm__rocky_9() {
-  _prerm_systemd
-}
-
-postrm__ubuntu_noble() {
-  if [ -d /run/systemd/system ]; then
-    systemctl daemon-reload &>/dev/null || :
-  fi
-}
-
-postrm__rocky_9() {
-  if [ -d /run/systemd/system ]; then
-    systemctl daemon-reload &>/dev/null || :
-  fi
-}
