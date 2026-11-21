@@ -3,6 +3,7 @@ package com.zimbra.cs.service.account;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.MailboxTestSuite;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
@@ -55,6 +56,46 @@ class GetAccountInfoTest extends MailboxTestSuite {
         .collect(Collectors.toList());
     assertEquals(1, attributes.size());
     assertEquals("FALSE", attributes.get(0).getValue());
+  }
+
+  @Test
+  void shouldDenyInfoOfAnotherAccountLikeAnUnknownAccount() throws Exception {
+    Account caller = createAccount().create();
+    Account other = createAccount().create();
+
+    ServiceException otherAccount = assertThrows(ServiceException.class,
+        () -> getAccountInfoByName(caller, other.getName()));
+    ServiceException unknownAccount = assertThrows(ServiceException.class,
+        () -> getAccountInfoByName(caller, "unknown-" + other.getName()));
+
+    assertEquals(ServiceException.PERM_DENIED, otherAccount.getCode());
+    assertEquals(unknownAccount.getCode(), otherAccount.getCode());
+    assertEquals(unknownAccount.getMessage(), otherAccount.getMessage());
+  }
+
+  @Test
+  void shouldReturnInfoOfAnotherAccountToGlobalAdmin() throws Exception {
+    Account admin = createAccount().asGlobalAdmin().create();
+    Account other = createAccount().create();
+
+    GetAccountInfoResponse response = JaxbUtil.elementToJaxb(getAccountInfoByName(admin, other.getName()));
+
+    assertEquals(other.getName(), Objects.requireNonNull(response).getName());
+  }
+
+  @Test
+  void shouldReturnOwnInfoByName() throws Exception {
+    Account caller = createAccount().create();
+
+    GetAccountInfoResponse response = JaxbUtil.elementToJaxb(getAccountInfoByName(caller, caller.getName()));
+
+    assertEquals(caller.getName(), Objects.requireNonNull(response).getName());
+  }
+
+  private Element getAccountInfoByName(Account caller, String name) throws Exception {
+    GetAccountInfoRequest request = new GetAccountInfoRequest();
+    request.setAccount(AccountSelector.fromName(name));
+    return newRequest().handle(JaxbUtil.jaxbToElement(request), ServiceTestUtil.getRequestContext(caller));
   }
 
   private GetAccountInfo newRequest() {
