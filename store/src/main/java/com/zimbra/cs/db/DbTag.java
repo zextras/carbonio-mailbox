@@ -456,11 +456,11 @@ public class DbTag {
         DbConnection conn = mbox.getOperationConnection();
         PreparedStatement stmt = null;
 
-        String command = Db.supports(Db.Capability.REPLACE_INTO) ? "REPLACE" : "INSERT";
+        String sql = Db.getInstance().upsert(getTaggedItemTableName(mbox),
+                DbMailItem.withMailboxId("tag_id", "item_id"), DbMailItem.withMailboxId("tag_id", "item_id"), List.of());
         for (int itemId : itemIds) {
             try {
-                stmt = conn.prepareStatement(command + " INTO " + getTaggedItemTableName(mbox) +
-                        "(" + DbMailItem.MAILBOX_ID + "tag_id, item_id) VALUES (" + DbMailItem.MAILBOX_ID_VALUE + "?, ?)");
+                stmt = conn.prepareStatement(sql);
                 int pos = 1;
                 pos = DbMailItem.setMailboxId(stmt, mbox, pos);
                 stmt.setInt(pos++, tagId);

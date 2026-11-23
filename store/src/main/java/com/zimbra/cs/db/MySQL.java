@@ -15,9 +15,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -134,6 +137,15 @@ public class MySQL extends Db {
         if (LC.jdbc_results_streaming_enabled.booleanValue()) {
             stmt.setFetchSize(Integer.MIN_VALUE);
         }
+    }
+
+    @Override
+    public String upsert(String table, List<String> columns, List<String> keyColumns, List<String> updateColumns) {
+        String update = updateColumns.isEmpty()
+            ? keyColumns.get(0) + " = " + keyColumns.get(0)
+            : updateColumns.stream().map(c -> c + " = VALUES(" + c + ")").collect(Collectors.joining(", "));
+        return "INSERT INTO " + table + " (" + String.join(", ", columns) + ") VALUES ("
+            + String.join(", ", Collections.nCopies(columns.size(), "?")) + ") ON DUPLICATE KEY UPDATE " + update;
     }
 
     protected static class MySQLConfig extends DbPool.PoolConfig {

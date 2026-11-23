@@ -1364,53 +1364,35 @@ public class DbMailItem {
     }
   }
 
+  static List<String> withMailboxId(String... columns) {
+    List<String> out = new ArrayList<>();
+    if (!DebugConfig.disableMailboxGroups) {
+      out.add("mailbox_id");
+    }
+    out.addAll(Arrays.asList(columns));
+    return out;
+  }
+
   public static void openConversation(String hash, MailItem item) throws ServiceException {
     Mailbox mbox = item.getMailbox();
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     try {
-      String command = Db.supports(Db.Capability.REPLACE_INTO) ? "REPLACE" : "INSERT";
-      String mailbox_id = DebugConfig.disableMailboxGroups ? "" : "mailbox_id, ";
       stmt =
           conn.prepareStatement(
-              command
-                  + " INTO "
-                  + getConversationTableName(item)
-                  + "("
-                  + mailbox_id
-                  + "hash, conv_id)"
-                  + " VALUES ("
-                  + (DebugConfig.disableMailboxGroups ? "" : "?, ")
-                  + "?, ?)");
+              Db.getInstance()
+                  .upsert(
+                      getConversationTableName(item),
+                      withMailboxId("hash", "conv_id"),
+                      withMailboxId("hash"),
+                      List.of("conv_id")));
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
       stmt.setString(pos++, hash);
       stmt.setInt(pos++, item.getId());
       stmt.executeUpdate();
     } catch (SQLException e) {
-      if (Db.errorMatches(e, Db.Error.DUPLICATE_ROW)) {
-        try {
-          DbPool.closeStatement(stmt);
-
-          stmt =
-              conn.prepareStatement(
-                  "UPDATE "
-                      + getConversationTableName(item)
-                      + " SET conv_id = ? WHERE "
-                      + IN_THIS_MAILBOX_AND
-                      + "hash = ?");
-          int pos = 1;
-          stmt.setInt(pos++, item.getId());
-          pos = setMailboxId(stmt, mbox, pos);
-          stmt.setString(pos++, hash);
-          stmt.executeUpdate();
-        } catch (SQLException nested) {
-          throw ServiceException.FAILURE(
-              "updating open conversation association for hash " + hash, nested);
-        }
-      } else {
-        throw ServiceException.FAILURE("writing open conversation association for hash " + hash, e);
-      }
+      throw ServiceException.FAILURE("writing open conversation association for hash " + hash, e);
     } finally {
       DbPool.closeStatement(stmt);
     }
@@ -4986,19 +4968,14 @@ public class DbMailItem {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     try {
-      String command = Db.supports(Db.Capability.REPLACE_INTO) ? "REPLACE" : "INSERT";
-      String mailbox_id = DebugConfig.disableMailboxGroups ? "" : "mailbox_id, ";
       stmt =
           conn.prepareStatement(
-              command
-                  + " INTO "
-                  + getCalendarItemTableName(mbox)
-                  + " ("
-                  + mailbox_id
-                  + "uid, item_id, start_time, end_time)"
-                  + " VALUES ("
-                  + MAILBOX_ID_VALUE
-                  + "?, ?, ?, ?)");
+              Db.getInstance()
+                  .upsert(
+                      getCalendarItemTableName(mbox),
+                      withMailboxId("uid", "item_id", "start_time", "end_time"),
+                      withMailboxId("uid"),
+                      List.of("uid", "item_id", "start_time", "end_time")));
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
       stmt.setString(pos++, calItem.getUid());
@@ -5007,36 +4984,13 @@ public class DbMailItem {
       stmt.setTimestamp(pos++, endTs);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      if (Db.errorMatches(e, Db.Error.DUPLICATE_ROW)) {
-        try {
-          DbPool.closeStatement(stmt);
-
-          stmt =
-              conn.prepareStatement(
-                  "UPDATE "
-                      + getCalendarItemTableName(mbox)
-                      + " SET item_id = ?, start_time = ?, end_time = ? WHERE "
-                      + IN_THIS_MAILBOX_AND
-                      + "uid = ?");
-          int pos = 1;
-          stmt.setInt(pos++, calItem.getId());
-          stmt.setTimestamp(pos++, startTs);
-          stmt.setTimestamp(pos++, endTs);
-          pos = setMailboxId(stmt, mbox, pos);
-          stmt.setString(pos++, calItem.getUid());
-          stmt.executeUpdate();
-        } catch (SQLException nested) {
-          throw ServiceException.FAILURE(
-              "updating data in calendar item table " + calItem.getUid(), nested);
-        }
-      } else {
-        throw ServiceException.FAILURE(
-            "writing invite to calendar item table " + calItem.getUid(), e);
-      }
+      throw ServiceException.FAILURE(
+          "writing invite to calendar item table " + calItem.getUid(), e);
     } finally {
       DbPool.closeStatement(stmt);
     }
   }
+
 
   /**
    * @param start start time of range, in milliseconds. {@code -1} means to leave the start time
