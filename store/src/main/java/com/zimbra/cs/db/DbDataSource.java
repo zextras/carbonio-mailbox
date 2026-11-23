@@ -91,9 +91,7 @@ public class DbDataSource {
             sb.append("data_source_id, item_id, folder_id, remote_id, metadata) VALUES (");
             sb.append(DbMailItem.MAILBOX_ID_VALUE);
             sb.append("?, ?, ?, ?, ?)");
-            if (conn.getDb().supportsCapability(Db.Capability.ON_DUPLICATE_KEY)) {
-                sb.append(" ON DUPLICATE KEY UPDATE data_source_id = ?, item_id = ?, folder_id = ?, remote_id = ?, metadata = ?");
-            }
+            sb.append(" ON DUPLICATE KEY UPDATE data_source_id = ?, item_id = ?, folder_id = ?, remote_id = ?, metadata = ?");
             stmt = conn.prepareStatement(sb.toString());
             int i = 1;
             i = DbMailItem.setMailboxId(stmt, mbox, i);
@@ -102,27 +100,17 @@ public class DbDataSource {
             stmt.setInt(i++, item.folderId);
             stmt.setString(i++, item.remoteId);
             stmt.setString(i++, DbMailItem.checkMetadataLength((item.md == null) ? null : item.md.toString()));
-            if (conn.getDb().supportsCapability(Db.Capability.ON_DUPLICATE_KEY)) {
-                stmt.setString(i++, dataSourceId);
-                stmt.setInt(i++, item.itemId);
-                stmt.setInt(i++, item.folderId);
-                stmt.setString(i++, item.remoteId);
-                stmt.setString(i++, DbMailItem.checkMetadataLength((item.md == null) ? null : item.md.toString()));
-            }
+            stmt.setString(i++, dataSourceId);
+            stmt.setInt(i++, item.itemId);
+            stmt.setInt(i++, item.folderId);
+            stmt.setString(i++, item.remoteId);
+            stmt.setString(i++, DbMailItem.checkMetadataLength((item.md == null) ? null : item.md.toString()));
             stmt.executeUpdate();
             if (!isBatch) {
                 conn.commit();
             }
         } catch (SQLException e) {
-            if (!conn.getDb().supportsCapability(Db.Capability.ON_DUPLICATE_KEY) && conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
-                DbPool.closeStatement(stmt);
-                if (!isBatch) {
-                    DbPool.quietClose(conn);
-                }
-                updateMapping(ds, item, isBatch);
-            } else {
-                throw ServiceException.FAILURE("Unable to add mapping for dataSource " + ds.getName(), e);
-            }
+            throw ServiceException.FAILURE("Unable to add mapping for dataSource " + ds.getName(), e);
         } finally {
             DbPool.closeStatement(stmt);
             if (!isBatch) {
@@ -148,37 +136,19 @@ public class DbDataSource {
             } else {
                 conn = DbPool.getConnection(mbox);
             }
-            if (!conn.getDb().supportsCapability(Db.Capability.ON_DUPLICATE_KEY) && !hasMapping(ds, item.itemId)) {
-                // if we need to update due to unique remoteId then itemid
-                // isn't going to be the same
-                StringBuilder sb = new StringBuilder();
-                sb.append("UPDATE ");
-                sb.append(getTableName(mbox));
-                sb.append(" SET folder_id = ?, item_id = ?, metadata = ? WHERE ");
-                sb.append(DbMailItem.IN_THIS_MAILBOX_AND);
-                sb.append(" remote_id = ?");
-                stmt = conn.prepareStatement(sb.toString());
-                int i = 1;
-                stmt.setInt(i++, item.folderId);
-                stmt.setInt(i++, item.itemId);
-                stmt.setString(i++, DbMailItem.checkMetadataLength((item.md == null) ? null : item.md.toString()));
-                i = DbMailItem.setMailboxId(stmt, mbox, i);
-                stmt.setString(i++, item.remoteId);
-            } else {
-                StringBuilder sb = new StringBuilder();
-                sb.append("UPDATE ");
-                sb.append(getTableName(mbox));
-                sb.append(" SET folder_id = ?, remote_id = ?, metadata = ? WHERE ");
-                sb.append(DbMailItem.IN_THIS_MAILBOX_AND);
-                sb.append(" item_id = ?");
-                stmt = conn.prepareStatement(sb.toString());
-                int i = 1;
-                stmt.setInt(i++, item.folderId);
-                stmt.setString(i++, item.remoteId);
-                stmt.setString(i++, DbMailItem.checkMetadataLength((item.md == null) ? null : item.md.toString()));
-                i = DbMailItem.setMailboxId(stmt, mbox, i);
-                stmt.setInt(i++, item.itemId);
-            }
+            StringBuilder sb = new StringBuilder();
+            sb.append("UPDATE ");
+            sb.append(getTableName(mbox));
+            sb.append(" SET folder_id = ?, remote_id = ?, metadata = ? WHERE ");
+            sb.append(DbMailItem.IN_THIS_MAILBOX_AND);
+            sb.append(" item_id = ?");
+            stmt = conn.prepareStatement(sb.toString());
+            int i = 1;
+            stmt.setInt(i++, item.folderId);
+            stmt.setString(i++, item.remoteId);
+            stmt.setString(i++, DbMailItem.checkMetadataLength((item.md == null) ? null : item.md.toString()));
+            i = DbMailItem.setMailboxId(stmt, mbox, i);
+            stmt.setInt(i++, item.itemId);
             stmt.executeUpdate();
             if (!isBatch) {
                 conn.commit();

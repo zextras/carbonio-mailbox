@@ -114,19 +114,6 @@ public class HSQLDB extends Db {
     }
 
     @Override
-    boolean supportsCapability(Capability capability) {
-        switch (capability) {
-            case MULTITABLE_UPDATE:
-            case BITWISE_OPERATIONS:
-            case REPLACE_INTO:
-            case DISABLE_CONSTRAINT_CHECK:
-                return false;
-            default:
-                return true;
-        }
-    }
-
-    @Override
     boolean compareError(SQLException e, Error error) {
         switch (error) {
             case DUPLICATE_ROW:
@@ -174,6 +161,31 @@ public class HSQLDB extends Db {
     }
 
     @Override
+    public String bitOR(String expr1, String expr2) {
+        return "BITOR(" + expr1 + ", " + expr2 + ")";
+    }
+
+    @Override
+    String updateInnerJoin(String target, String joined, String on, String set, String where) {
+        return "UPDATE " + target + " SET " + set + " WHERE EXISTS (SELECT 1 FROM " + joined + " WHERE " + on + " AND " + where + ")";
+    }
+
+    @Override
+    String decrementConversationSizes(String table, String sourceWhere, String targetWhere, byte conversationType) {
+        return "MERGE INTO " + table + " USING (SELECT x.pid, x.cnt, p.mm, p.cd FROM"
+            + " (SELECT parent_id pid, COUNT(*) cnt FROM " + table + " WHERE " + sourceWhere
+            + " AND parent_id IS NOT NULL GROUP BY parent_id) AS x,"
+            + " (VALUES(CAST(? AS INTEGER), CAST(? AS INTEGER))) AS p(mm, cd)) AS s"
+            + " ON " + targetWhere + "id = s.pid AND type = " + conversationType
+            + " WHEN MATCHED THEN UPDATE SET size = size - s.cnt, metadata = NULL, mod_metadata = s.mm, change_date = s.cd";
+    }
+
+    @Override
+    String foreignKeyChecks(boolean enabled) {
+        return "SET DATABASE REFERENTIAL INTEGRITY " + (enabled ? "TRUE" : "FALSE");
+    }
+
+    @Override
     public String bitANDNOT(String expr1, String expr2) {
         return "BITANDNOT(" + expr1 + ", " + expr2 + ")";
     }
@@ -187,7 +199,7 @@ public class HSQLDB extends Db {
             mDriverClassName = "org.hsqldb.jdbcDriver";
             mPoolSize = 10;
             mRootUrl = "jdbc:hsqldb:mem:";
-            mConnectionUrl = "jdbc:hsqldb:mem:zimbra";
+            mConnectionUrl = "jdbc:hsqldb:mem:zimbra;sql.syntax_mys=true;sql.ignore_case=true";
             mSupportsStatsCallback = false;
             mDatabaseProperties = new Properties();
         }

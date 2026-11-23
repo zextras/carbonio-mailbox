@@ -187,11 +187,11 @@ public final class DbSearchTest extends MailboxTestSuite {
 				DbSearch.FetchMode.ID);
 		assertEquals(3, result.size());
 		assertEquals(102, result.get(0).getId());
-		assertEquals("SUBJECT0000000102", result.get(0).getSortValue());
+		assertEquals("subject0000000102", result.get(0).getSortValue());
 		assertEquals(103, result.get(1).getId());
-		assertEquals("SUBJECT0000000103", result.get(1).getSortValue());
+		assertEquals("subject0000000103", result.get(1).getSortValue());
 		assertEquals(104, result.get(2).getId());
-		assertEquals("SUBJECT0000000104", result.get(2).getSortValue());
+		assertEquals("subject0000000104", result.get(2).getSortValue());
 	}
 
 	@Test

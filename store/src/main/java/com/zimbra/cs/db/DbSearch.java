@@ -85,25 +85,6 @@ public final class DbSearch {
     this.dumpster = dumpster;
   }
 
-  /**
-   * Returns true if this field is case-sensitive for search/sort, i.e. whether or not we need to do
-   * an UPPER() on it in places.
-   */
-  private boolean isCaseSensitiveField(String fieldName) {
-    // we need to handle things like "mi.sender" for the sender column, etc
-    // so look for the last . in the fieldname, return the string after that.
-    String colNameAfterPeriod;
-    int periodOffset = fieldName.lastIndexOf('.');
-    if (periodOffset <= 0 && periodOffset < (fieldName.length() + 1)) {
-      colNameAfterPeriod = fieldName;
-    } else {
-      colNameAfterPeriod = fieldName.substring(periodOffset + 1);
-    }
-    return (colNameAfterPeriod.equals("sender")
-        || colNameAfterPeriod.equals("subject")
-        || colNameAfterPeriod.equals("name"));
-  }
-
   private static String toSortField(Db db, SortBy sort) {
     switch (sort.getKey()) {
       case NONE:
@@ -148,11 +129,7 @@ public final class DbSearch {
   }
 
   private static String toStringSortField(Db db, String col) {
-    if (db.supportsCapability(Db.Capability.CASE_SENSITIVE_COMPARISON)) {
-      return db.concat("UPPER(" + col + ")", db.lpad("mi.id", 10, "0"));
-    } else {
-      return db.concat(col, db.lpad("CAST(mi.id AS CHAR)", 10, "0"));
-    }
+    return db.concat(col, db.lpad("mi.id", 10, "0"));
   }
 
   /** Generate a column-reference for the sort-by column. */
@@ -238,8 +215,7 @@ public final class DbSearch {
     if (LC.search_disable_database_hints.booleanValue()) {
       return NO_HINT;
     }
-    if (!db.supportsCapability(Db.Capability.FORCE_INDEX_EVEN_IF_NO_SORT)
-        && sort.getKey() == SortBy.Key.NONE) {
+    if (sort.getKey() == SortBy.Key.NONE) {
       return NO_HINT;
     }
     String index = null;
@@ -389,7 +365,7 @@ public final class DbSearch {
 
     // if there are no possible matches, short-circuit here...
     if (constraint.noResults) {
-      sql.append(db.supportsCapability(Db.Capability.BOOLEAN_DATATYPE) ? "FALSE" : "0=1");
+      sql.append("FALSE");
       return;
     }
     sql.append('(');
@@ -611,18 +587,15 @@ public final class DbSearch {
       boolean searchDraftsSeparately)
       throws ServiceException {
     db = conn.getDb();
-    if (!db.supportsCapability(Db.Capability.AVOID_OR_IN_WHERE_CLAUSE)
-        || !(node instanceof DbSearchConstraints.Union)) {
-      try {
-        node = node.optimize();
-        return searchInternal(conn, node, sort, offset, limit, fetch, searchDraftsSeparately);
-      } catch (SQLException e) {
-        if (db.compareError(e, Db.Error.TOO_MANY_SQL_PARAMS)) {
-          ZimbraLog.sqltrace.debug(
-              "Too many SQL params: %s", node, e); // fall back to splitting OR clauses
-        } else {
-          throw ServiceException.FAILURE("Failed to search", e);
-        }
+    try {
+      node = node.optimize();
+      return searchInternal(conn, node, sort, offset, limit, fetch, searchDraftsSeparately);
+    } catch (SQLException e) {
+      if (db.compareError(e, Db.Error.TOO_MANY_SQL_PARAMS)) {
+        ZimbraLog.sqltrace.debug(
+            "Too many SQL params: %s", node, e); // fall back to splitting OR clauses
+      } else {
+        throw ServiceException.FAILURE("Failed to search", e);
       }
     }
     List<Result> result = new ArrayList<>();
@@ -805,7 +778,7 @@ public final class DbSearch {
       if (requiresUnion) {
         sql.append(orderBy(db, sort, true));
         // LIMIT ?, ?
-        if (hasValidLIMIT && db.supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
+        if (hasValidLIMIT) {
           sql.append(' ').append(db.limit(offset, limit));
         }
       }
@@ -822,7 +795,7 @@ public final class DbSearch {
       if (requiresUnion) {
         sql.append(orderBy(db, sort, true));
         // LIMIT ?, ?
-        if (hasValidLIMIT && db.supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
+        if (hasValidLIMIT) {
           sql.append(' ').append(db.limit(offset, limit));
         }
         if (requiresUnion) {
@@ -835,7 +808,7 @@ public final class DbSearch {
     sql.append(orderBy(db, sort, true));
 
     // LIMIT ?, ?
-    if (hasValidLIMIT && db.supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
+    if (hasValidLIMIT) {
       sql.append(' ').append(db.limit(offset, limit));
     }
 
@@ -845,23 +818,10 @@ public final class DbSearch {
       // Create the statement and bind all our parameters!
       stmt = conn.prepareStatement(sql.toString());
       setParameters(stmt);
-      // Limit query if DB doesn't support LIMIT clause
-      if (hasValidLIMIT && !db.supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
-        stmt.setMaxRows(offset + limit + 1);
-      }
       rs = stmt.executeQuery();
 
       List<Result> result = new ArrayList<>();
       while (rs.next()) {
-        if (hasValidLIMIT && !db.supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
-          if (offset-- > 0) {
-            continue;
-          }
-          if (limit-- <= 0) {
-            break;
-          }
-        }
-
         Object sortkey = getSortKey(rs, sort);
         switch (fetch) {
           case ID:
@@ -1256,9 +1216,6 @@ public final class DbSearch {
       Object min,
       Object max,
       boolean and) {
-    if (db.supportsCapability(Db.Capability.CASE_SENSITIVE_COMPARISON) && isCaseSensitiveField(column)) {
-      column = "UPPER(" + column + ")";
-    }
     boolean lowValid = range.min >= cutoff;
     boolean highValid = range.max >= cutoff;
     if (!(lowValid || highValid)) {
@@ -1290,9 +1247,6 @@ public final class DbSearch {
 
   private boolean encodeStringRange(
       String column, DbSearchConstraints.StringRange range, boolean and) {
-    if (db.supportsCapability(Db.Capability.CASE_SENSITIVE_COMPARISON) && isCaseSensitiveField(column)) {
-      column = "UPPER(" + column + ")";
-    }
     if (and) {
       sql.append(" AND ");
     }

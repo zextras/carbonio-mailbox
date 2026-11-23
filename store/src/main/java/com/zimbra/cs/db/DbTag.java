@@ -595,33 +595,21 @@ public class DbTag {
             stmt = null;
 
             // finally, update the denormalized TAG_NAMES column in the MAIL_ITEM table
-            if (conn.getDb().supportsCapability(Db.Capability.MULTITABLE_UPDATE)) {
-                String mailboxesMatchAnd = DebugConfig.disableMailboxGroups ? "" : "mi.mailbox_id = ti.mailbox_id AND ";
-                stmt = conn.prepareStatement("UPDATE " + DbMailItem.getMailItemTableName(mbox, "mi") +
-                        " INNER JOIN " + getTaggedItemTableName(mbox, "ti") + " ON " + mailboxesMatchAnd + "mi.id = ti.item_id" +
-                        " SET tag_names = REPLACE(tag_names, ?, ?), mod_metadata = ?, change_date = ?" +
-                        " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id = ?");
-                pos = 1;
-                stmt.setString(pos++, delimitTagName(oldName));
-                stmt.setString(pos++, delimitTagName(newName));
-                stmt.setInt(pos++, mbox.getOperationChangeID());
-                stmt.setInt(pos++, mbox.getOperationTimestamp());
-                pos = DbMailItem.setMailboxId(stmt, mbox, pos);
-                stmt.setInt(pos++, tag.getId());
-            } else {
-                stmt = conn.prepareStatement("UPDATE " + DbMailItem.getMailItemTableName(mbox) +
-                        " SET tag_names = REPLACE(tag_names, ?, ?), mod_metadata = ?, change_date = ?" +
-                        " WHERE " + DbMailItem.IN_THIS_MAILBOX_AND + "id IN" +
-                        " (SELECT ti.item_id FROM " + getTaggedItemTableName(mbox, "ti") + " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id = ?)");
-                pos = 1;
-                stmt.setString(pos++, delimitTagName(oldName));
-                stmt.setString(pos++, delimitTagName(newName));
-                stmt.setInt(pos++, mbox.getOperationChangeID());
-                stmt.setInt(pos++, mbox.getOperationTimestamp());
-                pos = DbMailItem.setMailboxId(stmt, mbox, pos);
-                pos = DbMailItem.setMailboxId(stmt, mbox, pos);
-                stmt.setInt(pos++, tag.getId());
-            }
+            String mailboxesMatchAnd = DebugConfig.disableMailboxGroups ? "" : "mi.mailbox_id = ti.mailbox_id AND ";
+            stmt = conn.prepareStatement(conn.getDb().updateInnerJoin(
+                    DbMailItem.getMailItemTableName(mbox, "mi"),
+                    getTaggedItemTableName(mbox, "ti"),
+                    mailboxesMatchAnd + "mi.id = ti.item_id",
+                    "tag_names = REPLACE(tag_names, ?, ?), mod_metadata = ?, change_date = ?",
+                    inThisMailboxAnd("ti") + "ti.tag_id = ?"));
+            pos = 1;
+            stmt.setString(pos++, delimitTagName(oldName));
+            stmt.setString(pos++, delimitTagName(newName));
+            stmt.setInt(pos++, mbox.getOperationChangeID());
+            stmt.setInt(pos++, mbox.getOperationTimestamp());
+            pos = DbMailItem.setMailboxId(stmt, mbox, pos);
+            stmt.setInt(pos++, tag.getId());
+
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -646,31 +634,20 @@ public class DbTag {
             //   (if it was the last tag on the item, TAG_NAMES becomes NULL)
             int pos = 1;
             String delimited = delimitTagName(tag.getName());
-            if (conn.getDb().supportsCapability(Db.Capability.MULTITABLE_UPDATE)) {
-                String mailboxesMatchAnd = DebugConfig.disableMailboxGroups ? "" : "mi.mailbox_id = ti.mailbox_id AND ";
-                stmt = conn.prepareStatement("UPDATE " + DbMailItem.getMailItemTableName(mbox, "mi") +
-                        " INNER JOIN " + getTaggedItemTableName(mbox, "ti") + " ON " + mailboxesMatchAnd + "mi.id = ti.item_id" +
-                        " SET mi.tag_names = CASE mi.tag_names WHEN ? THEN NULL ELSE REPLACE(mi.tag_names, ?, '" + Db.getEscapeSequence() + "0') END, mod_metadata = ?, change_date = ?" +
-                        " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id = ?");
-                stmt.setString(pos++, delimited);
-                stmt.setString(pos++, delimited);
-                stmt.setInt(pos++, mbox.getOperationChangeID());
-                stmt.setInt(pos++, mbox.getOperationTimestamp());
-                pos = DbMailItem.setMailboxId(stmt, mbox, pos);
-                stmt.setInt(pos++, tag.getId());
-            } else {
-                stmt = conn.prepareStatement("UPDATE " + DbMailItem.getMailItemTableName(mbox) +
-                        " SET tag_names = CASE tag_names WHEN ? THEN NULL ELSE REPLACE(tag_names, ?, '" + Db.getEscapeSequence() + "0') END, mod_metadata = ?, change_date = ?" +
-                        " WHERE " + DbMailItem.IN_THIS_MAILBOX_AND + "id IN" +
-                        " (SELECT ti.item_id FROM " + getTaggedItemTableName(mbox, "ti") + " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id = ?)");
-                stmt.setString(pos++, delimited);
-                stmt.setString(pos++, delimited);
-                stmt.setInt(pos++, mbox.getOperationChangeID());
-                stmt.setInt(pos++, mbox.getOperationTimestamp());
-                pos = DbMailItem.setMailboxId(stmt, mbox, pos);
-                pos = DbMailItem.setMailboxId(stmt, mbox, pos);
-                stmt.setInt(pos++, tag.getId());
-            }
+            String mailboxesMatchAnd = DebugConfig.disableMailboxGroups ? "" : "mi.mailbox_id = ti.mailbox_id AND ";
+            stmt = conn.prepareStatement(conn.getDb().updateInnerJoin(
+                    DbMailItem.getMailItemTableName(mbox, "mi"),
+                    getTaggedItemTableName(mbox, "ti"),
+                    mailboxesMatchAnd + "mi.id = ti.item_id",
+                    "mi.tag_names = CASE mi.tag_names WHEN ? THEN NULL ELSE REPLACE(mi.tag_names, ?, '" + Db.getEscapeSequence() + "0') END, mod_metadata = ?, change_date = ?",
+                    inThisMailboxAnd("ti") + "ti.tag_id = ?"));
+            stmt.setString(pos++, delimited);
+            stmt.setString(pos++, delimited);
+            stmt.setInt(pos++, mbox.getOperationChangeID());
+            stmt.setInt(pos++, mbox.getOperationTimestamp());
+            pos = DbMailItem.setMailboxId(stmt, mbox, pos);
+            stmt.setInt(pos++, tag.getId());
+
 
             stmt.executeUpdate();
             DbPool.closeStatement(stmt);
@@ -711,7 +688,7 @@ public class DbTag {
         ResultSet rs = null;
         try {
             String orderByLimit = "";
-            if (maxItems != null && conn.getDb().supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
+            if (maxItems != null) {
                 orderByLimit = " ORDER BY date " + conn.getDb().limit(maxItems);
             }
 

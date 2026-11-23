@@ -36,7 +36,6 @@ public class DbPendingAclPush {
         ZimbraLog.mailbox.debug("Queuing for ACL push - mailbox %s item %s", mbox.getId(), itemId);
         DbConnection conn = mbox.getOperationConnection();
         PreparedStatement stmt = null;
-        boolean supportsReplace = conn.getDb().supportsCapability(Db.Capability.REPLACE_INTO);
         try {
         	
         	stmt = conn.prepareStatement(
@@ -55,7 +54,7 @@ public class DbPendingAclPush {
 				stmt.executeUpdate();
 			} else {
         	
-	            String command = supportsReplace ? "REPLACE" : "INSERT";
+	            String command = "REPLACE";
 	            stmt = conn.prepareStatement(
 	                    command + " INTO " + TABLE_PENDING_ACL_PUSH + " (mailbox_id, item_id, date) VALUES (?, ?, ?)");
 	            stmt.setInt(1, mbox.getId());
@@ -69,17 +68,6 @@ public class DbPendingAclPush {
                     "Unable to queue for ACL push - mailbox " + mbox.getId() + " item " + itemId, e);
         } finally {
             conn.closeQuietly(stmt);
-        }
-
-        // unit tests using hsqldb could potentially cause integrity constraint violation
-        // because hsqldb does not support REPLACE command and if this method is called twice in
-        // the same millisecond with the same (mailbox_id, item_id). Sleeping for 2ms would
-        // take care of this.
-        if (!supportsReplace) {
-            try {
-                Thread.sleep(2);
-            } catch (InterruptedException ignored) {
-            }
         }
     }
 

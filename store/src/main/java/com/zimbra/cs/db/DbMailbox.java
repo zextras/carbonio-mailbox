@@ -196,10 +196,7 @@ public final class DbMailbox {
   public static synchronized Mailbox.MailboxData createMailbox(
       DbConnection conn, int requestedMailboxId, String accountId, String comment, int lastBackupAt)
       throws ServiceException {
-    String limitClause =
-        conn.getDb().supportsCapability(Db.Capability.LIMIT_CLAUSE)
-            ? " ORDER BY index_volume_id " + conn.getDb().limit(1)
-            : "";
+    String limitClause = " ORDER BY index_volume_id " + conn.getDb().limit(1);
 
     // Get mailbox id.
     MailboxIdentifier newMboxId = getNextMailboxId(conn, requestedMailboxId);
@@ -393,18 +390,12 @@ public final class DbMailbox {
     ZimbraLog.mailbox.info(
         "clearing contents of mailbox " + mailboxId + ", group " + mbox.getSchemaGroupId());
 
-    if (DebugConfig.disableMailboxGroups && conn.getDb().supportsCapability(Db.Capability.FILE_PER_DATABASE)) {
-      return;
-    }
-
     if (conn == null) {
       conn = mbox.getOperationConnection();
     }
 
     try {
-      if (conn.getDb().supportsCapability(Db.Capability.DISABLE_CONSTRAINT_CHECK)) {
-        conn.disableForeignKeyConstraints();
-      }
+      conn.disableForeignKeyConstraints();
 
       // delete from tables in reverse order
       ArrayList<String> tables = new ArrayList<>(sTables);
@@ -436,9 +427,7 @@ public final class DbMailbox {
       throw ServiceException.FAILURE("dropMailboxFromGroup(" + mailboxId + ")", e);
     } finally {
       try {
-        if (conn.getDb().supportsCapability(Db.Capability.DISABLE_CONSTRAINT_CHECK)) {
-          conn.enableForeignKeyConstraints();
-        }
+        conn.enableForeignKeyConstraints();
       } catch (ServiceException e) {
         ZimbraLog.mailbox.error(
             "error enabling foreign key constraints during mailbox deletion", e);
@@ -1110,18 +1099,11 @@ public final class DbMailbox {
       DbPool.closeStatement(stmt);
     }
 
-    boolean supportsReplaceInto = conn.getDb().supportsCapability(Db.Capability.REPLACE_INTO);
-    if (!supportsReplaceInto) {
-      removeFromDeletedAccount(conn, email);
-    }
-
     try {
       // add the mailbox's account to deleted_account table
-      String command = supportsReplaceInto ? "REPLACE" : "INSERT";
       stmt =
           conn.prepareStatement(
-              command
-                  + " INTO deleted_account (email, account_id, mailbox_id, deleted_at) "
+              "REPLACE INTO deleted_account (email, account_id, mailbox_id, deleted_at) "
                   + "SELECT ?, account_id, id, ? FROM mailbox WHERE id = ?");
       stmt.setString(1, email.toLowerCase());
       stmt.setInt(2, (int) (System.currentTimeMillis() / 1000));
