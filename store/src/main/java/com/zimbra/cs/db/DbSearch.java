@@ -7,7 +7,6 @@ package com.zimbra.cs.db;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ListUtil;
@@ -206,10 +205,8 @@ public final class DbSearch {
     sql.append("SELECT COUNT(*) FROM ")
         .append(DbMailItem.getMailItemTableName(mailbox, "mi", dumpster));
     sql.append(" WHERE ");
-    if (!DebugConfig.disableMailboxGroups) {
-      sql.append("mi.mailbox_id = ? AND ");
-      params.add(mailbox.getId());
-    }
+    sql.append("mi.mailbox_id = ? AND ");
+    params.add(mailbox.getId());
     encodeConstraint(node, null, false, false);
     if (ignoreNoRecipients) {
       sql.append(" AND mi.recipients IS NOT NULL");
@@ -317,10 +314,8 @@ public final class DbSearch {
       sql.append(", ").append(DbTag.getTaggedItemTableName(mailbox, "ti"));
     }
     sql.append(" WHERE ");
-    if (!DebugConfig.disableMailboxGroups) {
-      sql.append("mi.mailbox_id = ? AND ");
-      params.add(mailbox.getId());
-    }
+    sql.append("mi.mailbox_id = ? AND ");
+    params.add(mailbox.getId());
     // Bug: 74521
     // for rcptAsc order make sure that the RECIPIENTS col is NOT null.
     // Bug: 82703
@@ -331,9 +326,7 @@ public final class DbSearch {
       sql.append("(mi.recipients is NOT NULL) AND ");
     }
     if (joinAppt) {
-      if (!DebugConfig.disableMailboxGroups) {
-        sql.append("mi.mailbox_id = ap.mailbox_id AND ");
-      }
+      sql.append("mi.mailbox_id = ap.mailbox_id AND ");
       sql.append("mi.id = ap.item_id AND ");
     }
   }
@@ -1167,9 +1160,7 @@ public final class DbSearch {
           sql.append("EXISTS (SELECT * FROM ").append(DbTag.getTaggedItemTableName(mailbox, "ti"));
           and = true;
           sql.append(" WHERE ");
-          if (!DebugConfig.disableMailboxGroups) {
-            sql.append("mi.mailbox_id = ti.mailbox_id AND ");
-          }
+          sql.append("mi.mailbox_id = ti.mailbox_id AND ");
           sql.append("mi.id = ti.item_id AND ti.tag_id = ?)");
           params.add(tag.getId());
         }
@@ -1181,9 +1172,7 @@ public final class DbSearch {
       sql.append("NOT EXISTS (SELECT * FROM ").append(DbTag.getTaggedItemTableName(mailbox, "ti"));
       and = true;
       sql.append(" WHERE ");
-      if (!DebugConfig.disableMailboxGroups) {
-        sql.append("mi.mailbox_id = ti.mailbox_id AND ");
-      }
+      sql.append("mi.mailbox_id = ti.mailbox_id AND ");
       sql.append("mi.id = ti.item_id AND ")
           .append(DbUtil.whereIn("ti.tag_id", tags.size()))
           .append(')');

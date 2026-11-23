@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.util.Pair;
@@ -253,8 +252,8 @@ public class DbImapMessage {
         try {
             conn = DbPool.getConnection();
 
-            String MBOX_JOIN = DebugConfig.disableMailboxGroups ? "" : "imap.mailbox_id = mi.mailbox_id AND";
-            String IN_IMAP_MAILBOX_AND = DebugConfig.disableMailboxGroups ? "" : "imap.mailbox_id = ? AND";
+            String MBOX_JOIN = "imap.mailbox_id = mi.mailbox_id AND";
+            String IN_IMAP_MAILBOX_AND = "imap.mailbox_id = ? AND";
             stmt = conn.prepareStatement(
                     "SELECT imap.uid, imap.flags as tflags, imap.imap_folder_id, mi.unread, mi.flags " +
                     "FROM " + getTableName(mbox) + " imap " +
@@ -336,8 +335,8 @@ public class DbImapMessage {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            String MBOX_JOIN = DebugConfig.disableMailboxGroups ? "" : "imap.mailbox_id = mi.mailbox_id AND";
-            String IN_IMAP_MAILBOX_AND = DebugConfig.disableMailboxGroups ? "" : "imap.mailbox_id = ? AND";
+            String MBOX_JOIN = "imap.mailbox_id = mi.mailbox_id AND";
+            String IN_IMAP_MAILBOX_AND = "imap.mailbox_id = ? AND";
             conn = DbPool.getConnection(mbox);
 
             stmt = conn.prepareStatement(
@@ -389,8 +388,8 @@ public class DbImapMessage {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            String MBOX_JOIN = DebugConfig.disableMailboxGroups ? "" : "imap.mailbox_id = mi.mailbox_id AND";
-            String IN_MI_MAILBOX_AND = DebugConfig.disableMailboxGroups ? "" : "mi.mailbox_id = ? AND";
+            String MBOX_JOIN = "imap.mailbox_id = mi.mailbox_id AND";
+            String IN_MI_MAILBOX_AND = "mi.mailbox_id = ? AND";
             conn = DbPool.getConnection(mbox);
 
             stmt = conn.prepareStatement(

@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.MoreObjects;
-import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ListUtil;
 import com.zimbra.common.util.ZimbraLog;
@@ -339,7 +338,7 @@ public class DbDataSource {
                     conn = DbPool.getConnection(mbox);
                 }
                 String dataSourceTable = getTableName(mbox);
-                String IN_THIS_MAILBOX_AND = DebugConfig.disableMailboxGroups ? "" : dataSourceTable + ".mailbox_id = ? AND ";
+                String IN_THIS_MAILBOX_AND = dataSourceTable + ".mailbox_id = ? AND ";
                 StringBuilder sb = new StringBuilder();
                 sb.append("DELETE FROM ");
                 sb.append(dataSourceTable);
@@ -432,7 +431,7 @@ public class DbDataSource {
             conn = DbPool.getConnection(mbox);
 
             String thisTable = getTableName(mbox);
-            String IN_THIS_MAILBOX_AND = DebugConfig.disableMailboxGroups ? "" : thisTable + ".mailbox_id = ? AND ";
+            String IN_THIS_MAILBOX_AND = thisTable + ".mailbox_id = ? AND ";
             StringBuilder sb = new StringBuilder();
             sb.append("SELECT item_id, remote_id, ").append(thisTable).append(".metadata FROM ");
             sb.append(thisTable);
@@ -476,8 +475,8 @@ public class DbDataSource {
         ResultSet rs = null;
         try {
             String thisTable = getTableName(mbox);
-            String IN_THIS_MAILBOX_AND = DebugConfig.disableMailboxGroups ? "" : thisTable + ".mailbox_id = ? AND ";
-            String MBOX_JOIN = DebugConfig.disableMailboxGroups ? " " : thisTable + ".mailbox_id = mi.mailbox_id AND ";
+            String IN_THIS_MAILBOX_AND = thisTable + ".mailbox_id = ? AND ";
+            String MBOX_JOIN = thisTable + ".mailbox_id = mi.mailbox_id AND ";
             conn = DbPool.getConnection(mbox);
             StringBuilder sb = new StringBuilder();
             sb.append("SELECT item_id, remote_id, ").append(thisTable).append(".metadata, mi.unread, mi.flags FROM ");

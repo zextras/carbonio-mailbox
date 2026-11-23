@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
-import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
@@ -141,7 +140,7 @@ public class DbOutOfOffice {
         ResultSet rs = null;
         try {
             stmt = conn.prepareStatement("DELETE FROM " + DbMailbox.qualifyZimbraTableName(mbox, TABLE_NAME) +
-                    (DebugConfig.disableMailboxGroups ? "" : " WHERE mailbox_id = ?"));
+                    " WHERE mailbox_id = ?");
             DbMailItem.setMailboxId(stmt, mbox, 1);
             int num = stmt.executeUpdate();
 
@@ -156,10 +155,6 @@ public class DbOutOfOffice {
 
     public static void prune(DbConnection conn, long cacheDurationMillis)
     throws ServiceException {
-        // there's no centralized OoO table to prune in the DB-per-user case
-        if (DebugConfig.disableMailboxGroups)
-            return;
-
         PreparedStatement stmt = null;
         try {
             Timestamp cutoff = new Timestamp(System.currentTimeMillis() - cacheDurationMillis);

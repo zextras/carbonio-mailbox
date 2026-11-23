@@ -18,7 +18,6 @@ import java.util.Set;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.mailbox.Color;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
@@ -162,7 +161,7 @@ public class DbTag {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            String mailboxesMatchAnd = DebugConfig.disableMailboxGroups ? "" : "mi.mailbox_id = ti.mailbox_id AND ";
+            String mailboxesMatchAnd = "mi.mailbox_id = ti.mailbox_id AND ";
             stmt = conn.prepareStatement("SELECT " + DbMailItem.DB_FIELDS +
                     " FROM " + DbMailItem.getMailItemTableName(mbox, "mi") +
                     " INNER JOIN " + getTaggedItemTableName(mbox, "ti") + " ON " + mailboxesMatchAnd + "ti.item_id = mi.id" +
@@ -223,7 +222,7 @@ public class DbTag {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            String mailboxesMatchAnd = DebugConfig.disableMailboxGroups ? "" : "mi.mailbox_id = ti.mailbox_id AND ";
+            String mailboxesMatchAnd = "mi.mailbox_id = ti.mailbox_id AND ";
             String folderconstraint = folders == null ? "" : " AND " + DbUtil.whereIn("folder_id", folders.size());
             stmt = conn.prepareStatement("SELECT " + DbMailItem.LEAF_NODE_FIELDS +
                         " FROM " + DbMailItem.getMailItemTableName(mbox, "mi") +
@@ -257,7 +256,7 @@ public class DbTag {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            String mailboxesMatchAnd = DebugConfig.disableMailboxGroups ? "" : "mi.mailbox_id = ti.mailbox_id AND ";
+            String mailboxesMatchAnd = "mi.mailbox_id = ti.mailbox_id AND ";
             stmt = conn.prepareStatement("SELECT ti.tag_id, COUNT(*), " + Db.clauseIFNULL("SUM(mi.unread)", "0") +
                     " FROM " + DbMailItem.getMailItemTableName(mbox, "mi") +
                     " INNER JOIN " + getTaggedItemTableName(mbox, "ti") + " ON " + mailboxesMatchAnd + "ti.item_id = mi.id" +
@@ -596,7 +595,7 @@ public class DbTag {
 
             // finally, update the denormalized TAG_NAMES column in the MAIL_ITEM table
             if (Db.supports(Db.Capability.MULTITABLE_UPDATE)) {
-                String mailboxesMatchAnd = DebugConfig.disableMailboxGroups ? "" : "mi.mailbox_id = ti.mailbox_id AND ";
+                String mailboxesMatchAnd = "mi.mailbox_id = ti.mailbox_id AND ";
                 stmt = conn.prepareStatement("UPDATE " + DbMailItem.getMailItemTableName(mbox, "mi") +
                         " INNER JOIN " + getTaggedItemTableName(mbox, "ti") + " ON " + mailboxesMatchAnd + "mi.id = ti.item_id" +
                         " SET tag_names = REPLACE(tag_names, ?, ?), mod_metadata = ?, change_date = ?" +
@@ -647,7 +646,7 @@ public class DbTag {
             int pos = 1;
             String delimited = delimitTagName(tag.getName());
             if (Db.supports(Db.Capability.MULTITABLE_UPDATE)) {
-                String mailboxesMatchAnd = DebugConfig.disableMailboxGroups ? "" : "mi.mailbox_id = ti.mailbox_id AND ";
+                String mailboxesMatchAnd = "mi.mailbox_id = ti.mailbox_id AND ";
                 stmt = conn.prepareStatement("UPDATE " + DbMailItem.getMailItemTableName(mbox, "mi") +
                         " INNER JOIN " + getTaggedItemTableName(mbox, "ti") + " ON " + mailboxesMatchAnd + "mi.id = ti.item_id" +
                         " SET mi.tag_names = CASE mi.tag_names WHEN ? THEN NULL ELSE REPLACE(mi.tag_names, ?, '" + Db.getEscapeSequence() + "0') END, mod_metadata = ?, change_date = ?" +
@@ -715,7 +714,7 @@ public class DbTag {
                 orderByLimit = " ORDER BY date " + Db.getInstance().limit(maxItems);
             }
 
-            String mailboxesMatchAnd = DebugConfig.disableMailboxGroups ? "" : "mi.mailbox_id = ti.mailbox_id AND ";
+            String mailboxesMatchAnd = "mi.mailbox_id = ti.mailbox_id AND ";
             stmt = conn.prepareStatement("SELECT " + DbMailItem.LEAF_NODE_FIELDS +
                     " FROM " + DbMailItem.getMailItemTableName(mbox, "mi") +
                     " INNER JOIN " + getTaggedItemTableName(mbox, "ti") + " ON " + mailboxesMatchAnd + "ti.item_id = mi.id" +
@@ -748,7 +747,7 @@ public class DbTag {
                         "(SELECT (CONCAT('" + Db.getEscapeSequence() + "0', GROUP_CONCAT(t.name SEPARATOR '" + Db.getEscapeSequence() + "0'), '" + Db.getEscapeSequence() + "0')" +
                         " FROM tag t INNER JOIN tagged_item ti ON t.mailbox_id = ti.mailbox_id AND t.id = ti.tag_id" +
                         " WHERE ti.item_id = mi.id AND ti.tag_id > 0)" +
-                    (DebugConfig.disableMailboxGroups ? "" : " WHERE mi.mailbox_id = ?"));
+                    " WHERE mi.mailbox_id = ?");
             int pos = 1;
             pos = DbMailItem.setMailboxId(stmt, mbox, pos);
 
@@ -761,15 +760,11 @@ public class DbTag {
     }
 
     public static String inThisMailboxAnd(String alias) {
-        if (DebugConfig.disableMailboxGroups) {
-            return "";
-        } else {
-            StringBuilder sb = new StringBuilder();
-            if (!Strings.isNullOrEmpty(alias)) {
-                sb.append(alias).append('.');
-            }
-            return sb.append("mailbox_id = ? AND ").toString();
+        StringBuilder sb = new StringBuilder();
+        if (!Strings.isNullOrEmpty(alias)) {
+            sb.append(alias).append('.');
         }
+        return sb.append("mailbox_id = ? AND ").toString();
     }
 
     /** Returns the name of the table that stores {@link Tag} data.  The table
@@ -806,7 +801,7 @@ public class DbTag {
 //        PreparedStatement stmt = null;
 //        ResultSet rs = null;
 //        try {
-//            String mailboxesMatchAnd = DebugConfig.disableMailboxGroups ? "" : "ti.mailbox_id = mi.mailbox_id AND ";
+//            String mailboxesMatchAnd = "ti.mailbox_id = mi.mailbox_id AND ";
 //            stmt = conn.prepareStatement("SELECT ti.tag_id, mi.id, mi.unread, mi.flags, mi.type" +
 //                    " FROM " + getTaggedItemTableName(mbox, "ti") +
 //                    " INNER JOIN " + DbMailItem.getMailItemTableName(mbox, "mi") + " ON " + mailboxesMatchAnd + "mi.id = ti.item_id" +
