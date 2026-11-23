@@ -35,8 +35,6 @@ public abstract class Db {
 
     private static volatile Db sDatabase;
 
-    private static volatile String ESCAPE_SEQUENCE = "\\";
-
     public static Db getInstance() {
         Db db = sDatabase;
         if (db == null) {
@@ -47,9 +45,6 @@ public abstract class Db {
 
     @VisibleForTesting
     public static synchronized void setInstance(Db database) {
-        if (database != null) {
-            ESCAPE_SEQUENCE = database.escapeSequence();
-        }
         sDatabase = database;
     }
 
@@ -196,9 +191,5 @@ public abstract class Db {
 
     protected String escapeSequence() {
         return "\\";
-    }
-
-    public static String getEscapeSequence() {
-        return ESCAPE_SEQUENCE;
     }
 }

@@ -638,7 +638,7 @@ public class DbTag {
                     DbMailItem.getMailItemTableName(mbox, "mi"),
                     getTaggedItemTableName(mbox, "ti"),
                     mailboxesMatchAnd + "mi.id = ti.item_id",
-                    "mi.tag_names = CASE mi.tag_names WHEN ? THEN NULL ELSE REPLACE(mi.tag_names, ?, '" + Db.getEscapeSequence() + "0') END, mod_metadata = ?, change_date = ?",
+                    "mi.tag_names = CASE mi.tag_names WHEN ? THEN NULL ELSE REPLACE(mi.tag_names, ?, '" + conn.getDb().escapeSequence() + "0') END, mod_metadata = ?, change_date = ?",
                     inThisMailboxAnd("ti") + "ti.tag_id = ?"));
             stmt.setString(pos++, delimited);
             stmt.setString(pos++, delimited);
@@ -721,7 +721,7 @@ public class DbTag {
         try {
             stmt = conn.prepareStatement("UPDATE " + DbMailItem.getMailItemTableName(mbox) +
                     " SET tag_names = " +
-                        "(SELECT (CONCAT('" + Db.getEscapeSequence() + "0', GROUP_CONCAT(t.name SEPARATOR '" + Db.getEscapeSequence() + "0'), '" + Db.getEscapeSequence() + "0')" +
+                        "(SELECT (CONCAT('" + conn.getDb().escapeSequence() + "0', GROUP_CONCAT(t.name SEPARATOR '" + conn.getDb().escapeSequence() + "0'), '" + conn.getDb().escapeSequence() + "0')" +
                         " FROM tag t INNER JOIN tagged_item ti ON t.mailbox_id = ti.mailbox_id AND t.id = ti.tag_id" +
                         " WHERE ti.item_id = mi.id AND ti.tag_id > 0)" +
                     " WHERE mi.mailbox_id = ?");
