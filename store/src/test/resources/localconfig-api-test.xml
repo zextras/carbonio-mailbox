@@ -37,4 +37,7 @@
   <key name="localized_msgs_directory">
     <value>./conf/msgs</value>
   </key>
+  <key name="proxy_ips_cache_ttl">
+    <value>0</value>
+  </key>
 </localconfig>
