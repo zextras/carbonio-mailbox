@@ -70,7 +70,6 @@ public class UserServletContext {
     public ItemId itemId;
     public MailItem target;
     public SortBy sortBy;
-    public FakeFolder fakeTarget = null;
     public int[] reqListIds;
     public ArrayList<Item> requestedItems;
     public boolean fromDumpster;
@@ -147,20 +146,6 @@ public class UserServletContext {
         @Override
         public void remove() {
         }
-    }
-
-    public static class FakeFolder {
-        private final String account;
-        private final String path;
-        private final String name;
-        public FakeFolder(String targetAccount, String calPath, String calName) {
-            account = targetAccount;
-            path = calPath;
-            name =  calName;
-        }
-        public String getAccount() { return account; }
-        public String getPath() { return path; }
-        public String getName() { return name; }
     }
 
     public UserServletContext(HttpServletRequest request, HttpServletResponse response, UserServlet srvlt)

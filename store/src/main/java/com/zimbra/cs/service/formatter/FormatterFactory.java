@@ -120,12 +120,10 @@ public class FormatterFactory {
         addFormatter(new RssFormatter());
         addFormatter(new AtomFormatter());
         addFormatter(new NativeFormatter());
-        addFormatter(new FreeBusyFormatter());
         addFormatter(new IfbFormatter());
         addFormatter(new SyncFormatter());
         addFormatter(new XmlFormatter());
         addFormatter(new JsonFormatter());
-        addFormatter(new HtmlFormatter());
         addFormatter(new TarFormatter());
         addFormatter(new TgzFormatter());
         addFormatter(new ZipFormatter());
