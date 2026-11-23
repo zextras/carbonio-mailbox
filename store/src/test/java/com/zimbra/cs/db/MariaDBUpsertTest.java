@@ -302,7 +302,7 @@ class MariaDBUpsertTest {
   private static void runScript(Connection c, String file, Map<String, String> vars) throws Exception {
     String script = StringUtil.fillTemplate(Files.readString(Path.of("db", file)), vars);
     try (Statement stmt = c.createStatement()) {
-      for (String sql : DbUtil.parseScript(new StringReader(script))) {
+      for (String sql : DbUtil.parseScript(new StringReader(script), DB)) {
         if (!sql.isEmpty()) {
           stmt.execute(sql);
         }

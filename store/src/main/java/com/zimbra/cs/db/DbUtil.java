@@ -213,6 +213,10 @@ public final class DbUtil {
      * Removes comments that begin with <code>--</code> or <code>#</code>.
      */
     public static String[] parseScript(Reader scriptReader) throws IOException {
+        return parseScript(scriptReader, Db.getInstance());
+    }
+
+    public static String[] parseScript(Reader scriptReader, Db db) throws IOException {
         StringBuilder buf = new StringBuilder();
         BufferedReader br = new BufferedReader(scriptReader);
         String line;
@@ -246,7 +250,7 @@ public final class DbUtil {
         br.close();
         if (buf.length() != 0 || ret == null)
             ret = addScript(ret, buf.toString().split("\\s*" +
-                Db.getInstance().scriptCommandDelimiter() + "\\s*"));
+                db.scriptCommandDelimiter() + "\\s*"));
         for (int i = 0; i < ret.length; i++) {
             if (ret[i].startsWith("END")) {
                 ret[i - 1] += ";\n" + ret[i];

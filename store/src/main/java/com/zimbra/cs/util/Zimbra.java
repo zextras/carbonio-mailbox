@@ -24,6 +24,7 @@ import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.ldap.LdapAttributeCallbackHelper;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.db.DbPool;
+import com.zimbra.cs.db.Db;
 import com.zimbra.cs.db.Versions;
 import com.zimbra.cs.ephemeral.EphemeralStore;
 import com.zimbra.cs.ephemeral.LdapEphemeralStore;
@@ -165,16 +166,16 @@ public final class Zimbra {
     checkForClass("javax.mail.internet.MimeMessage", "javamail-1.4.3.jar");
   }
 
-  public static void startup() {
+  public static void startup(Db db) {
     try {
-      startup(true);
+      startup(true, db);
     } catch (ServiceException se) {
       Zimbra.halt("Exception during startup, aborting server, please check your config", se);
     }
   }
 
-  public static void startupCLI() throws ServiceException {
-    startup(false);
+  public static void startupCLI(Db db) throws ServiceException {
+    startup(false, db);
   }
 
   /**
@@ -183,7 +184,7 @@ public final class Zimbra {
    * @param forMailboxd true if this is the mailboxd process; false for CLI processes
    * @throws ServiceException service exception
    */
-  private static synchronized void startup(boolean forMailboxd) throws ServiceException {
+  private static synchronized void startup(boolean forMailboxd, Db db) throws ServiceException {
     if (sInited) return;
 
     sIsMailboxd = forMailboxd;
@@ -204,7 +205,7 @@ public final class Zimbra {
 
     ZimbraPerf.prepare(ZimbraPerf.ServerID.ZIMBRA);
 
-    DbPool.global();
+    DbPool.global(db);
 
     app.initializeZimbraDb(forMailboxd);
 

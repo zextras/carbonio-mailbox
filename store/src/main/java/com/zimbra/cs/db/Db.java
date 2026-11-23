@@ -56,23 +56,24 @@ public abstract class Db {
         DUMPSTER_TABLES
     }
 
-    private static Db sDatabase;
+    private static volatile Db sDatabase;
 
-    private static String ESCAPE_SEQUENCE = "\\";
+    private static volatile String ESCAPE_SEQUENCE = "\\";
 
-    public static synchronized Db getInstance() {
-        if (sDatabase == null) {
-            setInstance(new MariaDB());
+    public static Db getInstance() {
+        Db db = sDatabase;
+        if (db == null) {
+            throw new IllegalStateException("no database configured: create the pool with DbPool.global(Db)");
         }
-        return sDatabase;
+        return db;
     }
 
     @VisibleForTesting
     public static synchronized void setInstance(Db database) {
-        sDatabase = database;
         if (database != null) {
             ESCAPE_SEQUENCE = database.escapeSequence();
         }
+        sDatabase = database;
     }
 
     public String healthCheckQuery() {

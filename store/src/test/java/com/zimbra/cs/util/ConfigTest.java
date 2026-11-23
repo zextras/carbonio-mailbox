@@ -6,7 +6,6 @@
 
 package com.zimbra.cs.util;
 
-import com.zimbra.cs.db.Db;
 import com.zimbra.cs.db.DbConfig;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
@@ -26,9 +25,8 @@ class ConfigTest {
 
   @BeforeAll
   static void setUp() throws Exception {
-    Db.setInstance(new HSQLDB());
     HSQLDB.createDatabase(tempDir.getAbsolutePath());
-    DbPool.global();
+    DbPool.global(new HSQLDB());
   }
 
   @AfterAll

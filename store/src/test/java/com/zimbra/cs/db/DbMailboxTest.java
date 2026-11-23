@@ -29,8 +29,7 @@ public class DbMailboxTest {
 	@BeforeAll
 	public static void init() throws Exception {
 		HSQLDB.createDatabase(LC.zimbra_home.value() + "/build/test");
-		Db.setInstance(new HSQLDB());
-		DbPool.global();
+		DbPool.global(new HSQLDB());
 	}
 
 	@BeforeEach
