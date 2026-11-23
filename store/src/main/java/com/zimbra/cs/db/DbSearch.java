@@ -73,6 +73,7 @@ public final class DbSearch {
   private final boolean dumpster;
   private final StringBuilder sql = new StringBuilder();
   private final List<Object> params = new ArrayList<>();
+  private Db db;
 
   public DbSearch(Mailbox mbox) {
     this.mailbox = mbox;
@@ -103,20 +104,19 @@ public final class DbSearch {
         || colNameAfterPeriod.equals("name"));
   }
 
-  private static String toSortField(SortBy sort) {
-    Db db = Db.getInstance();
+  private static String toSortField(Db db, SortBy sort) {
     switch (sort.getKey()) {
       case NONE:
         return null;
       case SENDER:
-        return toStringSortField("mi.sender");
+        return toStringSortField(db, "mi.sender");
       case RCPT:
-        return toStringSortField("mi.recipients");
+        return toStringSortField(db, "mi.recipients");
       case SUBJECT:
-        return toStringSortField("mi.subject");
+        return toStringSortField(db, "mi.subject");
       case NAME:
       case NAME_NATURAL_ORDER:
-        return toStringSortField("mi.name");
+        return toStringSortField(db, "mi.name");
       case ID:
         return "mi.id";
       case SIZE:
@@ -147,9 +147,8 @@ public final class DbSearch {
     }
   }
 
-  private static String toStringSortField(String col) {
-    Db db = Db.getInstance();
-    if (Db.supports(Db.Capability.CASE_SENSITIVE_COMPARISON)) {
+  private static String toStringSortField(Db db, String col) {
+    if (db.supportsCapability(Db.Capability.CASE_SENSITIVE_COMPARISON)) {
       return db.concat("UPPER(" + col + ")", db.lpad("mi.id", 10, "0"));
     } else {
       return db.concat(col, db.lpad("CAST(mi.id AS CHAR)", 10, "0"));
@@ -158,7 +157,7 @@ public final class DbSearch {
 
   /** Generate a column-reference for the sort-by column. */
   private void addSortColumn(SortBy sort) {
-    String field = toSortField(sort);
+    String field = toSortField(db, sort);
     if (field == null) { // no sort column for NONE
       return;
     }
@@ -169,12 +168,12 @@ public final class DbSearch {
    * Generate the ORDER BY part that goes at the end of the SELECT. Note: Assumes that <b>mi.id</b>
    * is something defined in the SELECT which can be ordered by.
    */
-  protected static String orderBy(SortBy sort, boolean alias) {
+  protected static String orderBy(Db db, SortBy sort, boolean alias) {
     if (sort.getKey() == SortBy.Key.NONE) { // no ORDER BY for NONE
       return "";
     }
     StringBuilder orderBy = new StringBuilder(" ORDER BY ");
-    orderBy.append(alias ? SORT_COLUMN_ALIAS : toSortField(sort));
+    orderBy.append(alias ? SORT_COLUMN_ALIAS : toSortField(db, sort));
     if (sort.getDirection() == SortBy.Direction.DESC) {
       orderBy.append(" DESC");
     }
@@ -202,6 +201,7 @@ public final class DbSearch {
 
   public int countResults(DbConnection conn, DbSearchConstraints node, boolean ignoreNoRecipients)
       throws ServiceException {
+    db = conn.getDb();
     node = node.optimize();
     sql.append("SELECT COUNT(*) FROM ")
         .append(DbMailItem.getMailItemTableName(mailbox, "mi", dumpster));
@@ -238,7 +238,7 @@ public final class DbSearch {
     if (LC.search_disable_database_hints.booleanValue()) {
       return NO_HINT;
     }
-    if (!Db.supports(Db.Capability.FORCE_INDEX_EVEN_IF_NO_SORT)
+    if (!db.supportsCapability(Db.Capability.FORCE_INDEX_EVEN_IF_NO_SORT)
         && sort.getKey() == SortBy.Key.NONE) {
       return NO_HINT;
     }
@@ -263,7 +263,10 @@ public final class DbSearch {
         }
       }
     }
-    return Db.forceIndex(index);
+    if (index == null || index.trim().equals("")) {
+      return "";
+    }
+    return db.forceIndexClause(index);
   }
 
   private void encodeSelect(
@@ -386,7 +389,7 @@ public final class DbSearch {
 
     // if there are no possible matches, short-circuit here...
     if (constraint.noResults) {
-      sql.append(Db.supports(Db.Capability.BOOLEAN_DATATYPE) ? "FALSE" : "0=1");
+      sql.append(db.supportsCapability(Db.Capability.BOOLEAN_DATATYPE) ? "FALSE" : "0=1");
       return;
     }
     sql.append('(');
@@ -607,13 +610,14 @@ public final class DbSearch {
       FetchMode fetch,
       boolean searchDraftsSeparately)
       throws ServiceException {
-    if (!conn.getDb().supportsCapability(Db.Capability.AVOID_OR_IN_WHERE_CLAUSE)
+    db = conn.getDb();
+    if (!db.supportsCapability(Db.Capability.AVOID_OR_IN_WHERE_CLAUSE)
         || !(node instanceof DbSearchConstraints.Union)) {
       try {
         node = node.optimize();
         return searchInternal(conn, node, sort, offset, limit, fetch, searchDraftsSeparately);
       } catch (SQLException e) {
-        if (conn.getDb().compareError(e, Db.Error.TOO_MANY_SQL_PARAMS)) {
+        if (db.compareError(e, Db.Error.TOO_MANY_SQL_PARAMS)) {
           ZimbraLog.sqltrace.debug(
               "Too many SQL params: %s", node, e); // fall back to splitting OR clauses
         } else {
@@ -650,7 +654,7 @@ public final class DbSearch {
       // only deals with folders for now to avoid considering complicated situations (other
       // constraints combined)
       DbSearchConstraints.Leaf leafNode = node.toLeaf();
-      final int dbLimit = conn.getDb().getParamLimit();
+      final int dbLimit = db.getParamLimit();
       // avoid edge cases
       int otherConstraintsCount = params.size() - leafNode.folders.size();
       final int softLimit = dbLimit - otherConstraintsCount - 10;
@@ -799,10 +803,10 @@ public final class DbSearch {
           joinTaggedItem);
 
       if (requiresUnion) {
-        sql.append(orderBy(sort, true));
+        sql.append(orderBy(db, sort, true));
         // LIMIT ?, ?
-        if (hasValidLIMIT && conn.getDb().supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
-          sql.append(' ').append(conn.getDb().limit(offset, limit));
+        if (hasValidLIMIT && db.supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
+          sql.append(' ').append(db.limit(offset, limit));
         }
       }
     }
@@ -816,10 +820,10 @@ public final class DbSearch {
       encodeSelect(sort, fetch, true, false, node, hasValidLIMIT);
       encodeConstraint(node, APPOINTMENT_TABLE_TYPES, true, false);
       if (requiresUnion) {
-        sql.append(orderBy(sort, true));
+        sql.append(orderBy(db, sort, true));
         // LIMIT ?, ?
-        if (hasValidLIMIT && conn.getDb().supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
-          sql.append(' ').append(conn.getDb().limit(offset, limit));
+        if (hasValidLIMIT && db.supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
+          sql.append(' ').append(db.limit(offset, limit));
         }
         if (requiresUnion) {
           sql.append(')');
@@ -828,11 +832,11 @@ public final class DbSearch {
     }
 
     // TODO FIXME: include COLLATION for sender/subject sort
-    sql.append(orderBy(sort, true));
+    sql.append(orderBy(db, sort, true));
 
     // LIMIT ?, ?
-    if (hasValidLIMIT && conn.getDb().supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
-      sql.append(' ').append(conn.getDb().limit(offset, limit));
+    if (hasValidLIMIT && db.supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
+      sql.append(' ').append(db.limit(offset, limit));
     }
 
     PreparedStatement stmt = null;
@@ -842,14 +846,14 @@ public final class DbSearch {
       stmt = conn.prepareStatement(sql.toString());
       setParameters(stmt);
       // Limit query if DB doesn't support LIMIT clause
-      if (hasValidLIMIT && !conn.getDb().supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
+      if (hasValidLIMIT && !db.supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
         stmt.setMaxRows(offset + limit + 1);
       }
       rs = stmt.executeQuery();
 
       List<Result> result = new ArrayList<>();
       while (rs.next()) {
-        if (hasValidLIMIT && !conn.getDb().supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
+        if (hasValidLIMIT && !db.supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
           if (offset-- > 0) {
             continue;
           }
@@ -1142,7 +1146,7 @@ public final class DbSearch {
         }
       }
       if (flags != 0) {
-        sql.append(" AND ").append(Db.getInstance().bitAND("mi.flags", "?")).append(" = ?");
+        sql.append(" AND ").append(db.bitAND("mi.flags", "?")).append(" = ?");
         params.add(flags);
         params.add(bool ? flags : 0);
       }
@@ -1252,7 +1256,7 @@ public final class DbSearch {
       Object min,
       Object max,
       boolean and) {
-    if (Db.supports(Db.Capability.CASE_SENSITIVE_COMPARISON) && isCaseSensitiveField(column)) {
+    if (db.supportsCapability(Db.Capability.CASE_SENSITIVE_COMPARISON) && isCaseSensitiveField(column)) {
       column = "UPPER(" + column + ")";
     }
     boolean lowValid = range.min >= cutoff;
@@ -1286,7 +1290,7 @@ public final class DbSearch {
 
   private boolean encodeStringRange(
       String column, DbSearchConstraints.StringRange range, boolean and) {
-    if (Db.supports(Db.Capability.CASE_SENSITIVE_COMPARISON) && isCaseSensitiveField(column)) {
+    if (db.supportsCapability(Db.Capability.CASE_SENSITIVE_COMPARISON) && isCaseSensitiveField(column)) {
       column = "UPPER(" + column + ")";
     }
     if (and) {
@@ -1314,7 +1318,7 @@ public final class DbSearch {
 
   private boolean encodeCursorRange(DbSearchConstraints.CursorRange range, boolean and) {
     // Can't use SORT_COLUMN_ALIAS because column aliases in SELECT are illegal to use in WHERE
-    String col = toSortField(range.sortBy);
+    String col = toSortField(db, range.sortBy);
     if (and) {
       sql.append(" AND ");
     }

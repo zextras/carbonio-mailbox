@@ -2733,7 +2733,7 @@ public class DbMailItem {
                   + " WHERE "
                   + IN_THIS_MAILBOX_AND
                   + typeIn(type)
-                  + DbSearch.orderBy(sort, false));
+                  + DbSearch.orderBy(conn.getDb(), sort, false));
       if (type == MailItem.Type.MESSAGE) {
         conn.getDb().enableStreaming(stmt);
       }
@@ -2769,6 +2769,7 @@ public class DbMailItem {
 
     List<UnderlyingData> result = new ArrayList<>();
 
+    DbConnection conn = mbox.getOperationConnection();
     StringBuilder sql =
         new StringBuilder("SELECT ")
             .append(DB_FIELDS)
@@ -2777,12 +2778,11 @@ public class DbMailItem {
             .append(" WHERE ")
             .append(IN_THIS_MAILBOX_AND)
             .append("parent_id = ? ")
-            .append(DbSearch.orderBy(sort, false));
+            .append(DbSearch.orderBy(conn.getDb(), sort, false));
     if (limit > 0) {
       sql.append(" LIMIT ?");
     }
 
-    DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     ResultSet rs = null;
     try {
@@ -2903,7 +2903,7 @@ public class DbMailItem {
                   + IN_THIS_MAILBOX_AND
                   + "folder_id = ? AND "
                   + typeIn(type)
-                  + DbSearch.orderBy(sort, false));
+                  + DbSearch.orderBy(conn.getDb(), sort, false));
       if (folder.getSize() > RESULTS_STREAMING_MIN_ROWS && type == MailItem.Type.MESSAGE) {
         conn.getDb().enableStreaming(stmt);
       }
