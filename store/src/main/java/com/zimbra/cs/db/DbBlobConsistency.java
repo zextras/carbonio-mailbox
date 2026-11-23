@@ -16,7 +16,6 @@ import java.util.Set;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.db.DbPool.DbConnection;
@@ -64,12 +63,10 @@ public class DbBlobConsistency {
                 " item_id BETWEEN " + minId + " AND " + maxId +
                 " AND blob_digest IS NOT NULL " +
                 "AND locator = " + volumeId);
-            if (!DebugConfig.disableMailboxGroups) {
-                stmt.setInt(1, mbox.getId());
-                stmt.setInt(2, mbox.getId());
-                stmt.setInt(3, mbox.getId());
-                stmt.setInt(4, mbox.getId());
-            }
+            stmt.setInt(1, mbox.getId());
+            stmt.setInt(2, mbox.getId());
+            stmt.setInt(3, mbox.getId());
+            stmt.setInt(4, mbox.getId());
             conn.getDb().enableStreaming(stmt);
             rs = stmt.executeQuery();
             while (rs.next()) {
@@ -112,9 +109,7 @@ public class DbBlobConsistency {
             try {
                 String sql = "SELECT MAX(id) " +
                     "FROM " + DbMailItem.getMailItemTableName(mbox, fromDumpster);
-                if (!DebugConfig.disableMailboxGroups) {
-                    sql += " WHERE mailbox_id = " + mbox.getId();
-                }
+                sql += " WHERE mailbox_id = " + mbox.getId();
                 stmt = conn.prepareStatement(sql);
                 rs = stmt.executeQuery();
                 rs.next();

@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.db;
 
-import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;
@@ -232,62 +231,25 @@ public final class DbMailbox {
       stmt.close();
       stmt = null;
 
-      if (DebugConfig.disableMailboxGroups) {
-
-        if (!DebugConfig.externalMailboxDirectory) {
-          // then create the primary lookup row in ZIMBRA.MAILBOX
-          stmt =
-              conn.prepareStatement(
-                  "INSERT INTO mailbox (account_id, id, last_backup_at, comment)"
-                      + " VALUES (?, ?, ?, ?)");
-          stmt.setString(1, accountId.toLowerCase());
-          stmt.setInt(2, mailboxId);
-          if (lastBackupAt >= 0) {
-            stmt.setInt(3, lastBackupAt);
-          } else {
-            stmt.setNull(3, Types.INTEGER);
-          }
-          stmt.setString(4, comment);
-          stmt.executeUpdate();
-          stmt.close();
-          stmt = null;
-        }
-
-        // finally, create the row in MBOXGROUPnn.MAILBOX for mutable state and counts
-        stmt =
-            conn.prepareStatement(
-                "INSERT INTO "
-                    + qualifyTableName(groupId, TABLE_MAILBOX)
-                    + "(id, account_id, index_volume_id, item_id_checkpoint, version)"
-                    + " VALUES (?, ?, ?, "
-                    + (Mailbox.FIRST_USER_ID - 1)
-                    + ", ?)");
-        stmt.setInt(1, mailboxId);
-        stmt.setString(2, accountId.toLowerCase());
-        stmt.setShort(3, indexVolume);
-        stmt.setString(4, MailboxVersion.getCurrent().toString());
-        stmt.executeUpdate();
+      // then create the primary lookup row in ZIMBRA.MAILBOX
+      stmt =
+          conn.prepareStatement(
+              "INSERT INTO mailbox(account_id, id, group_id, index_volume_id, item_id_checkpoint,"
+                  + " last_backup_at, comment, version) VALUES (?, ?, ?, ?, "
+                  + (Mailbox.FIRST_USER_ID - 1)
+                  + ", ?, ?, ?)");
+      stmt.setString(1, accountId.toLowerCase());
+      stmt.setInt(2, mailboxId);
+      stmt.setInt(3, groupId);
+      stmt.setInt(4, indexVolume);
+      if (lastBackupAt >= 0) {
+        stmt.setInt(5, lastBackupAt);
       } else {
-        // then create the primary lookup row in ZIMBRA.MAILBOX
-        stmt =
-            conn.prepareStatement(
-                "INSERT INTO mailbox(account_id, id, group_id, index_volume_id, item_id_checkpoint,"
-                    + " last_backup_at, comment, version) VALUES (?, ?, ?, ?, "
-                    + (Mailbox.FIRST_USER_ID - 1)
-                    + ", ?, ?, ?)");
-        stmt.setString(1, accountId.toLowerCase());
-        stmt.setInt(2, mailboxId);
-        stmt.setInt(3, groupId);
-        stmt.setInt(4, indexVolume);
-        if (lastBackupAt >= 0) {
-          stmt.setInt(5, lastBackupAt);
-        } else {
-          stmt.setNull(5, Types.INTEGER);
-        }
-        stmt.setString(6, comment);
-        stmt.setString(7, MailboxVersion.getCurrent().toString());
-        stmt.executeUpdate();
+        stmt.setNull(5, Types.INTEGER);
       }
+      stmt.setString(6, comment);
+      stmt.setString(7, MailboxVersion.getCurrent().toString());
+      stmt.executeUpdate();
 
       Mailbox.MailboxData data = new Mailbox.MailboxData();
       data.accountId = accountId;
@@ -363,11 +325,6 @@ public final class DbMailbox {
   static final List<String> sTables = new ArrayList<>();
 
   static {
-    if (DebugConfig.disableMailboxGroups) {
-      sTables.add(TABLE_MAILBOX);
-      sTables.add(TABLE_METADATA);
-      sTables.add(TABLE_OUT_OF_OFFICE);
-    }
     sTables.add(DbMailItem.TABLE_MAIL_ITEM);
     sTables.add(DbMailItem.TABLE_MAIL_ITEM_DUMPSTER);
     sTables.add(DbMailItem.TABLE_REVISION);
@@ -415,9 +372,7 @@ public final class DbMailbox {
               conn.prepareStatement(
                   "DELETE FROM "
                       + qualifyTableName(mbox, tableName)
-                      + (DebugConfig.disableMailboxGroups
-                          ? ""
-                          : " WHERE mailbox_id = " + mailboxId));
+                      + " WHERE mailbox_id = " + mailboxId);
           stmt.executeUpdate();
         } finally {
           DbPool.closeStatement(stmt);
@@ -445,10 +400,6 @@ public final class DbMailbox {
   }
 
   public static void renameMailbox(Mailbox mbox, String newName) throws ServiceException {
-    if (DebugConfig.externalMailboxDirectory) {
-      return;
-    }
-
     int mailboxId = mbox.getId();
     ZimbraLog.mailbox.info("Renaming email/comment of mailbox " + mailboxId + " to " + newName);
 
@@ -478,7 +429,7 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "UPDATE "
-                  + qualifyZimbraTableName(mbox, TABLE_MAILBOX)
+                  + TABLE_MAILBOX
                   + " SET contact_count = NULL WHERE id = ?");
       stmt.setInt(1, mbox.getId());
       stmt.executeUpdate();
@@ -496,7 +447,7 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "UPDATE "
-                  + qualifyZimbraTableName(mbox, TABLE_MAILBOX)
+                  + TABLE_MAILBOX
                   + " SET last_soap_access = ? WHERE id = ?");
       stmt.setInt(1, (int) (mbox.getLastSoapAccessTime() / 1000));
       stmt.setInt(2, mbox.getId());
@@ -516,7 +467,7 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "UPDATE "
-                  + qualifyZimbraTableName(mbox, TABLE_MAILBOX)
+                  + TABLE_MAILBOX
                   + " SET item_id_checkpoint = ?, contact_count = ?, change_checkpoint = ?,"
                   + "  size_checkpoint = ?, new_messages = ? WHERE id = ?");
       int pos = 1;
@@ -545,7 +496,7 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "UPDATE "
-                  + qualifyZimbraTableName(mbox, TABLE_MAILBOX)
+                  + TABLE_MAILBOX
                   + " SET tracking_sync = ? WHERE id = ? AND tracking_sync < ?");
       stmt.setInt(1, cutoff);
       stmt.setInt(2, mbox.getId());
@@ -565,7 +516,7 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "UPDATE "
-                  + qualifyZimbraTableName(mbox, TABLE_MAILBOX)
+                  + TABLE_MAILBOX
                   + " SET tracking_imap = 1 WHERE id = ?");
       stmt.setInt(1, mbox.getId());
       stmt.executeUpdate();
@@ -584,14 +535,12 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "SELECT metadata FROM "
-                  + qualifyZimbraTableName(mbox, TABLE_METADATA)
+                  + TABLE_METADATA
                   + " WHERE "
                   + DbMailItem.IN_THIS_MAILBOX_AND
                   + "section = ?");
       int pos = 1;
-      if (!DebugConfig.disableMailboxGroups) {
-        stmt.setInt(pos++, mbox.getId());
-      }
+      stmt.setInt(pos++, mbox.getId());
       stmt.setString(pos++, section);
 
       rs = stmt.executeQuery();
@@ -617,14 +566,12 @@ public final class DbMailbox {
         stmt =
             conn.prepareStatement(
                 "DELETE FROM "
-                    + qualifyZimbraTableName(mbox, TABLE_METADATA)
+                    + TABLE_METADATA
                     + " WHERE "
                     + DbMailItem.IN_THIS_MAILBOX_AND
                     + "section = ?");
         int pos = 1;
-        if (!DebugConfig.disableMailboxGroups) {
-          stmt.setInt(pos++, mbox.getId());
-        }
+        stmt.setInt(pos++, mbox.getId());
         stmt.setString(pos++, section.toUpperCase());
         stmt.executeUpdate();
         stmt.close();
@@ -633,14 +580,12 @@ public final class DbMailbox {
             conn.prepareStatement(
                 Db.getInstance()
                     .upsert(
-                        qualifyZimbraTableName(mbox, TABLE_METADATA),
+                        TABLE_METADATA,
                         DbMailItem.withMailboxId("section", "metadata"),
                         DbMailItem.withMailboxId("section"),
                         List.of("metadata")));
         int pos = 1;
-        if (!DebugConfig.disableMailboxGroups) {
-          stmt.setInt(pos++, mbox.getId());
-        }
+        stmt.setInt(pos++, mbox.getId());
         stmt.setString(pos++, section);
         stmt.setString(pos++, config.toString());
         stmt.executeUpdate();
@@ -660,14 +605,12 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "DELETE FROM "
-                  + qualifyZimbraTableName(mbox, TABLE_METADATA)
+                  + TABLE_METADATA
                   + " WHERE "
                   + DbMailItem.IN_THIS_MAILBOX_AND
                   + "section like ?");
       int pos = 1;
-      if (!DebugConfig.disableMailboxGroups) {
-        stmt.setInt(pos++, mbox.getId());
-      }
+      stmt.setInt(pos++, mbox.getId());
       stmt.setString(pos++, sectionPart);
       stmt.executeUpdate();
       stmt.close();
@@ -686,9 +629,9 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "UPDATE "
-                  + qualifyZimbraTableName(mbox, TABLE_MAILBOX)
+                  + TABLE_MAILBOX
                   + " SET version = ?"
-                  + (DebugConfig.disableMailboxGroups ? "" : " WHERE id = ?"));
+                  + " WHERE id = ?");
       int pos = 1;
       stmt.setString(pos++, version == null ? null : version.toString());
       pos = DbMailItem.setMailboxId(stmt, mbox, pos++);
@@ -708,7 +651,7 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "UPDATE "
-                  + qualifyZimbraTableName(mbox, TABLE_MAILBOX)
+                  + TABLE_MAILBOX
                   + " SET last_purge_at = ? WHERE id = ?");
       int pos = 1;
       stmt.setInt(pos++, (int) (lastPurgeAt / 1000));
@@ -733,7 +676,7 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "UPDATE "
-                  + qualifyZimbraTableName(mbox, TABLE_MAILBOX)
+                  + TABLE_MAILBOX
                   + " SET itemcache_checkpoint = itemcache_checkpoint + 1 WHERE id = ?");
       int pos = 1;
       pos = DbMailItem.setMailboxId(stmt, mbox, pos++);
@@ -766,9 +709,6 @@ public final class DbMailbox {
   public static Map<String, Integer> listMailboxes(DbConnection conn, MailboxManager mmgr)
       throws ServiceException {
     HashMap<String, Integer> result = new HashMap<>();
-    if (DebugConfig.externalMailboxDirectory) {
-      return result;
-    }
 
     PreparedStatement stmt = null;
     ResultSet rs = null;
@@ -788,10 +728,6 @@ public final class DbMailbox {
   }
 
   public static int getMailboxId(DbConnection conn, String accountId) throws ServiceException {
-
-    if (DebugConfig.externalMailboxDirectory) {
-      return -1;
-    }
 
     PreparedStatement stmt = null;
     ResultSet rs = null;
@@ -831,39 +767,14 @@ public final class DbMailbox {
   public static Map<String, Long> getMailboxSizes(DbConnection conn, List<Integer> mailboxIds)
       throws ServiceException {
     HashMap<String, Long> sizes = new HashMap<>();
-    if (DebugConfig.externalMailboxDirectory) {
-      return sizes;
-    }
 
     PreparedStatement stmt = null;
     ResultSet rs = null;
     try {
-      if (!DebugConfig.disableMailboxGroups) {
-        stmt = conn.prepareStatement("SELECT account_id, size_checkpoint FROM mailbox");
-        rs = stmt.executeQuery();
-        while (rs.next()) {
-          sizes.put(rs.getString(1).toLowerCase(), rs.getLong(2));
-        }
-      } else {
-        for (int mailboxId : mailboxIds) {
-
-          stmt =
-              conn.prepareStatement(
-                  "SELECT account_id, size_checkpoint FROM "
-                      + qualifyZimbraTableName(mailboxId, TABLE_MAILBOX));
-          rs = stmt.executeQuery();
-          while (rs.next()) {
-            sizes.put(rs.getString(1).toLowerCase(), rs.getLong(2));
-          }
-          rs.close();
-          rs = null;
-          stmt.close();
-          stmt = null;
-
-          // XXX: have to avoid having too many attached databases referenced in the same
-          // transaction?
-          conn.commit();
-        }
+      stmt = conn.prepareStatement("SELECT account_id, size_checkpoint FROM mailbox");
+      rs = stmt.executeQuery();
+      while (rs.next()) {
+        sizes.put(rs.getString(1).toLowerCase(), rs.getLong(2));
       }
       return sizes;
     } catch (SQLException e) {
@@ -885,9 +796,6 @@ public final class DbMailbox {
   public static Set<Integer> listPurgePendingMailboxes(DbConnection conn, long time)
       throws ServiceException {
     Set<Integer> result = new HashSet<>();
-    if (DebugConfig.externalMailboxDirectory) {
-      return result;
-    }
 
     PreparedStatement stmt = null;
     ResultSet rs = null;
@@ -925,11 +833,11 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "SELECT account_id,"
-                  + (DebugConfig.disableMailboxGroups ? mailboxId : " group_id")
+                  + " group_id"
                   + ", size_checkpoint, contact_count, item_id_checkpoint, change_checkpoint,"
                   + " tracking_sync, tracking_imap, index_volume_id, last_soap_access,"
                   + " new_messages, version, itemcache_checkpoint FROM "
-                  + qualifyZimbraTableName(mailboxId, TABLE_MAILBOX)
+                  + TABLE_MAILBOX
                   + " WHERE id = ?");
       stmt.setInt(1, mailboxId);
 
@@ -987,11 +895,9 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "SELECT section FROM "
-                  + qualifyZimbraTableName(mailboxId, TABLE_METADATA)
-                  + (DebugConfig.disableMailboxGroups ? "" : " WHERE mailbox_id = ?"));
-      if (!DebugConfig.disableMailboxGroups) {
-        stmt.setInt(1, mailboxId);
-      }
+                  + TABLE_METADATA
+                  + " WHERE mailbox_id = ?");
+      stmt.setInt(1, mailboxId);
       rs = stmt.executeQuery();
 
       while (rs.next()) {
@@ -1014,7 +920,7 @@ public final class DbMailbox {
   }
 
   public static int calculateMailboxGroupId(int mailboxId) {
-    int groups = DebugConfig.numMailboxGroups;
+    int groups = Math.max(LC.zimbra_mailbox_groups.intValue(), 1);
     // -1 / +1 operations are done so that the group id is never 0.
     return (mailboxId - 1) % groups + 1;
   }
@@ -1032,21 +938,12 @@ public final class DbMailbox {
     return DB_PREFIX_MAILBOX_GROUP + groupId;
   }
 
-  /**
-   * Qualifies the name of a database table that may be in the per-user database if {@link
-   * DebugConfig.disableMailboxGroups} is set and in the <tt>ZIMBRA</tt> database otherwise.
-   */
   public static String qualifyZimbraTableName(Mailbox mbox, String tableName) {
-    return DebugConfig.disableMailboxGroups ? qualifyTableName(mbox, tableName) : tableName;
+    return tableName;
   }
 
-  /**
-   * Qualifies the name of a database table that may be in the per-user database if {@link
-   * DebugConfig.disableMailboxGroups} is set and in the <tt>ZIMBRA</tt> database otherwise.
-   */
   public static String qualifyZimbraTableName(int mailboxId, String tableName) {
-    // note that if groups are disabled, mailboxId == groupId
-    return DebugConfig.disableMailboxGroups ? qualifyTableName(mailboxId, tableName) : tableName;
+    return tableName;
   }
 
   public static String qualifyTableName(Mailbox mbox, String tableName) {
@@ -1074,10 +971,6 @@ public final class DbMailbox {
   }
 
   private static void addToDeletedAccount(DbConnection conn, Mailbox mbox) throws ServiceException {
-    if (DebugConfig.externalMailboxDirectory) {
-      return;
-    }
-
     // Get email address for mailbox by querying the mailbox table.  We can't get it by
     // calling mbox.getAccount().getName() because the account was already deleted from LDAP.
     String email;
@@ -1194,22 +1087,10 @@ public final class DbMailbox {
 
     PreparedStatement stmt = null;
     try {
-      if (DebugConfig.disableMailboxGroups) {
-        // remove entry from MBOXGROUP database (is this redundant?)
-        stmt =
-            conn.prepareStatement(
-                "DELETE FROM " + qualifyTableName(mbox, TABLE_MAILBOX) + " WHERE id = ?");
-        stmt.setInt(1, mbox.getId());
-        stmt.executeUpdate();
-        stmt.close();
-      }
-
       // remove entry from mailbox table
-      if (!DebugConfig.externalMailboxDirectory) {
-        stmt = conn.prepareStatement("DELETE FROM mailbox WHERE id = ?");
-        stmt.setInt(1, mbox.getId());
-        stmt.executeUpdate();
-      }
+      stmt = conn.prepareStatement("DELETE FROM mailbox WHERE id = ?");
+      stmt.setInt(1, mbox.getId());
+      stmt.executeUpdate();
     } catch (SQLException e) {
       throw ServiceException.FAILURE("deleting mailbox " + mbox.getId(), e);
     } finally {
@@ -1220,9 +1101,6 @@ public final class DbMailbox {
   /** Returns the account id's for the current server. */
   public static Set<String> listAccountIds(DbConnection conn) throws ServiceException {
     Set<String> accountIds = new HashSet<>();
-    if (DebugConfig.externalMailboxDirectory) {
-      return accountIds;
-    }
 
     PreparedStatement stmt = null;
     ResultSet rs = null;
@@ -1245,46 +1123,18 @@ public final class DbMailbox {
   public static List<Mailbox.MailboxData> getMailboxRawData(DbConnection conn)
       throws ServiceException {
     List<Mailbox.MailboxData> results = new ArrayList<>();
-    if (DebugConfig.externalMailboxDirectory) {
-      return results;
-    }
 
     PreparedStatement stmt = null;
     ResultSet rs = null;
     try {
-      if (!DebugConfig.disableMailboxGroups) {
-        stmt =
-            conn.prepareStatement(
-                "SELECT id, group_id, account_id, index_volume_id, item_id_checkpoint,"
-                    + " contact_count, size_checkpoint, change_checkpoint, tracking_sync,"
-                    + " tracking_imap, last_backup_at, last_soap_access, new_messages FROM"
-                    + " mailbox");
-        rs = stmt.executeQuery();
-        readMailboxRawData(results, rs);
-      } else {
-        // FIXME: need an (impossible) assert for synchronization purposes
-
-        int[] mailboxIds = MailboxManager.getInstance().getMailboxIds();
-        for (int mailboxId : mailboxIds) {
-
-          stmt =
-              conn.prepareStatement(
-                  "SELECT id, id, account_id, index_volume_id, item_id_checkpoint, contact_count,"
-                      + " size_checkpoint, change_checkpoint, tracking_sync, tracking_imap, -1,"
-                      + " last_soap_access, new_messages FROM "
-                      + qualifyZimbraTableName(mailboxId, TABLE_MAILBOX));
-          rs = stmt.executeQuery();
-          readMailboxRawData(results, rs);
-          rs.close();
-          rs = null;
-          stmt.close();
-          stmt = null;
-
-          // XXX: have to avoid having too many attached databases referenced in the same
-          // transaction?
-          conn.commit();
-        }
-      }
+      stmt =
+          conn.prepareStatement(
+              "SELECT id, group_id, account_id, index_volume_id, item_id_checkpoint,"
+                  + " contact_count, size_checkpoint, change_checkpoint, tracking_sync,"
+                  + " tracking_imap, last_backup_at, last_soap_access, new_messages FROM"
+                  + " mailbox");
+      rs = stmt.executeQuery();
+      readMailboxRawData(results, rs);
     } catch (SQLException e) {
       throw ServiceException.FAILURE("getting distinct account id's", e);
     } finally {

@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.MoreObjects;
-import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ListUtil;
 import com.zimbra.common.util.ZimbraLog;
@@ -309,12 +308,11 @@ public class DbDataSource {
                     conn = DbPool.getConnection(mbox);
                 }
                 String dataSourceTable = getTableName(mbox);
-                String IN_THIS_MAILBOX_AND = DebugConfig.disableMailboxGroups ? "" : dataSourceTable + ".mailbox_id = ? AND ";
                 StringBuilder sb = new StringBuilder();
                 sb.append("DELETE FROM ");
                 sb.append(dataSourceTable);
                 sb.append(" WHERE ");
-                sb.append(IN_THIS_MAILBOX_AND);
+                sb.append(dataSourceTable).append(".mailbox_id = ? AND ");
                 sb.append("  data_source_id = ? AND folder_id = ?");
                 stmt = conn.prepareStatement(sb.toString());
                 int pos = 1;
@@ -402,12 +400,11 @@ public class DbDataSource {
             conn = DbPool.getConnection(mbox);
 
             String thisTable = getTableName(mbox);
-            String IN_THIS_MAILBOX_AND = DebugConfig.disableMailboxGroups ? "" : thisTable + ".mailbox_id = ? AND ";
             StringBuilder sb = new StringBuilder();
             sb.append("SELECT item_id, remote_id, ").append(thisTable).append(".metadata FROM ");
             sb.append(thisTable);
             sb.append(" WHERE ");
-            sb.append(IN_THIS_MAILBOX_AND);
+            sb.append(thisTable).append(".mailbox_id = ? AND ");
             sb.append("  data_source_id = ? AND folder_id = ?");
             stmt = conn.prepareStatement(sb.toString());
             int pos = 1;
@@ -446,16 +443,14 @@ public class DbDataSource {
         ResultSet rs = null;
         try {
             String thisTable = getTableName(mbox);
-            String IN_THIS_MAILBOX_AND = DebugConfig.disableMailboxGroups ? "" : thisTable + ".mailbox_id = ? AND ";
-            String MBOX_JOIN = DebugConfig.disableMailboxGroups ? " " : thisTable + ".mailbox_id = mi.mailbox_id AND ";
             conn = DbPool.getConnection(mbox);
             StringBuilder sb = new StringBuilder();
             sb.append("SELECT item_id, remote_id, ").append(thisTable).append(".metadata, mi.unread, mi.flags FROM ");
             sb.append(thisTable);
             sb.append("  LEFT OUTER JOIN ").append(DbMailItem.getMailItemTableName(mbox)).append(" mi ");
-            sb.append("  ON ").append(MBOX_JOIN).append(thisTable).append(".item_id = mi.id ");
+            sb.append("  ON ").append(thisTable).append(".mailbox_id = mi.mailbox_id AND ").append(thisTable).append(".item_id = mi.id ");
             sb.append(" WHERE ");
-            sb.append(IN_THIS_MAILBOX_AND);
+            sb.append(thisTable).append(".mailbox_id = ? AND ");
             sb.append("  data_source_id = ? AND ").append(thisTable).append(".folder_id = ?");
             stmt = conn.prepareStatement(sb.toString());
             int pos = 1;

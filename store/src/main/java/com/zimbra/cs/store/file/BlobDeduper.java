@@ -20,7 +20,6 @@ import com.zextras.mailbox.hardlinks.HardLink;
 import org.apache.commons.collections.MultiMap;
 import org.apache.commons.collections.map.MultiValueMap;
 
-import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.ZimbraLog;
@@ -392,23 +391,18 @@ public class BlobDeduper {
             } else { // this is resumed request.
                 resumed = true;
             }
-            if (DebugConfig.disableMailboxGroups) {
-                populateVolumeBlobs(vol.getId(), -1, metadata.getLastSyncDate(), metadata.getCurrentSyncDate());
-                setVolumeBlobsProgress(vol.getId(), "1/1");
-            } else {
-                List<Integer> groupIds = getSortedGroupIds();
-                for (int i = 0; i < groupIds.size(); i++) {
-                    if (resumed && groupIds.get(i) <= metadata.getGroupId()) {
-                        continue;
-                    }
-                    populateVolumeBlobs(vol.getId(), groupIds.get(i), metadata.getLastSyncDate(), metadata.getCurrentSyncDate());
-                    metadata.setGroupId(groupIds.get(i));
-                    vol = updateMetadata(vol.getId(), metadata);
-                    setVolumeBlobsProgress(vol.getId(), i+1 + "/" + groupIds.size());
-                    if (isStopProcessing()) {
-                        ZimbraLog.misc.info("Recieved the stop signal. Stopping the deduplication process.");
-                        throw ServiceException.INTERRUPTED("received stop signal");
-                    }
+            List<Integer> groupIds = getSortedGroupIds();
+            for (int i = 0; i < groupIds.size(); i++) {
+                if (resumed && groupIds.get(i) <= metadata.getGroupId()) {
+                    continue;
+                }
+                populateVolumeBlobs(vol.getId(), groupIds.get(i), metadata.getLastSyncDate(), metadata.getCurrentSyncDate());
+                metadata.setGroupId(groupIds.get(i));
+                vol = updateMetadata(vol.getId(), metadata);
+                setVolumeBlobsProgress(vol.getId(), i+1 + "/" + groupIds.size());
+                if (isStopProcessing()) {
+                    ZimbraLog.misc.info("Recieved the stop signal. Stopping the deduplication process.");
+                    throw ServiceException.INTERRUPTED("received stop signal");
                 }
             }
             // reset group-id and update currentSync and lastSync.
