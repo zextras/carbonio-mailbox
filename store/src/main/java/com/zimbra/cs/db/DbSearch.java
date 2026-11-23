@@ -607,13 +607,13 @@ public final class DbSearch {
       FetchMode fetch,
       boolean searchDraftsSeparately)
       throws ServiceException {
-    if (!Db.supports(Db.Capability.AVOID_OR_IN_WHERE_CLAUSE)
+    if (!conn.getDb().supportsCapability(Db.Capability.AVOID_OR_IN_WHERE_CLAUSE)
         || !(node instanceof DbSearchConstraints.Union)) {
       try {
         node = node.optimize();
         return searchInternal(conn, node, sort, offset, limit, fetch, searchDraftsSeparately);
       } catch (SQLException e) {
-        if (Db.errorMatches(e, Db.Error.TOO_MANY_SQL_PARAMS)) {
+        if (conn.getDb().compareError(e, Db.Error.TOO_MANY_SQL_PARAMS)) {
           ZimbraLog.sqltrace.debug(
               "Too many SQL params: %s", node, e); // fall back to splitting OR clauses
         } else {
@@ -650,7 +650,7 @@ public final class DbSearch {
       // only deals with folders for now to avoid considering complicated situations (other
       // constraints combined)
       DbSearchConstraints.Leaf leafNode = node.toLeaf();
-      final int dbLimit = Db.getInstance().getParamLimit();
+      final int dbLimit = conn.getDb().getParamLimit();
       // avoid edge cases
       int otherConstraintsCount = params.size() - leafNode.folders.size();
       final int softLimit = dbLimit - otherConstraintsCount - 10;
@@ -801,8 +801,8 @@ public final class DbSearch {
       if (requiresUnion) {
         sql.append(orderBy(sort, true));
         // LIMIT ?, ?
-        if (hasValidLIMIT && Db.supports(Db.Capability.LIMIT_CLAUSE)) {
-          sql.append(' ').append(Db.getInstance().limit(offset, limit));
+        if (hasValidLIMIT && conn.getDb().supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
+          sql.append(' ').append(conn.getDb().limit(offset, limit));
         }
       }
     }
@@ -818,8 +818,8 @@ public final class DbSearch {
       if (requiresUnion) {
         sql.append(orderBy(sort, true));
         // LIMIT ?, ?
-        if (hasValidLIMIT && Db.supports(Db.Capability.LIMIT_CLAUSE)) {
-          sql.append(' ').append(Db.getInstance().limit(offset, limit));
+        if (hasValidLIMIT && conn.getDb().supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
+          sql.append(' ').append(conn.getDb().limit(offset, limit));
         }
         if (requiresUnion) {
           sql.append(')');
@@ -831,8 +831,8 @@ public final class DbSearch {
     sql.append(orderBy(sort, true));
 
     // LIMIT ?, ?
-    if (hasValidLIMIT && Db.supports(Db.Capability.LIMIT_CLAUSE)) {
-      sql.append(' ').append(Db.getInstance().limit(offset, limit));
+    if (hasValidLIMIT && conn.getDb().supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
+      sql.append(' ').append(conn.getDb().limit(offset, limit));
     }
 
     PreparedStatement stmt = null;
@@ -842,14 +842,14 @@ public final class DbSearch {
       stmt = conn.prepareStatement(sql.toString());
       setParameters(stmt);
       // Limit query if DB doesn't support LIMIT clause
-      if (hasValidLIMIT && !Db.supports(Db.Capability.LIMIT_CLAUSE)) {
+      if (hasValidLIMIT && !conn.getDb().supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
         stmt.setMaxRows(offset + limit + 1);
       }
       rs = stmt.executeQuery();
 
       List<Result> result = new ArrayList<>();
       while (rs.next()) {
-        if (hasValidLIMIT && !Db.supports(Db.Capability.LIMIT_CLAUSE)) {
+        if (hasValidLIMIT && !conn.getDb().supportsCapability(Db.Capability.LIMIT_CLAUSE)) {
           if (offset-- > 0) {
             continue;
           }

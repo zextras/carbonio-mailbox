@@ -104,7 +104,7 @@ public class DbOutOfOffice {
 
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement(Db.getInstance().upsert(DbMailbox.qualifyZimbraTableName(mbox, TABLE_NAME),
+            stmt = conn.prepareStatement(conn.getDb().upsert(DbMailbox.qualifyZimbraTableName(mbox, TABLE_NAME),
                     DbMailItem.withMailboxId("sent_to", "sent_on"), DbMailItem.withMailboxId("sent_to"), List.of("sent_on")));
             int pos = 1;
             pos = DbMailItem.setMailboxId(stmt, mbox, pos);

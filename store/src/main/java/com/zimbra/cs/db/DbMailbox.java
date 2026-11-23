@@ -197,8 +197,8 @@ public final class DbMailbox {
       DbConnection conn, int requestedMailboxId, String accountId, String comment, int lastBackupAt)
       throws ServiceException {
     String limitClause =
-        Db.supports(Db.Capability.LIMIT_CLAUSE)
-            ? " ORDER BY index_volume_id " + Db.getInstance().limit(1)
+        conn.getDb().supportsCapability(Db.Capability.LIMIT_CLAUSE)
+            ? " ORDER BY index_volume_id " + conn.getDb().limit(1)
             : "";
 
     // Get mailbox id.
@@ -301,7 +301,7 @@ public final class DbMailbox {
       data.version = MailboxVersion.getCurrent();
       return data;
     } catch (SQLException e) {
-      if (Db.errorMatches(e, Db.Error.DUPLICATE_ROW)) {
+      if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(accountId, e);
       } else {
         throw ServiceException.FAILURE("writing new mailbox row for account " + accountId, e);
@@ -327,7 +327,7 @@ public final class DbMailbox {
     PreparedStatement stmt = null;
     try {
       String dbname = getDatabaseName(groupId);
-      if (Db.getInstance().databaseExists(conn, dbname)) {
+      if (conn.getDb().databaseExists(conn, dbname)) {
         // If database didn't exist we would end up doing CREATE DATABASE which does implicit
         // commit.
         // Let's do an explicit here so pending transactions always committed on exit from this
@@ -393,7 +393,7 @@ public final class DbMailbox {
     ZimbraLog.mailbox.info(
         "clearing contents of mailbox " + mailboxId + ", group " + mbox.getSchemaGroupId());
 
-    if (DebugConfig.disableMailboxGroups && Db.supports(Db.Capability.FILE_PER_DATABASE)) {
+    if (DebugConfig.disableMailboxGroups && conn.getDb().supportsCapability(Db.Capability.FILE_PER_DATABASE)) {
       return;
     }
 
@@ -402,7 +402,7 @@ public final class DbMailbox {
     }
 
     try {
-      if (Db.supports(Db.Capability.DISABLE_CONSTRAINT_CHECK)) {
+      if (conn.getDb().supportsCapability(Db.Capability.DISABLE_CONSTRAINT_CHECK)) {
         conn.disableForeignKeyConstraints();
       }
 
@@ -436,7 +436,7 @@ public final class DbMailbox {
       throw ServiceException.FAILURE("dropMailboxFromGroup(" + mailboxId + ")", e);
     } finally {
       try {
-        if (Db.supports(Db.Capability.DISABLE_CONSTRAINT_CHECK)) {
+        if (conn.getDb().supportsCapability(Db.Capability.DISABLE_CONSTRAINT_CHECK)) {
           conn.enableForeignKeyConstraints();
         }
       } catch (ServiceException e) {
@@ -1014,7 +1014,7 @@ public final class DbMailbox {
 
       return mbd;
     } catch (SQLException e) {
-      if (Db.errorMatches(e, Db.Error.NO_SUCH_TABLE)) {
+      if (conn.getDb().compareError(e, Db.Error.NO_SUCH_TABLE)) {
         return null;
       }
       throw ServiceException.FAILURE("fetching stats on mailbox " + mailboxId, e);
@@ -1110,7 +1110,7 @@ public final class DbMailbox {
       DbPool.closeStatement(stmt);
     }
 
-    boolean supportsReplaceInto = Db.supports(Db.Capability.REPLACE_INTO);
+    boolean supportsReplaceInto = conn.getDb().supportsCapability(Db.Capability.REPLACE_INTO);
     if (!supportsReplaceInto) {
       removeFromDeletedAccount(conn, email);
     }

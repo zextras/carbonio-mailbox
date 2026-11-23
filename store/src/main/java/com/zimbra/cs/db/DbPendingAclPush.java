@@ -36,7 +36,7 @@ public class DbPendingAclPush {
         ZimbraLog.mailbox.debug("Queuing for ACL push - mailbox %s item %s", mbox.getId(), itemId);
         DbConnection conn = mbox.getOperationConnection();
         PreparedStatement stmt = null;
-        boolean supportsReplace = Db.supports(Db.Capability.REPLACE_INTO);
+        boolean supportsReplace = conn.getDb().supportsCapability(Db.Capability.REPLACE_INTO);
         try {
         	
         	stmt = conn.prepareStatement(

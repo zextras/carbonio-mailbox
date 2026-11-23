@@ -91,7 +91,7 @@ public class DbDataSource {
             sb.append("data_source_id, item_id, folder_id, remote_id, metadata) VALUES (");
             sb.append(DbMailItem.MAILBOX_ID_VALUE);
             sb.append("?, ?, ?, ?, ?)");
-            if (Db.supports(Db.Capability.ON_DUPLICATE_KEY)) {
+            if (conn.getDb().supportsCapability(Db.Capability.ON_DUPLICATE_KEY)) {
                 sb.append(" ON DUPLICATE KEY UPDATE data_source_id = ?, item_id = ?, folder_id = ?, remote_id = ?, metadata = ?");
             }
             stmt = conn.prepareStatement(sb.toString());
@@ -102,7 +102,7 @@ public class DbDataSource {
             stmt.setInt(i++, item.folderId);
             stmt.setString(i++, item.remoteId);
             stmt.setString(i++, DbMailItem.checkMetadataLength((item.md == null) ? null : item.md.toString()));
-            if (Db.supports(Db.Capability.ON_DUPLICATE_KEY)) {
+            if (conn.getDb().supportsCapability(Db.Capability.ON_DUPLICATE_KEY)) {
                 stmt.setString(i++, dataSourceId);
                 stmt.setInt(i++, item.itemId);
                 stmt.setInt(i++, item.folderId);
@@ -114,7 +114,7 @@ public class DbDataSource {
                 conn.commit();
             }
         } catch (SQLException e) {
-            if (!Db.supports(Db.Capability.ON_DUPLICATE_KEY) && Db.errorMatches(e, Db.Error.DUPLICATE_ROW)) {
+            if (!conn.getDb().supportsCapability(Db.Capability.ON_DUPLICATE_KEY) && conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
                 DbPool.closeStatement(stmt);
                 if (!isBatch) {
                     DbPool.quietClose(conn);
@@ -148,7 +148,7 @@ public class DbDataSource {
             } else {
                 conn = DbPool.getConnection(mbox);
             }
-            if (!Db.supports(Db.Capability.ON_DUPLICATE_KEY) && !hasMapping(ds, item.itemId)) {
+            if (!conn.getDb().supportsCapability(Db.Capability.ON_DUPLICATE_KEY) && !hasMapping(ds, item.itemId)) {
                 // if we need to update due to unique remoteId then itemid
                 // isn't going to be the same
                 StringBuilder sb = new StringBuilder();
@@ -974,7 +974,7 @@ public class DbDataSource {
             conn.commit();
             stmt.close();
         } catch (SQLException e) {
-            if (Db.errorMatches(e, Db.Error.DUPLICATE_ROW)) {
+            if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
                 ZimbraLog.datasource.warn(String.format("purging message %d more than once", msg.getId()));
                 return;
             }
@@ -1004,7 +1004,7 @@ public class DbDataSource {
             conn.commit();
             stmt.close();
         } catch (SQLException e) {
-            if (Db.errorMatches(e, Db.Error.DUPLICATE_ROW)) {
+            if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
                 ZimbraLog.datasource.warn(String.format("moving item %d to purged conversations table more than once", item.getId()));
                 return;
             }
@@ -1208,7 +1208,7 @@ public class DbDataSource {
             stmt.close();
             conn.commit();
         } catch (SQLException e) {
-            if (Db.errorMatches(e, Db.Error.DUPLICATE_ROW)) {
+            if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
                 ZimbraLog.datasource.warn("inserting duplicate hash");
             } else {
                 throw ServiceException.FAILURE("Unable to insert purged conversation hash", e);
