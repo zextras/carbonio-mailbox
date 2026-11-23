@@ -644,17 +644,26 @@ public final class DbMailbox {
         // deadlock.  See bug 19404 for more info.
         try {
           String command = Db.supports(Db.Capability.REPLACE_INTO) ? "REPLACE" : "INSERT";
+          String upsert =
+              Db.getInstance()
+                  .upsert(
+                      qualifyZimbraTableName(mbox, TABLE_METADATA),
+                      DbMailItem.withMailboxId("section", "metadata"),
+                      DbMailItem.withMailboxId("section"),
+                      List.of("metadata"));
           stmt =
               conn.prepareStatement(
-                  command
-                      + " INTO "
-                      + qualifyZimbraTableName(mbox, TABLE_METADATA)
-                      + " ("
-                      + (DebugConfig.disableMailboxGroups ? "" : "mailbox_id, ")
-                      + "section, metadata)"
-                      + " VALUES ("
-                      + (DebugConfig.disableMailboxGroups ? "" : "?, ")
-                      + "?, ?)");
+                  upsert != null
+                      ? upsert
+                      : command
+                          + " INTO "
+                          + qualifyZimbraTableName(mbox, TABLE_METADATA)
+                          + " ("
+                          + (DebugConfig.disableMailboxGroups ? "" : "mailbox_id, ")
+                          + "section, metadata)"
+                          + " VALUES ("
+                          + (DebugConfig.disableMailboxGroups ? "" : "?, ")
+                          + "?, ?)");
           int pos = 1;
           if (!DebugConfig.disableMailboxGroups) {
             stmt.setInt(pos++, mbox.getId());

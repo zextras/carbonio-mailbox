@@ -1364,6 +1364,15 @@ public class DbMailItem {
     }
   }
 
+  static List<String> withMailboxId(String... columns) {
+    List<String> out = new ArrayList<>();
+    if (!DebugConfig.disableMailboxGroups) {
+      out.add("mailbox_id");
+    }
+    out.addAll(Arrays.asList(columns));
+    return out;
+  }
+
   public static void openConversation(String hash, MailItem item) throws ServiceException {
     Mailbox mbox = item.getMailbox();
     DbConnection conn = mbox.getOperationConnection();
@@ -1371,17 +1380,26 @@ public class DbMailItem {
     try {
       String command = Db.supports(Db.Capability.REPLACE_INTO) ? "REPLACE" : "INSERT";
       String mailbox_id = DebugConfig.disableMailboxGroups ? "" : "mailbox_id, ";
+      String upsert =
+          Db.getInstance()
+              .upsert(
+                  getConversationTableName(item),
+                  withMailboxId("hash", "conv_id"),
+                  withMailboxId("hash"),
+                  List.of("conv_id"));
       stmt =
           conn.prepareStatement(
-              command
-                  + " INTO "
-                  + getConversationTableName(item)
-                  + "("
-                  + mailbox_id
-                  + "hash, conv_id)"
-                  + " VALUES ("
-                  + (DebugConfig.disableMailboxGroups ? "" : "?, ")
-                  + "?, ?)");
+              upsert != null
+                  ? upsert
+                  : command
+                      + " INTO "
+                      + getConversationTableName(item)
+                      + "("
+                      + mailbox_id
+                      + "hash, conv_id)"
+                      + " VALUES ("
+                      + (DebugConfig.disableMailboxGroups ? "" : "?, ")
+                      + "?, ?)");
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
       stmt.setString(pos++, hash);

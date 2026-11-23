@@ -10,6 +10,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 /**
  * @since Apr 10, 2004
@@ -156,6 +157,10 @@ public abstract class Db {
      * Generates a bitwise AND on two values.
      */
     public abstract String bitAND(String expr1, String expr2);
+
+    public String upsert(String table, List<String> columns, List<String> keyColumns, List<String> updateColumns) {
+        return null;
+    }
 
     /**
      * Generates a bitwise first value AND NOT second values.

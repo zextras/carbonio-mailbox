@@ -61,6 +61,7 @@ public class DbPool {
         var connectionFactory = new PoolableConnectionFactory(cfac, null);
         connectionFactory.setDefaultReadOnly(false);
         connectionFactory.setDefaultAutoCommit(false);
+        connectionFactory.setAutoCommitOnReturn(false);
         connectionFactory.setCacheState(false);
 
         var connectionPool = new GenericObjectPool<>(connectionFactory);
@@ -105,11 +106,6 @@ public class DbPool {
 
                 if (dbconn.getAutoCommit() != false)
                     dbconn.setAutoCommit(false);
-
-                // We want READ COMMITTED transaction isolation level for duplicate
-                // handling code in BucketBlobStore.newBlobInfo().
-                if (db.instanceSupports(Db.Capability.READ_COMMITTED_ISOLATION))
-                    dbconn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
                 conn = new DbConnection(dbconn, mboxId);
             } catch (SQLException e) {

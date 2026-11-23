@@ -6,6 +6,7 @@
 package com.zimbra.cs.db;
 
 import com.zimbra.common.localconfig.LC;
+import java.util.Properties;
 
 
 public class MariaDB extends MySQL {
@@ -30,6 +31,13 @@ public class MariaDB extends MySQL {
             }
 
             return "jdbc:mysql://" + bindAddress + ":" + LC.mysql_port.value() + "/";
+        }
+
+        @Override
+        protected Properties getDBProperties() {
+            Properties props = super.getDBProperties();
+            props.putIfAbsent("sessionVariables", "tx_isolation='READ-COMMITTED'");
+            return props;
         }
 
     }

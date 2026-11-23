@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.service.ServiceException;
@@ -104,7 +105,9 @@ public class DbOutOfOffice {
         PreparedStatement stmt = null;
         try {
             String command = Db.supports(Db.Capability.REPLACE_INTO) ? "REPLACE" : "INSERT";
-            stmt = conn.prepareStatement(command + " INTO " + DbMailbox.qualifyZimbraTableName(mbox, TABLE_NAME) +
+            String upsert = Db.getInstance().upsert(DbMailbox.qualifyZimbraTableName(mbox, TABLE_NAME),
+                    DbMailItem.withMailboxId("sent_to", "sent_on"), DbMailItem.withMailboxId("sent_to"), List.of("sent_on"));
+            stmt = conn.prepareStatement(upsert != null ? upsert : command + " INTO " + DbMailbox.qualifyZimbraTableName(mbox, TABLE_NAME) +
                     "(" + DbMailItem.MAILBOX_ID + "sent_to, sent_on)" +
                     " VALUES (" + DbMailItem.MAILBOX_ID_VALUE +" ?, ?) ");
             int pos = 1;
