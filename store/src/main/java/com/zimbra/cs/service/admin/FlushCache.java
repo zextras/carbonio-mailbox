@@ -19,6 +19,7 @@ import com.zimbra.cs.account.accesscontrol.PermissionCache;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.cs.gal.GalGroup;
 import com.zimbra.cs.httpclient.URLUtil;
+import com.zimbra.cs.servlet.ZimbraServlet;
 import com.zimbra.cs.util.WebClientL10nUtil;
 import com.zimbra.soap.SoapServlet;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -100,6 +101,11 @@ public class FlushCache extends AdminDocumentHandler {
       case all:
         flushLdapCache(cacheType, cacheSelector);
         Provisioning.getInstance().refreshValidators(); // refresh other bits of cached license data
+        ZimbraServlet.flushProxyIpsCache();
+        break;
+      case server:
+        flushLdapCache(cacheType, cacheSelector);
+        ZimbraServlet.flushProxyIpsCache();
         break;
       case galgroup:
         GalGroup.flushCache(getCacheEntries(cacheSelector));
