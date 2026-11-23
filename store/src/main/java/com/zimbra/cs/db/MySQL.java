@@ -134,9 +134,7 @@ public class MySQL extends Db {
     @Override
     public void enableStreaming(Statement stmt)
     throws SQLException {
-        if (LC.jdbc_results_streaming_enabled.booleanValue()) {
-            stmt.setFetchSize(Integer.MIN_VALUE);
-        }
+        stmt.setFetchSize(Integer.MIN_VALUE);
     }
 
     @Override

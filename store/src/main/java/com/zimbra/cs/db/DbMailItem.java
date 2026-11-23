@@ -2233,7 +2233,7 @@ public class DbMailItem {
                       ? " = " + types.iterator().next().toByte()
                       : " IN " + typesValue)
                   + " AND ids IS NOT NULL ORDER BY sequence");
-      Db.getInstance().enableStreaming(stmt);
+      conn.getDb().enableStreaming(stmt);
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
       stmt.setLong(pos++, lastSync);
@@ -2297,7 +2297,7 @@ public class DbMailItem {
                     + " ORDER BY sequence");
       }
 
-      Db.getInstance().enableStreaming(stmt);
+      conn.getDb().enableStreaming(stmt);
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
       stmt.setLong(pos++, lastSync);
@@ -2413,7 +2413,7 @@ public class DbMailItem {
                   + IN_THIS_MAILBOX_AND
                   + "mod_metadata > ? "
                   + " ORDER BY id");
-      Db.getInstance().enableStreaming(stmt);
+      conn.getDb().enableStreaming(stmt);
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
       stmt.setLong(pos++, lastSync);
@@ -2735,7 +2735,7 @@ public class DbMailItem {
                   + typeIn(type)
                   + DbSearch.orderBy(sort, false));
       if (type == MailItem.Type.MESSAGE) {
-        Db.getInstance().enableStreaming(stmt);
+        conn.getDb().enableStreaming(stmt);
       }
       setMailboxId(stmt, mbox, 1);
       rs = stmt.executeQuery();
@@ -2788,7 +2788,7 @@ public class DbMailItem {
     try {
       stmt = conn.prepareStatement(sql.toString());
       if (parent.getSize() > RESULTS_STREAMING_MIN_ROWS) {
-        Db.getInstance().enableStreaming(stmt);
+        conn.getDb().enableStreaming(stmt);
       }
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
@@ -2852,7 +2852,7 @@ public class DbMailItem {
                   + " AND type NOT IN "
                   + NON_SEARCHABLE_TYPES);
       if (relativeTo.getUnreadCount() > RESULTS_STREAMING_MIN_ROWS) {
-        Db.getInstance().enableStreaming(stmt);
+        conn.getDb().enableStreaming(stmt);
       }
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
@@ -2905,7 +2905,7 @@ public class DbMailItem {
                   + typeIn(type)
                   + DbSearch.orderBy(sort, false));
       if (folder.getSize() > RESULTS_STREAMING_MIN_ROWS && type == MailItem.Type.MESSAGE) {
-        Db.getInstance().enableStreaming(stmt);
+        conn.getDb().enableStreaming(stmt);
       }
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
@@ -3298,7 +3298,7 @@ public class DbMailItem {
 
       stmt = conn.prepareStatement(buf.toString());
       if (type == MailItem.Type.MESSAGE) {
-        Db.getInstance().enableStreaming(stmt);
+        conn.getDb().enableStreaming(stmt);
       }
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
@@ -3340,7 +3340,7 @@ public class DbMailItem {
       }
       stmt = conn.prepareStatement(buf.toString());
       if (type == MailItem.Type.MESSAGE) {
-        Db.getInstance().enableStreaming(stmt);
+        conn.getDb().enableStreaming(stmt);
       }
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
@@ -3533,7 +3533,7 @@ public class DbMailItem {
         buf.append(" ").append(limitClause);
       }
       stmt = conn.prepareStatement(buf.toString());
-      Db.getInstance().enableStreaming(stmt); // Assume we're dealing with a very large result set.
+      conn.getDb().enableStreaming(stmt); // Assume we're dealing with a very large result set.
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
 
@@ -3645,7 +3645,7 @@ public class DbMailItem {
                   + constraint
                   + orderByLimit);
       if (globalMessages || getTotalFolderSize(folders) > RESULTS_STREAMING_MIN_ROWS) {
-        Db.getInstance().enableStreaming(stmt);
+        conn.getDb().enableStreaming(stmt);
       }
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
@@ -4050,7 +4050,7 @@ public class DbMailItem {
       }
       stmt = conn.prepareStatement(query.toString());
       if (folder.getSize() > RESULTS_STREAMING_MIN_ROWS && !hasLimit) {
-        Db.getInstance().enableStreaming(stmt);
+        conn.getDb().enableStreaming(stmt);
       }
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
@@ -4162,7 +4162,7 @@ public class DbMailItem {
                   + dateConstraint);
       if (getTotalFolderSize(folders) > RESULTS_STREAMING_MIN_ROWS) {
         // TODO: Because of POPPED flag, the folder size no longer represent the count.
-        Db.getInstance().enableStreaming(stmt);
+        conn.getDb().enableStreaming(stmt);
       }
 
       int pos = 1;
@@ -4247,7 +4247,7 @@ public class DbMailItem {
                   + " ORDER BY date"
                   + (descending ? " DESC" : ""));
       if (type == MailItem.Type.MESSAGE && folder.getSize() > RESULTS_STREAMING_MIN_ROWS) {
-        Db.getInstance().enableStreaming(stmt);
+        conn.getDb().enableStreaming(stmt);
       }
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);

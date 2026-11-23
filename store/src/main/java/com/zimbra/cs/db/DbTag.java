@@ -169,7 +169,7 @@ public class DbTag {
                     " WHERE " + inThisMailboxAnd("ti") + "type NOT IN " + DbMailItem.NON_SEARCHABLE_TYPES +
                     " AND unread > 0 AND ti.tag_id = ?");
             if (tag.getUnreadCount() > DbMailItem.RESULTS_STREAMING_MIN_ROWS) {
-                Db.getInstance().enableStreaming(stmt);
+                conn.getDb().enableStreaming(stmt);
             }
             int pos = 1;
             pos = DbMailItem.setMailboxId(stmt, mbox, pos);
@@ -231,7 +231,7 @@ public class DbTag {
                         " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id = " + Flag.ID_DELETED +
                         " AND type IN " + DbMailItem.IMAP_TYPES + folderconstraint);
             if (DbMailItem.getTotalFolderSize(folders) > DbMailItem.RESULTS_STREAMING_MIN_ROWS) {
-                Db.getInstance().enableStreaming(stmt);
+                conn.getDb().enableStreaming(stmt);
             }
             int pos = 1;
             pos = DbMailItem.setMailboxId(stmt, mbox, pos);

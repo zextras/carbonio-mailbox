@@ -70,7 +70,7 @@ public class DbBlobConsistency {
                 stmt.setInt(3, mbox.getId());
                 stmt.setInt(4, mbox.getId());
             }
-            Db.getInstance().enableStreaming(stmt);
+            conn.getDb().enableStreaming(stmt);
             rs = stmt.executeQuery();
             while (rs.next()) {
                 BlobInfo info = new BlobInfo();
