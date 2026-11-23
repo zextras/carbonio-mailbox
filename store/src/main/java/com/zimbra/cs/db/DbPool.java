@@ -287,19 +287,6 @@ public class DbPool {
         boolean blockWhenExhausted = true;
     }
 
-    /**
-     * Initializes the connection pool.  Applications that access the
-     * database must call this method before calling {@link DbPool#getConnection}.
-     * Allocates a global pool as singleton.
-     *
-     */
-    public static synchronized DbPool global() {
-        if (dbPool == null) {
-            throw new IllegalStateException("database pool not initialized: create it with DbPool.global(Db)");
-        }
-        return dbPool;
-    }
-
     public static synchronized DbPool global(Db db) {
         if (dbPool == null) {
             Db.setInstance(db);

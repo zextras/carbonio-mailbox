@@ -6,6 +6,7 @@ package com.zextras.mailbox.servlet;
 
 import com.zextras.mailbox.health.DatabaseServiceDependency;
 import com.zextras.mailbox.health.HealthUseCase;
+import com.zimbra.cs.db.Db;
 import com.zimbra.cs.db.DbPool;
 import java.util.List;
 import java.util.Set;
@@ -18,7 +19,7 @@ public class HealthApplication extends Application {
       Set.of(
           new HealthResource(
               new HealthUseCase(
-                  List.of(new DatabaseServiceDependency(DbPool.global(), System::currentTimeMillis)))));
+                  List.of(new DatabaseServiceDependency(DbPool.global(Db.getInstance()), System::currentTimeMillis)))));
 
   @Override
   public Set<Object> getSingletons() {

@@ -37,10 +37,15 @@ public abstract class Db {
 
     public static Db getInstance() {
         Db db = sDatabase;
-        if (db == null) {
-            throw new IllegalStateException("no database configured: create the pool with DbPool.global(Db)");
+        if (db != null) {
+            return db;
         }
-        return db;
+        synchronized (Db.class) {
+            if (sDatabase == null) {
+                sDatabase = new MariaDB();
+            }
+            return sDatabase;
+        }
     }
 
     @VisibleForTesting
