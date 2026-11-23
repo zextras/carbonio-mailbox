@@ -53,7 +53,6 @@ public class MySQL extends Db {
             case AVOID_OR_IN_WHERE_CLAUSE:
           case SQL_PARAM_LIMIT:
           case NON_BMP_CHARACTERS:
-          case FILE_PER_DATABASE:
           case CAST_AS_BIGINT:
           case CASE_SENSITIVE_COMPARISON:
             return false;

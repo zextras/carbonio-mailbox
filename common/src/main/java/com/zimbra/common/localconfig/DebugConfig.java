@@ -72,29 +72,6 @@ public final class DebugConfig {
      *  to ensure cache consistency (very expensive) */
     public static final boolean checkMailboxCacheConsistency = value("debug_check_mailbox_cache_consistency", false);
 
-    /** If true, the database layer assumes that every mailbox gets its own
-     *  database instance and that all the tables in that database do *not*
-     *  have the MAILBOX_ID column.  All mutable mailbox data, including
-     *  sizes and checkpoints as well as out-of-office reply tracking and
-     *  the "mailbox metadata" scratch space, are moved out of the ZIMBRA
-     *  database and into this per-user database. */
-    public static final boolean disableMailboxGroups = value("debug_disable_mailbox_group", false);
-
-    /** If true, the database layer assumes that the MailboxManager
-     *  implementation has an external mapping from accounts to mailbox
-     *  IDs.  As a result, the ZIMBRA.MAILBOX table will not be populated
-     *  and will not be read at startup. */
-    public static final boolean externalMailboxDirectory =
-            disableMailboxGroups && value("debug_external_mailbox_directory", false);
-
-    /**
-     * The number of {@code MBOXGROUP<N>} databases to distribute the users over. This is a middle ground between One
-     * Huge Database (contention and the effects of corruption are issues) and database-per-user (which most DBMSes
-     * can't deal with).
-     */
-    public static final int numMailboxGroups = disableMailboxGroups ?
-            Integer.MAX_VALUE : Math.max(LC.zimbra_mailbox_groups.intValue(), 1);
-
     public static final boolean disableCalendarTZMatchByID = value("debug_disable_calendar_tz_match_by_id", false);
     public static final boolean disableCalendarTZMatchByRule = value("debug_disable_calendar_tz_match_by_rule", false);
     public static final boolean disableMimeConvertersForCalendarBlobs =
@@ -103,7 +80,6 @@ public final class DebugConfig {
     /** If true, disable the memcached-based folders/tags cache of mailboxes. */
     public static final boolean disableFoldersTagsCache = value("debug_disable_folders_tags_cache", false);
     public static final boolean enableContactLocalizedSort = value("debug_enable_contact_localized_sort", true);
-    public static final boolean enableMigrateUserZimletPrefs = value("migrate_user_zimlet_prefs", false);
     public static final boolean disableGroupTargetForAdminRight = value("disable_group_target_for_admin_right", false);
     public static final boolean disableCalendarReminderEmail = value("debug_disable_calendar_reminder_email", false);
     public static final int imapSerializedSessionNotificationOverloadThreshold =

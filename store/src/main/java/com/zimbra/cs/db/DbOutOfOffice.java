@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
-import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
@@ -49,7 +48,7 @@ public class DbOutOfOffice {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            stmt = conn.prepareStatement("SELECT COUNT(*) FROM " + DbMailbox.qualifyZimbraTableName(mbox, TABLE_NAME) +
+            stmt = conn.prepareStatement("SELECT COUNT(*) FROM " + TABLE_NAME +
                     " WHERE " + DbMailItem.IN_THIS_MAILBOX_AND + "sent_to = ? AND sent_on > ?");
             int pos = 1;
             pos = DbMailItem.setMailboxId(stmt, mbox, pos);
@@ -104,7 +103,7 @@ public class DbOutOfOffice {
 
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement(Db.getInstance().upsert(DbMailbox.qualifyZimbraTableName(mbox, TABLE_NAME),
+            stmt = conn.prepareStatement(Db.getInstance().upsert(TABLE_NAME,
                     DbMailItem.withMailboxId("sent_to", "sent_on"), DbMailItem.withMailboxId("sent_to"), List.of("sent_on")));
             int pos = 1;
             pos = DbMailItem.setMailboxId(stmt, mbox, pos);
@@ -140,8 +139,8 @@ public class DbOutOfOffice {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            stmt = conn.prepareStatement("DELETE FROM " + DbMailbox.qualifyZimbraTableName(mbox, TABLE_NAME) +
-                    (DebugConfig.disableMailboxGroups ? "" : " WHERE mailbox_id = ?"));
+            stmt = conn.prepareStatement("DELETE FROM " + TABLE_NAME +
+                    " WHERE mailbox_id = ?");
             DbMailItem.setMailboxId(stmt, mbox, 1);
             int num = stmt.executeUpdate();
 
@@ -156,10 +155,6 @@ public class DbOutOfOffice {
 
     public static void prune(DbConnection conn, long cacheDurationMillis)
     throws ServiceException {
-        // there's no centralized OoO table to prune in the DB-per-user case
-        if (DebugConfig.disableMailboxGroups)
-            return;
-
         PreparedStatement stmt = null;
         try {
             Timestamp cutoff = new Timestamp(System.currentTimeMillis() - cacheDurationMillis);

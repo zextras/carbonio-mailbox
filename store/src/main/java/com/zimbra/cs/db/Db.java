@@ -39,7 +39,6 @@ public abstract class Db {
         CAST_AS_BIGINT,
         CLOB_COMPARISON,
         DISABLE_CONSTRAINT_CHECK,
-        FILE_PER_DATABASE,
         LIMIT_CLAUSE,
         MULTITABLE_UPDATE,
         NON_BMP_CHARACTERS,

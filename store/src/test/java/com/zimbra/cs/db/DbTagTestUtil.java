@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.mailbox.Flag;
@@ -71,7 +70,7 @@ public class DbTagTestUtil extends DbTag {
       PreparedStatement stmt = null;
       ResultSet rs = null;
       try {
-          String mailboxesMatchAnd = DebugConfig.disableMailboxGroups ? "" : "ti.mailbox_id = mi.mailbox_id AND ";
+          String mailboxesMatchAnd = "ti.mailbox_id = mi.mailbox_id AND ";
           stmt = conn.prepareStatement("SELECT mi.id, mi.type, ti.tag_id " +
                   " FROM " + getTaggedItemTableName(mbox, "ti") +
                   " INNER JOIN " + DbMailItem.getMailItemTableName(mbox, "mi") + " ON " + mailboxesMatchAnd + "mi.id = ti.item_id" +
@@ -117,7 +116,7 @@ public class DbTagTestUtil extends DbTag {
               ResultSet rscheck = null;
               try {
                   // make sure the item counts match the tag totals
-                  String mailboxesMatchAnd = DebugConfig.disableMailboxGroups ? "" : "tag.mailbox_id = ti.mailbox_id AND ";
+                  String mailboxesMatchAnd = "tag.mailbox_id = ti.mailbox_id AND ";
                   stmtcheck = conn.prepareStatement("SELECT id, name FROM " + getTagTableName(mbox, "tag") +
                           " INNER JOIN " + getTaggedItemTableName(mbox, "ti") + " ON " + mailboxesMatchAnd + "tag.id = ti.tag_id" +
                           " WHERE " + inThisMailboxAnd("ti") + "ti.item_id = ?");
@@ -159,7 +158,7 @@ public class DbTagTestUtil extends DbTag {
       PreparedStatement stmt = null;
       ResultSet rs = null;
       try {
-          String mailboxesMatchAnd = DebugConfig.disableMailboxGroups ? "" : "ti.mailbox_id = mi.mailbox_id AND ";
+          String mailboxesMatchAnd = "ti.mailbox_id = mi.mailbox_id AND ";
           stmt = conn.prepareStatement("SELECT ti.tag_id, COUNT(ti.item_id), " + Db.clauseIFNULL("SUM(mi.unread)", "0") +
                   " FROM " + getTaggedItemTableName(mbox, "ti") +
                   " INNER JOIN " + DbMailItem.getMailItemTableName(mbox, "mi") + " ON " + mailboxesMatchAnd + "mi.id = ti.item_id" +

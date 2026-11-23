@@ -12,7 +12,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
-import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.ListUtil;
@@ -80,9 +79,9 @@ public class DbMailItem {
   public static final int MAX_MEDIUMTEXT_LENGTH = 16777216;
 
   public static final String IN_THIS_MAILBOX_AND =
-      DebugConfig.disableMailboxGroups ? "" : "mailbox_id = ? AND ";
-  public static final String MAILBOX_ID = DebugConfig.disableMailboxGroups ? "" : "mailbox_id, ";
-  public static final String MAILBOX_ID_VALUE = DebugConfig.disableMailboxGroups ? "" : "?, ";
+      "mailbox_id = ? AND ";
+  public static final String MAILBOX_ID = "mailbox_id, ";
+  public static final String MAILBOX_ID_VALUE = "?, ";
 
   static final int RESULTS_STREAMING_MIN_ROWS = 10000;
 
@@ -94,11 +93,8 @@ public class DbMailItem {
 
   public static final int setMailboxId(PreparedStatement stmt, int mboxId, int pos)
       throws SQLException {
-    int nextPos = pos;
-    if (!DebugConfig.disableMailboxGroups) {
-      stmt.setInt(nextPos++, mboxId);
-    }
-    return nextPos;
+    stmt.setInt(pos, mboxId);
+    return pos + 1;
   }
 
   public void create(UnderlyingData data) throws ServiceException {
@@ -257,13 +253,12 @@ public class DbMailItem {
     try {
       String srcTable = getMailItemTableName(mbox, fromDumpster);
       String destTable = getMailItemTableName(mbox);
-      String mailbox_id = DebugConfig.disableMailboxGroups ? "" : "mailbox_id, ";
       stmt =
           conn.prepareStatement(
               "INSERT INTO "
                   + destTable
                   + "("
-                  + mailbox_id
+                  + MAILBOX_ID
                   + " id, type, parent_id, folder_id, prev_folders, index_id, imap_id, date, size,"
                   + " locator, blob_digest, unread, flags, tag_names, sender, subject, name,"
                   + " metadata, mod_metadata, change_date, mod_content, uuid) SELECT "
@@ -331,13 +326,12 @@ public class DbMailItem {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     try {
-      String mailbox_id = DebugConfig.disableMailboxGroups ? "" : "mailbox_id, ";
       stmt =
           conn.prepareStatement(
               "INSERT INTO "
                   + getCalendarItemTableName(mbox)
                   + "("
-                  + mailbox_id
+                  + MAILBOX_ID
                   + " uid, item_id, start_time, end_time) "
                   + "SELECT "
                   + MAILBOX_ID_VALUE
@@ -377,13 +371,12 @@ public class DbMailItem {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     try {
-      String mailbox_id = DebugConfig.disableMailboxGroups ? "" : "mailbox_id, ";
       stmt =
           conn.prepareStatement(
               "INSERT INTO "
                   + getRevisionTableName(mbox)
                   + "("
-                  + mailbox_id
+                  + MAILBOX_ID
                   + " item_id, version, date, size, locator, blob_digest, name, metadata,"
                   + " mod_metadata, change_date, mod_content) "
                   + "SELECT "
@@ -437,7 +430,6 @@ public class DbMailItem {
     PreparedStatement stmt = null;
     try {
       String table = getMailItemTableName(mbox);
-      String mailbox_id = DebugConfig.disableMailboxGroups ? "" : "mailbox_id, ";
       String flags;
       if (!shared) {
         flags = "flags";
@@ -456,11 +448,11 @@ public class DbMailItem {
               "INSERT INTO "
                   + table
                   + "("
-                  + mailbox_id
+                  + MAILBOX_ID
                   + " id, type, parent_id, folder_id, prev_folders, index_id, imap_id, date, size,"
                   + " locator, blob_digest, unread, flags, tag_names, sender, subject, name,"
                   + " metadata, mod_metadata, change_date, mod_content) SELECT "
-                  + mailbox_id
+                  + MAILBOX_ID
                   + " ?, type, parent_id, ?, ?, ?, ?, date, size, ?, blob_digest,"
                   + " unread, "
                   + flags
@@ -547,18 +539,17 @@ public class DbMailItem {
     PreparedStatement stmt = null;
     try {
       String command = Db.supports(Db.Capability.REPLACE_INTO) ? "REPLACE" : "INSERT";
-      String mailbox_id = DebugConfig.disableMailboxGroups ? "" : "mailbox_id, ";
       stmt =
           conn.prepareStatement(
               command
                   + " INTO "
                   + getRevisionTableName(mbox)
                   + "("
-                  + mailbox_id
+                  + MAILBOX_ID
                   + "item_id, version, date, size, locator, blob_digest,"
                   + " name, metadata, mod_metadata, change_date, mod_content) "
                   + "SELECT "
-                  + mailbox_id
+                  + MAILBOX_ID
                   + "id, ?, date, size, locator, blob_digest,"
                   + " name, metadata, mod_metadata, change_date, mod_content"
                   + " FROM "
@@ -1366,9 +1357,7 @@ public class DbMailItem {
 
   static List<String> withMailboxId(String... columns) {
     List<String> out = new ArrayList<>();
-    if (!DebugConfig.disableMailboxGroups) {
-      out.add("mailbox_id");
-    }
+    out.add("mailbox_id");
     out.addAll(Arrays.asList(columns));
     return out;
   }
@@ -1435,9 +1424,7 @@ public class DbMailItem {
     ZimbraLog.purge.debug("Closing conversations dated before %d.", beforeDate);
     try {
       String mailboxJoin =
-          (DebugConfig.disableMailboxGroups
-              ? ""
-              : " AND mi.mailbox_id = open_conversation.mailbox_id");
+          " AND mi.mailbox_id = open_conversation.mailbox_id";
       stmt =
           conn.prepareStatement(
               "DELETE FROM "
@@ -1994,12 +1981,12 @@ public class DbMailItem {
 
   // parent_id = null, change_date = ? (to be set to deletion time)
   private static String MAIL_ITEM_DUMPSTER_COPY_SRC_FIELDS =
-      (DebugConfig.disableMailboxGroups ? "" : "mailbox_id, ")
+      "mailbox_id, "
           + "id, type, parent_id, folder_id, prev_folders, index_id, imap_id, date, size, locator,"
           + " blob_digest, unread, tag_names, sender, recipients, subject, name, metadata, ?, ?,"
           + " mod_content, uuid, ";
   private static String MAIL_ITEM_DUMPSTER_COPY_DEST_FIELDS =
-      (DebugConfig.disableMailboxGroups ? "" : "mailbox_id, ")
+      "mailbox_id, "
           + "id, type, parent_id, folder_id, prev_folders, index_id, imap_id, date, size, locator,"
           + " blob_digest, unread, tag_names, sender, recipients, subject, name, metadata,"
           + " mod_metadata, change_date, mod_content, uuid, flags";
@@ -2177,13 +2164,12 @@ public class DbMailItem {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     try {
-      String mailbox_id = DebugConfig.disableMailboxGroups ? "" : "mailbox_id, ";
       stmt =
           conn.prepareStatement(
               "INSERT INTO "
                   + getTombstoneTableName(mbox)
                   + "("
-                  + mailbox_id
+                  + MAILBOX_ID
                   + "sequence, date, type, ids)"
                   + " VALUES ("
                   + MAILBOX_ID_VALUE
@@ -2680,9 +2666,7 @@ public class DbMailItem {
                   + ", "
                   + getRevisionTableName(mbox, "rev")
                   + " WHERE mi.id = rev.item_id"
-                  + (DebugConfig.disableMailboxGroups
-                      ? ""
-                      : " AND rev.mailbox_id = ? AND mi.mailbox_id = rev.mailbox_id")
+                  + " AND rev.mailbox_id = ? AND mi.mailbox_id = rev.mailbox_id"
                   + " GROUP BY folder_id");
       setMailboxId(stmt, mbox, 1);
       rs = stmt.executeQuery();
@@ -3214,9 +3198,7 @@ public class DbMailItem {
                   + getConversationTableName(mbox, "oc")
                   + " WHERE mi.id = oc.conv_id AND "
                   + DbUtil.whereIn("oc.hash", hashes.size())
-                  + (DebugConfig.disableMailboxGroups
-                      ? ""
-                      : " AND oc.mailbox_id = ? AND mi.mailbox_id = oc.mailbox_id"));
+                  + " AND oc.mailbox_id = ? AND mi.mailbox_id = oc.mailbox_id");
       int pos = 1;
       for (String hash : hashes) {
         stmt.setString(pos++, hash);
@@ -3880,9 +3862,7 @@ public class DbMailItem {
                   + getRevisionTableName(mbox, "rev")
                   + " WHERE mi.id = rev.item_id AND "
                   + DbUtil.whereIn("mi.id", versioned.size())
-                  + (DebugConfig.disableMailboxGroups
-                      ? ""
-                      : " AND mi.mailbox_id = ? AND mi.mailbox_id = rev.mailbox_id"));
+                  + " AND mi.mailbox_id = ? AND mi.mailbox_id = rev.mailbox_id");
       int pos = 1;
       for (int vid : versioned) {
         stmt.setInt(pos++, vid);
@@ -4315,7 +4295,7 @@ public class DbMailItem {
       for (boolean fromDumpster : dumpsterOrNot) {
         String query =
             "SELECT "
-                + (DebugConfig.disableMailboxGroups ? groupId : "mailbox_id")
+                + "mailbox_id"
                 + ", id, mod_content,"
                 + " locator, blob_digest FROM "
                 + getMailItemTableName(groupId, fromDumpster)
@@ -4329,7 +4309,7 @@ public class DbMailItem {
 
         query =
             "SELECT "
-                + (DebugConfig.disableMailboxGroups ? groupId : "mailbox_id")
+                + "mailbox_id"
                 + ", item_id, mod_content,"
                 + " locator, blob_digest FROM "
                 + getRevisionTableName(groupId, fromDumpster)
@@ -4694,9 +4674,7 @@ public class DbMailItem {
                   + getMailItemTableName(mbox, "mi")
                   + " WHERE ci.uid = ? AND mi.id = ci.item_id AND mi.type IN "
                   + CALENDAR_TYPES
-                  + (DebugConfig.disableMailboxGroups
-                      ? ""
-                      : " AND ci.mailbox_id = ? AND mi.mailbox_id = ci.mailbox_id"));
+                  + " AND ci.mailbox_id = ? AND mi.mailbox_id = ci.mailbox_id");
 
       int pos = 1;
       stmt.setString(pos++, uid);
@@ -4770,9 +4748,7 @@ public class DbMailItem {
                     + getMailItemTableName(mbox, "mi")
                     + " WHERE mi.id = ci.item_id AND mi.type IN "
                     + CALENDAR_TYPES
-                    + (DebugConfig.disableMailboxGroups
-                        ? ""
-                        : " AND ci.mailbox_id = ? AND mi.mailbox_id = ci.mailbox_id")
+                    + " AND ci.mailbox_id = ? AND mi.mailbox_id = ci.mailbox_id"
                     + " AND "
                     + DbUtil.whereIn("ci.uid", count));
         int pos = 1;
@@ -4871,9 +4847,7 @@ public class DbMailItem {
                 + startConstraint
                 + " AND mi."
                 + typeConstraint
-                + (DebugConfig.disableMailboxGroups
-                    ? ""
-                    : " AND ci.mailbox_id = ? AND mi.mailbox_id = ci.mailbox_id")
+                + " AND ci.mailbox_id = ? AND mi.mailbox_id = ci.mailbox_id"
                 + (folderSpecified ? " AND folder_id = ?" : "")
                 + excludeFolderPart);
 
@@ -4908,16 +4882,15 @@ public class DbMailItem {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     try {
-      String mailbox_id = DebugConfig.disableMailboxGroups ? "" : "mailbox_id, ";
       stmt =
           conn.prepareStatement(
               "INSERT INTO "
                   + getCalendarItemTableName(mbox)
                   + " ("
-                  + mailbox_id
+                  + MAILBOX_ID
                   + "uid, item_id, start_time, end_time)"
                   + " VALUES ("
-                  + (DebugConfig.disableMailboxGroups ? "" : "?, ")
+                  + "?, "
                   + "?, ?, ?, ?)");
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
@@ -5023,7 +4996,7 @@ public class DbMailItem {
                   + ", "
                   + getCalendarItemTableName(mbox, "ci")
                   + " WHERE mi.mailbox_id = ci.mailbox_id AND mi.id = ci.item_id"
-                  + (DebugConfig.disableMailboxGroups ? "" : " AND mi.mailbox_id = ? ")
+                  + " AND mi.mailbox_id = ? "
                   + startConstraint
                   + endConstraint
                   + folderConstraint);
