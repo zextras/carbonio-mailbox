@@ -14,7 +14,7 @@ import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
-import com.zimbra.cs.db.DbUtil;
+import com.zimbra.cs.db.DbTestUtil;
 import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.DeliveryOptions;
 import com.zimbra.cs.mailbox.MailItem;
@@ -165,7 +165,7 @@ public final class ZimbraQueryTest extends MailboxTestSuite {
 				MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
 		DbConnection conn = DbPool.getConnection();
-		DbUtil.executeUpdate(
+		DbTestUtil.executeUpdate(
 				conn,
 				"INSERT INTO mboxgroup1.mail_item (mailbox_id, id, folder_id, type, flags, date,"
 						+ " change_date, size, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, ?, ?, 0,"
@@ -176,7 +176,7 @@ public final class ZimbraQueryTest extends MailboxTestSuite {
 				MailItem.Type.MESSAGE.toByte(),
 				100,
 				1000);
-		DbUtil.executeUpdate(
+		DbTestUtil.executeUpdate(
 				conn,
 				"INSERT INTO mboxgroup1.mail_item (mailbox_id, id, folder_id, type, flags, date,"
 						+ " change_date, size, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, ?, ?, 0,"
@@ -187,7 +187,7 @@ public final class ZimbraQueryTest extends MailboxTestSuite {
 				MailItem.Type.MESSAGE.toByte(),
 				200,
 				2000);
-		DbUtil.executeUpdate(
+		DbTestUtil.executeUpdate(
 				conn,
 				"INSERT INTO mboxgroup1.mail_item (mailbox_id, id, folder_id, type, flags, date,"
 						+ " change_date, size, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, ?, ?, 0,"
@@ -198,7 +198,7 @@ public final class ZimbraQueryTest extends MailboxTestSuite {
 				MailItem.Type.MESSAGE.toByte(),
 				300,
 				3000);
-		DbUtil.executeUpdate(
+		DbTestUtil.executeUpdate(
 				conn,
 				"INSERT INTO mboxgroup1.mail_item (mailbox_id, id, folder_id, type, flags, date,"
 						+ " change_date, size, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, ?, ?, 0,"
@@ -209,7 +209,7 @@ public final class ZimbraQueryTest extends MailboxTestSuite {
 				MailItem.Type.MESSAGE.toByte(),
 				400,
 				4000);
-		DbUtil.executeUpdate(
+		DbTestUtil.executeUpdate(
 				conn,
 				"INSERT INTO mboxgroup1.mail_item (mailbox_id, id, folder_id, type, flags, date,"
 						+ " change_date, size, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, ?, ?, 0,"

@@ -53,7 +53,7 @@ public final class DbMailItemTest extends MailboxTestSuite {
     conn.closeQuietly();
   }
   private int insertIntoMailItem(int id, Type type, Integer indexId) throws ServiceException {
-    return DbUtil.executeUpdate(
+    return DbTestUtil.executeUpdate(
         conn,
         "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
             + " mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
@@ -65,7 +65,7 @@ public final class DbMailItemTest extends MailboxTestSuite {
 
 
   private int insertIntoDumpster(int id, Type type, Integer indexId) throws ServiceException {
-    return DbUtil.executeUpdate(
+    return DbTestUtil.executeUpdate(
         conn,
         "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
             + " flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
@@ -120,11 +120,11 @@ public final class DbMailItemTest extends MailboxTestSuite {
     DbMailItem.setIndexIds(conn, mbox, ImmutableList.of(100, 200));
     assertEquals(
         100,
-        DbUtil.executeQuery(conn, "SELECT index_id FROM mboxgroup1.mail_item WHERE id = ?", 100)
+        DbTestUtil.executeQuery(conn, "SELECT index_id FROM mboxgroup1.mail_item WHERE id = ?", 100)
             .getInt(1));
     assertEquals(
         200,
-        DbUtil.executeQuery(
+        DbTestUtil.executeQuery(
                 conn, "SELECT index_id FROM mboxgroup1.mail_item_dumpster WHERE id = ?", 200)
             .getInt(1));
   }
@@ -165,11 +165,11 @@ public final class DbMailItemTest extends MailboxTestSuite {
     DbMailItem.resetIndexId(conn, mbox);
     assertEquals(
         0,
-        DbUtil.executeQuery(conn, "SELECT index_id FROM mboxgroup1.mail_item WHERE id = ?", 100)
+        DbTestUtil.executeQuery(conn, "SELECT index_id FROM mboxgroup1.mail_item WHERE id = ?", 100)
             .getInt(1));
     assertEquals(
         0,
-        DbUtil.executeQuery(
+        DbTestUtil.executeQuery(
                 conn, "SELECT index_id FROM mboxgroup1.mail_item_dumpster WHERE id = ?", 200)
             .getInt(1));
   }
@@ -197,7 +197,7 @@ public final class DbMailItemTest extends MailboxTestSuite {
 
     int idsInit = ids.size();
     for (int i = 0; i < beforeNowCount; i++) {
-      DbUtil.executeUpdate(
+      DbTestUtil.executeUpdate(
           conn,
           "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags,"
               + " tags, mod_metadata, change_date, mod_content) VALUES(?, ?, ?, 0, 0, 0, 0, 0, 0,"
@@ -211,7 +211,7 @@ public final class DbMailItemTest extends MailboxTestSuite {
     Set<Integer> idsAddBeforeNow = DbMailItem.getIds(mbox, conn, new QueryParams(), false);
     assertEquals(beforeNowCount, idsAddBeforeNow.size() - idsInit);
     for (int i = 0; i < afterNowCount; i++) {
-      DbUtil.executeUpdate(
+      DbTestUtil.executeUpdate(
           conn,
           "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags,"
               + " tags, mod_metadata, change_date, mod_content) VALUES(?, ?, ?, 0, 0, 0, 0, 0, 0,"
@@ -236,7 +236,7 @@ public final class DbMailItemTest extends MailboxTestSuite {
 
     id = 300;
     for (int i = 0; i < notDeleteCount; i++) {
-      DbUtil.executeUpdate(
+      DbTestUtil.executeUpdate(
           conn,
           "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags,"
               + " tags, mod_metadata, change_date, mod_content) VALUES(?, ?, ?, 0, 0, 0, 0, 0, 0,"
@@ -247,7 +247,7 @@ public final class DbMailItemTest extends MailboxTestSuite {
           deleteNow);
     }
     for (int i = 0; i < deleteCount; i++) {
-      DbUtil.executeUpdate(
+      DbTestUtil.executeUpdate(
           conn,
           "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags,"
               + " tags, mod_metadata, change_date, mod_content) VALUES(?, ?, ?, 0, 0, 0, 128, 0, 0,"
@@ -270,7 +270,7 @@ public final class DbMailItemTest extends MailboxTestSuite {
   @Test
   void readTombstones() throws Exception {
     int now = (int) (System.currentTimeMillis() / 1000);
-    DbUtil.executeUpdate(
+    DbTestUtil.executeUpdate(
         conn,
         "INSERT INTO mboxgroup1.tombstone "
             + "(mailbox_id, sequence, date, type, ids) "
@@ -280,7 +280,7 @@ public final class DbMailItemTest extends MailboxTestSuite {
         now,
         MailItem.Type.MESSAGE.toByte(),
         "1,2,3");
-    DbUtil.executeUpdate(
+    DbTestUtil.executeUpdate(
         conn,
         "INSERT INTO mboxgroup1.tombstone "
             + "(mailbox_id, sequence, date, type, ids) "
@@ -290,7 +290,7 @@ public final class DbMailItemTest extends MailboxTestSuite {
         now,
         MailItem.Type.APPOINTMENT.toByte(),
         "11,12,13,14");
-    DbUtil.executeUpdate(
+    DbTestUtil.executeUpdate(
         conn,
         "INSERT INTO mboxgroup1.tombstone "
             + "(mailbox_id, sequence, date, type, ids) "

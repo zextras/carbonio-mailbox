@@ -15,8 +15,10 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxVersion;
 import com.zimbra.cs.mailbox.Metadata;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.sql.PreparedStatement;
@@ -303,8 +305,7 @@ public final class DbMailbox {
       Map<String, String> vars = new HashMap<>();
       vars.put("DATABASE_NAME", dbname);
       String script = StringUtil.fillTemplate(template, vars);
-      // note that DbUtil.executeScript ends with a COMMIT
-      DbUtil.executeScript(conn, new StringReader(script));
+      executeScript(conn, script);
       succeeded = true;
     } catch (IOException e) {
       throw ServiceException.FAILURE("unable to read SQL statements from " + file.getPath(), e);
@@ -1187,5 +1188,55 @@ public final class DbMailbox {
     }
 
     return groups;
+  }
+
+  private static void executeScript(DbConnection conn, String script)
+      throws IOException, ServiceException, SQLException {
+    try {
+      for (String sql : parseScript(new StringReader(script), conn.getDb())) {
+        if (sql.isEmpty()) {
+          continue;
+        }
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+          stmt.execute();
+        }
+      }
+      conn.commit();
+    } catch (SQLException e) {
+      DbPool.quietRollback(conn);
+      throw e;
+    }
+  }
+
+  static String[] parseScript(Reader scriptReader, Db db) throws IOException {
+    StringBuilder buf = new StringBuilder();
+    try (BufferedReader br = new BufferedReader(scriptReader)) {
+      String line;
+      while ((line = br.readLine()) != null) {
+        line = removeComments(line);
+        buf.append(line);
+        if (line.trim().isEmpty()) {
+          continue;
+        }
+        buf.append('\n');
+      }
+    }
+    String[] statements = buf.toString().split("\\s*" + db.scriptCommandDelimiter() + "\\s*");
+    for (int i = 0; i < statements.length; i++) {
+      if (statements[i].startsWith("END")) {
+        statements[i - 1] += ";\n" + statements[i];
+        statements[i] = "";
+      }
+    }
+    return statements;
+  }
+
+  private static String removeComments(String sqlLine) {
+    int commentIndex = sqlLine.indexOf("--");
+    int hashIndex = sqlLine.indexOf('#');
+    if (hashIndex >= 0) {
+      commentIndex = commentIndex >= 0 ? Math.min(commentIndex, hashIndex) : hashIndex;
+    }
+    return commentIndex != -1 ? sqlLine.substring(0, commentIndex) : sqlLine;
   }
 }

@@ -30,7 +30,7 @@ import com.zimbra.cs.db.DbMailItem;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.db.DbResults;
-import com.zimbra.cs.db.DbUtil;
+import com.zimbra.cs.db.DbTestUtil;
 import com.zimbra.cs.gal.GalGroup.GroupInfo;
 import com.zimbra.cs.gal.GalGroupInfoProvider;
 import com.zimbra.cs.mailbox.Contact.Attachment;
@@ -95,7 +95,7 @@ public final class ContactTest extends MailboxTestSuite {
 
 		assertEquals(
 				"Last1, First1",
-				DbUtil.executeQuery(
+				DbTestUtil.executeQuery(
 								conn,
 								"SELECT sender FROM mboxgroup1.mail_item WHERE mailbox_id = ? AND id = ?",
 								mbox.getId(),
@@ -108,7 +108,7 @@ public final class ContactTest extends MailboxTestSuite {
 
 		assertEquals(
 				"Last2, First2",
-				DbUtil.executeQuery(
+				DbTestUtil.executeQuery(
 								conn,
 								"SELECT sender FROM mboxgroup1.mail_item WHERE mailbox_id = ? AND id = ?",
 								mbox.getId(),
@@ -131,7 +131,7 @@ public final class ContactTest extends MailboxTestSuite {
 
 		assertEquals(
 				Strings.repeat("F", 128),
-				DbUtil.executeQuery(
+				DbTestUtil.executeQuery(
 								conn,
 								"SELECT sender FROM mboxgroup1.mail_item WHERE mailbox_id = ? AND id = ?",
 								mbox.getId(),
@@ -144,7 +144,7 @@ public final class ContactTest extends MailboxTestSuite {
 
 		assertEquals(
 				Strings.repeat("L", 128),
-				DbUtil.executeQuery(
+				DbTestUtil.executeQuery(
 								conn,
 								"SELECT sender FROM mboxgroup1.mail_item WHERE mailbox_id = ? AND id = ?",
 								mbox.getId(),
@@ -247,7 +247,7 @@ public final class ContactTest extends MailboxTestSuite {
 						"SELECT COUNT(*) FROM %s WHERE type = %d AND blob_digest IS NULL AND locator IS NOT"
 								+ " NULL",
 						DbMailItem.getMailItemTableName(mbox), MailItem.Type.CONTACT.toByte());
-		DbResults results = DbUtil.executeQuery(sql);
+		DbResults results = DbTestUtil.executeQuery(sql);
 		assertEquals(0, results.getInt(1), "Found non-null locator values for contacts");
 	}
 

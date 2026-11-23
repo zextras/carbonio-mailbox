@@ -8,8 +8,10 @@ package com.zimbra.cs.db;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,7 +47,7 @@ public class DbScheduledTask {
             stmt.setString(1, task.getClass().getName());
             stmt.setString(2, task.getName());
             stmt.setInt(3, task.getMailboxId());
-            stmt.setTimestamp(4, DbUtil.dateToTimestamp(task.getExecTime()));
+            stmt.setTimestamp(4, dateToTimestamp(task.getExecTime()));
             if (task.getIntervalMillis() > 0) {
                 stmt.setLong(5, task.getIntervalMillis());
             } else {
@@ -125,7 +127,7 @@ public class DbScheduledTask {
 
                 // Set member vars
                 task.setMailboxId(rs.getInt("mailbox_id"));
-                task.setExecTime(DbUtil.timestampToDate(rs.getTimestamp("exec_time")));
+                task.setExecTime(timestampToDate(rs.getTimestamp("exec_time")));
                 task.setIntervalMillis(rs.getLong("interval_millis"));
 
                 try {
@@ -160,7 +162,7 @@ public class DbScheduledTask {
                 " SET mailbox_id = ?, exec_time = ?, interval_millis = ?, metadata = ? " +
                 "WHERE class_name = ? AND name = ?");
             stmt.setInt(1, task.getMailboxId());
-            stmt.setTimestamp(2, DbUtil.dateToTimestamp(task.getExecTime()));
+            stmt.setTimestamp(2, dateToTimestamp(task.getExecTime()));
             if (task.getIntervalMillis() > 0) {
                 stmt.setLong(3, task.getIntervalMillis());
             } else {
@@ -241,5 +243,13 @@ public class DbScheduledTask {
                 task.setProperty(entry.getKey(), (String) entry.getValue());
             }
         }
+    }
+
+    private static Timestamp dateToTimestamp(Date date) {
+        return date == null ? null : new Timestamp(date.getTime());
+    }
+
+    private static Date timestampToDate(Timestamp timestamp) {
+        return timestamp == null ? null : new Date(timestamp.getTime());
     }
 }
