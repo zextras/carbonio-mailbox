@@ -5,8 +5,6 @@
 
 package com.zimbra.cs.db;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.db.DbPool.DbConnection;
@@ -16,7 +14,9 @@ import com.zimbra.cs.util.ZimbraApplication;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class DbPendingAclPush {
 
@@ -83,50 +83,59 @@ public class DbPendingAclPush {
         }
     }
 
-    public static Multimap<Integer, Integer> getEntries(Date uptoTime) throws ServiceException {
-        Multimap<Integer, Integer> mboxIdToItemIds = HashMultimap.create();
+    public record Entry(int mailboxId, int itemId, long date) {}
+
+    public static List<Entry> getEntries() throws ServiceException {
+        List<Entry> entries = new ArrayList<>();
         DbConnection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        ZimbraLog.misc.debug("Getting entries recorded before %s for ACL push", uptoTime);
+        ZimbraLog.misc.debug("Getting entries for ACL push");
         try {
             conn = DbPool.getConnection();
             stmt = conn.prepareStatement(
-                    "SELECT mailbox_id, item_id FROM " + TABLE_PENDING_ACL_PUSH + " WHERE date < ?");
-            stmt.setLong(1, uptoTime.getTime());
+                    "SELECT mailbox_id, item_id, date FROM " + TABLE_PENDING_ACL_PUSH);
             rs = stmt.executeQuery();
             while (rs.next()) {
-            	mboxIdToItemIds.put(rs.getInt(1), rs.getInt(2));
+                entries.add(new Entry(rs.getInt(1), rs.getInt(2), rs.getLong(3)));
             }
         } catch (SQLException e) {
-            throw ServiceException.FAILURE("Unable to get entries recorded before " + uptoTime + " for ACL push", e);
+            throw ServiceException.FAILURE("Unable to get entries for ACL push", e);
         } finally {
             DbPool.closeResults(rs);
             DbPool.closeStatement(stmt);
             DbPool.quietClose(conn);
         }
-        return mboxIdToItemIds;
+        return entries;
     }
 
-    public static void deleteEntries(Date uptoTime) throws ServiceException {
-        ZimbraLog.misc.debug("Deleting entries for ACL push before %s", uptoTime);
+    public static void deleteEntries(Collection<Entry> entries) throws ServiceException {
+        if (entries.isEmpty()) {
+            return;
+        }
+        ZimbraLog.misc.debug("Deleting %d entries for ACL push", entries.size());
         DbConnection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = DbPool.getConnection();
             stmt = conn.prepareStatement(
-                    "DELETE FROM " + TABLE_PENDING_ACL_PUSH + " WHERE date < ?");
-            stmt.setLong(1, uptoTime.getTime());
-            stmt.executeUpdate();
+                    "DELETE FROM " + TABLE_PENDING_ACL_PUSH + " WHERE mailbox_id = ? AND item_id = ? AND date = ?");
+            for (Entry entry : entries) {
+                stmt.setInt(1, entry.mailboxId());
+                stmt.setInt(2, entry.itemId());
+                stmt.setLong(3, entry.date());
+                stmt.addBatch();
+            }
+            stmt.executeBatch();
             conn.commit();
         } catch (SQLException e) {
-            throw ServiceException.FAILURE("Unable to delete UID's", e);
+            throw ServiceException.FAILURE("Unable to delete entries for ACL push", e);
         } finally {
             DbPool.closeStatement(stmt);
             DbPool.quietClose(conn);
         }
     }
-    
+
     public static void deleteEntry(int mailboxId, int itemId) throws ServiceException {
         ZimbraLog.misc.debug("Deleting entry for ACL push for mailbox: %d, item : %d", mailboxId, itemId);
         DbConnection conn = null;
