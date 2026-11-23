@@ -20,8 +20,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import org.hsqldb.cmdline.SqlFile;
 
 /**
@@ -153,6 +155,17 @@ public class HSQLDB extends Db {
     @Override
     String getIFNULLClause(String expr1, String expr2) {
         return "COALESCE(" + expr1 + ", " + expr2 + ")";
+    }
+
+    @Override
+    public String upsert(String table, List<String> columns, List<String> keyColumns, List<String> updateColumns) {
+        String match = keyColumns.stream().map(c -> "t." + c + " = v." + c).collect(Collectors.joining(" AND "));
+        String whenMatched = updateColumns.isEmpty() ? ""
+            : " WHEN MATCHED THEN UPDATE SET " + updateColumns.stream().map(c -> "t." + c + " = v." + c).collect(Collectors.joining(", "));
+        return "MERGE INTO " + table + " AS t USING (VALUES(" + String.join(", ", Collections.nCopies(columns.size(), "?"))
+            + ")) AS v(" + String.join(", ", columns) + ") ON " + match + whenMatched
+            + " WHEN NOT MATCHED THEN INSERT (" + String.join(", ", columns) + ") VALUES ("
+            + columns.stream().map(c -> "v." + c).collect(Collectors.joining(", ")) + ")";
     }
 
     @Override

@@ -104,12 +104,8 @@ public class DbOutOfOffice {
 
         PreparedStatement stmt = null;
         try {
-            String command = Db.supports(Db.Capability.REPLACE_INTO) ? "REPLACE" : "INSERT";
-            String upsert = Db.getInstance().upsert(DbMailbox.qualifyZimbraTableName(mbox, TABLE_NAME),
-                    DbMailItem.withMailboxId("sent_to", "sent_on"), DbMailItem.withMailboxId("sent_to"), List.of("sent_on"));
-            stmt = conn.prepareStatement(upsert != null ? upsert : command + " INTO " + DbMailbox.qualifyZimbraTableName(mbox, TABLE_NAME) +
-                    "(" + DbMailItem.MAILBOX_ID + "sent_to, sent_on)" +
-                    " VALUES (" + DbMailItem.MAILBOX_ID_VALUE +" ?, ?) ");
+            stmt = conn.prepareStatement(Db.getInstance().upsert(DbMailbox.qualifyZimbraTableName(mbox, TABLE_NAME),
+                    DbMailItem.withMailboxId("sent_to", "sent_on"), DbMailItem.withMailboxId("sent_to"), List.of("sent_on")));
             int pos = 1;
             pos = DbMailItem.setMailboxId(stmt, mbox, pos);
             stmt.setString(pos++, sentTo.toLowerCase());
@@ -125,26 +121,8 @@ public class DbOutOfOffice {
                         + " sent_to=" + sentTo + " sent_on=" + sentOn + " rows=" + num + ")");
             }
         } catch (SQLException e) {
-            if (Db.errorMatches(e, Db.Error.DUPLICATE_ROW)) {
-                try {
-                    stmt.close();
-
-                    stmt = conn.prepareStatement("UPDATE " + DbMailbox.qualifyZimbraTableName(mbox, TABLE_NAME) +
-                            " SET sent_on = ?" +
-                            " WHERE " + DbMailItem.IN_THIS_MAILBOX_AND + "sent_to = ?");
-                    int pos = 1;
-                    stmt.setTimestamp(pos++, ts);
-                    pos = DbMailItem.setMailboxId(stmt, mbox, pos);
-                    stmt.setString(pos++, sentTo.toLowerCase());
-                    stmt.executeUpdate();
-                } catch (SQLException nested) {
-                    throw ServiceException.FAILURE("DbOutOfOffice.setSentTime: sql exception " +
-                            "(mailbox_id=" + mbox.getId() + " sent_to" + sentTo + " sent_on=" + sentOn + ")", nested);
-                }
-            } else {
-                throw ServiceException.FAILURE("DbOutOfOffice.setSentTime: sql exception " +
-                        "(mailbox_id=" + mbox.getId() + " sent_to" + sentTo + " sent_on=" + sentOn + ")", e);
-            }
+            throw ServiceException.FAILURE("DbOutOfOffice.setSentTime: sql exception " +
+                    "(mailbox_id=" + mbox.getId() + " sent_to" + sentTo + " sent_on=" + sentOn + ")", e);
         } finally {
             DbPool.closeStatement(stmt);
         }

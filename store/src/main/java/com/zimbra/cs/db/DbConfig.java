@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.zimbra.common.service.ServiceException;
@@ -49,21 +50,12 @@ public class DbConfig {
 
         PreparedStatement stmt = null;
         try {
-            // Try update first
-            stmt = conn.prepareStatement("UPDATE config SET value = ?, modified = ? WHERE name = ?");
-            stmt.setString(1, value);
-            stmt.setTimestamp(2, modified);
-            stmt.setString(3, name);
-            int numRows = stmt.executeUpdate();
-
-            // If update didn't affect any rows, do an insert
-            if (numRows == 0) {
-                stmt = conn.prepareStatement("INSERT INTO config(name, value, modified) VALUES (?, ?, ?)");
-                stmt.setString(1, name);
-                stmt.setString(2, value);
-                stmt.setTimestamp(3, modified);
-                stmt.executeUpdate();
-            }
+            stmt = conn.prepareStatement(Db.getInstance().upsert("config",
+                    List.of("name", "value", "modified"), List.of("name"), List.of("value", "modified")));
+            stmt.setString(1, name);
+            stmt.setString(2, value);
+            stmt.setTimestamp(3, modified);
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw ServiceException.FAILURE("writing config entry: " + name, e);
         } finally {

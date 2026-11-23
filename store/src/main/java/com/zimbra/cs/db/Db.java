@@ -158,9 +158,7 @@ public abstract class Db {
      */
     public abstract String bitAND(String expr1, String expr2);
 
-    public String upsert(String table, List<String> columns, List<String> keyColumns, List<String> updateColumns) {
-        return null;
-    }
+    public abstract String upsert(String table, List<String> columns, List<String> keyColumns, List<String> updateColumns);
 
     /**
      * Generates a bitwise first value AND NOT second values.

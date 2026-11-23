@@ -640,61 +640,21 @@ public final class DbMailbox {
         stmt.executeUpdate();
         stmt.close();
       } else {
-        // We try INSERT first even though it's the less common case, to avoid MySQL
-        // deadlock.  See bug 19404 for more info.
-        try {
-          String command = Db.supports(Db.Capability.REPLACE_INTO) ? "REPLACE" : "INSERT";
-          String upsert =
-              Db.getInstance()
-                  .upsert(
-                      qualifyZimbraTableName(mbox, TABLE_METADATA),
-                      DbMailItem.withMailboxId("section", "metadata"),
-                      DbMailItem.withMailboxId("section"),
-                      List.of("metadata"));
-          stmt =
-              conn.prepareStatement(
-                  upsert != null
-                      ? upsert
-                      : command
-                          + " INTO "
-                          + qualifyZimbraTableName(mbox, TABLE_METADATA)
-                          + " ("
-                          + (DebugConfig.disableMailboxGroups ? "" : "mailbox_id, ")
-                          + "section, metadata)"
-                          + " VALUES ("
-                          + (DebugConfig.disableMailboxGroups ? "" : "?, ")
-                          + "?, ?)");
-          int pos = 1;
-          if (!DebugConfig.disableMailboxGroups) {
-            stmt.setInt(pos++, mbox.getId());
-          }
-          stmt.setString(pos++, section);
-          stmt.setString(pos++, config.toString());
-          stmt.executeUpdate();
-        } catch (SQLException e) {
-          if (Db.errorMatches(e, Db.Error.DUPLICATE_ROW)) {
-            stmt =
-                conn.prepareStatement(
-                    "UPDATE "
-                        + qualifyZimbraTableName(mbox, TABLE_METADATA)
-                        + " SET metadata = ? WHERE "
-                        + DbMailItem.IN_THIS_MAILBOX_AND
-                        + "section = ?");
-            int pos = 1;
-            stmt.setString(pos++, config.toString());
-            if (!DebugConfig.disableMailboxGroups) {
-              stmt.setInt(pos++, mbox.getId());
-            }
-            stmt.setString(pos++, section);
-            int numRows = stmt.executeUpdate();
-            if (numRows != 1) {
-              String msg =
-                  String.format(
-                      "Unexpected number of rows (%d) updated for section %s", numRows, section);
-              throw ServiceException.FAILURE(msg, e);
-            }
-          }
+        stmt =
+            conn.prepareStatement(
+                Db.getInstance()
+                    .upsert(
+                        qualifyZimbraTableName(mbox, TABLE_METADATA),
+                        DbMailItem.withMailboxId("section", "metadata"),
+                        DbMailItem.withMailboxId("section"),
+                        List.of("metadata")));
+        int pos = 1;
+        if (!DebugConfig.disableMailboxGroups) {
+          stmt.setInt(pos++, mbox.getId());
         }
+        stmt.setString(pos++, section);
+        stmt.setString(pos++, config.toString());
+        stmt.executeUpdate();
       }
     } catch (SQLException e) {
       throw ServiceException.FAILURE(

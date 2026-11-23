@@ -1378,57 +1378,21 @@ public class DbMailItem {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     try {
-      String command = Db.supports(Db.Capability.REPLACE_INTO) ? "REPLACE" : "INSERT";
-      String mailbox_id = DebugConfig.disableMailboxGroups ? "" : "mailbox_id, ";
-      String upsert =
-          Db.getInstance()
-              .upsert(
-                  getConversationTableName(item),
-                  withMailboxId("hash", "conv_id"),
-                  withMailboxId("hash"),
-                  List.of("conv_id"));
       stmt =
           conn.prepareStatement(
-              upsert != null
-                  ? upsert
-                  : command
-                      + " INTO "
-                      + getConversationTableName(item)
-                      + "("
-                      + mailbox_id
-                      + "hash, conv_id)"
-                      + " VALUES ("
-                      + (DebugConfig.disableMailboxGroups ? "" : "?, ")
-                      + "?, ?)");
+              Db.getInstance()
+                  .upsert(
+                      getConversationTableName(item),
+                      withMailboxId("hash", "conv_id"),
+                      withMailboxId("hash"),
+                      List.of("conv_id")));
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
       stmt.setString(pos++, hash);
       stmt.setInt(pos++, item.getId());
       stmt.executeUpdate();
     } catch (SQLException e) {
-      if (Db.errorMatches(e, Db.Error.DUPLICATE_ROW)) {
-        try {
-          DbPool.closeStatement(stmt);
-
-          stmt =
-              conn.prepareStatement(
-                  "UPDATE "
-                      + getConversationTableName(item)
-                      + " SET conv_id = ? WHERE "
-                      + IN_THIS_MAILBOX_AND
-                      + "hash = ?");
-          int pos = 1;
-          stmt.setInt(pos++, item.getId());
-          pos = setMailboxId(stmt, mbox, pos);
-          stmt.setString(pos++, hash);
-          stmt.executeUpdate();
-        } catch (SQLException nested) {
-          throw ServiceException.FAILURE(
-              "updating open conversation association for hash " + hash, nested);
-        }
-      } else {
-        throw ServiceException.FAILURE("writing open conversation association for hash " + hash, e);
-      }
+      throw ServiceException.FAILURE("writing open conversation association for hash " + hash, e);
     } finally {
       DbPool.closeStatement(stmt);
     }
