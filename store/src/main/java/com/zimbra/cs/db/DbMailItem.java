@@ -93,9 +93,8 @@ public class DbMailItem {
 
   public static final int setMailboxId(PreparedStatement stmt, int mboxId, int pos)
       throws SQLException {
-    int nextPos = pos;
-    stmt.setInt(nextPos++, mboxId);
-    return nextPos;
+    stmt.setInt(pos, mboxId);
+    return pos + 1;
   }
 
   public void create(UnderlyingData data) throws ServiceException {
@@ -254,13 +253,12 @@ public class DbMailItem {
     try {
       String srcTable = getMailItemTableName(mbox, fromDumpster);
       String destTable = getMailItemTableName(mbox);
-      String mailbox_id = "mailbox_id, ";
       stmt =
           conn.prepareStatement(
               "INSERT INTO "
                   + destTable
                   + "("
-                  + mailbox_id
+                  + MAILBOX_ID
                   + " id, type, parent_id, folder_id, prev_folders, index_id, imap_id, date, size,"
                   + " locator, blob_digest, unread, flags, tag_names, sender, subject, name,"
                   + " metadata, mod_metadata, change_date, mod_content, uuid) SELECT "
@@ -328,13 +326,12 @@ public class DbMailItem {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     try {
-      String mailbox_id = "mailbox_id, ";
       stmt =
           conn.prepareStatement(
               "INSERT INTO "
                   + getCalendarItemTableName(mbox)
                   + "("
-                  + mailbox_id
+                  + MAILBOX_ID
                   + " uid, item_id, start_time, end_time) "
                   + "SELECT "
                   + MAILBOX_ID_VALUE
@@ -374,13 +371,12 @@ public class DbMailItem {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     try {
-      String mailbox_id = "mailbox_id, ";
       stmt =
           conn.prepareStatement(
               "INSERT INTO "
                   + getRevisionTableName(mbox)
                   + "("
-                  + mailbox_id
+                  + MAILBOX_ID
                   + " item_id, version, date, size, locator, blob_digest, name, metadata,"
                   + " mod_metadata, change_date, mod_content) "
                   + "SELECT "
@@ -434,7 +430,6 @@ public class DbMailItem {
     PreparedStatement stmt = null;
     try {
       String table = getMailItemTableName(mbox);
-      String mailbox_id = "mailbox_id, ";
       String flags;
       if (!shared) {
         flags = "flags";
@@ -453,11 +448,11 @@ public class DbMailItem {
               "INSERT INTO "
                   + table
                   + "("
-                  + mailbox_id
+                  + MAILBOX_ID
                   + " id, type, parent_id, folder_id, prev_folders, index_id, imap_id, date, size,"
                   + " locator, blob_digest, unread, flags, tag_names, sender, subject, name,"
                   + " metadata, mod_metadata, change_date, mod_content) SELECT "
-                  + mailbox_id
+                  + MAILBOX_ID
                   + " ?, type, parent_id, ?, ?, ?, ?, date, size, ?, blob_digest,"
                   + " unread, "
                   + flags
@@ -544,18 +539,17 @@ public class DbMailItem {
     PreparedStatement stmt = null;
     try {
       String command = Db.supports(Db.Capability.REPLACE_INTO) ? "REPLACE" : "INSERT";
-      String mailbox_id = "mailbox_id, ";
       stmt =
           conn.prepareStatement(
               command
                   + " INTO "
                   + getRevisionTableName(mbox)
                   + "("
-                  + mailbox_id
+                  + MAILBOX_ID
                   + "item_id, version, date, size, locator, blob_digest,"
                   + " name, metadata, mod_metadata, change_date, mod_content) "
                   + "SELECT "
-                  + mailbox_id
+                  + MAILBOX_ID
                   + "id, ?, date, size, locator, blob_digest,"
                   + " name, metadata, mod_metadata, change_date, mod_content"
                   + " FROM "
@@ -2170,13 +2164,12 @@ public class DbMailItem {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     try {
-      String mailbox_id = "mailbox_id, ";
       stmt =
           conn.prepareStatement(
               "INSERT INTO "
                   + getTombstoneTableName(mbox)
                   + "("
-                  + mailbox_id
+                  + MAILBOX_ID
                   + "sequence, date, type, ids)"
                   + " VALUES ("
                   + MAILBOX_ID_VALUE
@@ -4889,13 +4882,12 @@ public class DbMailItem {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     try {
-      String mailbox_id = "mailbox_id, ";
       stmt =
           conn.prepareStatement(
               "INSERT INTO "
                   + getCalendarItemTableName(mbox)
                   + " ("
-                  + mailbox_id
+                  + MAILBOX_ID
                   + "uid, item_id, start_time, end_time)"
                   + " VALUES ("
                   + "?, "

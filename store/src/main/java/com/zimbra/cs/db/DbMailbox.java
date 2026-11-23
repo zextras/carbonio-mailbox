@@ -377,7 +377,7 @@ public final class DbMailbox {
               conn.prepareStatement(
                   "DELETE FROM "
                       + qualifyTableName(mbox, tableName)
-                      + (" WHERE mailbox_id = " + mailboxId));
+                      + " WHERE mailbox_id = " + mailboxId);
           stmt.executeUpdate();
         } finally {
           DbPool.closeStatement(stmt);
@@ -436,7 +436,7 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "UPDATE "
-                  + qualifyZimbraTableName(mbox, TABLE_MAILBOX)
+                  + TABLE_MAILBOX
                   + " SET contact_count = NULL WHERE id = ?");
       stmt.setInt(1, mbox.getId());
       stmt.executeUpdate();
@@ -454,7 +454,7 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "UPDATE "
-                  + qualifyZimbraTableName(mbox, TABLE_MAILBOX)
+                  + TABLE_MAILBOX
                   + " SET last_soap_access = ? WHERE id = ?");
       stmt.setInt(1, (int) (mbox.getLastSoapAccessTime() / 1000));
       stmt.setInt(2, mbox.getId());
@@ -474,7 +474,7 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "UPDATE "
-                  + qualifyZimbraTableName(mbox, TABLE_MAILBOX)
+                  + TABLE_MAILBOX
                   + " SET item_id_checkpoint = ?, contact_count = ?, change_checkpoint = ?,"
                   + "  size_checkpoint = ?, new_messages = ? WHERE id = ?");
       int pos = 1;
@@ -503,7 +503,7 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "UPDATE "
-                  + qualifyZimbraTableName(mbox, TABLE_MAILBOX)
+                  + TABLE_MAILBOX
                   + " SET tracking_sync = ? WHERE id = ? AND tracking_sync < ?");
       stmt.setInt(1, cutoff);
       stmt.setInt(2, mbox.getId());
@@ -523,7 +523,7 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "UPDATE "
-                  + qualifyZimbraTableName(mbox, TABLE_MAILBOX)
+                  + TABLE_MAILBOX
                   + " SET tracking_imap = 1 WHERE id = ?");
       stmt.setInt(1, mbox.getId());
       stmt.executeUpdate();
@@ -542,7 +542,7 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "SELECT metadata FROM "
-                  + qualifyZimbraTableName(mbox, TABLE_METADATA)
+                  + TABLE_METADATA
                   + " WHERE "
                   + DbMailItem.IN_THIS_MAILBOX_AND
                   + "section = ?");
@@ -573,7 +573,7 @@ public final class DbMailbox {
         stmt =
             conn.prepareStatement(
                 "DELETE FROM "
-                    + qualifyZimbraTableName(mbox, TABLE_METADATA)
+                    + TABLE_METADATA
                     + " WHERE "
                     + DbMailItem.IN_THIS_MAILBOX_AND
                     + "section = ?");
@@ -587,7 +587,7 @@ public final class DbMailbox {
             conn.prepareStatement(
                 Db.getInstance()
                     .upsert(
-                        qualifyZimbraTableName(mbox, TABLE_METADATA),
+                        TABLE_METADATA,
                         DbMailItem.withMailboxId("section", "metadata"),
                         DbMailItem.withMailboxId("section"),
                         List.of("metadata")));
@@ -612,7 +612,7 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "DELETE FROM "
-                  + qualifyZimbraTableName(mbox, TABLE_METADATA)
+                  + TABLE_METADATA
                   + " WHERE "
                   + DbMailItem.IN_THIS_MAILBOX_AND
                   + "section like ?");
@@ -636,7 +636,7 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "UPDATE "
-                  + qualifyZimbraTableName(mbox, TABLE_MAILBOX)
+                  + TABLE_MAILBOX
                   + " SET version = ?"
                   + " WHERE id = ?");
       int pos = 1;
@@ -658,7 +658,7 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "UPDATE "
-                  + qualifyZimbraTableName(mbox, TABLE_MAILBOX)
+                  + TABLE_MAILBOX
                   + " SET last_purge_at = ? WHERE id = ?");
       int pos = 1;
       stmt.setInt(pos++, (int) (lastPurgeAt / 1000));
@@ -683,7 +683,7 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "UPDATE "
-                  + qualifyZimbraTableName(mbox, TABLE_MAILBOX)
+                  + TABLE_MAILBOX
                   + " SET itemcache_checkpoint = itemcache_checkpoint + 1 WHERE id = ?");
       int pos = 1;
       pos = DbMailItem.setMailboxId(stmt, mbox, pos++);
@@ -844,7 +844,7 @@ public final class DbMailbox {
                   + ", size_checkpoint, contact_count, item_id_checkpoint, change_checkpoint,"
                   + " tracking_sync, tracking_imap, index_volume_id, last_soap_access,"
                   + " new_messages, version, itemcache_checkpoint FROM "
-                  + qualifyZimbraTableName(mailboxId, TABLE_MAILBOX)
+                  + TABLE_MAILBOX
                   + " WHERE id = ?");
       stmt.setInt(1, mailboxId);
 
@@ -902,7 +902,7 @@ public final class DbMailbox {
       stmt =
           conn.prepareStatement(
               "SELECT section FROM "
-                  + qualifyZimbraTableName(mailboxId, TABLE_METADATA)
+                  + TABLE_METADATA
                   + " WHERE mailbox_id = ?");
       stmt.setInt(1, mailboxId);
       rs = stmt.executeQuery();

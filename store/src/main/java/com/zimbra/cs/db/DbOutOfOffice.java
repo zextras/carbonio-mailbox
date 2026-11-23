@@ -48,7 +48,7 @@ public class DbOutOfOffice {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            stmt = conn.prepareStatement("SELECT COUNT(*) FROM " + DbMailbox.qualifyZimbraTableName(mbox, TABLE_NAME) +
+            stmt = conn.prepareStatement("SELECT COUNT(*) FROM " + TABLE_NAME +
                     " WHERE " + DbMailItem.IN_THIS_MAILBOX_AND + "sent_to = ? AND sent_on > ?");
             int pos = 1;
             pos = DbMailItem.setMailboxId(stmt, mbox, pos);
@@ -103,7 +103,7 @@ public class DbOutOfOffice {
 
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement(Db.getInstance().upsert(DbMailbox.qualifyZimbraTableName(mbox, TABLE_NAME),
+            stmt = conn.prepareStatement(Db.getInstance().upsert(TABLE_NAME,
                     DbMailItem.withMailboxId("sent_to", "sent_on"), DbMailItem.withMailboxId("sent_to"), List.of("sent_on")));
             int pos = 1;
             pos = DbMailItem.setMailboxId(stmt, mbox, pos);
@@ -139,7 +139,7 @@ public class DbOutOfOffice {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            stmt = conn.prepareStatement("DELETE FROM " + DbMailbox.qualifyZimbraTableName(mbox, TABLE_NAME) +
+            stmt = conn.prepareStatement("DELETE FROM " + TABLE_NAME +
                     " WHERE mailbox_id = ?");
             DbMailItem.setMailboxId(stmt, mbox, 1);
             int num = stmt.executeUpdate();

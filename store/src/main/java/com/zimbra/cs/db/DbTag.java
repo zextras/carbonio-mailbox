@@ -797,31 +797,4 @@ public class DbTag {
         return getTaggedItemTableName(mbox) + " AS " + alias;
     }
 
-    //    private static void verifyTagCounts(DbConnection conn, Mailbox mbox, Map<Integer, UnderlyingData> tdata) throws ServiceException {
-//        PreparedStatement stmt = null;
-//        ResultSet rs = null;
-//        try {
-//            String mailboxesMatchAnd = "ti.mailbox_id = mi.mailbox_id AND ";
-//            stmt = conn.prepareStatement("SELECT ti.tag_id, mi.id, mi.unread, mi.flags, mi.type" +
-//                    " FROM " + getTaggedItemTableName(mbox, "ti") +
-//                    " INNER JOIN " + DbMailItem.getMailItemTableName(mbox, "mi") + " ON " + mailboxesMatchAnd + "mi.id = ti.item_id" +
-//                    " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id > 0 AND " + Db.getInstance().bitAND("mi.flags", String.valueOf(Flag.BITMASK_DELETED)) + " = 0");
-////                    " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id > 0");
-//            DbMailItem.setMailboxId(stmt, mbox, 1);
-//            rs = stmt.executeQuery();
-//
-//            while (rs.next()) {
-//                int tagId = rs.getInt(1), itemId = rs.getInt(2), unread = rs.getInt(3), flags = rs.getInt(4), type = rs.getInt(5);
-//                System.out.println(MailItem.Type.of((byte) type) + " " + itemId + ": tag " + tdata.get(tagId).name + ": unread " + (unread > 0) +
-//                        ", deleted " + ((flags & Flag.BITMASK_DELETED) != 0) + " (flags " + flags + ")");
-//            }
-//            System.out.println("-----------------------");
-//        } catch (SQLException e) {
-//            throw ServiceException.FAILURE("consistency checking TAGGED_ITEM vs. TAG", e);
-//        } finally {
-//            DbPool.closeResults(rs);
-//            DbPool.closeStatement(stmt);
-//        }
-//    }
-
 }
