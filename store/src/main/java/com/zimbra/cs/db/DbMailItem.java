@@ -4968,19 +4968,14 @@ public class DbMailItem {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     try {
-      String command = Db.supports(Db.Capability.REPLACE_INTO) ? "REPLACE" : "INSERT";
-      String mailbox_id = DebugConfig.disableMailboxGroups ? "" : "mailbox_id, ";
       stmt =
           conn.prepareStatement(
-              command
-                  + " INTO "
-                  + getCalendarItemTableName(mbox)
-                  + " ("
-                  + mailbox_id
-                  + "uid, item_id, start_time, end_time)"
-                  + " VALUES ("
-                  + MAILBOX_ID_VALUE
-                  + "?, ?, ?, ?)");
+              Db.getInstance()
+                  .upsert(
+                      getCalendarItemTableName(mbox),
+                      withMailboxId("uid", "item_id", "start_time", "end_time"),
+                      withMailboxId("uid"),
+                      List.of("uid", "item_id", "start_time", "end_time")));
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
       stmt.setString(pos++, calItem.getUid());
@@ -4989,36 +4984,13 @@ public class DbMailItem {
       stmt.setTimestamp(pos++, endTs);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      if (Db.errorMatches(e, Db.Error.DUPLICATE_ROW)) {
-        try {
-          DbPool.closeStatement(stmt);
-
-          stmt =
-              conn.prepareStatement(
-                  "UPDATE "
-                      + getCalendarItemTableName(mbox)
-                      + " SET item_id = ?, start_time = ?, end_time = ? WHERE "
-                      + IN_THIS_MAILBOX_AND
-                      + "uid = ?");
-          int pos = 1;
-          stmt.setInt(pos++, calItem.getId());
-          stmt.setTimestamp(pos++, startTs);
-          stmt.setTimestamp(pos++, endTs);
-          pos = setMailboxId(stmt, mbox, pos);
-          stmt.setString(pos++, calItem.getUid());
-          stmt.executeUpdate();
-        } catch (SQLException nested) {
-          throw ServiceException.FAILURE(
-              "updating data in calendar item table " + calItem.getUid(), nested);
-        }
-      } else {
-        throw ServiceException.FAILURE(
-            "writing invite to calendar item table " + calItem.getUid(), e);
-      }
+      throw ServiceException.FAILURE(
+          "writing invite to calendar item table " + calItem.getUid(), e);
     } finally {
       DbPool.closeStatement(stmt);
     }
   }
+
 
   /**
    * @param start start time of range, in milliseconds. {@code -1} means to leave the start time
