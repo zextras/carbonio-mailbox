@@ -10,9 +10,9 @@ import com.zextras.mailbox.testcontainers.MariaDBExtension;
 import com.zextras.mailbox.testcontainers.MariaDBResource;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.StringUtil;
+import java.io.InputStream;
 import java.io.StringReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -123,7 +123,10 @@ public final class TestMariaDB {
 
   private static void runScript(Connection conn, String file, Map<String, String> vars)
       throws Exception {
-    String script = StringUtil.fillTemplate(Files.readString(Path.of("db", file)), vars);
+    String script;
+    try (InputStream in = TestMariaDB.class.getResourceAsStream("/db/" + file)) {
+      script = StringUtil.fillTemplate(new String(in.readAllBytes(), StandardCharsets.UTF_8), vars);
+    }
     try (Statement stmt = conn.createStatement()) {
       for (String sql : DbMailbox.parseScript(new StringReader(script), new MariaDB())) {
         if (!sql.isEmpty()) {

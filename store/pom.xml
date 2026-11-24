@@ -293,17 +293,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>hsqldb</artifactId>
-      <groupId>org.hsqldb</groupId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <artifactId>sqltool</artifactId>
-      <groupId>org.hsqldb</groupId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
     </dependency>
@@ -641,6 +630,13 @@
     <testResources>
       <testResource>
         <directory>${project.basedir}/src/test/resources</directory>
+      </testResource>
+      <testResource>
+        <directory>${project.basedir}/db</directory>
+        <targetPath>db</targetPath>
+        <includes>
+          <include>*.sql</include>
+        </includes>
       </testResource>
     </testResources>
 
@@ -1026,7 +1022,8 @@ EOF
               <!-- Listed class by class on purpose: these packages also hold test suites and
                    fixtures, and anything published here becomes a surface consumers depend on. -->
               <includes>
-                <include>com/zimbra/cs/db/HSQLDB*</include>
+                <include>com/zimbra/cs/db/TestMariaDB*</include>
+                <include>com/zextras/mailbox/testcontainers/*</include>
                 <include>com/zextras/mailbox/util/InMemoryLdapServer*</include>
                 <include>com/zextras/mailbox/util/MailboxSetupHelper*</include>
                 <include>com/zextras/mailbox/util/MailboxTestData*</include>
@@ -1038,7 +1035,7 @@ EOF
                 <include>com/zimbra/cs/mime/MockMimeTypeInfo*</include>
                 <include>com/zimbra/cs/service/admin/TestableAdminService*</include>
                 <include>**/*.ldif</include>
-                <include>com/zimbra/cs/db/*.sql</include>
+                <include>db/*.sql</include>
                 <include>timezones-test.ics</include>
                 <include>datasource-test.xml</include>
                 <include>localconfig-api-test.xml</include>
