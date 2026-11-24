@@ -21,8 +21,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.parallel.ResourceLock;
 import redis.clients.jedis.Jedis;
 
+@ResourceLock("redis")
 class RedisEphemeralStoreFactoryTest extends MailboxTestSuite {
 
 	@RegisterExtension
@@ -71,6 +73,7 @@ class RedisEphemeralStoreFactoryTest extends MailboxTestSuite {
 		provisioning.getConfig()
 				.setEphemeralBackendURL("redis://" + redis.getHost() + ":" + redis.getPort());
 
+		final int clientsBefore = connectedClients();
 		final RedisEphemeralStoreFactory redisEphemeralStoreFactory = new RedisEphemeralStoreFactory();
 
 		final EphemeralStore store = redisEphemeralStoreFactory.getStore();
@@ -80,7 +83,10 @@ class RedisEphemeralStoreFactoryTest extends MailboxTestSuite {
 		final EphemeralStore store3 = redisEphemeralStoreFactory.getStore();
 		store3.get(new EphemeralKey("test"), new LdapEntryLocation(account));
 
-		final String[] clientList = jedisClient.clientList().split("\n");
-		Assertions.assertEquals(2, clientList.length);
+		Assertions.assertEquals(clientsBefore + 1, connectedClients());
+	}
+
+	private static int connectedClients() {
+		return jedisClient.clientList().split("\n").length;
 	}
 }
