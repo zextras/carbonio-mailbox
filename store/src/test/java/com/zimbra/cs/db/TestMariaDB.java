@@ -67,6 +67,7 @@ public final class TestMariaDB {
       if (!schemaExists(conn, "zimbra")) {
         runScript(conn, "db.sql", Map.of());
         runScript(conn, "create_database.sql", Map.of("DATABASE_NAME", groupDatabase()));
+        runScript(conn, "versions-init.sql", Map.of());
       }
       try (PreparedStatement stmt =
           conn.prepareStatement("UPDATE zimbra.volume SET path = ? WHERE id = ?")) {

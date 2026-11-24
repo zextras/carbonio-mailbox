@@ -23,8 +23,7 @@ public class VersionsTest {
 
 	@BeforeAll
 	static void setUp() throws Exception {
-		HSQLDB.createDatabase(tempDir.getAbsolutePath());
-		DbPool.global(new HSQLDB());
+		DbPool.global(TestMariaDB.start(tempDir.getAbsolutePath()));
 	}
 
 	@AfterAll
