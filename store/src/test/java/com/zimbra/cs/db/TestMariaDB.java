@@ -52,7 +52,8 @@ public final class TestMariaDB {
           "table_maintenance",
           "service_status",
           "scheduled_task",
-          "pending_acl_push");
+          "pending_acl_push",
+          "volume_blobs");
 
   private TestMariaDB() {}
 
