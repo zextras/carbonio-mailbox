@@ -1,0 +1,23 @@
+{
+  "Body": {
+    "ItemActionRequest": {
+      "action": {
+        "id": "ids",
+        "op": "operation",
+        "tcon": "constraint",
+        "tag": 7,
+        "l": "folder",
+        "rgb": "rgb",
+        "color": 2,
+        "name": "name",
+        "f": "flags",
+        "t": "tags",
+        "tn": "tagNames",
+        "nei": false,
+        "nci": false
+      },
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

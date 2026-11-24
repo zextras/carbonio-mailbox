@@ -1,0 +1,8 @@
+{
+  "Body": {
+    "PingRequest": {
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

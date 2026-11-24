@@ -1,0 +1,3 @@
+<GetCosRequest attrs="attrs0,attrs1" xmlns="urn:zimbraAdmin">
+  <cos by="id">key</cos>
+</GetCosRequest>

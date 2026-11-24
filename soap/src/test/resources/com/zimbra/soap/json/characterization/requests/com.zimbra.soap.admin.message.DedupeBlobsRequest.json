@@ -1,0 +1,16 @@
+{
+  "Body": {
+    "DedupeBlobsRequest": {
+      "action": "start",
+      "volume": [
+        {
+          "id": -1
+        },
+        {
+          "id": -1
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

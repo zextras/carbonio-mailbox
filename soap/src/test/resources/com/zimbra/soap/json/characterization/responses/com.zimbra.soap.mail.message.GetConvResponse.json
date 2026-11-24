@@ -1,0 +1,203 @@
+{
+  "c": [{
+      "meta": [
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        },
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        }],
+      "su": "subject",
+      "chat": [{
+          "fr": "fragment",
+          "e": [
+            {
+              "a": "address",
+              "d": "display",
+              "p": "personal",
+              "t": "addressType",
+              "isGroup": false,
+              "exp": false
+            },
+            {
+              "a": "address",
+              "d": "display",
+              "p": "personal",
+              "t": "addressType",
+              "isGroup": false,
+              "exp": false
+            }],
+          "su": "subject",
+          "mid": "messageIdHeader",
+          "irt": "inReplyTo",
+          "inv": [{
+              "replies": {},
+              "type": "calItemType"
+            }],
+          "header": [
+            {
+              "n": "key",
+              "_content": "value"
+            },
+            {
+              "n": "key",
+              "_content": "value"
+            }],
+          "mp": [{
+              "content": [{
+                  "_content": "content"
+                }],
+              "part": "part",
+              "ct": "contentType",
+              "s": 7,
+              "cd": "contentDisposition",
+              "filename": "contentFilename",
+              "ci": "contentId",
+              "cl": "location",
+              "body": false,
+              "truncated": false,
+              "requiresSmartLinkConversion": false
+            }],
+          "shr": [{
+              "truncated": false,
+              "content": "content"
+            }],
+          "dlSubs": [{
+              "truncated": false,
+              "content": "content"
+            }],
+          "s": 1700000000000,
+          "d": 1700000000000,
+          "l": "folder",
+          "cid": "conversationId",
+          "f": "flags",
+          "t": "tags",
+          "tn": "tagNames",
+          "rev": 7,
+          "md": 1700000000000,
+          "ms": 7,
+          "meta": [
+            {
+              "section": "section"
+            },
+            {
+              "section": "section"
+            }],
+          "id": "id",
+          "i4uid": 7,
+          "cif": "calendarIntendedFor",
+          "origid": "origId",
+          "rt": "draftReplyType",
+          "idnt": "identityId",
+          "forAcct": "draftAccountId",
+          "autoSendTime": 1700000000000,
+          "sd": 1700000000000,
+          "rd": 1700000000000,
+          "part": "part"
+        }],
+      "m": [{
+          "fr": "fragment",
+          "e": [
+            {
+              "a": "address",
+              "d": "display",
+              "p": "personal",
+              "t": "addressType",
+              "isGroup": false,
+              "exp": false
+            },
+            {
+              "a": "address",
+              "d": "display",
+              "p": "personal",
+              "t": "addressType",
+              "isGroup": false,
+              "exp": false
+            }],
+          "su": "subject",
+          "mid": "messageIdHeader",
+          "irt": "inReplyTo",
+          "inv": [{
+              "replies": {},
+              "type": "calItemType"
+            }],
+          "header": [
+            {
+              "n": "key",
+              "_content": "value"
+            },
+            {
+              "n": "key",
+              "_content": "value"
+            }],
+          "mp": [{
+              "content": [{
+                  "_content": "content"
+                }],
+              "part": "part",
+              "ct": "contentType",
+              "s": 7,
+              "cd": "contentDisposition",
+              "filename": "contentFilename",
+              "ci": "contentId",
+              "cl": "location",
+              "body": false,
+              "truncated": false,
+              "requiresSmartLinkConversion": false
+            }],
+          "shr": [{
+              "truncated": false,
+              "content": "content"
+            }],
+          "dlSubs": [{
+              "truncated": false,
+              "content": "content"
+            }],
+          "s": 1700000000000,
+          "d": 1700000000000,
+          "l": "folder",
+          "cid": "conversationId",
+          "f": "flags",
+          "t": "tags",
+          "tn": "tagNames",
+          "rev": 7,
+          "md": 1700000000000,
+          "ms": 7,
+          "meta": [
+            {
+              "section": "section"
+            },
+            {
+              "section": "section"
+            }],
+          "id": "id",
+          "i4uid": 7,
+          "cif": "calendarIntendedFor",
+          "origid": "origId",
+          "rt": "draftReplyType",
+          "idnt": "identityId",
+          "forAcct": "draftAccountId",
+          "autoSendTime": 1700000000000,
+          "sd": 1700000000000,
+          "rd": 1700000000000,
+          "part": "part"
+        }],
+      "id": "id",
+      "n": 7,
+      "total": 7,
+      "f": "flags",
+      "t": "tags",
+      "tn": "tagNames"
+    }],
+  "_jsns": "urn:zimbraMail"
+}

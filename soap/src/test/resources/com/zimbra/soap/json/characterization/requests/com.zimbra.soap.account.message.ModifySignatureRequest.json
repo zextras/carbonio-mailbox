@@ -1,0 +1,24 @@
+{
+  "Body": {
+    "ModifySignatureRequest": {
+      "signature": [{
+          "content": [
+            {
+              "type": "contentType",
+              "_content": "content"
+            },
+            {
+              "type": "contentType",
+              "_content": "content"
+            }],
+          "cid": [{
+              "_content": "cid"
+            }],
+          "id": "id",
+          "name": "name"
+        }],
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,676 @@
+{
+  "soap": [{
+      "zid": [
+        {
+          "name": "name",
+          "id": "id",
+          "s": [
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            },
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            }]
+        },
+        {
+          "name": "name",
+          "id": "id",
+          "s": [
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            },
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            }]
+        }],
+      "s": [
+        {
+          "any": [
+            {
+              "name": "extraElements0",
+              "_content": "extraElements0"
+            },
+            {
+              "name": "extraElements1",
+              "_content": "extraElements1"
+            }],
+          "zid": "zimbraId",
+          "name": "name",
+          "sid": "sessionId",
+          "cd": -1,
+          "ld": -1
+        },
+        {
+          "any": [
+            {
+              "name": "extraElements0",
+              "_content": "extraElements0"
+            },
+            {
+              "name": "extraElements1",
+              "_content": "extraElements1"
+            }],
+          "zid": "zimbraId",
+          "name": "name",
+          "sid": "sessionId",
+          "cd": -1,
+          "ld": -1
+        }],
+      "activeAccounts": 7,
+      "activeSessions": -1
+    }],
+  "imap": [{
+      "zid": [
+        {
+          "name": "name",
+          "id": "id",
+          "s": [
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            },
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            }]
+        },
+        {
+          "name": "name",
+          "id": "id",
+          "s": [
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            },
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            }]
+        }],
+      "s": [
+        {
+          "any": [
+            {
+              "name": "extraElements0",
+              "_content": "extraElements0"
+            },
+            {
+              "name": "extraElements1",
+              "_content": "extraElements1"
+            }],
+          "zid": "zimbraId",
+          "name": "name",
+          "sid": "sessionId",
+          "cd": -1,
+          "ld": -1
+        },
+        {
+          "any": [
+            {
+              "name": "extraElements0",
+              "_content": "extraElements0"
+            },
+            {
+              "name": "extraElements1",
+              "_content": "extraElements1"
+            }],
+          "zid": "zimbraId",
+          "name": "name",
+          "sid": "sessionId",
+          "cd": -1,
+          "ld": -1
+        }],
+      "activeAccounts": 7,
+      "activeSessions": -1
+    }],
+  "admin": [{
+      "zid": [
+        {
+          "name": "name",
+          "id": "id",
+          "s": [
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            },
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            }]
+        },
+        {
+          "name": "name",
+          "id": "id",
+          "s": [
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            },
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            }]
+        }],
+      "s": [
+        {
+          "any": [
+            {
+              "name": "extraElements0",
+              "_content": "extraElements0"
+            },
+            {
+              "name": "extraElements1",
+              "_content": "extraElements1"
+            }],
+          "zid": "zimbraId",
+          "name": "name",
+          "sid": "sessionId",
+          "cd": -1,
+          "ld": -1
+        },
+        {
+          "any": [
+            {
+              "name": "extraElements0",
+              "_content": "extraElements0"
+            },
+            {
+              "name": "extraElements1",
+              "_content": "extraElements1"
+            }],
+          "zid": "zimbraId",
+          "name": "name",
+          "sid": "sessionId",
+          "cd": -1,
+          "ld": -1
+        }],
+      "activeAccounts": 7,
+      "activeSessions": -1
+    }],
+  "wiki": [{
+      "zid": [
+        {
+          "name": "name",
+          "id": "id",
+          "s": [
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            },
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            }]
+        },
+        {
+          "name": "name",
+          "id": "id",
+          "s": [
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            },
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            }]
+        }],
+      "s": [
+        {
+          "any": [
+            {
+              "name": "extraElements0",
+              "_content": "extraElements0"
+            },
+            {
+              "name": "extraElements1",
+              "_content": "extraElements1"
+            }],
+          "zid": "zimbraId",
+          "name": "name",
+          "sid": "sessionId",
+          "cd": -1,
+          "ld": -1
+        },
+        {
+          "any": [
+            {
+              "name": "extraElements0",
+              "_content": "extraElements0"
+            },
+            {
+              "name": "extraElements1",
+              "_content": "extraElements1"
+            }],
+          "zid": "zimbraId",
+          "name": "name",
+          "sid": "sessionId",
+          "cd": -1,
+          "ld": -1
+        }],
+      "activeAccounts": 7,
+      "activeSessions": -1
+    }],
+  "synclistener": [{
+      "zid": [
+        {
+          "name": "name",
+          "id": "id",
+          "s": [
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            },
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            }]
+        },
+        {
+          "name": "name",
+          "id": "id",
+          "s": [
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            },
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            }]
+        }],
+      "s": [
+        {
+          "any": [
+            {
+              "name": "extraElements0",
+              "_content": "extraElements0"
+            },
+            {
+              "name": "extraElements1",
+              "_content": "extraElements1"
+            }],
+          "zid": "zimbraId",
+          "name": "name",
+          "sid": "sessionId",
+          "cd": -1,
+          "ld": -1
+        },
+        {
+          "any": [
+            {
+              "name": "extraElements0",
+              "_content": "extraElements0"
+            },
+            {
+              "name": "extraElements1",
+              "_content": "extraElements1"
+            }],
+          "zid": "zimbraId",
+          "name": "name",
+          "sid": "sessionId",
+          "cd": -1,
+          "ld": -1
+        }],
+      "activeAccounts": 7,
+      "activeSessions": -1
+    }],
+  "waitset": [{
+      "zid": [
+        {
+          "name": "name",
+          "id": "id",
+          "s": [
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            },
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            }]
+        },
+        {
+          "name": "name",
+          "id": "id",
+          "s": [
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            },
+            {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "zid": "zimbraId",
+              "name": "name",
+              "sid": "sessionId",
+              "cd": -1,
+              "ld": -1
+            }]
+        }],
+      "s": [
+        {
+          "any": [
+            {
+              "name": "extraElements0",
+              "_content": "extraElements0"
+            },
+            {
+              "name": "extraElements1",
+              "_content": "extraElements1"
+            }],
+          "zid": "zimbraId",
+          "name": "name",
+          "sid": "sessionId",
+          "cd": -1,
+          "ld": -1
+        },
+        {
+          "any": [
+            {
+              "name": "extraElements0",
+              "_content": "extraElements0"
+            },
+            {
+              "name": "extraElements1",
+              "_content": "extraElements1"
+            }],
+          "zid": "zimbraId",
+          "name": "name",
+          "sid": "sessionId",
+          "cd": -1,
+          "ld": -1
+        }],
+      "activeAccounts": 7,
+      "activeSessions": -1
+    }],
+  "activeSessions": -1,
+  "_jsns": "urn:zimbraAdmin"
+}

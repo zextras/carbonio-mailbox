@@ -1,0 +1,9 @@
+{
+  "name": "name",
+  "soapURL": "soapURL",
+  "publicURL": "publicURL",
+  "changePasswordURL": "changePasswordURL",
+  "adminURL": "adminURL",
+  "boshURL": "boshURL",
+  "_jsns": "urn:zimbraAccount"
+}

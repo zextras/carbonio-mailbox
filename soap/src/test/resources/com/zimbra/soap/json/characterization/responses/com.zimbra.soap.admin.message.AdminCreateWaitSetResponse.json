@@ -1,0 +1,15 @@
+{
+  "waitSet": "waitSetId",
+  "defTypes": "defaultInterests",
+  "seq": -1,
+  "error": [
+    {
+      "id": "id",
+      "type": "type"
+    },
+    {
+      "id": "id",
+      "type": "type"
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

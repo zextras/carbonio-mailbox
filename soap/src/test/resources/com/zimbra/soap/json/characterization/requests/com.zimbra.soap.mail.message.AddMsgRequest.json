@@ -1,0 +1,21 @@
+{
+  "Body": {
+    "AddMsgRequest": {
+      "filterSent": false,
+      "m": {
+        "f": "flags",
+        "t": "tags",
+        "tn": "tagNames",
+        "l": "folder",
+        "noICal": false,
+        "d": 1700000000000,
+        "aid": "attachmentId",
+        "content": [{
+            "_content": "content"
+          }]
+      },
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

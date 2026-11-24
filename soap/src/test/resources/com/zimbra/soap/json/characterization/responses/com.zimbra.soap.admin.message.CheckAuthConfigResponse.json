@@ -1,0 +1,12 @@
+{
+  "code": [{
+      "_content": "code"
+    }],
+  "message": [{
+      "_content": "message"
+    }],
+  "bindDn": [{
+      "_content": "bindDn"
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

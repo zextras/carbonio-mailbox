@@ -1,0 +1,3 @@
+<GetEffectiveFolderPermsRequest xmlns="urn:zimbraMail">
+  <folder l="folder"/>
+</GetEffectiveFolderPermsRequest>

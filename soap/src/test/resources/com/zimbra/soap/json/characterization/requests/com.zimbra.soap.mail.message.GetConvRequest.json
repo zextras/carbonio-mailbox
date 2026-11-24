@@ -1,0 +1,22 @@
+{
+  "Body": {
+    "GetConvRequest": {
+      "c": {
+        "id": "id",
+        "fetch": "inlineRule",
+        "html": false,
+        "max": 7,
+        "header": [
+          {
+            "n": "name"
+          },
+          {
+            "n": "name"
+          }],
+        "needExp": false
+      },
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

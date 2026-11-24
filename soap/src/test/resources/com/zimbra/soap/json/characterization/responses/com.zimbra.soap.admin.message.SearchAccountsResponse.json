@@ -1,0 +1,112 @@
+{
+  "calresource": [{
+      "name": "name",
+      "id": "id",
+      "a": [
+        {
+          "n": "key",
+          "_content": "value"
+        },
+        {
+          "n": "key",
+          "_content": "value"
+        }]
+    }],
+  "dl": [{
+      "name": "name",
+      "id": "id",
+      "a": [
+        {
+          "n": "key",
+          "_content": "value"
+        },
+        {
+          "n": "key",
+          "_content": "value"
+        }],
+      "dynamic": false,
+      "dlm": [
+        {
+          "_content": "members0"
+        },
+        {
+          "_content": "members1"
+        }],
+      "owners": [{
+          "owner": [
+            {
+              "type": "usr",
+              "id": "id",
+              "name": "name"
+            },
+            {
+              "type": "usr",
+              "id": "id",
+              "name": "name"
+            }]
+        }]
+    }],
+  "alias": [{
+      "name": "name",
+      "id": "id",
+      "a": [
+        {
+          "n": "key",
+          "_content": "value"
+        },
+        {
+          "n": "key",
+          "_content": "value"
+        }],
+      "targetName": "targetName",
+      "type": "account"
+    }],
+  "account": [{
+      "name": "name",
+      "id": "id",
+      "a": [
+        {
+          "n": "key",
+          "_content": "value"
+        },
+        {
+          "n": "key",
+          "_content": "value"
+        }],
+      "isExternal": false
+    }],
+  "domain": [{
+      "name": "name",
+      "id": "id",
+      "a": [
+        {
+          "n": "key",
+          "_content": "value"
+        },
+        {
+          "n": "key",
+          "_content": "value"
+        }]
+    }],
+  "cos": [{
+      "id": "id",
+      "name": "name",
+      "isDefaultCos": false,
+      "a": [
+        {
+          "n": "key",
+          "_content": "value",
+          "c": false,
+          "pd": false
+        },
+        {
+          "n": "key",
+          "_content": "value",
+          "c": false,
+          "pd": false
+        }]
+    }],
+  "more": false,
+  "searchTotal": -1,
+  "_jsns": "urn:zimbraAdmin"
+}

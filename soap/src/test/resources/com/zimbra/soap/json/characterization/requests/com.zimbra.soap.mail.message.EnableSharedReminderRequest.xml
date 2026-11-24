@@ -1,0 +1,3 @@
+<EnableSharedReminderRequest xmlns="urn:zimbraMail">
+  <link reminder="false" id="id"/>
+</EnableSharedReminderRequest>

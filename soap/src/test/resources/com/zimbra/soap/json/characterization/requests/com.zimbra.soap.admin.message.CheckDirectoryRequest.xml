@@ -1,0 +1,4 @@
+<CheckDirectoryRequest xmlns="urn:zimbraAdmin">
+  <directory path="path" create="false"/>
+  <directory path="path" create="false"/>
+</CheckDirectoryRequest>

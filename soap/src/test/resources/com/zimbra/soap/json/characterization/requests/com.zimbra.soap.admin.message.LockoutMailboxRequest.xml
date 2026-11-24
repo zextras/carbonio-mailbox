@@ -1,0 +1,3 @@
+<LockoutMailboxRequest op="operation" xmlns="urn:zimbraAdmin">
+  <account by="adminName" name="name">key</account>
+</LockoutMailboxRequest>

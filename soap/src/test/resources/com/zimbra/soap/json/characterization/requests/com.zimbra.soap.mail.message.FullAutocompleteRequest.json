@@ -1,0 +1,18 @@
+{
+  "Body": {
+    "FullAutocompleteRequest": {
+      "AutoCompleteRequest": [{
+          "name": "name",
+          "t": "all",
+          "needExp": false,
+          "folders": "folderList",
+          "includeGal": false
+        }],
+      "orderedAccountIds": [{
+          "_content": "orderedAccountIds"
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,42 @@
+{
+  "grant": [
+    {
+      "target": [{
+          "type": "type",
+          "id": "id",
+          "name": "name"
+        }],
+      "grantee": [{
+          "type": "usr",
+          "id": "id",
+          "name": "name"
+        }],
+      "right": [{
+          "deny": false,
+          "canDelegate": false,
+          "disinheritSubGroups": false,
+          "subDomain": false,
+          "_content": "value"
+        }]
+    },
+    {
+      "target": [{
+          "type": "type",
+          "id": "id",
+          "name": "name"
+        }],
+      "grantee": [{
+          "type": "usr",
+          "id": "id",
+          "name": "name"
+        }],
+      "right": [{
+          "deny": false,
+          "canDelegate": false,
+          "disinheritSubGroups": false,
+          "subDomain": false,
+          "_content": "value"
+        }]
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

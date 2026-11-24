@@ -1,0 +1,4 @@
+<FixCalendarEndTimeRequest sync="false" xmlns="urn:zimbraAdmin">
+  <account name="name"/>
+  <account name="name"/>
+</FixCalendarEndTimeRequest>

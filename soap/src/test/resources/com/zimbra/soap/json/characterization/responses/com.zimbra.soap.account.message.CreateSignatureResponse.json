@@ -1,0 +1,7 @@
+{
+  "signature": [{
+      "name": "name",
+      "id": "id"
+    }],
+  "_jsns": "urn:zimbraAccount"
+}

@@ -1,0 +1,11 @@
+{
+  "Body": {
+    "RecoverAccountRequest": {
+      "op": "getRecoveryAccount",
+      "email": "email",
+      "channel": "email",
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,8 @@
+<GetMiniCalRequest s="-1" e="-1" xmlns="urn:zimbraMail">
+  <folder id="id"/>
+  <folder id="id"/>
+  <tz stdoff="7" dayname="daylightTZName" dayoff="7" id="id" stdname="standardTZName">
+    <standard sec="7" week="7" min="7" hour="7" wkday="7" mday="7" mon="7"/>
+    <daylight sec="7" week="7" min="7" hour="7" wkday="7" mday="7" mon="7"/>
+  </tz>
+</GetMiniCalRequest>

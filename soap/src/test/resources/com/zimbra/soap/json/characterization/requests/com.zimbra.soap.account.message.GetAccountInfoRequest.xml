@@ -1,0 +1,3 @@
+<GetAccountInfoRequest xmlns="urn:zimbraAccount">
+  <account by="adminName">key</account>
+</GetAccountInfoRequest>

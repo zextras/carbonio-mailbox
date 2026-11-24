@@ -1,0 +1,12 @@
+{
+  "Body": {
+    "GetRightRequest": {
+      "expandAllAttrs": false,
+      "right": [{
+          "_content": "right"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

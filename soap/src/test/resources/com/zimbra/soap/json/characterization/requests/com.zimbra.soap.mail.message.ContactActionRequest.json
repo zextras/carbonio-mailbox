@@ -1,0 +1,38 @@
+{
+  "Body": {
+    "ContactActionRequest": {
+      "action": {
+        "id": "ids",
+        "op": "operation",
+        "tcon": "constraint",
+        "tag": 7,
+        "l": "folder",
+        "rgb": "rgb",
+        "color": 2,
+        "name": "name",
+        "f": "flags",
+        "t": "tags",
+        "tn": "tagNames",
+        "nei": false,
+        "nci": false,
+        "a": [
+          {
+            "n": "name",
+            "aid": "attachId",
+            "id": 7,
+            "part": "part",
+            "_content": "value"
+          },
+          {
+            "n": "name",
+            "aid": "attachId",
+            "id": 7,
+            "part": "part",
+            "_content": "value"
+          }]
+      },
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

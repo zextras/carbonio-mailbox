@@ -1,0 +1,10 @@
+{
+  "Body": {
+    "GetModifiedItemsIDsRequest": {
+      "l": 7,
+      "ms": 7,
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

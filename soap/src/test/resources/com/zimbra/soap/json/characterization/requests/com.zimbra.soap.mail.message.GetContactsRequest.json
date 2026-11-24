@@ -1,0 +1,38 @@
+{
+  "Body": {
+    "GetContactsRequest": {
+      "sync": false,
+      "l": "folderId",
+      "sortBy": "sortBy",
+      "derefGroupMember": false,
+      "memberOf": false,
+      "returnHiddenAttrs": false,
+      "returnCertInfo": false,
+      "wantImapUid": false,
+      "maxMembers": 1700000000000,
+      "a": [
+        {
+          "n": "name"
+        },
+        {
+          "n": "name"
+        }],
+      "ma": [
+        {
+          "n": "name"
+        },
+        {
+          "n": "name"
+        }],
+      "cn": [
+        {
+          "id": "id"
+        },
+        {
+          "id": "id"
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

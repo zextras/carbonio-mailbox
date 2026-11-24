@@ -1,0 +1,7 @@
+<GetMailQueueRequest xmlns="urn:zimbraAdmin">
+  <server name="serverName">
+    <queue wait="1700000000000" name="queueName" scan="false">
+      <query offset="7" limit="7"/>
+    </queue>
+  </server>
+</GetMailQueueRequest>

@@ -1,0 +1,129 @@
+{
+  "grantee": [{
+      "type": "usr",
+      "id": "id",
+      "name": "name"
+    }],
+  "target": [
+    {
+      "type": "account",
+      "all": [{
+          "right": [
+            {
+              "n": "name"
+            },
+            {
+              "n": "name"
+            }],
+          "setAttrs": [{
+              "all": false
+            }],
+          "getAttrs": [{
+              "all": false
+            }]
+        }],
+      "inDomains": [
+        {
+          "domain": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "name"
+            }],
+          "rights": [{}]
+        },
+        {
+          "domain": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "name"
+            }],
+          "rights": [{}]
+        }],
+      "entries": [
+        {
+          "entry": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "name"
+            }],
+          "rights": [{}]
+        },
+        {
+          "entry": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "name"
+            }],
+          "rights": [{}]
+        }]
+    },
+    {
+      "type": "account",
+      "all": [{
+          "right": [
+            {
+              "n": "name"
+            },
+            {
+              "n": "name"
+            }],
+          "setAttrs": [{
+              "all": false
+            }],
+          "getAttrs": [{
+              "all": false
+            }]
+        }],
+      "inDomains": [
+        {
+          "domain": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "name"
+            }],
+          "rights": [{}]
+        },
+        {
+          "domain": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "name"
+            }],
+          "rights": [{}]
+        }],
+      "entries": [
+        {
+          "entry": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "name"
+            }],
+          "rights": [{}]
+        },
+        {
+          "entry": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "name"
+            }],
+          "rights": [{}]
+        }]
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

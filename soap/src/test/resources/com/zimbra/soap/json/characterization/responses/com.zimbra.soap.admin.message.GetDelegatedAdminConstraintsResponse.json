@@ -1,0 +1,44 @@
+{
+  "a": [
+    {
+      "name": "name",
+      "constraint": [{
+          "min": [{
+              "_content": "min"
+            }],
+          "max": [{
+              "_content": "max"
+            }],
+          "values": [{
+              "v": [
+                {
+                  "_content": "values0"
+                },
+                {
+                  "_content": "values1"
+                }]
+            }]
+        }]
+    },
+    {
+      "name": "name",
+      "constraint": [{
+          "min": [{
+              "_content": "min"
+            }],
+          "max": [{
+              "_content": "max"
+            }],
+          "values": [{
+              "v": [
+                {
+                  "_content": "values0"
+                },
+                {
+                  "_content": "values1"
+                }]
+            }]
+        }]
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

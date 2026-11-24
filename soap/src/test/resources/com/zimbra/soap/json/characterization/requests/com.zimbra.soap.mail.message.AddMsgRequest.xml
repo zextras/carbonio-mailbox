@@ -1,0 +1,5 @@
+<AddMsgRequest filterSent="false" xmlns="urn:zimbraMail">
+  <m t="tags" d="1700000000000" noICal="false" f="flags" tn="tagNames" l="folder" aid="attachmentId">
+    <content>content</content>
+  </m>
+</AddMsgRequest>

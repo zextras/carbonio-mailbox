@@ -1,0 +1,14 @@
+{
+  "Body": {
+    "LockoutMailboxRequest": {
+      "account": [{
+          "by": "adminName",
+          "name": "name",
+          "_content": "key"
+        }],
+      "op": "operation",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,5 @@
+<PushFreeBusyRequest xmlns="urn:zimbraAdmin">
+  <domain name="names"/>
+  <account id="id"/>
+  <account id="id"/>
+</PushFreeBusyRequest>

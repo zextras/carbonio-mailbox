@@ -1,0 +1,3 @@
+<GetAccountRequest applyCos="true" attrs="attrs0,attrs1" xmlns="urn:zimbraAdmin">
+  <account by="adminName">key</account>
+</GetAccountRequest>

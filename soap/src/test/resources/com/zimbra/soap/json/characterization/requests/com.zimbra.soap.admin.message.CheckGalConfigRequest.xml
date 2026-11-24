@@ -1,0 +1,6 @@
+<CheckGalConfigRequest xmlns="urn:zimbraAdmin">
+  <a n="key">value</a>
+  <a n="key">value</a>
+  <query limit="1700000000000">text</query>
+  <action>action</action>
+</CheckGalConfigRequest>

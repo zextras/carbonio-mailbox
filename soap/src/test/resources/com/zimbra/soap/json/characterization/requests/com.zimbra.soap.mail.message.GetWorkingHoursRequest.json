@@ -1,0 +1,12 @@
+{
+  "Body": {
+    "GetWorkingHoursRequest": {
+      "s": -1,
+      "e": -1,
+      "id": "id",
+      "name": "name",
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

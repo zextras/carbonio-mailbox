@@ -1,0 +1,3 @@
+<SearchAutoProvDirectoryRequest offset="7" maxResults="7" query="query" name="name" limit="7" refresh="false" keyAttr="keyAttr" attrs="attrs0,attrs1" xmlns="urn:zimbraAdmin">
+  <domain by="id">key</domain>
+</SearchAutoProvDirectoryRequest>

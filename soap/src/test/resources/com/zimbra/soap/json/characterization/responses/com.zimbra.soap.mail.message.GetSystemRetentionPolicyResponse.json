@@ -1,0 +1,20 @@
+{
+  "retentionPolicy": [{
+      "purge": [{
+          "policy": [
+            {
+              "type": "user",
+              "id": "id",
+              "name": "name",
+              "lifetime": "lifetime"
+            },
+            {
+              "type": "user",
+              "id": "id",
+              "name": "name",
+              "lifetime": "lifetime"
+            }]
+        }]
+    }],
+  "_jsns": "urn:zimbraMail"
+}

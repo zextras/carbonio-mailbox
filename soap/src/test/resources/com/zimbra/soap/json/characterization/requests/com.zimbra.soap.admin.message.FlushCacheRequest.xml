@@ -1,0 +1,6 @@
+<FlushCacheRequest xmlns="urn:zimbraAdmin">
+  <cache allServers="false" type="">
+    <entry by="id">key</entry>
+    <entry by="id">key</entry>
+  </cache>
+</FlushCacheRequest>

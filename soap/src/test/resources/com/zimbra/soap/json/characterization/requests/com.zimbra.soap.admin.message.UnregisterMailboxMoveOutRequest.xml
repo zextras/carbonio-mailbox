@@ -1,0 +1,3 @@
+<UnregisterMailboxMoveOutRequest xmlns="urn:zimbraAdmin">
+  <account name="name" dest="target"/>
+</UnregisterMailboxMoveOutRequest>

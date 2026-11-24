@@ -1,0 +1,9 @@
+{
+  "Body": {
+    "DestroyWaitSetRequest": {
+      "waitSet": "waitSetId",
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

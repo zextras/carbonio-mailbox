@@ -1,0 +1,5 @@
+<ModifyCosRequest xmlns="urn:zimbraAdmin">
+  <a n="key">value</a>
+  <a n="key">value</a>
+  <id>id</id>
+</ModifyCosRequest>

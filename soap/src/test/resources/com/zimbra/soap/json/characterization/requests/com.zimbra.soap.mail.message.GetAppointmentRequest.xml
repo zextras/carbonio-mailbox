@@ -1,0 +1,1 @@
+<GetAppointmentRequest uid="uid" includeInvites="false" includeContent="false" id="id" sync="false" xmlns="urn:zimbraMail"/>

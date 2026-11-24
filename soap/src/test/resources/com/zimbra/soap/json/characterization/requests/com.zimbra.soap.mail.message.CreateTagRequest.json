@@ -1,0 +1,13 @@
+{
+  "Body": {
+    "CreateTagRequest": {
+      "tag": {
+        "name": "name",
+        "rgb": "rgb",
+        "color": 2
+      },
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

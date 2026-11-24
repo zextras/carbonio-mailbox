@@ -1,0 +1,4 @@
+<GetServerStatsRequest xmlns="urn:zimbraAdmin">
+  <stat name="name" description="description">value</stat>
+  <stat name="name" description="description">value</stat>
+</GetServerStatsRequest>

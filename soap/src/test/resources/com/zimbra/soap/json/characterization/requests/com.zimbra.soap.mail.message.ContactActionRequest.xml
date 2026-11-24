@@ -1,0 +1,6 @@
+<ContactActionRequest xmlns="urn:zimbraMail">
+  <action op="operation" color="2" f="flags" l="folder" rgb="rgb" nei="false" t="tags" nci="false" tcon="constraint" name="name" tn="tagNames" id="ids" tag="7">
+    <a part="part" id="7" aid="attachId" n="name">value</a>
+    <a part="part" id="7" aid="attachId" n="name">value</a>
+  </action>
+</ContactActionRequest>

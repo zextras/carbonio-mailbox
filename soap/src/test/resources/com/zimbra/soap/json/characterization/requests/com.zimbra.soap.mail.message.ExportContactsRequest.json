@@ -1,0 +1,13 @@
+{
+  "Body": {
+    "ExportContactsRequest": {
+      "ct": "contentType",
+      "l": "folderId",
+      "csvfmt": "csvFormat",
+      "csvlocale": "csvLocale",
+      "csvsep": "csvDelimiter",
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

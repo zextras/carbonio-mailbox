@@ -1,0 +1,4 @@
+<ClearCookieRequest xmlns="urn:zimbraAdmin">
+  <cookie name="name"/>
+  <cookie name="name"/>
+</ClearCookieRequest>

@@ -1,0 +1,9 @@
+{
+  "Body": {
+    "DeleteVolumeRequest": {
+      "id": -1,
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

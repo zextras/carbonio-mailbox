@@ -1,0 +1,14 @@
+<AdminWaitSetRequest expand="false" waitSet="waitSetId" defTypes="defaultInterests" block="false" seq="lastKnownSeqNo" timeout="1700000000000" xmlns="urn:zimbraAdmin">
+  <add>
+    <a types="interests" folderInterests="7" name="name" id="id" token="token"/>
+    <a types="interests" folderInterests="7" name="name" id="id" token="token"/>
+  </add>
+  <update>
+    <a types="interests" folderInterests="7" name="name" id="id" token="token"/>
+    <a types="interests" folderInterests="7" name="name" id="id" token="token"/>
+  </update>
+  <remove>
+    <a id="id"/>
+    <a id="id"/>
+  </remove>
+</AdminWaitSetRequest>

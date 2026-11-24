@@ -1,0 +1,49 @@
+{
+  "tag": [{
+      "id": "id",
+      "name": "name",
+      "color": 2,
+      "rgb": "rgb",
+      "u": 7,
+      "n": 7,
+      "d": 1700000000000,
+      "rev": 7,
+      "md": 1700000000000,
+      "ms": 7,
+      "meta": [
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        },
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        }],
+      "retentionPolicy": [{
+          "purge": [{
+              "policy": [
+                {
+                  "type": "user",
+                  "id": "id",
+                  "name": "name",
+                  "lifetime": "lifetime"
+                },
+                {
+                  "type": "user",
+                  "id": "id",
+                  "name": "name",
+                  "lifetime": "lifetime"
+                }]
+            }]
+        }]
+    }],
+  "_jsns": "urn:zimbraMail"
+}

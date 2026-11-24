@@ -1,0 +1,44 @@
+{
+  "Body": {
+    "ModifyContactRequest": {
+      "replace": false,
+      "verbose": false,
+      "wantImapUid": false,
+      "wantModSeq": false,
+      "cn": {
+        "id": 7,
+        "tn": "tagNames",
+        "a": [
+          {
+            "n": "name",
+            "aid": "attachId",
+            "id": 7,
+            "part": "part",
+            "_content": "value",
+            "op": "operation"
+          },
+          {
+            "n": "name",
+            "aid": "attachId",
+            "id": 7,
+            "part": "part",
+            "_content": "value",
+            "op": "operation"
+          }],
+        "m": [
+          {
+            "type": "type",
+            "value": "value",
+            "op": "+"
+          },
+          {
+            "type": "type",
+            "value": "value",
+            "op": "+"
+          }]
+      },
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

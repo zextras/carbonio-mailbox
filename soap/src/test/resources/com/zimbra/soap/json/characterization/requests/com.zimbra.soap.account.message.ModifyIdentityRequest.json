@@ -1,0 +1,17 @@
+{
+  "Body": {
+    "ModifyIdentityRequest": {
+      "identity": [{
+          "name": "name",
+          "id": "id",
+          "_attrs": {
+            "name": [
+              "value",
+              "value"]
+          }
+        }],
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

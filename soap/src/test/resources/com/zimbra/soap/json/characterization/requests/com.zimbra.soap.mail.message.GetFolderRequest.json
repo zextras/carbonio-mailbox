@@ -1,0 +1,18 @@
+{
+  "Body": {
+    "GetFolderRequest": {
+      "visible": false,
+      "needGranteeName": false,
+      "view": "viewConstraint",
+      "depth": 7,
+      "tr": false,
+      "folder": [{
+          "uuid": "uuid",
+          "l": "folderId",
+          "path": "path"
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,9 @@
+{
+  "Body": {
+    "SendDeliveryReportRequest": {
+      "mid": "messageId",
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

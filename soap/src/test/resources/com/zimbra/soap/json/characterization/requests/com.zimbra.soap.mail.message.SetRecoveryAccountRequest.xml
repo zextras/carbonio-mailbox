@@ -1,0 +1,1 @@
+<SetRecoveryAccountRequest op="sendCode" recoveryAccount="recoveryAccount" channel="email" recoveryAccountVerificationCode="recoveryAccountVerificationCode" xmlns="urn:zimbraMail"/>

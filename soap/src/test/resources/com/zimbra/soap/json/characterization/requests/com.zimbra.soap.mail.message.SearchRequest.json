@@ -1,0 +1,75 @@
+{
+  "Body": {
+    "SearchRequest": {
+      "includeTagDeleted": false,
+      "includeTagMuted": false,
+      "calExpandInstStart": 1700000000000,
+      "calExpandInstEnd": 1700000000000,
+      "query": "query",
+      "inDumpster": false,
+      "types": "searchTypes",
+      "groupBy": "groupBy",
+      "quick": false,
+      "sortBy": "sortBy",
+      "fetch": "fetch",
+      "read": false,
+      "max": 7,
+      "html": false,
+      "needExp": false,
+      "neuter": false,
+      "recip": "0",
+      "prefetch": false,
+      "resultMode": "resultMode",
+      "fullConversation": false,
+      "field": "field",
+      "limit": 7,
+      "offset": 7,
+      "header": [
+        {
+          "n": "name"
+        },
+        {
+          "n": "name"
+        }],
+      "tz": [{
+          "id": "id",
+          "stdoff": 7,
+          "dayoff": 7,
+          "standard": [{
+              "week": 7,
+              "wkday": 7,
+              "mon": 7,
+              "mday": 7,
+              "hour": 7,
+              "min": 7,
+              "sec": 7
+            }],
+          "daylight": [{
+              "week": 7,
+              "wkday": 7,
+              "mon": 7,
+              "mday": 7,
+              "hour": 7,
+              "min": 7,
+              "sec": 7
+            }],
+          "stdname": "standardTZName",
+          "dayname": "daylightTZName"
+        }],
+      "locale": [{
+          "_content": "locale"
+        }],
+      "cursor": [{
+          "id": "id",
+          "sortVal": "sortVal",
+          "endSortVal": "endSortVal",
+          "includeOffset": false
+        }],
+      "wantContent": "full",
+      "memberOf": false,
+      "warmup": false,
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,29 @@
+{
+  "Body": {
+    "RevokeRightsRequest": {
+      "ace": [
+        {
+          "zid": "zimbraId",
+          "gt": "usr",
+          "right": "right",
+          "d": "displayName",
+          "key": "accessKey",
+          "pw": "password",
+          "deny": false,
+          "chkgt": false
+        },
+        {
+          "zid": "zimbraId",
+          "gt": "usr",
+          "right": "right",
+          "d": "displayName",
+          "key": "accessKey",
+          "pw": "password",
+          "deny": false,
+          "chkgt": false
+        }],
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

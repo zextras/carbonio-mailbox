@@ -1,0 +1,1 @@
+<VerifyCertKeyRequest privkey="privateKey" cert="certificate" ca="CA" xmlns="urn:zimbraAdmin"/>

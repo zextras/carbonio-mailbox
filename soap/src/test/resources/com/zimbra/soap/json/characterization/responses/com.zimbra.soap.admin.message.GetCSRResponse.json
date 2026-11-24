@@ -1,0 +1,31 @@
+{
+  "csr_exists": "csrExists",
+  "isComm": "isComm",
+  "server": "server",
+  "C": [{
+      "_content": "CsubjectDSN"
+    }],
+  "ST": [{
+      "_content": "STsubjectDSN"
+    }],
+  "L": [{
+      "_content": "LsubjectDSN"
+    }],
+  "O": [{
+      "_content": "OsubjectDSN"
+    }],
+  "OU": [{
+      "_content": "OUsubjectDSN"
+    }],
+  "CN": [{
+      "_content": "CNsubjectDSN"
+    }],
+  "SubjectAltName": [
+    {
+      "_content": "subjectAltNames0"
+    },
+    {
+      "_content": "subjectAltNames1"
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

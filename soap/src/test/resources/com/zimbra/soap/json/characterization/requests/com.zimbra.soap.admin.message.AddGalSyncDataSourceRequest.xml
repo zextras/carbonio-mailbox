@@ -1,0 +1,5 @@
+<AddGalSyncDataSourceRequest folder="folder" domain="domain" name="name" type="both" xmlns="urn:zimbraAdmin">
+  <a n="key">value</a>
+  <a n="key">value</a>
+  <account by="adminName">key</account>
+</AddGalSyncDataSourceRequest>

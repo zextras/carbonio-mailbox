@@ -1,0 +1,16 @@
+{
+  "Body": {
+    "CreateCosRequest": {
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "name": [{
+          "_content": "name"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

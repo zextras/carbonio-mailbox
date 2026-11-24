@@ -1,0 +1,8 @@
+{
+  "Body": {
+    "GetAllAccountLoggersRequest": {
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

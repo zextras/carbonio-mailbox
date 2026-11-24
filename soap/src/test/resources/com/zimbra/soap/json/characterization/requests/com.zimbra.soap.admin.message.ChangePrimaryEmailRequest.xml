@@ -1,0 +1,4 @@
+<ChangePrimaryEmailRequest xmlns="urn:zimbraAdmin">
+  <account by="adminName">key</account>
+  <newName>newName</newName>
+</ChangePrimaryEmailRequest>

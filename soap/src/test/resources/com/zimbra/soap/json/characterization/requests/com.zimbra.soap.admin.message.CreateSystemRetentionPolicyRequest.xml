@@ -1,0 +1,6 @@
+<CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+  <cos by="id">key</cos>
+  <purge>
+    <policy name="name" lifetime="lifetime" id="id" type="user" xmlns="urn:zimbraMail"/>
+  </purge>
+</CreateSystemRetentionPolicyRequest>

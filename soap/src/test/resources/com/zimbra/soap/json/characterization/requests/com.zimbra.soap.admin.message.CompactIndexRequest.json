@@ -1,0 +1,12 @@
+{
+  "Body": {
+    "CompactIndexRequest": {
+      "action": "action",
+      "mbox": [{
+          "id": "id"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

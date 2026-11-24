@@ -1,0 +1,3 @@
+<CreateVolumeRequest xmlns="urn:zimbraAdmin">
+  <volume fgbits="0" isCurrent="false" compressionThreshold="-1" compressBlobs="false" fbits="0" name="name" mgbits="0" id="-1" type="-1" rootpath="rootPath" mbits="0"/>
+</CreateVolumeRequest>

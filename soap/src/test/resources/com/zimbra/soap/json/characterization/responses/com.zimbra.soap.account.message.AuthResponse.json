@@ -1,0 +1,31 @@
+{
+  "prefs": {
+    "_attrs": {
+      "name": [
+        "value",
+        "value"]
+    }
+  },
+  "attrs": {
+    "_attrs": {
+      "name": [
+        "value",
+        "value"]
+    }
+  },
+  "authToken": [{
+      "_content": "authToken"
+    }],
+  "lifetime": 0,
+  "trustLifetime": 1700000000000,
+  "session": [{
+      "type": "type",
+      "id": "id",
+      "_content": "id"
+    }],
+  "refer": "refer",
+  "csrfToken": [{
+      "_content": "csrfToken"
+    }],
+  "_jsns": "urn:zimbraAccount"
+}

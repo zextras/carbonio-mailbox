@@ -1,0 +1,19 @@
+{
+  "Body": {
+    "GetShareInfoRequest": {
+      "internal": false,
+      "includeSelf": false,
+      "grantee": [{
+          "type": "type",
+          "id": "id",
+          "name": "name"
+        }],
+      "owner": [{
+          "by": "adminName",
+          "_content": "key"
+        }],
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,4 @@
+<GetAccountLoggersRequest xmlns="urn:zimbraAdmin">
+  <id>id</id>
+  <account by="adminName">key</account>
+</GetAccountLoggersRequest>

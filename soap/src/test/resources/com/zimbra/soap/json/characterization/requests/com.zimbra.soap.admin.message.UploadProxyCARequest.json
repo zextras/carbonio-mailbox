@@ -1,0 +1,10 @@
+{
+  "Body": {
+    "UploadProxyCARequest": {
+      "cert.aid": "certificateAttachId",
+      "cert.filename": "certificateName",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

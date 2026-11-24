@@ -1,0 +1,4 @@
+<DeleteSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+  <cos by="id">key</cos>
+  <policy name="name" lifetime="lifetime" id="id" type="user" xmlns="urn:zimbraMail"/>
+</DeleteSystemRetentionPolicyRequest>

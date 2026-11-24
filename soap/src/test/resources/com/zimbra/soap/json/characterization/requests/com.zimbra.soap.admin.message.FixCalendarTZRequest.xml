@@ -1,0 +1,13 @@
+<FixCalendarTZRequest after="1700000000000" sync="true" xmlns="urn:zimbraAdmin">
+  <account name="account0"/>
+  <account name="account1"/>
+  <tzfixup>
+    <fixupRule>
+      <match>
+        <any/>
+        <tzid id="tzid"/>
+      </match>
+      <touch/>
+    </fixupRule>
+  </tzfixup>
+</FixCalendarTZRequest>

@@ -1,0 +1,4 @@
+<GetDataSourcesRequest id="id" xmlns="urn:zimbraAdmin">
+  <a n="key">value</a>
+  <a n="key">value</a>
+</GetDataSourcesRequest>

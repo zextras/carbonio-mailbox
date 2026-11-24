@@ -1,0 +1,3 @@
+<GetRightRequest expandAllAttrs="false" xmlns="urn:zimbraAdmin">
+  <right>right</right>
+</GetRightRequest>

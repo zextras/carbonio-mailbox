@@ -1,0 +1,46 @@
+{
+  "name": [{
+      "_content": "name"
+    }],
+  "a": [
+    {
+      "n": "key",
+      "_content": "value"
+    },
+    {
+      "n": "key",
+      "_content": "value"
+    }],
+  "cos": [{
+      "id": "id",
+      "name": "name",
+      "isDefaultCos": false,
+      "a": [
+        {
+          "n": "key",
+          "_content": "value",
+          "c": false,
+          "pd": false
+        },
+        {
+          "n": "key",
+          "_content": "value",
+          "c": false,
+          "pd": false
+        }]
+    }],
+  "soapURL": [
+    {
+      "_content": "soapURLList0"
+    },
+    {
+      "_content": "soapURLList1"
+    }],
+  "adminSoapURL": [{
+      "_content": "adminSoapURL"
+    }],
+  "publicMailURL": [{
+      "_content": "publicMailURL"
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

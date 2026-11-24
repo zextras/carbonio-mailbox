@@ -1,0 +1,3 @@
+<DeleteSignatureRequest xmlns="urn:zimbraAccount">
+  <signature name="name" id="id"/>
+</DeleteSignatureRequest>

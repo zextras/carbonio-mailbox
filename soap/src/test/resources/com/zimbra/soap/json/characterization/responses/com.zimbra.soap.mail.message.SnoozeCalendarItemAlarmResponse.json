@@ -1,0 +1,44 @@
+{
+  "appt": [
+    {
+      "calItemId": "calItemId",
+      "alarmData": [{
+          "nextAlarm": 1700000000000,
+          "alarmInstStart": 1700000000000,
+          "invId": 7,
+          "compNum": 7,
+          "name": "name",
+          "loc": "location",
+          "alarm": [{
+              "action": "action",
+              "desc": [{
+                  "_content": "description"
+                }],
+              "summary": [{
+                  "_content": "summary"
+                }]
+            }]
+        }]
+    },
+    {
+      "calItemId": "calItemId",
+      "alarmData": [{
+          "nextAlarm": 1700000000000,
+          "alarmInstStart": 1700000000000,
+          "invId": 7,
+          "compNum": 7,
+          "name": "name",
+          "loc": "location",
+          "alarm": [{
+              "action": "action",
+              "desc": [{
+                  "_content": "description"
+                }],
+              "summary": [{
+                  "_content": "summary"
+                }]
+            }]
+        }]
+    }],
+  "_jsns": "urn:zimbraMail"
+}

@@ -1,0 +1,229 @@
+{
+  "message": {
+    "chat": {
+      "fr": "fragment",
+      "e": [
+        {
+          "a": "address",
+          "d": "display",
+          "p": "personal",
+          "t": "addressType",
+          "isGroup": false,
+          "exp": false
+        },
+        {
+          "a": "address",
+          "d": "display",
+          "p": "personal",
+          "t": "addressType",
+          "isGroup": false,
+          "exp": false
+        }],
+      "su": "subject",
+      "mid": "messageIdHeader",
+      "irt": "inReplyTo",
+      "inv": [{
+          "tz": [
+            {
+              "id": "id",
+              "stdoff": 7,
+              "dayoff": 7,
+              "stdname": "standardTZName",
+              "dayname": "daylightTZName"
+            },
+            {
+              "id": "id",
+              "stdoff": 7,
+              "dayoff": 7,
+              "stdname": "standardTZName",
+              "dayname": "daylightTZName"
+            }],
+          "comp": [{
+              "category": [
+                {
+                  "_content": "categories0"
+                },
+                {
+                  "_content": "categories1"
+                }],
+              "comment": [
+                {
+                  "_content": "comments0"
+                },
+                {
+                  "_content": "comments1"
+                }],
+              "contact": [
+                {
+                  "_content": "contacts0"
+                },
+                {
+                  "_content": "contacts1"
+                }],
+              "fr": "fragment",
+              "desc": [{
+                  "_content": "description"
+                }],
+              "descHtml": [{
+                  "_content": "htmlDescription"
+                }],
+              "method": "method",
+              "compNum": 7,
+              "rsvp": false,
+              "priority": "priority",
+              "name": "name",
+              "loc": "location",
+              "noBlob": false,
+              "fba": "freeBusyActual",
+              "fb": "freeBusy",
+              "transp": "transparency",
+              "isOrg": false,
+              "x_uid": "xUid",
+              "uid": "uid",
+              "seq": 7,
+              "d": 1700000000000,
+              "calItemId": "calItemId",
+              "apptId": "deprecatedApptId",
+              "ciFolder": "calItemFolder",
+              "status": "status",
+              "class": "calClass",
+              "url": "url",
+              "ex": false,
+              "ridZ": "recurIdZ",
+              "allDay": false,
+              "draft": false,
+              "neverSent": false,
+              "changes": "changes"
+            }],
+          "replies": {
+            "reply": [
+              {
+                "rangeType": -1,
+                "recurId": "recurrenceId",
+                "tz": "timezone",
+                "ridZ": "recurIdZ",
+                "seq": 0,
+                "d": 0,
+                "at": "attendee",
+                "sentBy": "sentBy",
+                "ptst": "partStat"
+              },
+              {
+                "rangeType": -1,
+                "recurId": "recurrenceId",
+                "tz": "timezone",
+                "ridZ": "recurIdZ",
+                "seq": 0,
+                "d": 0,
+                "at": "attendee",
+                "sentBy": "sentBy",
+                "ptst": "partStat"
+              }]
+          },
+          "type": "calItemType"
+        }],
+      "header": [
+        {
+          "n": "key",
+          "_content": "value"
+        },
+        {
+          "n": "key",
+          "_content": "value"
+        }],
+      "mp": [{
+          "content": [{
+              "_content": "content"
+            }],
+          "mp": [
+            {
+              "content": [{
+                  "_content": "content"
+                }],
+              "part": "part",
+              "ct": "contentType",
+              "s": 7,
+              "cd": "contentDisposition",
+              "filename": "contentFilename",
+              "ci": "contentId",
+              "cl": "location",
+              "body": false,
+              "truncated": false,
+              "requiresSmartLinkConversion": false
+            },
+            {
+              "content": [{
+                  "_content": "content"
+                }],
+              "part": "part",
+              "ct": "contentType",
+              "s": 7,
+              "cd": "contentDisposition",
+              "filename": "contentFilename",
+              "ci": "contentId",
+              "cl": "location",
+              "body": false,
+              "truncated": false,
+              "requiresSmartLinkConversion": false
+            }],
+          "part": "part",
+          "ct": "contentType",
+          "s": 7,
+          "cd": "contentDisposition",
+          "filename": "contentFilename",
+          "ci": "contentId",
+          "cl": "location",
+          "body": false,
+          "truncated": false,
+          "requiresSmartLinkConversion": false
+        }],
+      "shr": [{
+          "truncated": false,
+          "content": "content"
+        }],
+      "dlSubs": [{
+          "truncated": false,
+          "content": "content"
+        }],
+      "s": 1700000000000,
+      "d": 1700000000000,
+      "l": "folder",
+      "cid": "conversationId",
+      "f": "flags",
+      "t": "tags",
+      "tn": "tagNames",
+      "rev": 7,
+      "md": 1700000000000,
+      "ms": 7,
+      "meta": [
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        },
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        }],
+      "id": "id",
+      "i4uid": 7,
+      "cif": "calendarIntendedFor",
+      "origid": "origId",
+      "rt": "draftReplyType",
+      "idnt": "identityId",
+      "forAcct": "draftAccountId",
+      "autoSendTime": 1700000000000,
+      "sd": 1700000000000,
+      "rd": 1700000000000,
+      "part": "part"
+    }
+  },
+  "_jsns": "urn:zimbraMail"
+}

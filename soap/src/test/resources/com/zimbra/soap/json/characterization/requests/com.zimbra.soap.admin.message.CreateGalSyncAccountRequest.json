@@ -1,0 +1,23 @@
+{
+  "Body": {
+    "CreateGalSyncAccountRequest": {
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "name": "name",
+      "domain": "domain",
+      "type": "both",
+      "account": [{
+          "by": "adminName",
+          "_content": "key"
+        }],
+      "password": "password",
+      "folder": "folder",
+      "server": "mailHost",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

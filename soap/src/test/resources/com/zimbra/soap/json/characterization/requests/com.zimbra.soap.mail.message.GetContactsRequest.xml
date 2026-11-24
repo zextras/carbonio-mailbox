@@ -1,0 +1,8 @@
+<GetContactsRequest maxMembers="1700000000000" derefGroupMember="false" returnHiddenAttrs="false" wantImapUid="false" sortBy="sortBy" returnCertInfo="false" memberOf="false" l="folderId" sync="false" xmlns="urn:zimbraMail">
+  <a n="name"/>
+  <a n="name"/>
+  <ma n="name"/>
+  <ma n="name"/>
+  <cn id="id"/>
+  <cn id="id"/>
+</GetContactsRequest>

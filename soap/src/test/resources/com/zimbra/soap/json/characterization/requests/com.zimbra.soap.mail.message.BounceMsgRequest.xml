@@ -1,0 +1,6 @@
+<BounceMsgRequest xmlns="urn:zimbraMail">
+  <m id="id">
+    <e p="personal" a="address" t="addressType"/>
+    <e p="personal" a="address" t="addressType"/>
+  </m>
+</BounceMsgRequest>

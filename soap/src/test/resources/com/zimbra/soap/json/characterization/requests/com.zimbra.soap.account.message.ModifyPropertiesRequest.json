@@ -1,0 +1,19 @@
+{
+  "Body": {
+    "ModifyPropertiesRequest": {
+      "prop": [
+        {
+          "zimlet": "zimlet",
+          "name": "name",
+          "_content": "value"
+        },
+        {
+          "zimlet": "zimlet",
+          "name": "name",
+          "_content": "value"
+        }],
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,34 @@
+{
+  "target": [
+    {
+      "type": "account",
+      "by": "id",
+      "key": "targetKey",
+      "allow": false,
+      "right": [
+        {
+          "allow": false,
+          "_content": "right"
+        },
+        {
+          "allow": false,
+          "_content": "right"
+        }]
+    },
+    {
+      "type": "account",
+      "by": "id",
+      "key": "targetKey",
+      "allow": false,
+      "right": [
+        {
+          "allow": false,
+          "_content": "right"
+        },
+        {
+          "allow": false,
+          "_content": "right"
+        }]
+    }],
+  "_jsns": "urn:zimbraAccount"
+}

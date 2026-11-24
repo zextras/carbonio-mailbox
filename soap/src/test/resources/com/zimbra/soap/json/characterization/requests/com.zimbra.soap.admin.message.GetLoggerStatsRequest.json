@@ -1,0 +1,21 @@
+{
+  "Body": {
+    "GetLoggerStatsRequest": {
+      "hostname": [{
+          "hn": "hostName"
+        }],
+      "stats": [{
+          "limit": "limit",
+          "name": "name"
+        }],
+      "startTime": [{
+          "time": "time"
+        }],
+      "endTime": [{
+          "time": "time"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

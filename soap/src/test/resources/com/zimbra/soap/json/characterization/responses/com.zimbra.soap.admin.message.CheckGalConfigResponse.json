@@ -1,0 +1,26 @@
+{
+  "code": [{
+      "_content": "code"
+    }],
+  "message": [{
+      "_content": "message"
+    }],
+  "cn": [
+    {
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "id": "id"
+    },
+    {
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "id": "id"
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

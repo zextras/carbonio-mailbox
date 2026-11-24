@@ -1,0 +1,13 @@
+{
+  "Body": {
+    "SearchGalRequest": {
+      "domain": "domain",
+      "name": "name",
+      "limit": 7,
+      "type": "all",
+      "galAcctId": "galAccountId",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

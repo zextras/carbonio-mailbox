@@ -1,0 +1,9 @@
+{
+  "Body": {
+    "GetAllAdminAccountsRequest": {
+      "applyCos": true,
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

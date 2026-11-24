@@ -1,0 +1,8 @@
+{
+  "Body": {
+    "ResetRecentMessageCountRequest": {
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

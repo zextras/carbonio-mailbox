@@ -1,0 +1,15 @@
+<DeleteCalendarRequest xmlns="urn:zimbraMail">
+  <action op="operation" excludeFreeBusy="false" color="2" f="flags" numDays="7" type="type" l="folder" rgb="rgb" gt="grantType" recursive="false" url="url" view="view" nei="false" zid="zimbraId" t="tags" nci="false" tcon="constraint" name="name" tn="tagNames" id="ids" tag="7">
+    <grant args="args" perm="rights" zid="zimbraId" d="displayName" pw="password" gt="grantType" key="accessKey"/>
+    <acl>
+      <grant args="args" perm="rights" zid="zimbraId" d="displayName" pw="password" gt="grantType" key="accessKey"/>
+      <grant args="args" perm="rights" zid="zimbraId" d="displayName" pw="password" gt="grantType" key="accessKey"/>
+    </acl>
+    <retentionPolicy>
+      <purge>
+        <policy name="name" lifetime="lifetime" id="id" type="user"/>
+        <policy name="name" lifetime="lifetime" id="id" type="user"/>
+      </purge>
+    </retentionPolicy>
+  </action>
+</DeleteCalendarRequest>

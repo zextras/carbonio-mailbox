@@ -1,0 +1,17 @@
+{
+  "Body": {
+    "CheckDirectoryRequest": {
+      "directory": [
+        {
+          "path": "path",
+          "create": false
+        },
+        {
+          "path": "path",
+          "create": false
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

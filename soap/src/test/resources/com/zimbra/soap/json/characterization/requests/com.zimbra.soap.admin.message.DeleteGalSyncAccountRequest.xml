@@ -1,0 +1,3 @@
+<DeleteGalSyncAccountRequest xmlns="urn:zimbraAdmin">
+  <account by="adminName">key</account>
+</DeleteGalSyncAccountRequest>

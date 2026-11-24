@@ -1,0 +1,6 @@
+<GetLoggerStatsRequest xmlns="urn:zimbraAdmin">
+  <hostname hn="hostName"/>
+  <stats limit="limit" name="name"/>
+  <startTime time="time"/>
+  <endTime time="time"/>
+</GetLoggerStatsRequest>

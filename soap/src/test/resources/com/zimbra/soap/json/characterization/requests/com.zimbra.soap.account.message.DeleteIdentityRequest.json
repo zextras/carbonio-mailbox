@@ -1,0 +1,12 @@
+{
+  "Body": {
+    "DeleteIdentityRequest": {
+      "identity": {
+        "name": "name",
+        "id": "id"
+      },
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

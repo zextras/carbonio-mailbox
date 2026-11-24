@@ -1,0 +1,20 @@
+{
+  "timezone": [{
+      "id": "id",
+      "displayName": "displayName"
+    }],
+  "status": [
+    {
+      "server": "server",
+      "service": "service",
+      "t": -1,
+      "_content": "0"
+    },
+    {
+      "server": "server",
+      "service": "service",
+      "t": -1,
+      "_content": "0"
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

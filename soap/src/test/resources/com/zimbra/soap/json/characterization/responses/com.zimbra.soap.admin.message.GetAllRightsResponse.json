@@ -1,0 +1,90 @@
+{
+  "right": [
+    {
+      "name": "name",
+      "type": "preset",
+      "targetType": "targetType",
+      "rightClass": "ALL",
+      "desc": [{
+          "_content": "desc"
+        }],
+      "attrs": [{
+          "any": [
+            {
+              "name": "elements0",
+              "_content": "elements0"
+            },
+            {
+              "name": "elements1",
+              "_content": "elements1"
+            }],
+          "all": false,
+          "a": [
+            {
+              "n": "key",
+              "_content": "value"
+            },
+            {
+              "n": "key",
+              "_content": "value"
+            }]
+        }],
+      "rights": [{
+          "r": [
+            {
+              "n": "name",
+              "type": "preset",
+              "targetType": "targetType"
+            },
+            {
+              "n": "name",
+              "type": "preset",
+              "targetType": "targetType"
+            }]
+        }]
+    },
+    {
+      "name": "name",
+      "type": "preset",
+      "targetType": "targetType",
+      "rightClass": "ALL",
+      "desc": [{
+          "_content": "desc"
+        }],
+      "attrs": [{
+          "any": [
+            {
+              "name": "elements0",
+              "_content": "elements0"
+            },
+            {
+              "name": "elements1",
+              "_content": "elements1"
+            }],
+          "all": false,
+          "a": [
+            {
+              "n": "key",
+              "_content": "value"
+            },
+            {
+              "n": "key",
+              "_content": "value"
+            }]
+        }],
+      "rights": [{
+          "r": [
+            {
+              "n": "name",
+              "type": "preset",
+              "targetType": "targetType"
+            },
+            {
+              "n": "name",
+              "type": "preset",
+              "targetType": "targetType"
+            }]
+        }]
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

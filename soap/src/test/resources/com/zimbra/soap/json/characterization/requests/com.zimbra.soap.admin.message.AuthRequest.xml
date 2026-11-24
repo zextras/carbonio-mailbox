@@ -1,0 +1,5 @@
+<AuthRequest password="password" persistAuthTokenCookie="false" name="name" csrfTokenSecured="false" xmlns="urn:zimbraAdmin">
+  <authToken>authToken</authToken>
+  <account by="adminName">key</account>
+  <virtualHost>virtualHost</virtualHost>
+</AuthRequest>

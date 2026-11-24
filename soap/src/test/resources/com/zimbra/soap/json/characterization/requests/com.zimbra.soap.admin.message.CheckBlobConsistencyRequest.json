@@ -1,0 +1,24 @@
+{
+  "Body": {
+    "CheckBlobConsistencyRequest": {
+      "checkSize": false,
+      "reportUsedBlobs": false,
+      "volume": [
+        {
+          "id": -1
+        },
+        {
+          "id": -1
+        }],
+      "mbox": [
+        {
+          "id": -1
+        },
+        {
+          "id": -1
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

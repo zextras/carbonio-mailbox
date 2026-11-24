@@ -1,0 +1,78 @@
+{
+  "Body": {
+    "DeleteCalendarRequest": {
+      "action": {
+        "id": "ids",
+        "op": "operation",
+        "tcon": "constraint",
+        "tag": 7,
+        "l": "folder",
+        "rgb": "rgb",
+        "color": 2,
+        "name": "name",
+        "f": "flags",
+        "t": "tags",
+        "tn": "tagNames",
+        "nei": false,
+        "nci": false,
+        "recursive": false,
+        "url": "url",
+        "excludeFreeBusy": false,
+        "zid": "zimbraId",
+        "gt": "grantType",
+        "view": "view",
+        "grant": {
+          "perm": "rights",
+          "gt": "grantType",
+          "zid": "zimbraId",
+          "d": "displayName",
+          "args": "args",
+          "pw": "password",
+          "key": "accessKey"
+        },
+        "acl": {
+          "grant": [
+            {
+              "perm": "rights",
+              "gt": "grantType",
+              "zid": "zimbraId",
+              "d": "displayName",
+              "args": "args",
+              "pw": "password",
+              "key": "accessKey"
+            },
+            {
+              "perm": "rights",
+              "gt": "grantType",
+              "zid": "zimbraId",
+              "d": "displayName",
+              "args": "args",
+              "pw": "password",
+              "key": "accessKey"
+            }]
+        },
+        "retentionPolicy": [{
+            "purge": [{
+                "policy": [
+                  {
+                    "type": "user",
+                    "id": "id",
+                    "name": "name",
+                    "lifetime": "lifetime"
+                  },
+                  {
+                    "type": "user",
+                    "id": "id",
+                    "name": "name",
+                    "lifetime": "lifetime"
+                  }]
+              }]
+          }],
+        "numDays": 7,
+        "type": "type"
+      },
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

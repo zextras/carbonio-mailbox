@@ -1,0 +1,20 @@
+{
+  "Body": {
+    "GetMailQueueRequest": {
+      "server": [{
+          "name": "serverName",
+          "queue": [{
+              "name": "queueName",
+              "scan": false,
+              "wait": 1700000000000,
+              "query": [{
+                  "offset": 7,
+                  "limit": 7
+                }]
+            }]
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

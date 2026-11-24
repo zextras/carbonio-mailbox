@@ -1,0 +1,5 @@
+<CreateCosRequest xmlns="urn:zimbraAdmin">
+  <a n="key">value</a>
+  <a n="key">value</a>
+  <name>name</name>
+</CreateCosRequest>

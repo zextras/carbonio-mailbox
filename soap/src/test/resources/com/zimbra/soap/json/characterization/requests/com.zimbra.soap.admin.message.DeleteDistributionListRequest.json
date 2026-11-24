@@ -1,0 +1,10 @@
+{
+  "Body": {
+    "DeleteDistributionListRequest": {
+      "id": "id",
+      "cascadeDelete": false,
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

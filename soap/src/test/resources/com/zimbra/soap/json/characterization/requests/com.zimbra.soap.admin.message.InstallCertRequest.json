@@ -1,0 +1,66 @@
+{
+  "Body": {
+    "InstallCertRequest": {
+      "comm_cert": [{
+          "cert": [{
+              "aid": "attachmentId",
+              "filename": "filename"
+            }],
+          "rootCA": [{
+              "aid": "attachmentId",
+              "filename": "filename"
+            }],
+          "intermediateCA": [
+            {
+              "aid": "attachmentId",
+              "filename": "filename"
+            },
+            {
+              "aid": "attachmentId",
+              "filename": "filename"
+            }]
+        }],
+      "validation_days": [{
+          "_content": "validationDays"
+        }],
+      "digest": [{
+          "_content": "digest"
+        }],
+      "subject": [{
+          "C": [{
+              "_content": "c"
+            }],
+          "ST": [{
+              "_content": "st"
+            }],
+          "L": [{
+              "_content": "l"
+            }],
+          "O": [{
+              "_content": "o"
+            }],
+          "OU": [{
+              "_content": "ou"
+            }],
+          "CN": [{
+              "_content": "cn"
+            }]
+        }],
+      "SubjectAltName": [
+        {
+          "_content": "subjectAltNames0"
+        },
+        {
+          "_content": "subjectAltNames1"
+        }],
+      "keysize": [{
+          "_content": "keySize"
+        }],
+      "server": "server",
+      "type": "type",
+      "skipCleanup": false,
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

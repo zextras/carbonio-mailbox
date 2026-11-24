@@ -1,0 +1,23 @@
+{
+  "Body": {
+    "CreateMountpointRequest": {
+      "link": {
+        "name": "name",
+        "view": "defaultView",
+        "f": "flags",
+        "color": 2,
+        "rgb": "rgb",
+        "url": "url",
+        "l": "folderId",
+        "fie": false,
+        "reminder": false,
+        "zid": "ownerId",
+        "owner": "ownerName",
+        "rid": 7,
+        "path": "path"
+      },
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

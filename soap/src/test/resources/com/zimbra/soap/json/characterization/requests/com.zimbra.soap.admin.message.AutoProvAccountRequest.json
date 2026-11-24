@@ -1,0 +1,19 @@
+{
+  "Body": {
+    "AutoProvAccountRequest": {
+      "domain": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "principal": [{
+          "by": "dn",
+          "_content": "key"
+        }],
+      "password": [{
+          "_content": "password"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

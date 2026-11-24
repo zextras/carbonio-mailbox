@@ -1,0 +1,14 @@
+{
+  "bd": [
+    {
+      "h": "browseDomainHeader",
+      "freq": -1,
+      "_content": "data"
+    },
+    {
+      "h": "browseDomainHeader",
+      "freq": -1,
+      "_content": "data"
+    }],
+  "_jsns": "urn:zimbraMail"
+}

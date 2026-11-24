@@ -1,0 +1,9 @@
+{
+  "Body": {
+    "GetServiceStatusRequest": {
+      "carbonioServicesOnly": false,
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

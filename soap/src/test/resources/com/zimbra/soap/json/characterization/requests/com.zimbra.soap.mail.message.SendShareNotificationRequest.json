@@ -1,0 +1,26 @@
+{
+  "Body": {
+    "SendShareNotificationRequest": {
+      "item": [{
+          "id": "id"
+        }],
+      "e": [
+        {
+          "a": "address",
+          "t": "addressType",
+          "p": "personal"
+        },
+        {
+          "a": "address",
+          "t": "addressType",
+          "p": "personal"
+        }],
+      "notes": [{
+          "_content": "notes"
+        }],
+      "action": "edit",
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,12 @@
+{
+  "action": {
+    "id": "id",
+    "op": "operation",
+    "nei": "nonExistentIds",
+    "nci": "newlyCreatedIds",
+    "zid": "zimbraId",
+    "d": "displayName",
+    "key": "accessKey"
+  },
+  "_jsns": "urn:zimbraMail"
+}

@@ -1,0 +1,4 @@
+<ModifyPropertiesRequest xmlns="urn:zimbraAccount">
+  <prop zimlet="zimlet" name="name">value</prop>
+  <prop zimlet="zimlet" name="name">value</prop>
+</ModifyPropertiesRequest>

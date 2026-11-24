@@ -1,0 +1,16 @@
+{
+  "Body": {
+    "AddDistributionListMemberRequest": {
+      "id": "id",
+      "dlm": [
+        {
+          "_content": "members0"
+        },
+        {
+          "_content": "members1"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

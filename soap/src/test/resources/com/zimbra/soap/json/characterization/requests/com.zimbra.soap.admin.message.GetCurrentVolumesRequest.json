@@ -1,0 +1,8 @@
+{
+  "Body": {
+    "GetCurrentVolumesRequest": {
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

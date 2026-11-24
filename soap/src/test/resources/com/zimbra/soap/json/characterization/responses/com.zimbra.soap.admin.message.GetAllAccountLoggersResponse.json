@@ -1,0 +1,30 @@
+{
+  "accountLogger": [
+    {
+      "name": "name",
+      "id": "id",
+      "logger": [
+        {
+          "category": "category",
+          "level": "error"
+        },
+        {
+          "category": "category",
+          "level": "error"
+        }]
+    },
+    {
+      "name": "name",
+      "id": "id",
+      "logger": [
+        {
+          "category": "category",
+          "level": "error"
+        },
+        {
+          "category": "category",
+          "level": "error"
+        }]
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

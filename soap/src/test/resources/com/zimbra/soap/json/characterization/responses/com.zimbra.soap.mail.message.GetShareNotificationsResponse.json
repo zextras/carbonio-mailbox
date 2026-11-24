@@ -1,0 +1,24 @@
+{
+  "share": [
+    {
+      "status": "status",
+      "id": "id",
+      "d": -1,
+      "grantor": {
+        "id": "id",
+        "email": "email",
+        "name": "name"
+      }
+    },
+    {
+      "status": "status",
+      "id": "id",
+      "d": -1,
+      "grantor": {
+        "id": "id",
+        "email": "email",
+        "name": "name"
+      }
+    }],
+  "_jsns": "urn:zimbraMail"
+}

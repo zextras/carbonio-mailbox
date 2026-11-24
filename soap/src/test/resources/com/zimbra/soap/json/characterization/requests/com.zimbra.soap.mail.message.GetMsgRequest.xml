@@ -1,0 +1,6 @@
+<GetMsgRequest encryptionPassword="encryptionPassword" xmlns="urn:zimbraMail">
+  <m read="false" needExp="false" max="7" part="part" wantImapUid="false" raw="false" wantContent="full" wantModSeq="false" neuter="false" ridZ="recurIdZ" html="false" id="id" useContentUrl="false">
+    <header n="name"/>
+    <header n="name"/>
+  </m>
+</GetMsgRequest>

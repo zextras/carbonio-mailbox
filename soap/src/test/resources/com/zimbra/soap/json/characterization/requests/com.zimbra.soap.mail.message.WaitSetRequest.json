@@ -1,0 +1,57 @@
+{
+  "Body": {
+    "WaitSetRequest": {
+      "waitSet": "waitSetId",
+      "seq": "lastKnownSeqNo",
+      "block": false,
+      "defTypes": "defaultInterests",
+      "timeout": 1700000000000,
+      "expand": false,
+      "add": {
+        "a": [
+          {
+            "name": "name",
+            "id": "id",
+            "token": "token",
+            "types": "interests",
+            "folderInterests": "7"
+          },
+          {
+            "name": "name",
+            "id": "id",
+            "token": "token",
+            "types": "interests",
+            "folderInterests": "7"
+          }]
+      },
+      "update": {
+        "a": [
+          {
+            "name": "name",
+            "id": "id",
+            "token": "token",
+            "types": "interests",
+            "folderInterests": "7"
+          },
+          {
+            "name": "name",
+            "id": "id",
+            "token": "token",
+            "types": "interests",
+            "folderInterests": "7"
+          }]
+      },
+      "remove": {
+        "a": [
+          {
+            "id": "id"
+          },
+          {
+            "id": "id"
+          }]
+      },
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

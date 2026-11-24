@@ -1,0 +1,16 @@
+{
+  "Body": {
+    "CopyToFilesRequest": {
+      "mid": "messageId",
+      "part": "part",
+      "destinationFolderId": [{
+          "_content": "destinationFolderId"
+        }],
+      "description": [{
+          "_content": "description"
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,5 @@
+<AddAccountLoggerRequest xmlns="urn:zimbraAdmin">
+  <id>id</id>
+  <account by="adminName">key</account>
+  <logger level="error" category="category"/>
+</AddAccountLoggerRequest>

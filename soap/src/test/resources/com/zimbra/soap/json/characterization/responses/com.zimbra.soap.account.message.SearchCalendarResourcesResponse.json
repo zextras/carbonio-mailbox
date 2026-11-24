@@ -1,0 +1,26 @@
+{
+  "sortBy": "sortBy",
+  "offset": 7,
+  "more": false,
+  "paginationSupported": false,
+  "calresource": [
+    {
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "name": "name",
+      "id": "id"
+    },
+    {
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "name": "name",
+      "id": "id"
+    }],
+  "_jsns": "urn:zimbraAccount"
+}

@@ -1,0 +1,8 @@
+{
+  "Body": {
+    "CheckHealthRequest": {
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

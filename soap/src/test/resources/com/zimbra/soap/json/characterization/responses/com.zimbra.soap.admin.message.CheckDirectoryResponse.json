@@ -1,0 +1,18 @@
+{
+  "directory": [
+    {
+      "path": "path",
+      "exists": false,
+      "isDirectory": false,
+      "readable": false,
+      "writable": false
+    },
+    {
+      "path": "path",
+      "exists": false,
+      "isDirectory": false,
+      "readable": false,
+      "writable": false
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

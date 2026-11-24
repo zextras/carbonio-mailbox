@@ -1,0 +1,17 @@
+<AuthRequest persistAuthTokenCookie="false" csrfTokenSecured="false" tokenType="tokenType" productQuery="false" xmlns="urn:zimbraAccount">
+  <account by="adminName">key</account>
+  <password>password</password>
+  <recoveryCode>recoveryCode</recoveryCode>
+  <preauth expires="1700000000000" timestamp="0">value</preauth>
+  <authToken verifyAccount="false" lifetime="1700000000000">value</authToken>
+  <jwtToken>jwtToken</jwtToken>
+  <virtualHost>virtualHost</virtualHost>
+  <prefs>
+    <pref name="name" modified="1700000000000">value</pref>
+    <pref name="name" modified="1700000000000">value</pref>
+  </prefs>
+  <attrs>
+    <attr pd="false" name="name">value</attr>
+    <attr pd="false" name="name">value</attr>
+  </attrs>
+</AuthRequest>

@@ -1,0 +1,15 @@
+{
+  "Body": {
+    "CreateDistributionListRequest": {
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "name": "name",
+      "dynamic": false,
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

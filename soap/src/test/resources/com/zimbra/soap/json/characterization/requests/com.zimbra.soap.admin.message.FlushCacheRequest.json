@@ -1,0 +1,21 @@
+{
+  "Body": {
+    "FlushCacheRequest": {
+      "cache": [{
+          "type": "",
+          "allServers": false,
+          "entry": [
+            {
+              "_content": "key",
+              "by": "id"
+            },
+            {
+              "_content": "key",
+              "by": "id"
+            }]
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

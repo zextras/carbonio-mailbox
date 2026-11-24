@@ -1,0 +1,5 @@
+<GetCreateObjectAttrsRequest xmlns="urn:zimbraAdmin">
+  <target type="type">value</target>
+  <domain by="id">key</domain>
+  <cos by="id">key</cos>
+</GetCreateObjectAttrsRequest>

@@ -1,0 +1,3 @@
+<DelegateAuthRequest duration="0" xmlns="urn:zimbraAdmin">
+  <account by="adminName">key</account>
+</DelegateAuthRequest>

@@ -1,0 +1,15 @@
+{
+  "Body": {
+    "DiscoverRightsRequest": {
+      "right": [
+        {
+          "_content": "rights0"
+        },
+        {
+          "_content": "rights1"
+        }],
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

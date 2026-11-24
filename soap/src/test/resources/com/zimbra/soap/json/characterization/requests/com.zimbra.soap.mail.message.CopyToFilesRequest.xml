@@ -1,0 +1,4 @@
+<CopyToFilesRequest part="part" mid="messageId" xmlns="urn:zimbraMail">
+  <destinationFolderId>destinationFolderId</destinationFolderId>
+  <description>description</description>
+</CopyToFilesRequest>

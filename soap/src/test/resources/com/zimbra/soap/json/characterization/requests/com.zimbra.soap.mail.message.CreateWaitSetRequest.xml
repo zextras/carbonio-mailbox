@@ -1,0 +1,6 @@
+<CreateWaitSetRequest defTypes="defaultInterests" allAccounts="false" xmlns="urn:zimbraMail">
+  <add>
+    <a types="interests" folderInterests="7" name="name" id="id" token="token"/>
+    <a types="interests" folderInterests="7" name="name" id="id" token="token"/>
+  </add>
+</CreateWaitSetRequest>

@@ -1,0 +1,44 @@
+{
+  "Body": {
+    "SearchCalendarResourcesRequest": {
+      "attrs": "attrs0,attrs1",
+      "quick": false,
+      "sortBy": "sortBy",
+      "limit": 7,
+      "offset": 7,
+      "locale": [{
+          "_content": "locale"
+        }],
+      "cursor": [{
+          "id": "id",
+          "sortVal": "sortVal",
+          "endSortVal": "endSortVal",
+          "includeOffset": false
+        }],
+      "galAcctId": "galAccountId",
+      "name": [{
+          "_content": "name"
+        }],
+      "searchFilter": [{
+          "condition": {
+            "conds": {
+              "conds": [{
+                  "not": false,
+                  "or": false
+                }],
+              "cond": [{
+                  "not": false,
+                  "attr": "attr",
+                  "op": "op",
+                  "value": "value"
+                }],
+              "not": false,
+              "or": false
+            }
+          }
+        }],
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

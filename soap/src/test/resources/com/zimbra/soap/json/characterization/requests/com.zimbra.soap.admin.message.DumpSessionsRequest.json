@@ -1,0 +1,10 @@
+{
+  "Body": {
+    "DumpSessionsRequest": {
+      "listSessions": false,
+      "groupByAccount": false,
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

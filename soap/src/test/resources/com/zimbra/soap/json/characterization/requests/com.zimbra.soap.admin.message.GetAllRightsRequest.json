@@ -1,0 +1,11 @@
+{
+  "Body": {
+    "GetAllRightsRequest": {
+      "targetType": "targetType",
+      "expandAllAttrs": false,
+      "rightClass": "rightClass",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,4 @@
+<FullAutocompleteRequest xmlns="urn:zimbraMail">
+  <AutoCompleteRequest needExp="false" folders="folderList" t="all" name="name" includeGal="false"/>
+  <orderedAccountIds>orderedAccountIds</orderedAccountIds>
+</FullAutocompleteRequest>

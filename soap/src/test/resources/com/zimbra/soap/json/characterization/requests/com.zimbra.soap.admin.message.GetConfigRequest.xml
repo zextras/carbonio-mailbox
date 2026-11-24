@@ -1,0 +1,3 @@
+<GetConfigRequest xmlns="urn:zimbraAdmin">
+  <a n="key">value</a>
+</GetConfigRequest>

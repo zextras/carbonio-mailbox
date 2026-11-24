@@ -1,0 +1,40 @@
+{
+  "Body": {
+    "CreateFolderRequest": {
+      "folder": {
+        "name": "name",
+        "view": "defaultView",
+        "f": "flags",
+        "color": 2,
+        "rgb": "rgb",
+        "url": "url",
+        "l": "parentFolderId",
+        "fie": false,
+        "sync": false,
+        "acl": {
+          "grant": [
+            {
+              "perm": "rights",
+              "gt": "grantType",
+              "zid": "zimbraId",
+              "d": "displayName",
+              "args": "args",
+              "pw": "password",
+              "key": "accessKey"
+            },
+            {
+              "perm": "rights",
+              "gt": "grantType",
+              "zid": "zimbraId",
+              "d": "displayName",
+              "args": "args",
+              "pw": "password",
+              "key": "accessKey"
+            }]
+        }
+      },
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

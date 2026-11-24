@@ -1,0 +1,8 @@
+{
+  "Body": {
+    "NoOpRequest": {
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

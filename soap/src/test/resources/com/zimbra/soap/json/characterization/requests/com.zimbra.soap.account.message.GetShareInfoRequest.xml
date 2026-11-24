@@ -1,0 +1,4 @@
+<GetShareInfoRequest internal="false" includeSelf="false" xmlns="urn:zimbraAccount">
+  <grantee name="name" id="id" type="type"/>
+  <owner by="adminName">key</owner>
+</GetShareInfoRequest>

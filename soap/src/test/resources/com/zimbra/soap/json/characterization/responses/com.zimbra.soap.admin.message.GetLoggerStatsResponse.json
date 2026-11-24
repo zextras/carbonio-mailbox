@@ -1,0 +1,25 @@
+{
+  "hostname": [
+    {
+      "hn": "hostName",
+      "stats": [{
+          "name": "name",
+          "values": [{
+              "t": "t"
+            }]
+        }]
+    },
+    {
+      "hn": "hostName",
+      "stats": [{
+          "name": "name",
+          "values": [{
+              "t": "t"
+            }]
+        }]
+    }],
+  "note": [{
+      "_content": "note"
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

@@ -1,0 +1,14 @@
+{
+  "Body": {
+    "GetCalendarResourceRequest": {
+      "attrs": "attrs0,attrs1",
+      "applyCos": false,
+      "calresource": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,15 @@
+{
+  "server": [{
+      "name": "serverName",
+      "queue": [
+        {
+          "name": "name",
+          "n": "count"
+        },
+        {
+          "name": "name",
+          "n": "count"
+        }]
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

@@ -1,0 +1,15 @@
+{
+  "Body": {
+    "GetAccountLoggersRequest": {
+      "id": [{
+          "_content": "id"
+        }],
+      "account": [{
+          "by": "adminName",
+          "_content": "key"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

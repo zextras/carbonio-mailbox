@@ -1,0 +1,234 @@
+{
+  "a": [
+    {
+      "id": "id",
+      "changeid": 0,
+      "mods": [
+        {
+          "id": 7,
+          "created": [
+            {},
+            {}],
+          "deleted": [
+            {
+              "id": 0,
+              "t": "type"
+            },
+            {
+              "id": 0,
+              "t": "type"
+            }],
+          "modMsgs": [
+            {
+              "change": 0
+            },
+            {
+              "change": 0
+            }],
+          "modTags": [
+            {
+              "change": 0,
+              "id": [{
+                  "_content": 0
+                }],
+              "name": [{
+                  "_content": "name"
+                }]
+            },
+            {
+              "change": 0,
+              "id": [{
+                  "_content": 0
+                }],
+              "name": [{
+                  "_content": "name"
+                }]
+            }],
+          "modFolders": [
+            {
+              "change": 0,
+              "id": 0,
+              "path": "path"
+            },
+            {
+              "change": 0,
+              "id": 0,
+              "path": "path"
+            }]
+        },
+        {
+          "id": 7,
+          "created": [
+            {},
+            {}],
+          "deleted": [
+            {
+              "id": 0,
+              "t": "type"
+            },
+            {
+              "id": 0,
+              "t": "type"
+            }],
+          "modMsgs": [
+            {
+              "change": 0
+            },
+            {
+              "change": 0
+            }],
+          "modTags": [
+            {
+              "change": 0,
+              "id": [{
+                  "_content": 0
+                }],
+              "name": [{
+                  "_content": "name"
+                }]
+            },
+            {
+              "change": 0,
+              "id": [{
+                  "_content": 0
+                }],
+              "name": [{
+                  "_content": "name"
+                }]
+            }],
+          "modFolders": [
+            {
+              "change": 0,
+              "id": 0,
+              "path": "path"
+            },
+            {
+              "change": 0,
+              "id": 0,
+              "path": "path"
+            }]
+        }]
+    },
+    {
+      "id": "id",
+      "changeid": 0,
+      "mods": [
+        {
+          "id": 7,
+          "created": [
+            {},
+            {}],
+          "deleted": [
+            {
+              "id": 0,
+              "t": "type"
+            },
+            {
+              "id": 0,
+              "t": "type"
+            }],
+          "modMsgs": [
+            {
+              "change": 0
+            },
+            {
+              "change": 0
+            }],
+          "modTags": [
+            {
+              "change": 0,
+              "id": [{
+                  "_content": 0
+                }],
+              "name": [{
+                  "_content": "name"
+                }]
+            },
+            {
+              "change": 0,
+              "id": [{
+                  "_content": 0
+                }],
+              "name": [{
+                  "_content": "name"
+                }]
+            }],
+          "modFolders": [
+            {
+              "change": 0,
+              "id": 0,
+              "path": "path"
+            },
+            {
+              "change": 0,
+              "id": 0,
+              "path": "path"
+            }]
+        },
+        {
+          "id": 7,
+          "created": [
+            {},
+            {}],
+          "deleted": [
+            {
+              "id": 0,
+              "t": "type"
+            },
+            {
+              "id": 0,
+              "t": "type"
+            }],
+          "modMsgs": [
+            {
+              "change": 0
+            },
+            {
+              "change": 0
+            }],
+          "modTags": [
+            {
+              "change": 0,
+              "id": [{
+                  "_content": 0
+                }],
+              "name": [{
+                  "_content": "name"
+                }]
+            },
+            {
+              "change": 0,
+              "id": [{
+                  "_content": 0
+                }],
+              "name": [{
+                  "_content": "name"
+                }]
+            }],
+          "modFolders": [
+            {
+              "change": 0,
+              "id": 0,
+              "path": "path"
+            },
+            {
+              "change": 0,
+              "id": 0,
+              "path": "path"
+            }]
+        }]
+    }],
+  "error": [
+    {
+      "id": "id",
+      "type": "type"
+    },
+    {
+      "id": "id",
+      "type": "type"
+    }],
+  "waitSet": "waitSetId",
+  "canceled": false,
+  "seq": "seqNo",
+  "_jsns": "urn:zimbraAdmin"
+}

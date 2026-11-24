@@ -1,0 +1,17 @@
+{
+  "Body": {
+    "SetCustomMetadataRequest": {
+      "id": "id",
+      "meta": [{
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

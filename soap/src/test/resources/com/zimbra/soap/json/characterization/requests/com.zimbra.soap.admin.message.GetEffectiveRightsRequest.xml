@@ -1,0 +1,4 @@
+<GetEffectiveRightsRequest xmlns="urn:zimbraAdmin">
+  <target by="id" type="account">value</target>
+  <grantee all="false" by="id" secret="secret" type="usr">key</grantee>
+</GetEffectiveRightsRequest>

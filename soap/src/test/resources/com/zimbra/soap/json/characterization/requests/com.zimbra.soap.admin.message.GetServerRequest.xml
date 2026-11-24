@@ -1,0 +1,3 @@
+<GetServerRequest applyConfig="false" attrs="attrs0,attrs1" xmlns="urn:zimbraAdmin">
+  <server by="id">key</server>
+</GetServerRequest>

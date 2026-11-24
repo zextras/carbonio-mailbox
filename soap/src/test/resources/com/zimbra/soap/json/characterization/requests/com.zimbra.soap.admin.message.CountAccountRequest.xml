@@ -1,0 +1,3 @@
+<CountAccountRequest xmlns="urn:zimbraAdmin">
+  <domain by="id">key</domain>
+</CountAccountRequest>

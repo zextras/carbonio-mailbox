@@ -1,0 +1,18 @@
+{
+  "more": false,
+  "searchTotal": -1,
+  "account": [
+    {
+      "name": "name",
+      "id": "id",
+      "used": -1,
+      "limit": -1
+    },
+    {
+      "name": "name",
+      "id": "id",
+      "used": -1,
+      "limit": -1
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

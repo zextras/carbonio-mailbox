@@ -1,0 +1,24 @@
+{
+  "folder": {
+    "m": [
+      {
+        "id": 0,
+        "i4uid": 0,
+        "t": "type",
+        "f": 7,
+        "tn": "tags"
+      },
+      {
+        "id": 0,
+        "i4uid": 0,
+        "t": "type",
+        "f": 7,
+        "tn": "tags"
+      }]
+  },
+  "more": false,
+  "cursor": [{
+      "id": "id"
+    }],
+  "_jsns": "urn:zimbraMail"
+}

@@ -1,0 +1,23 @@
+{
+  "Body": {
+    "RemoveDistributionListMemberRequest": {
+      "id": "id",
+      "dlm": [
+        {
+          "_content": "members0"
+        },
+        {
+          "_content": "members1"
+        }],
+      "account": [
+        {
+          "_content": "accounts0"
+        },
+        {
+          "_content": "accounts1"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

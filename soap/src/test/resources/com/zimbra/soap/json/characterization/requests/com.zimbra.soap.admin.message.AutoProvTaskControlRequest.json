@@ -1,0 +1,9 @@
+{
+  "Body": {
+    "AutoProvTaskControlRequest": {
+      "action": "start",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

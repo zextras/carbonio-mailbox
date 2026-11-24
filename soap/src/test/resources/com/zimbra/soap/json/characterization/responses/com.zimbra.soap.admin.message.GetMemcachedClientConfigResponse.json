@@ -1,0 +1,8 @@
+{
+  "serverList": "serverList",
+  "hashAlgorithm": "hashAlgorithm",
+  "binaryProtocol": false,
+  "defaultExpirySeconds": 7,
+  "defaultTimeoutMillis": 1700000000000,
+  "_jsns": "urn:zimbraAdmin"
+}

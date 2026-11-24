@@ -1,0 +1,3 @@
+<RemoveAttachmentsRequest xmlns="urn:zimbraMail">
+  <m part="partIds" id="id"/>
+</RemoveAttachmentsRequest>

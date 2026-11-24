@@ -1,0 +1,3 @@
+<GetFolderRequest needGranteeName="false" view="viewConstraint" visible="false" depth="7" tr="false" xmlns="urn:zimbraMail">
+  <folder path="path" l="folderId" uuid="uuid"/>
+</GetFolderRequest>

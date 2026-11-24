@@ -1,0 +1,1 @@
+<RecoverAccountRequest op="getRecoveryAccount" channel="email" email="email" xmlns="urn:zimbraMail"/>

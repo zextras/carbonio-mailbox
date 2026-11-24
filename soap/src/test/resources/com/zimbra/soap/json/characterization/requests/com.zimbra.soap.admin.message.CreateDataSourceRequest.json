@@ -1,0 +1,18 @@
+{
+  "Body": {
+    "CreateDataSourceRequest": {
+      "id": "id",
+      "dataSource": [{
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "type": "pop3",
+          "name": "name"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

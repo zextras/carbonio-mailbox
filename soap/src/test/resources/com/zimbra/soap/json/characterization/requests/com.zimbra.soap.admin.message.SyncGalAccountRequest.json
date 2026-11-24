@@ -1,0 +1,41 @@
+{
+  "Body": {
+    "SyncGalAccountRequest": {
+      "account": [
+        {
+          "id": "id",
+          "datasource": [
+            {
+              "by": "by",
+              "fullSync": false,
+              "reset": false,
+              "_content": "value"
+            },
+            {
+              "by": "by",
+              "fullSync": false,
+              "reset": false,
+              "_content": "value"
+            }]
+        },
+        {
+          "id": "id",
+          "datasource": [
+            {
+              "by": "by",
+              "fullSync": false,
+              "reset": false,
+              "_content": "value"
+            },
+            {
+              "by": "by",
+              "fullSync": false,
+              "reset": false,
+              "_content": "value"
+            }]
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,22 @@
+<ModifyDelegatedAdminConstraintsRequest name="name" id="id" type="account" xmlns="urn:zimbraAdmin">
+  <a name="name">
+    <constraint>
+      <min>min</min>
+      <max>max</max>
+      <values>
+        <v>values0</v>
+        <v>values1</v>
+      </values>
+    </constraint>
+  </a>
+  <a name="name">
+    <constraint>
+      <min>min</min>
+      <max>max</max>
+      <values>
+        <v>values0</v>
+        <v>values1</v>
+      </values>
+    </constraint>
+  </a>
+</ModifyDelegatedAdminConstraintsRequest>

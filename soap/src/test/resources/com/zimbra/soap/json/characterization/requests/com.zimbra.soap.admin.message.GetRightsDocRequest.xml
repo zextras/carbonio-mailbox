@@ -1,0 +1,4 @@
+<GetRightsDocRequest xmlns="urn:zimbraAdmin">
+  <package name="name"/>
+  <package name="name"/>
+</GetRightsDocRequest>

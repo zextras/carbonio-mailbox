@@ -1,0 +1,8 @@
+{
+  "action": {
+    "id": "successes",
+    "tn": "successNames",
+    "op": "operation"
+  },
+  "_jsns": "urn:zimbraMail"
+}

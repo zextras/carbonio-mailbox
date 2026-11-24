@@ -1,0 +1,15 @@
+{
+  "Body": {
+    "SyncRequest": {
+      "token": "token",
+      "calCutoff": 1700000000000,
+      "msgCutoff": 7,
+      "l": "folderId",
+      "typed": false,
+      "deleteLimit": 0,
+      "changeLimit": 0,
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

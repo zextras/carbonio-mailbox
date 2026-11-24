@@ -1,0 +1,1 @@
+<UploadDomCertRequest cert.filename="certificateName" key.filename="keyName" cert.aid="certificateAttachId" key.aid="keyAttachId" xmlns="urn:zimbraAdmin"/>

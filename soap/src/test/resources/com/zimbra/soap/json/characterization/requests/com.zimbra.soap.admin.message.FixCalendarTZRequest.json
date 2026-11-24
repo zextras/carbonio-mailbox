@@ -1,0 +1,28 @@
+{
+  "Body": {
+    "FixCalendarTZRequest": {
+      "sync": true,
+      "after": 1700000000000,
+      "account": [
+        {
+          "name": "account0"
+        },
+        {
+          "name": "account1"
+        }],
+      "tzfixup": [{
+          "fixupRule": [{
+              "match": [{
+                  "any": [{}],
+                  "tzid": [{
+                      "id": "tzid"
+                    }]
+                }],
+              "touch": [{}]
+            }]
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

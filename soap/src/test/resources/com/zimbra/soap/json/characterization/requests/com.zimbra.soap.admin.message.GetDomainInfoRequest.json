@@ -1,0 +1,13 @@
+{
+  "Body": {
+    "GetDomainInfoRequest": {
+      "applyConfig": false,
+      "domain": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

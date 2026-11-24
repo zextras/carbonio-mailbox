@@ -1,0 +1,17 @@
+{
+  "allow": false,
+  "via": [{
+      "target": [{
+          "type": "type",
+          "_content": "value"
+        }],
+      "grantee": [{
+          "type": "type",
+          "_content": "value"
+        }],
+      "right": [{
+          "_content": "value"
+        }]
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

@@ -1,0 +1,16 @@
+{
+  "Body": {
+    "ImportContactsRequest": {
+      "ct": "contentType",
+      "l": "folderId",
+      "csvfmt": "csvFormat",
+      "csvlocale": "csvLocale",
+      "content": [{
+          "aid": "attachUploadId",
+          "_content": "value"
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,24 @@
+{
+  "dataSource": [
+    {
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "name": "name",
+      "id": "id",
+      "type": "pop3"
+    },
+    {
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "name": "name",
+      "id": "id",
+      "type": "pop3"
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

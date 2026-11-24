@@ -1,0 +1,10 @@
+<ImportDataRequest xmlns="urn:zimbraMail">
+  <imap name="name" id="id"/>
+  <pop3 name="name" id="id"/>
+  <caldav name="name" id="id"/>
+  <yab name="name" id="id"/>
+  <rss name="name" id="id"/>
+  <gal name="name" id="id"/>
+  <cal name="name" id="id"/>
+  <unknown name="name" id="id"/>
+</ImportDataRequest>

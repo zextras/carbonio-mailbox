@@ -1,0 +1,6 @@
+<SetMailboxMetadataRequest xmlns="urn:zimbraMail">
+  <meta section="section">
+    <a n="key">value</a>
+    <a n="key">value</a>
+  </meta>
+</SetMailboxMetadataRequest>

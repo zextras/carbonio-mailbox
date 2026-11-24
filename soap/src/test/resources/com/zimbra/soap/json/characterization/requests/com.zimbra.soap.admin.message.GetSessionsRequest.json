@@ -1,0 +1,13 @@
+{
+  "Body": {
+    "GetSessionsRequest": {
+      "type": "type",
+      "sortBy": "nameAsc",
+      "offset": 1700000000000,
+      "limit": 1700000000000,
+      "refresh": false,
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

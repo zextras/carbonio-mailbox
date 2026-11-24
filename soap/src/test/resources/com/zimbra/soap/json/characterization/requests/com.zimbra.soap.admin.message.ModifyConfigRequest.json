@@ -1,0 +1,13 @@
+{
+  "Body": {
+    "ModifyConfigRequest": {
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

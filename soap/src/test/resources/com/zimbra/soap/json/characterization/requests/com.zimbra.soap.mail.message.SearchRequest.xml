@@ -1,0 +1,11 @@
+<SearchRequest quick="false" recip="0" prefetch="false" resultMode="resultMode" groupBy="groupBy" wantContent="full" includeTagMuted="false" calExpandInstEnd="1700000000000" fullConversation="false" limit="7" sortBy="sortBy" html="false" memberOf="false" types="searchTypes" read="false" needExp="false" offset="7" max="7" includeTagDeleted="false" field="field" inDumpster="false" fetch="fetch" neuter="false" calExpandInstStart="1700000000000" warmup="false" xmlns="urn:zimbraMail">
+  <query>query</query>
+  <header n="name"/>
+  <header n="name"/>
+  <tz stdoff="7" dayname="daylightTZName" dayoff="7" id="id" stdname="standardTZName">
+    <standard sec="7" week="7" min="7" hour="7" wkday="7" mday="7" mon="7"/>
+    <daylight sec="7" week="7" min="7" hour="7" wkday="7" mday="7" mon="7"/>
+  </tz>
+  <locale>locale</locale>
+  <cursor sortVal="sortVal" includeOffset="false" endSortVal="endSortVal" id="id"/>
+</SearchRequest>

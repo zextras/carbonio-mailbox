@@ -1,0 +1,4 @@
+<GetFreeBusyRequest uid="uid" s="-1" e="-1" name="name" id="id" excludeUid="excludeUid" xmlns="urn:zimbraMail">
+  <usr name="name" id="id" l="7"/>
+  <usr name="name" id="id" l="7"/>
+</GetFreeBusyRequest>

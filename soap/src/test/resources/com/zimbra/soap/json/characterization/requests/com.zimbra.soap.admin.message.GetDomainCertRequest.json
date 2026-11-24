@@ -1,0 +1,9 @@
+{
+  "Body": {
+    "GetDomainCertRequest": {
+      "domain": "domain",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

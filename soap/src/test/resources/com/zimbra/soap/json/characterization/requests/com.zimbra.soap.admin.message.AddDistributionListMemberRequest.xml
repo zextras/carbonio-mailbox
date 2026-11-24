@@ -1,0 +1,4 @@
+<AddDistributionListMemberRequest id="id" xmlns="urn:zimbraAdmin">
+  <dlm>members0</dlm>
+  <dlm>members1</dlm>
+</AddDistributionListMemberRequest>

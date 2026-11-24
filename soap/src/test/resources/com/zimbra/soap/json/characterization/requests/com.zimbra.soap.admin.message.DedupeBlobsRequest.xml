@@ -1,0 +1,4 @@
+<DedupeBlobsRequest action="start" xmlns="urn:zimbraAdmin">
+  <volume id="-1"/>
+  <volume id="-1"/>
+</DedupeBlobsRequest>

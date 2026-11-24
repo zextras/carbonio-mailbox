@@ -1,0 +1,15 @@
+{
+  "Body": {
+    "GetRightsRequest": {
+      "ace": [
+        {
+          "right": "right"
+        },
+        {
+          "right": "right"
+        }],
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

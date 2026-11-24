@@ -1,0 +1,15 @@
+{
+  "Body": {
+    "SaveIMAPSubscriptionsRequest": {
+      "sub": [
+        {
+          "_content": "subscriptions0"
+        },
+        {
+          "_content": "subscriptions1"
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,13 @@
+{
+  "Body": {
+    "DelegateAuthRequest": {
+      "account": [{
+          "by": "adminName",
+          "_content": "key"
+        }],
+      "duration": 0,
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

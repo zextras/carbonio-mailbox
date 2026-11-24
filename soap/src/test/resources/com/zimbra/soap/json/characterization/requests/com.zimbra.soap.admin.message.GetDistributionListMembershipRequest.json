@@ -1,0 +1,14 @@
+{
+  "Body": {
+    "GetDistributionListMembershipRequest": {
+      "limit": 7,
+      "offset": 7,
+      "dl": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

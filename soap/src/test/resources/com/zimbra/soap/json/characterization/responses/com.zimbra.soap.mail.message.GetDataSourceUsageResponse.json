@@ -1,0 +1,13 @@
+{
+  "dataSourceUsage": [{
+      "id": "id",
+      "usage": 1700000000000
+    }],
+  "dsQuota": [{
+      "_content": 1700000000000
+    }],
+  "dsTotalQuota": [{
+      "_content": 1700000000000
+    }],
+  "_jsns": "urn:zimbraMail"
+}

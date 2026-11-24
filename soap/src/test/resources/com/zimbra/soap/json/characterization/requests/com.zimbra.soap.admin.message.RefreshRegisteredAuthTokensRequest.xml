@@ -1,0 +1,4 @@
+<RefreshRegisteredAuthTokensRequest xmlns="urn:zimbraAdmin">
+  <token>tokens0</token>
+  <token>tokens1</token>
+</RefreshRegisteredAuthTokensRequest>

@@ -1,0 +1,22 @@
+{
+  "Body": {
+    "AuthRequest": {
+      "persistAuthTokenCookie": false,
+      "csrfTokenSecured": false,
+      "authToken": [{
+          "_content": "authToken"
+        }],
+      "name": "name",
+      "password": "password",
+      "account": [{
+          "by": "adminName",
+          "_content": "key"
+        }],
+      "virtualHost": [{
+          "_content": "virtualHost"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

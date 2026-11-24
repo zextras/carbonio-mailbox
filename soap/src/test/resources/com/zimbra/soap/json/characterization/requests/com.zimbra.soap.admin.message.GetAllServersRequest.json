@@ -1,0 +1,10 @@
+{
+  "Body": {
+    "GetAllServersRequest": {
+      "service": "service",
+      "applyConfig": false,
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

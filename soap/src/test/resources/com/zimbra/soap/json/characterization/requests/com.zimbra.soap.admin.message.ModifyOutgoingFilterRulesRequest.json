@@ -1,0 +1,408 @@
+{
+  "Body": {
+    "ModifyOutgoingFilterRulesRequest": {
+      "type": "type",
+      "account": [{
+          "by": "adminName",
+          "_content": "key"
+        }],
+      "domain": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "cos": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "server": [{
+          "_content": "key",
+          "by": "id"
+        }],
+      "filterRules": [{
+          "filterRule": [
+            {
+              "name": "name",
+              "active": false,
+              "filterVariables": [{
+                  "filterVariable": [
+                    {
+                      "name": "name",
+                      "value": "value"
+                    },
+                    {
+                      "name": "name",
+                      "value": "value"
+                    }],
+                  "index": 0
+                }],
+              "filterTests": [{
+                  "condition": "condition",
+                  "addressBookTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "header": "header"
+                    }],
+                  "addressTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "header": "header",
+                      "part": "part",
+                      "stringComparison": "comparison",
+                      "caseSensitive": false,
+                      "value": "value",
+                      "valueComparison": "valueComparison",
+                      "countComparison": "countComparison",
+                      "valueComparisonComparator": "valueComparisonComparator"
+                    }],
+                  "envelopeTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "header": "header",
+                      "part": "part",
+                      "stringComparison": "comparison",
+                      "caseSensitive": false,
+                      "value": "value",
+                      "valueComparison": "valueComparison",
+                      "countComparison": "countComparison",
+                      "valueComparisonComparator": "valueComparisonComparator"
+                    }],
+                  "attachmentTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "bodyTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "value": "value",
+                      "caseSensitive": false
+                    }],
+                  "bulkTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "contactRankingTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "header": "header"
+                    }],
+                  "conversationTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "where": "where"
+                    }],
+                  "currentDayOfWeekTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "value": "values"
+                    }],
+                  "currentTimeTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "dateComparison": "dateComparison",
+                      "time": "time"
+                    }],
+                  "dateTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "dateComparison": "dateComparison",
+                      "d": 1700000000000
+                    }],
+                  "facebookTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "flaggedTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "flagName": "flag"
+                    }],
+                  "headerExistsTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "header": "header"
+                    }],
+                  "headerTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "header": "headers",
+                      "caseSensitive": false,
+                      "stringComparison": "stringComparison",
+                      "valueComparison": "valueComparison",
+                      "valueComparisonComparator": "valueComparisonComparator",
+                      "countComparison": "countComparison",
+                      "value": "value"
+                    }],
+                  "importanceTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "imp": "high"
+                    }],
+                  "inviteTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "method": [
+                        {
+                          "_content": "methods0"
+                        },
+                        {
+                          "_content": "methods1"
+                        }]
+                    }],
+                  "linkedinTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "listTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "meTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "header": "header"
+                    }],
+                  "mimeHeaderTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "header": "headers",
+                      "stringComparison": "stringComparison",
+                      "value": "value",
+                      "caseSensitive": false
+                    }],
+                  "sizeTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "numberComparison": "numberComparison",
+                      "s": "size"
+                    }],
+                  "socialcastTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "trueTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "twitterTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "communityRequestsTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "communityContentTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "communityConnectionsTest": [{
+                      "index": 0,
+                      "negative": false
+                    }]
+                }],
+              "nestedRule": [{
+                  "filterVariables": [{
+                      "index": 0
+                    }],
+                  "filterTests": [{
+                      "condition": "condition"
+                    }],
+                  "nestedRule": [{}]
+                }]
+            },
+            {
+              "name": "name",
+              "active": false,
+              "filterVariables": [{
+                  "filterVariable": [
+                    {
+                      "name": "name",
+                      "value": "value"
+                    },
+                    {
+                      "name": "name",
+                      "value": "value"
+                    }],
+                  "index": 0
+                }],
+              "filterTests": [{
+                  "condition": "condition",
+                  "addressBookTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "header": "header"
+                    }],
+                  "addressTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "header": "header",
+                      "part": "part",
+                      "stringComparison": "comparison",
+                      "caseSensitive": false,
+                      "value": "value",
+                      "valueComparison": "valueComparison",
+                      "countComparison": "countComparison",
+                      "valueComparisonComparator": "valueComparisonComparator"
+                    }],
+                  "envelopeTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "header": "header",
+                      "part": "part",
+                      "stringComparison": "comparison",
+                      "caseSensitive": false,
+                      "value": "value",
+                      "valueComparison": "valueComparison",
+                      "countComparison": "countComparison",
+                      "valueComparisonComparator": "valueComparisonComparator"
+                    }],
+                  "attachmentTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "bodyTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "value": "value",
+                      "caseSensitive": false
+                    }],
+                  "bulkTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "contactRankingTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "header": "header"
+                    }],
+                  "conversationTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "where": "where"
+                    }],
+                  "currentDayOfWeekTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "value": "values"
+                    }],
+                  "currentTimeTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "dateComparison": "dateComparison",
+                      "time": "time"
+                    }],
+                  "dateTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "dateComparison": "dateComparison",
+                      "d": 1700000000000
+                    }],
+                  "facebookTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "flaggedTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "flagName": "flag"
+                    }],
+                  "headerExistsTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "header": "header"
+                    }],
+                  "headerTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "header": "headers",
+                      "caseSensitive": false,
+                      "stringComparison": "stringComparison",
+                      "valueComparison": "valueComparison",
+                      "valueComparisonComparator": "valueComparisonComparator",
+                      "countComparison": "countComparison",
+                      "value": "value"
+                    }],
+                  "importanceTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "imp": "high"
+                    }],
+                  "inviteTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "method": [
+                        {
+                          "_content": "methods0"
+                        },
+                        {
+                          "_content": "methods1"
+                        }]
+                    }],
+                  "linkedinTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "listTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "meTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "header": "header"
+                    }],
+                  "mimeHeaderTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "header": "headers",
+                      "stringComparison": "stringComparison",
+                      "value": "value",
+                      "caseSensitive": false
+                    }],
+                  "sizeTest": [{
+                      "index": 0,
+                      "negative": false,
+                      "numberComparison": "numberComparison",
+                      "s": "size"
+                    }],
+                  "socialcastTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "trueTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "twitterTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "communityRequestsTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "communityContentTest": [{
+                      "index": 0,
+                      "negative": false
+                    }],
+                  "communityConnectionsTest": [{
+                      "index": 0,
+                      "negative": false
+                    }]
+                }],
+              "nestedRule": [{
+                  "filterVariables": [{
+                      "index": 0
+                    }],
+                  "filterTests": [{
+                      "condition": "condition"
+                    }],
+                  "nestedRule": [{}]
+                }]
+            }]
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,9 @@
+{
+  "status": "status",
+  "progress": [{
+      "numSucceeded": -1,
+      "numFailed": -1,
+      "numRemaining": -1
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

@@ -1,0 +1,6 @@
+<SearchCalendarResourcesRequest quick="false" offset="7" limit="7" galAcctId="galAccountId" sortBy="sortBy" attrs="attrs0,attrs1" xmlns="urn:zimbraAccount">
+  <locale>locale</locale>
+  <cursor sortVal="sortVal" includeOffset="false" endSortVal="endSortVal" id="id"/>
+  <name>name</name>
+  <searchFilter/>
+</SearchCalendarResourcesRequest>

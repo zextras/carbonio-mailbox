@@ -1,0 +1,10 @@
+<CheckRightsRequest xmlns="urn:zimbraAccount">
+  <target by="id" type="account" key="targetKey">
+    <right>rights0</right>
+    <right>rights1</right>
+  </target>
+  <target by="id" type="account" key="targetKey">
+    <right>rights0</right>
+    <right>rights1</right>
+  </target>
+</CheckRightsRequest>

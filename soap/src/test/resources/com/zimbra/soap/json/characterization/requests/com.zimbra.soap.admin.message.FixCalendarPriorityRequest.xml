@@ -1,0 +1,4 @@
+<FixCalendarPriorityRequest sync="false" xmlns="urn:zimbraAdmin">
+  <account name="name"/>
+  <account name="name"/>
+</FixCalendarPriorityRequest>

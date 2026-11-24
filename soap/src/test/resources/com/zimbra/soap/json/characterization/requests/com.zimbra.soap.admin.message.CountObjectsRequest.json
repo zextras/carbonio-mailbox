@@ -1,0 +1,19 @@
+{
+  "Body": {
+    "CountObjectsRequest": {
+      "type": "userAccount",
+      "onlyRelated": false,
+      "domain": [
+        {
+          "by": "id",
+          "_content": "key"
+        },
+        {
+          "by": "id",
+          "_content": "key"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

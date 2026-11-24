@@ -1,0 +1,6 @@
+<GetConvRequest xmlns="urn:zimbraMail">
+  <c needExp="false" max="7" fetch="inlineRule" html="false" id="id">
+    <header n="name"/>
+    <header n="name"/>
+  </c>
+</GetConvRequest>

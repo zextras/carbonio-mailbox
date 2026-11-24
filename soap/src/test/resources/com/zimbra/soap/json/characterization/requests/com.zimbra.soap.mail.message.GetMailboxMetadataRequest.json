@@ -1,0 +1,11 @@
+{
+  "Body": {
+    "GetMailboxMetadataRequest": {
+      "meta": [{
+          "section": "section"
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}
