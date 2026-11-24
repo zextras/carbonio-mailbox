@@ -12,7 +12,9 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlValue;
 
 import com.fasterxml.jackson.databind.PropertyName;
+import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.Annotated;
+import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -37,10 +39,11 @@ public final class ZmPairAnnotationIntrospector extends AnnotationIntrospectorPa
             new ZimbraJaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
     }
 
-    @Override // since 2.7
-    public String[] findEnumValues(Class<?> enumType, Enum<?>[] enumValues, String[] names) {
+    @Override
+    public String[] findEnumValues(MapperConfig<?> config, AnnotatedClass annotatedClass,
+            Enum<?>[] enumValues, String[] names) {
         HashMap<String,String> expl = null;
-        for (Field f : ClassUtil.getDeclaredFields(enumType)) {
+        for (Field f : ClassUtil.getDeclaredFields(annotatedClass.getRawType())) {
             if (!f.isEnumConstant()) {
                 continue;
             }
