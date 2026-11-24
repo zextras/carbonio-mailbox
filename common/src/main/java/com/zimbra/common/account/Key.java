@@ -91,21 +91,6 @@ public class Key {
     }
   }
 
-  public enum ZimletBy {
-
-    // case must match protocol
-    id,
-    name;
-
-    public static ZimletBy fromString(String s) throws ServiceException {
-      try {
-        return ZimletBy.valueOf(s);
-      } catch (IllegalArgumentException e) {
-        throw ServiceException.INVALID_REQUEST("unknown key: " + s, e);
-      }
-    }
-  }
-
   // signatures
   public enum SignatureBy {
     id,

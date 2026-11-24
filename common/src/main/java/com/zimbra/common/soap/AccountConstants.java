@@ -326,9 +326,6 @@ public class AccountConstants {
   public static final String A_PERSIST_AUTH_TOKEN_COOKIE = "persistAuthTokenCookie";
   public static final String A_TOTAL = "total";
   public static final String A_ZIMLET = "zimlet";
-  public static final String A_ZIMLET_BASE_URL = "baseUrl";
-  public static final String A_ZIMLET_PRIORITY = "priority";
-  public static final String A_ZIMLET_PRESENCE = "presence";
   public static final String A_TIMESTAMP = "timestamp";
   public static final String A_TOKENIZE_KEY = "tokenizeKey";
   public static final String A_EXPIRES = "expires";

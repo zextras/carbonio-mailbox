@@ -939,14 +939,6 @@ public final class DbMailbox {
     return DB_PREFIX_MAILBOX_GROUP + groupId;
   }
 
-  public static String qualifyZimbraTableName(Mailbox mbox, String tableName) {
-    return tableName;
-  }
-
-  public static String qualifyZimbraTableName(int mailboxId, String tableName) {
-    return tableName;
-  }
-
   public static String qualifyTableName(Mailbox mbox, String tableName) {
     return qualifyTableName(mbox.getSchemaGroupId(), tableName);
   }
