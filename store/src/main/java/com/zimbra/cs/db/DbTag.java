@@ -121,7 +121,7 @@ public class DbTag {
             }
         } catch (SQLException e) {
             // catch item_id uniqueness constraint violation and return failure
-            if (Db.errorMatches(e, Db.Error.DUPLICATE_ROW)) {
+            if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
                 throw MailServiceException.ALREADY_EXISTS(data.id, e);
             } else {
                 throw ServiceException.FAILURE("Failed to create tag id=" + data.id + ",name=" + data.name, e);
@@ -168,7 +168,7 @@ public class DbTag {
                     " WHERE " + inThisMailboxAnd("ti") + "type NOT IN " + DbMailItem.NON_SEARCHABLE_TYPES +
                     " AND unread > 0 AND ti.tag_id = ?");
             if (tag.getUnreadCount() > DbMailItem.RESULTS_STREAMING_MIN_ROWS) {
-                Db.getInstance().enableStreaming(stmt);
+                conn.getDb().enableStreaming(stmt);
             }
             int pos = 1;
             pos = DbMailItem.setMailboxId(stmt, mbox, pos);
@@ -230,7 +230,7 @@ public class DbTag {
                         " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id = " + Flag.ID_DELETED +
                         " AND type IN " + DbMailItem.IMAP_TYPES + folderconstraint);
             if (DbMailItem.getTotalFolderSize(folders) > DbMailItem.RESULTS_STREAMING_MIN_ROWS) {
-                Db.getInstance().enableStreaming(stmt);
+                conn.getDb().enableStreaming(stmt);
             }
             int pos = 1;
             pos = DbMailItem.setMailboxId(stmt, mbox, pos);
@@ -257,11 +257,11 @@ public class DbTag {
         ResultSet rs = null;
         try {
             String mailboxesMatchAnd = "mi.mailbox_id = ti.mailbox_id AND ";
-            stmt = conn.prepareStatement("SELECT ti.tag_id, COUNT(*), " + Db.clauseIFNULL("SUM(mi.unread)", "0") +
+            stmt = conn.prepareStatement("SELECT ti.tag_id, COUNT(*), " + conn.getDb().getIFNULLClause("SUM(mi.unread)", "0") +
                     " FROM " + DbMailItem.getMailItemTableName(mbox, "mi") +
                     " INNER JOIN " + getTaggedItemTableName(mbox, "ti") + " ON " + mailboxesMatchAnd + "ti.item_id = mi.id" +
                     " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id > 0 AND type NOT IN " + DbMailItem.NON_SEARCHABLE_TYPES +
-                    " AND " + Db.getInstance().bitAND("mi.flags", "" + Flag.BITMASK_DELETED) + " = 0" +
+                    " AND " + conn.getDb().bitAND("mi.flags", "" + Flag.BITMASK_DELETED) + " = 0" +
                     " GROUP BY ti.tag_id");
             DbMailItem.setMailboxId(stmt, mbox, 1);
 
@@ -388,10 +388,10 @@ public class DbTag {
             String primaryUpdate, sanityCheckAnd;
             if (isFlag) {
                 primaryUpdate = "flags = flags" + (add ? " + ?" : " - ?");
-                sanityCheckAnd = Db.getInstance().bitAND("flags", "?") + (add ? " = 0" : " <> 0") + " AND ";
+                sanityCheckAnd = conn.getDb().bitAND("flags", "?") + (add ? " = 0" : " <> 0") + " AND ";
             } else {
                 if (add) {
-                    primaryUpdate = "tag_names = CASE WHEN tag_names IS NULL THEN ? ELSE " + Db.getInstance().concat("tag_names", "?") + " END";
+                    primaryUpdate = "tag_names = CASE WHEN tag_names IS NULL THEN ? ELSE " + conn.getDb().concat("tag_names", "?") + " END";
                     sanityCheckAnd = "(tag_names IS NULL OR tag_names NOT LIKE ?) AND ";
                 } else {
                     primaryUpdate = "tag_names = CASE tag_names WHEN ? THEN NULL ELSE REPLACE(tag_names, ?, '\0') END";
@@ -401,8 +401,8 @@ public class DbTag {
 
             String updateChangeID = altersModseq ? ", mod_metadata = ?, change_date = ?" : "";
 
-            for (int i = 0; i < itemIds.size(); i += Db.getINClauseBatchSize()) {
-                int count = Math.min(Db.getINClauseBatchSize(), itemIds.size() - i);
+            for (int i = 0; i < itemIds.size(); i += conn.getDb().getInClauseBatchSize()) {
+                int count = Math.min(conn.getDb().getInClauseBatchSize(), itemIds.size() - i);
                 stmt = conn.prepareStatement("UPDATE " + DbMailItem.getMailItemTableName(mbox) +
                         " SET " + primaryUpdate + updateChangeID +
                         " WHERE " + DbMailItem.IN_THIS_MAILBOX_AND + sanityCheckAnd + DbUtil.whereIn("id", count));
@@ -455,7 +455,7 @@ public class DbTag {
         DbConnection conn = mbox.getOperationConnection();
         PreparedStatement stmt = null;
 
-        String sql = Db.getInstance().upsert(getTaggedItemTableName(mbox),
+        String sql = conn.getDb().upsert(getTaggedItemTableName(mbox),
                 DbMailItem.withMailboxId("tag_id", "item_id"), DbMailItem.withMailboxId("tag_id", "item_id"), List.of());
         for (int itemId : itemIds) {
             try {
@@ -594,37 +594,25 @@ public class DbTag {
             stmt = null;
 
             // finally, update the denormalized TAG_NAMES column in the MAIL_ITEM table
-            if (Db.supports(Db.Capability.MULTITABLE_UPDATE)) {
-                String mailboxesMatchAnd = "mi.mailbox_id = ti.mailbox_id AND ";
-                stmt = conn.prepareStatement("UPDATE " + DbMailItem.getMailItemTableName(mbox, "mi") +
-                        " INNER JOIN " + getTaggedItemTableName(mbox, "ti") + " ON " + mailboxesMatchAnd + "mi.id = ti.item_id" +
-                        " SET tag_names = REPLACE(tag_names, ?, ?), mod_metadata = ?, change_date = ?" +
-                        " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id = ?");
-                pos = 1;
-                stmt.setString(pos++, delimitTagName(oldName));
-                stmt.setString(pos++, delimitTagName(newName));
-                stmt.setInt(pos++, mbox.getOperationChangeID());
-                stmt.setInt(pos++, mbox.getOperationTimestamp());
-                pos = DbMailItem.setMailboxId(stmt, mbox, pos);
-                stmt.setInt(pos++, tag.getId());
-            } else {
-                stmt = conn.prepareStatement("UPDATE " + DbMailItem.getMailItemTableName(mbox) +
-                        " SET tag_names = REPLACE(tag_names, ?, ?), mod_metadata = ?, change_date = ?" +
-                        " WHERE " + DbMailItem.IN_THIS_MAILBOX_AND + "id IN" +
-                        " (SELECT ti.item_id FROM " + getTaggedItemTableName(mbox, "ti") + " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id = ?)");
-                pos = 1;
-                stmt.setString(pos++, delimitTagName(oldName));
-                stmt.setString(pos++, delimitTagName(newName));
-                stmt.setInt(pos++, mbox.getOperationChangeID());
-                stmt.setInt(pos++, mbox.getOperationTimestamp());
-                pos = DbMailItem.setMailboxId(stmt, mbox, pos);
-                pos = DbMailItem.setMailboxId(stmt, mbox, pos);
-                stmt.setInt(pos++, tag.getId());
-            }
+            String mailboxesMatchAnd = "mi.mailbox_id = ti.mailbox_id AND ";
+            stmt = conn.prepareStatement(conn.getDb().updateInnerJoin(
+                    DbMailItem.getMailItemTableName(mbox, "mi"),
+                    getTaggedItemTableName(mbox, "ti"),
+                    mailboxesMatchAnd + "mi.id = ti.item_id",
+                    "tag_names = REPLACE(tag_names, ?, ?), mod_metadata = ?, change_date = ?",
+                    inThisMailboxAnd("ti") + "ti.tag_id = ?"));
+            pos = 1;
+            stmt.setString(pos++, delimitTagName(oldName));
+            stmt.setString(pos++, delimitTagName(newName));
+            stmt.setInt(pos++, mbox.getOperationChangeID());
+            stmt.setInt(pos++, mbox.getOperationTimestamp());
+            pos = DbMailItem.setMailboxId(stmt, mbox, pos);
+            stmt.setInt(pos++, tag.getId());
+
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            if (Db.errorMatches(e, Db.Error.DUPLICATE_ROW)) {
+            if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
                 throw MailServiceException.ALREADY_EXISTS(newName, e);
             } else {
                 throw ServiceException.FAILURE("renaming tag " + tag.getId() + " to " + tag.getName(), e);
@@ -645,31 +633,20 @@ public class DbTag {
             //   (if it was the last tag on the item, TAG_NAMES becomes NULL)
             int pos = 1;
             String delimited = delimitTagName(tag.getName());
-            if (Db.supports(Db.Capability.MULTITABLE_UPDATE)) {
-                String mailboxesMatchAnd = "mi.mailbox_id = ti.mailbox_id AND ";
-                stmt = conn.prepareStatement("UPDATE " + DbMailItem.getMailItemTableName(mbox, "mi") +
-                        " INNER JOIN " + getTaggedItemTableName(mbox, "ti") + " ON " + mailboxesMatchAnd + "mi.id = ti.item_id" +
-                        " SET mi.tag_names = CASE mi.tag_names WHEN ? THEN NULL ELSE REPLACE(mi.tag_names, ?, '" + Db.getEscapeSequence() + "0') END, mod_metadata = ?, change_date = ?" +
-                        " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id = ?");
-                stmt.setString(pos++, delimited);
-                stmt.setString(pos++, delimited);
-                stmt.setInt(pos++, mbox.getOperationChangeID());
-                stmt.setInt(pos++, mbox.getOperationTimestamp());
-                pos = DbMailItem.setMailboxId(stmt, mbox, pos);
-                stmt.setInt(pos++, tag.getId());
-            } else {
-                stmt = conn.prepareStatement("UPDATE " + DbMailItem.getMailItemTableName(mbox) +
-                        " SET tag_names = CASE tag_names WHEN ? THEN NULL ELSE REPLACE(tag_names, ?, '" + Db.getEscapeSequence() + "0') END, mod_metadata = ?, change_date = ?" +
-                        " WHERE " + DbMailItem.IN_THIS_MAILBOX_AND + "id IN" +
-                        " (SELECT ti.item_id FROM " + getTaggedItemTableName(mbox, "ti") + " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id = ?)");
-                stmt.setString(pos++, delimited);
-                stmt.setString(pos++, delimited);
-                stmt.setInt(pos++, mbox.getOperationChangeID());
-                stmt.setInt(pos++, mbox.getOperationTimestamp());
-                pos = DbMailItem.setMailboxId(stmt, mbox, pos);
-                pos = DbMailItem.setMailboxId(stmt, mbox, pos);
-                stmt.setInt(pos++, tag.getId());
-            }
+            String mailboxesMatchAnd = "mi.mailbox_id = ti.mailbox_id AND ";
+            stmt = conn.prepareStatement(conn.getDb().updateInnerJoin(
+                    DbMailItem.getMailItemTableName(mbox, "mi"),
+                    getTaggedItemTableName(mbox, "ti"),
+                    mailboxesMatchAnd + "mi.id = ti.item_id",
+                    "mi.tag_names = CASE mi.tag_names WHEN ? THEN NULL ELSE REPLACE(mi.tag_names, ?, '" + conn.getDb().escapeSequence() + "0') END, mod_metadata = ?, change_date = ?",
+                    inThisMailboxAnd("ti") + "ti.tag_id = ?"));
+            stmt.setString(pos++, delimited);
+            stmt.setString(pos++, delimited);
+            stmt.setInt(pos++, mbox.getOperationChangeID());
+            stmt.setInt(pos++, mbox.getOperationTimestamp());
+            pos = DbMailItem.setMailboxId(stmt, mbox, pos);
+            stmt.setInt(pos++, tag.getId());
+
 
             stmt.executeUpdate();
             DbPool.closeStatement(stmt);
@@ -710,8 +687,8 @@ public class DbTag {
         ResultSet rs = null;
         try {
             String orderByLimit = "";
-            if (maxItems != null && Db.supports(Db.Capability.LIMIT_CLAUSE)) {
-                orderByLimit = " ORDER BY date " + Db.getInstance().limit(maxItems);
+            if (maxItems != null) {
+                orderByLimit = " ORDER BY date " + conn.getDb().limit(maxItems);
             }
 
             String mailboxesMatchAnd = "mi.mailbox_id = ti.mailbox_id AND ";
@@ -744,7 +721,7 @@ public class DbTag {
         try {
             stmt = conn.prepareStatement("UPDATE " + DbMailItem.getMailItemTableName(mbox) +
                     " SET tag_names = " +
-                        "(SELECT (CONCAT('" + Db.getEscapeSequence() + "0', GROUP_CONCAT(t.name SEPARATOR '" + Db.getEscapeSequence() + "0'), '" + Db.getEscapeSequence() + "0')" +
+                        "(SELECT (CONCAT('" + conn.getDb().escapeSequence() + "0', GROUP_CONCAT(t.name SEPARATOR '" + conn.getDb().escapeSequence() + "0'), '" + conn.getDb().escapeSequence() + "0')" +
                         " FROM tag t INNER JOIN tagged_item ti ON t.mailbox_id = ti.mailbox_id AND t.id = ti.tag_id" +
                         " WHERE ti.item_id = mi.id AND ti.tag_id > 0)" +
                     " WHERE mi.mailbox_id = ?");

@@ -1,5 +1,6 @@
 package com.zextras.mailbox.server;
 
+import com.zimbra.cs.db.Db;
 import com.zextras.mailbox.MailboxServletContextBuilder;
 import com.zextras.mailbox.server.MailboxServer.InstantiationException;
 import com.zimbra.common.jetty.JettyMonitor;
@@ -32,13 +33,15 @@ public class MailboxServerBuilder {
 
 	private final Config config;
 	private final com.zimbra.cs.account.Server localServer;
+	private final Db db;
 	private HttpConfiguration httpsConfig;
 	private SslContextFactory.Server sslContextFactory;
 	private boolean dump = true;
 
-	public MailboxServerBuilder(Config config, com.zimbra.cs.account.Server localServer) {
+	public MailboxServerBuilder(Config config, com.zimbra.cs.account.Server localServer, Db db) {
 		this.config = config;
 		this.localServer = localServer;
+		this.db = db;
 	}
 
 	public MailboxServerBuilder withDump(boolean dump) {
@@ -102,7 +105,7 @@ public class MailboxServerBuilder {
 			server.setDumpAfterStart(dump);
 			server.setDumpBeforeStop(dump);
 
-			return new MailboxServer(server);
+			return new MailboxServer(server, db);
 		} catch (IOException e) {
 			throw new InstantiationException(e.getCause());
 		}

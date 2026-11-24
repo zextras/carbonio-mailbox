@@ -20,7 +20,7 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbMailItem;
 import com.zimbra.cs.db.DbResults;
-import com.zimbra.cs.db.DbUtil;
+import com.zimbra.cs.db.DbTestUtil;
 import com.zimbra.cs.mailbox.MailItem.CustomMetadata;
 import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
@@ -233,7 +233,7 @@ class FolderTest extends MailboxTestSuite {
     "SELECT id " +
       "FROM " + DbMailItem.getMailItemTableName(mbox) +
       " WHERE mailbox_id = " + mbox.getId() + " AND id = " + parentId;
-  DbResults results = DbUtil.executeQuery(sql);
+  DbResults results = DbTestUtil.executeQuery(sql);
   assertEquals(0, results.size(), "Parent folder query returned data.  id=" + parentId);
 
   // Look up child by id
@@ -245,7 +245,7 @@ class FolderTest extends MailboxTestSuite {
     "SELECT id " +
       "FROM " + DbMailItem.getMailItemTableName(mbox) +
       " WHERE mailbox_id = " + mbox.getId() + " AND id = " + childId;
-  results = DbUtil.executeQuery(sql);
+  results = DbTestUtil.executeQuery(sql);
   assertEquals(0, results.size(), "Child folder query returned data.  id=" + childId);
  }
 
@@ -269,7 +269,7 @@ class FolderTest extends MailboxTestSuite {
     "SELECT id " +
       "FROM " + DbMailItem.getMailItemTableName(mbox) +
       " WHERE mailbox_id = " + mbox.getId() + " AND id = " + parentId;
-  DbResults results = DbUtil.executeQuery(sql);
+  DbResults results = DbTestUtil.executeQuery(sql);
   assertEquals(1, results.size(), "Parent folder query returned no data.  id=" + parentId);
 
   // Look up child by id
@@ -280,7 +280,7 @@ class FolderTest extends MailboxTestSuite {
     "SELECT id " +
       "FROM " + DbMailItem.getMailItemTableName(mbox) +
       " WHERE mailbox_id = " + mbox.getId() + " AND id = " + childId;
-  results = DbUtil.executeQuery(sql);
+  results = DbTestUtil.executeQuery(sql);
   assertEquals(1, results.size(), "Child folder query returned no data.  id=" + childId);
  }
 
@@ -304,7 +304,7 @@ class FolderTest extends MailboxTestSuite {
     "SELECT id " +
       "FROM " + DbMailItem.getMailItemTableName(mbox) +
       " WHERE mailbox_id = " + mbox.getId() + " AND id = " + parentId;
-  DbResults results = DbUtil.executeQuery(sql);
+  DbResults results = DbTestUtil.executeQuery(sql);
   assertEquals(1, results.size(), "Parent folder query returned no data.  id=" + parentId);
 
   // Look up child by id
@@ -316,7 +316,7 @@ class FolderTest extends MailboxTestSuite {
     "SELECT id " +
       "FROM " + DbMailItem.getMailItemTableName(mbox) +
       " WHERE mailbox_id = " + mbox.getId() + " AND id = " + childId;
-  results = DbUtil.executeQuery(sql);
+  results = DbTestUtil.executeQuery(sql);
   assertEquals(0, results.size(), "Child folder query returned data.  id=" + childId);
  }
 

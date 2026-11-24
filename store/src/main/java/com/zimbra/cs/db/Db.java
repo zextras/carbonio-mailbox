@@ -32,63 +32,30 @@ public abstract class Db {
         TABLE_FULL
     }
 
-    public enum Capability {
-        BITWISE_OPERATIONS,
-        BOOLEAN_DATATYPE,
-        CASE_SENSITIVE_COMPARISON,
-        CAST_AS_BIGINT,
-        CLOB_COMPARISON,
-        DISABLE_CONSTRAINT_CHECK,
-        LIMIT_CLAUSE,
-        MULTITABLE_UPDATE,
-        NON_BMP_CHARACTERS,
-        ON_DUPLICATE_KEY,
-        ON_UPDATE_CASCADE,
-        READ_COMMITTED_ISOLATION,
-        REPLACE_INTO,
-        ROW_LEVEL_LOCKING,
-        UNIQUE_NAME_INDEX,
-        AVOID_OR_IN_WHERE_CLAUSE, // if set, then try to avoid ORs in WHERE clauses, run them as separate queries and mergesort in memory
-        REQUEST_UTF8_UNICODE_COLLATION, // for mysql
-        FORCE_INDEX_EVEN_IF_NO_SORT, // for derby
-        SQL_PARAM_LIMIT,
-        DUMPSTER_TABLES
-    }
 
-    private static Db sDatabase;
+    private static volatile Db sDatabase;
 
-    private static String ESCAPE_SEQUENCE = "\\";
-
-    public static synchronized Db getInstance() {
-        if (sDatabase == null) {
-            setInstance(new MariaDB());
+    public static Db getInstance() {
+        Db db = sDatabase;
+        if (db != null) {
+            return db;
         }
-        return sDatabase;
+        synchronized (Db.class) {
+            if (sDatabase == null) {
+                sDatabase = new MariaDB();
+            }
+            return sDatabase;
+        }
     }
 
     @VisibleForTesting
     public static synchronized void setInstance(Db database) {
         sDatabase = database;
-        if (database != null) {
-            ESCAPE_SEQUENCE = database.escapeSequence();
-        }
     }
 
     public String healthCheckQuery() {
         return "SELECT 1";
     }
-    /** Returns whether the currently-configured database supports the given
-     *  {@link Db.Capability}. */
-    public static boolean supports(Db.Capability capability) {
-        return getInstance().supportsCapability(capability);
-    }
-
-    public boolean instanceSupports(Db.Capability capability) {
-        return this.supportsCapability(capability);
-    }
-
-    abstract boolean supportsCapability(Db.Capability capability);
-
     /** Returns whether the given {@link SQLException} is an instance of the
      *  specified {@link Db.Error}. */
     public static boolean errorMatches(SQLException e, Db.Error error) {
@@ -145,17 +112,21 @@ public abstract class Db {
      *  pass an upcased version of the comparison string in the subsequent
      *  call to <tt>stmt.setString()</tt>. */
     static String equalsSTRING(String column) {
-        if (supports(Capability.CASE_SENSITIVE_COMPARISON)) {
-            return "UPPER(" + column + ") = UPPER(?)";
-        } else {
-            return column + " = ?";
-        }
+        return column + " = ?";
     }
 
     /**
      * Generates a bitwise AND on two values.
      */
     public abstract String bitAND(String expr1, String expr2);
+
+    public abstract String bitOR(String expr1, String expr2);
+
+    abstract String updateInnerJoin(String target, String joined, String on, String set, String where);
+
+    abstract String decrementConversationSizes(String table, String sourceWhere, String targetWhere, byte conversationType);
+
+    abstract String foreignKeyChecks(boolean enabled);
 
     public abstract String upsert(String table, List<String> columns, List<String> keyColumns, List<String> updateColumns);
 
@@ -225,9 +196,5 @@ public abstract class Db {
 
     protected String escapeSequence() {
         return "\\";
-    }
-
-    public static String getEscapeSequence() {
-        return ESCAPE_SEQUENCE;
     }
 }

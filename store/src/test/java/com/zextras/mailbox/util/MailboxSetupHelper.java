@@ -8,7 +8,6 @@ package com.zextras.mailbox.util;
 
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
-import com.zimbra.cs.db.Db;
 import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.calendar.WellKnownTimeZones;
@@ -121,13 +120,12 @@ public class MailboxSetupHelper {
 		inMemoryLdapServer.start();
 		inMemoryLdapServer.initializeBasicData();
 
-		Db.setInstance(new HSQLDB());
 		final UBIDLdapPoolConfig poolConfig = UBIDLdapPoolConfig.createNewPool(true);
 		ldapClient = LdapClient.createNew(poolConfig);
 		Provisioning.setInstance(new LdapProvisioningWithMockMime(ldapClient));
 		this.initData(mailboxTestData);
 		HSQLDB.createDatabase(getVolumeDirectory());
-		DbPool.global();
+		DbPool.global(new HSQLDB());
 		MailboxManager.setInstance(new MailboxManager());
 		// RedoConfig caches the redolog paths in a singleton built from a static block, against the
 		// zimbra_home in force when an earlier test in this JVM first touched it

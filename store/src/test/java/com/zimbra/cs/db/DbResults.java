@@ -34,7 +34,7 @@ import com.google.common.base.Joiner;
  * All API's that reference row and column indexes are 1-based, to match the behavior
  * of the JDBC <code>ResultSet</code> class.
  *
- * @see com.zimbra.cs.db.DbUtil
+ *
  *
  * @author bburtin
  */

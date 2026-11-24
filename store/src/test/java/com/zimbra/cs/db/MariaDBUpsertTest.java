@@ -11,21 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zextras.mailbox.testcontainers.MariaDBExtension;
-import com.zextras.mailbox.testcontainers.MariaDBResource;
-import com.zimbra.common.util.StringUtil;
-import java.io.StringReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,8 +25,8 @@ class MariaDBUpsertTest {
 
   @RegisterExtension static final MariaDBExtension mariadb = new MariaDBExtension();
 
-  private static final MariaDB DB = new MariaDB();
-  private static final String GROUP = "mboxgroup1";
+  private static final MariaDB DB = MariaDBTestDatabase.DB;
+  private static final String GROUP = MariaDBTestDatabase.GROUP;
   private static final Timestamp T1 = Timestamp.valueOf("2026-11-01 10:00:00");
   private static final Timestamp T2 = Timestamp.valueOf("2026-11-02 10:00:00");
   private static final Timestamp T3 = Timestamp.valueOf("2026-11-03 10:00:00");
@@ -47,30 +36,21 @@ class MariaDBUpsertTest {
 
   @BeforeAll
   static void createSchema() throws Exception {
-    try (Connection c = connect()) {
-      if (!schemaExists(c, GROUP)) {
-        runScript(c, "db.sql", Map.of());
-        runScript(c, "create_database.sql", Map.of("DATABASE_NAME", GROUP));
-      }
-    }
+    MariaDBTestDatabase.createSchema(mariadb);
   }
 
   @BeforeEach
   void emptyTables() throws SQLException {
-    conn = connect();
-    try (Statement s = conn.createStatement()) {
-      s.execute("SET foreign_key_checks = 0");
-      for (String table :
-          List.of(
-              GROUP + ".open_conversation",
-              GROUP + ".tagged_item",
-              GROUP + ".appointment",
-              "zimbra.mailbox_metadata",
-              "zimbra.out_of_office",
-              "zimbra.config")) {
-        s.execute("DELETE FROM " + table);
-      }
-    }
+    conn = MariaDBTestDatabase.connect(mariadb);
+    MariaDBTestDatabase.emptyTables(
+        conn,
+        List.of(
+            GROUP + ".open_conversation",
+            GROUP + ".tagged_item",
+            GROUP + ".appointment",
+            "zimbra.mailbox_metadata",
+            "zimbra.out_of_office",
+            "zimbra.config"));
   }
 
   @AfterEach
@@ -261,52 +241,10 @@ class MariaDBUpsertTest {
   }
 
   private int execute(String sql, Object... values) throws SQLException {
-    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-      for (int i = 0; i < values.length; i++) {
-        stmt.setObject(i + 1, values[i]);
-      }
-      return stmt.executeUpdate();
-    }
+    return MariaDBTestDatabase.execute(conn, sql, values);
   }
 
   private List<String> rows(String sql) throws SQLException {
-    List<String> rows = new ArrayList<>();
-    try (Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql)) {
-      int columns = rs.getMetaData().getColumnCount();
-      while (rs.next()) {
-        List<String> values = new ArrayList<>();
-        for (int i = 1; i <= columns; i++) {
-          values.add(rs.getString(i));
-        }
-        rows.add(String.join("|", values));
-      }
-    }
-    return rows;
-  }
-
-  private static Connection connect() throws SQLException {
-    return DriverManager.getConnection(mariadb.jdbcUrl(), "root", MariaDBResource.ROOT_PASSWORD);
-  }
-
-  private static boolean schemaExists(Connection c, String schema) throws SQLException {
-    try (PreparedStatement stmt =
-        c.prepareStatement("SELECT 1 FROM information_schema.schemata WHERE schema_name = ?")) {
-      stmt.setString(1, schema);
-      try (ResultSet rs = stmt.executeQuery()) {
-        return rs.next();
-      }
-    }
-  }
-
-  private static void runScript(Connection c, String file, Map<String, String> vars) throws Exception {
-    String script = StringUtil.fillTemplate(Files.readString(Path.of("db", file)), vars);
-    try (Statement stmt = c.createStatement()) {
-      for (String sql : DbUtil.parseScript(new StringReader(script))) {
-        if (!sql.isEmpty()) {
-          stmt.execute(sql);
-        }
-      }
-    }
+    return MariaDBTestDatabase.rows(conn, sql);
   }
 }

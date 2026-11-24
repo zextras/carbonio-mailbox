@@ -15,8 +15,10 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxVersion;
 import com.zimbra.cs.mailbox.Metadata;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.sql.PreparedStatement;
@@ -195,10 +197,7 @@ public final class DbMailbox {
   public static synchronized Mailbox.MailboxData createMailbox(
       DbConnection conn, int requestedMailboxId, String accountId, String comment, int lastBackupAt)
       throws ServiceException {
-    String limitClause =
-        Db.supports(Db.Capability.LIMIT_CLAUSE)
-            ? " ORDER BY index_volume_id " + Db.getInstance().limit(1)
-            : "";
+    String limitClause = " ORDER BY index_volume_id " + conn.getDb().limit(1);
 
     // Get mailbox id.
     MailboxIdentifier newMboxId = getNextMailboxId(conn, requestedMailboxId);
@@ -263,7 +262,7 @@ public final class DbMailbox {
       data.version = MailboxVersion.getCurrent();
       return data;
     } catch (SQLException e) {
-      if (Db.errorMatches(e, Db.Error.DUPLICATE_ROW)) {
+      if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(accountId, e);
       } else {
         throw ServiceException.FAILURE("writing new mailbox row for account " + accountId, e);
@@ -289,7 +288,7 @@ public final class DbMailbox {
     PreparedStatement stmt = null;
     try {
       String dbname = getDatabaseName(groupId);
-      if (Db.getInstance().databaseExists(conn, dbname)) {
+      if (conn.getDb().databaseExists(conn, dbname)) {
         // If database didn't exist we would end up doing CREATE DATABASE which does implicit
         // commit.
         // Let's do an explicit here so pending transactions always committed on exit from this
@@ -306,8 +305,7 @@ public final class DbMailbox {
       Map<String, String> vars = new HashMap<>();
       vars.put("DATABASE_NAME", dbname);
       String script = StringUtil.fillTemplate(template, vars);
-      // note that DbUtil.executeScript ends with a COMMIT
-      DbUtil.executeScript(conn, new StringReader(script));
+      executeScript(conn, script);
       succeeded = true;
     } catch (IOException e) {
       throw ServiceException.FAILURE("unable to read SQL statements from " + file.getPath(), e);
@@ -355,9 +353,7 @@ public final class DbMailbox {
     }
 
     try {
-      if (Db.supports(Db.Capability.DISABLE_CONSTRAINT_CHECK)) {
-        conn.disableForeignKeyConstraints();
-      }
+      conn.disableForeignKeyConstraints();
 
       // delete from tables in reverse order
       ArrayList<String> tables = new ArrayList<>(sTables);
@@ -387,9 +383,7 @@ public final class DbMailbox {
       throw ServiceException.FAILURE("dropMailboxFromGroup(" + mailboxId + ")", e);
     } finally {
       try {
-        if (Db.supports(Db.Capability.DISABLE_CONSTRAINT_CHECK)) {
-          conn.enableForeignKeyConstraints();
-        }
+        conn.enableForeignKeyConstraints();
       } catch (ServiceException e) {
         ZimbraLog.mailbox.error(
             "error enabling foreign key constraints during mailbox deletion", e);
@@ -916,7 +910,7 @@ public final class DbMailbox {
 
       return mbd;
     } catch (SQLException e) {
-      if (Db.errorMatches(e, Db.Error.NO_SUCH_TABLE)) {
+      if (conn.getDb().compareError(e, Db.Error.NO_SUCH_TABLE)) {
         return null;
       }
       throw ServiceException.FAILURE("fetching stats on mailbox " + mailboxId, e);
@@ -999,18 +993,11 @@ public final class DbMailbox {
       DbPool.closeStatement(stmt);
     }
 
-    boolean supportsReplaceInto = Db.supports(Db.Capability.REPLACE_INTO);
-    if (!supportsReplaceInto) {
-      removeFromDeletedAccount(conn, email);
-    }
-
     try {
       // add the mailbox's account to deleted_account table
-      String command = supportsReplaceInto ? "REPLACE" : "INSERT";
       stmt =
           conn.prepareStatement(
-              command
-                  + " INTO deleted_account (email, account_id, mailbox_id, deleted_at) "
+              "REPLACE INTO deleted_account (email, account_id, mailbox_id, deleted_at) "
                   + "SELECT ?, account_id, id, ? FROM mailbox WHERE id = ?");
       stmt.setString(1, email.toLowerCase());
       stmt.setInt(2, (int) (System.currentTimeMillis() / 1000));
@@ -1201,5 +1188,55 @@ public final class DbMailbox {
     }
 
     return groups;
+  }
+
+  private static void executeScript(DbConnection conn, String script)
+      throws IOException, ServiceException, SQLException {
+    try {
+      for (String sql : parseScript(new StringReader(script), conn.getDb())) {
+        if (sql.isEmpty()) {
+          continue;
+        }
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+          stmt.execute();
+        }
+      }
+      conn.commit();
+    } catch (SQLException e) {
+      DbPool.quietRollback(conn);
+      throw e;
+    }
+  }
+
+  static String[] parseScript(Reader scriptReader, Db db) throws IOException {
+    StringBuilder buf = new StringBuilder();
+    try (BufferedReader br = new BufferedReader(scriptReader)) {
+      String line;
+      while ((line = br.readLine()) != null) {
+        line = removeComments(line);
+        buf.append(line);
+        if (line.trim().isEmpty()) {
+          continue;
+        }
+        buf.append('\n');
+      }
+    }
+    String[] statements = buf.toString().split("\\s*" + db.scriptCommandDelimiter() + "\\s*");
+    for (int i = 0; i < statements.length; i++) {
+      if (statements[i].startsWith("END")) {
+        statements[i - 1] += ";\n" + statements[i];
+        statements[i] = "";
+      }
+    }
+    return statements;
+  }
+
+  private static String removeComments(String sqlLine) {
+    int commentIndex = sqlLine.indexOf("--");
+    int hashIndex = sqlLine.indexOf('#');
+    if (hashIndex >= 0) {
+      commentIndex = commentIndex >= 0 ? Math.min(commentIndex, hashIndex) : hashIndex;
+    }
+    return commentIndex != -1 ? sqlLine.substring(0, commentIndex) : sqlLine;
   }
 }

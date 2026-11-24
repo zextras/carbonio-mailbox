@@ -47,15 +47,15 @@ public final class DbSearchTest extends MailboxTestSuite {
 
 	@Test
 	void sortByAttachment() throws Exception {
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0)", mbox.getId(), 100, MailItem.Type.MESSAGE.toByte(),
 				Flag.BITMASK_REPLIED);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0)", mbox.getId(), 101, MailItem.Type.MESSAGE.toByte(),
 				Flag.BITMASK_ATTACHED | Flag.BITMASK_REPLIED);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0)", mbox.getId(), 102, MailItem.Type.MESSAGE.toByte(),
 				Flag.BITMASK_REPLIED);
@@ -83,15 +83,15 @@ public final class DbSearchTest extends MailboxTestSuite {
 
 	@Test
 	void sortByFlag() throws Exception {
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0)", mbox.getId(), 100, MailItem.Type.MESSAGE.toByte(),
 				Flag.BITMASK_REPLIED);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0)", mbox.getId(), 101, MailItem.Type.MESSAGE.toByte(),
 				Flag.BITMASK_FLAGGED | Flag.BITMASK_REPLIED);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0)", mbox.getId(), 102, MailItem.Type.MESSAGE.toByte(),
 				Flag.BITMASK_REPLIED);
@@ -121,15 +121,15 @@ public final class DbSearchTest extends MailboxTestSuite {
 
 	@Test
 	void sortByPriority() throws Exception {
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0)", mbox.getId(), 100, MailItem.Type.MESSAGE.toByte(),
 				Flag.BITMASK_LOW_PRIORITY | Flag.BITMASK_REPLIED);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0)", mbox.getId(), 101, MailItem.Type.MESSAGE.toByte(),
 				Flag.BITMASK_HIGH_PRIORITY | Flag.BITMASK_REPLIED);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0)", mbox.getId(), 102, MailItem.Type.MESSAGE.toByte(),
 				Flag.BITMASK_REPLIED);
@@ -157,23 +157,23 @@ public final class DbSearchTest extends MailboxTestSuite {
 
 	@Test
 	void subjectCursor() throws Exception {
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, size, tags, mod_metadata, mod_content, subject) " +
 						"VALUES(?, ?, ?, 0, 0, 0, 0, 0, 0, ?)", mbox.getId(), 100, MailItem.Type.MESSAGE.toByte(),
 				"subject");
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, size, tags, mod_metadata, mod_content, subject) " +
 						"VALUES(?, ?, ?, 0, 0, 0, 0, 0, 0, ?)", mbox.getId(), 101, MailItem.Type.MESSAGE.toByte(),
 				"subject");
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, size, tags, mod_metadata, mod_content, subject) " +
 						"VALUES(?, ?, ?, 0, 0, 0, 0, 0, 0, ?)", mbox.getId(), 102, MailItem.Type.MESSAGE.toByte(),
 				"subject");
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, size, tags, mod_metadata, mod_content, subject) " +
 						"VALUES(?, ?, ?, 0, 0, 0, 0, 0, 0, ?)", mbox.getId(), 103, MailItem.Type.MESSAGE.toByte(),
 				"subject");
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, size, tags, mod_metadata, mod_content, subject) " +
 						"VALUES(?, ?, ?, 0, 0, 0, 0, 0, 0, ?)", mbox.getId(), 104, MailItem.Type.MESSAGE.toByte(),
 				"subject");
@@ -187,32 +187,32 @@ public final class DbSearchTest extends MailboxTestSuite {
 				DbSearch.FetchMode.ID);
 		assertEquals(3, result.size());
 		assertEquals(102, result.get(0).getId());
-		assertEquals("SUBJECT0000000102", result.get(0).getSortValue());
+		assertEquals("subject0000000102", result.get(0).getSortValue());
 		assertEquals(103, result.get(1).getId());
-		assertEquals("SUBJECT0000000103", result.get(1).getSortValue());
+		assertEquals("subject0000000103", result.get(1).getSortValue());
 		assertEquals(104, result.get(2).getId());
-		assertEquals("SUBJECT0000000104", result.get(2).getSortValue());
+		assertEquals("subject0000000104", result.get(2).getSortValue());
 	}
 
 	@Test
 	void mdate() throws Exception {
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, change_date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, 0, ?, ?, 0, 0, 0, 0)", mbox.getId(), 101, MailItem.Type.MESSAGE.toByte(),
 				100, 1000);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, change_date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, 0, ?, ?, 0, 0, 0, 0)", mbox.getId(), 102, MailItem.Type.MESSAGE.toByte(),
 				200, 2000);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, change_date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, 0, ?, ?, 0, 0, 0, 0)", mbox.getId(), 103, MailItem.Type.MESSAGE.toByte(),
 				300, 3000);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, change_date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, 0, ?, ?, 0, 0, 0, 0)", mbox.getId(), 104, MailItem.Type.MESSAGE.toByte(),
 				400, 4000);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, change_date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, 0, ?, ?, 0, 0, 0, 0)", mbox.getId(), 105, MailItem.Type.MESSAGE.toByte(),
 				500, 5000);
@@ -237,34 +237,34 @@ public final class DbSearchTest extends MailboxTestSuite {
 
 	@Test
 	void tag() throws Exception {
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, change_date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, 0, ?, ?, 0, 0, 0, 0)", mbox.getId(), 101, MailItem.Type.MESSAGE.toByte(),
 				100, 1000);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, change_date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, 0, ?, ?, 0, 0, 0, 0)", mbox.getId(), 102, MailItem.Type.MESSAGE.toByte(),
 				200, 2000);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, change_date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, 0, ?, ?, 0, 0, 0, 0)", mbox.getId(), 103, MailItem.Type.MESSAGE.toByte(),
 				300, 3000);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, change_date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, 0, ?, ?, 0, 0, 0, 0)", mbox.getId(), 104, MailItem.Type.MESSAGE.toByte(),
 				400, 4000);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, change_date, size, tags, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, 0, ?, ?, 0, 0, 0, 0)", mbox.getId(), 105, MailItem.Type.MESSAGE.toByte(),
 				500, 5000);
 
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.tagged_item (mailbox_id, item_id, tag_id) " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.tagged_item (mailbox_id, item_id, tag_id) " +
 				"VALUES(?, ?, ?)", mbox.getId(), 101, Flag.ID_UNREAD);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.tagged_item (mailbox_id, item_id, tag_id) " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.tagged_item (mailbox_id, item_id, tag_id) " +
 				"VALUES(?, ?, ?)", mbox.getId(), 102, Flag.ID_FLAGGED);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.tagged_item (mailbox_id, item_id, tag_id) " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.tagged_item (mailbox_id, item_id, tag_id) " +
 				"VALUES(?, ?, ?)", mbox.getId(), 103, Flag.ID_UNREAD);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.tagged_item (mailbox_id, item_id, tag_id) " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.tagged_item (mailbox_id, item_id, tag_id) " +
 				"VALUES(?, ?, ?)", mbox.getId(), 103, Flag.ID_FLAGGED);
 
 		DbSearchConstraints.Leaf constraints = new DbSearchConstraints.Leaf();
@@ -310,25 +310,25 @@ public final class DbSearchTest extends MailboxTestSuite {
 
 	@Test
 	void tagInDumpster() throws Exception {
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item_dumpster " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item_dumpster " +
 						"(mailbox_id, id, type, flags, unread, tag_names, date, size, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, ?, ?, ?, ?, ?, 0, 0)",
 				mbox.getId(), 101, MailItem.Type.MESSAGE.toByte(), 0, 1, null, 100, 1000);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item_dumpster " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item_dumpster " +
 						"(mailbox_id, id, type, flags, unread, tag_names, date, size, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, ?, ?, ?, ?, ?, 0, 0)",
 				mbox.getId(), 102, MailItem.Type.MESSAGE.toByte(), Flag.BITMASK_FLAGGED, 0, null, 200,
 				2000);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item_dumpster " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item_dumpster " +
 						"(mailbox_id, id, type, flags, unread, tag_names, date, size, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, ?, ?, ?, ?, ?, 0, 0)",
 				mbox.getId(), 103, MailItem.Type.MESSAGE.toByte(), Flag.BITMASK_FLAGGED, 1, null, 300,
 				3000);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item_dumpster " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item_dumpster " +
 						"(mailbox_id, id, type, flags, unread, tag_names, date, size, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, ?, ?, ?, ?, ?, 0, 0)",
 				mbox.getId(), 104, MailItem.Type.MESSAGE.toByte(), 0, 0, "\0test\0", 400, 4000);
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item_dumpster " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item_dumpster " +
 						"(mailbox_id, id, type, flags, unread, tag_names, date, size, mod_metadata, mod_content) " +
 						"VALUES(?, ?, ?, ?, ?, ?, ?, ?, 0, 0)",
 				mbox.getId(), 105, MailItem.Type.MESSAGE.toByte(), 0, 0, "\0test\0", 500, 5000);
@@ -380,15 +380,15 @@ public final class DbSearchTest extends MailboxTestSuite {
 
 	@Test
 	void caseInsensitiveSort() throws Exception {
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, size, tags, mod_metadata, mod_content, sender) " +
 						"VALUES(?, ?, ?, 0, 0, 0, 0, 0, 0, ?)", mbox.getId(), 101, MailItem.Type.CONTACT.toByte(),
 				"Zimbra");
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, size, tags, mod_metadata, mod_content, sender) " +
 						"VALUES(?, ?, ?, 0, 0, 0, 0, 0, 0, ?)", mbox.getId(), 102, MailItem.Type.CONTACT.toByte(),
 				"AAA");
-		DbUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
+		DbTestUtil.executeUpdate(conn, "INSERT INTO mboxgroup1.mail_item " +
 						"(mailbox_id, id, type, flags, date, size, tags, mod_metadata, mod_content, sender) " +
 						"VALUES(?, ?, ?, 0, 0, 0, 0, 0, 0, ?)", mbox.getId(), 103, MailItem.Type.CONTACT.toByte(),
 				"aaa");

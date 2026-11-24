@@ -8,7 +8,6 @@ package com.zimbra.cs.mailbox.acl;
 import com.zimbra.cs.account.Provisioning;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
@@ -16,6 +15,7 @@ import java.util.Set;
 import java.util.TimerTask;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
@@ -55,8 +55,11 @@ public class AclPushTask extends TimerTask {
         Multimap<Integer, List<Integer>> currentItemIdsProcessed = ArrayListMultimap.create();
         		
         try {
-        	Date now = new Date();
-            Multimap<Integer, Integer> mboxIdToItemIds = DbPendingAclPush.getEntries(now);
+            List<DbPendingAclPush.Entry> entries = DbPendingAclPush.getEntries();
+            Multimap<Integer, Integer> mboxIdToItemIds = HashMultimap.create();
+            for (DbPendingAclPush.Entry entry : entries) {
+                mboxIdToItemIds.put(entry.mailboxId(), entry.itemId());
+            }
 
             for (int mboxId : mboxIdToItemIds.keySet()) {
                 Mailbox mbox;
@@ -119,7 +122,7 @@ public class AclPushTask extends TimerTask {
                 }
                 account.setSharedItem(updatedSharedItems.toArray(new String[0]));
             } // for
-            DbPendingAclPush.deleteEntries(now);
+            DbPendingAclPush.deleteEntries(entries);
             
         } catch (ServiceException e){
         	ZimbraLog.misc.warn("Error during ACL push task", e);

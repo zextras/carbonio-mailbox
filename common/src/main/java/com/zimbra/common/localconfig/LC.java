@@ -768,8 +768,6 @@ public final class LC {
 
   @Supported public static final KnownKey contact_ranking_enabled = KnownKey.newKey(true);
 
-  public static final KnownKey jdbc_results_streaming_enabled = KnownKey.newKey(true);
-
   public static final KnownKey freebusy_queue_directory =
       KnownKey.newKey("${zimbra_home}/fbqueue/");
   public static final KnownKey freebusy_disable_nodata_status = KnownKey.newKey(false);

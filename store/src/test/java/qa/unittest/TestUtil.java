@@ -37,7 +37,7 @@ import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.db.DbMailItem;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
-import com.zimbra.cs.db.DbUtil;
+import com.zimbra.cs.db.DbTestUtil;
 import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.index.ZimbraHit;
 import com.zimbra.cs.index.ZimbraQueryResults;
@@ -567,7 +567,7 @@ public class TestUtil {
                 sql.append(", flags = ").append(flagValue);
             }
             sql.append(" WHERE id = ").append(itemId);
-            DbUtil.executeUpdate(conn, sql.toString());
+            DbTestUtil.executeUpdate(conn, sql.toString());
         } finally {
             conn.commit();
             conn.closeQuietly();

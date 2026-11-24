@@ -163,7 +163,7 @@ public class SoapServlet extends ZimbraServlet {
 
   /**
    * Note: this method is used by extensions loaded through {@link
-   * com.zimbra.cs.extension.ExtensionUtil} during {@link Zimbra#startup()}. An extension should not
+   * com.zimbra.cs.extension.ExtensionUtil} during {@link Zimbra#startup(com.zimbra.cs.db.Db)}. An extension should not
    * prevent application/servlet startup. If adding a service through extension fails we do not want
    * to prevent startup of the servlet.
    *
