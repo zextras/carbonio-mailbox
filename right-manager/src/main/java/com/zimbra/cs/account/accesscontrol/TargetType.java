@@ -45,7 +45,6 @@ public enum TargetType {
       AttributeClass.xmppComponent,
       SoapTargetType.xmppcomponent,
       "XMPPComponent"),
-  zimlet(true, false, AttributeClass.zimletEntry, SoapTargetType.zimlet, "Zimlet"),
   config(
       false,
       false,
@@ -138,8 +137,6 @@ public enum TargetType {
 
     TargetType.xmppcomponent.setInheritedByTargetTypes(new TargetType[] {xmppcomponent});
 
-    TargetType.zimlet.setInheritedByTargetTypes(new TargetType[] {zimlet});
-
     TargetType.config.setInheritedByTargetTypes(new TargetType[] {config});
 
     TargetType.global.setInheritedByTargetTypes(
@@ -152,7 +149,6 @@ public enum TargetType {
           domain,
           server,
           xmppcomponent,
-          zimlet,
           config,
           global
         }); // inherited by all
@@ -318,7 +314,6 @@ public enum TargetType {
     domain,
     server,
     xmppcomponent,
-    zimlet,
     config,
     global;
 

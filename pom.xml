@@ -496,7 +496,7 @@
       <dependency>
         <groupId>com.zextras</groupId>
         <artifactId>mailbox-attribute-manager</artifactId>
-        <version>5.7.3</version>
+        <version>5.7.6</version>
       </dependency>
       <dependency>
         <groupId>com.zextras</groupId>

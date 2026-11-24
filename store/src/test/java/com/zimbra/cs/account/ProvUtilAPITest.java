@@ -402,7 +402,7 @@ class ProvUtilAPITest {
   void createCalendarResources() throws Exception {
     final String calResourceId = "calRes@test.com";
     final String output = runCommand(
-        new String[]{"-l", "ccr", calResourceId, "password", "name", "testCalResource", "zimbraCalResContactName",
+        new String[]{"-l", "ccr", calResourceId, "password", "name", "testCalResource", "zimbraCalResSite",
             "TestResName"});
     assertIsUUID(output.trim());
   }
@@ -430,11 +430,11 @@ class ProvUtilAPITest {
   void searchCalendarResources() throws Exception {
     final String calResourceId = "calRes@test.com";
     runCommand(
-        new String[]{"-l", "ccr", calResourceId, "password", "name", "testCalResource", "zimbraCalResContactName",
+        new String[]{"-l", "ccr", calResourceId, "password", "name", "testCalResource", "zimbraCalResSite",
             "TestResName"});
 
     final String searchCalResOutput = runCommand(
-        new String[]{"-l", "scr", "test.com", "zimbraCalResContactName", "has", "TestResName"});
+        new String[]{"-l", "scr", "test.com", "zimbraCalResSite", "has", "TestResName"});
 
     Assertions.assertEquals(calResourceId.toLowerCase() + "\n", searchCalResOutput);
   }
