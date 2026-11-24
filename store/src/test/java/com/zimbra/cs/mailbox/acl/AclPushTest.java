@@ -13,7 +13,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbPendingAclPush;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbResults;
-import com.zimbra.cs.db.DbUtil;
+import com.zimbra.cs.db.DbTestUtil;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Folder;
@@ -163,7 +163,7 @@ public class AclPushTest extends MailboxTestSuite {
   private static List<DbPendingAclPush.Entry> entriesFor(int mailboxId, int itemId) throws Exception {
     DbConnection conn = DbPool.getConnection();
     try {
-      DbResults results = DbUtil.executeQuery(conn,
+      DbResults results = DbTestUtil.executeQuery(conn,
           "SELECT date FROM " + DbPendingAclPush.TABLE_PENDING_ACL_PUSH
               + " WHERE mailbox_id = ? AND item_id = ?", mailboxId, itemId);
       List<DbPendingAclPush.Entry> entries = new ArrayList<>();
@@ -199,7 +199,7 @@ public class AclPushTest extends MailboxTestSuite {
   private static void execute(String sql, Object... params) throws Exception {
     DbConnection conn = DbPool.getConnection();
     try {
-      DbUtil.executeUpdate(conn, sql, params);
+      DbTestUtil.executeUpdate(conn, sql, params);
       conn.commit();
     } finally {
       conn.closeQuietly();
