@@ -1,0 +1,14 @@
+{
+  "info": [{
+      "type": "type",
+      "version": "version",
+      "release": "release",
+      "buildDate": "buildDate",
+      "host": "host",
+      "majorversion": "majorVersion",
+      "minorversion": "minorVersion",
+      "microversion": "microVersion",
+      "platform": "platform"
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

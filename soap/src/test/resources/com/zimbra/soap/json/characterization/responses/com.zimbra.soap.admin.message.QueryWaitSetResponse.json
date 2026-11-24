@@ -1,0 +1,146 @@
+{
+  "waitSet": [
+    {
+      "session": [
+        {
+          "account": "account",
+          "types": "interests",
+          "token": "token",
+          "mboxSyncToken": 7,
+          "mboxSyncTokenDiff": 7,
+          "acctIdError": "acctIdError",
+          "WaitSetSession": [{
+              "interestMask": "interestMask",
+              "highestChangeId": -1,
+              "lastAccessTime": -1,
+              "creationTime": -1,
+              "sessionId": "sessionId",
+              "token": "token",
+              "folderInterests": "7",
+              "changedFolders": "7"
+            }]
+        },
+        {
+          "account": "account",
+          "types": "interests",
+          "token": "token",
+          "mboxSyncToken": 7,
+          "mboxSyncTokenDiff": 7,
+          "acctIdError": "acctIdError",
+          "WaitSetSession": [{
+              "interestMask": "interestMask",
+              "highestChangeId": -1,
+              "lastAccessTime": -1,
+              "creationTime": -1,
+              "sessionId": "sessionId",
+              "token": "token",
+              "folderInterests": "7",
+              "changedFolders": "7"
+            }]
+        }],
+      "errors": [{
+          "error": [
+            {
+              "id": "id",
+              "type": "type"
+            },
+            {
+              "id": "id",
+              "type": "type"
+            }]
+        }],
+      "ready": [{
+          "accounts": "accounts"
+        }],
+      "buffered": [{
+          "commit": [
+            {
+              "aid": "aid",
+              "cid": "cid"
+            },
+            {
+              "aid": "aid",
+              "cid": "cid"
+            }]
+        }],
+      "id": "waitSetId",
+      "owner": "owner",
+      "defTypes": "defaultInterests",
+      "ld": -1,
+      "cbSeqNo": "cbSeqNo",
+      "currentSeqNo": "currentSeqNo",
+      "nextSeqNo": "nextSeqNo"
+    },
+    {
+      "session": [
+        {
+          "account": "account",
+          "types": "interests",
+          "token": "token",
+          "mboxSyncToken": 7,
+          "mboxSyncTokenDiff": 7,
+          "acctIdError": "acctIdError",
+          "WaitSetSession": [{
+              "interestMask": "interestMask",
+              "highestChangeId": -1,
+              "lastAccessTime": -1,
+              "creationTime": -1,
+              "sessionId": "sessionId",
+              "token": "token",
+              "folderInterests": "7",
+              "changedFolders": "7"
+            }]
+        },
+        {
+          "account": "account",
+          "types": "interests",
+          "token": "token",
+          "mboxSyncToken": 7,
+          "mboxSyncTokenDiff": 7,
+          "acctIdError": "acctIdError",
+          "WaitSetSession": [{
+              "interestMask": "interestMask",
+              "highestChangeId": -1,
+              "lastAccessTime": -1,
+              "creationTime": -1,
+              "sessionId": "sessionId",
+              "token": "token",
+              "folderInterests": "7",
+              "changedFolders": "7"
+            }]
+        }],
+      "errors": [{
+          "error": [
+            {
+              "id": "id",
+              "type": "type"
+            },
+            {
+              "id": "id",
+              "type": "type"
+            }]
+        }],
+      "ready": [{
+          "accounts": "accounts"
+        }],
+      "buffered": [{
+          "commit": [
+            {
+              "aid": "aid",
+              "cid": "cid"
+            },
+            {
+              "aid": "aid",
+              "cid": "cid"
+            }]
+        }],
+      "id": "waitSetId",
+      "owner": "owner",
+      "defTypes": "defaultInterests",
+      "ld": -1,
+      "cbSeqNo": "cbSeqNo",
+      "currentSeqNo": "currentSeqNo",
+      "nextSeqNo": "nextSeqNo"
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

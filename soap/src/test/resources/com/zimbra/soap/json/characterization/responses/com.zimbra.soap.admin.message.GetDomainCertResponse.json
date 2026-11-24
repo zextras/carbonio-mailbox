@@ -1,0 +1,32 @@
+{
+  "cert": [{
+      "any": [
+        {
+          "name": "certInfos0",
+          "_content": "certInfos0"
+        },
+        {
+          "name": "certInfos1",
+          "_content": "certInfos1"
+        }],
+      "server": "server",
+      "type": "type",
+      "subject": [{
+          "_content": "subject"
+        }],
+      "issuer": [{
+          "_content": "issuer"
+        }],
+      "notBefore": [{
+          "_content": "notBefore"
+        }],
+      "notAfter": [{
+          "_content": "notAfter"
+        }],
+      "SubjectAltName": [{
+          "_content": "SubjectAltName"
+        }]
+    }],
+  "domain": "domain",
+  "_jsns": "urn:zimbraAdmin"
+}

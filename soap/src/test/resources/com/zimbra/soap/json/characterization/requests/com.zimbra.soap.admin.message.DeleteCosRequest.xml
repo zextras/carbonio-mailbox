@@ -1,0 +1,3 @@
+<DeleteCosRequest xmlns="urn:zimbraAdmin">
+  <id>id</id>
+</DeleteCosRequest>

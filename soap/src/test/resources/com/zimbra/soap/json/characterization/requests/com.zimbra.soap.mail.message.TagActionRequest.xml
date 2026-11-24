@@ -1,0 +1,10 @@
+<TagActionRequest xmlns="urn:zimbraMail">
+  <action op="operation" color="2" f="flags" l="folder" rgb="rgb" nei="false" t="tags" nci="false" tcon="constraint" name="name" tn="tagNames" id="ids" tag="7">
+    <retentionPolicy>
+      <purge>
+        <policy name="name" lifetime="lifetime" id="id" type="user"/>
+        <policy name="name" lifetime="lifetime" id="id" type="user"/>
+      </purge>
+    </retentionPolicy>
+  </action>
+</TagActionRequest>

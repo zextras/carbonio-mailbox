@@ -1,0 +1,11 @@
+{
+  "Body": {
+    "VerifyIndexRequest": {
+      "mbox": [{
+          "id": "id"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

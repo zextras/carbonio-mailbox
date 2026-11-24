@@ -1,0 +1,47 @@
+{
+  "Body": {
+    "CreateContactRequest": {
+      "verbose": false,
+      "wantImapUid": false,
+      "wantModSeq": false,
+      "cn": {
+        "id": 7,
+        "l": "folder",
+        "t": "tags",
+        "tn": "tagNames",
+        "vcard": [{
+            "mid": "messageId",
+            "part": "part",
+            "aid": "attachId",
+            "_content": "value"
+          }],
+        "a": [
+          {
+            "n": "name",
+            "aid": "attachId",
+            "id": 7,
+            "part": "part",
+            "_content": "value"
+          },
+          {
+            "n": "name",
+            "aid": "attachId",
+            "id": 7,
+            "part": "part",
+            "_content": "value"
+          }],
+        "m": [
+          {
+            "type": "type",
+            "value": "value"
+          },
+          {
+            "type": "type",
+            "value": "value"
+          }]
+      },
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

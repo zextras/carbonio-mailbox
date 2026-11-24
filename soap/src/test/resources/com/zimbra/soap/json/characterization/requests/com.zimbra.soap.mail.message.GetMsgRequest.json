@@ -1,0 +1,31 @@
+{
+  "Body": {
+    "GetMsgRequest": {
+      "m": {
+        "id": "id",
+        "part": "part",
+        "raw": false,
+        "read": false,
+        "max": 7,
+        "useContentUrl": false,
+        "html": false,
+        "wantImapUid": false,
+        "wantModSeq": false,
+        "neuter": false,
+        "ridZ": "recurIdZ",
+        "needExp": false,
+        "wantContent": "full",
+        "header": [
+          {
+            "n": "name"
+          },
+          {
+            "n": "name"
+          }]
+      },
+      "encryptionPassword": "encryptionPassword",
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

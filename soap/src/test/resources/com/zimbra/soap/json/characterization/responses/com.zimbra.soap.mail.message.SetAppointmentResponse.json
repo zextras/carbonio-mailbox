@@ -1,0 +1,17 @@
+{
+  "default": [{
+      "id": "id"
+    }],
+  "except": [
+    {
+      "recurId": "recurrenceId",
+      "id": "id"
+    },
+    {
+      "recurId": "recurrenceId",
+      "id": "id"
+    }],
+  "calItemId": "calItemId",
+  "apptId": "deprecatedApptId",
+  "_jsns": "urn:zimbraMail"
+}

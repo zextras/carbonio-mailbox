@@ -1,0 +1,27 @@
+{
+  "Body": {
+    "RevokeRightRequest": {
+      "target": [{
+          "type": "account",
+          "by": "id",
+          "_content": "value"
+        }],
+      "grantee": [{
+          "type": "usr",
+          "by": "id",
+          "secret": "secret",
+          "all": false,
+          "_content": "key"
+        }],
+      "right": [{
+          "deny": false,
+          "canDelegate": false,
+          "disinheritSubGroups": false,
+          "subDomain": false,
+          "_content": "value"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,11 @@
+{
+  "Body": {
+    "GetEffectiveFolderPermsRequest": {
+      "folder": [{
+          "l": "folder"
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

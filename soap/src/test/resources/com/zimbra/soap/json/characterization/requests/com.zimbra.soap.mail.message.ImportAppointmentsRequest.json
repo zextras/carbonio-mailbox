@@ -1,0 +1,16 @@
+{
+  "Body": {
+    "ImportAppointmentsRequest": {
+      "l": "folderId",
+      "ct": "contentType",
+      "content": [{
+          "aid": "attachmentId",
+          "mid": "messageId",
+          "part": "part",
+          "_content": "text"
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

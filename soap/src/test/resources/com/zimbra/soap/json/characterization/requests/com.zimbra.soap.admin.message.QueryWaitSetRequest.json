@@ -1,0 +1,9 @@
+{
+  "Body": {
+    "QueryWaitSetRequest": {
+      "waitSet": "waitSetId",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

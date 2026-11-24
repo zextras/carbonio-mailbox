@@ -1,0 +1,4 @@
+<GetRightsRequest xmlns="urn:zimbraAccount">
+  <ace right="right"/>
+  <ace right="right"/>
+</GetRightsRequest>

@@ -1,0 +1,30 @@
+{
+  "Body": {
+    "ModifyWhiteBlackListRequest": {
+      "whiteList": {
+        "addr": [
+          {
+            "op": "op",
+            "_content": "value"
+          },
+          {
+            "op": "op",
+            "_content": "value"
+          }]
+      },
+      "blackList": {
+        "addr": [
+          {
+            "op": "op",
+            "_content": "value"
+          },
+          {
+            "op": "op",
+            "_content": "value"
+          }]
+      },
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

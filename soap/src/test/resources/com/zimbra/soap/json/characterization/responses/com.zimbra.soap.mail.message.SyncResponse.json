@@ -1,0 +1,1379 @@
+{
+  "deleted": [{
+      "folder": [{
+          "ids": "ids"
+        }],
+      "search": [{
+          "ids": "ids"
+        }],
+      "link": [{
+          "ids": "ids"
+        }],
+      "tag": [{
+          "ids": "ids"
+        }],
+      "c": [{
+          "ids": "ids"
+        }],
+      "chat": [{
+          "ids": "ids"
+        }],
+      "m": [{
+          "ids": "ids"
+        }],
+      "cn": [{
+          "ids": "ids"
+        }],
+      "appt": [{
+          "ids": "ids"
+        }],
+      "ids": "ids"
+    }],
+  "folder": [{
+      "meta": [
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        },
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        }],
+      "acl": {
+        "internalGrantExpiry": 1700000000000,
+        "guestGrantExpiry": 1700000000000,
+        "grant": [
+          {
+            "perm": "perm",
+            "gt": "usr",
+            "zid": "granteeId",
+            "expiry": 1700000000000,
+            "d": "granteeName",
+            "pw": "guestPassword",
+            "key": "accessKey"
+          },
+          {
+            "perm": "perm",
+            "gt": "usr",
+            "zid": "granteeId",
+            "expiry": 1700000000000,
+            "d": "granteeName",
+            "pw": "guestPassword",
+            "key": "accessKey"
+          }]
+      },
+      "retentionPolicy": [{
+          "purge": [{
+              "policy": [
+                {
+                  "type": "user",
+                  "id": "id",
+                  "name": "name",
+                  "lifetime": "lifetime"
+                },
+                {
+                  "type": "user",
+                  "id": "id",
+                  "name": "name",
+                  "lifetime": "lifetime"
+                }]
+            }]
+        }],
+      "folder": [{
+          "meta": [
+            {
+              "section": "section"
+            },
+            {
+              "section": "section"
+            }],
+          "acl": {
+            "internalGrantExpiry": 1700000000000,
+            "guestGrantExpiry": 1700000000000
+          },
+          "retentionPolicy": [{
+              "purge": [{}]
+            }],
+          "folder": [{
+              "id": "id",
+              "uuid": "uuid",
+              "name": "name",
+              "absFolderPath": "absoluteFolderPath",
+              "l": "parentId",
+              "luuid": "folderUuid",
+              "f": "flags",
+              "color": 7,
+              "rgb": "rgb",
+              "u": 7,
+              "i4u": 7,
+              "view": "",
+              "rev": 7,
+              "ms": 7,
+              "md": 1700000000000,
+              "n": 7,
+              "i4n": 7,
+              "s": 1700000000000,
+              "i4ms": 7,
+              "i4next": 7,
+              "url": "url",
+              "lsd": 1700000000000,
+              "dsId": "datasourceId",
+              "dsType": "datasourceType",
+              "activesyncdisabled": false,
+              "webOfflineSyncDays": 7,
+              "perm": "perm",
+              "recursive": false,
+              "rest": "restUrl",
+              "deletable": false
+            }],
+          "link": [{
+              "id": "id",
+              "uuid": "uuid",
+              "name": "name",
+              "absFolderPath": "absoluteFolderPath",
+              "l": "parentId",
+              "luuid": "folderUuid",
+              "f": "flags",
+              "color": 7,
+              "rgb": "rgb",
+              "u": 7,
+              "i4u": 7,
+              "view": "",
+              "rev": 7,
+              "ms": 7,
+              "md": 1700000000000,
+              "n": 7,
+              "i4n": 7,
+              "s": 1700000000000,
+              "i4ms": 7,
+              "i4next": 7,
+              "url": "url",
+              "lsd": 1700000000000,
+              "dsId": "datasourceId",
+              "dsType": "datasourceType",
+              "activesyncdisabled": false,
+              "webOfflineSyncDays": 7,
+              "perm": "perm",
+              "recursive": false,
+              "rest": "restUrl",
+              "deletable": false,
+              "owner": "ownerEmail",
+              "zid": "ownerAccountId",
+              "rid": 0,
+              "ruuid": "remoteUuid",
+              "oname": "remoteFolderName",
+              "reminder": false,
+              "broken": false
+            }],
+          "search": [{
+              "id": "id",
+              "uuid": "uuid",
+              "name": "name",
+              "absFolderPath": "absoluteFolderPath",
+              "l": "parentId",
+              "luuid": "folderUuid",
+              "f": "flags",
+              "color": 7,
+              "rgb": "rgb",
+              "u": 7,
+              "i4u": 7,
+              "view": "",
+              "rev": 7,
+              "ms": 7,
+              "md": 1700000000000,
+              "n": 7,
+              "i4n": 7,
+              "s": 1700000000000,
+              "i4ms": 7,
+              "i4next": 7,
+              "url": "url",
+              "lsd": 1700000000000,
+              "dsId": "datasourceId",
+              "dsType": "datasourceType",
+              "activesyncdisabled": false,
+              "webOfflineSyncDays": 7,
+              "perm": "perm",
+              "recursive": false,
+              "rest": "restUrl",
+              "deletable": false,
+              "query": "query",
+              "sortBy": "dateDesc",
+              "types": "appointment"
+            }],
+          "id": "id",
+          "uuid": "uuid",
+          "name": "name",
+          "absFolderPath": "absoluteFolderPath",
+          "l": "parentId",
+          "luuid": "folderUuid",
+          "f": "flags",
+          "color": 7,
+          "rgb": "rgb",
+          "u": 7,
+          "i4u": 7,
+          "view": "",
+          "rev": 7,
+          "ms": 7,
+          "md": 1700000000000,
+          "n": 7,
+          "i4n": 7,
+          "s": 1700000000000,
+          "i4ms": 7,
+          "i4next": 7,
+          "url": "url",
+          "lsd": 1700000000000,
+          "dsId": "datasourceId",
+          "dsType": "datasourceType",
+          "activesyncdisabled": false,
+          "webOfflineSyncDays": 7,
+          "perm": "perm",
+          "recursive": false,
+          "rest": "restUrl",
+          "deletable": false
+        }],
+      "link": [{
+          "meta": [
+            {
+              "section": "section"
+            },
+            {
+              "section": "section"
+            }],
+          "acl": {
+            "internalGrantExpiry": 1700000000000,
+            "guestGrantExpiry": 1700000000000
+          },
+          "retentionPolicy": [{
+              "purge": [{}]
+            }],
+          "folder": [{
+              "id": "id",
+              "uuid": "uuid",
+              "name": "name",
+              "absFolderPath": "absoluteFolderPath",
+              "l": "parentId",
+              "luuid": "folderUuid",
+              "f": "flags",
+              "color": 7,
+              "rgb": "rgb",
+              "u": 7,
+              "i4u": 7,
+              "view": "",
+              "rev": 7,
+              "ms": 7,
+              "md": 1700000000000,
+              "n": 7,
+              "i4n": 7,
+              "s": 1700000000000,
+              "i4ms": 7,
+              "i4next": 7,
+              "url": "url",
+              "lsd": 1700000000000,
+              "dsId": "datasourceId",
+              "dsType": "datasourceType",
+              "activesyncdisabled": false,
+              "webOfflineSyncDays": 7,
+              "perm": "perm",
+              "recursive": false,
+              "rest": "restUrl",
+              "deletable": false
+            }],
+          "link": [{
+              "id": "id",
+              "uuid": "uuid",
+              "name": "name",
+              "absFolderPath": "absoluteFolderPath",
+              "l": "parentId",
+              "luuid": "folderUuid",
+              "f": "flags",
+              "color": 7,
+              "rgb": "rgb",
+              "u": 7,
+              "i4u": 7,
+              "view": "",
+              "rev": 7,
+              "ms": 7,
+              "md": 1700000000000,
+              "n": 7,
+              "i4n": 7,
+              "s": 1700000000000,
+              "i4ms": 7,
+              "i4next": 7,
+              "url": "url",
+              "lsd": 1700000000000,
+              "dsId": "datasourceId",
+              "dsType": "datasourceType",
+              "activesyncdisabled": false,
+              "webOfflineSyncDays": 7,
+              "perm": "perm",
+              "recursive": false,
+              "rest": "restUrl",
+              "deletable": false,
+              "owner": "ownerEmail",
+              "zid": "ownerAccountId",
+              "rid": 0,
+              "ruuid": "remoteUuid",
+              "oname": "remoteFolderName",
+              "reminder": false,
+              "broken": false
+            }],
+          "search": [{
+              "id": "id",
+              "uuid": "uuid",
+              "name": "name",
+              "absFolderPath": "absoluteFolderPath",
+              "l": "parentId",
+              "luuid": "folderUuid",
+              "f": "flags",
+              "color": 7,
+              "rgb": "rgb",
+              "u": 7,
+              "i4u": 7,
+              "view": "",
+              "rev": 7,
+              "ms": 7,
+              "md": 1700000000000,
+              "n": 7,
+              "i4n": 7,
+              "s": 1700000000000,
+              "i4ms": 7,
+              "i4next": 7,
+              "url": "url",
+              "lsd": 1700000000000,
+              "dsId": "datasourceId",
+              "dsType": "datasourceType",
+              "activesyncdisabled": false,
+              "webOfflineSyncDays": 7,
+              "perm": "perm",
+              "recursive": false,
+              "rest": "restUrl",
+              "deletable": false,
+              "query": "query",
+              "sortBy": "dateDesc",
+              "types": "appointment"
+            }],
+          "id": "id",
+          "uuid": "uuid",
+          "name": "name",
+          "absFolderPath": "absoluteFolderPath",
+          "l": "parentId",
+          "luuid": "folderUuid",
+          "f": "flags",
+          "color": 7,
+          "rgb": "rgb",
+          "u": 7,
+          "i4u": 7,
+          "view": "",
+          "rev": 7,
+          "ms": 7,
+          "md": 1700000000000,
+          "n": 7,
+          "i4n": 7,
+          "s": 1700000000000,
+          "i4ms": 7,
+          "i4next": 7,
+          "url": "url",
+          "lsd": 1700000000000,
+          "dsId": "datasourceId",
+          "dsType": "datasourceType",
+          "activesyncdisabled": false,
+          "webOfflineSyncDays": 7,
+          "perm": "perm",
+          "recursive": false,
+          "rest": "restUrl",
+          "deletable": false,
+          "owner": "ownerEmail",
+          "zid": "ownerAccountId",
+          "rid": 0,
+          "ruuid": "remoteUuid",
+          "oname": "remoteFolderName",
+          "reminder": false,
+          "broken": false
+        }],
+      "search": [{
+          "meta": [
+            {
+              "section": "section"
+            },
+            {
+              "section": "section"
+            }],
+          "acl": {
+            "internalGrantExpiry": 1700000000000,
+            "guestGrantExpiry": 1700000000000
+          },
+          "retentionPolicy": [{
+              "purge": [{}]
+            }],
+          "folder": [{
+              "id": "id",
+              "uuid": "uuid",
+              "name": "name",
+              "absFolderPath": "absoluteFolderPath",
+              "l": "parentId",
+              "luuid": "folderUuid",
+              "f": "flags",
+              "color": 7,
+              "rgb": "rgb",
+              "u": 7,
+              "i4u": 7,
+              "view": "",
+              "rev": 7,
+              "ms": 7,
+              "md": 1700000000000,
+              "n": 7,
+              "i4n": 7,
+              "s": 1700000000000,
+              "i4ms": 7,
+              "i4next": 7,
+              "url": "url",
+              "lsd": 1700000000000,
+              "dsId": "datasourceId",
+              "dsType": "datasourceType",
+              "activesyncdisabled": false,
+              "webOfflineSyncDays": 7,
+              "perm": "perm",
+              "recursive": false,
+              "rest": "restUrl",
+              "deletable": false
+            }],
+          "link": [{
+              "id": "id",
+              "uuid": "uuid",
+              "name": "name",
+              "absFolderPath": "absoluteFolderPath",
+              "l": "parentId",
+              "luuid": "folderUuid",
+              "f": "flags",
+              "color": 7,
+              "rgb": "rgb",
+              "u": 7,
+              "i4u": 7,
+              "view": "",
+              "rev": 7,
+              "ms": 7,
+              "md": 1700000000000,
+              "n": 7,
+              "i4n": 7,
+              "s": 1700000000000,
+              "i4ms": 7,
+              "i4next": 7,
+              "url": "url",
+              "lsd": 1700000000000,
+              "dsId": "datasourceId",
+              "dsType": "datasourceType",
+              "activesyncdisabled": false,
+              "webOfflineSyncDays": 7,
+              "perm": "perm",
+              "recursive": false,
+              "rest": "restUrl",
+              "deletable": false,
+              "owner": "ownerEmail",
+              "zid": "ownerAccountId",
+              "rid": 0,
+              "ruuid": "remoteUuid",
+              "oname": "remoteFolderName",
+              "reminder": false,
+              "broken": false
+            }],
+          "search": [{
+              "id": "id",
+              "uuid": "uuid",
+              "name": "name",
+              "absFolderPath": "absoluteFolderPath",
+              "l": "parentId",
+              "luuid": "folderUuid",
+              "f": "flags",
+              "color": 7,
+              "rgb": "rgb",
+              "u": 7,
+              "i4u": 7,
+              "view": "",
+              "rev": 7,
+              "ms": 7,
+              "md": 1700000000000,
+              "n": 7,
+              "i4n": 7,
+              "s": 1700000000000,
+              "i4ms": 7,
+              "i4next": 7,
+              "url": "url",
+              "lsd": 1700000000000,
+              "dsId": "datasourceId",
+              "dsType": "datasourceType",
+              "activesyncdisabled": false,
+              "webOfflineSyncDays": 7,
+              "perm": "perm",
+              "recursive": false,
+              "rest": "restUrl",
+              "deletable": false,
+              "query": "query",
+              "sortBy": "dateDesc",
+              "types": "appointment"
+            }],
+          "id": "id",
+          "uuid": "uuid",
+          "name": "name",
+          "absFolderPath": "absoluteFolderPath",
+          "l": "parentId",
+          "luuid": "folderUuid",
+          "f": "flags",
+          "color": 7,
+          "rgb": "rgb",
+          "u": 7,
+          "i4u": 7,
+          "view": "",
+          "rev": 7,
+          "ms": 7,
+          "md": 1700000000000,
+          "n": 7,
+          "i4n": 7,
+          "s": 1700000000000,
+          "i4ms": 7,
+          "i4next": 7,
+          "url": "url",
+          "lsd": 1700000000000,
+          "dsId": "datasourceId",
+          "dsType": "datasourceType",
+          "activesyncdisabled": false,
+          "webOfflineSyncDays": 7,
+          "perm": "perm",
+          "recursive": false,
+          "rest": "restUrl",
+          "deletable": false,
+          "query": "query",
+          "sortBy": "dateDesc",
+          "types": "appointment"
+        }],
+      "tag": [{
+          "ids": "ids"
+        }],
+      "c": [{
+          "ids": "ids"
+        }],
+      "chat": [{
+          "ids": "ids"
+        }],
+      "m": [{
+          "ids": "ids"
+        }],
+      "cn": [{
+          "ids": "ids"
+        }],
+      "appt": [{
+          "ids": "ids"
+        }],
+      "id": "id",
+      "uuid": "uuid",
+      "name": "name",
+      "absFolderPath": "absoluteFolderPath",
+      "l": "parentId",
+      "luuid": "folderUuid",
+      "f": "flags",
+      "color": 7,
+      "rgb": "rgb",
+      "u": 7,
+      "i4u": 7,
+      "view": "",
+      "rev": 7,
+      "ms": 7,
+      "md": 1700000000000,
+      "n": 7,
+      "i4n": 7,
+      "s": 1700000000000,
+      "i4ms": 7,
+      "i4next": 7,
+      "url": "url",
+      "lsd": 1700000000000,
+      "dsId": "datasourceId",
+      "dsType": "datasourceType",
+      "activesyncdisabled": false,
+      "webOfflineSyncDays": 7,
+      "perm": "perm",
+      "recursive": false,
+      "rest": "restUrl",
+      "deletable": false
+    }],
+  "tag": [{
+      "id": "id",
+      "name": "name",
+      "color": 2,
+      "rgb": "rgb",
+      "u": 7,
+      "n": 7,
+      "d": 1700000000000,
+      "rev": 7,
+      "md": 1700000000000,
+      "ms": 7,
+      "meta": [
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        },
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        }],
+      "retentionPolicy": [{
+          "purge": [{
+              "policy": [
+                {
+                  "type": "user",
+                  "id": "id",
+                  "name": "name",
+                  "lifetime": "lifetime"
+                },
+                {
+                  "type": "user",
+                  "id": "id",
+                  "name": "name",
+                  "lifetime": "lifetime"
+                }]
+            }]
+        }]
+    }],
+  "cn": [{
+      "sf": "sortField",
+      "exp": false,
+      "id": "id",
+      "i4uid": 7,
+      "l": "folder",
+      "f": "flags",
+      "t": "tags",
+      "tn": "tagNames",
+      "md": 1700000000000,
+      "ms": 7,
+      "d": 1700000000000,
+      "rev": 7,
+      "fileAsStr": "fileAs",
+      "email": "email",
+      "email2": "email2",
+      "email3": "email3",
+      "type": "type",
+      "dlist": "dlist",
+      "ref": "reference",
+      "tooManyMembers": false,
+      "meta": [
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        },
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        }],
+      "a": [
+        {
+          "n": "key",
+          "_content": "value",
+          "part": "part",
+          "ct": "contentType",
+          "s": 7,
+          "filename": "contentFilename"
+        },
+        {
+          "n": "key",
+          "_content": "value",
+          "part": "part",
+          "ct": "contentType",
+          "s": 7,
+          "filename": "contentFilename"
+        }],
+      "m": [
+        {
+          "type": "type",
+          "value": "value",
+          "cn": [{
+              "sf": "sortField",
+              "exp": false,
+              "id": "id",
+              "i4uid": 7,
+              "l": "folder",
+              "f": "flags",
+              "t": "tags",
+              "tn": "tagNames",
+              "md": 1700000000000,
+              "ms": 7,
+              "d": 1700000000000,
+              "rev": 7,
+              "fileAsStr": "fileAs",
+              "email": "email",
+              "email2": "email2",
+              "email3": "email3",
+              "type": "type",
+              "dlist": "dlist",
+              "ref": "reference",
+              "tooManyMembers": false,
+              "memberOf": "memberOf"
+            }]
+        },
+        {
+          "type": "type",
+          "value": "value",
+          "cn": [{
+              "sf": "sortField",
+              "exp": false,
+              "id": "id",
+              "i4uid": 7,
+              "l": "folder",
+              "f": "flags",
+              "t": "tags",
+              "tn": "tagNames",
+              "md": 1700000000000,
+              "ms": 7,
+              "d": 1700000000000,
+              "rev": 7,
+              "fileAsStr": "fileAs",
+              "email": "email",
+              "email2": "email2",
+              "email3": "email3",
+              "type": "type",
+              "dlist": "dlist",
+              "ref": "reference",
+              "tooManyMembers": false,
+              "memberOf": "memberOf"
+            }]
+        }],
+      "memberOf": "memberOf"
+    }],
+  "appt": [{
+      "inv": [
+        {
+          "tz": [
+            {
+              "id": "id",
+              "stdoff": 7,
+              "dayoff": 7,
+              "stdname": "standardTZName",
+              "dayname": "daylightTZName"
+            },
+            {
+              "id": "id",
+              "stdoff": 7,
+              "dayoff": 7,
+              "stdname": "standardTZName",
+              "dayname": "daylightTZName"
+            }],
+          "comp": [{
+              "category": [
+                {
+                  "_content": "categories0"
+                },
+                {
+                  "_content": "categories1"
+                }],
+              "comment": [
+                {
+                  "_content": "comments0"
+                },
+                {
+                  "_content": "comments1"
+                }],
+              "contact": [
+                {
+                  "_content": "contacts0"
+                },
+                {
+                  "_content": "contacts1"
+                }],
+              "fr": "fragment",
+              "desc": [{
+                  "_content": "description"
+                }],
+              "descHtml": [{
+                  "_content": "htmlDescription"
+                }],
+              "method": "method",
+              "compNum": 7,
+              "rsvp": false,
+              "priority": "priority",
+              "name": "name",
+              "loc": "location",
+              "noBlob": false,
+              "fba": "freeBusyActual",
+              "fb": "freeBusy",
+              "transp": "transparency",
+              "isOrg": false,
+              "x_uid": "xUid",
+              "uid": "uid",
+              "seq": 7,
+              "d": 1700000000000,
+              "calItemId": "calItemId",
+              "apptId": "deprecatedApptId",
+              "ciFolder": "calItemFolder",
+              "status": "status",
+              "class": "calClass",
+              "url": "url",
+              "ex": false,
+              "ridZ": "recurIdZ",
+              "allDay": false,
+              "draft": false,
+              "neverSent": false,
+              "changes": "changes"
+            }],
+          "mp": [{
+              "content": [{
+                  "_content": "content"
+                }],
+              "part": "part",
+              "ct": "contentType",
+              "s": 7,
+              "cd": "contentDisposition",
+              "filename": "contentFilename",
+              "ci": "contentId",
+              "cl": "location",
+              "body": false,
+              "truncated": false,
+              "requiresSmartLinkConversion": false
+            }],
+          "shr": [{
+              "truncated": false,
+              "content": "content"
+            }],
+          "dlSubs": [{
+              "truncated": false,
+              "content": "content"
+            }],
+          "type": "calItemType",
+          "seq": 7,
+          "id": 7,
+          "compNum": 7,
+          "recurId": "recurrenceId"
+        },
+        {
+          "tz": [
+            {
+              "id": "id",
+              "stdoff": 7,
+              "dayoff": 7,
+              "stdname": "standardTZName",
+              "dayname": "daylightTZName"
+            },
+            {
+              "id": "id",
+              "stdoff": 7,
+              "dayoff": 7,
+              "stdname": "standardTZName",
+              "dayname": "daylightTZName"
+            }],
+          "comp": [{
+              "category": [
+                {
+                  "_content": "categories0"
+                },
+                {
+                  "_content": "categories1"
+                }],
+              "comment": [
+                {
+                  "_content": "comments0"
+                },
+                {
+                  "_content": "comments1"
+                }],
+              "contact": [
+                {
+                  "_content": "contacts0"
+                },
+                {
+                  "_content": "contacts1"
+                }],
+              "fr": "fragment",
+              "desc": [{
+                  "_content": "description"
+                }],
+              "descHtml": [{
+                  "_content": "htmlDescription"
+                }],
+              "method": "method",
+              "compNum": 7,
+              "rsvp": false,
+              "priority": "priority",
+              "name": "name",
+              "loc": "location",
+              "noBlob": false,
+              "fba": "freeBusyActual",
+              "fb": "freeBusy",
+              "transp": "transparency",
+              "isOrg": false,
+              "x_uid": "xUid",
+              "uid": "uid",
+              "seq": 7,
+              "d": 1700000000000,
+              "calItemId": "calItemId",
+              "apptId": "deprecatedApptId",
+              "ciFolder": "calItemFolder",
+              "status": "status",
+              "class": "calClass",
+              "url": "url",
+              "ex": false,
+              "ridZ": "recurIdZ",
+              "allDay": false,
+              "draft": false,
+              "neverSent": false,
+              "changes": "changes"
+            }],
+          "mp": [{
+              "content": [{
+                  "_content": "content"
+                }],
+              "part": "part",
+              "ct": "contentType",
+              "s": 7,
+              "cd": "contentDisposition",
+              "filename": "contentFilename",
+              "ci": "contentId",
+              "cl": "location",
+              "body": false,
+              "truncated": false,
+              "requiresSmartLinkConversion": false
+            }],
+          "shr": [{
+              "truncated": false,
+              "content": "content"
+            }],
+          "dlSubs": [{
+              "truncated": false,
+              "content": "content"
+            }],
+          "type": "calItemType",
+          "seq": 7,
+          "id": 7,
+          "compNum": 7,
+          "recurId": "recurrenceId"
+        }],
+      "replies": [{
+          "reply": [
+            {
+              "rangeType": -1,
+              "recurId": "recurrenceId",
+              "tz": "timezone",
+              "ridZ": "recurIdZ",
+              "seq": 0,
+              "d": 0,
+              "at": "attendee",
+              "sentBy": "sentBy",
+              "ptst": "partStat"
+            },
+            {
+              "rangeType": -1,
+              "recurId": "recurrenceId",
+              "tz": "timezone",
+              "ridZ": "recurIdZ",
+              "seq": 0,
+              "d": 0,
+              "at": "attendee",
+              "sentBy": "sentBy",
+              "ptst": "partStat"
+            }]
+        }],
+      "meta": [
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        },
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        }],
+      "f": "flags",
+      "t": "tags",
+      "tn": "tagNames",
+      "uid": "uid",
+      "id": "id",
+      "rev": 7,
+      "s": 1700000000000,
+      "d": 1700000000000,
+      "l": "folder",
+      "md": 1700000000000,
+      "ms": 7,
+      "nextAlarm": 1700000000000,
+      "orphan": false
+    }],
+  "c": [{
+      "meta": [
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        },
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        }],
+      "su": "subject",
+      "fr": "fragment",
+      "e": [
+        {
+          "a": "address",
+          "d": "display",
+          "p": "personal",
+          "t": "addressType",
+          "isGroup": false,
+          "exp": false
+        },
+        {
+          "a": "address",
+          "d": "display",
+          "p": "personal",
+          "t": "addressType",
+          "isGroup": false,
+          "exp": false
+        }],
+      "id": "id",
+      "n": 7,
+      "u": 7,
+      "total": 7,
+      "f": "flags",
+      "t": "tags",
+      "tn": "tagNames",
+      "d": 1700000000000,
+      "elided": false,
+      "md": 1700000000000,
+      "ms": 7
+    }],
+  "m": [{
+      "e": [
+        {
+          "a": "address",
+          "d": "display",
+          "p": "personal",
+          "t": "addressType",
+          "isGroup": false,
+          "exp": false
+        },
+        {
+          "a": "address",
+          "d": "display",
+          "p": "personal",
+          "t": "addressType",
+          "isGroup": false,
+          "exp": false
+        }],
+      "su": "subject",
+      "fr": "fragment",
+      "inv": [{
+          "tz": [
+            {
+              "id": "id",
+              "stdoff": 7,
+              "dayoff": 7,
+              "stdname": "standardTZName",
+              "dayname": "daylightTZName"
+            },
+            {
+              "id": "id",
+              "stdoff": 7,
+              "dayoff": 7,
+              "stdname": "standardTZName",
+              "dayname": "daylightTZName"
+            }],
+          "comp": [{
+              "category": [
+                {
+                  "_content": "categories0"
+                },
+                {
+                  "_content": "categories1"
+                }],
+              "comment": [
+                {
+                  "_content": "comments0"
+                },
+                {
+                  "_content": "comments1"
+                }],
+              "contact": [
+                {
+                  "_content": "contacts0"
+                },
+                {
+                  "_content": "contacts1"
+                }],
+              "fr": "fragment",
+              "desc": [{
+                  "_content": "description"
+                }],
+              "descHtml": [{
+                  "_content": "htmlDescription"
+                }],
+              "method": "method",
+              "compNum": 7,
+              "rsvp": false,
+              "priority": "priority",
+              "name": "name",
+              "loc": "location",
+              "noBlob": false,
+              "fba": "freeBusyActual",
+              "fb": "freeBusy",
+              "transp": "transparency",
+              "isOrg": false,
+              "x_uid": "xUid",
+              "uid": "uid",
+              "seq": 7,
+              "d": 1700000000000,
+              "calItemId": "calItemId",
+              "apptId": "deprecatedApptId",
+              "ciFolder": "calItemFolder",
+              "status": "status",
+              "class": "calClass",
+              "url": "url",
+              "ex": false,
+              "ridZ": "recurIdZ",
+              "allDay": false,
+              "draft": false,
+              "neverSent": false,
+              "changes": "changes"
+            }],
+          "replies": {
+            "reply": [
+              {
+                "rangeType": -1,
+                "recurId": "recurrenceId",
+                "tz": "timezone",
+                "ridZ": "recurIdZ",
+                "seq": 0,
+                "d": 0,
+                "at": "attendee",
+                "sentBy": "sentBy",
+                "ptst": "partStat"
+              },
+              {
+                "rangeType": -1,
+                "recurId": "recurrenceId",
+                "tz": "timezone",
+                "ridZ": "recurIdZ",
+                "seq": 0,
+                "d": 0,
+                "at": "attendee",
+                "sentBy": "sentBy",
+                "ptst": "partStat"
+              }]
+          },
+          "type": "calItemType"
+        }],
+      "s": 1700000000000,
+      "d": 1700000000000,
+      "l": "folder",
+      "cid": "conversationId",
+      "f": "flags",
+      "t": "tags",
+      "tn": "tagNames",
+      "rev": 7,
+      "md": 1700000000000,
+      "ms": 7,
+      "meta": [
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        },
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        }],
+      "id": "id",
+      "autoSendTime": 1700000000000
+    }],
+  "chat": [{
+      "e": [
+        {
+          "a": "address",
+          "d": "display",
+          "p": "personal",
+          "t": "addressType",
+          "isGroup": false,
+          "exp": false
+        },
+        {
+          "a": "address",
+          "d": "display",
+          "p": "personal",
+          "t": "addressType",
+          "isGroup": false,
+          "exp": false
+        }],
+      "su": "subject",
+      "fr": "fragment",
+      "inv": [{
+          "tz": [
+            {
+              "id": "id",
+              "stdoff": 7,
+              "dayoff": 7,
+              "stdname": "standardTZName",
+              "dayname": "daylightTZName"
+            },
+            {
+              "id": "id",
+              "stdoff": 7,
+              "dayoff": 7,
+              "stdname": "standardTZName",
+              "dayname": "daylightTZName"
+            }],
+          "comp": [{
+              "category": [
+                {
+                  "_content": "categories0"
+                },
+                {
+                  "_content": "categories1"
+                }],
+              "comment": [
+                {
+                  "_content": "comments0"
+                },
+                {
+                  "_content": "comments1"
+                }],
+              "contact": [
+                {
+                  "_content": "contacts0"
+                },
+                {
+                  "_content": "contacts1"
+                }],
+              "fr": "fragment",
+              "desc": [{
+                  "_content": "description"
+                }],
+              "descHtml": [{
+                  "_content": "htmlDescription"
+                }],
+              "method": "method",
+              "compNum": 7,
+              "rsvp": false,
+              "priority": "priority",
+              "name": "name",
+              "loc": "location",
+              "noBlob": false,
+              "fba": "freeBusyActual",
+              "fb": "freeBusy",
+              "transp": "transparency",
+              "isOrg": false,
+              "x_uid": "xUid",
+              "uid": "uid",
+              "seq": 7,
+              "d": 1700000000000,
+              "calItemId": "calItemId",
+              "apptId": "deprecatedApptId",
+              "ciFolder": "calItemFolder",
+              "status": "status",
+              "class": "calClass",
+              "url": "url",
+              "ex": false,
+              "ridZ": "recurIdZ",
+              "allDay": false,
+              "draft": false,
+              "neverSent": false,
+              "changes": "changes"
+            }],
+          "replies": {
+            "reply": [
+              {
+                "rangeType": -1,
+                "recurId": "recurrenceId",
+                "tz": "timezone",
+                "ridZ": "recurIdZ",
+                "seq": 0,
+                "d": 0,
+                "at": "attendee",
+                "sentBy": "sentBy",
+                "ptst": "partStat"
+              },
+              {
+                "rangeType": -1,
+                "recurId": "recurrenceId",
+                "tz": "timezone",
+                "ridZ": "recurIdZ",
+                "seq": 0,
+                "d": 0,
+                "at": "attendee",
+                "sentBy": "sentBy",
+                "ptst": "partStat"
+              }]
+          },
+          "type": "calItemType"
+        }],
+      "s": 1700000000000,
+      "d": 1700000000000,
+      "l": "folder",
+      "cid": "conversationId",
+      "f": "flags",
+      "t": "tags",
+      "tn": "tagNames",
+      "rev": 7,
+      "md": 1700000000000,
+      "ms": 7,
+      "meta": [
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        },
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        }],
+      "id": "id",
+      "autoSendTime": 1700000000000
+    }],
+  "md": 0,
+  "token": "token",
+  "s": 1700000000000,
+  "more": false,
+  "_jsns": "urn:zimbraMail"
+}

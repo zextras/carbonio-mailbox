@@ -1,0 +1,49 @@
+{
+  "server": [{
+      "name": "serverName",
+      "queue": [{
+          "qs": [
+            {
+              "type": "type"
+            },
+            {
+              "type": "type"
+            }],
+          "qi": [
+            {
+              "id": "id",
+              "time": "time",
+              "fromdomain": "fromdomain",
+              "size": "size",
+              "from": "from",
+              "to": "to",
+              "host": "host",
+              "addr": "addr",
+              "reason": "reason",
+              "filter": "filter",
+              "todomain": "todomain",
+              "received": "received"
+            },
+            {
+              "id": "id",
+              "time": "time",
+              "fromdomain": "fromdomain",
+              "size": "size",
+              "from": "from",
+              "to": "to",
+              "host": "host",
+              "addr": "addr",
+              "reason": "reason",
+              "filter": "filter",
+              "todomain": "todomain",
+              "received": "received"
+            }],
+          "name": "name",
+          "time": -1,
+          "scan": false,
+          "total": -1,
+          "more": false
+        }]
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

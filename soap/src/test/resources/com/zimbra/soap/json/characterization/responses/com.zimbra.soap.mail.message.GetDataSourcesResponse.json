@@ -1,0 +1,317 @@
+{
+  "imap": [{
+      "lastError": [{
+          "_content": "lastError"
+        }],
+      "a": [
+        {
+          "_content": "attributes0"
+        },
+        {
+          "_content": "attributes1"
+        }],
+      "id": "id",
+      "name": "name",
+      "l": "folderId",
+      "isEnabled": false,
+      "importOnly": false,
+      "host": "host",
+      "port": 7,
+      "connectionType": "cleartext",
+      "username": "username",
+      "password": "password",
+      "pollingInterval": "pollingInterval",
+      "emailAddress": "emailAddress",
+      "smtpEnabled": false,
+      "smtpHost": "smtpHost",
+      "smtpPort": 7,
+      "smtpConnectionType": "cleartext",
+      "smtpAuthRequired": false,
+      "smtpUsername": "smtpUsername",
+      "smtpPassword": "smtpPassword",
+      "useAddressForForwardReply": false,
+      "defaultSignature": "defaultSignature",
+      "forwardReplySignature": "forwardReplySignature",
+      "fromDisplay": "fromDisplay",
+      "replyToAddress": "replyToAddress",
+      "replyToDisplay": "replyToDisplay",
+      "importClass": "importClass",
+      "failingSince": 1700000000000,
+      "test": false
+    }],
+  "pop3": [{
+      "lastError": [{
+          "_content": "lastError"
+        }],
+      "a": [
+        {
+          "_content": "attributes0"
+        },
+        {
+          "_content": "attributes1"
+        }],
+      "id": "id",
+      "name": "name",
+      "l": "folderId",
+      "isEnabled": false,
+      "importOnly": false,
+      "host": "host",
+      "port": 7,
+      "connectionType": "cleartext",
+      "username": "username",
+      "password": "password",
+      "pollingInterval": "pollingInterval",
+      "emailAddress": "emailAddress",
+      "smtpEnabled": false,
+      "smtpHost": "smtpHost",
+      "smtpPort": 7,
+      "smtpConnectionType": "cleartext",
+      "smtpAuthRequired": false,
+      "smtpUsername": "smtpUsername",
+      "smtpPassword": "smtpPassword",
+      "useAddressForForwardReply": false,
+      "defaultSignature": "defaultSignature",
+      "forwardReplySignature": "forwardReplySignature",
+      "fromDisplay": "fromDisplay",
+      "replyToAddress": "replyToAddress",
+      "replyToDisplay": "replyToDisplay",
+      "importClass": "importClass",
+      "failingSince": 1700000000000,
+      "leaveOnServer": false
+    }],
+  "caldav": [{
+      "lastError": [{
+          "_content": "lastError"
+        }],
+      "a": [
+        {
+          "_content": "attributes0"
+        },
+        {
+          "_content": "attributes1"
+        }],
+      "id": "id",
+      "name": "name",
+      "l": "folderId",
+      "isEnabled": false,
+      "importOnly": false,
+      "host": "host",
+      "port": 7,
+      "connectionType": "cleartext",
+      "username": "username",
+      "password": "password",
+      "pollingInterval": "pollingInterval",
+      "emailAddress": "emailAddress",
+      "smtpEnabled": false,
+      "smtpHost": "smtpHost",
+      "smtpPort": 7,
+      "smtpConnectionType": "cleartext",
+      "smtpAuthRequired": false,
+      "smtpUsername": "smtpUsername",
+      "smtpPassword": "smtpPassword",
+      "useAddressForForwardReply": false,
+      "defaultSignature": "defaultSignature",
+      "forwardReplySignature": "forwardReplySignature",
+      "fromDisplay": "fromDisplay",
+      "replyToAddress": "replyToAddress",
+      "replyToDisplay": "replyToDisplay",
+      "importClass": "importClass",
+      "failingSince": 1700000000000
+    }],
+  "yab": [{
+      "lastError": [{
+          "_content": "lastError"
+        }],
+      "a": [
+        {
+          "_content": "attributes0"
+        },
+        {
+          "_content": "attributes1"
+        }],
+      "id": "id",
+      "name": "name",
+      "l": "folderId",
+      "isEnabled": false,
+      "importOnly": false,
+      "host": "host",
+      "port": 7,
+      "connectionType": "cleartext",
+      "username": "username",
+      "password": "password",
+      "pollingInterval": "pollingInterval",
+      "emailAddress": "emailAddress",
+      "smtpEnabled": false,
+      "smtpHost": "smtpHost",
+      "smtpPort": 7,
+      "smtpConnectionType": "cleartext",
+      "smtpAuthRequired": false,
+      "smtpUsername": "smtpUsername",
+      "smtpPassword": "smtpPassword",
+      "useAddressForForwardReply": false,
+      "defaultSignature": "defaultSignature",
+      "forwardReplySignature": "forwardReplySignature",
+      "fromDisplay": "fromDisplay",
+      "replyToAddress": "replyToAddress",
+      "replyToDisplay": "replyToDisplay",
+      "importClass": "importClass",
+      "failingSince": 1700000000000
+    }],
+  "rss": [{
+      "lastError": [{
+          "_content": "lastError"
+        }],
+      "a": [
+        {
+          "_content": "attributes0"
+        },
+        {
+          "_content": "attributes1"
+        }],
+      "id": "id",
+      "name": "name",
+      "l": "folderId",
+      "isEnabled": false,
+      "importOnly": false,
+      "host": "host",
+      "port": 7,
+      "connectionType": "cleartext",
+      "username": "username",
+      "password": "password",
+      "pollingInterval": "pollingInterval",
+      "emailAddress": "emailAddress",
+      "smtpEnabled": false,
+      "smtpHost": "smtpHost",
+      "smtpPort": 7,
+      "smtpConnectionType": "cleartext",
+      "smtpAuthRequired": false,
+      "smtpUsername": "smtpUsername",
+      "smtpPassword": "smtpPassword",
+      "useAddressForForwardReply": false,
+      "defaultSignature": "defaultSignature",
+      "forwardReplySignature": "forwardReplySignature",
+      "fromDisplay": "fromDisplay",
+      "replyToAddress": "replyToAddress",
+      "replyToDisplay": "replyToDisplay",
+      "importClass": "importClass",
+      "failingSince": 1700000000000
+    }],
+  "gal": [{
+      "lastError": [{
+          "_content": "lastError"
+        }],
+      "a": [
+        {
+          "_content": "attributes0"
+        },
+        {
+          "_content": "attributes1"
+        }],
+      "id": "id",
+      "name": "name",
+      "l": "folderId",
+      "isEnabled": false,
+      "importOnly": false,
+      "host": "host",
+      "port": 7,
+      "connectionType": "cleartext",
+      "username": "username",
+      "password": "password",
+      "pollingInterval": "pollingInterval",
+      "emailAddress": "emailAddress",
+      "smtpEnabled": false,
+      "smtpHost": "smtpHost",
+      "smtpPort": 7,
+      "smtpConnectionType": "cleartext",
+      "smtpAuthRequired": false,
+      "smtpUsername": "smtpUsername",
+      "smtpPassword": "smtpPassword",
+      "useAddressForForwardReply": false,
+      "defaultSignature": "defaultSignature",
+      "forwardReplySignature": "forwardReplySignature",
+      "fromDisplay": "fromDisplay",
+      "replyToAddress": "replyToAddress",
+      "replyToDisplay": "replyToDisplay",
+      "importClass": "importClass",
+      "failingSince": 1700000000000
+    }],
+  "cal": [{
+      "lastError": [{
+          "_content": "lastError"
+        }],
+      "a": [
+        {
+          "_content": "attributes0"
+        },
+        {
+          "_content": "attributes1"
+        }],
+      "id": "id",
+      "name": "name",
+      "l": "folderId",
+      "isEnabled": false,
+      "importOnly": false,
+      "host": "host",
+      "port": 7,
+      "connectionType": "cleartext",
+      "username": "username",
+      "password": "password",
+      "pollingInterval": "pollingInterval",
+      "emailAddress": "emailAddress",
+      "smtpEnabled": false,
+      "smtpHost": "smtpHost",
+      "smtpPort": 7,
+      "smtpConnectionType": "cleartext",
+      "smtpAuthRequired": false,
+      "smtpUsername": "smtpUsername",
+      "smtpPassword": "smtpPassword",
+      "useAddressForForwardReply": false,
+      "defaultSignature": "defaultSignature",
+      "forwardReplySignature": "forwardReplySignature",
+      "fromDisplay": "fromDisplay",
+      "replyToAddress": "replyToAddress",
+      "replyToDisplay": "replyToDisplay",
+      "importClass": "importClass",
+      "failingSince": 1700000000000
+    }],
+  "unknown": [{
+      "lastError": [{
+          "_content": "lastError"
+        }],
+      "a": [
+        {
+          "_content": "attributes0"
+        },
+        {
+          "_content": "attributes1"
+        }],
+      "id": "id",
+      "name": "name",
+      "l": "folderId",
+      "isEnabled": false,
+      "importOnly": false,
+      "host": "host",
+      "port": 7,
+      "connectionType": "cleartext",
+      "username": "username",
+      "password": "password",
+      "pollingInterval": "pollingInterval",
+      "emailAddress": "emailAddress",
+      "smtpEnabled": false,
+      "smtpHost": "smtpHost",
+      "smtpPort": 7,
+      "smtpConnectionType": "cleartext",
+      "smtpAuthRequired": false,
+      "smtpUsername": "smtpUsername",
+      "smtpPassword": "smtpPassword",
+      "useAddressForForwardReply": false,
+      "defaultSignature": "defaultSignature",
+      "forwardReplySignature": "forwardReplySignature",
+      "fromDisplay": "fromDisplay",
+      "replyToAddress": "replyToAddress",
+      "replyToDisplay": "replyToDisplay",
+      "importClass": "importClass",
+      "failingSince": 1700000000000
+    }],
+  "_jsns": "urn:zimbraMail"
+}

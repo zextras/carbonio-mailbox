@@ -1,0 +1,14 @@
+{
+  "stat": [
+    {
+      "name": "name",
+      "description": "description",
+      "_content": "value"
+    },
+    {
+      "name": "name",
+      "description": "description",
+      "_content": "value"
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

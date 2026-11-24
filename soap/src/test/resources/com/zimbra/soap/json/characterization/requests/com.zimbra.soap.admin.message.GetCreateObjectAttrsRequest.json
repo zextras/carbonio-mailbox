@@ -1,0 +1,20 @@
+{
+  "Body": {
+    "GetCreateObjectAttrsRequest": {
+      "target": [{
+          "type": "type",
+          "_content": "value"
+        }],
+      "domain": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "cos": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

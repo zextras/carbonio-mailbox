@@ -1,0 +1,3 @@
+<PurgeFreeBusyQueueRequest xmlns="urn:zimbraAdmin">
+  <provider name="name"/>
+</PurgeFreeBusyQueueRequest>

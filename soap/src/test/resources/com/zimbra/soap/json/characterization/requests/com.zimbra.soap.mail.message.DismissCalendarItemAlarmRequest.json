@@ -1,0 +1,17 @@
+{
+  "Body": {
+    "DismissCalendarItemAlarmRequest": {
+      "appt": [
+        {
+          "id": "id",
+          "dismissedAt": -1
+        },
+        {
+          "id": "id",
+          "dismissedAt": -1
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

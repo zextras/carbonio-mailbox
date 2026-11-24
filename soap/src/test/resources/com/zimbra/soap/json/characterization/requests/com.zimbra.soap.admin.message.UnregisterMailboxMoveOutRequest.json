@@ -1,0 +1,12 @@
+{
+  "Body": {
+    "UnregisterMailboxMoveOutRequest": {
+      "account": [{
+          "name": "name",
+          "dest": "target"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

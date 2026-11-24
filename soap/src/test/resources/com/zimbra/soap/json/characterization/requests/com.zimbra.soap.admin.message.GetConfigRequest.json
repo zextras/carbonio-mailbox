@@ -1,0 +1,12 @@
+{
+  "Body": {
+    "GetConfigRequest": {
+      "a": [{
+          "n": "key",
+          "_content": "value"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

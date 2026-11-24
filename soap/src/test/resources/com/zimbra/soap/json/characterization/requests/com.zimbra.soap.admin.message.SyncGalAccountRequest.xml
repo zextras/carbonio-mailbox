@@ -1,0 +1,10 @@
+<SyncGalAccountRequest xmlns="urn:zimbraAdmin">
+  <account id="id">
+    <datasource by="by" reset="false" fullSync="false">value</datasource>
+    <datasource by="by" reset="false" fullSync="false">value</datasource>
+  </account>
+  <account id="id">
+    <datasource by="by" reset="false" fullSync="false">value</datasource>
+    <datasource by="by" reset="false" fullSync="false">value</datasource>
+  </account>
+</SyncGalAccountRequest>

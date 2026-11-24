@@ -1,0 +1,12 @@
+{
+  "Body": {
+    "GetAccountMembershipRequest": {
+      "account": [{
+          "by": "adminName",
+          "_content": "key"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,14 @@
+{
+  "Body": {
+    "ModifyCalendarResourceRequest": {
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "id": "id",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

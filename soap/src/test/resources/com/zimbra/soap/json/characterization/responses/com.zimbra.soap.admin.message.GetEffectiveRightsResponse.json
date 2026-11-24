@@ -1,0 +1,76 @@
+{
+  "grantee": [{
+      "type": "usr",
+      "id": "id",
+      "name": "name"
+    }],
+  "target": [{
+      "right": [
+        {
+          "n": "name"
+        },
+        {
+          "n": "name"
+        }],
+      "setAttrs": [{
+          "all": false,
+          "a": [
+            {
+              "n": "name",
+              "default": [{
+                  "v": [
+                    {
+                      "_content": "values0"
+                    },
+                    {
+                      "_content": "values1"
+                    }]
+                }]
+            },
+            {
+              "n": "name",
+              "default": [{
+                  "v": [
+                    {
+                      "_content": "values0"
+                    },
+                    {
+                      "_content": "values1"
+                    }]
+                }]
+            }]
+        }],
+      "getAttrs": [{
+          "all": false,
+          "a": [
+            {
+              "n": "name",
+              "default": [{
+                  "v": [
+                    {
+                      "_content": "values0"
+                    },
+                    {
+                      "_content": "values1"
+                    }]
+                }]
+            },
+            {
+              "n": "name",
+              "default": [{
+                  "v": [
+                    {
+                      "_content": "values0"
+                    },
+                    {
+                      "_content": "values1"
+                    }]
+                }]
+            }]
+        }],
+      "type": "account",
+      "id": "id",
+      "name": "name"
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

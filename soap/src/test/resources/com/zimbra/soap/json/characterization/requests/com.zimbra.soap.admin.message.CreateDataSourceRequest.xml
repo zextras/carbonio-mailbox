@@ -1,0 +1,6 @@
+<CreateDataSourceRequest id="id" xmlns="urn:zimbraAdmin">
+  <dataSource name="name" type="pop3">
+    <a n="key">value</a>
+    <a n="key">value</a>
+  </dataSource>
+</CreateDataSourceRequest>

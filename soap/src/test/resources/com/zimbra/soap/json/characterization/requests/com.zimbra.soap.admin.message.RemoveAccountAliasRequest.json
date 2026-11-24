@@ -1,0 +1,10 @@
+{
+  "Body": {
+    "RemoveAccountAliasRequest": {
+      "id": "id",
+      "alias": "alias",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

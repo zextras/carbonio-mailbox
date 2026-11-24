@@ -1,0 +1,22 @@
+{
+  "Body": {
+    "BounceMsgRequest": {
+      "m": [{
+          "id": "id",
+          "e": [
+            {
+              "a": "address",
+              "t": "addressType",
+              "p": "personal"
+            },
+            {
+              "a": "address",
+              "t": "addressType",
+              "p": "personal"
+            }]
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

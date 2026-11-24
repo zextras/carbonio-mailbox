@@ -1,0 +1,3 @@
+<CreateSearchFolderRequest xmlns="urn:zimbraMail">
+  <search types="searchTypes" color="2" f="flags" query="query" name="name" sortBy="sortBy" rgb="rgb" l="parentFolderId"/>
+</CreateSearchFolderRequest>

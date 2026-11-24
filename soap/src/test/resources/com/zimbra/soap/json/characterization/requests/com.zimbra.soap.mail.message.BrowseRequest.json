@@ -1,0 +1,11 @@
+{
+  "Body": {
+    "BrowseRequest": {
+      "browseBy": "browseBy",
+      "regex": "regex",
+      "maxToReturn": 7,
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

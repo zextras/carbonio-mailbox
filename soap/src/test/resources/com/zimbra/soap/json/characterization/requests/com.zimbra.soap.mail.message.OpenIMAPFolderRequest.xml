@@ -1,0 +1,3 @@
+<OpenIMAPFolderRequest limit="0" l="folderId" xmlns="urn:zimbraMail">
+  <cursor id="id"/>
+</OpenIMAPFolderRequest>

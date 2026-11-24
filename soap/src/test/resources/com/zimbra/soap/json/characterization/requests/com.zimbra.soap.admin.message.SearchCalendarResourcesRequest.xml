@@ -1,0 +1,3 @@
+<SearchCalendarResourcesRequest sortAscending="false" offset="7" domain="domain" limit="7" sortBy="sortBy" applyCos="false" attrs="attrs0,attrs1" xmlns="urn:zimbraAdmin">
+  <searchFilter/>
+</SearchCalendarResourcesRequest>

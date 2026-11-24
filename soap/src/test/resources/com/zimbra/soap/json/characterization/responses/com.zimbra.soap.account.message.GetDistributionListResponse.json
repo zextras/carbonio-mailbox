@@ -1,0 +1,66 @@
+{
+  "dl": [{
+      "name": "name",
+      "id": "id",
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "isOwner": false,
+      "isMember": false,
+      "dynamic": false,
+      "dlm": [
+        {
+          "_content": "members0"
+        },
+        {
+          "_content": "members1"
+        }],
+      "owners": [{
+          "owner": [
+            {
+              "type": "usr",
+              "id": "id",
+              "name": "name"
+            },
+            {
+              "type": "usr",
+              "id": "id",
+              "name": "name"
+            }]
+        }],
+      "rights": [{
+          "right": [
+            {
+              "right": "right",
+              "grantee": [
+                {
+                  "type": "usr",
+                  "id": "id",
+                  "name": "name"
+                },
+                {
+                  "type": "usr",
+                  "id": "id",
+                  "name": "name"
+                }]
+            },
+            {
+              "right": "right",
+              "grantee": [
+                {
+                  "type": "usr",
+                  "id": "id",
+                  "name": "name"
+                },
+                {
+                  "type": "usr",
+                  "id": "id",
+                  "name": "name"
+                }]
+            }]
+        }]
+    }],
+  "_jsns": "urn:zimbraAccount"
+}

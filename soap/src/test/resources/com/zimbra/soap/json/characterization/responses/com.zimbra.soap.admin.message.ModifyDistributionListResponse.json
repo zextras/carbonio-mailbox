@@ -1,0 +1,37 @@
+{
+  "dl": [{
+      "name": "name",
+      "id": "id",
+      "a": [
+        {
+          "n": "key",
+          "_content": "value"
+        },
+        {
+          "n": "key",
+          "_content": "value"
+        }],
+      "dynamic": false,
+      "dlm": [
+        {
+          "_content": "members0"
+        },
+        {
+          "_content": "members1"
+        }],
+      "owners": [{
+          "owner": [
+            {
+              "type": "usr",
+              "id": "id",
+              "name": "name"
+            },
+            {
+              "type": "usr",
+              "id": "id",
+              "name": "name"
+            }]
+        }]
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

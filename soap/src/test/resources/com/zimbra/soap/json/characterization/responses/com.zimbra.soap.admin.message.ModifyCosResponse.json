@@ -1,0 +1,21 @@
+{
+  "cos": [{
+      "id": "id",
+      "name": "name",
+      "isDefaultCos": false,
+      "a": [
+        {
+          "n": "key",
+          "_content": "value",
+          "c": false,
+          "pd": false
+        },
+        {
+          "n": "key",
+          "_content": "value",
+          "c": false,
+          "pd": false
+        }]
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

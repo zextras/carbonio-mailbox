@@ -1,0 +1,20 @@
+{
+  "Body": {
+    "CheckGalConfigRequest": {
+      "query": [{
+          "_content": "text",
+          "limit": 1700000000000
+        }],
+      "action": [{
+          "_content": "action"
+        }],
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

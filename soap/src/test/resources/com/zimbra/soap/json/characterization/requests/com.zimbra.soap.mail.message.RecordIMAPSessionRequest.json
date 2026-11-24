@@ -1,0 +1,9 @@
+{
+  "Body": {
+    "RecordIMAPSessionRequest": {
+      "id": "folderId",
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

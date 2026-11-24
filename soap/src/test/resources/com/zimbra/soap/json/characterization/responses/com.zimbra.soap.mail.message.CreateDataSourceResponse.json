@@ -1,0 +1,8 @@
+{
+  "dataSource": {
+    "imap": {
+      "id": "id"
+    }
+  },
+  "_jsns": "urn:zimbraMail"
+}

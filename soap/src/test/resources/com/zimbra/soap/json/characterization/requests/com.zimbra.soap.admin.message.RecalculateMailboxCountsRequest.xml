@@ -1,0 +1,3 @@
+<RecalculateMailboxCountsRequest xmlns="urn:zimbraAdmin">
+  <mbox id="id"/>
+</RecalculateMailboxCountsRequest>

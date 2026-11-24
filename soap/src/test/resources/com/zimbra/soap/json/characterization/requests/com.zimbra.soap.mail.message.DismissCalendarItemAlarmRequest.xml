@@ -1,0 +1,4 @@
+<DismissCalendarItemAlarmRequest xmlns="urn:zimbraMail">
+  <appt id="id" dismissedAt="-1"/>
+  <appt id="id" dismissedAt="-1"/>
+</DismissCalendarItemAlarmRequest>

@@ -1,0 +1,12 @@
+{
+  "Body": {
+    "GetAllDistributionListsRequest": {
+      "domain": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

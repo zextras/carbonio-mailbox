@@ -1,0 +1,7 @@
+<CreateSignatureRequest xmlns="urn:zimbraAccount">
+  <signature name="name" id="id">
+    <content type="contentType">content</content>
+    <content type="contentType">content</content>
+    <cid>cid</cid>
+  </signature>
+</CreateSignatureRequest>

@@ -1,0 +1,15 @@
+{
+  "Body": {
+    "CopyCosRequest": {
+      "name": [{
+          "_content": "newName"
+        }],
+      "cos": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

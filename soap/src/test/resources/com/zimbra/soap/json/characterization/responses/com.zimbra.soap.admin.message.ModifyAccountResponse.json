@@ -1,0 +1,17 @@
+{
+  "account": [{
+      "name": "name",
+      "id": "id",
+      "a": [
+        {
+          "n": "key",
+          "_content": "value"
+        },
+        {
+          "n": "key",
+          "_content": "value"
+        }],
+      "isExternal": false
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

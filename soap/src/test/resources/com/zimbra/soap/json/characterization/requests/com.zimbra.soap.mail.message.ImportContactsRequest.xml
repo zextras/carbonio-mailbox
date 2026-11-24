@@ -1,0 +1,3 @@
+<ImportContactsRequest ct="contentType" csvlocale="csvLocale" l="folderId" csvfmt="csvFormat" xmlns="urn:zimbraMail">
+  <content aid="attachUploadId">value</content>
+</ImportContactsRequest>

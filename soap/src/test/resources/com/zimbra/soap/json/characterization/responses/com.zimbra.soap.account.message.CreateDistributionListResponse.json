@@ -1,0 +1,18 @@
+{
+  "dl": [{
+      "name": "name",
+      "id": "id",
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "ref": "ref",
+      "d": "displayName",
+      "dynamic": false,
+      "via": "via",
+      "isOwner": false,
+      "isMember": false
+    }],
+  "_jsns": "urn:zimbraAccount"
+}

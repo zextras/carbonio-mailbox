@@ -1,0 +1,20 @@
+{
+  "Body": {
+    "GetGrantsRequest": {
+      "target": [{
+          "type": "account",
+          "by": "id",
+          "_content": "value"
+        }],
+      "grantee": [{
+          "type": "usr",
+          "by": "id",
+          "secret": "secret",
+          "all": false,
+          "_content": "key"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

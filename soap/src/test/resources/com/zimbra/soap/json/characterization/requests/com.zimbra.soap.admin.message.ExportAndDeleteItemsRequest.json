@@ -1,0 +1,22 @@
+{
+  "Body": {
+    "ExportAndDeleteItemsRequest": {
+      "exportDir": "exportDir",
+      "exportFilenamePrefix": "exportFilenamePrefix",
+      "mbox": [{
+          "id": -1,
+          "item": [
+            {
+              "id": -1,
+              "version": -1
+            },
+            {
+              "id": -1,
+              "version": -1
+            }]
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

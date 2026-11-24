@@ -1,0 +1,22 @@
+<DistributionListActionRequest xmlns="urn:zimbraAccount">
+  <a>value</a>
+  <a>value</a>
+  <dl by="id">key</dl>
+  <action op="delete">
+    <a n="key">value</a>
+    <a n="key">value</a>
+    <dlm>members0</dlm>
+    <dlm>members1</dlm>
+    <newName>newName</newName>
+    <owner by="id" type="usr">key</owner>
+    <owner by="id" type="usr">key</owner>
+    <right right="right">
+      <grantee by="id" type="usr">key</grantee>
+      <grantee by="id" type="usr">key</grantee>
+    </right>
+    <right right="right">
+      <grantee by="id" type="usr">key</grantee>
+      <grantee by="id" type="usr">key</grantee>
+    </right>
+  </action>
+</DistributionListActionRequest>

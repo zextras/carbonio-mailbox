@@ -1,0 +1,3 @@
+<ItemActionRequest xmlns="urn:zimbraMail">
+  <action op="operation" color="2" f="flags" l="folder" rgb="rgb" nei="false" t="tags" nci="false" tcon="constraint" name="name" tn="tagNames" id="ids" tag="7"/>
+</ItemActionRequest>

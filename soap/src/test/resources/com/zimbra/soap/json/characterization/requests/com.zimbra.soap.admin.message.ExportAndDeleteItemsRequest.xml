@@ -1,0 +1,6 @@
+<ExportAndDeleteItemsRequest exportFilenamePrefix="exportFilenamePrefix" exportDir="exportDir" xmlns="urn:zimbraAdmin">
+  <mbox id="-1">
+    <item id="-1" version="-1"/>
+    <item id="-1" version="-1"/>
+  </mbox>
+</ExportAndDeleteItemsRequest>

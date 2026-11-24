@@ -1,0 +1,36 @@
+{
+  "unknown": [
+    {
+      "success": 1,
+      "error": "error"
+    },
+    {
+      "success": 1,
+      "error": "error"
+    },
+    {
+      "success": 1,
+      "error": "error"
+    },
+    {
+      "success": 1,
+      "error": "error"
+    },
+    {
+      "success": 1,
+      "error": "error"
+    },
+    {
+      "success": 1,
+      "error": "error"
+    },
+    {
+      "success": 1,
+      "error": "error"
+    },
+    {
+      "success": 1,
+      "error": "error"
+    }],
+  "_jsns": "urn:zimbraMail"
+}

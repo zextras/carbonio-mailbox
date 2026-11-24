@@ -1,0 +1,4 @@
+<SaveIMAPSubscriptionsRequest xmlns="urn:zimbraMail">
+  <sub>subscriptions0</sub>
+  <sub>subscriptions1</sub>
+</SaveIMAPSubscriptionsRequest>

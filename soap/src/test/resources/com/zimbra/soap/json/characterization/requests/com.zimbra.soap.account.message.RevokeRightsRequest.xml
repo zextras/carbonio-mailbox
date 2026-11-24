@@ -1,0 +1,4 @@
+<RevokeRightsRequest xmlns="urn:zimbraAccount">
+  <ace chkgt="false" deny="false" zid="zimbraId" d="displayName" pw="password" right="right" gt="usr" key="accessKey"/>
+  <ace chkgt="false" deny="false" zid="zimbraId" d="displayName" pw="password" right="right" gt="usr" key="accessKey"/>
+</RevokeRightsRequest>

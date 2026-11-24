@@ -1,0 +1,140 @@
+{
+  "usr": [
+    {
+      "f": [{
+          "s": -1,
+          "e": -1,
+          "eventId": "id",
+          "subject": "subject",
+          "location": "location",
+          "isMeeting": false,
+          "isRecurring": false,
+          "isException": false,
+          "isReminderSet": false,
+          "isPrivate": false,
+          "hasPermission": false
+        }],
+      "b": [{
+          "s": -1,
+          "e": -1,
+          "eventId": "id",
+          "subject": "subject",
+          "location": "location",
+          "isMeeting": false,
+          "isRecurring": false,
+          "isException": false,
+          "isReminderSet": false,
+          "isPrivate": false,
+          "hasPermission": false
+        }],
+      "t": [{
+          "s": -1,
+          "e": -1,
+          "eventId": "id",
+          "subject": "subject",
+          "location": "location",
+          "isMeeting": false,
+          "isRecurring": false,
+          "isException": false,
+          "isReminderSet": false,
+          "isPrivate": false,
+          "hasPermission": false
+        }],
+      "u": [{
+          "s": -1,
+          "e": -1,
+          "eventId": "id",
+          "subject": "subject",
+          "location": "location",
+          "isMeeting": false,
+          "isRecurring": false,
+          "isException": false,
+          "isReminderSet": false,
+          "isPrivate": false,
+          "hasPermission": false
+        }],
+      "n": [{
+          "s": -1,
+          "e": -1,
+          "eventId": "id",
+          "subject": "subject",
+          "location": "location",
+          "isMeeting": false,
+          "isRecurring": false,
+          "isException": false,
+          "isReminderSet": false,
+          "isPrivate": false,
+          "hasPermission": false
+        }],
+      "id": "id"
+    },
+    {
+      "f": [{
+          "s": -1,
+          "e": -1,
+          "eventId": "id",
+          "subject": "subject",
+          "location": "location",
+          "isMeeting": false,
+          "isRecurring": false,
+          "isException": false,
+          "isReminderSet": false,
+          "isPrivate": false,
+          "hasPermission": false
+        }],
+      "b": [{
+          "s": -1,
+          "e": -1,
+          "eventId": "id",
+          "subject": "subject",
+          "location": "location",
+          "isMeeting": false,
+          "isRecurring": false,
+          "isException": false,
+          "isReminderSet": false,
+          "isPrivate": false,
+          "hasPermission": false
+        }],
+      "t": [{
+          "s": -1,
+          "e": -1,
+          "eventId": "id",
+          "subject": "subject",
+          "location": "location",
+          "isMeeting": false,
+          "isRecurring": false,
+          "isException": false,
+          "isReminderSet": false,
+          "isPrivate": false,
+          "hasPermission": false
+        }],
+      "u": [{
+          "s": -1,
+          "e": -1,
+          "eventId": "id",
+          "subject": "subject",
+          "location": "location",
+          "isMeeting": false,
+          "isRecurring": false,
+          "isException": false,
+          "isReminderSet": false,
+          "isPrivate": false,
+          "hasPermission": false
+        }],
+      "n": [{
+          "s": -1,
+          "e": -1,
+          "eventId": "id",
+          "subject": "subject",
+          "location": "location",
+          "isMeeting": false,
+          "isRecurring": false,
+          "isException": false,
+          "isReminderSet": false,
+          "isPrivate": false,
+          "hasPermission": false
+        }],
+      "id": "id"
+    }],
+  "_jsns": "urn:zimbraMail"
+}

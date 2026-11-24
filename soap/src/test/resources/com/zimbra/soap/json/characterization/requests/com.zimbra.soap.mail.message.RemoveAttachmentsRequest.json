@@ -1,0 +1,12 @@
+{
+  "Body": {
+    "RemoveAttachmentsRequest": {
+      "m": [{
+          "id": "id",
+          "part": "partIds"
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

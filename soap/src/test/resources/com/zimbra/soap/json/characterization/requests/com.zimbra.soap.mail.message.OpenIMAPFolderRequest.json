@@ -1,0 +1,13 @@
+{
+  "Body": {
+    "OpenIMAPFolderRequest": {
+      "l": "folderId",
+      "limit": 0,
+      "cursor": [{
+          "id": "id"
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

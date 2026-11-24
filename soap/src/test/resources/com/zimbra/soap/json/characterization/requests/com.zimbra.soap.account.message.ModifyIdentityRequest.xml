@@ -1,0 +1,6 @@
+<ModifyIdentityRequest xmlns="urn:zimbraAccount">
+  <identity name="name" id="id">
+    <a>value</a>
+    <a>value</a>
+  </identity>
+</ModifyIdentityRequest>

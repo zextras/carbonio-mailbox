@@ -1,0 +1,11 @@
+{
+  "Body": {
+    "VerifyCertKeyRequest": {
+      "cert": "certificate",
+      "privkey": "privateKey",
+      "ca": "CA",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

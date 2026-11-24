@@ -1,0 +1,14 @@
+{
+  "Body": {
+    "GetServerRequest": {
+      "attrs": "attrs0,attrs1",
+      "applyConfig": false,
+      "server": [{
+          "_content": "key",
+          "by": "id"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

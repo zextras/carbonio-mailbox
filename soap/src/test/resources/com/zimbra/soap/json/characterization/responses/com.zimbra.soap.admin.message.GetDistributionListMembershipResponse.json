@@ -1,0 +1,14 @@
+{
+  "dl": [
+    {
+      "id": "id",
+      "name": "name",
+      "via": "via"
+    },
+    {
+      "id": "id",
+      "name": "name",
+      "via": "via"
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

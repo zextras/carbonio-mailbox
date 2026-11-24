@@ -1,0 +1,4 @@
+<CreateDistributionListRequest name="name" dynamic="false" xmlns="urn:zimbraAdmin">
+  <a n="key">value</a>
+  <a n="key">value</a>
+</CreateDistributionListRequest>

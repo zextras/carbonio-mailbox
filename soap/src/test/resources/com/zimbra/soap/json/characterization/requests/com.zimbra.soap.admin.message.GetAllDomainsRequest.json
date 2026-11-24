@@ -1,0 +1,9 @@
+{
+  "Body": {
+    "GetAllDomainsRequest": {
+      "applyConfig": false,
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

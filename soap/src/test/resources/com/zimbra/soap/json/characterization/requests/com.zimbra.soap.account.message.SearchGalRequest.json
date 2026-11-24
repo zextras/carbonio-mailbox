@@ -1,0 +1,50 @@
+{
+  "Body": {
+    "SearchGalRequest": {
+      "ref": "ref",
+      "name": "name",
+      "type": "all",
+      "needExp": false,
+      "needIsOwner": false,
+      "needIsMember": "all",
+      "needSMIMECerts": false,
+      "galAcctId": "galAccountId",
+      "quick": false,
+      "sortBy": "sortBy",
+      "limit": 7,
+      "offset": 7,
+      "locale": [{
+          "_content": "locale"
+        }],
+      "cursor": [{
+          "id": "id",
+          "sortVal": "sortVal",
+          "endSortVal": "endSortVal",
+          "includeOffset": false
+        }],
+      "query": [{
+          "_content": "query"
+        }],
+      "searchFilter": [{
+          "condition": {
+            "conds": {
+              "conds": [{
+                  "not": false,
+                  "or": false
+                }],
+              "cond": [{
+                  "not": false,
+                  "attr": "attr",
+                  "op": "op",
+                  "value": "value"
+                }],
+              "not": false,
+              "or": false
+            }
+          }
+        }],
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

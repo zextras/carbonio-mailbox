@@ -1,0 +1,3 @@
+<CreateMountpointRequest xmlns="urn:zimbraMail">
+  <link owner="ownerName" fie="false" color="2" reminder="false" f="flags" rgb="rgb" l="folderId" rid="7" url="url" path="path" view="defaultView" zid="ownerId" name="name"/>
+</CreateMountpointRequest>

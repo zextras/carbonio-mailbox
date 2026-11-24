@@ -1,0 +1,11 @@
+{
+  "Body": {
+    "GetCertRequest": {
+      "server": "server",
+      "type": "type",
+      "option": "option",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,15 @@
+{
+  "Body": {
+    "RefreshRegisteredAuthTokensRequest": {
+      "token": [
+        {
+          "_content": "tokens0"
+        },
+        {
+          "_content": "tokens1"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

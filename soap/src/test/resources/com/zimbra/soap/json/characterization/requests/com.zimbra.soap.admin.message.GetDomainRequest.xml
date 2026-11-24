@@ -1,0 +1,3 @@
+<GetDomainRequest applyConfig="false" attrs="attrs0,attrs1" xmlns="urn:zimbraAdmin">
+  <domain by="id">key</domain>
+</GetDomainRequest>

@@ -1,0 +1,11 @@
+{
+  "Body": {
+    "ICalReplyRequest": {
+      "ical": {
+        "_content": "ical"
+      },
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

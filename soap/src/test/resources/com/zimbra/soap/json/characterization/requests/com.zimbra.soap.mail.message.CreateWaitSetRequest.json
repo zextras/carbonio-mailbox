@@ -1,0 +1,27 @@
+{
+  "Body": {
+    "CreateWaitSetRequest": {
+      "defTypes": "defaultInterests",
+      "allAccounts": false,
+      "add": {
+        "a": [
+          {
+            "name": "name",
+            "id": "id",
+            "token": "token",
+            "types": "interests",
+            "folderInterests": "7"
+          },
+          {
+            "name": "name",
+            "id": "id",
+            "token": "token",
+            "types": "interests",
+            "folderInterests": "7"
+          }]
+      },
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

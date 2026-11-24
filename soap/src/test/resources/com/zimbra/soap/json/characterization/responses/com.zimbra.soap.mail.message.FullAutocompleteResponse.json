@@ -1,0 +1,39 @@
+{
+  "canBeCached": false,
+  "match": [
+    {
+      "email": "email",
+      "type": "matchType",
+      "ranking": 7,
+      "isGroup": false,
+      "exp": false,
+      "id": "id",
+      "l": "folder",
+      "display": "displayName",
+      "first": "firstName",
+      "middle": "middleName",
+      "last": "lastName",
+      "full": "fullName",
+      "nick": "nickname",
+      "company": "company",
+      "fileas": "fileAs"
+    },
+    {
+      "email": "email",
+      "type": "matchType",
+      "ranking": 7,
+      "isGroup": false,
+      "exp": false,
+      "id": "id",
+      "l": "folder",
+      "display": "displayName",
+      "first": "firstName",
+      "middle": "middleName",
+      "last": "lastName",
+      "full": "fullName",
+      "nick": "nickname",
+      "company": "company",
+      "fileas": "fileAs"
+    }],
+  "_jsns": "urn:zimbraMail"
+}

@@ -1,0 +1,15 @@
+{
+  "Body": {
+    "CreateCalendarResourceRequest": {
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "name": "name",
+      "password": "password",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,3 @@
+<GetFreeBusyQueueInfoRequest xmlns="urn:zimbraAdmin">
+  <provider name="name"/>
+</GetFreeBusyQueueInfoRequest>

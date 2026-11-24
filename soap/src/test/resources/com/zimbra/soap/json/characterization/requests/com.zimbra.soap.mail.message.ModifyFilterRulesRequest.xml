@@ -1,0 +1,92 @@
+<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+  <filterRules>
+    <filterRule name="name" active="false">
+      <filterVariables index="0">
+        <filterVariable name="name" value="value"/>
+        <filterVariable name="name" value="value"/>
+      </filterVariables>
+      <filterTests condition="condition">
+        <addressBookTest negative="false" header="header" index="0"/>
+        <addressTest stringComparison="comparison" valueComparison="valueComparison" countComparison="countComparison" negative="false" caseSensitive="false" part="part" header="header" index="0" valueComparisonComparator="valueComparisonComparator" value="value"/>
+        <envelopeTest stringComparison="comparison" valueComparison="valueComparison" countComparison="countComparison" negative="false" caseSensitive="false" part="part" header="header" index="0" valueComparisonComparator="valueComparisonComparator" value="value"/>
+        <attachmentTest negative="false" index="0"/>
+        <bodyTest negative="false" caseSensitive="false" index="0" value="value"/>
+        <bulkTest negative="false" index="0"/>
+        <contactRankingTest negative="false" header="header" index="0"/>
+        <conversationTest negative="false" index="0" where="where"/>
+        <currentDayOfWeekTest negative="false" index="0" value="values"/>
+        <currentTimeTest negative="false" dateComparison="dateComparison" index="0" time="time"/>
+        <dateTest negative="false" d="1700000000000" dateComparison="dateComparison" index="0"/>
+        <facebookTest negative="false" index="0"/>
+        <flaggedTest negative="false" flagName="flag" index="0"/>
+        <headerExistsTest negative="false" header="header" index="0"/>
+        <headerTest stringComparison="stringComparison" valueComparison="valueComparison" countComparison="countComparison" negative="false" caseSensitive="false" header="headers" index="0" valueComparisonComparator="valueComparisonComparator" value="value"/>
+        <importanceTest negative="false" index="0" imp="high"/>
+        <inviteTest negative="false" index="0">
+          <method>methods0</method>
+          <method>methods1</method>
+        </inviteTest>
+        <linkedinTest negative="false" index="0"/>
+        <listTest negative="false" index="0"/>
+        <meTest negative="false" header="header" index="0"/>
+        <mimeHeaderTest stringComparison="stringComparison" negative="false" caseSensitive="false" header="headers" index="0" value="value"/>
+        <sizeTest negative="false" s="size" numberComparison="numberComparison" index="0"/>
+        <socialcastTest negative="false" index="0"/>
+        <trueTest negative="false" index="0"/>
+        <twitterTest negative="false" index="0"/>
+        <communityRequestsTest negative="false" index="0"/>
+        <communityContentTest negative="false" index="0"/>
+        <communityConnectionsTest negative="false" index="0"/>
+      </filterTests>
+      <nestedRule>
+        <filterVariables index="0"/>
+        <filterTests condition="condition"/>
+        <nestedRule/>
+      </nestedRule>
+    </filterRule>
+    <filterRule name="name" active="false">
+      <filterVariables index="0">
+        <filterVariable name="name" value="value"/>
+        <filterVariable name="name" value="value"/>
+      </filterVariables>
+      <filterTests condition="condition">
+        <addressBookTest negative="false" header="header" index="0"/>
+        <addressTest stringComparison="comparison" valueComparison="valueComparison" countComparison="countComparison" negative="false" caseSensitive="false" part="part" header="header" index="0" valueComparisonComparator="valueComparisonComparator" value="value"/>
+        <envelopeTest stringComparison="comparison" valueComparison="valueComparison" countComparison="countComparison" negative="false" caseSensitive="false" part="part" header="header" index="0" valueComparisonComparator="valueComparisonComparator" value="value"/>
+        <attachmentTest negative="false" index="0"/>
+        <bodyTest negative="false" caseSensitive="false" index="0" value="value"/>
+        <bulkTest negative="false" index="0"/>
+        <contactRankingTest negative="false" header="header" index="0"/>
+        <conversationTest negative="false" index="0" where="where"/>
+        <currentDayOfWeekTest negative="false" index="0" value="values"/>
+        <currentTimeTest negative="false" dateComparison="dateComparison" index="0" time="time"/>
+        <dateTest negative="false" d="1700000000000" dateComparison="dateComparison" index="0"/>
+        <facebookTest negative="false" index="0"/>
+        <flaggedTest negative="false" flagName="flag" index="0"/>
+        <headerExistsTest negative="false" header="header" index="0"/>
+        <headerTest stringComparison="stringComparison" valueComparison="valueComparison" countComparison="countComparison" negative="false" caseSensitive="false" header="headers" index="0" valueComparisonComparator="valueComparisonComparator" value="value"/>
+        <importanceTest negative="false" index="0" imp="high"/>
+        <inviteTest negative="false" index="0">
+          <method>methods0</method>
+          <method>methods1</method>
+        </inviteTest>
+        <linkedinTest negative="false" index="0"/>
+        <listTest negative="false" index="0"/>
+        <meTest negative="false" header="header" index="0"/>
+        <mimeHeaderTest stringComparison="stringComparison" negative="false" caseSensitive="false" header="headers" index="0" value="value"/>
+        <sizeTest negative="false" s="size" numberComparison="numberComparison" index="0"/>
+        <socialcastTest negative="false" index="0"/>
+        <trueTest negative="false" index="0"/>
+        <twitterTest negative="false" index="0"/>
+        <communityRequestsTest negative="false" index="0"/>
+        <communityContentTest negative="false" index="0"/>
+        <communityConnectionsTest negative="false" index="0"/>
+      </filterTests>
+      <nestedRule>
+        <filterVariables index="0"/>
+        <filterTests condition="condition"/>
+        <nestedRule/>
+      </nestedRule>
+    </filterRule>
+  </filterRules>
+</ModifyFilterRulesRequest>

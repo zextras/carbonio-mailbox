@@ -1,0 +1,6 @@
+<GetFilterRulesRequest type="type" xmlns="urn:zimbraAdmin">
+  <account by="adminName">key</account>
+  <domain by="id">key</domain>
+  <cos by="id">key</cos>
+  <server by="id">key</server>
+</GetFilterRulesRequest>

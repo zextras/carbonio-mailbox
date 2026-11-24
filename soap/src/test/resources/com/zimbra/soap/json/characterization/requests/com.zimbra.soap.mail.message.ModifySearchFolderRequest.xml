@@ -1,0 +1,3 @@
+<ModifySearchFolderRequest xmlns="urn:zimbraMail">
+  <search types="searchTypes" query="query" sortBy="sortBy" id="id"/>
+</ModifySearchFolderRequest>

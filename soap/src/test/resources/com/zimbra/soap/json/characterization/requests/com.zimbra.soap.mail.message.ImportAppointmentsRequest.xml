@@ -1,0 +1,3 @@
+<ImportAppointmentsRequest ct="contentType" l="folderId" xmlns="urn:zimbraMail">
+  <content part="part" mid="messageId" aid="attachmentId">text</content>
+</ImportAppointmentsRequest>

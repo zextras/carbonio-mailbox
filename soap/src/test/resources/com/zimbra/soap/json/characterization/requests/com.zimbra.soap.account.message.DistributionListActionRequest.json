@@ -1,0 +1,75 @@
+{
+  "Body": {
+    "DistributionListActionRequest": {
+      "_attrs": {
+        "name": [
+          "value",
+          "value"]
+      },
+      "dl": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "action": [{
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "op": "delete",
+          "dlm": [
+            {
+              "_content": "members0"
+            },
+            {
+              "_content": "members1"
+            }],
+          "newName": [{
+              "_content": "newName"
+            }],
+          "owner": [
+            {
+              "type": "usr",
+              "by": "id",
+              "_content": "key"
+            },
+            {
+              "type": "usr",
+              "by": "id",
+              "_content": "key"
+            }],
+          "right": [
+            {
+              "right": "right",
+              "grantee": [
+                {
+                  "type": "usr",
+                  "by": "id",
+                  "_content": "key"
+                },
+                {
+                  "type": "usr",
+                  "by": "id",
+                  "_content": "key"
+                }]
+            },
+            {
+              "right": "right",
+              "grantee": [
+                {
+                  "type": "usr",
+                  "by": "id",
+                  "_content": "key"
+                },
+                {
+                  "type": "usr",
+                  "by": "id",
+                  "_content": "key"
+                }]
+            }]
+        }],
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

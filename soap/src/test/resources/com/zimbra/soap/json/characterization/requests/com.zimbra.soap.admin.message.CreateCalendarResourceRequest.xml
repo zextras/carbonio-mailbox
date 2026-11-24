@@ -1,0 +1,4 @@
+<CreateCalendarResourceRequest password="password" name="name" xmlns="urn:zimbraAdmin">
+  <a n="key">value</a>
+  <a n="key">value</a>
+</CreateCalendarResourceRequest>

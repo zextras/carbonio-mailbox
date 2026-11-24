@@ -1,0 +1,14 @@
+{
+  "Body": {
+    "GetItemRequest": {
+      "item": {
+        "id": "id",
+        "l": "folder",
+        "name": "name",
+        "path": "path"
+      },
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

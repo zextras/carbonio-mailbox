@@ -1,0 +1,51 @@
+{
+  "imap": [{
+      "id": "id",
+      "isRunning": false,
+      "success": false,
+      "error": "error"
+    }],
+  "pop3": [{
+      "id": "id",
+      "isRunning": false,
+      "success": false,
+      "error": "error"
+    }],
+  "caldav": [{
+      "id": "id",
+      "isRunning": false,
+      "success": false,
+      "error": "error"
+    }],
+  "yab": [{
+      "id": "id",
+      "isRunning": false,
+      "success": false,
+      "error": "error"
+    }],
+  "rss": [{
+      "id": "id",
+      "isRunning": false,
+      "success": false,
+      "error": "error"
+    }],
+  "gal": [{
+      "id": "id",
+      "isRunning": false,
+      "success": false,
+      "error": "error"
+    }],
+  "cal": [{
+      "id": "id",
+      "isRunning": false,
+      "success": false,
+      "error": "error"
+    }],
+  "unknown": [{
+      "id": "id",
+      "isRunning": false,
+      "success": false,
+      "error": "error"
+    }],
+  "_jsns": "urn:zimbraMail"
+}

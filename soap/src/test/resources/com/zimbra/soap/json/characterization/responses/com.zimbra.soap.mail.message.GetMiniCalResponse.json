@@ -1,0 +1,21 @@
+{
+  "error": [
+    {
+      "id": "id",
+      "code": "code",
+      "_content": "errorMessage"
+    },
+    {
+      "id": "id",
+      "code": "code",
+      "_content": "errorMessage"
+    }],
+  "date": [
+    {
+      "_content": "busyDates0"
+    },
+    {
+      "_content": "busyDates1"
+    }],
+  "_jsns": "urn:zimbraMail"
+}

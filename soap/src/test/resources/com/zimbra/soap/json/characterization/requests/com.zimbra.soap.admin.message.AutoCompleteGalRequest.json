@@ -1,0 +1,13 @@
+{
+  "Body": {
+    "AutoCompleteGalRequest": {
+      "domain": "domain",
+      "name": "name",
+      "type": "all",
+      "galAcctId": "galAccountId",
+      "limit": 7,
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

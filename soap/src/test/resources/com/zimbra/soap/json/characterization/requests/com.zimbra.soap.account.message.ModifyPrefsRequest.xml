@@ -1,0 +1,4 @@
+<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+  <pref name="name">value</pref>
+  <pref name="name">value</pref>
+</ModifyPrefsRequest>

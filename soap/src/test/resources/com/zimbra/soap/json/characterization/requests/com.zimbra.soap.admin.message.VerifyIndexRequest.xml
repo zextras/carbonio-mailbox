@@ -1,0 +1,3 @@
+<VerifyIndexRequest xmlns="urn:zimbraAdmin">
+  <mbox id="id"/>
+</VerifyIndexRequest>

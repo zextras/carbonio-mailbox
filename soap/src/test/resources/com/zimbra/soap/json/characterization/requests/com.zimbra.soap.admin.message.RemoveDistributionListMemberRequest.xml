@@ -1,0 +1,6 @@
+<RemoveDistributionListMemberRequest id="id" xmlns="urn:zimbraAdmin">
+  <dlm>members0</dlm>
+  <dlm>members1</dlm>
+  <account>accounts0</account>
+  <account>accounts1</account>
+</RemoveDistributionListMemberRequest>

@@ -1,0 +1,11 @@
+{
+  "Body": {
+    "DeleteCosRequest": {
+      "id": [{
+          "_content": "id"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,32 @@
+{
+  "account": [
+    {
+      "name": "name",
+      "id": "id",
+      "a": [
+        {
+          "n": "key",
+          "_content": "value"
+        },
+        {
+          "n": "key",
+          "_content": "value"
+        }]
+    },
+    {
+      "name": "name",
+      "id": "id",
+      "a": [
+        {
+          "n": "key",
+          "_content": "value"
+        },
+        {
+          "n": "key",
+          "_content": "value"
+        }]
+    }],
+  "total": 7,
+  "more": false,
+  "_jsns": "urn:zimbraAccount"
+}

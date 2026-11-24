@@ -1,0 +1,12 @@
+{
+  "Body": {
+    "NoOpRequest": {
+      "wait": false,
+      "delegate": false,
+      "limitToOneBlocked": false,
+      "timeout": 1700000000000,
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

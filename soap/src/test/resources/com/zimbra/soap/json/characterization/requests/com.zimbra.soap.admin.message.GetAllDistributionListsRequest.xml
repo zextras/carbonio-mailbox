@@ -1,0 +1,3 @@
+<GetAllDistributionListsRequest xmlns="urn:zimbraAdmin">
+  <domain by="id">key</domain>
+</GetAllDistributionListsRequest>

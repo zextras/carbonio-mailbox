@@ -1,0 +1,17 @@
+{
+  "Body": {
+    "SearchAccountsRequest": {
+      "query": "query",
+      "limit": 7,
+      "offset": 7,
+      "domain": "domain",
+      "applyCos": false,
+      "attrs": "attrs",
+      "sortBy": "sortBy",
+      "types": "types",
+      "sortAscending": false,
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

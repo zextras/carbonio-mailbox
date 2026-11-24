@@ -1,0 +1,16 @@
+{
+  "Body": {
+    "GetAllAccountsRequest": {
+      "server": [{
+          "_content": "key",
+          "by": "id"
+        }],
+      "domain": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

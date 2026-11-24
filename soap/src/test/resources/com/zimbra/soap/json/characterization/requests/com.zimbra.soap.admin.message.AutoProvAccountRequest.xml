@@ -1,0 +1,5 @@
+<AutoProvAccountRequest xmlns="urn:zimbraAdmin">
+  <domain by="id">key</domain>
+  <principal by="dn">key</principal>
+  <password>password</password>
+</AutoProvAccountRequest>

@@ -1,0 +1,38 @@
+{
+  "Body": {
+    "GenCSRRequest": {
+      "C": [{
+          "_content": "c"
+        }],
+      "ST": [{
+          "_content": "st"
+        }],
+      "L": [{
+          "_content": "l"
+        }],
+      "O": [{
+          "_content": "o"
+        }],
+      "OU": [{
+          "_content": "ou"
+        }],
+      "CN": [{
+          "_content": "cn"
+        }],
+      "SubjectAltName": [
+        {
+          "_content": "subjectAltNames0"
+        },
+        {
+          "_content": "subjectAltNames1"
+        }],
+      "server": "server",
+      "new": "newCSR",
+      "type": "type",
+      "digest": "digest",
+      "keysize": "keySize",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

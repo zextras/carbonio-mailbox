@@ -1,0 +1,64 @@
+{
+  "targets": [
+    {
+      "right": "right",
+      "target": [
+        {
+          "type": "account",
+          "id": "id",
+          "name": "name",
+          "d": "displayName",
+          "email": [
+            {
+              "addr": "addr"
+            },
+            {
+              "addr": "addr"
+            }]
+        },
+        {
+          "type": "account",
+          "id": "id",
+          "name": "name",
+          "d": "displayName",
+          "email": [
+            {
+              "addr": "addr"
+            },
+            {
+              "addr": "addr"
+            }]
+        }]
+    },
+    {
+      "right": "right",
+      "target": [
+        {
+          "type": "account",
+          "id": "id",
+          "name": "name",
+          "d": "displayName",
+          "email": [
+            {
+              "addr": "addr"
+            },
+            {
+              "addr": "addr"
+            }]
+        },
+        {
+          "type": "account",
+          "id": "id",
+          "name": "name",
+          "d": "displayName",
+          "email": [
+            {
+              "addr": "addr"
+            },
+            {
+              "addr": "addr"
+            }]
+        }]
+    }],
+  "_jsns": "urn:zimbraAccount"
+}

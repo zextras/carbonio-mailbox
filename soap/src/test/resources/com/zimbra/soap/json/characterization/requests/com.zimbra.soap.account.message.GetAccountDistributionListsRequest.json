@@ -1,0 +1,11 @@
+{
+  "Body": {
+    "GetAccountDistributionListsRequest": {
+      "ownerOf": false,
+      "memberOf": "all",
+      "attrs": "attrs0,attrs1",
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

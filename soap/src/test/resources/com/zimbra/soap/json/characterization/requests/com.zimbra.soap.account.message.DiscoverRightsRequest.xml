@@ -1,0 +1,4 @@
+<DiscoverRightsRequest xmlns="urn:zimbraAccount">
+  <right>rights0</right>
+  <right>rights1</right>
+</DiscoverRightsRequest>

@@ -1,0 +1,3 @@
+<GetMailboxMetadataRequest xmlns="urn:zimbraMail">
+  <meta section="section"/>
+</GetMailboxMetadataRequest>

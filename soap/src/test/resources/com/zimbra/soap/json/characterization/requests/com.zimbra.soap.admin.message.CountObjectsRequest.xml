@@ -1,0 +1,4 @@
+<CountObjectsRequest onlyRelated="false" type="userAccount" xmlns="urn:zimbraAdmin">
+  <domain by="id">key</domain>
+  <domain by="id">key</domain>
+</CountObjectsRequest>

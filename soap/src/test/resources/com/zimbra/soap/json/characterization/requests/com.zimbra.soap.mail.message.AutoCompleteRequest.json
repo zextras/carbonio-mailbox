@@ -1,0 +1,13 @@
+{
+  "Body": {
+    "AutoCompleteRequest": {
+      "name": "name",
+      "t": "all",
+      "needExp": false,
+      "folders": "folderList",
+      "includeGal": false,
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

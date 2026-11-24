@@ -1,0 +1,9 @@
+<CreateContactRequest wantImapUid="false" wantModSeq="false" verbose="false" xmlns="urn:zimbraMail">
+  <cn t="tags" tn="tagNames" id="7" l="folder">
+    <vcard part="part" mid="messageId" aid="attachId">value</vcard>
+    <a part="part" id="7" aid="attachId" n="name">value</a>
+    <a part="part" id="7" aid="attachId" n="name">value</a>
+    <m type="type" value="value"/>
+    <m type="type" value="value"/>
+  </cn>
+</CreateContactRequest>

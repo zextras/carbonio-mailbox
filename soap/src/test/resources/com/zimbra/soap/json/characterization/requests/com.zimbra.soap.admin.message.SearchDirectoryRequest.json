@@ -1,0 +1,20 @@
+{
+  "Body": {
+    "SearchDirectoryRequest": {
+      "attrs": "attrs0,attrs1",
+      "query": "query",
+      "maxResults": 7,
+      "limit": 7,
+      "offset": 7,
+      "domain": "domain",
+      "applyCos": false,
+      "applyConfig": false,
+      "sortBy": "sortBy",
+      "types": "types",
+      "sortAscending": false,
+      "countOnly": false,
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

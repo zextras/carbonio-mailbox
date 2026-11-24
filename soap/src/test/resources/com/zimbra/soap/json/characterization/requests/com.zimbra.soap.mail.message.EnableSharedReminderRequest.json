@@ -1,0 +1,12 @@
+{
+  "Body": {
+    "EnableSharedReminderRequest": {
+      "link": {
+        "id": "id",
+        "reminder": false
+      },
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,16 @@
+{
+  "Body": {
+    "CreateCalendarGroupRequest": {
+      "name": "name",
+      "calendarId": [
+        {
+          "_content": "calendarIds0"
+        },
+        {
+          "_content": "calendarIds1"
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

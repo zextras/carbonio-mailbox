@@ -1,0 +1,9 @@
+{
+  "Body": {
+    "PurgeAccountCalendarCacheRequest": {
+      "id": "id",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

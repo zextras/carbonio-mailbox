@@ -1,0 +1,12 @@
+{
+  "Body": {
+    "SearchUsersByFeatureRequest": {
+      "name": "name",
+      "feature": "WSC",
+      "limit": 7,
+      "offset": 7,
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

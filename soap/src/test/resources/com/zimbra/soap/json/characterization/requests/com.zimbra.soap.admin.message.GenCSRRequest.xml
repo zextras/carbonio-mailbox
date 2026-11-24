@@ -1,0 +1,10 @@
+<GenCSRRequest server="server" new="newCSR" keysize="keySize" digest="digest" type="type" xmlns="urn:zimbraAdmin">
+  <C>c</C>
+  <ST>st</ST>
+  <L>l</L>
+  <O>o</O>
+  <OU>ou</OU>
+  <CN>cn</CN>
+  <SubjectAltName>subjectAltNames0</SubjectAltName>
+  <SubjectAltName>subjectAltNames1</SubjectAltName>
+</GenCSRRequest>

@@ -1,0 +1,12 @@
+{
+  "Body": {
+    "DeleteSignatureRequest": {
+      "signature": [{
+          "name": "name",
+          "id": "id"
+        }],
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

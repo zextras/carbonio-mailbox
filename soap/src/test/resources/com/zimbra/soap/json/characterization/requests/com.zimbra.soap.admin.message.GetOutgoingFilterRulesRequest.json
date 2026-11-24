@@ -1,0 +1,25 @@
+{
+  "Body": {
+    "GetOutgoingFilterRulesRequest": {
+      "type": "type",
+      "account": [{
+          "by": "adminName",
+          "_content": "key"
+        }],
+      "domain": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "cos": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "server": [{
+          "_content": "key",
+          "by": "id"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

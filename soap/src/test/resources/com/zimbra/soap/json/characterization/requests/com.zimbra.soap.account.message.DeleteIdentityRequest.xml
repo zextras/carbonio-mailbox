@@ -1,0 +1,3 @@
+<DeleteIdentityRequest xmlns="urn:zimbraAccount">
+  <identity name="name" id="id"/>
+</DeleteIdentityRequest>

@@ -1,0 +1,15 @@
+{
+  "Body": {
+    "GetQuotaUsageRequest": {
+      "domain": "domain",
+      "allServers": false,
+      "limit": 7,
+      "offset": 7,
+      "sortBy": "sortBy",
+      "sortAscending": false,
+      "refresh": false,
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

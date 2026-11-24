@@ -1,0 +1,18 @@
+{
+  "Body": {
+    "CreateSearchFolderRequest": {
+      "search": {
+        "name": "name",
+        "query": "query",
+        "types": "searchTypes",
+        "sortBy": "sortBy",
+        "f": "flags",
+        "color": 2,
+        "rgb": "rgb",
+        "l": "parentFolderId"
+      },
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

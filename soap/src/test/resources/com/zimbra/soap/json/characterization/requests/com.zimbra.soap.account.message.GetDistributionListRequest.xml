@@ -1,0 +1,5 @@
+<GetDistributionListRequest needRights="needRights" needOwners="false" xmlns="urn:zimbraAccount">
+  <a>value</a>
+  <a>value</a>
+  <dl by="id">key</dl>
+</GetDistributionListRequest>

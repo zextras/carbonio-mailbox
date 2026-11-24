@@ -1,0 +1,14 @@
+{
+  "Body": {
+    "RenameCosRequest": {
+      "id": [{
+          "_content": "id"
+        }],
+      "newName": [{
+          "_content": "newName"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

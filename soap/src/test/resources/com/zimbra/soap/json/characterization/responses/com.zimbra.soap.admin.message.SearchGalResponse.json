@@ -1,0 +1,220 @@
+{
+  "sortBy": "sortBy",
+  "offset": 7,
+  "more": false,
+  "tokenizeKey": false,
+  "cn": [
+    {
+      "sf": "sortField",
+      "exp": false,
+      "id": "id",
+      "l": "folder",
+      "f": "flags",
+      "t": "tags",
+      "tn": "tagNames",
+      "md": 1700000000000,
+      "ms": 7,
+      "d": 1700000000000,
+      "rev": 7,
+      "fileAsStr": "fileAs",
+      "email": "email",
+      "email2": "email2",
+      "email3": "email3",
+      "type": "type",
+      "dlist": "dlist",
+      "ref": "reference",
+      "tooManyMembers": false,
+      "meta": [
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        },
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        }],
+      "a": [
+        {
+          "n": "key",
+          "_content": "value",
+          "part": "part",
+          "ct": "contentType",
+          "s": 7,
+          "filename": "contentFilename"
+        },
+        {
+          "n": "key",
+          "_content": "value",
+          "part": "part",
+          "ct": "contentType",
+          "s": 7,
+          "filename": "contentFilename"
+        }],
+      "m": [
+        {
+          "type": "type",
+          "value": "value",
+          "cn": [{
+              "sf": "sortField",
+              "exp": false,
+              "id": "id",
+              "l": "folder",
+              "f": "flags",
+              "t": "tags",
+              "tn": "tagNames",
+              "md": 1700000000000,
+              "ms": 7,
+              "d": 1700000000000,
+              "rev": 7,
+              "fileAsStr": "fileAs",
+              "email": "email",
+              "email2": "email2",
+              "email3": "email3",
+              "type": "type",
+              "dlist": "dlist",
+              "ref": "reference",
+              "tooManyMembers": false
+            }]
+        },
+        {
+          "type": "type",
+          "value": "value",
+          "cn": [{
+              "sf": "sortField",
+              "exp": false,
+              "id": "id",
+              "l": "folder",
+              "f": "flags",
+              "t": "tags",
+              "tn": "tagNames",
+              "md": 1700000000000,
+              "ms": 7,
+              "d": 1700000000000,
+              "rev": 7,
+              "fileAsStr": "fileAs",
+              "email": "email",
+              "email2": "email2",
+              "email3": "email3",
+              "type": "type",
+              "dlist": "dlist",
+              "ref": "reference",
+              "tooManyMembers": false
+            }]
+        }]
+    },
+    {
+      "sf": "sortField",
+      "exp": false,
+      "id": "id",
+      "l": "folder",
+      "f": "flags",
+      "t": "tags",
+      "tn": "tagNames",
+      "md": 1700000000000,
+      "ms": 7,
+      "d": 1700000000000,
+      "rev": 7,
+      "fileAsStr": "fileAs",
+      "email": "email",
+      "email2": "email2",
+      "email3": "email3",
+      "type": "type",
+      "dlist": "dlist",
+      "ref": "reference",
+      "tooManyMembers": false,
+      "meta": [
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        },
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        }],
+      "a": [
+        {
+          "n": "key",
+          "_content": "value",
+          "part": "part",
+          "ct": "contentType",
+          "s": 7,
+          "filename": "contentFilename"
+        },
+        {
+          "n": "key",
+          "_content": "value",
+          "part": "part",
+          "ct": "contentType",
+          "s": 7,
+          "filename": "contentFilename"
+        }],
+      "m": [
+        {
+          "type": "type",
+          "value": "value",
+          "cn": [{
+              "sf": "sortField",
+              "exp": false,
+              "id": "id",
+              "l": "folder",
+              "f": "flags",
+              "t": "tags",
+              "tn": "tagNames",
+              "md": 1700000000000,
+              "ms": 7,
+              "d": 1700000000000,
+              "rev": 7,
+              "fileAsStr": "fileAs",
+              "email": "email",
+              "email2": "email2",
+              "email3": "email3",
+              "type": "type",
+              "dlist": "dlist",
+              "ref": "reference",
+              "tooManyMembers": false
+            }]
+        },
+        {
+          "type": "type",
+          "value": "value",
+          "cn": [{
+              "sf": "sortField",
+              "exp": false,
+              "id": "id",
+              "l": "folder",
+              "f": "flags",
+              "t": "tags",
+              "tn": "tagNames",
+              "md": 1700000000000,
+              "ms": 7,
+              "d": 1700000000000,
+              "rev": 7,
+              "fileAsStr": "fileAs",
+              "email": "email",
+              "email2": "email2",
+              "email3": "email3",
+              "type": "type",
+              "dlist": "dlist",
+              "ref": "reference",
+              "tooManyMembers": false
+            }]
+        }]
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

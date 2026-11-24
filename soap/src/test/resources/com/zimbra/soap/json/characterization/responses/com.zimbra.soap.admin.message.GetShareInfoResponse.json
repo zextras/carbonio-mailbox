@@ -1,0 +1,34 @@
+{
+  "share": [
+    {
+      "ownerId": "ownerId",
+      "ownerEmail": "ownerEmail",
+      "ownerName": "ownerDisplayName",
+      "folderId": 0,
+      "folderUuid": "folderUuid",
+      "folderPath": "folderPath",
+      "view": "defaultView",
+      "rights": "rights",
+      "granteeType": "granteeType",
+      "granteeId": "granteeId",
+      "granteeName": "granteeName",
+      "granteeDisplayName": "granteeDisplayName",
+      "mid": "mountpointId"
+    },
+    {
+      "ownerId": "ownerId",
+      "ownerEmail": "ownerEmail",
+      "ownerName": "ownerDisplayName",
+      "folderId": 0,
+      "folderUuid": "folderUuid",
+      "folderPath": "folderPath",
+      "view": "defaultView",
+      "rights": "rights",
+      "granteeType": "granteeType",
+      "granteeId": "granteeId",
+      "granteeName": "granteeName",
+      "granteeDisplayName": "granteeDisplayName",
+      "mid": "mountpointId"
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

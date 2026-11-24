@@ -1,0 +1,3 @@
+<MailQueueFlushRequest xmlns="urn:zimbraAdmin">
+  <server name="name"/>
+</MailQueueFlushRequest>

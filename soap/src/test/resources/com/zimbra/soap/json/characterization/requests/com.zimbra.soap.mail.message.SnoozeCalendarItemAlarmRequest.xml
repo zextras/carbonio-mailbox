@@ -1,0 +1,4 @@
+<SnoozeCalendarItemAlarmRequest xmlns="urn:zimbraMail">
+  <appt until="-1" id="id"/>
+  <appt until="-1" id="id"/>
+</SnoozeCalendarItemAlarmRequest>

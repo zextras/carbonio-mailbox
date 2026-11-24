@@ -1,0 +1,13 @@
+{
+  "Body": {
+    "GetCosRequest": {
+      "attrs": "attrs0,attrs1",
+      "cos": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

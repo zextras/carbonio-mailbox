@@ -1,0 +1,244 @@
+{
+  "mbox": [
+    {
+      "id": -1,
+      "missingBlobs": [{
+          "item": [
+            {
+              "id": -1,
+              "rev": -1,
+              "s": -1,
+              "volumeId": -1,
+              "blobPath": "blobPath",
+              "external": false,
+              "version": -1
+            },
+            {
+              "id": -1,
+              "rev": -1,
+              "s": -1,
+              "volumeId": -1,
+              "blobPath": "blobPath",
+              "external": false,
+              "version": -1
+            }]
+        }],
+      "incorrectSize": [{
+          "item": [
+            {
+              "id": -1,
+              "rev": -1,
+              "s": -1,
+              "volumeId": -1,
+              "blob": [{
+                  "path": "path",
+                  "s": 1700000000000,
+                  "fileSize": 1700000000000,
+                  "external": false
+                }]
+            },
+            {
+              "id": -1,
+              "rev": -1,
+              "s": -1,
+              "volumeId": -1,
+              "blob": [{
+                  "path": "path",
+                  "s": 1700000000000,
+                  "fileSize": 1700000000000,
+                  "external": false
+                }]
+            }]
+        }],
+      "unexpectedBlobs": [{
+          "blob": [
+            {
+              "volumeId": -1,
+              "path": "path",
+              "fileSize": 1700000000000,
+              "external": false
+            },
+            {
+              "volumeId": -1,
+              "path": "path",
+              "fileSize": 1700000000000,
+              "external": false
+            }]
+        }],
+      "incorrectRevision": [{
+          "item": [
+            {
+              "id": -1,
+              "rev": -1,
+              "s": -1,
+              "volumeId": -1,
+              "blob": [{
+                  "path": "path",
+                  "fileSize": 1700000000000,
+                  "rev": -1,
+                  "external": false
+                }]
+            },
+            {
+              "id": -1,
+              "rev": -1,
+              "s": -1,
+              "volumeId": -1,
+              "blob": [{
+                  "path": "path",
+                  "fileSize": 1700000000000,
+                  "rev": -1,
+                  "external": false
+                }]
+            }]
+        }],
+      "usedBlobs": [{
+          "item": [
+            {
+              "id": -1,
+              "rev": -1,
+              "s": -1,
+              "volumeId": -1,
+              "blob": [{
+                  "path": "path",
+                  "s": 1700000000000,
+                  "fileSize": 1700000000000,
+                  "external": false
+                }]
+            },
+            {
+              "id": -1,
+              "rev": -1,
+              "s": -1,
+              "volumeId": -1,
+              "blob": [{
+                  "path": "path",
+                  "s": 1700000000000,
+                  "fileSize": 1700000000000,
+                  "external": false
+                }]
+            }]
+        }]
+    },
+    {
+      "id": -1,
+      "missingBlobs": [{
+          "item": [
+            {
+              "id": -1,
+              "rev": -1,
+              "s": -1,
+              "volumeId": -1,
+              "blobPath": "blobPath",
+              "external": false,
+              "version": -1
+            },
+            {
+              "id": -1,
+              "rev": -1,
+              "s": -1,
+              "volumeId": -1,
+              "blobPath": "blobPath",
+              "external": false,
+              "version": -1
+            }]
+        }],
+      "incorrectSize": [{
+          "item": [
+            {
+              "id": -1,
+              "rev": -1,
+              "s": -1,
+              "volumeId": -1,
+              "blob": [{
+                  "path": "path",
+                  "s": 1700000000000,
+                  "fileSize": 1700000000000,
+                  "external": false
+                }]
+            },
+            {
+              "id": -1,
+              "rev": -1,
+              "s": -1,
+              "volumeId": -1,
+              "blob": [{
+                  "path": "path",
+                  "s": 1700000000000,
+                  "fileSize": 1700000000000,
+                  "external": false
+                }]
+            }]
+        }],
+      "unexpectedBlobs": [{
+          "blob": [
+            {
+              "volumeId": -1,
+              "path": "path",
+              "fileSize": 1700000000000,
+              "external": false
+            },
+            {
+              "volumeId": -1,
+              "path": "path",
+              "fileSize": 1700000000000,
+              "external": false
+            }]
+        }],
+      "incorrectRevision": [{
+          "item": [
+            {
+              "id": -1,
+              "rev": -1,
+              "s": -1,
+              "volumeId": -1,
+              "blob": [{
+                  "path": "path",
+                  "fileSize": 1700000000000,
+                  "rev": -1,
+                  "external": false
+                }]
+            },
+            {
+              "id": -1,
+              "rev": -1,
+              "s": -1,
+              "volumeId": -1,
+              "blob": [{
+                  "path": "path",
+                  "fileSize": 1700000000000,
+                  "rev": -1,
+                  "external": false
+                }]
+            }]
+        }],
+      "usedBlobs": [{
+          "item": [
+            {
+              "id": -1,
+              "rev": -1,
+              "s": -1,
+              "volumeId": -1,
+              "blob": [{
+                  "path": "path",
+                  "s": 1700000000000,
+                  "fileSize": 1700000000000,
+                  "external": false
+                }]
+            },
+            {
+              "id": -1,
+              "rev": -1,
+              "s": -1,
+              "volumeId": -1,
+              "blob": [{
+                  "path": "path",
+                  "s": 1700000000000,
+                  "fileSize": 1700000000000,
+                  "external": false
+                }]
+            }]
+        }]
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

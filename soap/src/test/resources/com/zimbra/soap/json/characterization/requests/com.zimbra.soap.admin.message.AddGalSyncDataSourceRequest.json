@@ -1,0 +1,21 @@
+{
+  "Body": {
+    "AddGalSyncDataSourceRequest": {
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "name": "name",
+      "domain": "domain",
+      "type": "both",
+      "account": [{
+          "by": "adminName",
+          "_content": "key"
+        }],
+      "folder": "folder",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

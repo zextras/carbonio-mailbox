@@ -1,0 +1,10 @@
+{
+  "Body": {
+    "GetCSRRequest": {
+      "server": "server",
+      "type": "type",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

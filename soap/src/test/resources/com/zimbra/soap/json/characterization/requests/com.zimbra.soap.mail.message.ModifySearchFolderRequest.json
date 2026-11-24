@@ -1,0 +1,14 @@
+{
+  "Body": {
+    "ModifySearchFolderRequest": {
+      "search": {
+        "id": "id",
+        "query": "query",
+        "types": "searchTypes",
+        "sortBy": "sortBy"
+      },
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

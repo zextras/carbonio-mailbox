@@ -1,0 +1,10 @@
+{
+  "authToken": [{
+      "_content": "authToken"
+    }],
+  "csrfToken": [{
+      "_content": "csrfToken"
+    }],
+  "lifetime": 0,
+  "_jsns": "urn:zimbraAdmin"
+}

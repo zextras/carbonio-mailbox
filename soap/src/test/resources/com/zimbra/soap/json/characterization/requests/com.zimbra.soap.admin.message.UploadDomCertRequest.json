@@ -1,0 +1,12 @@
+{
+  "Body": {
+    "UploadDomCertRequest": {
+      "cert.aid": "certificateAttachId",
+      "cert.filename": "certificateName",
+      "key.aid": "keyAttachId",
+      "key.filename": "keyName",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

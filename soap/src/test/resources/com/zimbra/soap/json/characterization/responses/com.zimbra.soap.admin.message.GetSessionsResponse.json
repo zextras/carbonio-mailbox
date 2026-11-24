@@ -1,0 +1,20 @@
+{
+  "more": false,
+  "total": -1,
+  "s": [
+    {
+      "zid": "zimbraId",
+      "name": "name",
+      "sid": "sessionId",
+      "cd": -1,
+      "ld": -1
+    },
+    {
+      "zid": "zimbraId",
+      "name": "name",
+      "sid": "sessionId",
+      "cd": -1,
+      "ld": -1
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

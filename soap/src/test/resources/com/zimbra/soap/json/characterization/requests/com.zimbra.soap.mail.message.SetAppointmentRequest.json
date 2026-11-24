@@ -1,0 +1,731 @@
+{
+  "Body": {
+    "SetAppointmentRequest": {
+      "f": "flags",
+      "t": "tags",
+      "tn": "tagNames",
+      "l": "folderId",
+      "noNextAlarm": false,
+      "nextAlarm": 1700000000000,
+      "default": {
+        "ptst": "partStat",
+        "m": {
+          "content": [{
+              "_content": "content"
+            }],
+          "header": [
+            {
+              "name": "name",
+              "_content": "value"
+            },
+            {
+              "name": "name",
+              "_content": "value"
+            }],
+          "mp": {
+            "ct": "contentType",
+            "content": "content",
+            "ci": "contentId"
+          },
+          "attach": {
+            "any": [
+              {
+                "name": "extraElements0",
+                "_content": "extraElements0"
+              },
+              {
+                "name": "extraElements1",
+                "_content": "extraElements1"
+              }],
+            "aid": "attachmentId"
+          },
+          "inv": {
+            "method": "method",
+            "compNum": -1,
+            "rsvp": false,
+            "priority": "priority",
+            "name": "name",
+            "loc": "location",
+            "noBlob": false,
+            "fba": "freeBusyActual",
+            "fb": "freeBusy",
+            "transp": "transparency",
+            "isOrg": false,
+            "x_uid": "xUid",
+            "uid": "uid",
+            "seq": 7,
+            "d": 1700000000000,
+            "calItemId": "calItemId",
+            "apptId": "deprecatedApptId",
+            "ciFolder": "calItemFolder",
+            "status": "status",
+            "class": "calClass",
+            "url": "url",
+            "ex": false,
+            "ridZ": "recurIdZ",
+            "allDay": false,
+            "draft": false,
+            "neverSent": false,
+            "changes": "changes",
+            "category": [
+              {
+                "_content": "categories0"
+              },
+              {
+                "_content": "categories1"
+              }],
+            "comment": [
+              {
+                "_content": "comments0"
+              },
+              {
+                "_content": "comments1"
+              }],
+            "contact": [
+              {
+                "_content": "contacts0"
+              },
+              {
+                "_content": "contacts1"
+              }],
+            "fr": "fragment",
+            "desc": [{
+                "_content": "description"
+              }],
+            "descHtml": [{
+                "_content": "htmlDescription"
+              }],
+            "id": "id",
+            "ct": "contentType",
+            "ci": "contentId"
+          },
+          "e": [
+            {
+              "a": "address",
+              "t": "addressType",
+              "p": "personal"
+            },
+            {
+              "a": "address",
+              "t": "addressType",
+              "p": "personal"
+            }],
+          "tz": [
+            {
+              "id": "id",
+              "stdoff": 7,
+              "dayoff": 7,
+              "stdname": "standardTZName",
+              "dayname": "daylightTZName"
+            },
+            {
+              "id": "id",
+              "stdoff": 7,
+              "dayoff": 7,
+              "stdname": "standardTZName",
+              "dayname": "daylightTZName"
+            }],
+          "fr": "fragment",
+          "any": [
+            {
+              "name": "extraElements0",
+              "_content": "extraElements0"
+            },
+            {
+              "name": "extraElements1",
+              "_content": "extraElements1"
+            }],
+          "aid": "attachmentId",
+          "origid": "origId",
+          "rt": "replyType",
+          "idnt": "identityId",
+          "su": "subject",
+          "irt": "inReplyTo",
+          "l": "folderId",
+          "f": "flags"
+        }
+      },
+      "except": [
+        {
+          "ptst": "partStat",
+          "m": {
+            "content": [{
+                "_content": "content"
+              }],
+            "header": [
+              {
+                "name": "name",
+                "_content": "value"
+              },
+              {
+                "name": "name",
+                "_content": "value"
+              }],
+            "mp": {
+              "ct": "contentType",
+              "content": "content",
+              "ci": "contentId"
+            },
+            "attach": {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "aid": "attachmentId"
+            },
+            "inv": {
+              "method": "method",
+              "compNum": -1,
+              "rsvp": false,
+              "priority": "priority",
+              "name": "name",
+              "loc": "location",
+              "noBlob": false,
+              "fba": "freeBusyActual",
+              "fb": "freeBusy",
+              "transp": "transparency",
+              "isOrg": false,
+              "x_uid": "xUid",
+              "uid": "uid",
+              "seq": 7,
+              "d": 1700000000000,
+              "calItemId": "calItemId",
+              "apptId": "deprecatedApptId",
+              "ciFolder": "calItemFolder",
+              "status": "status",
+              "class": "calClass",
+              "url": "url",
+              "ex": false,
+              "ridZ": "recurIdZ",
+              "allDay": false,
+              "draft": false,
+              "neverSent": false,
+              "changes": "changes",
+              "category": [
+                {
+                  "_content": "categories0"
+                },
+                {
+                  "_content": "categories1"
+                }],
+              "comment": [
+                {
+                  "_content": "comments0"
+                },
+                {
+                  "_content": "comments1"
+                }],
+              "contact": [
+                {
+                  "_content": "contacts0"
+                },
+                {
+                  "_content": "contacts1"
+                }],
+              "fr": "fragment",
+              "desc": [{
+                  "_content": "description"
+                }],
+              "descHtml": [{
+                  "_content": "htmlDescription"
+                }],
+              "id": "id",
+              "ct": "contentType",
+              "ci": "contentId"
+            },
+            "e": [
+              {
+                "a": "address",
+                "t": "addressType",
+                "p": "personal"
+              },
+              {
+                "a": "address",
+                "t": "addressType",
+                "p": "personal"
+              }],
+            "tz": [
+              {
+                "id": "id",
+                "stdoff": 7,
+                "dayoff": 7,
+                "stdname": "standardTZName",
+                "dayname": "daylightTZName"
+              },
+              {
+                "id": "id",
+                "stdoff": 7,
+                "dayoff": 7,
+                "stdname": "standardTZName",
+                "dayname": "daylightTZName"
+              }],
+            "fr": "fragment",
+            "any": [
+              {
+                "name": "extraElements0",
+                "_content": "extraElements0"
+              },
+              {
+                "name": "extraElements1",
+                "_content": "extraElements1"
+              }],
+            "aid": "attachmentId",
+            "origid": "origId",
+            "rt": "replyType",
+            "idnt": "identityId",
+            "su": "subject",
+            "irt": "inReplyTo",
+            "l": "folderId",
+            "f": "flags"
+          }
+        },
+        {
+          "ptst": "partStat",
+          "m": {
+            "content": [{
+                "_content": "content"
+              }],
+            "header": [
+              {
+                "name": "name",
+                "_content": "value"
+              },
+              {
+                "name": "name",
+                "_content": "value"
+              }],
+            "mp": {
+              "ct": "contentType",
+              "content": "content",
+              "ci": "contentId"
+            },
+            "attach": {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "aid": "attachmentId"
+            },
+            "inv": {
+              "method": "method",
+              "compNum": -1,
+              "rsvp": false,
+              "priority": "priority",
+              "name": "name",
+              "loc": "location",
+              "noBlob": false,
+              "fba": "freeBusyActual",
+              "fb": "freeBusy",
+              "transp": "transparency",
+              "isOrg": false,
+              "x_uid": "xUid",
+              "uid": "uid",
+              "seq": 7,
+              "d": 1700000000000,
+              "calItemId": "calItemId",
+              "apptId": "deprecatedApptId",
+              "ciFolder": "calItemFolder",
+              "status": "status",
+              "class": "calClass",
+              "url": "url",
+              "ex": false,
+              "ridZ": "recurIdZ",
+              "allDay": false,
+              "draft": false,
+              "neverSent": false,
+              "changes": "changes",
+              "category": [
+                {
+                  "_content": "categories0"
+                },
+                {
+                  "_content": "categories1"
+                }],
+              "comment": [
+                {
+                  "_content": "comments0"
+                },
+                {
+                  "_content": "comments1"
+                }],
+              "contact": [
+                {
+                  "_content": "contacts0"
+                },
+                {
+                  "_content": "contacts1"
+                }],
+              "fr": "fragment",
+              "desc": [{
+                  "_content": "description"
+                }],
+              "descHtml": [{
+                  "_content": "htmlDescription"
+                }],
+              "id": "id",
+              "ct": "contentType",
+              "ci": "contentId"
+            },
+            "e": [
+              {
+                "a": "address",
+                "t": "addressType",
+                "p": "personal"
+              },
+              {
+                "a": "address",
+                "t": "addressType",
+                "p": "personal"
+              }],
+            "tz": [
+              {
+                "id": "id",
+                "stdoff": 7,
+                "dayoff": 7,
+                "stdname": "standardTZName",
+                "dayname": "daylightTZName"
+              },
+              {
+                "id": "id",
+                "stdoff": 7,
+                "dayoff": 7,
+                "stdname": "standardTZName",
+                "dayname": "daylightTZName"
+              }],
+            "fr": "fragment",
+            "any": [
+              {
+                "name": "extraElements0",
+                "_content": "extraElements0"
+              },
+              {
+                "name": "extraElements1",
+                "_content": "extraElements1"
+              }],
+            "aid": "attachmentId",
+            "origid": "origId",
+            "rt": "replyType",
+            "idnt": "identityId",
+            "su": "subject",
+            "irt": "inReplyTo",
+            "l": "folderId",
+            "f": "flags"
+          }
+        }],
+      "cancel": [
+        {
+          "ptst": "partStat",
+          "m": {
+            "content": [{
+                "_content": "content"
+              }],
+            "header": [
+              {
+                "name": "name",
+                "_content": "value"
+              },
+              {
+                "name": "name",
+                "_content": "value"
+              }],
+            "mp": {
+              "ct": "contentType",
+              "content": "content",
+              "ci": "contentId"
+            },
+            "attach": {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "aid": "attachmentId"
+            },
+            "inv": {
+              "method": "method",
+              "compNum": -1,
+              "rsvp": false,
+              "priority": "priority",
+              "name": "name",
+              "loc": "location",
+              "noBlob": false,
+              "fba": "freeBusyActual",
+              "fb": "freeBusy",
+              "transp": "transparency",
+              "isOrg": false,
+              "x_uid": "xUid",
+              "uid": "uid",
+              "seq": 7,
+              "d": 1700000000000,
+              "calItemId": "calItemId",
+              "apptId": "deprecatedApptId",
+              "ciFolder": "calItemFolder",
+              "status": "status",
+              "class": "calClass",
+              "url": "url",
+              "ex": false,
+              "ridZ": "recurIdZ",
+              "allDay": false,
+              "draft": false,
+              "neverSent": false,
+              "changes": "changes",
+              "category": [
+                {
+                  "_content": "categories0"
+                },
+                {
+                  "_content": "categories1"
+                }],
+              "comment": [
+                {
+                  "_content": "comments0"
+                },
+                {
+                  "_content": "comments1"
+                }],
+              "contact": [
+                {
+                  "_content": "contacts0"
+                },
+                {
+                  "_content": "contacts1"
+                }],
+              "fr": "fragment",
+              "desc": [{
+                  "_content": "description"
+                }],
+              "descHtml": [{
+                  "_content": "htmlDescription"
+                }],
+              "id": "id",
+              "ct": "contentType",
+              "ci": "contentId"
+            },
+            "e": [
+              {
+                "a": "address",
+                "t": "addressType",
+                "p": "personal"
+              },
+              {
+                "a": "address",
+                "t": "addressType",
+                "p": "personal"
+              }],
+            "tz": [
+              {
+                "id": "id",
+                "stdoff": 7,
+                "dayoff": 7,
+                "stdname": "standardTZName",
+                "dayname": "daylightTZName"
+              },
+              {
+                "id": "id",
+                "stdoff": 7,
+                "dayoff": 7,
+                "stdname": "standardTZName",
+                "dayname": "daylightTZName"
+              }],
+            "fr": "fragment",
+            "any": [
+              {
+                "name": "extraElements0",
+                "_content": "extraElements0"
+              },
+              {
+                "name": "extraElements1",
+                "_content": "extraElements1"
+              }],
+            "aid": "attachmentId",
+            "origid": "origId",
+            "rt": "replyType",
+            "idnt": "identityId",
+            "su": "subject",
+            "irt": "inReplyTo",
+            "l": "folderId",
+            "f": "flags"
+          }
+        },
+        {
+          "ptst": "partStat",
+          "m": {
+            "content": [{
+                "_content": "content"
+              }],
+            "header": [
+              {
+                "name": "name",
+                "_content": "value"
+              },
+              {
+                "name": "name",
+                "_content": "value"
+              }],
+            "mp": {
+              "ct": "contentType",
+              "content": "content",
+              "ci": "contentId"
+            },
+            "attach": {
+              "any": [
+                {
+                  "name": "extraElements0",
+                  "_content": "extraElements0"
+                },
+                {
+                  "name": "extraElements1",
+                  "_content": "extraElements1"
+                }],
+              "aid": "attachmentId"
+            },
+            "inv": {
+              "method": "method",
+              "compNum": -1,
+              "rsvp": false,
+              "priority": "priority",
+              "name": "name",
+              "loc": "location",
+              "noBlob": false,
+              "fba": "freeBusyActual",
+              "fb": "freeBusy",
+              "transp": "transparency",
+              "isOrg": false,
+              "x_uid": "xUid",
+              "uid": "uid",
+              "seq": 7,
+              "d": 1700000000000,
+              "calItemId": "calItemId",
+              "apptId": "deprecatedApptId",
+              "ciFolder": "calItemFolder",
+              "status": "status",
+              "class": "calClass",
+              "url": "url",
+              "ex": false,
+              "ridZ": "recurIdZ",
+              "allDay": false,
+              "draft": false,
+              "neverSent": false,
+              "changes": "changes",
+              "category": [
+                {
+                  "_content": "categories0"
+                },
+                {
+                  "_content": "categories1"
+                }],
+              "comment": [
+                {
+                  "_content": "comments0"
+                },
+                {
+                  "_content": "comments1"
+                }],
+              "contact": [
+                {
+                  "_content": "contacts0"
+                },
+                {
+                  "_content": "contacts1"
+                }],
+              "fr": "fragment",
+              "desc": [{
+                  "_content": "description"
+                }],
+              "descHtml": [{
+                  "_content": "htmlDescription"
+                }],
+              "id": "id",
+              "ct": "contentType",
+              "ci": "contentId"
+            },
+            "e": [
+              {
+                "a": "address",
+                "t": "addressType",
+                "p": "personal"
+              },
+              {
+                "a": "address",
+                "t": "addressType",
+                "p": "personal"
+              }],
+            "tz": [
+              {
+                "id": "id",
+                "stdoff": 7,
+                "dayoff": 7,
+                "stdname": "standardTZName",
+                "dayname": "daylightTZName"
+              },
+              {
+                "id": "id",
+                "stdoff": 7,
+                "dayoff": 7,
+                "stdname": "standardTZName",
+                "dayname": "daylightTZName"
+              }],
+            "fr": "fragment",
+            "any": [
+              {
+                "name": "extraElements0",
+                "_content": "extraElements0"
+              },
+              {
+                "name": "extraElements1",
+                "_content": "extraElements1"
+              }],
+            "aid": "attachmentId",
+            "origid": "origId",
+            "rt": "replyType",
+            "idnt": "identityId",
+            "su": "subject",
+            "irt": "inReplyTo",
+            "l": "folderId",
+            "f": "flags"
+          }
+        }],
+      "replies": {
+        "reply": [
+          {
+            "rangeType": -1,
+            "recurId": "recurrenceId",
+            "tz": "timezone",
+            "ridZ": "recurIdZ",
+            "at": "attendee",
+            "sentBy": "sentBy",
+            "ptst": "partStat",
+            "seq": -1,
+            "d": -1
+          },
+          {
+            "rangeType": -1,
+            "recurId": "recurrenceId",
+            "tz": "timezone",
+            "ridZ": "recurIdZ",
+            "at": "attendee",
+            "sentBy": "sentBy",
+            "ptst": "partStat",
+            "seq": -1,
+            "d": -1
+          }]
+      },
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

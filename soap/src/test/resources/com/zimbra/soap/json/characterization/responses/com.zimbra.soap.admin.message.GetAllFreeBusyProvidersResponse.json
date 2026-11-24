@@ -1,0 +1,20 @@
+{
+  "provider": [
+    {
+      "name": "name",
+      "propagate": false,
+      "start": -1,
+      "end": -1,
+      "queue": "queue",
+      "prefix": "prefix"
+    },
+    {
+      "name": "name",
+      "propagate": false,
+      "start": -1,
+      "end": -1,
+      "queue": "queue",
+      "prefix": "prefix"
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

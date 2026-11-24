@@ -1,0 +1,15 @@
+{
+  "Body": {
+    "GetRightsDocRequest": {
+      "package": [
+        {
+          "name": "name"
+        },
+        {
+          "name": "name"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

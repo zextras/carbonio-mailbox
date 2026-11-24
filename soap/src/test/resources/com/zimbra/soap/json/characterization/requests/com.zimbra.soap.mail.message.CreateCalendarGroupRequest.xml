@@ -1,0 +1,4 @@
+<CreateCalendarGroupRequest name="name" xmlns="urn:zimbraMail">
+  <calendarId>calendarIds0</calendarId>
+  <calendarId>calendarIds1</calendarId>
+</CreateCalendarGroupRequest>

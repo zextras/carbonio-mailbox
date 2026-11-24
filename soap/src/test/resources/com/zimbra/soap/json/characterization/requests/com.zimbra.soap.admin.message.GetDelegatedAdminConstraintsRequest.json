@@ -1,0 +1,18 @@
+{
+  "Body": {
+    "GetDelegatedAdminConstraintsRequest": {
+      "type": "account",
+      "id": "id",
+      "name": "name",
+      "a": [
+        {
+          "name": "name"
+        },
+        {
+          "name": "name"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

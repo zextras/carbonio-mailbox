@@ -1,0 +1,7 @@
+<MailQueueActionRequest xmlns="urn:zimbraAdmin">
+  <server name="name">
+    <queue name="name">
+      <action op="hold" by="id"/>
+    </queue>
+  </server>
+</MailQueueActionRequest>

@@ -1,0 +1,4 @@
+<GetAllCalendarResourcesRequest xmlns="urn:zimbraAdmin">
+  <server by="id">key</server>
+  <domain by="id">key</domain>
+</GetAllCalendarResourcesRequest>

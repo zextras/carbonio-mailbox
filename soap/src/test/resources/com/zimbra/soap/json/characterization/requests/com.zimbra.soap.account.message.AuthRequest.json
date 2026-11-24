@@ -1,0 +1,64 @@
+{
+  "Body": {
+    "AuthRequest": {
+      "persistAuthTokenCookie": false,
+      "csrfTokenSecured": false,
+      "account": [{
+          "by": "adminName",
+          "_content": "key"
+        }],
+      "password": [{
+          "_content": "password"
+        }],
+      "recoveryCode": [{
+          "_content": "recoveryCode"
+        }],
+      "preauth": [{
+          "timestamp": 0,
+          "expires": 1700000000000,
+          "_content": "value"
+        }],
+      "authToken": [{
+          "_content": "value",
+          "verifyAccount": false,
+          "lifetime": 1700000000000
+        }],
+      "jwtToken": [{
+          "_content": "jwtToken"
+        }],
+      "virtualHost": [{
+          "_content": "virtualHost"
+        }],
+      "prefs": {
+        "pref": [
+          {
+            "name": "name",
+            "modified": 1700000000000,
+            "_content": "value"
+          },
+          {
+            "name": "name",
+            "modified": 1700000000000,
+            "_content": "value"
+          }]
+      },
+      "attrs": {
+        "attr": [
+          {
+            "name": "name",
+            "pd": false,
+            "_content": "value"
+          },
+          {
+            "name": "name",
+            "pd": false,
+            "_content": "value"
+          }]
+      },
+      "tokenType": "tokenType",
+      "productQuery": false,
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

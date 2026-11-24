@@ -1,0 +1,12 @@
+{
+  "Body": {
+    "SetRecoveryAccountRequest": {
+      "op": "sendCode",
+      "recoveryAccount": "recoveryAccount",
+      "recoveryAccountVerificationCode": "recoveryAccountVerificationCode",
+      "channel": "email",
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

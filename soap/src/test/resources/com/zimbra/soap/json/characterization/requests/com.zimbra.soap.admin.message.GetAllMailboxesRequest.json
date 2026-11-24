@@ -1,0 +1,10 @@
+{
+  "Body": {
+    "GetAllMailboxesRequest": {
+      "limit": 1700000000000,
+      "offset": 1700000000000,
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

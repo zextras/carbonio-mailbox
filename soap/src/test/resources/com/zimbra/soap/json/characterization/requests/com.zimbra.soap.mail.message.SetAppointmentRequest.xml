@@ -1,0 +1,156 @@
+<SetAppointmentRequest t="tags" f="flags" tn="tagNames" l="folderId" noNextAlarm="false" nextAlarm="1700000000000" xmlns="urn:zimbraMail">
+  <default ptst="partStat">
+    <m idnt="identityId" rt="replyType" su="subject" f="flags" irt="inReplyTo" l="folderId" aid="attachmentId" origid="origId">
+      <content>content</content>
+      <header name="name">value</header>
+      <header name="name">value</header>
+      <mp ct="contentType" ci="contentId" content="content"/>
+      <attach aid="attachmentId">
+        <any name="extraElements0">extraElements0</any>
+        <any name="extraElements1">extraElements1</any>
+      </attach>
+      <inv loc="location" changes="changes" apptId="deprecatedApptId" rsvp="false" noBlob="false" x_uid="xUid" compNum="-1" uid="uid" allDay="false" draft="false" ridZ="recurIdZ" id="id" class="calClass" seq="7" neverSent="false" method="method" fba="freeBusyActual" d="1700000000000" ci="contentId" isOrg="false" priority="priority" transp="transparency" url="url" ciFolder="calItemFolder" ct="contentType" calItemId="calItemId" ex="false" name="name" fb="freeBusy" status="status">
+        <category>categories0</category>
+        <category>categories1</category>
+        <comment>comments0</comment>
+        <comment>comments1</comment>
+        <contact>contacts0</contact>
+        <contact>contacts1</contact>
+        <fr>fragment</fr>
+        <desc>description</desc>
+        <descHtml>htmlDescription</descHtml>
+      </inv>
+      <e p="personal" a="address" t="addressType"/>
+      <e p="personal" a="address" t="addressType"/>
+      <tz stdoff="7" dayname="daylightTZName" dayoff="7" id="id" stdname="standardTZName"/>
+      <tz stdoff="7" dayname="daylightTZName" dayoff="7" id="id" stdname="standardTZName"/>
+      <fr>fragment</fr>
+      <any name="extraElements0">extraElements0</any>
+      <any name="extraElements1">extraElements1</any>
+    </m>
+  </default>
+  <except ptst="partStat">
+    <m idnt="identityId" rt="replyType" su="subject" f="flags" irt="inReplyTo" l="folderId" aid="attachmentId" origid="origId">
+      <content>content</content>
+      <header name="name">value</header>
+      <header name="name">value</header>
+      <mp ct="contentType" ci="contentId" content="content"/>
+      <attach aid="attachmentId">
+        <any name="extraElements0">extraElements0</any>
+        <any name="extraElements1">extraElements1</any>
+      </attach>
+      <inv loc="location" changes="changes" apptId="deprecatedApptId" rsvp="false" noBlob="false" x_uid="xUid" compNum="-1" uid="uid" allDay="false" draft="false" ridZ="recurIdZ" id="id" class="calClass" seq="7" neverSent="false" method="method" fba="freeBusyActual" d="1700000000000" ci="contentId" isOrg="false" priority="priority" transp="transparency" url="url" ciFolder="calItemFolder" ct="contentType" calItemId="calItemId" ex="false" name="name" fb="freeBusy" status="status">
+        <category>categories0</category>
+        <category>categories1</category>
+        <comment>comments0</comment>
+        <comment>comments1</comment>
+        <contact>contacts0</contact>
+        <contact>contacts1</contact>
+        <fr>fragment</fr>
+        <desc>description</desc>
+        <descHtml>htmlDescription</descHtml>
+      </inv>
+      <e p="personal" a="address" t="addressType"/>
+      <e p="personal" a="address" t="addressType"/>
+      <tz stdoff="7" dayname="daylightTZName" dayoff="7" id="id" stdname="standardTZName"/>
+      <tz stdoff="7" dayname="daylightTZName" dayoff="7" id="id" stdname="standardTZName"/>
+      <fr>fragment</fr>
+      <any name="extraElements0">extraElements0</any>
+      <any name="extraElements1">extraElements1</any>
+    </m>
+  </except>
+  <except ptst="partStat">
+    <m idnt="identityId" rt="replyType" su="subject" f="flags" irt="inReplyTo" l="folderId" aid="attachmentId" origid="origId">
+      <content>content</content>
+      <header name="name">value</header>
+      <header name="name">value</header>
+      <mp ct="contentType" ci="contentId" content="content"/>
+      <attach aid="attachmentId">
+        <any name="extraElements0">extraElements0</any>
+        <any name="extraElements1">extraElements1</any>
+      </attach>
+      <inv loc="location" changes="changes" apptId="deprecatedApptId" rsvp="false" noBlob="false" x_uid="xUid" compNum="-1" uid="uid" allDay="false" draft="false" ridZ="recurIdZ" id="id" class="calClass" seq="7" neverSent="false" method="method" fba="freeBusyActual" d="1700000000000" ci="contentId" isOrg="false" priority="priority" transp="transparency" url="url" ciFolder="calItemFolder" ct="contentType" calItemId="calItemId" ex="false" name="name" fb="freeBusy" status="status">
+        <category>categories0</category>
+        <category>categories1</category>
+        <comment>comments0</comment>
+        <comment>comments1</comment>
+        <contact>contacts0</contact>
+        <contact>contacts1</contact>
+        <fr>fragment</fr>
+        <desc>description</desc>
+        <descHtml>htmlDescription</descHtml>
+      </inv>
+      <e p="personal" a="address" t="addressType"/>
+      <e p="personal" a="address" t="addressType"/>
+      <tz stdoff="7" dayname="daylightTZName" dayoff="7" id="id" stdname="standardTZName"/>
+      <tz stdoff="7" dayname="daylightTZName" dayoff="7" id="id" stdname="standardTZName"/>
+      <fr>fragment</fr>
+      <any name="extraElements0">extraElements0</any>
+      <any name="extraElements1">extraElements1</any>
+    </m>
+  </except>
+  <cancel ptst="partStat">
+    <m idnt="identityId" rt="replyType" su="subject" f="flags" irt="inReplyTo" l="folderId" aid="attachmentId" origid="origId">
+      <content>content</content>
+      <header name="name">value</header>
+      <header name="name">value</header>
+      <mp ct="contentType" ci="contentId" content="content"/>
+      <attach aid="attachmentId">
+        <any name="extraElements0">extraElements0</any>
+        <any name="extraElements1">extraElements1</any>
+      </attach>
+      <inv loc="location" changes="changes" apptId="deprecatedApptId" rsvp="false" noBlob="false" x_uid="xUid" compNum="-1" uid="uid" allDay="false" draft="false" ridZ="recurIdZ" id="id" class="calClass" seq="7" neverSent="false" method="method" fba="freeBusyActual" d="1700000000000" ci="contentId" isOrg="false" priority="priority" transp="transparency" url="url" ciFolder="calItemFolder" ct="contentType" calItemId="calItemId" ex="false" name="name" fb="freeBusy" status="status">
+        <category>categories0</category>
+        <category>categories1</category>
+        <comment>comments0</comment>
+        <comment>comments1</comment>
+        <contact>contacts0</contact>
+        <contact>contacts1</contact>
+        <fr>fragment</fr>
+        <desc>description</desc>
+        <descHtml>htmlDescription</descHtml>
+      </inv>
+      <e p="personal" a="address" t="addressType"/>
+      <e p="personal" a="address" t="addressType"/>
+      <tz stdoff="7" dayname="daylightTZName" dayoff="7" id="id" stdname="standardTZName"/>
+      <tz stdoff="7" dayname="daylightTZName" dayoff="7" id="id" stdname="standardTZName"/>
+      <fr>fragment</fr>
+      <any name="extraElements0">extraElements0</any>
+      <any name="extraElements1">extraElements1</any>
+    </m>
+  </cancel>
+  <cancel ptst="partStat">
+    <m idnt="identityId" rt="replyType" su="subject" f="flags" irt="inReplyTo" l="folderId" aid="attachmentId" origid="origId">
+      <content>content</content>
+      <header name="name">value</header>
+      <header name="name">value</header>
+      <mp ct="contentType" ci="contentId" content="content"/>
+      <attach aid="attachmentId">
+        <any name="extraElements0">extraElements0</any>
+        <any name="extraElements1">extraElements1</any>
+      </attach>
+      <inv loc="location" changes="changes" apptId="deprecatedApptId" rsvp="false" noBlob="false" x_uid="xUid" compNum="-1" uid="uid" allDay="false" draft="false" ridZ="recurIdZ" id="id" class="calClass" seq="7" neverSent="false" method="method" fba="freeBusyActual" d="1700000000000" ci="contentId" isOrg="false" priority="priority" transp="transparency" url="url" ciFolder="calItemFolder" ct="contentType" calItemId="calItemId" ex="false" name="name" fb="freeBusy" status="status">
+        <category>categories0</category>
+        <category>categories1</category>
+        <comment>comments0</comment>
+        <comment>comments1</comment>
+        <contact>contacts0</contact>
+        <contact>contacts1</contact>
+        <fr>fragment</fr>
+        <desc>description</desc>
+        <descHtml>htmlDescription</descHtml>
+      </inv>
+      <e p="personal" a="address" t="addressType"/>
+      <e p="personal" a="address" t="addressType"/>
+      <tz stdoff="7" dayname="daylightTZName" dayoff="7" id="id" stdname="standardTZName"/>
+      <tz stdoff="7" dayname="daylightTZName" dayoff="7" id="id" stdname="standardTZName"/>
+      <fr>fragment</fr>
+      <any name="extraElements0">extraElements0</any>
+      <any name="extraElements1">extraElements1</any>
+    </m>
+  </cancel>
+  <replies>
+    <reply ptst="partStat" recurId="recurrenceId" at="attendee" d="-1" rangeType="-1" tz="timezone" ridZ="recurIdZ" seq="-1" sentBy="sentBy"/>
+    <reply ptst="partStat" recurId="recurrenceId" at="attendee" d="-1" rangeType="-1" tz="timezone" ridZ="recurIdZ" seq="-1" sentBy="sentBy"/>
+  </replies>
+</SetAppointmentRequest>

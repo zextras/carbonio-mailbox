@@ -1,0 +1,3 @@
+<GetMsgMetadataRequest xmlns="urn:zimbraMail">
+  <m ids="ids"/>
+</GetMsgMetadataRequest>

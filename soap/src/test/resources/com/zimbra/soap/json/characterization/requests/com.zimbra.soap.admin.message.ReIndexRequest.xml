@@ -1,0 +1,3 @@
+<ReIndexRequest action="action" xmlns="urn:zimbraAdmin">
+  <mbox types="types" ids="ids" id="accountId"/>
+</ReIndexRequest>

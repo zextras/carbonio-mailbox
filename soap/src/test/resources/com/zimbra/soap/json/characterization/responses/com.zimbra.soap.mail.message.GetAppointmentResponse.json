@@ -1,0 +1,267 @@
+{
+  "item": {
+    "appt": {
+      "inv": [
+        {
+          "tz": [
+            {
+              "id": "id",
+              "stdoff": 7,
+              "dayoff": 7,
+              "stdname": "standardTZName",
+              "dayname": "daylightTZName"
+            },
+            {
+              "id": "id",
+              "stdoff": 7,
+              "dayoff": 7,
+              "stdname": "standardTZName",
+              "dayname": "daylightTZName"
+            }],
+          "comp": [{
+              "category": [
+                {
+                  "_content": "categories0"
+                },
+                {
+                  "_content": "categories1"
+                }],
+              "comment": [
+                {
+                  "_content": "comments0"
+                },
+                {
+                  "_content": "comments1"
+                }],
+              "contact": [
+                {
+                  "_content": "contacts0"
+                },
+                {
+                  "_content": "contacts1"
+                }],
+              "fr": "fragment",
+              "desc": [{
+                  "_content": "description"
+                }],
+              "descHtml": [{
+                  "_content": "htmlDescription"
+                }],
+              "method": "method",
+              "compNum": 7,
+              "rsvp": false,
+              "priority": "priority",
+              "name": "name",
+              "loc": "location",
+              "noBlob": false,
+              "fba": "freeBusyActual",
+              "fb": "freeBusy",
+              "transp": "transparency",
+              "isOrg": false,
+              "x_uid": "xUid",
+              "uid": "uid",
+              "seq": 7,
+              "d": 1700000000000,
+              "calItemId": "calItemId",
+              "apptId": "deprecatedApptId",
+              "ciFolder": "calItemFolder",
+              "status": "status",
+              "class": "calClass",
+              "url": "url",
+              "ex": false,
+              "ridZ": "recurIdZ",
+              "allDay": false,
+              "draft": false,
+              "neverSent": false,
+              "changes": "changes"
+            }],
+          "mp": [{
+              "content": [{
+                  "_content": "content"
+                }],
+              "part": "part",
+              "ct": "contentType",
+              "s": 7,
+              "cd": "contentDisposition",
+              "filename": "contentFilename",
+              "ci": "contentId",
+              "cl": "location",
+              "body": false,
+              "truncated": false,
+              "requiresSmartLinkConversion": false
+            }],
+          "shr": [{
+              "truncated": false,
+              "content": "content"
+            }],
+          "dlSubs": [{
+              "truncated": false,
+              "content": "content"
+            }],
+          "type": "calItemType",
+          "seq": 7,
+          "id": 7,
+          "compNum": 7,
+          "recurId": "recurrenceId"
+        },
+        {
+          "tz": [
+            {
+              "id": "id",
+              "stdoff": 7,
+              "dayoff": 7,
+              "stdname": "standardTZName",
+              "dayname": "daylightTZName"
+            },
+            {
+              "id": "id",
+              "stdoff": 7,
+              "dayoff": 7,
+              "stdname": "standardTZName",
+              "dayname": "daylightTZName"
+            }],
+          "comp": [{
+              "category": [
+                {
+                  "_content": "categories0"
+                },
+                {
+                  "_content": "categories1"
+                }],
+              "comment": [
+                {
+                  "_content": "comments0"
+                },
+                {
+                  "_content": "comments1"
+                }],
+              "contact": [
+                {
+                  "_content": "contacts0"
+                },
+                {
+                  "_content": "contacts1"
+                }],
+              "fr": "fragment",
+              "desc": [{
+                  "_content": "description"
+                }],
+              "descHtml": [{
+                  "_content": "htmlDescription"
+                }],
+              "method": "method",
+              "compNum": 7,
+              "rsvp": false,
+              "priority": "priority",
+              "name": "name",
+              "loc": "location",
+              "noBlob": false,
+              "fba": "freeBusyActual",
+              "fb": "freeBusy",
+              "transp": "transparency",
+              "isOrg": false,
+              "x_uid": "xUid",
+              "uid": "uid",
+              "seq": 7,
+              "d": 1700000000000,
+              "calItemId": "calItemId",
+              "apptId": "deprecatedApptId",
+              "ciFolder": "calItemFolder",
+              "status": "status",
+              "class": "calClass",
+              "url": "url",
+              "ex": false,
+              "ridZ": "recurIdZ",
+              "allDay": false,
+              "draft": false,
+              "neverSent": false,
+              "changes": "changes"
+            }],
+          "mp": [{
+              "content": [{
+                  "_content": "content"
+                }],
+              "part": "part",
+              "ct": "contentType",
+              "s": 7,
+              "cd": "contentDisposition",
+              "filename": "contentFilename",
+              "ci": "contentId",
+              "cl": "location",
+              "body": false,
+              "truncated": false,
+              "requiresSmartLinkConversion": false
+            }],
+          "shr": [{
+              "truncated": false,
+              "content": "content"
+            }],
+          "dlSubs": [{
+              "truncated": false,
+              "content": "content"
+            }],
+          "type": "calItemType",
+          "seq": 7,
+          "id": 7,
+          "compNum": 7,
+          "recurId": "recurrenceId"
+        }],
+      "replies": [{
+          "reply": [
+            {
+              "rangeType": -1,
+              "recurId": "recurrenceId",
+              "tz": "timezone",
+              "ridZ": "recurIdZ",
+              "seq": 0,
+              "d": 0,
+              "at": "attendee",
+              "sentBy": "sentBy",
+              "ptst": "partStat"
+            },
+            {
+              "rangeType": -1,
+              "recurId": "recurrenceId",
+              "tz": "timezone",
+              "ridZ": "recurIdZ",
+              "seq": 0,
+              "d": 0,
+              "at": "attendee",
+              "sentBy": "sentBy",
+              "ptst": "partStat"
+            }]
+        }],
+      "meta": [
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        },
+        {
+          "_attrs": {
+            "key": [
+              "value",
+              "value"]
+          },
+          "section": "section"
+        }],
+      "f": "flags",
+      "t": "tags",
+      "tn": "tagNames",
+      "uid": "uid",
+      "id": "id",
+      "rev": 7,
+      "s": 1700000000000,
+      "d": 1700000000000,
+      "l": "folder",
+      "md": 1700000000000,
+      "ms": 7,
+      "nextAlarm": 1700000000000,
+      "orphan": false
+    }
+  },
+  "_jsns": "urn:zimbraMail"
+}

@@ -1,0 +1,12 @@
+{
+  "Body": {
+    "EndSessionRequest": {
+      "logoff": false,
+      "all": false,
+      "excludeCurrent": false,
+      "sessionId": "sessionId",
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

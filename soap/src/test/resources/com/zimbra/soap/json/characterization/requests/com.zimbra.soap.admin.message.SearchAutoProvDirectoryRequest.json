@@ -1,0 +1,20 @@
+{
+  "Body": {
+    "SearchAutoProvDirectoryRequest": {
+      "attrs": "attrs0,attrs1",
+      "keyAttr": "keyAttr",
+      "query": "query",
+      "name": "name",
+      "maxResults": 7,
+      "limit": 7,
+      "offset": 7,
+      "refresh": false,
+      "domain": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

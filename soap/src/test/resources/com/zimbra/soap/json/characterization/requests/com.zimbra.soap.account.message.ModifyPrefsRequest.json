@@ -1,0 +1,13 @@
+{
+  "Body": {
+    "ModifyPrefsRequest": {
+      "_attrs": {
+        "name": [
+          "value",
+          "value"]
+      },
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

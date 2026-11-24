@@ -1,0 +1,8 @@
+{
+  "Body": {
+    "GetSystemRetentionPolicyRequest": {
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

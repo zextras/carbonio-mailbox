@@ -1,0 +1,16 @@
+{
+  "Body": {
+    "GetDistributionListRequest": {
+      "attrs": "attrs0,attrs1",
+      "limit": 7,
+      "offset": 7,
+      "sortAscending": false,
+      "dl": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

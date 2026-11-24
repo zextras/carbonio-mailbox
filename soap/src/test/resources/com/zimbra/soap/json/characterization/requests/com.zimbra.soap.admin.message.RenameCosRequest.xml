@@ -1,0 +1,4 @@
+<RenameCosRequest xmlns="urn:zimbraAdmin">
+  <id>id</id>
+  <newName>newName</newName>
+</RenameCosRequest>

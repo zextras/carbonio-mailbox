@@ -1,0 +1,14 @@
+{
+  "locale": [
+    {
+      "id": "id",
+      "name": "name",
+      "localName": "localName"
+    },
+    {
+      "id": "id",
+      "name": "name",
+      "localName": "localName"
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

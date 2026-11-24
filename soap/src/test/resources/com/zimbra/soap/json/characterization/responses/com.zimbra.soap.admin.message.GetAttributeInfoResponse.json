@@ -1,0 +1,12 @@
+{
+  "a": [
+    {
+      "n": "name",
+      "desc": "description"
+    },
+    {
+      "n": "name",
+      "desc": "description"
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

@@ -1,0 +1,42 @@
+{
+  "Body": {
+    "GetMiniCalRequest": {
+      "folder": [
+        {
+          "id": "id"
+        },
+        {
+          "id": "id"
+        }],
+      "tz": [{
+          "id": "id",
+          "stdoff": 7,
+          "dayoff": 7,
+          "standard": [{
+              "week": 7,
+              "wkday": 7,
+              "mon": 7,
+              "mday": 7,
+              "hour": 7,
+              "min": 7,
+              "sec": 7
+            }],
+          "daylight": [{
+              "week": 7,
+              "wkday": 7,
+              "mon": 7,
+              "mday": 7,
+              "hour": 7,
+              "min": 7,
+              "sec": 7
+            }],
+          "stdname": "standardTZName",
+          "dayname": "daylightTZName"
+        }],
+      "s": -1,
+      "e": -1,
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

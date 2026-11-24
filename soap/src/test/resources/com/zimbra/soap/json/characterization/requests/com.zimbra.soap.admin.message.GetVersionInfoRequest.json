@@ -1,0 +1,8 @@
+{
+  "Body": {
+    "GetVersionInfoRequest": {
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

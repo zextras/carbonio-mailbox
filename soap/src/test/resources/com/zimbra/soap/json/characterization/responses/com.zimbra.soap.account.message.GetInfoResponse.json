@@ -1,0 +1,473 @@
+{
+  "version": "version",
+  "id": "accountId",
+  "profileImageId": 0,
+  "name": "accountName",
+  "crumb": "crumb",
+  "lifetime": 0,
+  "adminDelegated": false,
+  "docSizeLimit": 1700000000000,
+  "attSizeLimit": 1700000000000,
+  "rest": "restUrl",
+  "used": 1700000000000,
+  "isTrackingIMAP": false,
+  "prevSession": 1700000000000,
+  "accessed": 1700000000000,
+  "recent": 7,
+  "cos": {
+    "id": "id",
+    "name": "name"
+  },
+  "prefs": {
+    "_attrs": {
+      "name": [
+        "value",
+        "value"]
+    }
+  },
+  "attrs": {
+    "_attrs": {
+      "name": [
+        "value",
+        "value"]
+    }
+  },
+  "props": {
+    "prop": [
+      {
+        "zimlet": "zimlet",
+        "name": "name",
+        "_content": "value"
+      },
+      {
+        "zimlet": "zimlet",
+        "name": "name",
+        "_content": "value"
+      }]
+  },
+  "identities": {
+    "identity": [
+      {
+        "name": "name",
+        "id": "id",
+        "_attrs": {
+          "name": [
+            "value",
+            "value"]
+        }
+      },
+      {
+        "name": "name",
+        "id": "id",
+        "_attrs": {
+          "name": [
+            "value",
+            "value"]
+        }
+      }]
+  },
+  "signatures": {
+    "signature": [
+      {
+        "content": [
+          {
+            "type": "contentType",
+            "_content": "content"
+          },
+          {
+            "type": "contentType",
+            "_content": "content"
+          }],
+        "cid": [{
+            "_content": "cid"
+          }],
+        "id": "id",
+        "name": "name"
+      },
+      {
+        "content": [
+          {
+            "type": "contentType",
+            "_content": "content"
+          },
+          {
+            "type": "contentType",
+            "_content": "content"
+          }],
+        "cid": [{
+            "_content": "cid"
+          }],
+        "id": "id",
+        "name": "name"
+      }]
+  },
+  "dataSources": {
+    "imap": [{
+        "id": "id",
+        "name": "name",
+        "l": "folderId",
+        "isEnabled": false,
+        "importOnly": false,
+        "host": "host",
+        "port": 7,
+        "connectionType": "tls_is_available",
+        "username": "username",
+        "password": "password",
+        "pollingInterval": "pollingInterval",
+        "emailAddress": "emailAddress",
+        "useAddressForForwardReply": false,
+        "defaultSignature": "defaultSignature",
+        "forwardReplySignature": "forwardReplySignature",
+        "fromDisplay": "fromDisplay",
+        "replyToAddress": "replyToAddress",
+        "replyToDisplay": "replyToDisplay",
+        "importClass": "importClass",
+        "failingSince": 1700000000000,
+        "lastError": [{
+            "_content": "lastError"
+          }],
+        "a": [
+          {
+            "_content": "attributes0"
+          },
+          {
+            "_content": "attributes1"
+          }]
+      }],
+    "pop3": [{
+        "id": "id",
+        "name": "name",
+        "l": "folderId",
+        "isEnabled": false,
+        "importOnly": false,
+        "host": "host",
+        "port": 7,
+        "connectionType": "tls_is_available",
+        "username": "username",
+        "password": "password",
+        "pollingInterval": "pollingInterval",
+        "emailAddress": "emailAddress",
+        "useAddressForForwardReply": false,
+        "defaultSignature": "defaultSignature",
+        "forwardReplySignature": "forwardReplySignature",
+        "fromDisplay": "fromDisplay",
+        "replyToAddress": "replyToAddress",
+        "replyToDisplay": "replyToDisplay",
+        "importClass": "importClass",
+        "failingSince": 1700000000000,
+        "lastError": [{
+            "_content": "lastError"
+          }],
+        "a": [
+          {
+            "_content": "attributes0"
+          },
+          {
+            "_content": "attributes1"
+          }],
+        "leaveOnServer": false
+      }],
+    "caldav": [{
+        "lastError": [{
+            "_content": "lastError"
+          }],
+        "a": [
+          {
+            "_content": "attributes0"
+          },
+          {
+            "_content": "attributes1"
+          }],
+        "id": "id",
+        "name": "name",
+        "l": "folderId",
+        "isEnabled": false,
+        "importOnly": false,
+        "host": "host",
+        "port": 7,
+        "connectionType": "tls_is_available",
+        "username": "username",
+        "password": "password",
+        "pollingInterval": "pollingInterval",
+        "emailAddress": "emailAddress",
+        "useAddressForForwardReply": false,
+        "defaultSignature": "defaultSignature",
+        "forwardReplySignature": "forwardReplySignature",
+        "fromDisplay": "fromDisplay",
+        "replyToAddress": "replyToAddress",
+        "replyToDisplay": "replyToDisplay",
+        "importClass": "importClass",
+        "failingSince": 1700000000000
+      }],
+    "yab": [{
+        "lastError": [{
+            "_content": "lastError"
+          }],
+        "a": [
+          {
+            "_content": "attributes0"
+          },
+          {
+            "_content": "attributes1"
+          }],
+        "id": "id",
+        "name": "name",
+        "l": "folderId",
+        "isEnabled": false,
+        "importOnly": false,
+        "host": "host",
+        "port": 7,
+        "connectionType": "tls_is_available",
+        "username": "username",
+        "password": "password",
+        "pollingInterval": "pollingInterval",
+        "emailAddress": "emailAddress",
+        "useAddressForForwardReply": false,
+        "defaultSignature": "defaultSignature",
+        "forwardReplySignature": "forwardReplySignature",
+        "fromDisplay": "fromDisplay",
+        "replyToAddress": "replyToAddress",
+        "replyToDisplay": "replyToDisplay",
+        "importClass": "importClass",
+        "failingSince": 1700000000000
+      }],
+    "rss": [{
+        "id": "id",
+        "name": "name",
+        "l": "folderId",
+        "isEnabled": false,
+        "importOnly": false,
+        "host": "host",
+        "port": 7,
+        "connectionType": "tls_is_available",
+        "username": "username",
+        "password": "password",
+        "pollingInterval": "pollingInterval",
+        "emailAddress": "emailAddress",
+        "useAddressForForwardReply": false,
+        "defaultSignature": "defaultSignature",
+        "forwardReplySignature": "forwardReplySignature",
+        "fromDisplay": "fromDisplay",
+        "replyToAddress": "replyToAddress",
+        "replyToDisplay": "replyToDisplay",
+        "importClass": "importClass",
+        "failingSince": 1700000000000,
+        "lastError": [{
+            "_content": "lastError"
+          }],
+        "a": [
+          {
+            "_content": "attributes0"
+          },
+          {
+            "_content": "attributes1"
+          }]
+      }],
+    "gal": [{
+        "lastError": [{
+            "_content": "lastError"
+          }],
+        "a": [
+          {
+            "_content": "attributes0"
+          },
+          {
+            "_content": "attributes1"
+          }],
+        "id": "id",
+        "name": "name",
+        "l": "folderId",
+        "isEnabled": false,
+        "importOnly": false,
+        "host": "host",
+        "port": 7,
+        "connectionType": "tls_is_available",
+        "username": "username",
+        "password": "password",
+        "pollingInterval": "pollingInterval",
+        "emailAddress": "emailAddress",
+        "useAddressForForwardReply": false,
+        "defaultSignature": "defaultSignature",
+        "forwardReplySignature": "forwardReplySignature",
+        "fromDisplay": "fromDisplay",
+        "replyToAddress": "replyToAddress",
+        "replyToDisplay": "replyToDisplay",
+        "importClass": "importClass",
+        "failingSince": 1700000000000
+      }],
+    "cal": [{
+        "id": "id",
+        "name": "name",
+        "l": "folderId",
+        "isEnabled": false,
+        "importOnly": false,
+        "host": "host",
+        "port": 7,
+        "connectionType": "tls_is_available",
+        "username": "username",
+        "password": "password",
+        "pollingInterval": "pollingInterval",
+        "emailAddress": "emailAddress",
+        "useAddressForForwardReply": false,
+        "defaultSignature": "defaultSignature",
+        "forwardReplySignature": "forwardReplySignature",
+        "fromDisplay": "fromDisplay",
+        "replyToAddress": "replyToAddress",
+        "replyToDisplay": "replyToDisplay",
+        "importClass": "importClass",
+        "failingSince": 1700000000000,
+        "lastError": [{
+            "_content": "lastError"
+          }],
+        "a": [
+          {
+            "_content": "attributes0"
+          },
+          {
+            "_content": "attributes1"
+          }]
+      }],
+    "unknown": [{
+        "lastError": [{
+            "_content": "lastError"
+          }],
+        "a": [
+          {
+            "_content": "attributes0"
+          },
+          {
+            "_content": "attributes1"
+          }],
+        "id": "id",
+        "name": "name",
+        "l": "folderId",
+        "isEnabled": false,
+        "importOnly": false,
+        "host": "host",
+        "port": 7,
+        "connectionType": "tls_is_available",
+        "username": "username",
+        "password": "password",
+        "pollingInterval": "pollingInterval",
+        "emailAddress": "emailAddress",
+        "useAddressForForwardReply": false,
+        "defaultSignature": "defaultSignature",
+        "forwardReplySignature": "forwardReplySignature",
+        "fromDisplay": "fromDisplay",
+        "replyToAddress": "replyToAddress",
+        "replyToDisplay": "replyToDisplay",
+        "importClass": "importClass",
+        "failingSince": 1700000000000
+      }]
+  },
+  "childAccounts": {
+    "childAccount": [
+      {
+        "id": "id",
+        "name": "name",
+        "visible": false,
+        "active": false,
+        "attrs": {
+          "attr": [
+            {
+              "name": "name",
+              "pd": false,
+              "_content": "value"
+            },
+            {
+              "name": "name",
+              "pd": false,
+              "_content": "value"
+            }]
+        }
+      },
+      {
+        "id": "id",
+        "name": "name",
+        "visible": false,
+        "active": false,
+        "attrs": {
+          "attr": [
+            {
+              "name": "name",
+              "pd": false,
+              "_content": "value"
+            },
+            {
+              "name": "name",
+              "pd": false,
+              "_content": "value"
+            }]
+        }
+      }]
+  },
+  "rights": {
+    "targets": [
+      {
+        "right": "right",
+        "target": [
+          {
+            "type": "account",
+            "id": "id",
+            "name": "name",
+            "d": "displayName",
+            "email": [
+              {
+                "addr": "addr"
+              },
+              {
+                "addr": "addr"
+              }]
+          },
+          {
+            "type": "account",
+            "id": "id",
+            "name": "name",
+            "d": "displayName",
+            "email": [
+              {
+                "addr": "addr"
+              },
+              {
+                "addr": "addr"
+              }]
+          }]
+      },
+      {
+        "right": "right",
+        "target": [
+          {
+            "type": "account",
+            "id": "id",
+            "name": "name",
+            "d": "displayName",
+            "email": [
+              {
+                "addr": "addr"
+              },
+              {
+                "addr": "addr"
+              }]
+          },
+          {
+            "type": "account",
+            "id": "id",
+            "name": "name",
+            "d": "displayName",
+            "email": [
+              {
+                "addr": "addr"
+              },
+              {
+                "addr": "addr"
+              }]
+          }]
+      }]
+  },
+  "soapURL": "soapURL",
+  "publicURL": "publicURL",
+  "adminURL": "adminURL",
+  "boshURL": "boshURL",
+  "changePasswordURL": "changePasswordURL",
+  "_jsns": "urn:zimbraAccount"
+}

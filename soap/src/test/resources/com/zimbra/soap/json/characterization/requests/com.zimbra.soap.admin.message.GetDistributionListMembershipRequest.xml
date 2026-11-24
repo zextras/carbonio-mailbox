@@ -1,0 +1,3 @@
+<GetDistributionListMembershipRequest offset="7" limit="7" xmlns="urn:zimbraAdmin">
+  <dl by="id">key</dl>
+</GetDistributionListMembershipRequest>

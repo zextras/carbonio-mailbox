@@ -1,0 +1,3 @@
+<GetSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+  <cos by="id">key</cos>
+</GetSystemRetentionPolicyRequest>

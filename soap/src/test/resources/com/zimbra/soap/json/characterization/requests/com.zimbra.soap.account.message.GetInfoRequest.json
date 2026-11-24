@@ -1,0 +1,10 @@
+{
+  "Body": {
+    "GetInfoRequest": {
+      "sections": "mbox,mbox",
+      "rights": "rights0,rights1",
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

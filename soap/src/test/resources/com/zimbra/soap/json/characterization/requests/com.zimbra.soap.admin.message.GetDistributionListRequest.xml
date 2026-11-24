@@ -1,0 +1,3 @@
+<GetDistributionListRequest sortAscending="false" offset="7" limit="7" attrs="attrs0,attrs1" xmlns="urn:zimbraAdmin">
+  <dl by="id">key</dl>
+</GetDistributionListRequest>

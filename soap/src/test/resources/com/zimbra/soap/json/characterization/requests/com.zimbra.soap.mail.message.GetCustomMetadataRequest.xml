@@ -1,0 +1,3 @@
+<GetCustomMetadataRequest id="id" xmlns="urn:zimbraMail">
+  <meta section="section"/>
+</GetCustomMetadataRequest>

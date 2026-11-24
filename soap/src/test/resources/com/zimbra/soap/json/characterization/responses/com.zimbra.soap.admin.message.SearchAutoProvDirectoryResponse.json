@@ -1,0 +1,36 @@
+{
+  "more": false,
+  "searchTotal": 0,
+  "entry": [
+    {
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "dn": "dn",
+      "key": [
+        {
+          "_content": "keys0"
+        },
+        {
+          "_content": "keys1"
+        }]
+    },
+    {
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "dn": "dn",
+      "key": [
+        {
+          "_content": "keys0"
+        },
+        {
+          "_content": "keys1"
+        }]
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

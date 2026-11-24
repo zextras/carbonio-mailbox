@@ -1,0 +1,19 @@
+{
+  "Body": {
+    "ModifySystemRetentionPolicyRequest": {
+      "cos": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "policy": [{
+          "type": "user",
+          "id": "id",
+          "name": "name",
+          "lifetime": "lifetime",
+          "_jsns": "urn:zimbraMail"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

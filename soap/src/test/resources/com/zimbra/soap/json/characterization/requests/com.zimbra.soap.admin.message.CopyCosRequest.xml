@@ -1,0 +1,4 @@
+<CopyCosRequest xmlns="urn:zimbraAdmin">
+  <name>newName</name>
+  <cos by="id">key</cos>
+</CopyCosRequest>

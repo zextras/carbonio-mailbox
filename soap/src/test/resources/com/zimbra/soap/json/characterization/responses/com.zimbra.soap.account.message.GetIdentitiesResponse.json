@@ -1,0 +1,22 @@
+{
+  "identity": [
+    {
+      "name": "name",
+      "id": "id",
+      "_attrs": {
+        "name": [
+          "value",
+          "value"]
+      }
+    },
+    {
+      "name": "name",
+      "id": "id",
+      "_attrs": {
+        "name": [
+          "value",
+          "value"]
+      }
+    }],
+  "_jsns": "urn:zimbraAccount"
+}

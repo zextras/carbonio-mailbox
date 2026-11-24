@@ -1,0 +1,8 @@
+<ApplyFilterRulesRequest xmlns="urn:zimbraMail">
+  <filterRules>
+    <filterRule name="name"/>
+    <filterRule name="name"/>
+  </filterRules>
+  <m ids="ids"/>
+  <query>query</query>
+</ApplyFilterRulesRequest>

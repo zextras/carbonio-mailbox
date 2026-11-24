@@ -1,0 +1,17 @@
+{
+  "Body": {
+    "SnoozeCalendarItemAlarmRequest": {
+      "appt": [
+        {
+          "id": "id",
+          "until": -1
+        },
+        {
+          "id": "id",
+          "until": -1
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

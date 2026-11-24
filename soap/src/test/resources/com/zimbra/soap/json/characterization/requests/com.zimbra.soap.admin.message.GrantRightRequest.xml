@@ -1,0 +1,5 @@
+<GrantRightRequest xmlns="urn:zimbraAdmin">
+  <target by="id" type="account">value</target>
+  <grantee all="false" by="id" secret="secret" type="usr">key</grantee>
+  <right deny="false" subDomain="false" canDelegate="false" disinheritSubGroups="false">value</right>
+</GrantRightRequest>

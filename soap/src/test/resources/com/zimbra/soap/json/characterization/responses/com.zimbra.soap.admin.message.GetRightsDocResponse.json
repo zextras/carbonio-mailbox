@@ -1,0 +1,138 @@
+{
+  "package": [
+    {
+      "name": "name",
+      "cmd": [
+        {
+          "name": "name",
+          "rights": [{
+              "right": [
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "name"
+                }]
+            }],
+          "desc": [{
+              "note": [
+                {
+                  "_content": "notes0"
+                },
+                {
+                  "_content": "notes1"
+                }]
+            }]
+        },
+        {
+          "name": "name",
+          "rights": [{
+              "right": [
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "name"
+                }]
+            }],
+          "desc": [{
+              "note": [
+                {
+                  "_content": "notes0"
+                },
+                {
+                  "_content": "notes1"
+                }]
+            }]
+        }]
+    },
+    {
+      "name": "name",
+      "cmd": [
+        {
+          "name": "name",
+          "rights": [{
+              "right": [
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "name"
+                }]
+            }],
+          "desc": [{
+              "note": [
+                {
+                  "_content": "notes0"
+                },
+                {
+                  "_content": "notes1"
+                }]
+            }]
+        },
+        {
+          "name": "name",
+          "rights": [{
+              "right": [
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "name"
+                }]
+            }],
+          "desc": [{
+              "note": [
+                {
+                  "_content": "notes0"
+                },
+                {
+                  "_content": "notes1"
+                }]
+            }]
+        }]
+    }],
+  "notUsed": [
+    {
+      "_content": "notUsed0"
+    },
+    {
+      "_content": "notUsed1"
+    }],
+  "domainAdmin-copypaste-to-rights-domainadmin-xml-template": [{
+      "right": [
+        {
+          "name": "name",
+          "type": "preset",
+          "desc": [{
+              "_content": "desc"
+            }],
+          "rights": [{
+              "r": [
+                {
+                  "n": "name"
+                },
+                {
+                  "n": "name"
+                }]
+            }]
+        },
+        {
+          "name": "name",
+          "type": "preset",
+          "desc": [{
+              "_content": "desc"
+            }],
+          "rights": [{
+              "r": [
+                {
+                  "n": "name"
+                },
+                {
+                  "n": "name"
+                }]
+            }]
+        }]
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

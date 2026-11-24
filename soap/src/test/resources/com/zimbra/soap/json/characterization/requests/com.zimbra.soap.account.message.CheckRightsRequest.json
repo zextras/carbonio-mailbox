@@ -1,0 +1,33 @@
+{
+  "Body": {
+    "CheckRightsRequest": {
+      "target": [
+        {
+          "type": "account",
+          "by": "id",
+          "key": "targetKey",
+          "right": [
+            {
+              "_content": "rights0"
+            },
+            {
+              "_content": "rights1"
+            }]
+        },
+        {
+          "type": "account",
+          "by": "id",
+          "key": "targetKey",
+          "right": [
+            {
+              "_content": "rights0"
+            },
+            {
+              "_content": "rights1"
+            }]
+        }],
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

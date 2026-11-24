@@ -1,0 +1,23 @@
+{
+  "Body": {
+    "ApplyFilterRulesRequest": {
+      "filterRules": {
+        "filterRule": [
+          {
+            "name": "name"
+          },
+          {
+            "name": "name"
+          }]
+      },
+      "m": [{
+          "ids": "ids"
+        }],
+      "query": [{
+          "_content": "query"
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

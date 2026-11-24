@@ -1,0 +1,10 @@
+{
+  "Body": {
+    "RenameCalendarResourceRequest": {
+      "id": "id",
+      "newName": "newName",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

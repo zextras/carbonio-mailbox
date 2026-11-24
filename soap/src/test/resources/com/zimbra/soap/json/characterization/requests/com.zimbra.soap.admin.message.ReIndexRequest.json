@@ -1,0 +1,14 @@
+{
+  "Body": {
+    "ReIndexRequest": {
+      "action": "action",
+      "mbox": [{
+          "id": "accountId",
+          "types": "types",
+          "ids": "ids"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

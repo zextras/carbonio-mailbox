@@ -1,0 +1,18 @@
+{
+  "Body": {
+    "PushFreeBusyRequest": {
+      "domain": [{
+          "name": "names"
+        }],
+      "account": [
+        {
+          "id": "id"
+        },
+        {
+          "id": "id"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

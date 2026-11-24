@@ -1,0 +1,11 @@
+{
+  "Body": {
+    "IMAPCopyRequest": {
+      "ids": "ids",
+      "t": "t",
+      "l": 0,
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,15 @@
+{
+  "Body": {
+    "ChangePrimaryEmailRequest": {
+      "account": [{
+          "by": "adminName",
+          "_content": "key"
+        }],
+      "newName": [{
+          "_content": "newName"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

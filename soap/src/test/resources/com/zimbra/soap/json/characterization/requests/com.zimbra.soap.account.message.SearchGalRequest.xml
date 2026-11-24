@@ -1,0 +1,6 @@
+<SearchGalRequest ref="ref" quick="false" needExp="false" needIsMember="all" offset="7" name="name" galAcctId="galAccountId" limit="7" sortBy="sortBy" needIsOwner="false" type="all" needSMIMECerts="false" xmlns="urn:zimbraAccount">
+  <locale>locale</locale>
+  <cursor sortVal="sortVal" includeOffset="false" endSortVal="endSortVal" id="id"/>
+  <query>query</query>
+  <searchFilter/>
+</SearchGalRequest>

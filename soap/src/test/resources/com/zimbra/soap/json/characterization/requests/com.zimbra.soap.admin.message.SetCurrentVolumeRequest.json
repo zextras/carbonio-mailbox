@@ -1,0 +1,10 @@
+{
+  "Body": {
+    "SetCurrentVolumeRequest": {
+      "id": -1,
+      "type": -1,
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

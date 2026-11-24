@@ -1,0 +1,6 @@
+<CheckBlobConsistencyRequest checkSize="false" reportUsedBlobs="false" xmlns="urn:zimbraAdmin">
+  <volume id="-1"/>
+  <volume id="-1"/>
+  <mbox id="-1"/>
+  <mbox id="-1"/>
+</CheckBlobConsistencyRequest>

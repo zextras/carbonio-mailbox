@@ -1,0 +1,9 @@
+{
+  "action": {
+    "id": "id",
+    "op": "operation",
+    "nei": "nonExistentIds",
+    "nci": "newlyCreatedIds"
+  },
+  "_jsns": "urn:zimbraMail"
+}

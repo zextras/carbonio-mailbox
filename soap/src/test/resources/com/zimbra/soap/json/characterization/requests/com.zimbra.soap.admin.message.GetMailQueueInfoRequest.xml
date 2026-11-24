@@ -1,0 +1,3 @@
+<GetMailQueueInfoRequest xmlns="urn:zimbraAdmin">
+  <server name="name"/>
+</GetMailQueueInfoRequest>

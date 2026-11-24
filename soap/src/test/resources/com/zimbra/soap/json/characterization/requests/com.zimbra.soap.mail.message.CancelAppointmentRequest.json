@@ -1,0 +1,447 @@
+{
+  "Body": {
+    "CancelAppointmentRequest": {
+      "id": "id",
+      "comp": 7,
+      "ms": 7,
+      "rev": 7,
+      "inst": [{
+          "range": "range",
+          "d": "dateTime",
+          "tz": "timezone"
+        }],
+      "tz": [{
+          "id": "id",
+          "stdoff": 7,
+          "dayoff": 7,
+          "standard": [{
+              "week": 7,
+              "wkday": 7,
+              "mon": 7,
+              "mday": 7,
+              "hour": 7,
+              "min": 7,
+              "sec": 7
+            }],
+          "daylight": [{
+              "week": 7,
+              "wkday": 7,
+              "mon": 7,
+              "mday": 7,
+              "hour": 7,
+              "min": 7,
+              "sec": 7
+            }],
+          "stdname": "standardTZName",
+          "dayname": "daylightTZName"
+        }],
+      "m": [{
+          "content": [{
+              "_content": "content"
+            }],
+          "header": [
+            {
+              "name": "name",
+              "_content": "value"
+            },
+            {
+              "name": "name",
+              "_content": "value"
+            }],
+          "mp": {
+            "mp": [
+              {
+                "ct": "contentType",
+                "content": "content",
+                "ci": "contentId"
+              },
+              {
+                "ct": "contentType",
+                "content": "content",
+                "ci": "contentId"
+              }],
+            "attach": [{
+                "any": [
+                  {
+                    "name": "extraElements0",
+                    "_content": "extraElements0"
+                  },
+                  {
+                    "name": "extraElements1",
+                    "_content": "extraElements1"
+                  }],
+                "aid": "attachmentId"
+              }],
+            "ct": "contentType",
+            "content": "content",
+            "ci": "contentId"
+          },
+          "attach": {
+            "mp": [{
+                "optional": false,
+                "mid": "messageId",
+                "part": "part",
+                "requiresSmartLinkConversion": true
+              }],
+            "m": [{
+                "optional": false,
+                "id": "id"
+              }],
+            "cn": [{
+                "optional": false,
+                "id": "id"
+              }],
+            "any": [
+              {
+                "name": "extraElements0",
+                "_content": "extraElements0"
+              },
+              {
+                "name": "extraElements1",
+                "_content": "extraElements1"
+              }],
+            "aid": "attachmentId"
+          },
+          "inv": {
+            "content": [{
+                "uid": "uid",
+                "summary": "summary",
+                "_content": "content"
+              }],
+            "comp": [{
+                "category": [
+                  {
+                    "_content": "categories0"
+                  },
+                  {
+                    "_content": "categories1"
+                  }],
+                "comment": [
+                  {
+                    "_content": "comments0"
+                  },
+                  {
+                    "_content": "comments1"
+                  }],
+                "contact": [
+                  {
+                    "_content": "contacts0"
+                  },
+                  {
+                    "_content": "contacts1"
+                  }],
+                "fr": "fragment",
+                "desc": [{
+                    "_content": "description"
+                  }],
+                "descHtml": [{
+                    "_content": "htmlDescription"
+                  }],
+                "method": "method",
+                "compNum": 7,
+                "rsvp": false,
+                "priority": "priority",
+                "name": "name",
+                "loc": "location",
+                "noBlob": false,
+                "fba": "freeBusyActual",
+                "fb": "freeBusy",
+                "transp": "transparency",
+                "isOrg": false,
+                "x_uid": "xUid",
+                "uid": "uid",
+                "seq": 7,
+                "d": 1700000000000,
+                "calItemId": "calItemId",
+                "apptId": "deprecatedApptId",
+                "ciFolder": "calItemFolder",
+                "status": "status",
+                "class": "calClass",
+                "url": "url",
+                "ex": false,
+                "ridZ": "recurIdZ",
+                "allDay": false,
+                "draft": false,
+                "neverSent": false,
+                "changes": "changes"
+              }],
+            "tz": [
+              {
+                "id": "id",
+                "stdoff": 7,
+                "dayoff": 7,
+                "stdname": "standardTZName",
+                "dayname": "daylightTZName"
+              },
+              {
+                "id": "id",
+                "stdoff": 7,
+                "dayoff": 7,
+                "stdname": "standardTZName",
+                "dayname": "daylightTZName"
+              }],
+            "mp": [
+              {
+                "ct": "contentType",
+                "content": "content",
+                "ci": "contentId"
+              },
+              {
+                "ct": "contentType",
+                "content": "content",
+                "ci": "contentId"
+              }],
+            "attach": [{
+                "any": [
+                  {
+                    "name": "extraElements0",
+                    "_content": "extraElements0"
+                  },
+                  {
+                    "name": "extraElements1",
+                    "_content": "extraElements1"
+                  }],
+                "aid": "attachmentId"
+              }],
+            "method": "method",
+            "compNum": -1,
+            "rsvp": false,
+            "priority": "priority",
+            "name": "name",
+            "loc": "location",
+            "noBlob": false,
+            "fba": "freeBusyActual",
+            "fb": "freeBusy",
+            "transp": "transparency",
+            "isOrg": false,
+            "x_uid": "xUid",
+            "uid": "uid",
+            "seq": 7,
+            "d": 1700000000000,
+            "calItemId": "calItemId",
+            "apptId": "deprecatedApptId",
+            "ciFolder": "calItemFolder",
+            "status": "status",
+            "class": "calClass",
+            "url": "url",
+            "ex": false,
+            "ridZ": "recurIdZ",
+            "allDay": false,
+            "draft": false,
+            "neverSent": false,
+            "changes": "changes",
+            "category": [
+              {
+                "_content": "categories0"
+              },
+              {
+                "_content": "categories1"
+              }],
+            "comment": [
+              {
+                "_content": "comments0"
+              },
+              {
+                "_content": "comments1"
+              }],
+            "contact": [
+              {
+                "_content": "contacts0"
+              },
+              {
+                "_content": "contacts1"
+              }],
+            "geo": [{
+                "lat": "latitude",
+                "lon": "longitude"
+              }],
+            "at": [
+              {
+                "a": "address",
+                "url": "url",
+                "d": "displayName",
+                "sentBy": "sentBy",
+                "dir": "dir",
+                "lang": "language",
+                "cutype": "cuType",
+                "role": "role",
+                "ptst": "partStat",
+                "rsvp": false,
+                "member": "member",
+                "delTo": "delegatedTo",
+                "delFrom": "delegatedFrom"
+              },
+              {
+                "a": "address",
+                "url": "url",
+                "d": "displayName",
+                "sentBy": "sentBy",
+                "dir": "dir",
+                "lang": "language",
+                "cutype": "cuType",
+                "role": "role",
+                "ptst": "partStat",
+                "rsvp": false,
+                "member": "member",
+                "delTo": "delegatedTo",
+                "delFrom": "delegatedFrom"
+              }],
+            "alarm": [
+              {
+                "action": "action",
+                "desc": [{
+                    "_content": "description"
+                  }],
+                "summary": [{
+                    "_content": "summary"
+                  }]
+              },
+              {
+                "action": "action",
+                "desc": [{
+                    "_content": "description"
+                  }],
+                "summary": [{
+                    "_content": "summary"
+                  }]
+              }],
+            "xprop": [
+              {
+                "name": "name",
+                "value": "value"
+              },
+              {
+                "name": "name",
+                "value": "value"
+              }],
+            "fr": "fragment",
+            "desc": [{
+                "_content": "description"
+              }],
+            "descHtml": [{
+                "_content": "htmlDescription"
+              }],
+            "or": [{
+                "a": "address",
+                "url": "url",
+                "d": "displayName",
+                "sentBy": "sentBy",
+                "dir": "dir",
+                "lang": "language"
+              }],
+            "recur": [{}],
+            "exceptId": [{
+                "d": "dateTime",
+                "tz": "timezone",
+                "rangeType": 7
+              }],
+            "s": [{
+                "d": "dateTime",
+                "tz": "timezone",
+                "u": 1700000000000
+              }],
+            "e": [{
+                "d": "dateTime",
+                "tz": "timezone",
+                "u": 1700000000000
+              }],
+            "dur": [{
+                "neg": false,
+                "w": 7,
+                "d": 7,
+                "h": 7,
+                "m": 7,
+                "s": 7,
+                "related": "related",
+                "count": 7
+              }],
+            "id": "id",
+            "ct": "contentType",
+            "ci": "contentId"
+          },
+          "e": [
+            {
+              "a": "address",
+              "t": "addressType",
+              "p": "personal"
+            },
+            {
+              "a": "address",
+              "t": "addressType",
+              "p": "personal"
+            }],
+          "tz": [
+            {
+              "id": "id",
+              "stdoff": 7,
+              "dayoff": 7,
+              "standard": [{
+                  "week": 7,
+                  "wkday": 7,
+                  "mon": 7,
+                  "mday": 7,
+                  "hour": 7,
+                  "min": 7,
+                  "sec": 7
+                }],
+              "daylight": [{
+                  "week": 7,
+                  "wkday": 7,
+                  "mon": 7,
+                  "mday": 7,
+                  "hour": 7,
+                  "min": 7,
+                  "sec": 7
+                }],
+              "stdname": "standardTZName",
+              "dayname": "daylightTZName"
+            },
+            {
+              "id": "id",
+              "stdoff": 7,
+              "dayoff": 7,
+              "standard": [{
+                  "week": 7,
+                  "wkday": 7,
+                  "mon": 7,
+                  "mday": 7,
+                  "hour": 7,
+                  "min": 7,
+                  "sec": 7
+                }],
+              "daylight": [{
+                  "week": 7,
+                  "wkday": 7,
+                  "mon": 7,
+                  "mday": 7,
+                  "hour": 7,
+                  "min": 7,
+                  "sec": 7
+                }],
+              "stdname": "standardTZName",
+              "dayname": "daylightTZName"
+            }],
+          "fr": "fragment",
+          "any": [
+            {
+              "name": "extraElements0",
+              "_content": "extraElements0"
+            },
+            {
+              "name": "extraElements1",
+              "_content": "extraElements1"
+            }],
+          "aid": "attachmentId",
+          "origid": "origId",
+          "rt": "replyType",
+          "idnt": "identityId",
+          "su": "subject",
+          "irt": "inReplyTo",
+          "l": "folderId",
+          "f": "flags"
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

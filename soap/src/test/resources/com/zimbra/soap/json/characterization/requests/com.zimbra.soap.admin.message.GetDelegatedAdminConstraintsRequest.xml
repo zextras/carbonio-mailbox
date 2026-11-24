@@ -1,0 +1,4 @@
+<GetDelegatedAdminConstraintsRequest name="name" id="id" type="account" xmlns="urn:zimbraAdmin">
+  <a name="name"/>
+  <a name="name"/>
+</GetDelegatedAdminConstraintsRequest>

@@ -1,0 +1,10 @@
+{
+  "Body": {
+    "IssueCertRequest": {
+      "domain": "domain",
+      "chainType": "chainType",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,7 @@
+<CheckRightRequest xmlns="urn:zimbraAdmin">
+  <a n="key">value</a>
+  <a n="key">value</a>
+  <target by="id" type="account">value</target>
+  <grantee all="false" by="id" secret="secret" type="usr">key</grantee>
+  <right>value</right>
+</CheckRightRequest>

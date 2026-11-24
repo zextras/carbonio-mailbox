@@ -1,0 +1,21 @@
+<InstallCertRequest server="server" skipCleanup="false" type="type" xmlns="urn:zimbraAdmin">
+  <comm_cert>
+    <cert filename="filename" aid="attachmentId"/>
+    <rootCA filename="filename" aid="attachmentId"/>
+    <intermediateCA filename="filename" aid="attachmentId"/>
+    <intermediateCA filename="filename" aid="attachmentId"/>
+  </comm_cert>
+  <validation_days>validationDays</validation_days>
+  <digest>digest</digest>
+  <subject>
+    <C>c</C>
+    <ST>st</ST>
+    <L>l</L>
+    <O>o</O>
+    <OU>ou</OU>
+    <CN>cn</CN>
+  </subject>
+  <SubjectAltName>subjectAltNames0</SubjectAltName>
+  <SubjectAltName>subjectAltNames1</SubjectAltName>
+  <keysize>keySize</keysize>
+</InstallCertRequest>

@@ -1,0 +1,24 @@
+{
+  "provider": [
+    {
+      "name": "name",
+      "account": [
+        {
+          "id": "id"
+        },
+        {
+          "id": "id"
+        }]
+    },
+    {
+      "name": "name",
+      "account": [
+        {
+          "id": "id"
+        },
+        {
+          "id": "id"
+        }]
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

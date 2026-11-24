@@ -1,0 +1,10 @@
+{
+  "Body": {
+    "GetAttributeInfoRequest": {
+      "attrs": "attrs",
+      "entryTypes": "entryTypes",
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

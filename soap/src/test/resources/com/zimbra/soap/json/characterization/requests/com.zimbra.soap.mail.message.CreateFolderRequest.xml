@@ -1,0 +1,8 @@
+<CreateFolderRequest xmlns="urn:zimbraMail">
+  <folder view="defaultView" fie="false" color="2" f="flags" name="name" rgb="rgb" l="parentFolderId" sync="false" url="url">
+    <acl>
+      <grant args="args" perm="rights" zid="zimbraId" d="displayName" pw="password" gt="grantType" key="accessKey"/>
+      <grant args="args" perm="rights" zid="zimbraId" d="displayName" pw="password" gt="grantType" key="accessKey"/>
+    </acl>
+  </folder>
+</CreateFolderRequest>

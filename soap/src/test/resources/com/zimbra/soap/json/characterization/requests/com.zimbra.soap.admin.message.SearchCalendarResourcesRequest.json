@@ -1,0 +1,33 @@
+{
+  "Body": {
+    "SearchCalendarResourcesRequest": {
+      "attrs": "attrs0,attrs1",
+      "limit": 7,
+      "offset": 7,
+      "domain": "domain",
+      "applyCos": false,
+      "sortBy": "sortBy",
+      "sortAscending": false,
+      "searchFilter": [{
+          "condition": {
+            "conds": {
+              "conds": [{
+                  "not": false,
+                  "or": false
+                }],
+              "cond": [{
+                  "not": false,
+                  "attr": "attr",
+                  "op": "op",
+                  "value": "value"
+                }],
+              "not": false,
+              "or": false
+            }
+          }
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

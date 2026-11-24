@@ -1,0 +1,36 @@
+{
+  "mbox": [
+    {
+      "id": 0,
+      "groupId": 0,
+      "accountId": "accountId",
+      "indexVolumeId": 0,
+      "itemIdCheckPoint": 0,
+      "contactCount": 0,
+      "sizeCheckPoint": 0,
+      "changeCheckPoint": 0,
+      "trackingSync": 0,
+      "trackingImap": true,
+      "lastbackupat": 7,
+      "lastSoapAccess": 0,
+      "newMessages": 0
+    },
+    {
+      "id": 0,
+      "groupId": 0,
+      "accountId": "accountId",
+      "indexVolumeId": 0,
+      "itemIdCheckPoint": 0,
+      "contactCount": 0,
+      "sizeCheckPoint": 0,
+      "changeCheckPoint": 0,
+      "trackingSync": 0,
+      "trackingImap": true,
+      "lastbackupat": 7,
+      "lastSoapAccess": 0,
+      "newMessages": 0
+    }],
+  "more": false,
+  "searchTotal": 0,
+  "_jsns": "urn:zimbraAdmin"
+}

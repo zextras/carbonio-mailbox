@@ -1,0 +1,25 @@
+{
+  "Body": {
+    "GetFreeBusyRequest": {
+      "s": -1,
+      "e": -1,
+      "uid": "uid",
+      "id": "id",
+      "name": "name",
+      "excludeUid": "excludeUid",
+      "usr": [
+        {
+          "l": 7,
+          "id": "id",
+          "name": "name"
+        },
+        {
+          "l": 7,
+          "id": "id",
+          "name": "name"
+        }],
+      "_jsns": "urn:zimbraMail"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

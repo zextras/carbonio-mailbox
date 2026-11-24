@@ -1,0 +1,7 @@
+{
+  "domain": "domain",
+  "message": [{
+      "_content": "message"
+    }],
+  "_jsns": "urn:zimbraAdmin"
+}

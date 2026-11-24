@@ -1,0 +1,18 @@
+{
+  "Body": {
+    "MailQueueActionRequest": {
+      "server": [{
+          "name": "name",
+          "queue": [{
+              "name": "name",
+              "action": [{
+                  "op": "hold",
+                  "by": "id"
+                }]
+            }]
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

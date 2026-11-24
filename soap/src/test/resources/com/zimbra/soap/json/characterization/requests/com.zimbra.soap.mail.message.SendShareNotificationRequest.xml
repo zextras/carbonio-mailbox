@@ -1,0 +1,6 @@
+<SendShareNotificationRequest action="edit" xmlns="urn:zimbraMail">
+  <item id="id"/>
+  <e p="personal" a="address" t="addressType"/>
+  <e p="personal" a="address" t="addressType"/>
+  <notes>notes</notes>
+</SendShareNotificationRequest>

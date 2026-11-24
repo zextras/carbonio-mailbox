@@ -1,0 +1,3 @@
+<GetItemRequest xmlns="urn:zimbraMail">
+  <item path="path" name="name" id="id" l="folder"/>
+</GetItemRequest>

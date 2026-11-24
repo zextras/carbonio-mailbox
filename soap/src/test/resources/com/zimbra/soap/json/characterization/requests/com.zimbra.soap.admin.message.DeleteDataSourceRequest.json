@@ -1,0 +1,17 @@
+{
+  "Body": {
+    "DeleteDataSourceRequest": {
+      "_attrs": {
+        "key": [
+          "value",
+          "value"]
+      },
+      "id": "id",
+      "dataSource": [{
+          "id": "id"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

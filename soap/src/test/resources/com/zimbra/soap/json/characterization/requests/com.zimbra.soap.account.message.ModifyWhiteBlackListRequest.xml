@@ -1,0 +1,10 @@
+<ModifyWhiteBlackListRequest xmlns="urn:zimbraAccount">
+  <whiteList>
+    <addr op="op">value</addr>
+    <addr op="op">value</addr>
+  </whiteList>
+  <blackList>
+    <addr op="op">value</addr>
+    <addr op="op">value</addr>
+  </blackList>
+</ModifyWhiteBlackListRequest>

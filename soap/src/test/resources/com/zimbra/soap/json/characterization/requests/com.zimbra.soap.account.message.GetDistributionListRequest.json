@@ -1,0 +1,19 @@
+{
+  "Body": {
+    "GetDistributionListRequest": {
+      "_attrs": {
+        "name": [
+          "value",
+          "value"]
+      },
+      "needOwners": false,
+      "needRights": "needRights",
+      "dl": [{
+          "by": "id",
+          "_content": "key"
+        }],
+      "_jsns": "urn:zimbraAccount"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

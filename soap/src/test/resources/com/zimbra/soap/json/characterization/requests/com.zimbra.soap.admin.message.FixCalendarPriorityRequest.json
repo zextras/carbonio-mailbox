@@ -1,0 +1,16 @@
+{
+  "Body": {
+    "FixCalendarPriorityRequest": {
+      "sync": false,
+      "account": [
+        {
+          "name": "name"
+        },
+        {
+          "name": "name"
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}

@@ -1,0 +1,21 @@
+{
+  "Body": {
+    "CreateVolumeRequest": {
+      "volume": [{
+          "id": -1,
+          "name": "name",
+          "rootpath": "rootPath",
+          "type": -1,
+          "compressBlobs": false,
+          "compressionThreshold": -1,
+          "mgbits": 0,
+          "mbits": 0,
+          "fgbits": 0,
+          "fbits": 0,
+          "isCurrent": false
+        }],
+      "_jsns": "urn:zimbraAdmin"
+    }
+  },
+  "_jsns": "urn:zimbraSoap"
+}
