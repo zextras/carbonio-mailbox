@@ -8,6 +8,8 @@ public interface MariaDBResource {
 
   String ROOT_PASSWORD = "password";
 
+  String DATA_DIRECTORY = "/var/lib/mysql";
+
   String getHost();
 
   int getPort();
