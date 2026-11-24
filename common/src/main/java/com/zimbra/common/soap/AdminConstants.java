@@ -1325,9 +1325,6 @@ public final class AdminConstants {
   public static final String A_RELATIONAL_COMPARATOR = "relationalComparator";
   public static final String E_NEW_VALUE = "newValue";
 
-  // contact backup feature
-  public static final String E_SERVERS = "servers";
-
   // cert
   public static final String A_CHAIN_TYPE = "chainType";
 
