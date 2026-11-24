@@ -16,7 +16,7 @@ import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
-import com.zimbra.cs.db.DbUtil;
+import com.zimbra.cs.db.DbTestUtil;
 import com.zimbra.cs.index.IndexDocument;
 import com.zimbra.cs.index.LuceneFields;
 import com.zimbra.cs.index.SearchParams;
@@ -101,7 +101,7 @@ public final class MessageTest extends MailboxTestSuite {
     DbConnection conn = DbPool.getConnection(mbox);
     assertEquals(
         "to1@zimbra.com",
-        DbUtil.executeQuery(
+        DbTestUtil.executeQuery(
                 conn,
                 "SELECT recipients FROM mboxgroup1.mail_item WHERE mailbox_id = ? AND id = ?",
                 mbox.getId(),
@@ -109,7 +109,7 @@ public final class MessageTest extends MailboxTestSuite {
             .getString(1));
     assertEquals(
         "to2",
-        DbUtil.executeQuery(
+        DbTestUtil.executeQuery(
                 conn,
                 "SELECT recipients FROM mboxgroup1.mail_item WHERE mailbox_id = ? AND id = ?",
                 mbox.getId(),
@@ -117,7 +117,7 @@ public final class MessageTest extends MailboxTestSuite {
             .getString(1));
     assertEquals(
         "to3-1, to3-2",
-        DbUtil.executeQuery(
+        DbTestUtil.executeQuery(
                 conn,
                 "SELECT recipients FROM mboxgroup1.mail_item WHERE mailbox_id = ? AND id = ?",
                 mbox.getId(),

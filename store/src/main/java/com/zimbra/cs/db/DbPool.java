@@ -80,13 +80,6 @@ public class DbPool {
         return dbPool;
     }
 
-	/**
-	 * @return a new pool for local usage. No singleton.
-	 */
-    private static DbPool newPool() {
-        return newPool(Db.getInstance());
-    }
-
     public DbConnection getConnectionInstance() throws ServiceException {
         return getConnectionInstance(null);
     }
@@ -107,7 +100,7 @@ public class DbPool {
                 if (dbconn.getAutoCommit() != false)
                     dbconn.setAutoCommit(false);
 
-                conn = new DbConnection(dbconn, mboxId);
+                conn = new DbConnection(dbconn, mboxId, db);
             } catch (SQLException e) {
                 try {
                     if (dbconn != null && !dbconn.isClosed())
@@ -139,20 +132,26 @@ public class DbPool {
 
     public static class DbConnection implements AutoCloseable {
         private final Connection connection;
+        private final Db db;
         private Throwable mStackTrace;
         Integer mboxId;
 
-        DbConnection(Connection conn) {
+        DbConnection(Connection conn, Db db) {
             connection = conn;
+            this.db = db;
         }
 
-        DbConnection(Connection conn, Integer mboxId) {
-            this(conn);
+        DbConnection(Connection conn, Integer mboxId, Db db) {
+            this(conn, db);
             this.mboxId = mboxId;
         }
 
         public Connection getConnection() {
             return connection;
+        }
+
+        public Db getDb() {
+            return db;
         }
 
         public void setTransactionIsolation(int level) throws ServiceException {
@@ -170,7 +169,7 @@ public class DbPool {
         public void disableForeignKeyConstraints() throws ServiceException {
             PreparedStatement stmt = null;
             try {
-                String sql = "SET FOREIGN_KEY_CHECKS=0";
+                String sql = db.foreignKeyChecks(false);
                 stmt = new StatTrackingPreparedStatement(connection.prepareStatement(sql),sql);
                 stmt.execute();
             } catch (SQLException e) {
@@ -181,7 +180,7 @@ public class DbPool {
         }
 
         public void enableForeignKeyConstraints() throws ServiceException {
-            String sql = "SET FOREIGN_KEY_CHECKS=1";
+            String sql = db.foreignKeyChecks(true);
             PreparedStatement stmt = null;
             try {
                 stmt = new StatTrackingPreparedStatement(connection.prepareStatement(sql), sql);
@@ -288,15 +287,10 @@ public class DbPool {
         boolean blockWhenExhausted = true;
     }
 
-    /**
-     * Initializes the connection pool.  Applications that access the
-     * database must call this method before calling {@link DbPool#getConnection}.
-     * Allocates a global pool as singleton.
-     *
-     */
-    public static synchronized DbPool global() {
+    public static synchronized DbPool global(Db db) {
         if (dbPool == null) {
-            dbPool = newPool();
+            Db.setInstance(db);
+            dbPool = newPool(db);
         }
         return dbPool;
     }
@@ -421,7 +415,7 @@ public class DbPool {
             Connection conn = DriverManager.getConnection(
                 dbPool.sRootUrl + "?user=" + user + "&password=" + pwd);
             conn.setAutoCommit(false);
-            return new DbConnection(conn);
+            return new DbConnection(conn, dbPool.db);
         } catch (SQLException e) {
             throw ServiceException.FAILURE("getting database maintenance connection", e);
         }
@@ -438,7 +432,7 @@ public class DbPool {
             String user = LC.zimbra_mysql_user.value();
             String pwd = null;
             Connection conn = DriverManager.getConnection(dbPool.sLoggerRootUrl + "?user=" + user + "&password=" + pwd);
-            return new DbConnection(conn);
+            return new DbConnection(conn, dbPool.db);
         } catch (SQLException e) {
             throw ServiceException.FAILURE("getting database logger connection", e);
         }

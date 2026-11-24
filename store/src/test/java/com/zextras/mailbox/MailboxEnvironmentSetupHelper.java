@@ -2,7 +2,6 @@ package com.zextras.mailbox;
 
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
-import com.zimbra.cs.db.Db;
 import com.zextras.mailbox.server.MailboxServer;
 import com.zextras.mailbox.server.MailboxServerBuilder;
 import com.zextras.mailbox.util.InMemoryLdapServer;
@@ -79,8 +78,6 @@ public class MailboxEnvironmentSetupHelper {
 	public MailboxServer create() throws Exception {
 		setupTestKeyStore();
 
-		Db.setInstance(new HSQLDB());
-
 		LC.ldap_port.setDefault(LDAP_PORT);
 		LC.zimbra_home.setDefault(mailboxHome);
 		LC.zimbra_log_directory.setDefault(mailboxHome);
@@ -122,7 +119,7 @@ public class MailboxEnvironmentSetupHelper {
 										ZAttrProvisioning.A_zimbraPop3SSLServerEnabled, "FALSE",
 										ZAttrProvisioning.A_zimbraImapSSLServerEnabled, "FALSE")));
 
-		return new MailboxServerBuilder(provisioning.getConfig(), provisioning.getLocalServer())
+		return new MailboxServerBuilder(provisioning.getConfig(), provisioning.getLocalServer(), new HSQLDB())
 				.withDump(false)
 				.create();
 	}

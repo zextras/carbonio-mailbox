@@ -4,6 +4,7 @@
 
 package com.zextras.mailbox.server;
 
+import com.zimbra.cs.db.Db;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.net.SocketFactories;
 import com.zimbra.common.util.ZimbraLog;
@@ -24,9 +25,11 @@ import org.eclipse.jetty.server.Server;
 public class MailboxServer {
 
   private final Server server;
+  private final Db db;
 
-	MailboxServer(Server server) {
+	MailboxServer(Server server, Db db) {
 		this.server = server;
+		this.db = db;
 	}
 
 	public static class InstantiationException extends Exception {
@@ -55,7 +58,7 @@ public class MailboxServer {
   public void start() throws Exception {
     ZimbraLog.misc.info("Starting mailbox server");
     initDependencies(); // old FirstServlet#init
-    Zimbra.startup();
+    Zimbra.startup(db);
     server.start();
     com.zextras.carbonio.systemd.SystemdNotify.ready("mailbox ready");
     ZimbraLog.misc.info("Mailbox server started");

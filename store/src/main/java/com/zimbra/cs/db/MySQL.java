@@ -48,34 +48,6 @@ public class MySQL extends Db {
     }
 
     @Override
-    boolean supportsCapability(Db.Capability capability) {
-        switch (capability) {
-            case AVOID_OR_IN_WHERE_CLAUSE:
-          case SQL_PARAM_LIMIT:
-          case NON_BMP_CHARACTERS:
-          case CAST_AS_BIGINT:
-          case CASE_SENSITIVE_COMPARISON:
-            return false;
-            case BITWISE_OPERATIONS:
-          case DUMPSTER_TABLES:
-          case UNIQUE_NAME_INDEX:
-          case ROW_LEVEL_LOCKING:
-          case REQUEST_UTF8_UNICODE_COLLATION:
-          case REPLACE_INTO:
-          case READ_COMMITTED_ISOLATION:
-          case ON_UPDATE_CASCADE:
-          case ON_DUPLICATE_KEY:
-          case MULTITABLE_UPDATE:
-          case LIMIT_CLAUSE:
-          case DISABLE_CONSTRAINT_CHECK:
-          case CLOB_COMPARISON:
-          case BOOLEAN_DATATYPE:
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     boolean compareError(SQLException e, Db.Error error) {
         Integer code = mErrorCodes.get(error);
         return (code != null && e.getErrorCode() == code);
@@ -94,6 +66,29 @@ public class MySQL extends Db {
     @Override
     public String bitAND(String expr1, String expr2) {
         return expr1 + " & " + expr2;
+    }
+
+    @Override
+    public String bitOR(String expr1, String expr2) {
+        return expr1 + " | " + expr2;
+    }
+
+    @Override
+    String updateInnerJoin(String target, String joined, String on, String set, String where) {
+        return "UPDATE " + target + " INNER JOIN " + joined + " ON " + on + " SET " + set + " WHERE " + where;
+    }
+
+    @Override
+    String decrementConversationSizes(String table, String sourceWhere, String targetWhere, byte conversationType) {
+        return "UPDATE " + table + ", (SELECT parent_id pid, COUNT(*) count FROM " + table
+            + " WHERE " + sourceWhere + " AND parent_id IS NOT NULL GROUP BY parent_id) AS x"
+            + " SET size = size - count, metadata = NULL, mod_metadata = ?, change_date = ?"
+            + " WHERE " + targetWhere + "id = pid AND type = " + conversationType;
+    }
+
+    @Override
+    String foreignKeyChecks(boolean enabled) {
+        return "SET FOREIGN_KEY_CHECKS=" + (enabled ? 1 : 0);
     }
 
     @Override
@@ -133,9 +128,7 @@ public class MySQL extends Db {
     @Override
     public void enableStreaming(Statement stmt)
     throws SQLException {
-        if (LC.jdbc_results_streaming_enabled.booleanValue()) {
-            stmt.setFetchSize(Integer.MIN_VALUE);
-        }
+        stmt.setFetchSize(Integer.MIN_VALUE);
     }
 
     @Override

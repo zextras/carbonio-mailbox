@@ -4,7 +4,6 @@
 
 package com.zextras.mailbox.health;
 
-import com.zimbra.cs.db.Db;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
@@ -45,9 +44,9 @@ public class DatabaseServiceDependency extends ServiceDependency {
   }
 
   private boolean doCheckStatus() {
-    var selectStatement = Db.getInstance().healthCheckQuery();
     try (DbConnection connection = dbPool.getConnectionInstance();
-        PreparedStatement preparedStatement = connection.prepareStatement(selectStatement);
+        PreparedStatement preparedStatement =
+            connection.prepareStatement(connection.getDb().healthCheckQuery());
         ResultSet resultSet = preparedStatement.executeQuery()) {
       resultSet.next();
       return true;
