@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -47,13 +46,6 @@ public class DbVolumeBlobsTest extends MailboxTestSuite {
 	private Mailbox mailbox;
 	private Account account;
 	private Account acct2;
-
-	@BeforeAll
-	public static void init() throws Exception {
-		// need MVCC since the VolumeManager code creates connections internally
-		HSQLDB db = (HSQLDB) Db.getInstance();
-		db.useMVCC(null);
-	}
 
 	@BeforeEach
 	public void setUp() throws Exception {
