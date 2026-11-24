@@ -31,7 +31,7 @@ class JaxbRequestJsonParsingCharacterizationTest {
 
   private void assertParsedRequestMatchesSnapshot(Class<?> requestType) throws Exception {
     String inputFile = requestType.getName() + ".json";
-    if (snapshots.isUpdating() && !snapshots.exists(inputFile)) {
+    if (!snapshots.exists(inputFile)) {
       snapshots.write(inputFile, sampleRequestEnvelope(requestType));
     }
     String parsed = describeParsed(snapshots.read(inputFile));
