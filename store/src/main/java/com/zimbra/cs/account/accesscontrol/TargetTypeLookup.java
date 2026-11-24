@@ -112,11 +112,6 @@ public enum TargetTypeLookup {
 					throw AccountServiceException.NO_SUCH_SERVER(target);
 				}
 				break;
-			case zimlet:
-				if (mustFind) {
-					throw AccountServiceException.NO_SUCH_ZIMLET(target);
-				}
-				break;
 			case config:
 				targetEntry = prov.getConfig();
 				break;
@@ -277,9 +272,6 @@ public enum TargetTypeLookup {
 				break;
 			case server:
 				base = dit.serverBaseDN();
-				break;
-			case zimlet:
-				base = dit.zimletBaseDN();
 				break;
 			case config:
 				base = dit.configDN();
