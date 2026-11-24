@@ -13,9 +13,6 @@
   <key name="owasp_policy_file">
     <value>./conf/owasp_policy.xml</value>
   </key>
-  <key name="mysql_bind_address">
-    <value>localhost</value>
-  </key>
   <key name="zimbra_ldap_password">
     <value>password</value>
   </key>
