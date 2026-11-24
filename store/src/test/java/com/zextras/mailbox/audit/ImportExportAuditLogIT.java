@@ -28,6 +28,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -244,7 +245,11 @@ class ImportExportAuditLogIT extends MailboxTestSuite {
       lines.add(event.getMessage().getFormattedMessage());
     }
 
-    String findLineContaining(String text) {
+    String findLineContaining(String text) throws InterruptedException {
+      final long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+      while (linesContaining(text).isEmpty() && System.nanoTime() < deadline) {
+        Thread.sleep(10);
+      }
       final List<String> matches = linesContaining(text);
       assertEquals(1, matches.size(), "expected exactly one audit line containing: " + text);
       return matches.get(0);
