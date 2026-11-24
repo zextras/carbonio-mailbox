@@ -6,11 +6,9 @@
 package com.zimbra.cs.mime;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
-import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.convert.ConversionException;
@@ -20,7 +18,6 @@ import com.zimbra.cs.index.LuceneFields;
 import com.zimbra.cs.index.ZimbraAnalyzer;
 import com.zimbra.cs.index.analysis.RFC822AddressTokenStream;
 import com.zimbra.cs.store.Blob;
-import com.zimbra.cs.store.StoreManager;
 
 /**
  * @since Feb 15, 2006
@@ -43,20 +40,6 @@ public final class ParsedDocument {
      * to re-index this message at a later time */
     private boolean temporaryAnalysisFailure = false;
     private boolean parsed = false; // whether or not analysis has taken place
-
-    private static Blob saveInputAsBlob(InputStream in) throws ServiceException, IOException {
-        return StoreManager.getInstance().storeIncoming(in);
-    }
-
-    public ParsedDocument(InputStream in, String filename, String ctype, long createdDate, String creator,
-            String description) throws ServiceException, IOException {
-        this(saveInputAsBlob(in), filename, ctype, createdDate, creator, description, true);
-    }
-
-    public ParsedDocument(InputStream in, String filename, String ctype, long createdDate, String creator,
-            String description, boolean descEnabled) throws ServiceException, IOException {
-        this(saveInputAsBlob(in), filename, ctype, createdDate, creator, description, descEnabled);
-    }
 
     public ParsedDocument(Blob blob, String filename, String ctype, long createdDate, String creator,
             String description, boolean descEnabled) throws IOException {

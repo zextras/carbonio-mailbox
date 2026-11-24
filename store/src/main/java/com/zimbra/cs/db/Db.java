@@ -74,17 +74,6 @@ public abstract class Db {
     public abstract boolean databaseExists(DbConnection conn, String dbname)
     throws ServiceException;
 
-    /** Generates the correct SQL to direct the current database engine to use
-     *  a particular index to perform a SELECT query.  This string should come
-     *  after the FROM clause and before the WHERE clause in the final SQL
-     *  query.  If the database does not support this type of hinting, the
-     *  function will return <tt>""</tt>. */
-    public static String forceIndex(String index) {
-        if (index == null || index.trim().equals(""))
-            return "";
-        return getInstance().forceIndexClause(index);
-    }
-
     abstract String forceIndexClause(String index);
 
     /** Returns the string used to delimit commands in multi-line scripts.

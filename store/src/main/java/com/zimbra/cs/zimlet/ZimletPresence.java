@@ -7,7 +7,6 @@ package com.zimbra.cs.zimlet;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import com.zimbra.common.service.ServiceException;
 
@@ -146,9 +145,5 @@ public class ZimletPresence {
     
     public String[] getZimletNamesAsArray() {
         return mZimlets.keySet().toArray(new String[0]);
-    }
-    
-    public Set<String> getZimletNames() {
-        return mZimlets.keySet();
     }
 }

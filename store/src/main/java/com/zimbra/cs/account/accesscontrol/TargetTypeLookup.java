@@ -25,7 +25,6 @@ import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.soap.type.TargetBy;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -349,10 +348,5 @@ public enum TargetTypeLookup {
 	public static Set<String> getAttrsInClass(AttributeEntry target) throws ServiceException {
 		AttributeClass klass = getAttributeClass(target);
 		return StoreAttributeManager.getInstance().getAllAttrsInClass(klass);
-	}
-
-	static class SearchBaseAndOC {
-		String mBase;
-		List<String> mOCs;
 	}
 }

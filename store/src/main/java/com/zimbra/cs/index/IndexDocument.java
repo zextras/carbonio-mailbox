@@ -182,10 +182,6 @@ public final class IndexDocument {
         document.add(new Field(LuceneFields.L_CONTACT_DATA, value, Field.Store.NO, Field.Index.ANALYZED));
     }
 
-    public void addObjects(String value) {
-        document.add(new Field(LuceneFields.L_OBJECTS, value, Field.Store.NO, Field.Index.ANALYZED));
-    }
-
     public void addVersion(int value) {
         document.add(new Field(LuceneFields.L_VERSION, String.valueOf(value),
                 Field.Store.YES, Field.Index.NOT_ANALYZED));
