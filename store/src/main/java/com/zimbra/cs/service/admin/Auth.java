@@ -91,7 +91,8 @@ public class Auth extends AdminDocumentHandler {
                 throw ServiceException.AUTH_EXPIRED();
 
             // make sure the authenticated account is an admin account
-            checkAdmin(acct);
+            if (!isAdmin(acct))
+                throw ServiceException.PERM_DENIED("not an admin account");
         } else {
             /*
              * only one of
@@ -142,11 +143,9 @@ public class Auth extends AdminDocumentHandler {
                 if (acct == null)
                     acct = prov.get(by, value);
 
-                if (acct == null)
-                    throw AuthFailedServiceException.AUTH_FAILED(value, valuePassedIn, "account not found");
-
-                if (!isAdmin(acct))
-                    throw AuthFailedServiceException.AUTH_FAILED(value, valuePassedIn, "not an admin account");
+                if (acct == null || !isAdmin(acct))
+                    throw AuthFailedServiceException.AUTH_FAILED(value, valuePassedIn,
+                        acct == null ? "account not found" : "not an admin account");
 
                 AccountUtil.addAccountToLogContext(prov, acct.getId(), ZimbraLog.C_NAME, ZimbraLog.C_ID, null);
 
@@ -191,11 +190,6 @@ public class Auth extends AdminDocumentHandler {
         ServletRequest httpReq = (ServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
         httpReq.setAttribute(CsrfFilter.AUTH_TOKEN, at);
         return doResponse(request, at, zsc, context, acct, csrfSupport);
-    }
-
-    private void checkAdmin(Account acct) throws ServiceException {
-        if (!isAdmin(acct))
-            throw ServiceException.PERM_DENIED("not an admin account");
     }
 
     private boolean isAdmin(Account acct) {

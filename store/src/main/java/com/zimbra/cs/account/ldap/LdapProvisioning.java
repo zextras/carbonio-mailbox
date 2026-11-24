@@ -5169,14 +5169,10 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   private void authAccount(
       Account acct, String password, boolean checkPasswordPolicy, Map<String, Object> authCtxt)
       throws ServiceException {
-    try {
-      checkAccountStatus(acct, authCtxt);
-    } catch (AccountServiceException e) {
-      if (AccountServiceException.MAINTENANCE_MODE.equals(e.getCode())) {
-        verifyPassword(acct, password, AuthMechanism.newInstance(acct, authCtxt), authCtxt);
-      }
-      throw e;
+    if (Provisioning.ACCOUNT_STATUS_MAINTENANCE.equals(acct.getAccountStatus(this))) {
+      verifyPassword(acct, password, AuthMechanism.newInstance(acct, authCtxt), authCtxt);
     }
+    checkAccountStatus(acct, authCtxt);
 
     AuthMechanism authMech = AuthMechanism.newInstance(acct, authCtxt);
     verifyPassword(acct, password, authMech, authCtxt);

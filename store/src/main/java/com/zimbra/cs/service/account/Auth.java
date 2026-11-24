@@ -268,8 +268,6 @@ public class Auth extends AccountDocumentHandler {
         expires = preAuthEl.getAttributeLong(AccountConstants.A_EXPIRES, 0);
         String preAuth = preAuthEl.getTextTrim();
         prov.preAuthAccount(acct, acctValue, acctByStr, timestamp, expires, preAuth, authCtxt);
-      } else {
-        throw ServiceException.INVALID_REQUEST("must specify " + AccountConstants.E_PASSWORD, null);
       }
     }
 
