@@ -10,36 +10,23 @@ import com.zextras.mailbox.testcontainers.MariaDBExtension;
 import com.zextras.mailbox.testcontainers.MariaDBResource;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.StringUtil;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public final class TestMariaDB {
-
-  private static final List<String> GROUP_TABLES =
-      List.of(
-          "tagged_item",
-          "tag",
-          "mail_item",
-          "mail_item_dumpster",
-          "revision",
-          "revision_dumpster",
-          "open_conversation",
-          "appointment",
-          "appointment_dumpster",
-          "tombstone",
-          "pop3_message",
-          "imap_folder",
-          "imap_message",
-          "data_source_item");
 
   private static final List<String> ZIMBRA_TABLES =
       List.of(
@@ -69,6 +56,7 @@ public final class TestMariaDB {
         runScript(conn, "create_database.sql", Map.of("DATABASE_NAME", groupDatabase()));
         runScript(conn, "versions-init.sql", Map.of());
       }
+      LC.create_db_sql_file.setDefault(copyToTempFile("create_database.sql").toString());
       try (PreparedStatement stmt =
           conn.prepareStatement("UPDATE zimbra.volume SET path = ? WHERE id = ?")) {
         stmt.setString(1, volumeDirectory + "/store");
@@ -86,8 +74,8 @@ public final class TestMariaDB {
     try (Connection conn = connect();
         Statement stmt = conn.createStatement()) {
       stmt.execute("SET foreign_key_checks = 0");
-      for (String table : GROUP_TABLES) {
-        stmt.execute("DELETE FROM " + groupDatabase() + "." + table);
+      for (String table : groupTables(conn)) {
+        stmt.execute("DELETE FROM " + table);
       }
       for (String table : ZIMBRA_TABLES) {
         stmt.execute("DELETE FROM zimbra." + table);
@@ -96,6 +84,33 @@ public final class TestMariaDB {
           "INSERT INTO zimbra.current_volumes (message_volume_id, index_volume_id, next_mailbox_id)"
               + " VALUES (1, 2, 1)");
       stmt.execute("SET foreign_key_checks = 1");
+    }
+  }
+
+  private static List<String> groupTables(Connection conn) throws SQLException {
+    List<String> tables = new ArrayList<>();
+    try (Statement stmt = conn.createStatement();
+        ResultSet rs =
+            stmt.executeQuery(
+                "SELECT table_schema, table_name FROM information_schema.tables"
+                    + " WHERE table_schema LIKE 'mboxgroup%'")) {
+      while (rs.next()) {
+        tables.add(rs.getString(1) + "." + rs.getString(2));
+      }
+    }
+    return tables;
+  }
+
+  private static Path copyToTempFile(String file) throws IOException {
+    Path copy = Files.createTempFile("mariadb-" + file, ".sql");
+    copy.toFile().deleteOnExit();
+    Files.writeString(copy, readScript(file));
+    return copy;
+  }
+
+  private static String readScript(String file) throws IOException {
+    try (InputStream in = TestMariaDB.class.getResourceAsStream("/db/" + file)) {
+      return new String(in.readAllBytes(), StandardCharsets.UTF_8);
     }
   }
 
@@ -123,10 +138,7 @@ public final class TestMariaDB {
 
   private static void runScript(Connection conn, String file, Map<String, String> vars)
       throws Exception {
-    String script;
-    try (InputStream in = TestMariaDB.class.getResourceAsStream("/db/" + file)) {
-      script = StringUtil.fillTemplate(new String(in.readAllBytes(), StandardCharsets.UTF_8), vars);
-    }
+    String script = StringUtil.fillTemplate(readScript(file), vars);
     try (Statement stmt = conn.createStatement()) {
       for (String sql : DbMailbox.parseScript(new StringReader(script), new MariaDB())) {
         if (!sql.isEmpty()) {
