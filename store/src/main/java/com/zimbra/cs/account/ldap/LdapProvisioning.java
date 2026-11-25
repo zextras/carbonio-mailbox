@@ -4858,13 +4858,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
   public static final long TIMESTAMP_WINDOW = Constants.MILLIS_PER_MINUTE * 5;
 
-  private void checkAccountStatus(Account acct, Map<String, Object> authCtxt)
-      throws ServiceException {
-    checkAccountStatus(acct, authCtxt, Boolean.FALSE);
-  }
-
-  private void checkAccountStatus(Account acct, Map<String, Object> authCtxt, boolean ignoreLockout)
-      throws ServiceException {
+  private Account reloadAccount(Account acct) throws ServiceException {
     /*
      * We no longer do this reload(see bug 18981):
      *     Stale data can be read back if there are replication delays and the account is
@@ -4896,7 +4890,12 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     if (!Provisioning.getInstance().onLocalServer(acct)) {
       reload(acct, false); // reload from the replica
     }
+    return acct;
+  }
 
+  private Account failOnInactiveStatus(
+      Account acct, Map<String, Object> authCtxt, boolean ignoreLockout)
+      throws ServiceException {
     String accountStatus = acct.getAccountStatus(Provisioning.getInstance());
     if (accountStatus == null) {
       throw AuthFailedServiceException.AUTH_FAILED(
@@ -4907,14 +4906,18 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       throw AccountServiceException.MAINTENANCE_MODE();
     }
 
-    if (!ignoreLockout
-        && !(accountStatus.equals(Provisioning.ACCOUNT_STATUS_ACTIVE)
-            || accountStatus.equals(Provisioning.ACCOUNT_STATUS_LOCKOUT))) {
-      throw AuthFailedServiceException.AUTH_FAILED(
-          acct.getName(),
-          AuthMechanism.namePassedIn(authCtxt),
-          "account(or domain) status is " + accountStatus);
+    if (ignoreLockout || allowsLogin(accountStatus)) {
+      return acct;
     }
+    throw AuthFailedServiceException.AUTH_FAILED(
+        acct.getName(),
+        AuthMechanism.namePassedIn(authCtxt),
+        "account(or domain) status is " + accountStatus);
+  }
+
+  private static boolean allowsLogin(String accountStatus) {
+    return accountStatus.equals(Provisioning.ACCOUNT_STATUS_ACTIVE)
+        || accountStatus.equals(Provisioning.ACCOUNT_STATUS_LOCKOUT);
   }
 
   @Override
@@ -5002,7 +5005,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       boolean admin,
       Map<String, Object> authCtxt)
       throws ServiceException {
-    checkAccountStatus(acct, authCtxt);
+    failOnInactiveStatus(reloadAccount(acct), authCtxt, false);
     verifyPreAuth(
         Provisioning.getInstance().getDomain(acct),
         acct.getName(),
@@ -5169,10 +5172,15 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   private void authAccount(
       Account acct, String password, boolean checkPasswordPolicy, Map<String, Object> authCtxt)
       throws ServiceException {
-    checkAccountStatus(acct, authCtxt);
+    final Account account = reloadAccount(acct);
+    if (Provisioning.ACCOUNT_STATUS_MAINTENANCE.equals(account.getAccountStatus(this))) {
+      verifyPassword(account, password, AuthMechanism.newInstance(account, authCtxt), authCtxt);
+      throw AccountServiceException.MAINTENANCE_MODE();
+    }
+    failOnInactiveStatus(account, authCtxt, false);
 
-    AuthMechanism authMech = AuthMechanism.newInstance(acct, authCtxt);
-    verifyPassword(acct, password, authMech, authCtxt);
+    AuthMechanism authMech = AuthMechanism.newInstance(account, authCtxt);
+    verifyPassword(account, password, authMech, authCtxt);
 
     // true:  authenticating
     // false: changing password (we do *not* want to update last login in this case)
@@ -5180,10 +5188,10 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     if (authMech.checkPasswordAging()) {
       // below this point, the only fault that may be thrown is CHANGE_PASSWORD
-      int maxAge = acct.getIntAttr(Provisioning.A_zimbraPasswordMaxAge, 0);
+      int maxAge = account.getIntAttr(Provisioning.A_zimbraPasswordMaxAge, 0);
       if (maxAge > 0) {
         Date lastChange =
-            acct.getGeneralizedTimeAttr(Provisioning.A_zimbraPasswordModifiedTime, null);
+            account.getGeneralizedTimeAttr(Provisioning.A_zimbraPasswordModifiedTime, null);
         if (lastChange != null) {
           long last = lastChange.getTime();
           long curr = System.currentTimeMillis();
@@ -5192,17 +5200,17 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         }
       }
 
-      boolean mustChange = acct.getBooleanAttr(Provisioning.A_zimbraPasswordMustChange, false);
+      boolean mustChange = account.getBooleanAttr(Provisioning.A_zimbraPasswordMustChange, false);
       if (mustChange) throw AccountServiceException.CHANGE_PASSWORD();
     }
 
     // update/check last logon
-    updateLastLogon(acct);
+    updateLastLogon(account);
   }
 
   private void recoveryCodeBasedAuthAccount(
       Account acct, String recoveryCode, Map<String, Object> authCtxt) throws ServiceException {
-    checkAccountStatus(acct, authCtxt, Boolean.TRUE);
+    failOnInactiveStatus(reloadAccount(acct), authCtxt, true);
     ResetPasswordUtil.validateFeatureResetPasswordStatus(acct);
     verifyPassword(acct, recoveryCode, null, authCtxt);
     acct.unsetResetPasswordRecoveryCode();
@@ -5313,7 +5321,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
   private void ssoAuth(Account acct, Map<String, Object> authCtxt) throws ServiceException {
 
-    checkAccountStatus(acct, authCtxt);
+    failOnInactiveStatus(reloadAccount(acct), authCtxt, false);
 
     LdapLockoutPolicy lockoutPolicy = new LdapLockoutPolicy(this, acct);
     try {

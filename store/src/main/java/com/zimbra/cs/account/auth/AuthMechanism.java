@@ -311,8 +311,8 @@ public abstract class AuthMechanism {
           AuthFailedServiceException afse =
               AuthFailedServiceException.AUTH_FAILED(
                   acct.getName(),
-                  namePassedIn(authCtxt) + "(kerberos5 principal: " + principal + ")",
-                  e.getMessage(),
+                  namePassedIn(authCtxt),
+                  "kerberos5 principal: " + principal + ", " + e.getMessage(),
                   e);
           AuthListener.invokeOnException(afse);
           throw afse;
@@ -405,16 +405,9 @@ public abstract class AuthMechanism {
         if (e instanceof ServiceException) {
           throw (ServiceException) e;
         } else {
-          String msg = e.getMessage();
-          if (StringUtil.isNullOrEmpty(msg)) msg = "";
-          else msg = " (" + msg + ")";
-          /*
-           * include msg in the response, in addition to logs.  This is because custom
-           * auth handlers might want to pass the reason back to the client.
-           */
           AuthFailedServiceException afse =
               AuthFailedServiceException.AUTH_FAILED(
-                  acct.getName(), namePassedIn(authCtxt) + msg, msg, e);
+                  acct.getName(), namePassedIn(authCtxt), e.getMessage(), e);
           AuthListener.invokeOnException(afse);
           throw afse;
         }

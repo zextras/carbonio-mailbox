@@ -91,7 +91,8 @@ public class Auth extends AdminDocumentHandler {
                 throw ServiceException.AUTH_EXPIRED();
 
             // make sure the authenticated account is an admin account
-            checkAdmin(acct);
+            if (!isAdmin(acct))
+                throw ServiceException.PERM_DENIED("not an admin account");
         } else {
             /*
              * only one of
@@ -142,10 +143,9 @@ public class Auth extends AdminDocumentHandler {
                 if (acct == null)
                     acct = prov.get(by, value);
 
-                if (acct == null)
-                    throw AuthFailedServiceException.AUTH_FAILED(value, valuePassedIn, "account not found");
-
-                checkAdmin(acct);
+                if (acct == null || !isAdmin(acct))
+                    throw AuthFailedServiceException.AUTH_FAILED(value, valuePassedIn,
+                        acct == null ? "account not found" : "not an admin account");
 
                 AccountUtil.addAccountToLogContext(prov, acct.getId(), ZimbraLog.C_NAME, ZimbraLog.C_ID, null);
 
@@ -192,13 +192,11 @@ public class Auth extends AdminDocumentHandler {
         return doResponse(request, at, zsc, context, acct, csrfSupport);
     }
 
-    private void checkAdmin(Account acct) throws ServiceException {
+    private boolean isAdmin(Account acct) {
         boolean isDomainAdmin = acct.getBooleanAttr(Provisioning.A_zimbraIsDomainAdminAccount, false);
         boolean isAdmin= acct.getBooleanAttr(Provisioning.A_zimbraIsAdminAccount, false);
         boolean isDelegatedAdmin= acct.getBooleanAttr(Provisioning.A_zimbraIsDelegatedAdminAccount, false);
-        boolean ok = (isDomainAdmin || isAdmin || isDelegatedAdmin);
-        if (!ok)
-            throw ServiceException.PERM_DENIED("not an admin account");
+        return isDomainAdmin || isAdmin || isDelegatedAdmin;
     }
     
     private Element doResponse(Element request, AuthToken at, ZimbraSoapContext zsc, Map<String, Object> context, Account acct, boolean csrfSupport) throws ServiceException {
