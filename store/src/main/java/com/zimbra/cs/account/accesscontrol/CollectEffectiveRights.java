@@ -20,6 +20,8 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.SetUtil;
 import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.AccessManager;
+import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Group;
@@ -99,6 +101,9 @@ public class CollectEffectiveRights {
         if (isGlobalAdmin()) {
             // all preset rights on the target type
             presetRights = getAllExecutableAdminPresetRights();
+
+            // login-as is not implicit for global admins: only report it if granted
+            presetRights.removeIf(r -> RightBearer.isLoginAsRight(r) && !globalAdminHasLoginAs(r));
             
             // all attrs on the target type
             allowSetAttrs = AllowedAttrs.ALLOW_ALL_ATTRS();
@@ -149,6 +154,19 @@ public class CollectEffectiveRights {
         }
     }
     
+    private boolean globalAdminHasLoginAs(Right right) {
+        try {
+            return (mRightBearer.mRightBearer instanceof Account)
+                    && AccessManager.getInstance().canDo(
+                            (Account) mRightBearer.mRightBearer, mTarget, right, true);
+        } catch (Exception e) {
+            // Defensive: don't let unexpected failures get silently interpreted as "no right".
+            ZimbraLog.acl.error("Unexpected error evaluating login-as for right=%s target=%s grantee=%s",
+                    right, mTarget, mRightBearer, e);
+            return false;
+        }
+    }
+
     /*
      * get all executable preset rights on a target type
      * combo rights are expanded

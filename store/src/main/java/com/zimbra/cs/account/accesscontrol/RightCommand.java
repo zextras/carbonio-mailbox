@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
+import static com.zimbra.cs.account.accesscontrol.RightBearer.isLoginAsRight;
 import static com.zimbra.cs.account.accesscontrol.generated.UserRights.R_sendToDistList;
 
 import com.google.common.cache.Cache;
@@ -63,6 +64,7 @@ import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 public class RightCommand {
+    public static final String ZMPROV = "zmprov";
     /*
      * Grants and ACE are aux classes for ProvUtil.
      *
@@ -1148,7 +1150,10 @@ public class RightCommand {
         if (granteeType != null) {
             gt = GranteeType.fromCode(granteeType);
             granteeEntry = GranteeType.lookupGrantee(prov, gt, granteeBy, grantee);
-            isGranteeAnAdmin = RightBearer.isValidGranteeForAdminRights(gt, granteeEntry);
+            // global admins can now hold login-as grants, so show their admin grants too
+            isGranteeAnAdmin = RightBearer.isValidGranteeForAdminRights(gt, granteeEntry)
+                    || (gt == GranteeType.GT_USER
+                        && granteeEntry.getBooleanAttr(Provisioning.A_zimbraIsAdminAccount, false));
 
             if (granteeIncludeGroupsGranteeBelongs) {
                 Grantee theGrantee = Grantee.getGrantee(granteeEntry, false);
@@ -1217,7 +1222,7 @@ public class RightCommand {
             if (!revoking) {
                 boolean isCDARight = CrossDomain.validateCrossDomainAdminGrant(right, granteeType);
                 if (!isCDARight &&
-                    !RightBearer.isValidGranteeForAdminRights(granteeType, granteeEntry)) {
+                    !RightBearer.isValidGranteeForRight(granteeType, granteeEntry, right)) {
                     throw ServiceException.INVALID_REQUEST("grantee for admin right or " +
                             "for user right with the canDelegate modifier must be a " +
                             "delegated admin account or admin group, it cannot be a " +
@@ -1430,6 +1435,15 @@ public class RightCommand {
 
         ACLUtil.grantRight(prov, targetEntry, aces);
         refreshMilter(targetEntry, r);
+        if (isLoginAsRight(r)) {
+            ZimbraLog.security.info(
+                    "RightCommand; Method=GRANT; Right=%s; AuthUserId=%s; AuthUser=%s; GrantedUserId=%s; GrantedUser=%s;",
+                    r.getName(),
+                    authedAcct.getId(),
+                    getAuthUsername(authedAcct),
+                    granteeId,
+                    granteeEntry != null ? granteeEntry.getName() : granteeId);
+        }
     }
 
     public static void revokeRight(Provisioning prov, Account authedAcct, EffectiveRightsTargetSelector targSel,
@@ -1516,6 +1530,15 @@ public class RightCommand {
         if (revoked.isEmpty())
             throw AccountServiceException.NO_SUCH_GRANT(ace.dump(true));
         refreshMilter(targetEntry, r);
+        if (isLoginAsRight(r)) {
+            ZimbraLog.security.info(
+                    "RightCommand; Method=REVOKE; Right=%s; AuthUserId=%s; AuthUser=%s; RevokedUserId=%s; RevokedUser=%s;",
+                    r.getName(),
+                    authedAcct.getId(),
+                    getAuthUsername(authedAcct),
+                    granteeId,
+                    granteeEntry != null ? granteeEntry.getName() : granteeId);
+        }
     }
 
     /**
@@ -1628,6 +1651,12 @@ public class RightCommand {
     public static Right RightNameToRight(String rightName)
     throws ServiceException  {
         return RightManager.getInstance().getRight(rightName);
+    }
+
+    private static String getAuthUsername(Account authedAcct) {
+        return authedAcct.getName() == null
+                ? ""
+                : Provisioning.SERVICE_WEBCLIENT.equals(authedAcct.getName()) ? ZMPROV : authedAcct.getName();
     }
 
 }
