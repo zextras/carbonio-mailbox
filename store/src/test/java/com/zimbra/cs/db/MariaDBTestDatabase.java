@@ -24,7 +24,6 @@ import java.util.Map;
 
 final class MariaDBTestDatabase {
 
-  static final MariaDB DB = new MariaDB();
   static final String GROUP = "mboxgroup1";
 
   private MariaDBTestDatabase() {}
@@ -87,7 +86,7 @@ final class MariaDBTestDatabase {
   private static void runScript(Connection c, String file, Map<String, String> vars) throws Exception {
     String script = StringUtil.fillTemplate(Files.readString(Path.of("db", file)), vars);
     try (Statement stmt = c.createStatement()) {
-      for (String sql : DbMailbox.parseScript(new StringReader(script), DB)) {
+      for (String sql : DbMailbox.parseScript(new StringReader(script))) {
         if (!sql.isEmpty()) {
           stmt.execute(sql);
         }

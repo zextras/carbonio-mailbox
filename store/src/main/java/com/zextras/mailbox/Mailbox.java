@@ -4,7 +4,7 @@
 
 package com.zextras.mailbox;
 
-import com.zimbra.cs.db.MariaDB;
+import com.zextras.db.MariaDB;
 import com.zextras.mailbox.server.MailboxServer;
 import com.zextras.mailbox.server.MailboxServerBuilder;
 import com.zimbra.cs.account.Provisioning;
@@ -28,7 +28,7 @@ public class Mailbox {
 		}
 		final Provisioning provisioning = Provisioning.getInstance();
 		final MailboxServer mailboxServer = new MailboxServerBuilder(provisioning.getConfig(),
-				provisioning.getLocalServer(), new MariaDB()).create();
+				provisioning.getLocalServer(), MariaDB.fromLocalConfig()).create();
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			try {
 				mailboxServer.stop();

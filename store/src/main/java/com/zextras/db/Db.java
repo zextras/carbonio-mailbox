@@ -4,7 +4,7 @@
 
 package com.zextras.db;
 
-public interface DbConfig {
+public interface Db {
 
   String host();
 

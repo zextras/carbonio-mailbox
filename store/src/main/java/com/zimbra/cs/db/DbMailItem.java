@@ -179,7 +179,7 @@ public class DbMailItem {
       DbTag.storeTagReferences(mailbox, data.id, type, data.getTags());
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
+      if (DbError.DUPLICATE_ROW.matches(e)) {
         throw MailServiceException.ALREADY_EXISTS(data.id, e);
       } else {
         throw ServiceException.FAILURE("Failed to create id=" + data.id + ",type=" + data.type, e);
@@ -264,7 +264,7 @@ public class DbMailItem {
       DbTag.storeTagReferences(mbox, id, item.getType(), item.getTags());
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
+      if (DbError.DUPLICATE_ROW.matches(e)) {
         throw MailServiceException.ALREADY_EXISTS(id, e);
       } else {
         throw ServiceException.FAILURE("copying " + item.getType() + ": " + item.getId(), e);
@@ -310,7 +310,7 @@ public class DbMailItem {
       }
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
+      if (DbError.DUPLICATE_ROW.matches(e)) {
         throw MailServiceException.ALREADY_EXISTS(newId, e);
       } else {
         throw ServiceException.FAILURE("copying " + calItem.getType() + ": " + calItem.getId(), e);
@@ -360,7 +360,7 @@ public class DbMailItem {
       }
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
+      if (DbError.DUPLICATE_ROW.matches(e)) {
         throw MailServiceException.ALREADY_EXISTS(newId, e);
       } else {
         throw ServiceException.FAILURE(
@@ -392,7 +392,7 @@ public class DbMailItem {
       if (!shared) {
         flags = "flags";
       } else {
-        flags = conn.getDb().bitOR("flags", String.valueOf(Flag.BITMASK_COPIED));
+        flags = "flags" + " | " + String.valueOf(Flag.BITMASK_COPIED);
       }
       stmt =
           conn.prepareStatement(
@@ -471,7 +471,7 @@ public class DbMailItem {
       DbTag.storeTagReferences(mbox, data.id, type, data.getTags());
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
+      if (DbError.DUPLICATE_ROW.matches(e)) {
         throw MailServiceException.ALREADY_EXISTS(data.id, e);
       } else {
         throw ServiceException.FAILURE("i-copying " + source.getType() + ": " + source.getId(), e);
@@ -515,7 +515,7 @@ public class DbMailItem {
       stmt.executeUpdate();
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
+      if (DbError.DUPLICATE_ROW.matches(e)) {
         throw MailServiceException.ALREADY_EXISTS(item.getId(), e);
       } else {
         throw ServiceException.FAILURE(
@@ -653,7 +653,7 @@ public class DbMailItem {
       stmt.executeUpdate();
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
+      if (DbError.DUPLICATE_ROW.matches(e)) {
         throw MailServiceException.ALREADY_EXISTS(item.getName(), e);
       } else {
         throw ServiceException.FAILURE("writing new folder data for item " + item.getId(), e);
@@ -749,7 +749,7 @@ public class DbMailItem {
       stmt = null;
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      //            if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW))
+      //            if (DbError.DUPLICATE_ROW.matches(e))
       //                throw MailServiceException.ALREADY_EXISTS(msgs.toString(), e);
       //            else
       throw ServiceException.FAILURE("writing new folder data for messages", e);
@@ -872,8 +872,8 @@ public class DbMailItem {
     if (ids.isEmpty()) {
       return;
     }
-    for (int i = 0; i < ids.size(); i += conn.getDb().getInClauseBatchSize()) {
-      int count = Math.min(conn.getDb().getInClauseBatchSize(), ids.size() - i);
+    for (int i = 0; i < ids.size(); i += DbUtil.IN_CLAUSE_BATCH_SIZE) {
+      int count = Math.min(DbUtil.IN_CLAUSE_BATCH_SIZE, ids.size() - i);
       int updated;
       PreparedStatement stmt = null;
       try { // update MAIL_ITEM table
@@ -973,8 +973,8 @@ public class DbMailItem {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     try {
-      for (int i = 0; i < children.length; i += conn.getDb().getInClauseBatchSize()) {
-        int count = Math.min(conn.getDb().getInClauseBatchSize(), children.length - i);
+      for (int i = 0; i < children.length; i += DbUtil.IN_CLAUSE_BATCH_SIZE) {
+        int count = Math.min(DbUtil.IN_CLAUSE_BATCH_SIZE, children.length - i);
         stmt =
             conn.prepareStatement(
                 "UPDATE "
@@ -1166,7 +1166,7 @@ public class DbMailItem {
       }
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
+      if (DbError.DUPLICATE_ROW.matches(e)) {
         throw MailServiceException.ALREADY_EXISTS(name, e);
       } else {
         throw ServiceException.FAILURE(
@@ -1239,7 +1239,7 @@ public class DbMailItem {
       }
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
+      if (DbError.DUPLICATE_ROW.matches(e)) {
         throw MailServiceException.ALREADY_EXISTS(item.getName(), e);
       } else {
         throw ServiceException.FAILURE(
@@ -1292,8 +1292,7 @@ public class DbMailItem {
     try {
       stmt =
           conn.prepareStatement(
-              Db.getInstance()
-                  .upsert(
+              DbUtil.upsert(
                       getConversationTableName(item),
                       withMailboxId("hash", "conv_id"),
                       withMailboxId("hash"),
@@ -1502,8 +1501,8 @@ public class DbMailItem {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     try {
-      for (int i = 0; i < itemIDs.size(); i += conn.getDb().getInClauseBatchSize()) {
-        int count = Math.min(conn.getDb().getInClauseBatchSize(), itemIDs.size() - i);
+      for (int i = 0; i < itemIDs.size(); i += DbUtil.IN_CLAUSE_BATCH_SIZE) {
+        int count = Math.min(DbUtil.IN_CLAUSE_BATCH_SIZE, itemIDs.size() - i);
         stmt =
             conn.prepareStatement(
                 "UPDATE "
@@ -1561,8 +1560,7 @@ public class DbMailItem {
     try {
       stmt =
           conn.prepareStatement(
-              conn.getDb()
-                  .decrementConversationSizes(
+              DbUtil.decrementConversationSizes(
                       getMailItemTableName(folder),
                       IN_THIS_MAILBOX_AND + "folder_id = ?",
                       IN_THIS_MAILBOX_AND,
@@ -1607,12 +1605,11 @@ public class DbMailItem {
     ResultSet rs = null;
     try {
       String table = getMailItemTableName(mbox);
-      for (int i = 0; i < ids.size(); i += conn.getDb().getInClauseBatchSize()) {
-        int count = Math.min(conn.getDb().getInClauseBatchSize(), ids.size() - i);
+      for (int i = 0; i < ids.size(); i += DbUtil.IN_CLAUSE_BATCH_SIZE) {
+        int count = Math.min(DbUtil.IN_CLAUSE_BATCH_SIZE, ids.size() - i);
         stmt =
             conn.prepareStatement(
-                conn.getDb()
-                    .decrementConversationSizes(
+                DbUtil.decrementConversationSizes(
                         table,
                         IN_THIS_MAILBOX_AND + DbUtil.whereIn("id", count),
                         IN_THIS_MAILBOX_AND,
@@ -1657,8 +1654,8 @@ public class DbMailItem {
       // note: be somewhat careful making changes here, as <tt>i</tt> and <tt>it</tt> operate
       // separately
       Iterator<Integer> it = candidates.iterator();
-      for (int i = 0; i < candidates.size(); i += conn.getDb().getInClauseBatchSize()) {
-        int count = Math.min(conn.getDb().getInClauseBatchSize(), candidates.size() - i);
+      for (int i = 0; i < candidates.size(); i += DbUtil.IN_CLAUSE_BATCH_SIZE) {
+        int count = Math.min(DbUtil.IN_CLAUSE_BATCH_SIZE, candidates.size() - i);
         stmt =
             conn.prepareStatement(
                 "SELECT id FROM "
@@ -1756,10 +1753,10 @@ public class DbMailItem {
     }
 
     DbConnection conn = mbox.getOperationConnection();
-    for (int offset = 0; offset < targets.size(); offset += conn.getDb().getInClauseBatchSize()) {
+    for (int offset = 0; offset < targets.size(); offset += DbUtil.IN_CLAUSE_BATCH_SIZE) {
       PreparedStatement stmt = null;
       try {
-        int count = Math.min(conn.getDb().getInClauseBatchSize(), targets.size() - offset);
+        int count = Math.min(DbUtil.IN_CLAUSE_BATCH_SIZE, targets.size() - offset);
         if (!fromDumpster && mbox.dumpsterEnabled()) {
           copyToDumpster(conn, mbox, targets, offset, count, unsetDeletedFlag);
         }
@@ -1847,10 +1844,8 @@ public class DbMailItem {
                   + " SELECT "
                   + MAIL_ITEM_DUMPSTER_COPY_SRC_FIELDS
                   + (unsetDeletedFlag
-                      ? Db.getInstance()
-                          .bitANDNOT(
-                              "flags",
-                              String.valueOf(Flag.BITMASK_DELETED)) /* negate deleted flag value */
+                      ? "flags" + " & ~" + String.valueOf(
+                  Flag.BITMASK_DELETED) /* negate deleted flag value */
                       : "flags")
                   + " FROM "
                   + miTableName
@@ -2025,7 +2020,7 @@ public class DbMailItem {
                       ? " = " + types.iterator().next().toByte()
                       : " IN " + typesValue)
                   + " AND ids IS NOT NULL ORDER BY sequence");
-      conn.getDb().enableStreaming(stmt);
+      DbUtil.enableStreaming(stmt);
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
       stmt.setLong(pos++, lastSync);
@@ -2089,7 +2084,7 @@ public class DbMailItem {
                     + " ORDER BY sequence");
       }
 
-      conn.getDb().enableStreaming(stmt);
+      DbUtil.enableStreaming(stmt);
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
       stmt.setLong(pos++, lastSync);
@@ -2205,7 +2200,7 @@ public class DbMailItem {
                   + IN_THIS_MAILBOX_AND
                   + "mod_metadata > ? "
                   + " ORDER BY id");
-      conn.getDb().enableStreaming(stmt);
+      DbUtil.enableStreaming(stmt);
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
       stmt.setLong(pos++, lastSync);
@@ -2523,9 +2518,9 @@ public class DbMailItem {
                   + " WHERE "
                   + IN_THIS_MAILBOX_AND
                   + typeIn(type)
-                  + DbSearch.orderBy(conn.getDb(), sort, false));
+                  + DbSearch.orderBy(sort, false));
       if (type == MailItem.Type.MESSAGE) {
-        conn.getDb().enableStreaming(stmt);
+        DbUtil.enableStreaming(stmt);
       }
       setMailboxId(stmt, mbox, 1);
       rs = stmt.executeQuery();
@@ -2568,7 +2563,7 @@ public class DbMailItem {
             .append(" WHERE ")
             .append(IN_THIS_MAILBOX_AND)
             .append("parent_id = ? ")
-            .append(DbSearch.orderBy(conn.getDb(), sort, false));
+            .append(DbSearch.orderBy(sort, false));
     if (limit > 0) {
       sql.append(" LIMIT ?");
     }
@@ -2578,7 +2573,7 @@ public class DbMailItem {
     try {
       stmt = conn.prepareStatement(sql.toString());
       if (parent.getSize() > RESULTS_STREAMING_MIN_ROWS) {
-        conn.getDb().enableStreaming(stmt);
+        DbUtil.enableStreaming(stmt);
       }
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
@@ -2642,7 +2637,7 @@ public class DbMailItem {
                   + " AND type NOT IN "
                   + NON_SEARCHABLE_TYPES);
       if (relativeTo.getUnreadCount() > RESULTS_STREAMING_MIN_ROWS) {
-        conn.getDb().enableStreaming(stmt);
+        DbUtil.enableStreaming(stmt);
       }
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
@@ -2693,9 +2688,9 @@ public class DbMailItem {
                   + IN_THIS_MAILBOX_AND
                   + "folder_id = ? AND "
                   + typeIn(type)
-                  + DbSearch.orderBy(conn.getDb(), sort, false));
+                  + DbSearch.orderBy(sort, false));
       if (folder.getSize() > RESULTS_STREAMING_MIN_ROWS && type == MailItem.Type.MESSAGE) {
-        conn.getDb().enableStreaming(stmt);
+        DbUtil.enableStreaming(stmt);
       }
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
@@ -2883,9 +2878,9 @@ public class DbMailItem {
     PreparedStatement stmt = null;
     ResultSet rs = null;
     Iterator<Integer> it = ids.iterator();
-    for (int i = 0; i < ids.size(); i += conn.getDb().getInClauseBatchSize()) {
+    for (int i = 0; i < ids.size(); i += DbUtil.IN_CLAUSE_BATCH_SIZE) {
       try {
-        int count = Math.min(conn.getDb().getInClauseBatchSize(), ids.size() - i);
+        int count = Math.min(DbUtil.IN_CLAUSE_BATCH_SIZE, ids.size() - i);
         stmt =
             conn.prepareStatement(
                 "SELECT "
@@ -2952,7 +2947,7 @@ public class DbMailItem {
                   + "folder_id = ? AND "
                   + typeIn(type)
                   + " AND "
-                  + Db.equalsSTRING("name"));
+                  + "name" + " = ?");
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
       stmt.setInt(pos++, folderId);
@@ -3081,12 +3076,12 @@ public class DbMailItem {
           .append(typeConstraint)
           .append(" ORDER BY mod_metadata, id");
       if (limit > 0) {
-        buf.append(" ").append(conn.getDb().limit(limit));
+        buf.append(" ").append(DbUtil.limit(limit));
       }
 
       stmt = conn.prepareStatement(buf.toString());
       if (type == MailItem.Type.MESSAGE) {
-        conn.getDb().enableStreaming(stmt);
+        DbUtil.enableStreaming(stmt);
       }
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
@@ -3128,7 +3123,7 @@ public class DbMailItem {
       }
       stmt = conn.prepareStatement(buf.toString());
       if (type == MailItem.Type.MESSAGE) {
-        conn.getDb().enableStreaming(stmt);
+        DbUtil.enableStreaming(stmt);
       }
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
@@ -3208,13 +3203,13 @@ public class DbMailItem {
     }
 
     Map<Integer, UnderlyingData> conversations =
-        new HashMap<>(conn.getDb().getInClauseBatchSize() * 3 / 2);
+        new HashMap<>(DbUtil.IN_CLAUSE_BATCH_SIZE * 3 / 2);
 
     PreparedStatement stmt = null;
     ResultSet rs = null;
-    for (int i = 0; i < convData.size(); i += conn.getDb().getInClauseBatchSize()) {
+    for (int i = 0; i < convData.size(); i += DbUtil.IN_CLAUSE_BATCH_SIZE) {
       try {
-        int count = Math.min(conn.getDb().getInClauseBatchSize(), convData.size() - i);
+        int count = Math.min(DbUtil.IN_CLAUSE_BATCH_SIZE, convData.size() - i);
         stmt =
             conn.prepareStatement(
                 "SELECT parent_id, unread, flags, tag_names"
@@ -3321,7 +3316,7 @@ public class DbMailItem {
         buf.append(" ").append(limitClause);
       }
       stmt = conn.prepareStatement(buf.toString());
-      conn.getDb().enableStreaming(stmt); // Assume we're dealing with a very large result set.
+      DbUtil.enableStreaming(stmt); // Assume we're dealing with a very large result set.
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
 
@@ -3419,7 +3414,7 @@ public class DbMailItem {
       }
       String orderByLimit = "";
       if (maxItems != null) {
-        orderByLimit = " ORDER BY " + dateColumn + " " + conn.getDb().limit(maxItems);
+        orderByLimit = " ORDER BY " + dateColumn + " " + DbUtil.limit(maxItems);
       }
 
       stmt =
@@ -3433,7 +3428,7 @@ public class DbMailItem {
                   + constraint
                   + orderByLimit);
       if (globalMessages || getTotalFolderSize(folders) > RESULTS_STREAMING_MIN_ROWS) {
-        conn.getDb().enableStreaming(stmt);
+        DbUtil.enableStreaming(stmt);
       }
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
@@ -3755,8 +3750,8 @@ public class DbMailItem {
     PreparedStatement stmt = null;
     ResultSet rs = null;
     try {
-      for (int i = 0; i < indexIDs.size(); i += conn.getDb().getInClauseBatchSize()) {
-        int count = Math.min(conn.getDb().getInClauseBatchSize(), indexIDs.size() - i);
+      for (int i = 0; i < indexIDs.size(); i += DbUtil.IN_CLAUSE_BATCH_SIZE) {
+        int count = Math.min(DbUtil.IN_CLAUSE_BATCH_SIZE, indexIDs.size() - i);
         stmt =
             conn.prepareStatement(
                 "SELECT index_id FROM "
@@ -3832,11 +3827,11 @@ public class DbMailItem {
         query.append(" AND mi.id > ? ORDER BY mi.id");
       }
       if (hasLimit) {
-        query.append(" ").append(conn.getDb().limit(limit + 1));
+        query.append(" ").append(DbUtil.limit(limit + 1));
       }
       stmt = conn.prepareStatement(query.toString());
       if (folder.getSize() > RESULTS_STREAMING_MIN_ROWS && !hasLimit) {
-        conn.getDb().enableStreaming(stmt);
+        DbUtil.enableStreaming(stmt);
       }
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
@@ -3931,13 +3926,12 @@ public class DbMailItem {
                   + " AND type = "
                   + MailItem.Type.MESSAGE.toByte()
                   + " AND "
-                  + Db.getInstance()
-                      .bitAND("flags", String.valueOf(Flag.BITMASK_DELETED | Flag.BITMASK_POPPED))
+                  + "flags" + " & " + String.valueOf(Flag.BITMASK_DELETED | Flag.BITMASK_POPPED)
                   + " = 0"
                   + dateConstraint);
       if (getTotalFolderSize(folders) > RESULTS_STREAMING_MIN_ROWS) {
         // TODO: Because of POPPED flag, the folder size no longer represent the count.
-        conn.getDb().enableStreaming(stmt);
+        DbUtil.enableStreaming(stmt);
       }
 
       int pos = 1;
@@ -4022,7 +4016,7 @@ public class DbMailItem {
                   + " ORDER BY date"
                   + (descending ? " DESC" : ""));
       if (type == MailItem.Type.MESSAGE && folder.getSize() > RESULTS_STREAMING_MIN_ROWS) {
-        conn.getDb().enableStreaming(stmt);
+        DbUtil.enableStreaming(stmt);
       }
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
@@ -4531,8 +4525,8 @@ public class DbMailItem {
     ResultSet rs = null;
     List<UnderlyingData> result = new ArrayList<>();
     try {
-      for (int i = 0; i < uids.size(); i += conn.getDb().getInClauseBatchSize()) {
-        int count = Math.min(conn.getDb().getInClauseBatchSize(), uids.size() - i);
+      for (int i = 0; i < uids.size(); i += DbUtil.IN_CLAUSE_BATCH_SIZE) {
+        int count = Math.min(DbUtil.IN_CLAUSE_BATCH_SIZE, uids.size() - i);
         stmt =
             conn.prepareStatement(
                 "SELECT "
@@ -4738,8 +4732,7 @@ public class DbMailItem {
     try {
       stmt =
           conn.prepareStatement(
-              Db.getInstance()
-                  .upsert(
+              DbUtil.upsert(
                       getCalendarItemTableName(mbox),
                       withMailboxId("uid", "item_id", "start_time", "end_time"),
                       withMailboxId("uid"),
@@ -5061,7 +5054,7 @@ public class DbMailItem {
         if (buf.length() > 0) {
           buf.append(" AND ");
         }
-        buf.append(Db.getInstance().bitAND("flags", String.valueOf(flagToExclude.toBitmask())))
+        buf.append("flags" + " & " + String.valueOf(flagToExclude.toBitmask()))
             .append(" != ")
             .append(flagToExclude.toBitmask());
       }
@@ -5082,9 +5075,9 @@ public class DbMailItem {
     public String getLimitClause() {
       if (rowLimit != null && rowLimit != 0) {
         if (offset != null) {
-          return Db.getInstance().limit(offset, rowLimit);
+          return "LIMIT " + offset + "," + rowLimit;
         } else {
-          return Db.getInstance().limit(rowLimit);
+          return DbUtil.limit(rowLimit);
         }
       }
       return "";
@@ -5770,7 +5763,7 @@ public class DbMailItem {
                   + " WHERE "
                   + IN_THIS_MAILBOX_AND
                   + " change_date < ? AND "
-                  + conn.getDb().bitAND("flags", String.valueOf(Flag.BITMASK_DELETED))
+                  + "flags" + " & " + String.valueOf(Flag.BITMASK_DELETED)
                   + " = "
                   + Flag.BITMASK_DELETED
                   + " limit "
@@ -5811,7 +5804,7 @@ public class DbMailItem {
       stmt.executeUpdate();
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
+      if (DbError.DUPLICATE_ROW.matches(e)) {
         throw MailServiceException.ALREADY_EXISTS(id, e);
       } else {
         throw ServiceException.FAILURE("writing new folder data for item " + id, e);

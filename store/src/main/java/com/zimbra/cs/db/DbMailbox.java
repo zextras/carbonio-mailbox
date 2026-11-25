@@ -197,7 +197,7 @@ public final class DbMailbox {
   public static synchronized Mailbox.MailboxData createMailbox(
       DbConnection conn, int requestedMailboxId, String accountId, String comment, int lastBackupAt)
       throws ServiceException {
-    String limitClause = " ORDER BY index_volume_id " + conn.getDb().limit(1);
+    String limitClause = " ORDER BY index_volume_id " + DbUtil.limit(1);
 
     // Get mailbox id.
     MailboxIdentifier newMboxId = getNextMailboxId(conn, requestedMailboxId);
@@ -262,7 +262,7 @@ public final class DbMailbox {
       data.version = MailboxVersion.getCurrent();
       return data;
     } catch (SQLException e) {
-      if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
+      if (DbError.DUPLICATE_ROW.matches(e)) {
         throw MailServiceException.ALREADY_EXISTS(accountId, e);
       } else {
         throw ServiceException.FAILURE("writing new mailbox row for account " + accountId, e);
@@ -288,7 +288,7 @@ public final class DbMailbox {
     PreparedStatement stmt = null;
     try {
       String dbname = getDatabaseName(groupId);
-      if (conn.getDb().databaseExists(conn, dbname)) {
+      if (DbUtil.databaseExists(conn, dbname)) {
         // If database didn't exist we would end up doing CREATE DATABASE which does implicit
         // commit.
         // Let's do an explicit here so pending transactions always committed on exit from this
@@ -579,8 +579,7 @@ public final class DbMailbox {
       } else {
         stmt =
             conn.prepareStatement(
-                Db.getInstance()
-                    .upsert(
+                DbUtil.upsert(
                         TABLE_METADATA,
                         DbMailItem.withMailboxId("section", "metadata"),
                         DbMailItem.withMailboxId("section"),
@@ -910,7 +909,7 @@ public final class DbMailbox {
 
       return mbd;
     } catch (SQLException e) {
-      if (conn.getDb().compareError(e, Db.Error.NO_SUCH_TABLE)) {
+      if (DbError.NO_SUCH_TABLE.matches(e)) {
         return null;
       }
       throw ServiceException.FAILURE("fetching stats on mailbox " + mailboxId, e);
@@ -1185,7 +1184,7 @@ public final class DbMailbox {
   private static void executeScript(DbConnection conn, String script)
       throws IOException, ServiceException, SQLException {
     try {
-      for (String sql : parseScript(new StringReader(script), conn.getDb())) {
+      for (String sql : parseScript(new StringReader(script))) {
         if (sql.isEmpty()) {
           continue;
         }
@@ -1200,7 +1199,7 @@ public final class DbMailbox {
     }
   }
 
-  static String[] parseScript(Reader scriptReader, Db db) throws IOException {
+  static String[] parseScript(Reader scriptReader) throws IOException {
     StringBuilder buf = new StringBuilder();
     try (BufferedReader br = new BufferedReader(scriptReader)) {
       String line;
@@ -1213,7 +1212,7 @@ public final class DbMailbox {
         buf.append('\n');
       }
     }
-    String[] statements = buf.toString().split("\\s*" + db.scriptCommandDelimiter() + "\\s*");
+    String[] statements = buf.toString().split("\\s*;\\s*");
     for (int i = 0; i < statements.length; i++) {
       if (statements[i].startsWith("END")) {
         statements[i - 1] += ";\n" + statements[i];

@@ -25,7 +25,6 @@ class MariaDBUpsertTest {
 
   @RegisterExtension static final MariaDBExtension mariadb = new MariaDBExtension();
 
-  private static final MariaDB DB = MariaDBTestDatabase.DB;
   private static final String GROUP = MariaDBTestDatabase.GROUP;
   private static final Timestamp T1 = Timestamp.valueOf("2026-11-01 10:00:00");
   private static final Timestamp T2 = Timestamp.valueOf("2026-11-02 10:00:00");
@@ -237,7 +236,7 @@ class MariaDBUpsertTest {
   private int upsert(
       String table, List<String> columns, List<String> keys, List<String> updates, Object... values)
       throws SQLException {
-    return execute(DB.upsert(table, columns, keys, updates), values);
+    return execute(DbUtil.upsert(table, columns, keys, updates), values);
   }
 
   private int execute(String sql, Object... values) throws SQLException {

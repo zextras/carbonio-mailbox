@@ -12,7 +12,7 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
-import com.zimbra.cs.db.Db;
+import com.zextras.db.Db;
 import com.zimbra.cs.db.TestMariaDB;
 import java.io.FileOutputStream;
 import java.math.BigInteger;

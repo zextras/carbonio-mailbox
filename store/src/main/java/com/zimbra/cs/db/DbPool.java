@@ -6,8 +6,7 @@
 package com.zimbra.cs.db;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.zextras.db.DbConfig;
-import com.zextras.db.MariaDBConfig;
+import com.zextras.db.Db;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.SystemUtil;
@@ -41,21 +40,20 @@ public class DbPool {
     static ValueCounter<String> sConnectionStackCounter = new ValueCounter<>();
 
     // instance level
-    private final Db db;
     private final PoolingDataSource<PoolableConnection> dataSource;
     private final GenericObjectPool<PoolableConnection> pool;
     private final String sRootUrl;
     private final String sLoggerRootUrl;
 
-    private DbPool(Db db, PoolConfig pconfig, PoolingDataSource<PoolableConnection> dataSource, GenericObjectPool<PoolableConnection> pool) {
-        this.db = db;
+    private DbPool(PoolConfig pconfig, PoolingDataSource<PoolableConnection> dataSource, GenericObjectPool<PoolableConnection> pool) {
         this.dataSource = dataSource;
         this.pool = pool;
         sRootUrl = pconfig.mRootUrl;
         sLoggerRootUrl = pconfig.mLoggerUrl;
     }
 
-    static DbPool newPool(Db db, PoolConfig pconfig) {
+    static DbPool newPool(Db db) {
+        PoolConfig pconfig = new PoolConfig(db);
         System.setProperty("jdbc.drivers", pconfig.mDriverClassName);
         ConnectionFactory cfac = ZimbraConnectionFactory.getConnectionFactory(pconfig);
 
@@ -74,7 +72,7 @@ public class DbPool {
         var pds = new PoolingDataSource<>(connectionPool);
         pds.setAccessToUnderlyingConnectionAllowed(true);
 
-        final DbPool dbPool = new DbPool(db, pconfig, pds, connectionPool);
+        final DbPool dbPool = new DbPool(pconfig, pds, connectionPool);
 
 
         waitForDatabase(dbPool);
@@ -101,7 +99,7 @@ public class DbPool {
                 if (dbconn.getAutoCommit() != false)
                     dbconn.setAutoCommit(false);
 
-                conn = new DbConnection(dbconn, mboxId, db);
+                conn = new DbConnection(dbconn, mboxId);
             } catch (SQLException e) {
                 try {
                     if (dbconn != null && !dbconn.isClosed())
@@ -133,26 +131,20 @@ public class DbPool {
 
     public static class DbConnection implements AutoCloseable {
         private final Connection connection;
-        private final Db db;
         private Throwable mStackTrace;
         Integer mboxId;
 
-        DbConnection(Connection conn, Db db) {
+        DbConnection(Connection conn) {
             connection = conn;
-            this.db = db;
         }
 
-        DbConnection(Connection conn, Integer mboxId, Db db) {
-            this(conn, db);
+        DbConnection(Connection conn, Integer mboxId) {
+            this(conn);
             this.mboxId = mboxId;
         }
 
         public Connection getConnection() {
             return connection;
-        }
-
-        public Db getDb() {
-            return db;
         }
 
         public void setTransactionIsolation(int level) throws ServiceException {
@@ -170,7 +162,7 @@ public class DbPool {
         public void disableForeignKeyConstraints() throws ServiceException {
             PreparedStatement stmt = null;
             try {
-                String sql = db.foreignKeyChecks(false);
+                String sql = disableForeignKeyChecks();
                 stmt = new StatTrackingPreparedStatement(connection.prepareStatement(sql),sql);
                 stmt.execute();
             } catch (SQLException e) {
@@ -180,8 +172,12 @@ public class DbPool {
             }
         }
 
+        private String disableForeignKeyChecks() {
+            return "SET FOREIGN_KEY_CHECKS=" + 0;
+        }
+
         public void enableForeignKeyConstraints() throws ServiceException {
-            String sql = db.foreignKeyChecks(true);
+            String sql = "SET FOREIGN_KEY_CHECKS=" + 1;
             PreparedStatement stmt = null;
             try {
                 stmt = new StatTrackingPreparedStatement(connection.prepareStatement(sql), sql);
@@ -287,11 +283,11 @@ public class DbPool {
         Properties mDatabaseProperties;
         boolean blockWhenExhausted = true;
 
-        public PoolConfig(DbConfig dbConfig) {
+        public PoolConfig(Db db) {
             mDriverClassName = "org.mariadb.jdbc.Driver";
             mPoolSize = 100;
-            mRootUrl = dbConfig.rootUrl();
-            mConnectionUrl = dbConfig.jdbcUrl();
+            mRootUrl = db.rootUrl();
+            mConnectionUrl = db.jdbcUrl();
             mLoggerUrl = null;
             mSupportsStatsCallback = true;
             mDatabaseProperties = databaseProperties();
@@ -335,14 +331,9 @@ public class DbPool {
         }
     }
 
-    public static DbPool global(Db db) {
-        return global(db, new PoolConfig(MariaDBConfig.fromLocalConfig()));
-    }
-
-    public static synchronized DbPool global(Db db, PoolConfig poolConfig) {
+    public static synchronized DbPool global(Db db) {
         if (dbPool == null) {
-            Db.setInstance(db);
-            dbPool = newPool(db, poolConfig);
+            dbPool = newPool(db);
         }
         return dbPool;
     }
@@ -467,7 +458,7 @@ public class DbPool {
             Connection conn = DriverManager.getConnection(
                 dbPool.sRootUrl + "?user=" + user + "&password=" + pwd);
             conn.setAutoCommit(false);
-            return new DbConnection(conn, dbPool.db);
+            return new DbConnection(conn);
         } catch (SQLException e) {
             throw ServiceException.FAILURE("getting database maintenance connection", e);
         }
@@ -484,7 +475,7 @@ public class DbPool {
             String user = LC.zimbra_mysql_user.value();
             String pwd = null;
             Connection conn = DriverManager.getConnection(dbPool.sLoggerRootUrl + "?user=" + user + "&password=" + pwd);
-            return new DbConnection(conn, dbPool.db);
+            return new DbConnection(conn);
         } catch (SQLException e) {
             throw ServiceException.FAILURE("getting database logger connection", e);
         }
@@ -581,7 +572,6 @@ public class DbPool {
     public static synchronized void shutDownAndClear() throws Exception {
         shutdown();
         ZimbraConnectionFactory.close();
-        Db.setInstance(null);
     }
 
     public static void disableUsageWarning() {

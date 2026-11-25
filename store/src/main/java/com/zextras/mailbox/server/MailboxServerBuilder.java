@@ -1,6 +1,6 @@
 package com.zextras.mailbox.server;
 
-import com.zimbra.cs.db.Db;
+import com.zextras.db.Db;
 import com.zextras.mailbox.MailboxServletContextBuilder;
 import com.zextras.mailbox.server.MailboxServer.InstantiationException;
 import com.zimbra.common.jetty.JettyMonitor;

@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.db;
 
+import com.google.common.base.Joiner;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -67,7 +68,7 @@ public class DbBlobConsistency {
             stmt.setInt(2, mbox.getId());
             stmt.setInt(3, mbox.getId());
             stmt.setInt(4, mbox.getId());
-            conn.getDb().enableStreaming(stmt);
+            DbUtil.enableStreaming(stmt);
             rs = stmt.executeQuery();
             while (rs.next()) {
                 BlobInfo info = new BlobInfo();
@@ -162,7 +163,9 @@ public class DbBlobConsistency {
                 }
 
                 if (rev_itemIds.size() > 0) {
-                    sql.append(DbUtil.whereIn(conn.getDb().concat(idColName, "'-'", "version"), rev_itemIds.size()));
+                    Joiner joiner = Joiner.on(", ").skipNulls();
+                    sql.append(DbUtil.whereIn(
+                        "CONCAT(" + joiner.join(new String[]{idColName, "'-'", "version"}) + ")", rev_itemIds.size()));
                 }
             }
 
@@ -231,7 +234,9 @@ public class DbBlobConsistency {
                     sql.append(" OR ");
                 }
                 if (rev_itemIds.size() > 0) {
-                    sql.append(DbUtil.whereIn(conn.getDb().concat(idColName, "'-'", "version"), rev_itemIds.size()));
+                    Joiner joiner = Joiner.on(", ").skipNulls();
+                    sql.append(DbUtil.whereIn(
+                        "CONCAT(" + joiner.join(new String[]{idColName, "'-'", "version"}) + ")", rev_itemIds.size()));
                 }
             }
             sql.append(" INTO OUTFILE ?");
@@ -301,10 +306,11 @@ public class DbBlobConsistency {
             PreparedStatement revDumpstmt = null;
             try {
                 StringBuffer sql = new StringBuffer();
+                Joiner joiner = Joiner.on(", ").skipNulls();
                 sql.append("DELETE FROM ").append(
                         DbMailItem.getRevisionTableName(mbox, true)).append(" WHERE ").append(
                                 DbMailItem.IN_THIS_MAILBOX_AND).append(DbUtil.whereIn(
-                                        conn.getDb().concat("item_id", "'-'", "version"), rev_itemIds.size()));
+                    "CONCAT(" + joiner.join(new String[]{"item_id", "'-'", "version"}) + ")", rev_itemIds.size()));
 
                 revDumpstmt = conn.prepareStatement(sql.toString());
                 int pos = 1;

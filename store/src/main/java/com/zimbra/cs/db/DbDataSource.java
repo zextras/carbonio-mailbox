@@ -170,7 +170,7 @@ public class DbDataSource {
         Mailbox mbox = DataSourceManager.getInstance().getMailbox(ds);
 
         ZimbraLog.datasource.debug("Deleting %d mappings for dataSource %s", itemIds.size(), ds.getName());
-        List<List<Integer>> splitIds = ListUtil.split(itemIds, Db.getINClauseBatchSize());
+        List<List<Integer>> splitIds = ListUtil.split(itemIds, DbUtil.IN_CLAUSE_BATCH_SIZE);
         DbConnection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -630,7 +630,7 @@ public class DbDataSource {
         int itemId = 0;
         String remoteId = null;
         Metadata md = null;
-        List<List<Integer>> splitIds = ListUtil.split(ids, Db.getINClauseBatchSize());
+        List<List<Integer>> splitIds = ListUtil.split(ids, DbUtil.IN_CLAUSE_BATCH_SIZE);
         ArrayList<DataSourceItem> items = new ArrayList<>();
 
         ZimbraLog.datasource.debug("Get mappings for %s", ds.getName());
@@ -684,7 +684,7 @@ public class DbDataSource {
         int itemId = 0;
         String remoteId;
         Metadata md = null;
-        List<List<String>> splitIds = ListUtil.split(remoteIds, Db.getINClauseBatchSize());
+        List<List<String>> splitIds = ListUtil.split(remoteIds, DbUtil.IN_CLAUSE_BATCH_SIZE);
         ArrayList<DataSourceItem> items = new ArrayList<>();
 
         ZimbraLog.datasource.debug("Get reverse mappings for %s", ds.getName());
@@ -939,7 +939,7 @@ public class DbDataSource {
             conn.commit();
             stmt.close();
         } catch (SQLException e) {
-            if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
+            if (DbError.DUPLICATE_ROW.matches(e)) {
                 ZimbraLog.datasource.warn(String.format("purging message %d more than once", msg.getId()));
                 return;
             }
@@ -969,7 +969,7 @@ public class DbDataSource {
             conn.commit();
             stmt.close();
         } catch (SQLException e) {
-            if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
+            if (DbError.DUPLICATE_ROW.matches(e)) {
                 ZimbraLog.datasource.warn(String.format("moving item %d to purged conversations table more than once", item.getId()));
                 return;
             }
@@ -1173,7 +1173,7 @@ public class DbDataSource {
             stmt.close();
             conn.commit();
         } catch (SQLException e) {
-            if (conn.getDb().compareError(e, Db.Error.DUPLICATE_ROW)) {
+            if (DbError.DUPLICATE_ROW.matches(e)) {
                 ZimbraLog.datasource.warn("inserting duplicate hash");
             } else {
                 throw ServiceException.FAILURE("Unable to insert purged conversation hash", e);

@@ -50,7 +50,7 @@ public class DbConfig {
 
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement(conn.getDb().upsert("config",
+            stmt = conn.prepareStatement(DbUtil.upsert("config",
                     List.of("name", "value", "modified"), List.of("name"), List.of("value", "modified")));
             stmt.setString(1, name);
             stmt.setString(2, value);

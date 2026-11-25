@@ -6,11 +6,11 @@
 
 package com.zimbra.cs.db;
 
-import static com.zimbra.cs.db.MariaDBTestDatabase.DB;
 import static com.zimbra.cs.db.MariaDBTestDatabase.GROUP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.google.common.base.Joiner;
 import com.zextras.mailbox.testcontainers.MariaDBExtension;
 import com.zimbra.cs.mailbox.MailItem;
 import java.sql.Connection;
@@ -116,17 +116,17 @@ class MariaDBDialectTest {
     message(1, 11, INBOX, null, "s");
     execute("UPDATE " + MAIL_ITEM + " SET flags = 1");
 
-    execute("UPDATE " + MAIL_ITEM + " SET flags = " + DB.bitOR("flags", "4"));
+    execute("UPDATE " + MAIL_ITEM + " SET flags = " + "flags" + " | " + "4");
 
     assertEquals(List.of("5"), MariaDBTestDatabase.rows(conn, "SELECT flags FROM " + MAIL_ITEM));
   }
 
   @Test
   void foreignKeyChecksCanBeTurnedOffAndOn() throws SQLException {
-    execute(DB.foreignKeyChecks(true));
+    execute("SET FOREIGN_KEY_CHECKS=" + 1);
     assertThrows(SQLException.class, () -> tag(1, 99));
 
-    execute(DB.foreignKeyChecks(false));
+    execute("SET FOREIGN_KEY_CHECKS=" + 0);
     tag(1, 99);
   }
 
@@ -135,7 +135,10 @@ class MariaDBDialectTest {
     message(1, 102, INBOX, null, "subject");
     message(1, 99, INBOX, null, "Subject");
 
-    String sortField = DB.concat("mi.subject", DB.lpad("mi.id", 10, "0"));
+    String[] fieldsToConcat = new String[]{"mi.subject",
+        "LPAD(" + "mi.id" + ", " + 10 + ", '" + "0" + "')"};
+    Joiner joiner = Joiner.on(", ").skipNulls();
+    String sortField = "CONCAT(" + joiner.join(fieldsToConcat) + ")";
 
     assertEquals(
         List.of("Subject0000000099", "subject0000000102"),
@@ -176,11 +179,11 @@ class MariaDBDialectTest {
   }
 
   private void decrementConversationSizes(String sourceWhere, Object... values) throws SQLException {
-    execute(DB.decrementConversationSizes(MAIL_ITEM, sourceWhere, "mailbox_id = ? AND ", CONVERSATION), values);
+    execute(DbUtil.decrementConversationSizes(MAIL_ITEM, sourceWhere, "mailbox_id = ? AND ", CONVERSATION), values);
   }
 
   private String tagUpdate(String set) {
-    return DB.updateInnerJoin(
+    return DbUtil.updateInnerJoin(
         MAIL_ITEM + " AS mi",
         TAGGED_ITEM + " AS ti",
         "mi.mailbox_id = ti.mailbox_id AND mi.id = ti.item_id",
