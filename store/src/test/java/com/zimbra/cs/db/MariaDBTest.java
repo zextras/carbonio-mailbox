@@ -8,6 +8,7 @@ package com.zimbra.cs.db;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.zextras.db.MariaDBConfig;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -47,7 +48,7 @@ class MariaDBTest {
 
   @Test
   void connectionsUseReadCommittedFromTheStart() {
-    Object sessionVariables = mariaDB.getPoolConfig().mDatabaseProperties.get("sessionVariables");
+    Object sessionVariables = new DbPool.PoolConfig(MariaDBConfig.fromLocalConfig()).mDatabaseProperties.get("sessionVariables");
 
     assertEquals("tx_isolation='READ-COMMITTED'", sessionVariables);
   }

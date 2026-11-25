@@ -6,6 +6,8 @@
 package com.zimbra.cs.db;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.zextras.db.DbConfig;
+import com.zextras.db.MariaDBConfig;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.SystemUtil;
@@ -45,16 +47,15 @@ public class DbPool {
     private final String sRootUrl;
     private final String sLoggerRootUrl;
 
-    private DbPool(Db db, PoolingDataSource<PoolableConnection> dataSource, GenericObjectPool<PoolableConnection> pool) {
+    private DbPool(Db db, PoolConfig pconfig, PoolingDataSource<PoolableConnection> dataSource, GenericObjectPool<PoolableConnection> pool) {
         this.db = db;
         this.dataSource = dataSource;
         this.pool = pool;
-        sRootUrl = db.getPoolConfig().mRootUrl;
-        sLoggerRootUrl = db.getPoolConfig().mLoggerUrl;
+        sRootUrl = pconfig.mRootUrl;
+        sLoggerRootUrl = pconfig.mLoggerUrl;
     }
 
-    static DbPool newPool(Db db) {
-        PoolConfig pconfig = db.getPoolConfig();
+    static DbPool newPool(Db db, PoolConfig pconfig) {
         System.setProperty("jdbc.drivers", pconfig.mDriverClassName);
         ConnectionFactory cfac = ZimbraConnectionFactory.getConnectionFactory(pconfig);
 
@@ -73,7 +74,7 @@ public class DbPool {
         var pds = new PoolingDataSource<>(connectionPool);
         pds.setAccessToUnderlyingConnectionAllowed(true);
 
-        final DbPool dbPool = new DbPool(db, pds, connectionPool);
+        final DbPool dbPool = new DbPool(db, pconfig, pds, connectionPool);
 
 
         waitForDatabase(dbPool);
@@ -276,7 +277,7 @@ public class DbPool {
         }
     }
 
-    abstract static class PoolConfig {
+    public static final class PoolConfig {
         String mDriverClassName;
         int mPoolSize;
         String mRootUrl;
@@ -285,12 +286,63 @@ public class DbPool {
         boolean mSupportsStatsCallback;
         Properties mDatabaseProperties;
         boolean blockWhenExhausted = true;
+
+        public PoolConfig(DbConfig dbConfig) {
+            mDriverClassName = "org.mariadb.jdbc.Driver";
+            mPoolSize = 100;
+            mRootUrl = dbConfig.rootUrl();
+            mConnectionUrl = dbConfig.jdbcUrl();
+            mLoggerUrl = null;
+            mSupportsStatsCallback = true;
+            mDatabaseProperties = databaseProperties();
+
+            String maxActive = (String) mDatabaseProperties.get("maxActive");
+            if (maxActive != null) {
+                try {
+                    mPoolSize = Integer.parseInt(maxActive);
+                } catch (NumberFormatException nfe) {
+                    ZimbraLog.system.warn("exception parsing 'maxActive' pref; defaulting pool size to " + mPoolSize, nfe);
+                }
+            }
+            ZimbraLog.misc.debug("Setting connection pool size to " + mPoolSize);
+        }
+
+        private static Properties databaseProperties() {
+            Properties props = new Properties();
+            props.put("cacheResultSetMetadata", "true");
+            props.put("cachePrepStmts", "true");
+            props.put("prepStmtCacheSize", "25");
+            props.put("autoReconnect", "true");
+            props.put("useUnicode", "true");
+            props.put("characterEncoding", "UTF-8");
+            props.put("dumpQueriesOnException", "true");
+
+            final String prefix = "zimbra_mysql_connector_";
+            for (String key : LC.getAllKeys()) {
+                if (!key.startsWith(prefix))
+                    continue;
+                String prop = key.substring(prefix.length());
+                if (!prop.isEmpty() && !prop.equalsIgnoreCase("logger")) {
+                    props.put(prop, LC.get(key));
+                    ZimbraLog.system.info("Setting mysql connector property: " + prop + "=" + LC.get(key));
+                }
+            }
+
+            props.put("user", LC.zimbra_mysql_user.value());
+            props.put("password", LC.zimbra_mysql_password.value());
+            props.putIfAbsent("sessionVariables", "tx_isolation='READ-COMMITTED'");
+            return props;
+        }
     }
 
-    public static synchronized DbPool global(Db db) {
+    public static DbPool global(Db db) {
+        return global(db, new PoolConfig(MariaDBConfig.fromLocalConfig()));
+    }
+
+    public static synchronized DbPool global(Db db, PoolConfig poolConfig) {
         if (dbPool == null) {
             Db.setInstance(db);
-            dbPool = newPool(db);
+            dbPool = newPool(db, poolConfig);
         }
         return dbPool;
     }

@@ -5,40 +5,23 @@
 
 package com.zimbra.cs.db;
 
-import com.zimbra.common.localconfig.LC;
-import java.util.Properties;
+import java.sql.SQLException;
+import java.util.Map;
 
+public class MariaDB extends Db {
 
-public class MariaDB extends MySQL {
+    private static final Map<Db.Error, Integer> ERROR_CODES = Map.of(
+        Db.Error.DEADLOCK_DETECTED, 1213,
+        Db.Error.DUPLICATE_ROW, 1062,
+        Db.Error.FOREIGN_KEY_NO_PARENT, 1216,
+        Db.Error.FOREIGN_KEY_CHILD_EXISTS, 1451,
+        Db.Error.NO_SUCH_DATABASE, 1146,
+        Db.Error.NO_SUCH_TABLE, 1146,
+        Db.Error.TABLE_FULL, 1114);
 
     @Override
-    DbPool.PoolConfig getPoolConfig() {
-        return new MariaDBConfig();
-    }
-
-    protected static class MariaDBConfig extends MySQLConfig {
-
-        @Override
-        protected String getDriverClassName() {
-            return "org.mariadb.jdbc.Driver";
-        }
-
-        @Override
-        protected String getRootUrl() {
-            String bindAddress = LC.mysql_bind_address.value();
-            if (bindAddress.indexOf(':') > -1) {
-                bindAddress = "[" + bindAddress + "]";
-            }
-
-            return "jdbc:mysql://" + bindAddress + ":" + LC.mysql_port.value() + "/";
-        }
-
-        @Override
-        protected Properties getDBProperties() {
-            Properties props = super.getDBProperties();
-            props.putIfAbsent("sessionVariables", "tx_isolation='READ-COMMITTED'");
-            return props;
-        }
-
+    boolean compareError(SQLException e, Db.Error error) {
+        Integer code = ERROR_CODES.get(error);
+        return code != null && e.getErrorCode() == code;
     }
 }
