@@ -40,12 +40,14 @@ public class DbPool {
     static ValueCounter<String> sConnectionStackCounter = new ValueCounter<>();
 
     // instance level
+    private final Db db;
     private final PoolingDataSource<PoolableConnection> dataSource;
     private final GenericObjectPool<PoolableConnection> pool;
     private final String sRootUrl;
     private final String sLoggerRootUrl;
 
-    private DbPool(PoolConfig pconfig, PoolingDataSource<PoolableConnection> dataSource, GenericObjectPool<PoolableConnection> pool) {
+    private DbPool(Db db, PoolConfig pconfig, PoolingDataSource<PoolableConnection> dataSource, GenericObjectPool<PoolableConnection> pool) {
+        this.db = db;
         this.dataSource = dataSource;
         this.pool = pool;
         sRootUrl = pconfig.mRootUrl;
@@ -72,7 +74,7 @@ public class DbPool {
         var pds = new PoolingDataSource<>(connectionPool);
         pds.setAccessToUnderlyingConnectionAllowed(true);
 
-        final DbPool dbPool = new DbPool(pconfig, pds, connectionPool);
+        final DbPool dbPool = new DbPool(db, pconfig, pds, connectionPool);
 
 
         waitForDatabase(dbPool);
@@ -99,7 +101,7 @@ public class DbPool {
                 if (dbconn.getAutoCommit() != false)
                     dbconn.setAutoCommit(false);
 
-                conn = new DbConnection(dbconn, mboxId);
+                conn = new DbConnection(dbconn, mboxId, db);
             } catch (SQLException e) {
                 try {
                     if (dbconn != null && !dbconn.isClosed())
@@ -131,20 +133,26 @@ public class DbPool {
 
     public static class DbConnection implements AutoCloseable {
         private final Connection connection;
+        private final Db db;
         private Throwable mStackTrace;
         Integer mboxId;
 
-        DbConnection(Connection conn) {
+        DbConnection(Connection conn, Db db) {
             connection = conn;
+            this.db = db;
         }
 
-        DbConnection(Connection conn, Integer mboxId) {
-            this(conn);
+        DbConnection(Connection conn, Integer mboxId, Db db) {
+            this(conn, db);
             this.mboxId = mboxId;
         }
 
         public Connection getConnection() {
             return connection;
+        }
+
+        public Db getDb() {
+            return db;
         }
 
         public void setTransactionIsolation(int level) throws ServiceException {
@@ -331,6 +339,10 @@ public class DbPool {
         }
     }
 
+    public static Db getDb() {
+        return dbPool.db;
+    }
+
     public static synchronized DbPool global(Db db) {
         if (dbPool == null) {
             dbPool = newPool(db);
@@ -458,7 +470,7 @@ public class DbPool {
             Connection conn = DriverManager.getConnection(
                 dbPool.sRootUrl + "?user=" + user + "&password=" + pwd);
             conn.setAutoCommit(false);
-            return new DbConnection(conn);
+            return new DbConnection(conn, dbPool.db);
         } catch (SQLException e) {
             throw ServiceException.FAILURE("getting database maintenance connection", e);
         }
@@ -475,7 +487,7 @@ public class DbPool {
             String user = LC.zimbra_mysql_user.value();
             String pwd = null;
             Connection conn = DriverManager.getConnection(dbPool.sLoggerRootUrl + "?user=" + user + "&password=" + pwd);
-            return new DbConnection(conn);
+            return new DbConnection(conn, dbPool.db);
         } catch (SQLException e) {
             throw ServiceException.FAILURE("getting database logger connection", e);
         }

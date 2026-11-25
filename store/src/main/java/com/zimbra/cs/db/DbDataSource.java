@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.db;
 
+import com.zextras.db.DbError;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -939,7 +940,7 @@ public class DbDataSource {
             conn.commit();
             stmt.close();
         } catch (SQLException e) {
-            if (DbError.DUPLICATE_ROW.matches(e)) {
+            if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
                 ZimbraLog.datasource.warn(String.format("purging message %d more than once", msg.getId()));
                 return;
             }
@@ -969,7 +970,7 @@ public class DbDataSource {
             conn.commit();
             stmt.close();
         } catch (SQLException e) {
-            if (DbError.DUPLICATE_ROW.matches(e)) {
+            if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
                 ZimbraLog.datasource.warn(String.format("moving item %d to purged conversations table more than once", item.getId()));
                 return;
             }
@@ -1173,7 +1174,7 @@ public class DbDataSource {
             stmt.close();
             conn.commit();
         } catch (SQLException e) {
-            if (DbError.DUPLICATE_ROW.matches(e)) {
+            if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
                 ZimbraLog.datasource.warn("inserting duplicate hash");
             } else {
                 throw ServiceException.FAILURE("Unable to insert purged conversation hash", e);

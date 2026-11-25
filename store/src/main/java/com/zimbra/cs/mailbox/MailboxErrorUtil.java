@@ -5,7 +5,8 @@
 
 package com.zimbra.cs.mailbox;
 
-import com.zimbra.cs.db.DbError;
+import com.zimbra.cs.db.DbPool;
+import com.zextras.db.DbError;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -88,7 +89,7 @@ class MailboxErrorUtil {
     }
 
     private static boolean causeMatchesFKFailure(Throwable t) {
-        if (t instanceof SQLException && (DbError.FOREIGN_KEY_CHILD_EXISTS.matches((SQLException) t))) {
+        if (t instanceof SQLException && (DbPool.getDb().matches((SQLException) t, DbError.FOREIGN_KEY_CHILD_EXISTS))) {
             return true;
         } else if (t.getCause() != null) {
             return causeMatchesFKFailure(t.getCause());

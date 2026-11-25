@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.db;
 
+import com.zextras.db.DbError;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -66,7 +67,7 @@ public final class DbVolume {
             stmt.setString(pos++, volume.getMetadata().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            if (DbError.DUPLICATE_ROW.matches(e)) {
+            if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
                 throw VolumeServiceException.ALREADY_EXISTS(nextId, volume.getName(), volume.getRootPath(), e);
             } else {
                 throw ServiceException.FAILURE("inserting new volume " + nextId, e);
@@ -113,7 +114,7 @@ public final class DbVolume {
             stmt.setShort(pos++, volume.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            if (DbError.DUPLICATE_ROW.matches(e)) {
+            if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
                 throw VolumeServiceException.ALREADY_EXISTS(volume.getId(), volume.getName(), volume.getRootPath(), e);
             } else {
                 throw ServiceException.FAILURE("updating volume " + volume.getId(), e);
@@ -139,7 +140,7 @@ public final class DbVolume {
             int num = stmt.executeUpdate();
             return num == 1;
         } catch (SQLException e) {
-            if (DbError.FOREIGN_KEY_CHILD_EXISTS.matches(e))
+            if (conn.getDb().matches(e, DbError.FOREIGN_KEY_CHILD_EXISTS))
                 throw VolumeServiceException.CANNOT_DELETE_VOLUME_IN_USE(id, e);
             else
                 throw ServiceException.FAILURE("deleting volume entry: " + id, e);

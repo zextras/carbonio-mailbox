@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.db;
 
+import com.zextras.db.DbError;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -121,7 +122,7 @@ public class DbTag {
             }
         } catch (SQLException e) {
             // catch item_id uniqueness constraint violation and return failure
-            if (DbError.DUPLICATE_ROW.matches(e)) {
+            if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
                 throw MailServiceException.ALREADY_EXISTS(data.id, e);
             } else {
                 throw ServiceException.FAILURE("Failed to create tag id=" + data.id + ",name=" + data.name, e);
@@ -615,7 +616,7 @@ public class DbTag {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            if (DbError.DUPLICATE_ROW.matches(e)) {
+            if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
                 throw MailServiceException.ALREADY_EXISTS(newName, e);
             } else {
                 throw ServiceException.FAILURE("renaming tag " + tag.getId() + " to " + tag.getName(), e);

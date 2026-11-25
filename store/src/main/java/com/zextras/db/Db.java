@@ -4,6 +4,8 @@
 
 package com.zextras.db;
 
+import java.sql.SQLException;
+
 public interface Db {
 
   String host();
@@ -11,6 +13,8 @@ public interface Db {
   int port();
 
   String database();
+
+  boolean matches(SQLException e, DbError error);
 
   default String rootUrl() {
     String address = host().indexOf(':') > -1 ? "[" + host() + "]" : host();

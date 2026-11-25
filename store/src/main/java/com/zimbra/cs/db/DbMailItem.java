@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.db;
 
+import com.zextras.db.DbError;
 import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
@@ -179,7 +180,7 @@ public class DbMailItem {
       DbTag.storeTagReferences(mailbox, data.id, type, data.getTags());
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (DbError.DUPLICATE_ROW.matches(e)) {
+      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(data.id, e);
       } else {
         throw ServiceException.FAILURE("Failed to create id=" + data.id + ",type=" + data.type, e);
@@ -264,7 +265,7 @@ public class DbMailItem {
       DbTag.storeTagReferences(mbox, id, item.getType(), item.getTags());
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (DbError.DUPLICATE_ROW.matches(e)) {
+      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(id, e);
       } else {
         throw ServiceException.FAILURE("copying " + item.getType() + ": " + item.getId(), e);
@@ -310,7 +311,7 @@ public class DbMailItem {
       }
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (DbError.DUPLICATE_ROW.matches(e)) {
+      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(newId, e);
       } else {
         throw ServiceException.FAILURE("copying " + calItem.getType() + ": " + calItem.getId(), e);
@@ -360,7 +361,7 @@ public class DbMailItem {
       }
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (DbError.DUPLICATE_ROW.matches(e)) {
+      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(newId, e);
       } else {
         throw ServiceException.FAILURE(
@@ -471,7 +472,7 @@ public class DbMailItem {
       DbTag.storeTagReferences(mbox, data.id, type, data.getTags());
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (DbError.DUPLICATE_ROW.matches(e)) {
+      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(data.id, e);
       } else {
         throw ServiceException.FAILURE("i-copying " + source.getType() + ": " + source.getId(), e);
@@ -515,7 +516,7 @@ public class DbMailItem {
       stmt.executeUpdate();
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (DbError.DUPLICATE_ROW.matches(e)) {
+      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(item.getId(), e);
       } else {
         throw ServiceException.FAILURE(
@@ -653,7 +654,7 @@ public class DbMailItem {
       stmt.executeUpdate();
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (DbError.DUPLICATE_ROW.matches(e)) {
+      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(item.getName(), e);
       } else {
         throw ServiceException.FAILURE("writing new folder data for item " + item.getId(), e);
@@ -749,7 +750,7 @@ public class DbMailItem {
       stmt = null;
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      //            if (DbError.DUPLICATE_ROW.matches(e))
+      //            if (conn.getDb().matches(e, DbError.DUPLICATE_ROW))
       //                throw MailServiceException.ALREADY_EXISTS(msgs.toString(), e);
       //            else
       throw ServiceException.FAILURE("writing new folder data for messages", e);
@@ -1166,7 +1167,7 @@ public class DbMailItem {
       }
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (DbError.DUPLICATE_ROW.matches(e)) {
+      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(name, e);
       } else {
         throw ServiceException.FAILURE(
@@ -1239,7 +1240,7 @@ public class DbMailItem {
       }
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (DbError.DUPLICATE_ROW.matches(e)) {
+      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(item.getName(), e);
       } else {
         throw ServiceException.FAILURE(
@@ -5804,7 +5805,7 @@ public class DbMailItem {
       stmt.executeUpdate();
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (DbError.DUPLICATE_ROW.matches(e)) {
+      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(id, e);
       } else {
         throw ServiceException.FAILURE("writing new folder data for item " + id, e);

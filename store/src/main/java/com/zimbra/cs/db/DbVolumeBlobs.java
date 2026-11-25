@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.db;
 
+import com.zextras.db.DbError;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -76,7 +77,7 @@ public final class DbVolumeBlobs {
             stmt.setBoolean(pos++, false);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            if (DbError.DUPLICATE_ROW.matches(e)) {
+            if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
                 throw MailServiceException.ALREADY_EXISTS(path, e);
             } else {
                 throw ServiceException.FAILURE("unable to insert new blob reference for path " + path, e);

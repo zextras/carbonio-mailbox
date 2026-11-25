@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.db;
 
+import com.zextras.db.DbError;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;
@@ -262,7 +263,7 @@ public final class DbMailbox {
       data.version = MailboxVersion.getCurrent();
       return data;
     } catch (SQLException e) {
-      if (DbError.DUPLICATE_ROW.matches(e)) {
+      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(accountId, e);
       } else {
         throw ServiceException.FAILURE("writing new mailbox row for account " + accountId, e);
@@ -909,7 +910,7 @@ public final class DbMailbox {
 
       return mbd;
     } catch (SQLException e) {
-      if (DbError.NO_SUCH_TABLE.matches(e)) {
+      if (conn.getDb().matches(e, DbError.NO_SUCH_TABLE)) {
         return null;
       }
       throw ServiceException.FAILURE("fetching stats on mailbox " + mailboxId, e);
