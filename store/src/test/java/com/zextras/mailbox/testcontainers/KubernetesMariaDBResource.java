@@ -20,7 +20,8 @@ public class KubernetesMariaDBResource implements MariaDBResource {
             image,
             List.of(PORT),
             Map.of("MARIADB_ROOT_PASSWORD", ROOT_PASSWORD),
-            List.of());
+            List.of(),
+            List.of(DATA_DIRECTORY));
   }
 
   @Override

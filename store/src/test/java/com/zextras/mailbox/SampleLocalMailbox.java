@@ -6,11 +6,11 @@ package com.zextras.mailbox;
 
 import com.zextras.mailbox.server.MailboxServer;
 import com.zextras.mailbox.util.InMemoryLdapServer;
-import com.zimbra.cs.db.HSQLDB;
+import com.zimbra.cs.db.TestMariaDB;
 
 /**
  * A Mailbox that can be used for testing. You can spin it up and interact with APIs, except it uses
- * an in memory db {@link HSQLDB} and an in memory LDAP {@link InMemoryLdapServer}.
+ * a MariaDB container {@link TestMariaDB} and an in memory LDAP {@link InMemoryLdapServer}.
  */
 public class SampleLocalMailbox {
 

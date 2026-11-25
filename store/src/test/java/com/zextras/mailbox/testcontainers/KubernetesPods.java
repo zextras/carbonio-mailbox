@@ -10,12 +10,15 @@ import io.kubernetes.client.openapi.Configuration;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1ContainerPort;
+import io.kubernetes.client.openapi.models.V1EmptyDirVolumeSource;
 import io.kubernetes.client.openapi.models.V1EnvVar;
 import io.kubernetes.client.openapi.models.V1LocalObjectReference;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1Pod;
 import io.kubernetes.client.openapi.models.V1PodSpec;
 import io.kubernetes.client.openapi.models.V1PodStatus;
+import io.kubernetes.client.openapi.models.V1Volume;
+import io.kubernetes.client.openapi.models.V1VolumeMount;
 import io.kubernetes.client.util.ClientBuilder;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -58,12 +61,23 @@ public final class KubernetesPods {
       List<Integer> ports,
       Map<String, String> env,
       List<String> args) {
+    return start(namePrefix, image, ports, env, args, List.of());
+  }
+
+  public static LaunchedPod start(
+      String namePrefix,
+      String image,
+      List<Integer> ports,
+      Map<String, String> env,
+      List<String> args,
+      List<String> memoryMounts) {
     CoreV1Api api = newApi();
     String namespace = readNamespace();
     String podName = namePrefix + "-" + System.nanoTime();
 
     try {
-      api.createNamespacedPod(namespace, buildPod(podName, namespace, image, ports, env, null, args))
+      api.createNamespacedPod(
+              namespace, buildPod(podName, namespace, image, ports, env, null, args, memoryMounts))
           .execute();
     } catch (ApiException e) {
       throw new IllegalStateException("Failed to create pod " + podName + ": " + e.getResponseBody(), e);
@@ -96,7 +110,7 @@ public final class KubernetesPods {
 
     try {
       api.createNamespacedPod(
-              namespace, buildPod(podName, namespace, image, ports, env, command, args))
+              namespace, buildPod(podName, namespace, image, ports, env, command, args, List.of()))
           .execute();
     } catch (ApiException e) {
       throw new IllegalStateException("Failed to create pod " + podName + ": " + e.getResponseBody(), e);
@@ -129,7 +143,8 @@ public final class KubernetesPods {
       List<Integer> ports,
       Map<String, String> env,
       List<String> command,
-      List<String> args) {
+      List<String> args,
+      List<String> memoryMounts) {
     List<V1ContainerPort> containerPorts = new ArrayList<>();
     for (int port : ports) {
       containerPorts.add(new V1ContainerPort().containerPort(port));
@@ -145,10 +160,21 @@ public final class KubernetesPods {
     if (args != null && !args.isEmpty()) {
       container.args(args);
     }
+    List<V1Volume> volumes = new ArrayList<>();
+    for (int i = 0; i < memoryMounts.size(); i++) {
+      String volumeName = "memory-" + i;
+      volumes.add(
+          new V1Volume()
+              .name(volumeName)
+              .emptyDir(new V1EmptyDirVolumeSource().medium("Memory")));
+      container.addVolumeMountsItem(
+          new V1VolumeMount().name(volumeName).mountPath(memoryMounts.get(i)));
+    }
 
     V1PodSpec spec =
         new V1PodSpec()
             .containers(List.of(container))
+            .volumes(volumes.isEmpty() ? null : volumes)
             .restartPolicy("Never")
             .runtimeClassName(runtimeClass())
             .nodeSelector(Map.of("node-role.kubernetes.io/worker", "true"));

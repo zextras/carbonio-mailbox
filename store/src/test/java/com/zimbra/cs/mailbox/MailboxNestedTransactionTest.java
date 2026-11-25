@@ -10,10 +10,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.db.Db;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
-import com.zimbra.cs.db.HSQLDB;
 import com.zimbra.cs.mailbox.Mailbox.MailboxData;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.redolog.op.RedoableOp;
@@ -66,8 +64,6 @@ public class MailboxNestedTransactionTest extends MailboxTestSuite {
 	void nestedTxn() throws Exception {
 		Account acct = createAccount().create();
 		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
-		HSQLDB db = (HSQLDB) Db.getInstance();
-		db.useMVCC(mbox);
 
 		DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
 		mbox.lock.lock();

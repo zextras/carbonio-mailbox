@@ -17,7 +17,7 @@ import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.auth.ZimbraCustomAuth;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.db.DbPool;
-import com.zimbra.cs.db.HSQLDB;
+import com.zimbra.cs.db.TestMariaDB;
 import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.index.IndexStore;
 import com.zimbra.cs.index.ZimbraAnalyzer;
@@ -124,8 +124,7 @@ public class MailboxSetupHelper {
 		ldapClient = LdapClient.createNew(poolConfig);
 		Provisioning.setInstance(new LdapProvisioningWithMockMime(ldapClient));
 		this.initData(mailboxTestData);
-		HSQLDB.createDatabase(getVolumeDirectory());
-		DbPool.global(new HSQLDB());
+		DbPool.global(TestMariaDB.start(getVolumeDirectory()));
 		MailboxManager.setInstance(new MailboxManager());
 		// RedoConfig caches the redolog paths in a singleton built from a static block, against the
 		// zimbra_home in force when an earlier test in this JVM first touched it
@@ -165,7 +164,7 @@ public class MailboxSetupHelper {
 	public void clearData() throws Exception {
 		((LdapProvisioning) Provisioning.getInstance()).clearCache();
 		inMemoryLdapServer.clear();
-		HSQLDB.clearDatabase();
+		TestMariaDB.clear();
 	}
 
 	public void tearDown() throws Exception {

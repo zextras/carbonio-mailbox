@@ -5,6 +5,7 @@
 package com.zextras.mailbox.testcontainers;
 
 import java.time.Duration;
+import java.util.Map;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
@@ -18,6 +19,7 @@ public class DockerMariaDBResource implements MariaDBResource {
     container =
         new GenericContainer<>(DockerImageName.parse(image))
             .withEnv("MARIADB_ROOT_PASSWORD", ROOT_PASSWORD)
+            .withTmpFs(Map.of(DATA_DIRECTORY, "rw"))
             .withExposedPorts(PORT)
             .waitingFor(
                 Wait.forLogMessage(".*ready for connections.*", 2)

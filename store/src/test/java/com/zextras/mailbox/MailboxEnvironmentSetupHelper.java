@@ -12,7 +12,8 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
-import com.zimbra.cs.db.HSQLDB;
+import com.zimbra.cs.db.Db;
+import com.zimbra.cs.db.TestMariaDB;
 import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.nio.file.Files;
@@ -84,7 +85,7 @@ public class MailboxEnvironmentSetupHelper {
 
 		LC.zimbra_server_hostname.setDefault(APP_SERVER_NAME);
 		LC.timezone_file.setDefault(timeZoneFile);
-		HSQLDB.createDatabase(LC.zimbra_home.value() + "/build/test");
+		final Db db = TestMariaDB.start(LC.zimbra_home.value() + "/build/test");
 
 		if (sharedLdapServer == null) {
 			sharedLdapServer = new Builder()
@@ -119,7 +120,7 @@ public class MailboxEnvironmentSetupHelper {
 										ZAttrProvisioning.A_zimbraPop3SSLServerEnabled, "FALSE",
 										ZAttrProvisioning.A_zimbraImapSSLServerEnabled, "FALSE")));
 
-		return new MailboxServerBuilder(provisioning.getConfig(), provisioning.getLocalServer(), new HSQLDB())
+		return new MailboxServerBuilder(provisioning.getConfig(), provisioning.getLocalServer(), db)
 				.withDump(false)
 				.create();
 	}

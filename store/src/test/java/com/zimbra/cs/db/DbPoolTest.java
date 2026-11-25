@@ -9,7 +9,7 @@ class DbPoolTest {
 
 	@Test
 	void whenPoolShutdown_CannotAcquireConnection() throws Exception {
-		DbPool dbPool = DbPool.newPool(new HSQLDB());
+		DbPool dbPool = DbPool.newPool(TestMariaDB.start(System.getProperty("java.io.tmpdir")));
 		dbPool.shutdownInstance();
 		Assertions.assertThrows(IllegalStateException.class, dbPool::getConnectionInstance);
 	}

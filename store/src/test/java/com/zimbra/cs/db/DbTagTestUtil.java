@@ -74,7 +74,7 @@ public class DbTagTestUtil extends DbTag {
           stmt = conn.prepareStatement("SELECT mi.id, mi.type, ti.tag_id " +
                   " FROM " + getTaggedItemTableName(mbox, "ti") +
                   " INNER JOIN " + DbMailItem.getMailItemTableName(mbox, "mi") + " ON " + mailboxesMatchAnd + "mi.id = ti.item_id" +
-                  " WHERE " + DbMailItem.IN_THIS_MAILBOX_AND + "type IN " + DbMailItem.NON_SEARCHABLE_TYPES);
+                  " WHERE mi.mailbox_id = ? AND mi.type IN " + DbMailItem.NON_SEARCHABLE_TYPES);
           DbMailItem.setMailboxId(stmt, mbox, 1);
 
           rs = stmt.executeQuery();

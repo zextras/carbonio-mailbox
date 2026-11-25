@@ -28,13 +28,12 @@ public class DbMailboxTest {
 
 	@BeforeAll
 	public static void init() throws Exception {
-		HSQLDB.createDatabase(LC.zimbra_home.value() + "/build/test");
-		DbPool.global(new HSQLDB());
+		DbPool.global(TestMariaDB.start(LC.zimbra_home.value() + "/build/test"));
 	}
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		HSQLDB.clearDatabase();
+		TestMariaDB.clear();
 		connection = DbPool.getConnection();
 	}
 
