@@ -474,7 +474,7 @@ public final class Threader {
      *  refer to the given {@code Conversation}. */
     void changeThreadingTargets(Message msg, Conversation conv) throws ServiceException {
         if (conv != null && msg != null && isEnabled() && !mode.isSubject()) {
-            CONVERSATION_REPOSITORY.changeOpenTargets(msg, conv.getId());
+            CONVERSATION_REPOSITORY.changeOpenTargets(msg.getMailbox(), msg.getId(), conv.getId());
             ZimbraLog.mailbox.debug("  transferred hashes from message %d to conv %d", msg.getId(), conv.getId());
         }
     }

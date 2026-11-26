@@ -417,7 +417,7 @@ public class DbMailItem {
       }
 
       if (source instanceof Message && source.getParentId() <= 0) {
-        CONVERSATION_REPOSITORY.changeOpenTargets(source, data.id);
+        CONVERSATION_REPOSITORY.changeOpenTargets(source.getMailbox(), source.getId(), data.id);
       }
 
       MailItem.Type type = MailItem.Type.of(data.type);

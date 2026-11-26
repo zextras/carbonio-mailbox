@@ -1514,7 +1514,7 @@ public class Message extends MailItem {
         && !isDraft()
         && inSpam() == folder.inSpam()) {
       Conversation conv = mMailbox.createConversation(Mailbox.ID_AUTO_INCREMENT, this, copy);
-      CONVERSATION_REPOSITORY.changeOpenTargets(this, conv.getId());
+      CONVERSATION_REPOSITORY.changeOpenTargets(getMailbox(), getId(), conv.getId());
       parent.removeChild(this);
     }
     return copy;

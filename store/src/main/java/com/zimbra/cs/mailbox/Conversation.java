@@ -727,8 +727,18 @@ public class Conversation extends MailItem {
             msg.mData.parentId = mId;
             MetadataCallback.duringConversationAdd(mExtendedData, msg);
         }
-        CONVERSATION_REPOSITORY.reparentChildren(other, this);
-        CONVERSATION_REPOSITORY.changeOpenTargets(other, getId());
+        if (other.getMailbox() != getMailbox()) {
+            throw MailServiceException.WRONG_MAILBOX();
+        }
+        Integer newConversationId = this instanceof VirtualConversation ? null : getId();
+        int otherOpenTargetId =
+            other instanceof VirtualConversation ? ((VirtualConversation) other).getMessageId() : other.getId();
+        if (other instanceof VirtualConversation) {
+            CONVERSATION_REPOSITORY.reparentMessage(getMailbox(), otherOpenTargetId, newConversationId);
+        } else {
+            CONVERSATION_REPOSITORY.reparentChildren(getMailbox(), otherOpenTargetId, newConversationId);
+        }
+        CONVERSATION_REPOSITORY.changeOpenTargets(getMailbox(), otherOpenTargetId, getId());
 
         recalculateMetadata();
 

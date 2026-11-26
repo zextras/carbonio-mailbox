@@ -24,9 +24,7 @@ import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem.UnderlyingData;
 import com.zimbra.cs.mailbox.MailItem;
-import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.mailbox.VirtualConversation;
 import com.zimbra.cs.mailbox.util.TypedIdList;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,50 +38,48 @@ import java.util.Set;
 public class DbConversation implements ConversationRepository {
 
   @Override
-  public void reparentChildren(MailItem oldParent, MailItem newParent)
+  public void reparentChildren(Mailbox mbox, int oldConversationId, Integer newConversationId)
       throws ServiceException {
-    if (oldParent == newParent) {
-      return;
-    }
-    Mailbox mbox = oldParent.getMailbox();
-    if (mbox != newParent.getMailbox()) {
-      throw MailServiceException.WRONG_MAILBOX();
-    }
+    reparent(mbox, "parent_id = ?", oldConversationId, newConversationId);
+  }
+
+  @Override
+  public void reparentMessage(Mailbox mbox, int messageId, Integer newConversationId)
+      throws ServiceException {
+    reparent(mbox, "id = ?", messageId, newConversationId);
+  }
+
+  private void reparent(Mailbox mbox, String relation, int oldId, Integer newConversationId)
+      throws ServiceException {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     try {
-      String relation = (oldParent instanceof VirtualConversation ? "id = ?" : "parent_id = ?");
-
       stmt =
           conn.prepareStatement(
               "UPDATE "
-                  + getMailItemTableName(oldParent)
+                  + getMailItemTableName(mbox)
                   + " SET parent_id = ?, mod_metadata = ?, change_date = ?"
                   + " WHERE "
                   + IN_THIS_MAILBOX_AND
                   + relation);
       int pos = 1;
-      if (newParent instanceof VirtualConversation) {
+      if (newConversationId == null) {
         stmt.setNull(pos++, Types.INTEGER);
       } else {
-        stmt.setInt(pos++, newParent.getId());
+        stmt.setInt(pos++, newConversationId);
       }
       stmt.setInt(pos++, mbox.getOperationChangeID());
       stmt.setInt(pos++, mbox.getOperationTimestamp());
       pos = setMailboxId(stmt, mbox, pos);
-      stmt.setInt(
-          pos++,
-          oldParent instanceof VirtualConversation
-              ? ((VirtualConversation) oldParent).getMessageId()
-              : oldParent.getId());
+      stmt.setInt(pos++, oldId);
       stmt.executeUpdate();
     } catch (SQLException e) {
-      throw ServiceException.FAILURE(
-          "writing new parent for children of item " + oldParent.getId(), e);
+      throw ServiceException.FAILURE("writing new parent for children of item " + oldId, e);
     } finally {
       DbPool.closeStatement(stmt);
     }
   }
+
 
   @Override
   public void openConversation(Mailbox mbox, String hash, int conversationId) throws ServiceException {
@@ -168,21 +164,15 @@ public class DbConversation implements ConversationRepository {
   }
 
   @Override
-  public void changeOpenTargets(MailItem oldTarget, int newTargetId)
+  public void changeOpenTargets(Mailbox mbox, int oldTargetId, int newTargetId)
       throws ServiceException {
-    Mailbox mbox = oldTarget.getMailbox();
-    int oldTargetId =
-        oldTarget instanceof VirtualConversation
-            ? ((VirtualConversation) oldTarget).getMessageId()
-            : oldTarget.getId();
-
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     try {
       stmt =
           conn.prepareStatement(
               "UPDATE "
-                  + getConversationTableName(oldTarget)
+                  + getConversationTableName(mbox)
                   + " SET conv_id = ? WHERE "
                   + IN_THIS_MAILBOX_AND
                   + "conv_id = ?");
@@ -193,7 +183,7 @@ public class DbConversation implements ConversationRepository {
       stmt.executeUpdate();
     } catch (SQLException e) {
       throw ServiceException.FAILURE(
-          "switching open conversation association for item " + oldTarget.getId(), e);
+          "switching open conversation association for item " + oldTargetId, e);
     } finally {
       DbPool.closeStatement(stmt);
     }
