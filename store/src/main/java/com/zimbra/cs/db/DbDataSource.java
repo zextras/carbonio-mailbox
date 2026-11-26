@@ -958,12 +958,13 @@ public class DbDataSource {
             StringBuilder sb = new StringBuilder();
             sb.append("INSERT INTO ").append(getPurgedConvsTableName(mbox));
             sb.append("(mailbox_id, data_source_id, item_id, hash)");
-            sb.append(" SELECT ?, ").append(String.format("'%s', ", dsId)).append(" conv_id, hash");
+            sb.append(" SELECT ?, ?, conv_id, hash");
             sb.append(" FROM ").append(DbMailItem.getConversationTableName(mbox)).append(" ci");
             sb.append(" WHERE ci.mailbox_id = ? AND ci.conv_id = ?");
             stmt = conn.prepareStatement(sb.toString());
             int pos = 1;
             stmt.setInt(pos++, mbox.getId());
+            stmt.setString(pos++, dsId);
             pos = DbMailItem.setMailboxId(stmt, mbox, pos);
             stmt.setInt(pos++, item.getId());
             stmt.execute();
