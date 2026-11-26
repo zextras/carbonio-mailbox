@@ -13,6 +13,11 @@ boolean isBuildingTag() {
     return env.TAG_NAME ? true : false
 }
 
+// Tests and Sonar are skipped on request and on custom_* branches
+boolean skipTests() {
+    return params.SKIP_TESTS == true || customBranch()
+}
+
 pipeline {
     agent {
         node {
@@ -32,6 +37,10 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '25'))
         skipDefaultCheckout()
         timeout(time: 2, unit: 'HOURS')
+    }
+
+    parameters {
+        booleanParam defaultValue: false, description: 'Skip testing phase', name: 'SKIP_TESTS'
     }
 
     triggers {
@@ -71,6 +80,9 @@ pipeline {
         }
 
         stage('UT, IT') {
+            when {
+                not { expression { skipTests() } }
+            }
             environment {
                 K8S_IMAGE_PULL_SECRET = 'private-registry-secret'
             }
@@ -83,6 +95,9 @@ pipeline {
             }
         }
         stage('Flaky, API, E2E tests') {
+                    when {
+                        not { expression { skipTests() } }
+                    }
                     steps {
                         container('jdk-21') {
                             sh """
@@ -113,6 +128,9 @@ pipeline {
         }
 
         stage('Sonarqube Analysis') {
+            when {
+                not { expression { skipTests() } }
+            }
             steps {
                 container('jdk-21') {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
@@ -180,6 +198,9 @@ pipeline {
                 }
 
                 stage('Build and Publish Docker images') {
+                    when {
+                        not { expression { customBranch() } }
+                    }
                     steps {
                         dockerStage([
                                 dockerfile: 'docker/mailbox/Dockerfile',
