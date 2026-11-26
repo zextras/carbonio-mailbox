@@ -2728,7 +2728,7 @@ public abstract class MailItem
       data.setPrevFolders(prevFolders);
     }
     if (this instanceof CalendarItem)
-      CALENDAR_ITEM_REPOSITORY.copyCalendarItem((CalendarItem) this, copyId, inDumpster);
+      CALENDAR_ITEM_REPOSITORY.copyCalendar((CalendarItem) this, copyId, inDumpster);
 
     // older revisions
     // Copy revisions only when recovering from dumpster.  When copying from one non-dumpster folder

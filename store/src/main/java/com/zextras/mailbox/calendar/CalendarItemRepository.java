@@ -15,19 +15,19 @@ import java.util.List;
 
 public interface CalendarItemRepository {
 
-  void copyCalendarItem(CalendarItem calItem, int newId, boolean fromDumpster) throws ServiceException;
+  void copyCalendar(CalendarItem calItem, int newId, boolean fromDumpster) throws ServiceException;
 
-  UnderlyingData getCalendarItem(Mailbox mbox, String uid) throws ServiceException;
+  UnderlyingData getCalendar(Mailbox mbox, String uid) throws ServiceException;
 
-  List<UnderlyingData> getCalendarItems(Mailbox mbox, MailItem.Type type, long start, long end, int folderId, int[] excludeFolderIds) throws ServiceException;
+  List<UnderlyingData> getCalendars(Mailbox mbox, MailItem.Type type, long start, long end, int folderId, int[] excludeFolderIds) throws ServiceException;
 
-  List<UnderlyingData> getCalendarItems(Mailbox mbox, List<String> uids) throws ServiceException;
+  List<UnderlyingData> getCalendars(Mailbox mbox, List<String> uids) throws ServiceException;
 
-  TypedIdList listCalendarItems(Mailbox mbox, MailItem.Type type, long start, long end, int folderId, int[] excludeFolderIds) throws ServiceException;
+  TypedIdList listCalendars(Mailbox mbox, MailItem.Type type, long start, long end, int folderId, int[] excludeFolderIds) throws ServiceException;
 
   void addCalendar(CalendarItem calItem) throws ServiceException;
 
   void updateCalendar(CalendarItem calItem) throws ServiceException;
 
-  List<CalendarItem.CalendarMetadata> getCalendarItemMetadata(Folder folder, long start, long end) throws ServiceException;
+  List<CalendarItem.CalendarMetadata> getCalendarMetadata(Folder folder, long start, long end) throws ServiceException;
 }

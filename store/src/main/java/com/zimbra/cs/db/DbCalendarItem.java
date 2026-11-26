@@ -42,7 +42,7 @@ public class DbCalendarItem implements CalendarItemRepository {
   private static final String CALENDAR_TYPES = "(" + MailItem.Type.APPOINTMENT.toByte() + ')';
 
   @Override
-  public void copyCalendarItem(CalendarItem calItem, int newId, boolean fromDumpster)
+  public void copyCalendar(CalendarItem calItem, int newId, boolean fromDumpster)
       throws ServiceException {
     Mailbox mbox = calItem.getMailbox();
     if (newId <= 0) {
@@ -87,7 +87,7 @@ public class DbCalendarItem implements CalendarItemRepository {
   }
 
   @Override
-  public UnderlyingData getCalendarItem(Mailbox mbox, String uid) throws ServiceException {
+  public UnderlyingData getCalendar(Mailbox mbox, String uid) throws ServiceException {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     ResultSet rs = null;
@@ -122,7 +122,7 @@ public class DbCalendarItem implements CalendarItemRepository {
   }
 
   @Override
-  public List<UnderlyingData> getCalendarItems(
+  public List<UnderlyingData> getCalendars(
       Mailbox mbox, MailItem.Type type, long start, long end, int folderId, int[] excludeFolderIds)
       throws ServiceException {
     DbConnection conn = mbox.getOperationConnection();
@@ -148,7 +148,7 @@ public class DbCalendarItem implements CalendarItemRepository {
   }
 
   @Override
-  public List<UnderlyingData> getCalendarItems(Mailbox mbox, List<String> uids)
+  public List<UnderlyingData> getCalendars(Mailbox mbox, List<String> uids)
       throws ServiceException {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
@@ -192,7 +192,7 @@ public class DbCalendarItem implements CalendarItemRepository {
   }
 
   @Override
-  public TypedIdList listCalendarItems(
+  public TypedIdList listCalendars(
       Mailbox mbox, MailItem.Type type, long start, long end, int folderId, int[] excludeFolderIds)
       throws ServiceException {
     DbConnection conn = mbox.getOperationConnection();
@@ -362,7 +362,7 @@ public class DbCalendarItem implements CalendarItemRepository {
 
 
   @Override
-  public List<CalendarItem.CalendarMetadata> getCalendarItemMetadata(
+  public List<CalendarItem.CalendarMetadata> getCalendarMetadata(
       Folder folder, long start, long end) throws ServiceException {
     Mailbox mbox = folder.getMailbox();
 

@@ -4812,7 +4812,7 @@ public class Mailbox implements MailboxStore {
         throw ServiceException.PERM_DENIED("you do not have sufficient permissions");
       }
       success = true;
-      return CALENDAR_ITEM_REPOSITORY.getCalendarItemMetadata(f, start, end);
+      return CALENDAR_ITEM_REPOSITORY.getCalendarMetadata(f, start, end);
     } finally {
       endTransaction(success);
     }
@@ -4882,7 +4882,7 @@ public class Mailbox implements MailboxStore {
       getFolderById(folderId);
 
       // get the list of all visible calendar items in the specified folder
-      TypedIdList ids = CALENDAR_ITEM_REPOSITORY.listCalendarItems(this, type, start, end, folderId, null);
+      TypedIdList ids = CALENDAR_ITEM_REPOSITORY.listCalendars(this, type, start, end, folderId, null);
       success = true;
       return ids;
     } finally {
@@ -4950,7 +4950,7 @@ public class Mailbox implements MailboxStore {
       // get the list of all visible calendar items in the specified folder
       List<CalendarItem> calItems = new ArrayList<>();
       List<MailItem.UnderlyingData> invData =
-          CALENDAR_ITEM_REPOSITORY.getCalendarItems(this, type, start, end, folderId, excludeFolders);
+          CALENDAR_ITEM_REPOSITORY.getCalendars(this, type, start, end, folderId, excludeFolders);
       for (MailItem.UnderlyingData data : invData) {
         try {
           CalendarItem calItem = getCalendarItem(data);
@@ -6049,7 +6049,7 @@ public class Mailbox implements MailboxStore {
     boolean success = false;
     try {
       beginReadTransaction("getCalendarItemByUid", octxt);
-      MailItem.UnderlyingData data = CALENDAR_ITEM_REPOSITORY.getCalendarItem(this, uid);
+      MailItem.UnderlyingData data = CALENDAR_ITEM_REPOSITORY.getCalendar(this, uid);
       CalendarItem calItem = (CalendarItem) getItem(data);
       success = true;
       return calItem;
@@ -6065,7 +6065,7 @@ public class Mailbox implements MailboxStore {
       beginTransaction("getCalendarItemsByUid", octxt);
       ArrayList<String> uidList = new ArrayList<>(uids);
       Map<String, CalendarItem> calItems = new HashMap<>();
-      List<MailItem.UnderlyingData> invData = CALENDAR_ITEM_REPOSITORY.getCalendarItems(this, uids);
+      List<MailItem.UnderlyingData> invData = CALENDAR_ITEM_REPOSITORY.getCalendars(this, uids);
       for (MailItem.UnderlyingData data : invData) {
         try {
           CalendarItem calItem = getCalendarItem(data);
