@@ -89,7 +89,7 @@ class MailboxErrorUtil {
     }
 
     private static boolean causeMatchesFKFailure(Throwable t) {
-        if (t instanceof SQLException && (DbPool.getDb().matches((SQLException) t, DbError.FOREIGN_KEY_CHILD_EXISTS))) {
+        if (t instanceof SQLException && (DbPool.getDb().matchesError((SQLException) t, DbError.FOREIGN_KEY_CHILD_EXISTS))) {
             return true;
         } else if (t.getCause() != null) {
             return causeMatchesFKFailure(t.getCause());

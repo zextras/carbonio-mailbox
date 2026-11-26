@@ -77,7 +77,7 @@ public final class DbVolumeBlobs {
             stmt.setBoolean(pos++, false);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
+            if (conn.getDb().matchesError(e, DbError.DUPLICATE_ROW)) {
                 throw MailServiceException.ALREADY_EXISTS(path, e);
             } else {
                 throw ServiceException.FAILURE("unable to insert new blob reference for path " + path, e);

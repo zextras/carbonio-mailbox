@@ -180,7 +180,7 @@ public class DbMailItem {
       DbTag.storeTagReferences(mailbox, data.id, type, data.getTags());
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
+      if (conn.getDb().matchesError(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(data.id, e);
       } else {
         throw ServiceException.FAILURE("Failed to create id=" + data.id + ",type=" + data.type, e);
@@ -265,7 +265,7 @@ public class DbMailItem {
       DbTag.storeTagReferences(mbox, id, item.getType(), item.getTags());
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
+      if (conn.getDb().matchesError(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(id, e);
       } else {
         throw ServiceException.FAILURE("copying " + item.getType() + ": " + item.getId(), e);
@@ -311,7 +311,7 @@ public class DbMailItem {
       }
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
+      if (conn.getDb().matchesError(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(newId, e);
       } else {
         throw ServiceException.FAILURE("copying " + calItem.getType() + ": " + calItem.getId(), e);
@@ -361,7 +361,7 @@ public class DbMailItem {
       }
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
+      if (conn.getDb().matchesError(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(newId, e);
       } else {
         throw ServiceException.FAILURE(
@@ -393,7 +393,7 @@ public class DbMailItem {
       if (!shared) {
         flags = "flags";
       } else {
-        flags = "flags" + " | " + String.valueOf(Flag.BITMASK_COPIED);
+        flags = "flags | " + Flag.BITMASK_COPIED;
       }
       stmt =
           conn.prepareStatement(
@@ -472,7 +472,7 @@ public class DbMailItem {
       DbTag.storeTagReferences(mbox, data.id, type, data.getTags());
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
+      if (conn.getDb().matchesError(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(data.id, e);
       } else {
         throw ServiceException.FAILURE("i-copying " + source.getType() + ": " + source.getId(), e);
@@ -516,7 +516,7 @@ public class DbMailItem {
       stmt.executeUpdate();
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
+      if (conn.getDb().matchesError(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(item.getId(), e);
       } else {
         throw ServiceException.FAILURE(
@@ -654,7 +654,7 @@ public class DbMailItem {
       stmt.executeUpdate();
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
+      if (conn.getDb().matchesError(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(item.getName(), e);
       } else {
         throw ServiceException.FAILURE("writing new folder data for item " + item.getId(), e);
@@ -749,10 +749,6 @@ public class DbMailItem {
       stmt.close();
       stmt = null;
     } catch (SQLException e) {
-      // catch item_id uniqueness constraint violation and return failure
-      //            if (conn.getDb().matches(e, DbError.DUPLICATE_ROW))
-      //                throw MailServiceException.ALREADY_EXISTS(msgs.toString(), e);
-      //            else
       throw ServiceException.FAILURE("writing new folder data for messages", e);
     } finally {
       DbPool.closeStatement(stmt);
@@ -1167,7 +1163,7 @@ public class DbMailItem {
       }
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
+      if (conn.getDb().matchesError(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(name, e);
       } else {
         throw ServiceException.FAILURE(
@@ -1240,7 +1236,7 @@ public class DbMailItem {
       }
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
+      if (conn.getDb().matchesError(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(item.getName(), e);
       } else {
         throw ServiceException.FAILURE(
@@ -1845,8 +1841,7 @@ public class DbMailItem {
                   + " SELECT "
                   + MAIL_ITEM_DUMPSTER_COPY_SRC_FIELDS
                   + (unsetDeletedFlag
-                      ? "flags" + " & ~" + String.valueOf(
-                  Flag.BITMASK_DELETED) /* negate deleted flag value */
+                      ? "flags & ~" + Flag.BITMASK_DELETED
                       : "flags")
                   + " FROM "
                   + miTableName
@@ -2948,7 +2943,7 @@ public class DbMailItem {
                   + "folder_id = ? AND "
                   + typeIn(type)
                   + " AND "
-                  + "name" + " = ?");
+                  + "name = ?");
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
       stmt.setInt(pos++, folderId);
@@ -3068,7 +3063,7 @@ public class DbMailItem {
           type == MailItem.Type.UNKNOWN ? "type NOT IN " + NON_SYNCABLE_TYPES : typeIn(type);
       String dateConstraint = sinceDate > 0 ? "date > ? AND " : "";
       StringBuilder buf = new StringBuilder();
-      buf.append("SELECT id, type, folder_id, uuid, mod_metadata, prev_folders" + " FROM ")
+      buf.append("SELECT id, type, folder_id, uuid, mod_metadata, prev_folders FROM ")
           .append(getMailItemTableName(mbox))
           .append(" WHERE ")
           .append(IN_THIS_MAILBOX_AND)
@@ -3927,7 +3922,7 @@ public class DbMailItem {
                   + " AND type = "
                   + MailItem.Type.MESSAGE.toByte()
                   + " AND "
-                  + "flags" + " & " + String.valueOf(Flag.BITMASK_DELETED | Flag.BITMASK_POPPED)
+                  + "flags & " + (Flag.BITMASK_DELETED | Flag.BITMASK_POPPED)
                   + " = 0"
                   + dateConstraint);
       if (getTotalFolderSize(folders) > RESULTS_STREAMING_MIN_ROWS) {
@@ -5055,7 +5050,7 @@ public class DbMailItem {
         if (buf.length() > 0) {
           buf.append(" AND ");
         }
-        buf.append("flags" + " & " + String.valueOf(flagToExclude.toBitmask()))
+        buf.append("flags & " + flagToExclude.toBitmask())
             .append(" != ")
             .append(flagToExclude.toBitmask());
       }
@@ -5764,7 +5759,7 @@ public class DbMailItem {
                   + " WHERE "
                   + IN_THIS_MAILBOX_AND
                   + " change_date < ? AND "
-                  + "flags" + " & " + String.valueOf(Flag.BITMASK_DELETED)
+                  + "flags & " + Flag.BITMASK_DELETED
                   + " = "
                   + Flag.BITMASK_DELETED
                   + " limit "
@@ -5805,7 +5800,7 @@ public class DbMailItem {
       stmt.executeUpdate();
     } catch (SQLException e) {
       // catch item_id uniqueness constraint violation and return failure
-      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
+      if (conn.getDb().matchesError(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(id, e);
       } else {
         throw ServiceException.FAILURE("writing new folder data for item " + id, e);

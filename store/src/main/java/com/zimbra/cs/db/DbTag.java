@@ -122,7 +122,7 @@ public class DbTag {
             }
         } catch (SQLException e) {
             // catch item_id uniqueness constraint violation and return failure
-            if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
+            if (conn.getDb().matchesError(e, DbError.DUPLICATE_ROW)) {
                 throw MailServiceException.ALREADY_EXISTS(data.id, e);
             } else {
                 throw ServiceException.FAILURE("Failed to create tag id=" + data.id + ",name=" + data.name, e);
@@ -258,12 +258,11 @@ public class DbTag {
         ResultSet rs = null;
         try {
             String mailboxesMatchAnd = "mi.mailbox_id = ti.mailbox_id AND ";
-            stmt = conn.prepareStatement("SELECT ti.tag_id, COUNT(*), " + "IFNULL("
-                + "SUM(mi.unread)" + ", " + "0" + ")" +
+            stmt = conn.prepareStatement("SELECT ti.tag_id, COUNT(*), IFNULL(SUM(mi.unread), 0)" +
                     " FROM " + DbMailItem.getMailItemTableName(mbox, "mi") +
                     " INNER JOIN " + getTaggedItemTableName(mbox, "ti") + " ON " + mailboxesMatchAnd + "ti.item_id = mi.id" +
                     " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id > 0 AND type NOT IN " + DbMailItem.NON_SEARCHABLE_TYPES +
-                    " AND " + "mi.flags" + " & " + "" + Flag.BITMASK_DELETED + " = 0" +
+                    " AND mi.flags & " + Flag.BITMASK_DELETED + " = 0" +
                     " GROUP BY ti.tag_id");
             DbMailItem.setMailboxId(stmt, mbox, 1);
 
@@ -390,12 +389,10 @@ public class DbTag {
             String primaryUpdate, sanityCheckAnd;
             if (isFlag) {
                 primaryUpdate = "flags = flags" + (add ? " + ?" : " - ?");
-                sanityCheckAnd = "flags" + " & " + "?" + (add ? " = 0" : " <> 0") + " AND ";
+                sanityCheckAnd = "flags & ?" + (add ? " = 0" : " <> 0") + " AND ";
             } else {
                 if (add) {
-                    Joiner joiner = Joiner.on(", ").skipNulls();
-                    primaryUpdate = "tag_names = CASE WHEN tag_names IS NULL THEN ? ELSE " +
-                        "CONCAT(" + joiner.join(new String[]{"tag_names", "?"}) + ")" + " END";
+                    primaryUpdate = "tag_names = CASE WHEN tag_names IS NULL THEN ? ELSE CONCAT(tag_names, ?) END";
                     sanityCheckAnd = "(tag_names IS NULL OR tag_names NOT LIKE ?) AND ";
                 } else {
                     primaryUpdate = "tag_names = CASE tag_names WHEN ? THEN NULL ELSE REPLACE(tag_names, ?, '\0') END";
@@ -616,7 +613,7 @@ public class DbTag {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
+            if (conn.getDb().matchesError(e, DbError.DUPLICATE_ROW)) {
                 throw MailServiceException.ALREADY_EXISTS(newName, e);
             } else {
                 throw ServiceException.FAILURE("renaming tag " + tag.getId() + " to " + tag.getName(), e);
@@ -642,7 +639,7 @@ public class DbTag {
                     DbMailItem.getMailItemTableName(mbox, "mi"),
                     getTaggedItemTableName(mbox, "ti"),
                     mailboxesMatchAnd + "mi.id = ti.item_id",
-                    "mi.tag_names = CASE mi.tag_names WHEN ? THEN NULL ELSE REPLACE(mi.tag_names, ?, '" + "\\" + "0') END, mod_metadata = ?, change_date = ?",
+                    "mi.tag_names = CASE mi.tag_names WHEN ? THEN NULL ELSE REPLACE(mi.tag_names, ?, '\\0') END, mod_metadata = ?, change_date = ?",
                     inThisMailboxAnd("ti") + "ti.tag_id = ?"));
             stmt.setString(pos++, delimited);
             stmt.setString(pos++, delimited);
@@ -725,7 +722,7 @@ public class DbTag {
         try {
             stmt = conn.prepareStatement("UPDATE " + DbMailItem.getMailItemTableName(mbox) +
                     " SET tag_names = " +
-                        "(SELECT (CONCAT('" + "\\" + "0', GROUP_CONCAT(t.name SEPARATOR '" + "\\" + "0'), '" + "\\" + "0')" +
+                        "(SELECT (CONCAT('\\0', GROUP_CONCAT(t.name SEPARATOR '\\0'), '\\0')" +
                         " FROM tag t INNER JOIN tagged_item ti ON t.mailbox_id = ti.mailbox_id AND t.id = ti.tag_id" +
                         " WHERE ti.item_id = mi.id AND ti.tag_id > 0)" +
                     " WHERE mi.mailbox_id = ?");

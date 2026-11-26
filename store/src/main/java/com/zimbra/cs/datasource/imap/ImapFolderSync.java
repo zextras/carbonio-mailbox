@@ -1288,7 +1288,7 @@ class ImapFolderSync {
             Throwable cause = e.getCause();
             return cause == null || canContinue(cause);
         } else if (e instanceof SQLException) {
-            return DbPool.getDb().matches((SQLException) e, DbError.DUPLICATE_ROW);
+            return DbPool.getDb().matchesError((SQLException) e, DbError.DUPLICATE_ROW);
         } else if (e instanceof CommandFailedException) {
             return ((CommandFailedException) e).canContinue();
         } else {

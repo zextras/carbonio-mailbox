@@ -263,7 +263,7 @@ public final class DbMailbox {
       data.version = MailboxVersion.getCurrent();
       return data;
     } catch (SQLException e) {
-      if (conn.getDb().matches(e, DbError.DUPLICATE_ROW)) {
+      if (conn.getDb().matchesError(e, DbError.DUPLICATE_ROW)) {
         throw MailServiceException.ALREADY_EXISTS(accountId, e);
       } else {
         throw ServiceException.FAILURE("writing new mailbox row for account " + accountId, e);
@@ -910,7 +910,7 @@ public final class DbMailbox {
 
       return mbd;
     } catch (SQLException e) {
-      if (conn.getDb().matches(e, DbError.NO_SUCH_TABLE)) {
+      if (conn.getDb().matchesError(e, DbError.NO_SUCH_TABLE)) {
         return null;
       }
       throw ServiceException.FAILURE("fetching stats on mailbox " + mailboxId, e);

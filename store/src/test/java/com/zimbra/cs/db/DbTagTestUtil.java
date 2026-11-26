@@ -159,11 +159,11 @@ public class DbTagTestUtil extends DbTag {
       ResultSet rs = null;
       try {
           String mailboxesMatchAnd = "ti.mailbox_id = mi.mailbox_id AND ";
-          stmt = conn.prepareStatement("SELECT ti.tag_id, COUNT(ti.item_id), " + "IFNULL(SUM(mi.unread), 0)" +
+          stmt = conn.prepareStatement("SELECT ti.tag_id, COUNT(ti.item_id), IFNULL(SUM(mi.unread), 0)" +
                   " FROM " + getTaggedItemTableName(mbox, "ti") +
                   " INNER JOIN " + DbMailItem.getMailItemTableName(mbox, "mi") + " ON " + mailboxesMatchAnd + "mi.id = ti.item_id" +
-                  " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id > 0 AND " + "mi.flags" + " & "
-              + String.valueOf(Flag.BITMASK_DELETED) + " = 0" +
+                  " WHERE " + inThisMailboxAnd("ti") + "ti.tag_id > 0 AND mi.flags & "
+              + Flag.BITMASK_DELETED + " = 0" +
                   " GROUP BY ti.tag_id");
           DbMailItem.setMailboxId(stmt, mbox, 1);
 

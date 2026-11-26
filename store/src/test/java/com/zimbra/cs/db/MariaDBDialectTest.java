@@ -10,7 +10,6 @@ import static com.zimbra.cs.db.MariaDBTestDatabase.GROUP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.google.common.base.Joiner;
 import com.zextras.mailbox.testcontainers.MariaDBExtension;
 import com.zimbra.cs.mailbox.MailItem;
 import java.sql.Connection;
@@ -116,17 +115,17 @@ class MariaDBDialectTest {
     message(1, 11, INBOX, null, "s");
     execute("UPDATE " + MAIL_ITEM + " SET flags = 1");
 
-    execute("UPDATE " + MAIL_ITEM + " SET flags = " + "flags" + " | " + "4");
+    execute("UPDATE " + MAIL_ITEM + " SET flags = flags | 4");
 
     assertEquals(List.of("5"), MariaDBTestDatabase.rows(conn, "SELECT flags FROM " + MAIL_ITEM));
   }
 
   @Test
   void foreignKeyChecksCanBeTurnedOffAndOn() throws SQLException {
-    execute("SET FOREIGN_KEY_CHECKS=" + 1);
+    execute("SET FOREIGN_KEY_CHECKS=1");
     assertThrows(SQLException.class, () -> tag(1, 99));
 
-    execute("SET FOREIGN_KEY_CHECKS=" + 0);
+    execute("SET FOREIGN_KEY_CHECKS=0");
     tag(1, 99);
   }
 
@@ -135,10 +134,7 @@ class MariaDBDialectTest {
     message(1, 102, INBOX, null, "subject");
     message(1, 99, INBOX, null, "Subject");
 
-    String[] fieldsToConcat = new String[]{"mi.subject",
-        "LPAD(" + "mi.id" + ", " + 10 + ", '" + "0" + "')"};
-    Joiner joiner = Joiner.on(", ").skipNulls();
-    String sortField = "CONCAT(" + joiner.join(fieldsToConcat) + ")";
+    String sortField = "CONCAT(mi.subject, LPAD(mi.id, 10, '0'))";
 
     assertEquals(
         List.of("Subject0000000099", "subject0000000102"),

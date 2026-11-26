@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.db;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.zimbra.common.localconfig.LC;
@@ -101,25 +100,12 @@ public final class DbSearch {
       case SIZE:
         return "mi.size";
       case ATTACHMENT: // 0 or 1
-        String[] fieldsToConcat2 = new String[]{
-            "SIGN(" + "mi.flags" + " & " + String.valueOf(Flag.BITMASK_ATTACHED) + ")",
-            "LPAD(" + "mi.id" + ", " + 10 + ", '" + "0" + "')"};
-        Joiner joiner2 = Joiner.on(", ").skipNulls();
-        return "CONCAT(" + joiner2.join(fieldsToConcat2) + ")";
+        return "CONCAT(SIGN(mi.flags & " + Flag.BITMASK_ATTACHED + "), LPAD(mi.id, 10, '0'))";
       case FLAG: // 0 or 1
-        String[] fieldsToConcat1 = new String[]{
-            "SIGN(" + "mi.flags" + " & " + String.valueOf(Flag.BITMASK_FLAGGED) + ")",
-            "LPAD(" + "mi.id" + ", " + 10 + ", '" + "0" + "')"};
-        Joiner joiner1 = Joiner.on(", ").skipNulls();
-        return "CONCAT(" + joiner1.join(fieldsToConcat1) + ")";
+        return "CONCAT(SIGN(mi.flags & " + Flag.BITMASK_FLAGGED + "), LPAD(mi.id, 10, '0'))";
       case PRIORITY: // 0 or 1 or 2
-        String[] fieldsToConcat = new String[]{"(1 + "
-            + "SIGN(" + "mi.flags" + " & " + String.valueOf(Flag.BITMASK_HIGH_PRIORITY) + ")"
-            + " - "
-            + "SIGN(" + "mi.flags" + " & " + String.valueOf(Flag.BITMASK_LOW_PRIORITY) + ")"
-            + ")", "LPAD(" + "mi.id" + ", " + 10 + ", '" + "0" + "')"};
-        Joiner joiner = Joiner.on(", ").skipNulls();
-        return "CONCAT(" + joiner.join(fieldsToConcat) + ")";
+        return "CONCAT((1 + SIGN(mi.flags & " + Flag.BITMASK_HIGH_PRIORITY
+            + ") - SIGN(mi.flags & " + Flag.BITMASK_LOW_PRIORITY + ")), LPAD(mi.id, 10, '0'))";
       case UNREAD: // 0 or 1 or 2
         return "mi.unread";
       case CHANGE_DATE:
@@ -131,9 +117,7 @@ public final class DbSearch {
   }
 
   private static String toStringSortField(String col) {
-    String[] fieldsToConcat = new String[]{col, "LPAD(" + "mi.id" + ", " + 10 + ", '" + "0" + "')"};
-    Joiner joiner = Joiner.on(", ").skipNulls();
-    return "CONCAT(" + joiner.join(fieldsToConcat) + ")";
+    return "CONCAT(" + col + ", LPAD(mi.id, 10, '0'))";
   }
 
   /** Generate a column-reference for the sort-by column. */
@@ -1014,7 +998,7 @@ public final class DbSearch {
         }
       }
       if (flags != 0) {
-        sql.append(" AND ").append("mi.flags" + " & " + "?").append(" = ?");
+        sql.append(" AND ").append("mi.flags & ? = ?");
         params.add(flags);
         params.add(bool ? flags : 0);
       }

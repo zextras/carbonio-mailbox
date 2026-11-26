@@ -55,7 +55,7 @@ class MariaDBErrorTest {
 
     SQLException e = assertThrows(SQLException.class, () -> configEntry("error-test"));
 
-    assertTrue(db.matches(e, DbError.DUPLICATE_ROW));
+    assertTrue(db.matchesError(e, DbError.DUPLICATE_ROW));
   }
 
   @Test
@@ -67,7 +67,7 @@ class MariaDBErrorTest {
     SQLException e =
         assertThrows(SQLException.class, () -> execute("DELETE FROM zimbra.volume WHERE id = 1"));
 
-    assertTrue(db.matches(e, DbError.FOREIGN_KEY_CHILD_EXISTS));
+    assertTrue(db.matchesError(e, DbError.FOREIGN_KEY_CHILD_EXISTS));
   }
 
   @Test
@@ -76,7 +76,7 @@ class MariaDBErrorTest {
         assertThrows(
             SQLException.class, () -> execute("DELETE FROM " + GROUP + ".no_such_table"));
 
-    assertTrue(db.matches(e, DbError.NO_SUCH_TABLE));
+    assertTrue(db.matchesError(e, DbError.NO_SUCH_TABLE));
   }
 
   @Test
@@ -93,7 +93,7 @@ class MariaDBErrorTest {
               }
             });
 
-    assertTrue(db.matches(e, DbError.TABLE_FULL));
+    assertTrue(db.matchesError(e, DbError.TABLE_FULL));
   }
 
   @Test
@@ -102,9 +102,9 @@ class MariaDBErrorTest {
 
     SQLException e = assertThrows(SQLException.class, () -> configEntry("error-test"));
 
-    assertFalse(db.matches(e, DbError.FOREIGN_KEY_CHILD_EXISTS));
-    assertFalse(db.matches(e, DbError.NO_SUCH_TABLE));
-    assertFalse(db.matches(e, DbError.TABLE_FULL));
+    assertFalse(db.matchesError(e, DbError.FOREIGN_KEY_CHILD_EXISTS));
+    assertFalse(db.matchesError(e, DbError.NO_SUCH_TABLE));
+    assertFalse(db.matchesError(e, DbError.TABLE_FULL));
   }
 
   private void configEntry(String name) throws SQLException {

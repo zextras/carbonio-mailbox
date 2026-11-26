@@ -128,7 +128,7 @@ class DebugPreparedStatement extends DelegatingPreparedStatement {
     }
     
     private void processDbError(SQLException e) {
-        if (DbPool.getDb().matches(e, DbError.TABLE_FULL))
+        if (DbPool.getDb().matchesError(e, DbError.TABLE_FULL))
             Zimbra.halt("DB out of space", e);
     }
 

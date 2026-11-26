@@ -14,7 +14,7 @@ public record MariaDB(String host, int port, String database) implements Db {
   }
 
   @Override
-  public boolean matches(SQLException e, DbError error) {
+  public boolean matchesError(SQLException e, DbError error) {
     int code = switch (error) {
       case DUPLICATE_ROW -> 1062;
       case FOREIGN_KEY_CHILD_EXISTS -> 1451;

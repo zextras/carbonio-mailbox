@@ -170,7 +170,7 @@ public class DbPool {
         public void disableForeignKeyConstraints() throws ServiceException {
             PreparedStatement stmt = null;
             try {
-                String sql = disableForeignKeyChecks();
+                String sql = "SET FOREIGN_KEY_CHECKS=0";
                 stmt = new StatTrackingPreparedStatement(connection.prepareStatement(sql),sql);
                 stmt.execute();
             } catch (SQLException e) {
@@ -180,12 +180,8 @@ public class DbPool {
             }
         }
 
-        private String disableForeignKeyChecks() {
-            return "SET FOREIGN_KEY_CHECKS=" + 0;
-        }
-
         public void enableForeignKeyConstraints() throws ServiceException {
-            String sql = "SET FOREIGN_KEY_CHECKS=" + 1;
+            String sql = "SET FOREIGN_KEY_CHECKS=1";
             PreparedStatement stmt = null;
             try {
                 stmt = new StatTrackingPreparedStatement(connection.prepareStatement(sql), sql);
