@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.redolog;
 
+import com.zimbra.cs.db.DbUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,7 +24,6 @@ import com.zimbra.common.util.FileUtil;
 import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.ZimbraLog;
 
-import com.zimbra.cs.db.Db;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.redolog.logger.FileLogReader;
 import com.zimbra.cs.redolog.logger.FileLogWriter;
@@ -585,7 +585,7 @@ public class RedoLogManager {
                 long start = System.currentTimeMillis();
                 // Force the database to persist the committed changes to disk.
                 // This is very important when running mysql with innodb_flush_log_at_trx_commit=0 (or 2).
-                Db.getInstance().flushToDisk();
+                DbUtil.flushToDisk();
 
                 if (!skipCheckpoint)
                     checkpoint();

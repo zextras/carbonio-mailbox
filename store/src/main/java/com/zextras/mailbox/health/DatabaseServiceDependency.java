@@ -46,7 +46,7 @@ public class DatabaseServiceDependency extends ServiceDependency {
   private boolean doCheckStatus() {
     try (DbConnection connection = dbPool.getConnectionInstance();
         PreparedStatement preparedStatement =
-            connection.prepareStatement(connection.getDb().healthCheckQuery());
+            connection.prepareStatement("SELECT 1");
         ResultSet resultSet = preparedStatement.executeQuery()) {
       resultSet.next();
       return true;

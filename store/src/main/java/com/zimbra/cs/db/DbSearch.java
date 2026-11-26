@@ -28,7 +28,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 
-import static org.apache.commons.lang3.Strings.CS;
 
 /**
  * Search related DAO.
@@ -72,7 +71,6 @@ public final class DbSearch {
   private final boolean dumpster;
   private final StringBuilder sql = new StringBuilder();
   private final List<Object> params = new ArrayList<>();
-  private Db db;
 
   public DbSearch(Mailbox mbox) {
     this.mailbox = mbox;
@@ -84,39 +82,30 @@ public final class DbSearch {
     this.dumpster = dumpster;
   }
 
-  private static String toSortField(Db db, SortBy sort) {
+  private static String toSortField(SortBy sort) {
     switch (sort.getKey()) {
       case NONE:
         return null;
       case SENDER:
-        return toStringSortField(db, "mi.sender");
+        return toStringSortField("mi.sender");
       case RCPT:
-        return toStringSortField(db, "mi.recipients");
+        return toStringSortField("mi.recipients");
       case SUBJECT:
-        return toStringSortField(db, "mi.subject");
+        return toStringSortField("mi.subject");
       case NAME:
       case NAME_NATURAL_ORDER:
-        return toStringSortField(db, "mi.name");
+        return toStringSortField("mi.name");
       case ID:
         return "mi.id";
       case SIZE:
         return "mi.size";
       case ATTACHMENT: // 0 or 1
-        return db.concat(
-            db.sign(db.bitAND("mi.flags", String.valueOf(Flag.BITMASK_ATTACHED))),
-            db.lpad("mi.id", 10, "0"));
+        return "CONCAT(SIGN(mi.flags & " + Flag.BITMASK_ATTACHED + "), LPAD(mi.id, 10, '0'))";
       case FLAG: // 0 or 1
-        return db.concat(
-            db.sign(db.bitAND("mi.flags", String.valueOf(Flag.BITMASK_FLAGGED))),
-            db.lpad("mi.id", 10, "0"));
+        return "CONCAT(SIGN(mi.flags & " + Flag.BITMASK_FLAGGED + "), LPAD(mi.id, 10, '0'))";
       case PRIORITY: // 0 or 1 or 2
-        return db.concat(
-            "(1 + "
-                + db.sign(db.bitAND("mi.flags", String.valueOf(Flag.BITMASK_HIGH_PRIORITY)))
-                + " - "
-                + db.sign(db.bitAND("mi.flags", String.valueOf(Flag.BITMASK_LOW_PRIORITY)))
-                + ")",
-            db.lpad("mi.id", 10, "0"));
+        return "CONCAT((1 + SIGN(mi.flags & " + Flag.BITMASK_HIGH_PRIORITY
+            + ") - SIGN(mi.flags & " + Flag.BITMASK_LOW_PRIORITY + ")), LPAD(mi.id, 10, '0'))";
       case UNREAD: // 0 or 1 or 2
         return "mi.unread";
       case CHANGE_DATE:
@@ -127,13 +116,13 @@ public final class DbSearch {
     }
   }
 
-  private static String toStringSortField(Db db, String col) {
-    return db.concat(col, db.lpad("mi.id", 10, "0"));
+  private static String toStringSortField(String col) {
+    return "CONCAT(" + col + ", LPAD(mi.id, 10, '0'))";
   }
 
   /** Generate a column-reference for the sort-by column. */
   private void addSortColumn(SortBy sort) {
-    String field = toSortField(db, sort);
+    String field = toSortField(sort);
     if (field == null) { // no sort column for NONE
       return;
     }
@@ -144,12 +133,12 @@ public final class DbSearch {
    * Generate the ORDER BY part that goes at the end of the SELECT. Note: Assumes that <b>mi.id</b>
    * is something defined in the SELECT which can be ordered by.
    */
-  protected static String orderBy(Db db, SortBy sort, boolean alias) {
+  protected static String orderBy(SortBy sort, boolean alias) {
     if (sort.getKey() == SortBy.Key.NONE) { // no ORDER BY for NONE
       return "";
     }
     StringBuilder orderBy = new StringBuilder(" ORDER BY ");
-    orderBy.append(alias ? SORT_COLUMN_ALIAS : toSortField(db, sort));
+    orderBy.append(alias ? SORT_COLUMN_ALIAS : toSortField(sort));
     if (sort.getDirection() == SortBy.Direction.DESC) {
       orderBy.append(" DESC");
     }
@@ -177,7 +166,6 @@ public final class DbSearch {
 
   public int countResults(DbConnection conn, DbSearchConstraints node, boolean ignoreNoRecipients)
       throws ServiceException {
-    db = conn.getDb();
     node = node.optimize();
     sql.append("SELECT COUNT(*) FROM ")
         .append(DbMailItem.getMailItemTableName(mailbox, "mi", dumpster));
@@ -239,7 +227,7 @@ public final class DbSearch {
     if (index == null || index.trim().equals("")) {
       return "";
     }
-    return db.forceIndexClause(index);
+    return " FORCE INDEX (" + index + ')';
   }
 
   private void encodeSelect(
@@ -537,28 +525,6 @@ public final class DbSearch {
     return node.toLeaf().hasAppointmentTableConstraints();
   }
 
-  private static List<Result> intersectSortedLists(List<Result> toRet, List<List<Result>> lists) {
-    if (lists.size() < 0) {
-      return toRet;
-    }
-    // optimize so shortest list is first
-    lists.sort((l1, l2) -> l1.size() - l2.size());
-
-    for (Result result : lists.get(0)) {
-      boolean intersect = true;
-      for (int i = 1; i < lists.size(); i++) {
-        if (!lists.get(i).contains(result)) {
-          intersect = false;
-          break;
-        }
-      }
-      if (intersect) {
-        toRet.add(result);
-      }
-    }
-    return toRet;
-  }
-
   public List<Result> search(
       DbConnection conn,
       DbSearchConstraints node,
@@ -579,79 +545,12 @@ public final class DbSearch {
       FetchMode fetch,
       boolean searchDraftsSeparately)
       throws ServiceException {
-    db = conn.getDb();
     try {
       node = node.optimize();
       return searchInternal(conn, node, sort, offset, limit, fetch, searchDraftsSeparately);
     } catch (SQLException e) {
-      if (db.compareError(e, Db.Error.TOO_MANY_SQL_PARAMS)) {
-        ZimbraLog.sqltrace.debug(
-            "Too many SQL params: %s", node, e); // fall back to splitting OR clauses
-      } else {
-        throw ServiceException.FAILURE("Failed to search", e);
-      }
+      throw ServiceException.FAILURE("Failed to search", e);
     }
-    List<Result> result = new ArrayList<>();
-    if (!(node instanceof DbSearchConstraints.Leaf)) {
-      // case 1 (non-leaf node), if (where a or b) not supported or if we encountered too many sql
-      // params try splitting
-      // run each toplevel ORed part as a separate SQL query, then merge the results in memory
-      if (node instanceof DbSearchConstraints.Union) {
-        for (DbSearchConstraints child : node.getChildren()) {
-          result.addAll(
-              new DbSearch(mailbox, dumpster).search(conn, child, sort, offset, limit, fetch));
-        }
-        result.sort(new ResultComparator(sort));
-      } else if (node instanceof DbSearchConstraints.Intersection) {
-        List<List<Result>> resultLists = new ArrayList<>();
-
-        for (DbSearchConstraints child : node.getChildren()) {
-          resultLists.add(
-              new DbSearch(mailbox, dumpster).search(conn, child, sort, offset, limit, fetch));
-        }
-        result = intersectSortedLists(result, resultLists);
-      } else {
-        throw ServiceException.FAILURE(
-            "Reached merge/intersect block with something other than OR/AND clause", null);
-      }
-    } else {
-      // case 2 (leaf node), we could encounter a sql clause with too many folders involved, try
-      // splitting these folders
-      // only deals with folders for now to avoid considering complicated situations (other
-      // constraints combined)
-      DbSearchConstraints.Leaf leafNode = node.toLeaf();
-      final int dbLimit = db.getParamLimit();
-      // avoid edge cases
-      int otherConstraintsCount = params.size() - leafNode.folders.size();
-      final int softLimit = dbLimit - otherConstraintsCount - 10;
-      if (leafNode.folders.size() > softLimit) {
-        List<Folder> folderList = new ArrayList<>(leafNode.folders);
-        int end = leafNode.folders.size();
-        int start = end - softLimit;
-        leafNode.folders.clear();
-        while (start > 0) {
-          DbSearchConstraints.Leaf subsetNode = leafNode.clone();
-          List<Folder> subList = folderList.subList(start, end);
-          subsetNode.folders.addAll(subList);
-          result.addAll(
-              new DbSearch(mailbox, dumpster).search(conn, subsetNode, sort, offset, limit, fetch));
-          end -= softLimit;
-          start -= softLimit;
-        }
-        // 0 to end
-        DbSearchConstraints.Leaf subsetNode = leafNode.clone();
-        List<Folder> subList = folderList.subList(0, end);
-        subsetNode.folders.addAll(subList);
-        result.addAll(
-            new DbSearch(mailbox, dumpster).search(conn, subsetNode, sort, offset, limit, fetch));
-        result.sort(new ResultComparator(sort));
-      } else {
-        throw ServiceException.FAILURE(
-            "splitting failed, too many constraints but not caused entirely by folders", null);
-      }
-    }
-
-    return result;
   }
 
   private int countUnread(Folder folder) throws ServiceException {
@@ -769,10 +668,10 @@ public final class DbSearch {
           joinTaggedItem);
 
       if (requiresUnion) {
-        sql.append(orderBy(db, sort, true));
+        sql.append(orderBy(sort, true));
         // LIMIT ?, ?
         if (hasValidLIMIT) {
-          sql.append(' ').append(db.limit(offset, limit));
+          sql.append(' ').append("LIMIT " + offset + "," + limit);
         }
       }
     }
@@ -786,10 +685,10 @@ public final class DbSearch {
       encodeSelect(sort, fetch, true, false, node, hasValidLIMIT);
       encodeConstraint(node, APPOINTMENT_TABLE_TYPES, true, false);
       if (requiresUnion) {
-        sql.append(orderBy(db, sort, true));
+        sql.append(orderBy(sort, true));
         // LIMIT ?, ?
         if (hasValidLIMIT) {
-          sql.append(' ').append(db.limit(offset, limit));
+          sql.append(' ').append("LIMIT " + offset + "," + limit);
         }
         if (requiresUnion) {
           sql.append(')');
@@ -798,11 +697,11 @@ public final class DbSearch {
     }
 
     // TODO FIXME: include COLLATION for sender/subject sort
-    sql.append(orderBy(db, sort, true));
+    sql.append(orderBy(sort, true));
 
     // LIMIT ?, ?
     if (hasValidLIMIT) {
-      sql.append(' ').append(db.limit(offset, limit));
+      sql.append(' ').append("LIMIT " + offset + "," + limit);
     }
 
     PreparedStatement stmt = null;
@@ -1099,7 +998,7 @@ public final class DbSearch {
         }
       }
       if (flags != 0) {
-        sql.append(" AND ").append(db.bitAND("mi.flags", "?")).append(" = ?");
+        sql.append(" AND ").append("mi.flags & ? = ?");
         params.add(flags);
         params.add(bool ? flags : 0);
       }
@@ -1261,7 +1160,7 @@ public final class DbSearch {
 
   private boolean encodeCursorRange(DbSearchConstraints.CursorRange range, boolean and) {
     // Can't use SORT_COLUMN_ALIAS because column aliases in SELECT are illegal to use in WHERE
-    String col = toSortField(db, range.sortBy);
+    String col = toSortField(range.sortBy);
     if (and) {
       sql.append(" AND ");
     }
@@ -1486,60 +1385,6 @@ public final class DbSearch {
     @Override
     public int getParentId() {
       return parentId;
-    }
-  }
-
-  private static final class ResultComparator implements Comparator<Result> {
-    private final SortBy sort;
-
-    ResultComparator(SortBy sort) {
-      this.sort = sort;
-    }
-
-    @Override
-    public int compare(Result o1, Result o2) {
-      switch (sort.getKey()) {
-        case SIZE:
-        case CHANGE_DATE:
-        case DATE:
-          long date1 = (Long) o1.getSortValue();
-          long date2 = (Long) o2.getSortValue();
-          if (date1 != date2) {
-            long diff;
-            if (sort.getDirection() == SortBy.Direction.DESC) {
-              diff = date2 - date1;
-            } else {
-              diff = date1 - date2;
-            }
-            return (diff > 0) ? 1 : -1;
-          }
-          // fall through to ID-based comparison below!
-          break;
-        case SENDER:
-        case SUBJECT:
-        case NAME:
-        case NAME_NATURAL_ORDER:
-          String s1 = (String) o1.getSortValue();
-          String s2 = (String) o2.getSortValue();
-            if (!Objects.equals(s1, s2)) {
-            if (sort.getDirection() == SortBy.Direction.DESC) {
-                return CS.compare(s2, s1);
-            } else {
-                return CS.compare(s1, s2);
-            }
-          }
-          break;
-        case ID:
-        case NONE:
-          break;
-        default:
-          throw new UnsupportedOperationException(sort.getKey().toString());
-      }
-      if (sort.getDirection() == SortBy.Direction.DESC) {
-        return o2.getId() - o1.getId();
-      } else {
-        return o1.getId() - o2.getId();
-      }
     }
   }
 }

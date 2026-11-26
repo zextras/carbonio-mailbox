@@ -5,10 +5,10 @@
 
 package com.zimbra.cs.index;
 
+import com.zimbra.cs.db.DbUtil;
 import com.google.common.collect.ImmutableSet;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.db.Db;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.db.DbSearch;
@@ -765,7 +765,7 @@ public class DBQueryOperation extends QueryOperation {
       // sure that we'd "consumed" all the Lucene-ID's, and therefore we could miss hits!
 
       // limit in clause based on Db capabilities - bug 15511
-      luceneChunk = luceneOp.getNextResultsChunk(Math.min(Db.getINClauseBatchSize(), hitsPerChunk));
+      luceneChunk = luceneOp.getNextResultsChunk(Math.min(DbUtil.IN_CLAUSE_BATCH_SIZE, hitsPerChunk));
 
       DbSearchConstraints.Leaf sc = getTopLeafConstraint();
       sc.indexIds.clear();

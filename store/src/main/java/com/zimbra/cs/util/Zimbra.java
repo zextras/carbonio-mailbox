@@ -24,7 +24,7 @@ import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.ldap.LdapAttributeCallbackHelper;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.db.DbPool;
-import com.zimbra.cs.db.Db;
+import com.zextras.db.Db;
 import com.zimbra.cs.db.Versions;
 import com.zimbra.cs.ephemeral.EphemeralStore;
 import com.zimbra.cs.ephemeral.LdapEphemeralStore;

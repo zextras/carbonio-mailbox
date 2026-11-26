@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.datasource.imap;
 
+import com.zimbra.cs.db.DbPool;
+import com.zextras.db.DbError;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -31,7 +33,6 @@ import com.zimbra.cs.datasource.IOExceptionHandler;
 import com.zimbra.cs.datasource.MessageContent;
 import com.zimbra.cs.datasource.SyncErrorManager;
 import com.zimbra.cs.datasource.SyncUtil;
-import com.zimbra.cs.db.Db;
 import com.zimbra.cs.db.DbDataSource.DataSourceItem;
 import com.zimbra.cs.db.DbDataSource.PurgedConversation;
 import com.zimbra.cs.db.DbDataSource.PurgedMessage;
@@ -1287,7 +1288,7 @@ class ImapFolderSync {
             Throwable cause = e.getCause();
             return cause == null || canContinue(cause);
         } else if (e instanceof SQLException) {
-            return Db.errorMatches((SQLException) e, Db.Error.DUPLICATE_ROW);
+            return DbPool.getDb().matchesError((SQLException) e, DbError.DUPLICATE_ROW);
         } else if (e instanceof CommandFailedException) {
             return ((CommandFailedException) e).canContinue();
         } else {

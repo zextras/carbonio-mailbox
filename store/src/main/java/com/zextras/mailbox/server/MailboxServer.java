@@ -4,7 +4,7 @@
 
 package com.zextras.mailbox.server;
 
-import com.zimbra.cs.db.Db;
+import com.zextras.db.Db;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.net.SocketFactories;
 import com.zimbra.common.util.ZimbraLog;

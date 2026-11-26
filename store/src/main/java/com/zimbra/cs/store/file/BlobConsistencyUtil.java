@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.store.file;
 
+import com.zextras.db.MariaDB;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
@@ -24,7 +25,6 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.util.CliUtil;
 import com.zimbra.cs.account.soap.SoapProvisioning;
-import com.zimbra.cs.db.MariaDB;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.store.file.BlobConsistencyChecker.BlobInfo;
 import com.zimbra.soap.admin.message.ExportAndDeleteItemsRequest;
@@ -186,7 +186,7 @@ public class BlobConsistencyUtil {
             mailboxIds = getAllMailboxIds(prov);
         }
         try {
-        	DbPool.global(new MariaDB());
+        	DbPool.global(MariaDB.fromLocalConfig());
         	for (int mboxId : mailboxIds) {
         		System.out.println("Checking mailbox " + mboxId + ".");
         		checkMailbox(mboxId, prov);

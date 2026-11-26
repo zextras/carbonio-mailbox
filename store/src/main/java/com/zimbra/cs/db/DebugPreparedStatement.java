@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.db;
 
+import com.zextras.db.DbError;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -127,7 +128,7 @@ class DebugPreparedStatement extends DelegatingPreparedStatement {
     }
     
     private void processDbError(SQLException e) {
-        if (Db.errorMatches(e, Db.Error.TABLE_FULL))
+        if (DbPool.getDb().matchesError(e, DbError.TABLE_FULL))
             Zimbra.halt("DB out of space", e);
     }
 

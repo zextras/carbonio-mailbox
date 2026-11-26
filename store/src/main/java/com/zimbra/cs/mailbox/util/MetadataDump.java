@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.mailbox.util;
 
+import com.zextras.db.MariaDB;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -33,7 +34,6 @@ import org.apache.commons.cli.ParseException;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.StringUtil;
-import com.zimbra.cs.db.MariaDB;
 import com.zimbra.cs.db.DbMailItem;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
@@ -349,7 +349,7 @@ public final class MetadataDump {
             }
 
             // Get data from db.
-            DbPool.global(new MariaDB());
+            DbPool.global(MariaDB.fromLocalConfig());
             DbConnection conn = null;
 
             try {

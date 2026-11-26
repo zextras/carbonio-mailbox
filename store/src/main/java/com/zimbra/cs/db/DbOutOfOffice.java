@@ -103,7 +103,7 @@ public class DbOutOfOffice {
 
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement(conn.getDb().upsert(TABLE_NAME,
+            stmt = conn.prepareStatement(DbUtil.upsert(TABLE_NAME,
                     DbMailItem.withMailboxId("sent_to", "sent_on"), DbMailItem.withMailboxId("sent_to"), List.of("sent_on")));
             int pos = 1;
             pos = DbMailItem.setMailboxId(stmt, mbox, pos);

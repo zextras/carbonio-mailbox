@@ -8,17 +8,16 @@ package com.zimbra.cs.db;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.zextras.db.MariaDB;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class MariaDBTest {
 
-  private final MariaDB mariaDB = new MariaDB();
-
   @Test
   void upsertUpdatesGivenColumnsOnDuplicateKey() {
     String sql =
-        mariaDB.upsert(
+        DbUtil.upsert(
             "mboxgroup1.open_conversation",
             List.of("mailbox_id", "hash", "conv_id"),
             List.of("mailbox_id", "hash"),
@@ -33,7 +32,7 @@ class MariaDBTest {
   @Test
   void upsertWithoutUpdateColumnsKeepsExistingRow() {
     String sql =
-        mariaDB.upsert(
+        DbUtil.upsert(
             "mboxgroup1.tagged_item",
             List.of("mailbox_id", "tag_id", "item_id"),
             List.of("mailbox_id", "tag_id", "item_id"),
@@ -47,7 +46,7 @@ class MariaDBTest {
 
   @Test
   void connectionsUseReadCommittedFromTheStart() {
-    Object sessionVariables = mariaDB.getPoolConfig().mDatabaseProperties.get("sessionVariables");
+    Object sessionVariables = new DbPool.PoolConfig(MariaDB.fromLocalConfig()).mDatabaseProperties.get("sessionVariables");
 
     assertEquals("tx_isolation='READ-COMMITTED'", sessionVariables);
   }

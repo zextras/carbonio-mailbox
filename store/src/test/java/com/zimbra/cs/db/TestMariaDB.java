@@ -6,6 +6,8 @@
 
 package com.zimbra.cs.db;
 
+import com.zextras.db.Db;
+import com.zextras.db.MariaDB;
 import com.zextras.mailbox.testcontainers.MariaDBExtension;
 import com.zextras.mailbox.testcontainers.MariaDBResource;
 import com.zimbra.common.localconfig.LC;
@@ -67,7 +69,7 @@ public final class TestMariaDB {
         stmt.executeUpdate();
       }
     }
-    return new MariaDB();
+    return MariaDB.fromLocalConfig();
   }
 
   public static void clear() throws Exception {
@@ -140,7 +142,7 @@ public final class TestMariaDB {
       throws Exception {
     String script = StringUtil.fillTemplate(readScript(file), vars);
     try (Statement stmt = conn.createStatement()) {
-      for (String sql : DbMailbox.parseScript(new StringReader(script), new MariaDB())) {
+      for (String sql : DbMailbox.parseScript(new StringReader(script))) {
         if (!sql.isEmpty()) {
           stmt.execute(sql);
         }

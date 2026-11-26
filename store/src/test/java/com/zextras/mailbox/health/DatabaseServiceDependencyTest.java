@@ -8,7 +8,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.db.DbPool;
-import com.zimbra.cs.db.MariaDB;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -87,7 +86,6 @@ class DatabaseServiceDependencyTest {
     final DbPool dbPool = Mockito.mock(DbPool.class);
     final DbConnection dbConnection = Mockito.mock(DbConnection.class);
     Mockito.when(dbPool.getConnectionInstance()).thenReturn(dbConnection);
-    Mockito.when(dbConnection.getDb()).thenReturn(new MariaDB());
     Mockito.when(dbConnection.prepareStatement(anyString())).thenThrow(new SQLException());
 
     final DatabaseServiceDependency databaseService =
@@ -112,7 +110,6 @@ class DatabaseServiceDependencyTest {
     final PreparedStatement preparedStatement = Mockito.mock(PreparedStatement.class);
     final ResultSet resultSet = Mockito.mock(ResultSet.class);
     Mockito.when(dbPool.getConnectionInstance()).thenReturn(dbConnection);
-    Mockito.when(dbConnection.getDb()).thenReturn(new MariaDB());
     Mockito.when(dbConnection.prepareStatement(anyString())).thenReturn(preparedStatement);
     Mockito.when(preparedStatement.executeQuery()).thenReturn(resultSet);
     Mockito.when(resultSet.next()).thenReturn(true);

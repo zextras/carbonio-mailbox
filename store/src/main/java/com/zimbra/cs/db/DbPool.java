@@ -6,6 +6,7 @@
 package com.zimbra.cs.db;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.zextras.db.Db;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.SystemUtil;
@@ -43,18 +44,16 @@ public class DbPool {
     private final PoolingDataSource<PoolableConnection> dataSource;
     private final GenericObjectPool<PoolableConnection> pool;
     private final String sRootUrl;
-    private final String sLoggerRootUrl;
 
-    private DbPool(Db db, PoolingDataSource<PoolableConnection> dataSource, GenericObjectPool<PoolableConnection> pool) {
+    private DbPool(Db db, PoolConfig pconfig, PoolingDataSource<PoolableConnection> dataSource, GenericObjectPool<PoolableConnection> pool) {
         this.db = db;
         this.dataSource = dataSource;
         this.pool = pool;
-        sRootUrl = db.getPoolConfig().mRootUrl;
-        sLoggerRootUrl = db.getPoolConfig().mLoggerUrl;
+        sRootUrl = pconfig.mRootUrl;
     }
 
     static DbPool newPool(Db db) {
-        PoolConfig pconfig = db.getPoolConfig();
+        PoolConfig pconfig = new PoolConfig(db);
         System.setProperty("jdbc.drivers", pconfig.mDriverClassName);
         ConnectionFactory cfac = ZimbraConnectionFactory.getConnectionFactory(pconfig);
 
@@ -73,7 +72,7 @@ public class DbPool {
         var pds = new PoolingDataSource<>(connectionPool);
         pds.setAccessToUnderlyingConnectionAllowed(true);
 
-        final DbPool dbPool = new DbPool(db, pds, connectionPool);
+        final DbPool dbPool = new DbPool(db, pconfig, pds, connectionPool);
 
 
         waitForDatabase(dbPool);
@@ -169,7 +168,7 @@ public class DbPool {
         public void disableForeignKeyConstraints() throws ServiceException {
             PreparedStatement stmt = null;
             try {
-                String sql = db.foreignKeyChecks(false);
+                String sql = "SET FOREIGN_KEY_CHECKS=0";
                 stmt = new StatTrackingPreparedStatement(connection.prepareStatement(sql),sql);
                 stmt.execute();
             } catch (SQLException e) {
@@ -180,7 +179,7 @@ public class DbPool {
         }
 
         public void enableForeignKeyConstraints() throws ServiceException {
-            String sql = db.foreignKeyChecks(true);
+            String sql = "SET FOREIGN_KEY_CHECKS=1";
             PreparedStatement stmt = null;
             try {
                 stmt = new StatTrackingPreparedStatement(connection.prepareStatement(sql), sql);
@@ -276,20 +275,66 @@ public class DbPool {
         }
     }
 
-    abstract static class PoolConfig {
+    static final class PoolConfig {
         String mDriverClassName;
         int mPoolSize;
         String mRootUrl;
         String mConnectionUrl;
-        String mLoggerUrl;
-        boolean mSupportsStatsCallback;
         Properties mDatabaseProperties;
         boolean blockWhenExhausted = true;
+
+        PoolConfig(Db db) {
+            mDriverClassName = "org.mariadb.jdbc.Driver";
+            mPoolSize = 100;
+            mRootUrl = db.rootUrl();
+            mConnectionUrl = db.jdbcUrl();
+            mDatabaseProperties = databaseProperties();
+
+            String maxActive = (String) mDatabaseProperties.get("maxActive");
+            if (maxActive != null) {
+                try {
+                    mPoolSize = Integer.parseInt(maxActive);
+                } catch (NumberFormatException nfe) {
+                    ZimbraLog.system.warn("exception parsing 'maxActive' pref; defaulting pool size to " + mPoolSize, nfe);
+                }
+            }
+            ZimbraLog.misc.debug("Setting connection pool size to " + mPoolSize);
+        }
+
+        private static Properties databaseProperties() {
+            Properties props = new Properties();
+            props.put("cacheResultSetMetadata", "true");
+            props.put("cachePrepStmts", "true");
+            props.put("prepStmtCacheSize", "25");
+            props.put("autoReconnect", "true");
+            props.put("useUnicode", "true");
+            props.put("characterEncoding", "UTF-8");
+            props.put("dumpQueriesOnException", "true");
+
+            final String prefix = "zimbra_mysql_connector_";
+            for (String key : LC.getAllKeys()) {
+                if (!key.startsWith(prefix))
+                    continue;
+                String prop = key.substring(prefix.length());
+                if (!prop.isEmpty() && !prop.equalsIgnoreCase("logger")) {
+                    props.put(prop, LC.get(key));
+                    ZimbraLog.system.info("Setting mysql connector property: " + prop + "=" + LC.get(key));
+                }
+            }
+
+            props.put("user", LC.zimbra_mysql_user.value());
+            props.put("password", LC.zimbra_mysql_password.value());
+            props.putIfAbsent("sessionVariables", "tx_isolation='READ-COMMITTED'");
+            return props;
+        }
+    }
+
+    public static Db getDb() {
+        return dbPool.db;
     }
 
     public static synchronized DbPool global(Db db) {
         if (dbPool == null) {
-            Db.setInstance(db);
             dbPool = newPool(db);
         }
         return dbPool;
@@ -422,23 +467,6 @@ public class DbPool {
     }
 
     /**
-     * Returns a new database connection for logger use.
-     * Does not specify the name of the default database. This
-     * connection is created outside the context of the database connection
-     * pool.
-     */
-    public static DbConnection getLoggerConnection() throws ServiceException {
-        try {
-            String user = LC.zimbra_mysql_user.value();
-            String pwd = null;
-            Connection conn = DriverManager.getConnection(dbPool.sLoggerRootUrl + "?user=" + user + "&password=" + pwd);
-            return new DbConnection(conn, dbPool.db);
-        } catch (SQLException e) {
-            throw ServiceException.FAILURE("getting database logger connection", e);
-        }
-    }
-
-    /**
      * Closes the specified connection (if not <code>null</code>), catches any
      * exceptions, and logs them.
      */
@@ -529,7 +557,6 @@ public class DbPool {
     public static synchronized void shutDownAndClear() throws Exception {
         shutdown();
         ZimbraConnectionFactory.close();
-        Db.setInstance(null);
     }
 
     public static void disableUsageWarning() {

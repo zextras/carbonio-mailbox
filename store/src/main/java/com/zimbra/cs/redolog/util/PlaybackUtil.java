@@ -5,13 +5,13 @@
 
 package com.zimbra.cs.redolog.util;
 
+import com.zextras.db.MariaDB;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
-import com.zimbra.cs.db.MariaDB;
 import com.zimbra.cs.redolog.RedoPlayer;
 import com.zimbra.cs.redolog.RolloverManager;
 import com.zimbra.cs.redolog.logger.FileHeader;
@@ -383,7 +383,7 @@ public class PlaybackUtil {
             loggerConfig.removeAppender(consoleAppender.get().getName());
             }
 
-        Zimbra.startupCLI(new MariaDB());
+        Zimbra.startupCLI(MariaDB.fromLocalConfig());
     }
 
     private static void teardown() throws ServiceException {
