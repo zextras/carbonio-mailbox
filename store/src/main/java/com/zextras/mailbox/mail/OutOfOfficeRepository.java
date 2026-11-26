@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-2.0-only
 
-package com.zextras.mailbox.outofoffice;
+package com.zextras.mailbox.mail;
 
 import com.zimbra.common.service.ServiceException;
 import java.time.Instant;

@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zextras.mailbox.mail.ConversationRepository;
+import com.zimbra.cs.db.DbConversation;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -59,6 +61,8 @@ import com.zimbra.cs.mime.ParsedMessage;
  *  same logic as {@link MailThreadingAlgorithm#references} applies with the
  *  caveat that modifications to the subject will break a thread in two. */
 public final class Threader {
+
+  private static final ConversationRepository CONVERSATION_REPOSITORY = new DbConversation();
     // references-based threading:
     //   - check OPEN_CONVERSATION for Message-Id, In-Reply-To, References
     //     - 0 matches: fall back to normal threading
@@ -329,7 +333,7 @@ public final class Threader {
             return Collections.emptyList();
         }
         ZimbraLog.mailbox.debug("  lookup by references (%s): %s", mode, refHashes);
-        List<MailItem.UnderlyingData> dlist = DbMailItem.getByHashes(mbox, refHashes);
+        List<MailItem.UnderlyingData> dlist = CONVERSATION_REPOSITORY.getByHashes(mbox, refHashes);
         if (dlist == null || dlist.isEmpty()) {
             ZimbraLog.mailbox.debug("  no reference matches found");
             return Collections.emptyList();
@@ -470,7 +474,7 @@ public final class Threader {
      *  refer to the given {@code Conversation}. */
     void changeThreadingTargets(Message msg, Conversation conv) throws ServiceException {
         if (conv != null && msg != null && isEnabled() && !mode.isSubject()) {
-            DbMailItem.changeOpenTargets(msg, conv.getId());
+            CONVERSATION_REPOSITORY.changeOpenTargets(msg, conv.getId());
             ZimbraLog.mailbox.debug("  transferred hashes from message %d to conv %d", msg.getId(), conv.getId());
         }
     }

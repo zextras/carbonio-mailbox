@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zextras.mailbox.mail.ConversationRepository;
+import com.zimbra.cs.db.DbConversation;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
@@ -252,6 +254,8 @@ import javax.mail.internet.MimePart;
  * @since Jun 13, 2004
  */
 public class Mailbox implements MailboxStore {
+
+  private static final ConversationRepository CONVERSATION_REPOSITORY = new DbConversation();
 
   private static final CalendarItemRepository CALENDAR_ITEM_REPOSITORY = new DbCalendarItem();
 
@@ -4781,7 +4785,7 @@ public class Mailbox implements MailboxStore {
     }
 
     // XXX: why not just do a "getConversationById()" if convId != null?
-    MailItem.UnderlyingData data = DbMailItem.getByHash(this, hash);
+    MailItem.UnderlyingData data = CONVERSATION_REPOSITORY.getByHash(this, hash);
     if (data == null || data.type == MailItem.Type.CONVERSATION.toByte()) {
       return getConversation(data);
     }
@@ -9858,7 +9862,7 @@ public class Mailbox implements MailboxStore {
       if (Threader.isHashPurgeAllowed(acct)) {
         int convTimeoutSecs =
             (int) (LC.conversation_max_age_ms.longValue() / Constants.MILLIS_PER_SECOND);
-        DbMailItem.closeOldConversations(this, getOperationTimestamp() - convTimeoutSecs);
+        CONVERSATION_REPOSITORY.closeOldConversations(this, getOperationTimestamp() - convTimeoutSecs);
       }
 
       if (isTrackingSync()) {
@@ -10779,9 +10783,9 @@ public class Mailbox implements MailboxStore {
   }
 
   public TypedIdList listConvItemsForSync(
-      OperationContext octxt, int folderId, MailItem.Type type, long messageSyncStart)
+      OperationContext octxt, int folderId, long messageSyncStart)
       throws ServiceException {
-    if (folderId == ID_AUTO_INCREMENT) {
+		if (folderId == ID_AUTO_INCREMENT) {
       return new TypedIdList();
     }
 
@@ -10791,7 +10795,7 @@ public class Mailbox implements MailboxStore {
 
       // if they specified a folder, make sure it actually exists
       Folder folder = getFolderById(folderId);
-      TypedIdList ids = DbMailItem.listConvItems(folder, messageSyncStart, type, true, false);
+      TypedIdList ids = CONVERSATION_REPOSITORY.listConvItems(folder, messageSyncStart, true, false);
       success = true;
       return ids;
     } finally {

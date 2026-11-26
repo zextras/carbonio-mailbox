@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.db;
 
-import com.zextras.mailbox.outofoffice.OutOfOfficeRepository;
+import com.zextras.mailbox.mail.OutOfOfficeRepository;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;

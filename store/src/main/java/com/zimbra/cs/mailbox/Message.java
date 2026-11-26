@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zextras.mailbox.mail.ConversationRepository;
+import com.zimbra.cs.db.DbConversation;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.zimbra.common.account.Key.AccountBy;
@@ -64,6 +66,8 @@ import javax.mail.internet.MimeMessage;
  * @since Jun 13, 2004
  */
 public class Message extends MailItem {
+
+  private static final ConversationRepository CONVERSATION_REPOSITORY = new DbConversation();
 
   static class DraftInfo {
     String accountId;
@@ -1510,7 +1514,7 @@ public class Message extends MailItem {
         && !isDraft()
         && inSpam() == folder.inSpam()) {
       Conversation conv = mMailbox.createConversation(Mailbox.ID_AUTO_INCREMENT, this, copy);
-      DbMailItem.changeOpenTargets(this, conv.getId());
+      CONVERSATION_REPOSITORY.changeOpenTargets(this, conv.getId());
       parent.removeChild(this);
     }
     return copy;

@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zextras.mailbox.outofoffice.OutOfOfficeRepository;
+import com.zextras.mailbox.mail.OutOfOfficeRepository;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.MailboxManager;
 import java.time.Duration;

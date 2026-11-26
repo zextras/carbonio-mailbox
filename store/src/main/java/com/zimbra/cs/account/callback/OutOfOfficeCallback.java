@@ -11,7 +11,7 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AttributeCallback;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Provisioning;
-import com.zextras.mailbox.outofoffice.OutOfOfficeRepository;
+import com.zextras.mailbox.mail.OutOfOfficeRepository;
 import com.zimbra.cs.db.DbOutOfOffice;
 import java.time.Instant;
 import com.zimbra.cs.mailbox.Mailbox;

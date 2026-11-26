@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zextras.mailbox.mail.ConversationRepository;
+import com.zimbra.cs.db.DbConversation;
 import com.zimbra.cs.account.Provisioning;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +33,8 @@ import com.zimbra.cs.session.Session;
  * @since Jun 13, 2004
  */
 public class Conversation extends MailItem {
+
+  private static final ConversationRepository CONVERSATION_REPOSITORY = new DbConversation();
     private   String     mEncodedSenders;
     protected SenderList mSenderList;
 
@@ -289,11 +293,11 @@ public class Conversation extends MailItem {
     }
 
     void open(String hash) throws ServiceException {
-        DbMailItem.openConversation(hash, this);
+        CONVERSATION_REPOSITORY.openConversation(hash, this);
     }
 
     void close(String hash) throws ServiceException {
-        DbMailItem.closeConversation(hash, this);
+        CONVERSATION_REPOSITORY.closeConversation(hash, this);
     }
 
     @Override
@@ -723,8 +727,8 @@ public class Conversation extends MailItem {
             msg.mData.parentId = mId;
             MetadataCallback.duringConversationAdd(mExtendedData, msg);
         }
-        DbMailItem.reparentChildren(other, this);
-        DbMailItem.changeOpenTargets(other, getId());
+        CONVERSATION_REPOSITORY.reparentChildren(other, this);
+        CONVERSATION_REPOSITORY.changeOpenTargets(other, getId());
 
         recalculateMetadata();
 

@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zextras.mailbox.mail.ConversationRepository;
+import com.zimbra.cs.db.DbConversation;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,6 +20,8 @@ import com.zimbra.cs.session.PendingModifications.Change;
  * @since Jun 14, 2005
  */
 public class VirtualConversation extends Conversation {
+
+  private static final ConversationRepository CONVERSATION_REPOSITORY = new DbConversation();
 
     VirtualConversation(Mailbox mbox, Message msg) throws ServiceException {
         this(mbox, wrapMessage(msg));
@@ -89,12 +93,12 @@ public class VirtualConversation extends Conversation {
 
     @Override
     void open(String hash) throws ServiceException {
-        DbMailItem.openConversation(hash, getMessage());
+        CONVERSATION_REPOSITORY.openConversation(hash, getMessage());
     }
 
     @Override
     void close(String hash) throws ServiceException {
-        DbMailItem.closeConversation(hash, getMessage());
+        CONVERSATION_REPOSITORY.closeConversation(hash, getMessage());
     }
 
     @Override

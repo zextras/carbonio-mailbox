@@ -268,7 +268,7 @@ public class Sync extends MailDocumentHandler {
         && !Collections.disjoint(idlist.types(), EnumSet.of(MailItem.Type.CONVERSATION))) {
       idlist =
           mbox.listConvItemsForSync(
-              octxt, folder.getId(), MailItem.Type.CONVERSATION, messageSyncStart);
+              octxt, folder.getId(), messageSyncStart);
     }
     initialItemSync(f, MailConstants.E_CONV, idlist.getIds(MailItem.Type.CONVERSATION));
   }

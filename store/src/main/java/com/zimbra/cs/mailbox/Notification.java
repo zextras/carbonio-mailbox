@@ -43,7 +43,7 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbOutOfOffice;
-import com.zextras.mailbox.outofoffice.OutOfOfficeRepository;
+import com.zextras.mailbox.mail.OutOfOfficeRepository;
 import java.time.Instant;
 import com.zimbra.cs.lmtpserver.LmtpCallback;
 import com.zimbra.cs.mime.Mime;
