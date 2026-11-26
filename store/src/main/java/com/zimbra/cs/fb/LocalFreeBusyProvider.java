@@ -25,7 +25,6 @@ import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.Folder;
-import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.calendar.IcalXmlStrMap;
@@ -81,10 +80,10 @@ public class LocalFreeBusyProvider {
 
         List<CalendarDataResult> calDataResultList;
         if (folder == FreeBusyQuery.CALENDAR_FOLDER_ALL) {
-            calDataResultList = mbox.getAllCalendarsSummaryForRange(null, MailItem.Type.APPOINTMENT, start, end);
+            calDataResultList = mbox.getAllCalendarsSummaryForRange(null, start, end);
         } else {
             calDataResultList = new ArrayList<>(1);
-            calDataResultList.add(mbox.getCalendarSummaryForRange(null, folder, MailItem.Type.APPOINTMENT, start, end));
+            calDataResultList.add(mbox.getCalendarSummaryForRange(null, folder, start, end));
         }
         for (CalendarDataResult result : calDataResultList) {
             int folderId = result.data.getFolderId();

@@ -4891,8 +4891,8 @@ public class Mailbox implements MailboxStore {
   }
 
   public List<CalendarItem> getCalendarItems(
-      OperationContext octxt, MailItem.Type type, int folderId) throws ServiceException {
-    return getCalendarItemsForRange(octxt, type, -1, -1, folderId, null);
+      OperationContext octxt, int folderId) throws ServiceException {
+    return getCalendarAppointmentsForRange(octxt, -1, -1, folderId, null);
   }
 
   /**
@@ -4906,6 +4906,17 @@ public class Mailbox implements MailboxStore {
       throws ServiceException {
     return getCalendarItemsForRange(
         octxt, MailItem.Type.UNKNOWN, start, end, folderId, excludeFolders);
+  }
+
+  public List<CalendarItem> getCalendarAppointmentsForRange(
+      OperationContext octxt,
+      long start,
+      long end,
+      int folderId,
+      int[] excludeFolders)
+      throws ServiceException {
+    return getCalendarItemsForRange(
+        octxt, MailItem.Type.APPOINTMENT, start, end, folderId, excludeFolders);
   }
 
   /**
@@ -5116,6 +5127,11 @@ public class Mailbox implements MailboxStore {
   }
 
   public CalendarDataResult getCalendarSummaryForRange(
+      OperationContext octxt, int folderId, long start, long end) throws ServiceException {
+    return getCalendarSummaryForRange(octxt, folderId, MailItem.Type.APPOINTMENT, start, end);
+  }
+
+  public CalendarDataResult getCalendarSummaryForRange(
       OperationContext octxt, int folderId, MailItem.Type type, long start, long end)
       throws ServiceException {
     lock.lock(false);
@@ -5134,7 +5150,7 @@ public class Mailbox implements MailboxStore {
   }
 
   public List<CalendarDataResult> getAllCalendarsSummaryForRange(
-      OperationContext octxt, MailItem.Type type, long start, long end) throws ServiceException {
+      OperationContext octxt, long start, long end) throws ServiceException {
     boolean success = false;
     try {
       // folder cache is populated in beginTransaction...
@@ -5150,7 +5166,7 @@ public class Mailbox implements MailboxStore {
         // in any folder, but that requires scanning too many folders each time, most of which don't
         // contain
         // any calendar items.
-        if (folder.getDefaultView() != type) {
+        if (folder.getDefaultView() != MailItem.Type.APPOINTMENT) {
           continue;
         }
         try {
@@ -5161,7 +5177,7 @@ public class Mailbox implements MailboxStore {
               CalendarCacheManager.getInstance()
                   .getSummaryCache()
                   .getCalendarSummary(
-                      octxt, getAccountId(), folder.getId(), type, start, end, true);
+                      octxt, getAccountId(), folder.getId(), MailItem.Type.APPOINTMENT, start, end, true);
           if (result != null) {
             list.add(result);
           }
