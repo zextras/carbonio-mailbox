@@ -33,13 +33,11 @@ public class SoapConverter {
         VIEW_MAP = EnumBiMap.create(Folder.View.class, View.class);
         VIEW_MAP.put(Folder.View.UNKNOWN, View.unknown);
         VIEW_MAP.put(Folder.View.APPOINTMENT, View.appointment);
-        VIEW_MAP.put(Folder.View.CHAT, View.chat);
         VIEW_MAP.put(Folder.View.CONTACT, View.contact);
         VIEW_MAP.put(Folder.View.CONVERSATION, View.conversation);
         VIEW_MAP.put(Folder.View.MESSAGE, View.message);
         VIEW_MAP.put(Folder.View.REMOTE_FOLDER, View.remote);
         VIEW_MAP.put(Folder.View.SEARCH_FOLDER, View.search);
-        VIEW_MAP.put(Folder.View.TASK, View.task);
         
         ACCOUNT_BY_MAP = EnumBiMap.create(AccountBy.class, Key.AccountBy.class);
         ACCOUNT_BY_MAP.put(AccountBy.name , Key.AccountBy.name);

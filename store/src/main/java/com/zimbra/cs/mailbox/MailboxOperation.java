@@ -69,8 +69,6 @@ public enum MailboxOperation {
     FixCalendarItemTimeZone(60),
     RenameItem(61),
     RenameItemPath(62),
-    CreateChat(63),
-    SaveChat(64),
     PurgeImapDeleted(65),
     DismissCalendarItemAlarm(66),
     FixCalendarItemEndTime(67),

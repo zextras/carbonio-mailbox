@@ -88,7 +88,6 @@ public class ConversationInfo {
      * @zm-api-field-description Messages
      */
     @XmlElements({
-        @XmlElement(name=MailConstants.E_CHAT /* chat */, type=ChatMessageInfo.class),
         @XmlElement(name=MailConstants.E_MSG /* m */, type=MessageInfo.class)
     })
     private List<MessageInfo> messages = Lists.newArrayList();

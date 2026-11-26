@@ -214,7 +214,7 @@ public class Message extends MailItem {
   /** this one will call back into decodeMetadata() to do our initialization. */
   Message(Mailbox mbox, UnderlyingData ud, boolean skipCache) throws ServiceException {
     super(mbox, ud, skipCache);
-    if (mData.type != Type.MESSAGE.toByte() && mData.type != Type.CHAT.toByte()) {
+    if (mData.type != Type.MESSAGE.toByte()) {
       throw new IllegalArgumentException();
     }
     if (mData.parentId < 0) {

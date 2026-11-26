@@ -24,10 +24,6 @@ class ZFolderTest {
         ZFolder folder = new ZFolder(Element.parseXML(xml), null, null);
         assertEquals(ZFolder.View.appointment, folder.getDefaultView());
 
-        xml = "<folder id='1' rev='1' s='0' i4next='2' i4ms='1' name='X' ms='1' n='0' l='11' view='chat'/>";
-        folder = new ZFolder(Element.parseXML(xml), null, null);
-        assertEquals(ZFolder.View.chat, folder.getDefaultView());
-
         xml = "<folder id='1' rev='1' s='0' i4next='2' i4ms='1' name='X' ms='1' n='0' l='11' view='contact'/>";
         folder = new ZFolder(Element.parseXML(xml), null, null);
         assertEquals(ZFolder.View.contact, folder.getDefaultView());
@@ -47,10 +43,6 @@ class ZFolderTest {
         xml = "<folder id='1' rev='1' s='0' i4next='2' i4ms='1' name='X' ms='1' n='0' l='11' view='search'/>";
         folder = new ZFolder(Element.parseXML(xml), null, null);
         assertEquals(ZFolder.View.search, folder.getDefaultView());
-
-        xml = "<folder id='1' rev='1' s='0' i4next='2' i4ms='1' name='X' ms='1' n='0' l='11' view='task'/>";
-        folder = new ZFolder(Element.parseXML(xml), null, null);
-        assertEquals(ZFolder.View.task, folder.getDefaultView());
 
         xml = "<folder id='1' rev='1' s='0' i4next='2' i4ms='1' name='X' ms='1' n='0' l='11' view='voice'/>";
         folder = new ZFolder(Element.parseXML(xml), null, null);

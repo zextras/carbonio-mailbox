@@ -64,8 +64,6 @@ public class ProxiedHit extends ZimbraHit {
       return MailItemType.CONVERSATION;
     } else if (MailConstants.E_MSG.equals(elemName)) {
       return MailItemType.MESSAGE;
-    } else if (MailConstants.E_CHAT.equals(elemName)) {
-      return MailItemType.CHAT;
     } else if (MailConstants.E_CONTACT.equals(elemName)) {
       return MailItemType.CONTACT;
     } else if (MailConstants.E_APPOINTMENT.equals(elemName)) {

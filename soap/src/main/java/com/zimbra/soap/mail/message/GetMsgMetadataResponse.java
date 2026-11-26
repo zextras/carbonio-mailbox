@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.soap.mail.type.ChatSummary;
 import com.zimbra.soap.mail.type.MessageSummary;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -30,7 +29,6 @@ public class GetMsgMetadataResponse {
      * @zm-api-field-description Message metadata
      */
     @XmlElements({
-        @XmlElement(name=MailConstants.E_CHAT /* chat */, type=ChatSummary.class),
         @XmlElement(name=MailConstants.E_MSG /* m */, type=MessageSummary.class)
     })
     private List<MessageSummary> messages = Lists.newArrayList();
