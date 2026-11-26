@@ -13,7 +13,6 @@ import static com.zimbra.cs.db.DbMailItem.setMailboxId;
 import static com.zimbra.cs.db.DbMailItem.IN_THIS_MAILBOX_AND;
 import static com.zimbra.cs.db.DbMailItem.MAILBOX_ID;
 import static com.zimbra.cs.db.DbMailItem.MAILBOX_ID_VALUE;
-import static com.zimbra.cs.db.DbMailItem.typeIn;
 import static com.zimbra.cs.db.DbMailItem.withMailboxId;
 
 import com.zextras.mailbox.calendar.CalendarItemRepository;
@@ -123,7 +122,7 @@ public class DbCalendarItem implements CalendarItemRepository {
 
   @Override
   public List<UnderlyingData> getCalendars(
-      Mailbox mbox, MailItem.Type type, long start, long end, int folderId, int[] excludeFolderIds)
+      Mailbox mbox, long start, long end, int folderId, int[] excludeFolderIds)
       throws ServiceException {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
@@ -131,7 +130,7 @@ public class DbCalendarItem implements CalendarItemRepository {
     try {
       stmt =
           calendarItemStatement(
-              conn, DB_FIELDS, mbox, type, start, end, folderId, excludeFolderIds);
+              conn, DB_FIELDS, mbox, start, end, folderId, excludeFolderIds);
       rs = stmt.executeQuery();
 
       List<UnderlyingData> result = new ArrayList<>();
@@ -193,7 +192,7 @@ public class DbCalendarItem implements CalendarItemRepository {
 
   @Override
   public TypedIdList listCalendars(
-      Mailbox mbox, MailItem.Type type, long start, long end, int folderId, int[] excludeFolderIds)
+      Mailbox mbox, long start, long end, int folderId, int[] excludeFolderIds)
       throws ServiceException {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
@@ -201,7 +200,7 @@ public class DbCalendarItem implements CalendarItemRepository {
     try {
       stmt =
           calendarItemStatement(
-              conn, "mi.id, mi.type, mi.uuid", mbox, type, start, end, folderId, excludeFolderIds);
+              conn, "mi.id, mi.type, mi.uuid", mbox, start, end, folderId, excludeFolderIds);
       rs = stmt.executeQuery();
 
       TypedIdList result = new TypedIdList();
@@ -221,7 +220,6 @@ public class DbCalendarItem implements CalendarItemRepository {
       DbConnection conn,
       String fields,
       Mailbox mbox,
-      MailItem.Type type,
       long start,
       long end,
       int folderId,
@@ -231,8 +229,7 @@ public class DbCalendarItem implements CalendarItemRepository {
 
     String endConstraint = (end != -1) ? " AND ci.start_time < ?" : "";
     String startConstraint = (start != -1) ? " AND ci.end_time > ?" : "";
-    String typeConstraint =
-        type == MailItem.Type.UNKNOWN ? "type IN " + CALENDAR_TYPES : typeIn(type);
+    String typeConstraint = "type IN " + CALENDAR_TYPES;
 
     String excludeFolderPart = "";
     if (excludeFolderIds != null && excludeFolderIds.length > 0) {

@@ -1612,7 +1612,7 @@ public class CalendarUtils {
 
       if (folder.getDefaultView() == MailItem.Type.APPOINTMENT) {
         idlist =
-            mbox.listCalendarItemsForRange(null, MailItem.Type.APPOINTMENT, -1, -1, folder.getId());
+            mbox.listCalendarItemsForRange(null, -1, -1, folder.getId());
         targetId = Mailbox.ID_FOLDER_CALENDAR;
         type = MailItem.Type.APPOINTMENT;
       } else {

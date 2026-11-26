@@ -19,11 +19,11 @@ public interface CalendarItemRepository {
 
   UnderlyingData getCalendar(Mailbox mbox, String uid) throws ServiceException;
 
-  List<UnderlyingData> getCalendars(Mailbox mbox, MailItem.Type type, long start, long end, int folderId, int[] excludeFolderIds) throws ServiceException;
+  List<UnderlyingData> getCalendars(Mailbox mbox, long start, long end, int folderId, int[] excludeFolderIds) throws ServiceException;
 
   List<UnderlyingData> getCalendars(Mailbox mbox, List<String> uids) throws ServiceException;
 
-  TypedIdList listCalendars(Mailbox mbox, MailItem.Type type, long start, long end, int folderId, int[] excludeFolderIds) throws ServiceException;
+  TypedIdList listCalendars(Mailbox mbox, long start, long end, int folderId, int[] excludeFolderIds) throws ServiceException;
 
   void addCalendar(CalendarItem calItem) throws ServiceException;
 

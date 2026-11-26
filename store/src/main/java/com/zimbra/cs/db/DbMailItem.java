@@ -2249,7 +2249,7 @@ public class DbMailItem {
           + MailItem.Type.TAG.toByte()
           + ')';
 
-  static String typeIn(MailItem.Type type) {
+  private static String typeIn(MailItem.Type type) {
     switch (type) {
       case FOLDER:
         return "type IN " + FOLDER_TYPES;

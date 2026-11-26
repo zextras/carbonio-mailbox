@@ -4868,7 +4868,7 @@ public class Mailbox implements MailboxStore {
    *     unconstrained.
    */
   public TypedIdList listCalendarItemsForRange(
-      OperationContext octxt, MailItem.Type type, long start, long end, int folderId)
+      OperationContext octxt, long start, long end, int folderId)
       throws ServiceException {
     if (folderId == ID_AUTO_INCREMENT) {
       return new TypedIdList();
@@ -4881,7 +4881,7 @@ public class Mailbox implements MailboxStore {
       getFolderById(folderId);
 
       // get the list of all visible calendar items in the specified folder
-      TypedIdList ids = CALENDAR_ITEM_REPOSITORY.listCalendars(this, type, start, end, folderId, null);
+      TypedIdList ids = CALENDAR_ITEM_REPOSITORY.listCalendars(this, start, end, folderId, null);
       success = true;
       return ids;
     } finally {
@@ -4894,18 +4894,6 @@ public class Mailbox implements MailboxStore {
     return getCalendarAppointmentsForRange(octxt, -1, -1, folderId, null);
   }
 
-  /**
-   * @param start start time of range, in milliseconds. {@code -1} means to leave the start time
-   *     unconstrained.
-   * @param end end time of range, in milliseconds. {@code -1} means to leave the end time
-   *     unconstrained.
-   */
-  public List<CalendarItem> getCalendarItemsForRange(
-      OperationContext octxt, long start, long end, int folderId, int[] excludeFolders)
-      throws ServiceException {
-    return getCalendarItemsForRange(
-        octxt, MailItem.Type.UNKNOWN, start, end, folderId, excludeFolders);
-  }
 
   public List<CalendarItem> getCalendarAppointmentsForRange(
       OperationContext octxt,
@@ -4915,7 +4903,7 @@ public class Mailbox implements MailboxStore {
       int[] excludeFolders)
       throws ServiceException {
     return getCalendarItemsForRange(
-        octxt, MailItem.Type.APPOINTMENT, start, end, folderId, excludeFolders);
+        octxt, start, end, folderId, excludeFolders);
   }
 
   /**
@@ -4942,13 +4930,12 @@ public class Mailbox implements MailboxStore {
    */
   public List<CalendarItem> getCalendarItemsForRange(
       OperationContext octxt,
-      MailItem.Type type,
       long start,
       long end,
       int folderId,
       int[] excludeFolders)
       throws ServiceException {
-    boolean success = false;
+		boolean success = false;
     try {
       beginReadTransaction("getCalendarItemsForRange", octxt);
 
@@ -4960,7 +4947,7 @@ public class Mailbox implements MailboxStore {
       // get the list of all visible calendar items in the specified folder
       List<CalendarItem> calItems = new ArrayList<>();
       List<MailItem.UnderlyingData> invData =
-          CALENDAR_ITEM_REPOSITORY.getCalendars(this, type, start, end, folderId, excludeFolders);
+          CALENDAR_ITEM_REPOSITORY.getCalendars(this, start, end, folderId, excludeFolders);
       for (MailItem.UnderlyingData data : invData) {
         try {
           CalendarItem calItem = getCalendarItem(data);
@@ -5127,8 +5114,7 @@ public class Mailbox implements MailboxStore {
 
   public CalendarDataResult getCalendarSummaryForRange(
       OperationContext octxt, int folderId, long start, long end) throws ServiceException {
-    var type = Type.APPOINTMENT;
-    lock.lock(false);
+		lock.lock(false);
     try {
       Folder folder = getFolderById(folderId);
       if (!folder.canAccess(ACL.RIGHT_READ)) {
@@ -5137,7 +5123,7 @@ public class Mailbox implements MailboxStore {
       }
       return CalendarCacheManager.getInstance()
           .getSummaryCache()
-          .getCalendarSummary(octxt, getAccountId(), folderId, type, start, end, true);
+          .getCalendarSummary(octxt, getAccountId(), folderId, start, end, true);
     } finally {
       lock.release();
     }
@@ -5171,7 +5157,7 @@ public class Mailbox implements MailboxStore {
               CalendarCacheManager.getInstance()
                   .getSummaryCache()
                   .getCalendarSummary(
-                      octxt, getAccountId(), folder.getId(), MailItem.Type.APPOINTMENT, start, end, true);
+                      octxt, getAccountId(), folder.getId(), start, end, true);
           if (result != null) {
             list.add(result);
           }

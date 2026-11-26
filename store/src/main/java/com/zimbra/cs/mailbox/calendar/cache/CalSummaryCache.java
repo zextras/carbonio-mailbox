@@ -19,6 +19,7 @@ import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
+import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -289,7 +290,6 @@ public class CalSummaryCache {
       OperationContext octxt,
       Mailbox mbox,
       int folderId,
-      MailItem.Type type,
       long rangeStart,
       long rangeEnd,
       CalendarData prevCalData,
@@ -307,13 +307,13 @@ public class CalSummaryCache {
       // Ignore existing data if its range doesn't include the entire requested range.
       // We have to scan the calendar folder.
       return reloadCalendarOverRangeWithFolderScan(
-          octxt, mbox, folderId, type, rangeStart, rangeEnd, null);
+          octxt, mbox, folderId, rangeStart, rangeEnd, null);
     }
     if (!incrementalUpdate || prevCalData.getNumStaleItems() > S_MAX_STALE_ITEMS) {
       // If incremental update of stale items is disabled, do it with folder scan.
       // If there are too many stale items, do it with folder scan as that may be faster.
       return reloadCalendarOverRangeWithFolderScan(
-          octxt, mbox, folderId, type, rangeStart, rangeEnd, prevCalData);
+          octxt, mbox, folderId, rangeStart, rangeEnd, prevCalData);
     }
 
     Set<Integer> staleItemIds = new HashSet<>();
@@ -391,7 +391,6 @@ public class CalSummaryCache {
       OperationContext octxt,
       Mailbox mbox,
       int folderId,
-      MailItem.Type type,
       long rangeStart,
       long rangeEnd,
       CalendarData prevCalData)
@@ -411,7 +410,7 @@ public class CalSummaryCache {
     Folder folder = mbox.getFolderById(octxt, folderId);
     CalendarData calData = new CalendarData(folderId, folder.getImapMODSEQ(), rangeStart, rangeEnd);
     Collection<CalendarItem> calItems =
-        mbox.getCalendarItemsForRange(octxt, type, rangeStart, rangeEnd, folderId, null);
+        mbox.getCalendarItemsForRange(octxt, rangeStart, rangeEnd, folderId, null);
     for (CalendarItem calItem : calItems) {
       if (prevCalData != null) {
         // Reuse the appointment if it didn't change.
@@ -428,29 +427,16 @@ public class CalSummaryCache {
     return calData; // return a non-null object even if there are no items in the range
   }
 
-  public CalendarDataResult getCalendarSummary(
-      OperationContext octxt,
-      String targetAcctId,
-      int folderId,
-      long rangeStart,
-      long rangeEnd,
-      boolean computeSubRange)
-      throws ServiceException {
-    return this.getCalendarSummary(
-        octxt, targetAcctId, folderId, MailItem.Type.APPOINTMENT, rangeStart, rangeEnd, computeSubRange);
-  }
-
   // get summary for all appts/tasks in a calendar folder
   public CalendarDataResult getCalendarSummary(
       OperationContext octxt,
       String targetAcctId,
       int folderId,
-      MailItem.Type type,
       long rangeStart,
       long rangeEnd,
       boolean computeSubRange)
       throws ServiceException {
-    if (rangeStart > rangeEnd)
+		if (rangeStart > rangeEnd)
       throw ServiceException.INVALID_REQUEST(END_TIME_MUST_BE_AFTER_START_TIME, null);
 
     Account targetAcct = Provisioning.getInstance().get(AccountBy.id, targetAcctId);
@@ -470,7 +456,7 @@ public class CalSummaryCache {
       result.allowPrivateAccess = CalendarItem.allowPrivateAccess(folder, authAcct, asAdmin);
       result.data =
           reloadCalendarOverRangeWithFolderScan(
-              octxt, mbox, folderId, type, rangeStart, rangeEnd, null);
+              octxt, mbox, folderId, rangeStart, rangeEnd, null);
       if (ZimbraLog.calendar.isDebugEnabled()) {
         ZimbraLog.calendar.debug(
             "Calendar Summary for %s reloaded (no cache) - %s items private=%s",
@@ -606,7 +592,6 @@ public class CalSummaryCache {
               ownerOctxt,
               mbox,
               folderId,
-              type,
               defaultRange.getFirst(),
               defaultRange.getSecond(),
               reusableCalData,
@@ -644,7 +629,6 @@ public class CalSummaryCache {
               ownerOctxt,
               mbox,
               folderId,
-              type,
               rangeStart,
               rangeEnd,
               reusableCalData,

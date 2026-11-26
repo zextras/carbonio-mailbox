@@ -300,7 +300,7 @@ public class Sync extends MailDocumentHandler {
     if (calendarStart > 0 && !Collections.disjoint(idlist.types(), CALENDAR_TYPES)) {
       idlist =
           mbox.listCalendarItemsForRange(
-              octxt, MailItem.Type.UNKNOWN, calendarStart, -1, folder.getId());
+              octxt, calendarStart, -1, folder.getId());
     }
     initialItemSync(f, MailConstants.E_APPOINTMENT, idlist.getIds(MailItem.Type.APPOINTMENT));
   }
