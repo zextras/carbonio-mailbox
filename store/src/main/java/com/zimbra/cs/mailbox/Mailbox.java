@@ -4891,19 +4891,23 @@ public class Mailbox implements MailboxStore {
 
   public List<CalendarItem> getCalendarItems(
       OperationContext octxt, int folderId) throws ServiceException {
-    return getCalendarAppointmentsForRange(octxt, -1, -1, folderId, null);
+    return getCalendarItemsForRange(octxt, -1, -1, folderId, null);
   }
 
-
-  public List<CalendarItem> getCalendarAppointmentsForRange(
+  public List<CalendarItem> getCalendarItemsForRange(
       OperationContext octxt,
+      MailItem.Type type,
       long start,
       long end,
       int folderId,
       int[] excludeFolders)
       throws ServiceException {
-    return getCalendarItemsForRange(
-        octxt, start, end, folderId, excludeFolders);
+    List<CalendarItem> calItems =
+        getCalendarItemsForRange(octxt, start, end, folderId, excludeFolders);
+    if (type == MailItem.Type.APPOINTMENT || type == MailItem.Type.UNKNOWN) {
+      return calItems;
+    }
+    return new ArrayList<>();
   }
 
   /**
@@ -4935,7 +4939,7 @@ public class Mailbox implements MailboxStore {
       int folderId,
       int[] excludeFolders)
       throws ServiceException {
-		boolean success = false;
+    boolean success = false;
     try {
       beginReadTransaction("getCalendarItemsForRange", octxt);
 
@@ -5114,7 +5118,7 @@ public class Mailbox implements MailboxStore {
 
   public CalendarDataResult getCalendarSummaryForRange(
       OperationContext octxt, int folderId, long start, long end) throws ServiceException {
-		lock.lock(false);
+    lock.lock(false);
     try {
       Folder folder = getFolderById(folderId);
       if (!folder.canAccess(ACL.RIGHT_READ)) {

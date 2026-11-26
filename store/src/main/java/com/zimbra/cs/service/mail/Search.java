@@ -263,8 +263,7 @@ public class Search extends MailDocumentHandler {
       Mailbox mbox,
       List<String> folderIdStrs)
       throws ServiceException {
-
-		if (params.getSortBy() != null) {
+    if (params.getSortBy() != null) {
       parent.addAttribute(MailConstants.A_SORTBY, params.getSortBy().toString());
     }
     parent.addAttribute(MailConstants.A_QUERY_OFFSET, params.getOffset());
@@ -394,8 +393,7 @@ public class Search extends MailDocumentHandler {
       Mailbox targetMbox,
       List<Integer> folderIds)
       throws ServiceException {
-
-		ItemIdFormatter ifmt = new ItemIdFormatter(authAcct.getId(), targetMbox.getAccountId(), false);
+    ItemIdFormatter ifmt = new ItemIdFormatter(authAcct.getId(), targetMbox.getAccountId(), false);
     long rangeStart = params.getCalItemExpandStart();
     long rangeEnd = params.getCalItemExpandEnd();
     for (int folderId : folderIds) {

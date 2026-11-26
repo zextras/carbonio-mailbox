@@ -19,7 +19,6 @@ import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
-import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -427,7 +426,6 @@ public class CalSummaryCache {
     return calData; // return a non-null object even if there are no items in the range
   }
 
-  // get summary for all appts/tasks in a calendar folder
   public CalendarDataResult getCalendarSummary(
       OperationContext octxt,
       String targetAcctId,
@@ -436,7 +434,7 @@ public class CalSummaryCache {
       long rangeEnd,
       boolean computeSubRange)
       throws ServiceException {
-		if (rangeStart > rangeEnd)
+    if (rangeStart > rangeEnd)
       throw ServiceException.INVALID_REQUEST(END_TIME_MUST_BE_AFTER_START_TIME, null);
 
     Account targetAcct = Provisioning.getInstance().get(AccountBy.id, targetAcctId);
