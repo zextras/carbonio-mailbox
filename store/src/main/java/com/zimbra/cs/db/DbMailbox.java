@@ -1213,14 +1213,18 @@ public final class DbMailbox {
         buf.append('\n');
       }
     }
-    String[] statements = buf.toString().split("\\s*;\\s*");
+    String[] statements = buf.toString().split("\\s*" + commandDelimiter() + "\\s*");
     for (int i = 0; i < statements.length; i++) {
       if (statements[i].startsWith("END")) {
-        statements[i - 1] += ";\n" + statements[i];
+        statements[i - 1] += commandDelimiter() + "\n" + statements[i];
         statements[i] = "";
       }
     }
     return statements;
+  }
+
+  private static String commandDelimiter() {
+    return ";";
   }
 
   private static String removeComments(String sqlLine) {
