@@ -4894,22 +4894,6 @@ public class Mailbox implements MailboxStore {
     return getCalendarItemsForRange(octxt, -1, -1, folderId, null);
   }
 
-  public List<CalendarItem> getCalendarItemsForRange(
-      OperationContext octxt,
-      MailItem.Type type,
-      long start,
-      long end,
-      int folderId,
-      int[] excludeFolders)
-      throws ServiceException {
-    List<CalendarItem> calItems =
-        getCalendarItemsForRange(octxt, start, end, folderId, excludeFolders);
-    if (type == MailItem.Type.APPOINTMENT || type == MailItem.Type.UNKNOWN) {
-      return calItems;
-    }
-    return new ArrayList<>();
-  }
-
   /**
    * Returns a <tt>Collection</tt> of all {@link CalendarItem}s which overlap the specified time
    * period. There is no guarantee that the returned calendar items actually contain a recurrence
