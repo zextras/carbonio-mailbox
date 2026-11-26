@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zextras.mailbox.calendar.CalendarItemRepository;
+import com.zimbra.cs.db.DbCalendarItem;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
@@ -251,6 +253,8 @@ import java.util.regex.Pattern;
  * @since Jun 13, 2004
  */
 public class Mailbox implements MailboxStore {
+
+  private static final CalendarItemRepository CALENDAR_ITEM_REPOSITORY = new DbCalendarItem();
 
   public static final int ID_AUTO_INCREMENT = FolderConstants.ID_AUTO_INCREMENT; // -1;
   public static final int ID_FOLDER_USER_ROOT = FolderConstants.ID_FOLDER_USER_ROOT; // 1;
@@ -4808,7 +4812,7 @@ public class Mailbox implements MailboxStore {
         throw ServiceException.PERM_DENIED("you do not have sufficient permissions");
       }
       success = true;
-      return DbMailItem.getCalendarItemMetadata(f, start, end);
+      return CALENDAR_ITEM_REPOSITORY.getCalendarItemMetadata(f, start, end);
     } finally {
       endTransaction(success);
     }
@@ -4878,7 +4882,7 @@ public class Mailbox implements MailboxStore {
       getFolderById(folderId);
 
       // get the list of all visible calendar items in the specified folder
-      TypedIdList ids = DbMailItem.listCalendarItems(this, type, start, end, folderId, null);
+      TypedIdList ids = CALENDAR_ITEM_REPOSITORY.listCalendarItems(this, type, start, end, folderId, null);
       success = true;
       return ids;
     } finally {
@@ -4946,7 +4950,7 @@ public class Mailbox implements MailboxStore {
       // get the list of all visible calendar items in the specified folder
       List<CalendarItem> calItems = new ArrayList<>();
       List<MailItem.UnderlyingData> invData =
-          DbMailItem.getCalendarItems(this, type, start, end, folderId, excludeFolders);
+          CALENDAR_ITEM_REPOSITORY.getCalendarItems(this, type, start, end, folderId, excludeFolders);
       for (MailItem.UnderlyingData data : invData) {
         try {
           CalendarItem calItem = getCalendarItem(data);
@@ -6045,7 +6049,7 @@ public class Mailbox implements MailboxStore {
     boolean success = false;
     try {
       beginReadTransaction("getCalendarItemByUid", octxt);
-      MailItem.UnderlyingData data = DbMailItem.getCalendarItem(this, uid);
+      MailItem.UnderlyingData data = CALENDAR_ITEM_REPOSITORY.getCalendarItem(this, uid);
       CalendarItem calItem = (CalendarItem) getItem(data);
       success = true;
       return calItem;
@@ -6061,7 +6065,7 @@ public class Mailbox implements MailboxStore {
       beginTransaction("getCalendarItemsByUid", octxt);
       ArrayList<String> uidList = new ArrayList<>(uids);
       Map<String, CalendarItem> calItems = new HashMap<>();
-      List<MailItem.UnderlyingData> invData = DbMailItem.getCalendarItems(this, uids);
+      List<MailItem.UnderlyingData> invData = CALENDAR_ITEM_REPOSITORY.getCalendarItems(this, uids);
       for (MailItem.UnderlyingData data : invData) {
         try {
           CalendarItem calItem = getCalendarItem(data);

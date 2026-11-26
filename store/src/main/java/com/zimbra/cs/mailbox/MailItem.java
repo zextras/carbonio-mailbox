@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zextras.mailbox.calendar.CalendarItemRepository;
+import com.zimbra.cs.db.DbCalendarItem;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Splitter;
@@ -63,6 +65,8 @@ import java.util.TreeSet;
  */
 public abstract class MailItem
     implements Comparable<MailItem>, ScheduledTaskResult, ZimbraMailItem {
+
+  private static final CalendarItemRepository CALENDAR_ITEM_REPOSITORY = new DbCalendarItem();
 
   public enum Type {
     UNKNOWN(-1, MailItemType.UNKNOWN),
@@ -2724,7 +2728,7 @@ public abstract class MailItem
       data.setPrevFolders(prevFolders);
     }
     if (this instanceof CalendarItem)
-      DbMailItem.copyCalendarItem((CalendarItem) this, copyId, inDumpster);
+      CALENDAR_ITEM_REPOSITORY.copyCalendarItem((CalendarItem) this, copyId, inDumpster);
 
     // older revisions
     // Copy revisions only when recovering from dumpster.  When copying from one non-dumpster folder
