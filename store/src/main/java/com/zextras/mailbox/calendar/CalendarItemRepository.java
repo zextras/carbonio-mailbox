@@ -25,9 +25,9 @@ public interface CalendarItemRepository {
 
   TypedIdList listCalendarItems(Mailbox mbox, MailItem.Type type, long start, long end, int folderId, int[] excludeFolderIds) throws ServiceException;
 
-  void addToCalendarItemTable(CalendarItem calItem) throws ServiceException;
+  void addCalendar(CalendarItem calItem) throws ServiceException;
 
-  void updateInCalendarItemTable(CalendarItem calItem) throws ServiceException;
+  void updateCalendar(CalendarItem calItem) throws ServiceException;
 
   List<CalendarItem.CalendarMetadata> getCalendarItemMetadata(Folder folder, long start, long end) throws ServiceException;
 }

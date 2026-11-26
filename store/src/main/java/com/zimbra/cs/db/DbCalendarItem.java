@@ -277,7 +277,7 @@ public class DbCalendarItem implements CalendarItemRepository {
   }
 
   @Override
-  public void addToCalendarItemTable(CalendarItem calItem) throws ServiceException {
+  public void addCalendar(CalendarItem calItem) throws ServiceException {
     Mailbox mbox = calItem.getMailbox();
 
     long start = calItem.getStartTime();
@@ -328,7 +328,7 @@ public class DbCalendarItem implements CalendarItemRepository {
   }
 
   @Override
-  public void updateInCalendarItemTable(CalendarItem calItem) throws ServiceException {
+  public void updateCalendar(CalendarItem calItem) throws ServiceException {
     Mailbox mbox = calItem.getMailbox();
     long start = calItem.getStartTime();
     long end = calItem.getEndTime();

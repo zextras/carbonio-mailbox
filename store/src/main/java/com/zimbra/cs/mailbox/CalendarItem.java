@@ -653,7 +653,7 @@ public abstract class CalendarItem extends MailItem {
       }
     }
 
-    CALENDAR_ITEM_REPOSITORY.addToCalendarItemTable(item);
+    CALENDAR_ITEM_REPOSITORY.addCalendar(item);
 
     Callback cb = getCallback();
     if (cb != null) {
@@ -677,7 +677,7 @@ public abstract class CalendarItem extends MailItem {
     if (endTime != mEndTime) {
       markItemModified(Change.CONTENT | Change.INVITE);
       mEndTime = endTime;
-      CALENDAR_ITEM_REPOSITORY.updateInCalendarItemTable(this);
+      CALENDAR_ITEM_REPOSITORY.updateCalendar(this);
       return 1;
     }
     return 0;
@@ -875,7 +875,7 @@ public abstract class CalendarItem extends MailItem {
         ZimbraLog.calendar.debug(
             "Updating recurrence for %s.  nextAlarm=%d.", getMailopContext(this), nextAlarm);
       }
-      CALENDAR_ITEM_REPOSITORY.updateInCalendarItemTable(this);
+      CALENDAR_ITEM_REPOSITORY.updateCalendar(this);
     }
     return true;
   }
@@ -4116,7 +4116,7 @@ public abstract class CalendarItem extends MailItem {
         ZimbraLog.calendar.debug(
             "Setting next alarm for %s to %d.", getMailopContext(this), nextAlarm);
       }
-      CALENDAR_ITEM_REPOSITORY.updateInCalendarItemTable(this);
+      CALENDAR_ITEM_REPOSITORY.updateCalendar(this);
     }
     if (mAlarmData != null || hadAlarm) saveMetadata();
   }
