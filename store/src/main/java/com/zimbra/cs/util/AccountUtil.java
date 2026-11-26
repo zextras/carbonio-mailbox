@@ -72,17 +72,41 @@ public class AccountUtil {
 
   public static final String FN_SUBSCRIPTIONS = "subs";
   public static final String SN_IMAP = "imap";
+  public static final String A_ZIMBRA_MAIL_QUOTA = "zimbraMailQuota";
+  public static final String A_ZIMBRA_MAIL_DOMAIN_QUOTA = "zimbraMailDomainQuota";
 
   private AccountUtil() {
     throw new java.lang.UnsupportedOperationException("Utility class and cannot be instantiated");
   }
 
   /**
-   * Returns the effective quota for an account. Always zero, meaning unlimited: quota limits are no
-   * longer enforced here.
+   * Returns the effective quota for an account. When {@link LC#bypass_carbonio_storages} is false
+   * it is always zero (unlimited): quota limits are enforced externally. When true it is the
+   * limit configured in LDAP, see {@link #getMailQuotaLimit(Account)}.
    */
   public static long getEffectiveQuota(Account acct) throws ServiceException {
-    return 0L;
+    return LC.bypass_carbonio_storages.booleanValue() ? getMailQuotaLimit(acct) : 0L;
+  }
+
+  /**
+   * Returns the minimum of the account level quota ({@value #A_ZIMBRA_MAIL_QUOTA}) and the domain
+   * max mailbox quota ({@value #A_ZIMBRA_MAIL_DOMAIN_QUOTA}), ignoring unset (zero) values. Zero
+   * means unlimited.
+   *
+   * <p>Both attributes are deprecated in the LDAP schema and no longer generated in {@link
+   * ZAttrProvisioning}, hence the literal names.
+   */
+  public static long getMailQuotaLimit(Account acct) throws ServiceException {
+    long acctQuota = acct.getLongAttr(A_ZIMBRA_MAIL_QUOTA, 0);
+    Domain domain = Provisioning.getInstance().getDomain(acct);
+    long domainQuota = domain == null ? 0 : domain.getLongAttr(A_ZIMBRA_MAIL_DOMAIN_QUOTA, 0);
+    if (acctQuota == 0) {
+      return domainQuota;
+    } else if (domainQuota == 0) {
+      return acctQuota;
+    } else {
+      return Math.min(acctQuota, domainQuota);
+    }
   }
 
   /**

@@ -1,5 +1,6 @@
 package com.zextras.mailbox.quota;
 
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 
@@ -25,7 +26,15 @@ public class QuotaCheckSingleton {
 		}
 	}
 
+	/**
+	 * Returns the {@link ZimbraMailQuotaCheck} when {@link LC#bypass_carbonio_storages} is true,
+	 * otherwise the registered hook (or the no-op default). The flag is read on every call so that a
+	 * local config reload takes effect without a restart.
+	 */
 	public synchronized static QuotaCheck getInstance() {
+		if (LC.bypass_carbonio_storages.booleanValue()) {
+			return ZimbraMailQuotaCheck.INSTANCE;
+		}
 		if (instance == null) {
 			instance = new DefaultQuotaCheck();
 		}

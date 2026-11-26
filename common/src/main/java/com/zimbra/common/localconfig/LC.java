@@ -1359,6 +1359,14 @@ public final class LC {
 	public static final KnownKey mailbox_internal_api_bind_address = KnownKey.newKey("127.78.0.7");
 	public static final KnownKey support_timer = KnownKey.newKey(true);
 
+  /**
+   * When true the mailbox enforces zimbraMailQuota / zimbraMailDomainQuota itself instead of
+   * delegating to the registered QuotaCheck (carbonio-storages). Read on every call: a local
+   * config reload applies a change without restarting the mailbox.
+   */
+  @Reloadable
+  public static final KnownKey bypass_carbonio_storages = KnownKey.newKey(false);
+
 	static {
     // Automatically set the key name with the variable name.
     for (Field field : LC.class.getFields()) {
