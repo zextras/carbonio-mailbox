@@ -44,14 +44,12 @@ public class DbPool {
     private final PoolingDataSource<PoolableConnection> dataSource;
     private final GenericObjectPool<PoolableConnection> pool;
     private final String sRootUrl;
-    private final String sLoggerRootUrl;
 
     private DbPool(Db db, PoolConfig pconfig, PoolingDataSource<PoolableConnection> dataSource, GenericObjectPool<PoolableConnection> pool) {
         this.db = db;
         this.dataSource = dataSource;
         this.pool = pool;
         sRootUrl = pconfig.mRootUrl;
-        sLoggerRootUrl = pconfig.mLoggerUrl;
     }
 
     static DbPool newPool(Db db) {
@@ -277,23 +275,19 @@ public class DbPool {
         }
     }
 
-    public static final class PoolConfig {
+    static final class PoolConfig {
         String mDriverClassName;
         int mPoolSize;
         String mRootUrl;
         String mConnectionUrl;
-        String mLoggerUrl;
-        boolean mSupportsStatsCallback;
         Properties mDatabaseProperties;
         boolean blockWhenExhausted = true;
 
-        public PoolConfig(Db db) {
+        PoolConfig(Db db) {
             mDriverClassName = "org.mariadb.jdbc.Driver";
             mPoolSize = 100;
             mRootUrl = db.rootUrl();
             mConnectionUrl = db.jdbcUrl();
-            mLoggerUrl = null;
-            mSupportsStatsCallback = true;
             mDatabaseProperties = databaseProperties();
 
             String maxActive = (String) mDatabaseProperties.get("maxActive");
@@ -469,23 +463,6 @@ public class DbPool {
             return new DbConnection(conn, dbPool.db);
         } catch (SQLException e) {
             throw ServiceException.FAILURE("getting database maintenance connection", e);
-        }
-    }
-
-    /**
-     * Returns a new database connection for logger use.
-     * Does not specify the name of the default database. This
-     * connection is created outside the context of the database connection
-     * pool.
-     */
-    public static DbConnection getLoggerConnection() throws ServiceException {
-        try {
-            String user = LC.zimbra_mysql_user.value();
-            String pwd = null;
-            Connection conn = DriverManager.getConnection(dbPool.sLoggerRootUrl + "?user=" + user + "&password=" + pwd);
-            return new DbConnection(conn, dbPool.db);
-        } catch (SQLException e) {
-            throw ServiceException.FAILURE("getting database logger connection", e);
         }
     }
 
