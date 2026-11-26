@@ -86,22 +86,21 @@ public class DbConversation implements ConversationRepository {
   }
 
   @Override
-  public void openConversation(String hash, MailItem item) throws ServiceException {
-    Mailbox mbox = item.getMailbox();
+  public void openConversation(Mailbox mbox, String hash, int conversationId) throws ServiceException {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     try {
       stmt =
           conn.prepareStatement(
               DbUtil.upsert(
-                      getConversationTableName(item),
+                      getConversationTableName(mbox),
                       withMailboxId("hash", "conv_id"),
                       withMailboxId("hash"),
                       List.of("conv_id")));
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
       stmt.setString(pos++, hash);
-      stmt.setInt(pos++, item.getId());
+      stmt.setInt(pos++, conversationId);
       stmt.executeUpdate();
     } catch (SQLException e) {
       throw ServiceException.FAILURE("writing open conversation association for hash " + hash, e);
@@ -111,23 +110,21 @@ public class DbConversation implements ConversationRepository {
   }
 
   @Override
-  public void closeConversation(String hash, MailItem item) throws ServiceException {
-    Mailbox mbox = item.getMailbox();
-
+  public void closeConversation(Mailbox mbox, String hash, int conversationId) throws ServiceException {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     try {
       stmt =
           conn.prepareStatement(
               "DELETE FROM "
-                  + getConversationTableName(item)
+                  + getConversationTableName(mbox)
                   + " WHERE "
                   + IN_THIS_MAILBOX_AND
                   + "hash = ? AND conv_id = ?");
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
       stmt.setString(pos++, hash);
-      stmt.setInt(pos++, item.getId());
+      stmt.setInt(pos++, conversationId);
       stmt.executeUpdate();
     } catch (SQLException e) {
       throw ServiceException.FAILURE("closing open conversation association for hash " + hash, e);

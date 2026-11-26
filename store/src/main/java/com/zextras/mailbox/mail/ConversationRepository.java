@@ -16,9 +16,9 @@ public interface ConversationRepository {
 
   void reparentChildren(MailItem oldParent, MailItem newParent) throws ServiceException;
 
-  void openConversation(String hash, MailItem item) throws ServiceException;
+  void openConversation(Mailbox mbox, String hash, int conversationId) throws ServiceException;
 
-  void closeConversation(String hash, MailItem item) throws ServiceException;
+  void closeConversation(Mailbox mbox, String hash, int conversationId) throws ServiceException;
 
   void closeOldConversations(Mailbox mbox, int beforeDate) throws ServiceException;
 

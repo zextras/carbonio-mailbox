@@ -293,11 +293,11 @@ public class Conversation extends MailItem {
     }
 
     void open(String hash) throws ServiceException {
-        CONVERSATION_REPOSITORY.openConversation(hash, this);
+        CONVERSATION_REPOSITORY.openConversation(getMailbox(), hash, getId());
     }
 
     void close(String hash) throws ServiceException {
-        CONVERSATION_REPOSITORY.closeConversation(hash, this);
+        CONVERSATION_REPOSITORY.closeConversation(getMailbox(), hash, getId());
     }
 
     @Override

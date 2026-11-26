@@ -93,12 +93,12 @@ public class VirtualConversation extends Conversation {
 
     @Override
     void open(String hash) throws ServiceException {
-        CONVERSATION_REPOSITORY.openConversation(hash, getMessage());
+        CONVERSATION_REPOSITORY.openConversation(getMailbox(), hash, getMessage().getId());
     }
 
     @Override
     void close(String hash) throws ServiceException {
-        CONVERSATION_REPOSITORY.closeConversation(hash, getMessage());
+        CONVERSATION_REPOSITORY.closeConversation(getMailbox(), hash, getMessage().getId());
     }
 
     @Override
