@@ -5,16 +5,6 @@
 
 package com.zimbra.cs.service.mail;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
 import com.zimbra.client.ZMailbox;
 import com.zimbra.client.ZMailbox.ZGetMiniCalResult;
 import com.zimbra.client.ZMailbox.ZMiniCalError;
@@ -33,7 +23,6 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.mailbox.Folder;
-import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -51,6 +40,15 @@ import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.ZimbraSoapContext;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /*
 <GetMiniCalRequest s="range start time in millis" e="range end time in millis">
@@ -125,8 +123,7 @@ public class GetMiniCal extends CalendarRequest {
                     for (Iterator<Integer> iterFolderId = folderIds.iterator(); iterFolderId.hasNext(); ) {
                         int folderId = iterFolderId.next();
                         try {
-                            CalendarDataResult result = calCache.getCalendarSummary(octxt, acctId, folderId,
-                                    MailItem.Type.APPOINTMENT, rangeStart, rangeEnd, true);
+                            CalendarDataResult result = calCache.getCalendarSummary(octxt, acctId, folderId, rangeStart, rangeEnd, true);
                             if (result != null) {
                                 // Found data in cache.
                                 iterFolderId.remove();
@@ -241,7 +238,7 @@ public class GetMiniCal extends CalendarRequest {
             long rangeStart, long rangeEnd, Set<String> busyDates) throws ServiceException {
         Calendar cal = new GregorianCalendar(tz);
         CalendarDataResult result = mbox.getCalendarSummaryForRange(
-                octxt, folderId, MailItem.Type.APPOINTMENT, rangeStart, rangeEnd);
+                octxt, folderId, rangeStart, rangeEnd);
         if (result != null) {
             addBusyDates(cal, result.data, rangeStart, rangeEnd, busyDates);
         }

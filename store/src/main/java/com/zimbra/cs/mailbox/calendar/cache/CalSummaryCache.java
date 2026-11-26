@@ -428,6 +428,18 @@ public class CalSummaryCache {
     return calData; // return a non-null object even if there are no items in the range
   }
 
+  public CalendarDataResult getCalendarSummary(
+      OperationContext octxt,
+      String targetAcctId,
+      int folderId,
+      long rangeStart,
+      long rangeEnd,
+      boolean computeSubRange)
+      throws ServiceException {
+    return this.getCalendarSummary(
+        octxt, targetAcctId, folderId, MailItem.Type.APPOINTMENT, rangeStart, rangeEnd, computeSubRange);
+  }
+
   // get summary for all appts/tasks in a calendar folder
   public CalendarDataResult getCalendarSummary(
       OperationContext octxt,

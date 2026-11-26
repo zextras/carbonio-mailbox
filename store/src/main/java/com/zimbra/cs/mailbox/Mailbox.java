@@ -5,8 +5,6 @@
 
 package com.zimbra.cs.mailbox;
 
-import com.zextras.mailbox.calendar.CalendarItemRepository;
-import com.zimbra.cs.db.DbCalendarItem;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
@@ -18,6 +16,7 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Closeables;
 import com.google.common.primitives.Ints;
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
+import com.zextras.mailbox.calendar.CalendarItemRepository;
 import com.zextras.mailbox.quota.QuotaCheckSingleton;
 import com.zimbra.client.ZMailbox;
 import com.zimbra.client.ZMailbox.Options;
@@ -69,6 +68,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ProvisioningCache;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.datasource.DataSourceManager;
+import com.zimbra.cs.db.DbCalendarItem;
 import com.zimbra.cs.db.DbDataSource;
 import com.zimbra.cs.db.DbMailItem;
 import com.zimbra.cs.db.DbMailItem.QueryParams;
@@ -213,11 +213,6 @@ import com.zimbra.cs.util.Zimbra;
 import com.zimbra.soap.admin.type.DataSourceType;
 import com.zimbra.soap.mail.type.Policy;
 import com.zimbra.soap.mail.type.RetentionPolicy;
-
-import javax.mail.Address;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimePart;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -248,6 +243,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
+import javax.mail.Address;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimePart;
 
 /**
  * @since Jun 13, 2004
@@ -5128,12 +5127,7 @@ public class Mailbox implements MailboxStore {
 
   public CalendarDataResult getCalendarSummaryForRange(
       OperationContext octxt, int folderId, long start, long end) throws ServiceException {
-    return getCalendarSummaryForRange(octxt, folderId, MailItem.Type.APPOINTMENT, start, end);
-  }
-
-  public CalendarDataResult getCalendarSummaryForRange(
-      OperationContext octxt, int folderId, MailItem.Type type, long start, long end)
-      throws ServiceException {
+    var type = Type.APPOINTMENT;
     lock.lock(false);
     try {
       Folder folder = getFolderById(folderId);
