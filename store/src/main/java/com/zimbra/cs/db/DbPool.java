@@ -80,11 +80,6 @@ public class DbPool {
     }
 
     public DbConnection getConnectionInstance() throws ServiceException {
-        return getConnectionInstance(null);
-    }
-
-    public DbConnection getConnectionInstance(Mailbox mbox) throws ServiceException {
-        Integer mboxId = mbox != null ? mbox.getId() : -1; //-1 == zimbra db and/or initialization where mbox isn't known yet
         try {
             long start = ZimbraPerf.STOPWATCH_DB_CONN.start();
 
@@ -99,7 +94,7 @@ public class DbPool {
                 if (dbconn.getAutoCommit() != false)
                     dbconn.setAutoCommit(false);
 
-                conn = new DbConnection(dbconn, mboxId, db);
+                conn = new DbConnection(dbconn, db);
             } catch (SQLException e) {
                 try {
                     if (dbconn != null && !dbconn.isClosed())
@@ -133,16 +128,10 @@ public class DbPool {
         private final Connection connection;
         private final Db db;
         private Throwable mStackTrace;
-        Integer mboxId;
 
         DbConnection(Connection conn, Db db) {
             connection = conn;
             this.db = db;
-        }
-
-        DbConnection(Connection conn, Integer mboxId, Db db) {
-            this(conn, db);
-            this.mboxId = mboxId;
         }
 
         public Connection getConnection() {
@@ -410,7 +399,7 @@ public class DbPool {
         if (!isInitialized()) {
             throw ServiceException.FAILURE("Database connection pool not initialized.", null);
         }
-        return dbPool.getConnectionInstance(mbox);
+        return dbPool.getConnectionInstance();
     }
 
     private void checkPoolUsage() {
