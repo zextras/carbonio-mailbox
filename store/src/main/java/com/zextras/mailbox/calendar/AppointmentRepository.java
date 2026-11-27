@@ -5,17 +5,17 @@
 package com.zextras.mailbox.calendar;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
+import com.zimbra.cs.mailbox.Appointment.CalendarMetadata;
 import com.zimbra.cs.mailbox.Folder;
-import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailItem.UnderlyingData;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.util.TypedIdList;
 import java.util.List;
 
-public interface CalendarItemRepository {
+public interface AppointmentRepository {
 
-  void copyCalendar(CalendarItem calItem, int newId, boolean fromDumpster) throws ServiceException;
+  void copyCalendar(Appointment calItem, int newId, boolean fromDumpster) throws ServiceException;
 
   UnderlyingData getCalendar(Mailbox mbox, String uid) throws ServiceException;
 
@@ -25,9 +25,9 @@ public interface CalendarItemRepository {
 
   TypedIdList listCalendars(Mailbox mbox, long start, long end, int folderId, int[] excludeFolderIds) throws ServiceException;
 
-  void addCalendar(CalendarItem calItem) throws ServiceException;
+  void addCalendar(Appointment calItem) throws ServiceException;
 
-  void updateCalendar(CalendarItem calItem) throws ServiceException;
+  void updateCalendar(Appointment calItem) throws ServiceException;
 
-  List<CalendarItem.CalendarMetadata> getCalendarMetadata(Folder folder, long start, long end) throws ServiceException;
+  List<CalendarMetadata> getCalendarMetadata(Folder folder, long start, long end) throws ServiceException;
 }

@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mime.MimeProcessor;
 import com.zimbra.cs.mime.MimeProcessorUtil;
 import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
@@ -14,7 +15,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.MailSender;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -54,7 +54,7 @@ public class CounterCalendarItem extends CalendarRequest {
             if (!iid.belongsTo(acct))
                 return proxyRequest(request, context, iid.getAccountId());
         
-            CalendarItem calItem = mbox.getCalendarItemById(octxt, iid.getId());
+            Appointment calItem = mbox.getCalendarItemById(octxt, iid.getId());
             if (calItem == null) {
                 throw MailServiceException.NO_SUCH_CALITEM(iid.toString(), "Could not find calendar item");
             }

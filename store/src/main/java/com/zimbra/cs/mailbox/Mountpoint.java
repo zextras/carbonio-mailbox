@@ -19,7 +19,7 @@ import com.zimbra.cs.session.PendingModifications.Change;
 /**
  * @since Jul 3, 2005
  */
-public class Mountpoint extends Folder implements MountpointStore {
+public final class Mountpoint extends Folder implements MountpointStore {
 
     private String mOwnerId;
     private int    mRemoteId;
@@ -84,20 +84,11 @@ public class Mountpoint extends Folder implements MountpointStore {
         return (getOwnerId().equals(getMailbox().getAccountId()));
     }
 
-    /** Grants the specified set of rights to the target and persists them
-     *  to the database.  <i>Note: This function will always throw the
-     *  <code>service.PERM_DENIED</code> {@link ServiceException} because
-     *  <code>Mountpoint</code>s may not be re-shared.</i> */
-    void grantAccess(String liquidId, byte type, short rights, boolean inherit) throws ServiceException {
-        throw ServiceException.PERM_DENIED("you may not share the mounted folder " + getPath());
-    }
-
     /** Removes the set of rights granted to the specified (id, type) pair
      *  and updates the database accordingly.  <i>Note: This function does
      *  nothing, as you cannot re-share a <code>Mountpoint</code> in the
      *  first place.</i>
-     *
-     * @see #grantAccess(String, byte, short, boolean) */
+     **/
     @Override void revokeAccess(String liquidId) {
     }
 

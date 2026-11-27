@@ -7,7 +7,7 @@ package com.zimbra.cs.mailbox.alerts;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.ScheduledTask;
@@ -28,7 +28,7 @@ public abstract class CalItemReminderTaskBase extends ScheduledTask {
      * @return computed result
      * @throws Exception if unable to compute a result
      */
-    public CalendarItem call() throws Exception {
+    public Appointment call() throws Exception {
         if (ZimbraLog.scheduler.isDebugEnabled())
             ZimbraLog.scheduler.debug("Running task %s", this);
         Mailbox mbox = MailboxManager.getInstance().getMailboxById(getMailboxId());
@@ -37,7 +37,7 @@ public abstract class CalItemReminderTaskBase extends ScheduledTask {
             return null;
         }
         Integer calItemId = Integer.valueOf(getProperty(CAL_ITEM_ID_PROP_NAME));
-        CalendarItem calItem;
+        Appointment calItem;
         try {
             calItem = mbox.getCalendarItemById(null, calItemId);
         } catch (ServiceException e) {
@@ -59,5 +59,5 @@ public abstract class CalItemReminderTaskBase extends ScheduledTask {
         return calItem;
     }
 
-    protected abstract void sendReminder(CalendarItem calItem, Invite invite) throws Exception;
+    protected abstract void sendReminder(Appointment calItem, Invite invite) throws Exception;
 }

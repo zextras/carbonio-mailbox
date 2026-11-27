@@ -32,7 +32,7 @@ import com.zimbra.cs.session.Session;
 /**
  * @since Jun 13, 2004
  */
-public class Conversation extends MailItem {
+public sealed class Conversation extends MailItem permits VirtualConversation {
 
   private static final ConversationRepository CONVERSATION_REPOSITORY = new DbConversation();
     private   String     mEncodedSenders;
@@ -300,8 +300,7 @@ public class Conversation extends MailItem {
         CONVERSATION_REPOSITORY.closeConversation(getMailbox(), hash, getId());
     }
 
-    @Override
-    void detach() throws ServiceException {
+    private void detach() throws ServiceException {
         close(Mailbox.getHash(getNormalizedSubject()));
     }
 

@@ -13,19 +13,14 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
-import com.google.common.collect.Sets;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.Constants;
-import com.zimbra.common.util.ListUtil;
 import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.StringUtil;
-import com.zimbra.common.util.UUIDUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.imap.ImapMessage;
 import com.zimbra.cs.index.SortBy;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Conversation;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.Flag.FlagInfo;
@@ -51,7 +46,6 @@ import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -4276,7 +4270,7 @@ public class DbMailItem {
   }
 
   /**
-   * Returns the name of the table that stores {@link CalendarItem} data. The table name is
+   * Returns the name of the table that stores {@link com.zimbra.cs.mailbox.Appointment} data. The table name is
    * qualified by the name of the database (e.g. <tt>mailbox1.appointment</tt>).
    */
   public static String getCalendarItemTableName(int mailboxId, int groupId, boolean dumpster) {

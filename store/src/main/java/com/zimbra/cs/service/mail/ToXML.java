@@ -73,9 +73,7 @@ import com.zimbra.cs.index.SearchParams.ExpandResults;
 import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Appointment;
-import com.zimbra.cs.mailbox.CalendarItem;
-import com.zimbra.cs.mailbox.CalendarItem.AlarmData;
-import com.zimbra.cs.mailbox.CalendarItem.Instance;
+import com.zimbra.cs.mailbox.Appointment.ReplyInfo;
 import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.Contact.Attachment;
 import com.zimbra.cs.mailbox.ContactGroup;
@@ -101,7 +99,6 @@ import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mailbox.calendar.InviteChanges;
 import com.zimbra.cs.mailbox.calendar.RecurId;
 import com.zimbra.cs.mailbox.calendar.Recurrence;
-import com.zimbra.cs.mailbox.calendar.Recurrence.IRecurrence;
 import com.zimbra.cs.mailbox.calendar.ZAttendee;
 import com.zimbra.cs.mailbox.calendar.ZOrganizer;
 import com.zimbra.cs.mailbox.util.TagUtil;
@@ -152,6 +149,8 @@ import javax.mail.internet.MimeUtility;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONException;
+import com.zimbra.cs.mailbox.Appointment.Instance;
+import com.zimbra.cs.mailbox.Appointment.AlarmData;
 
 /**
  * Class containing static methods for encoding various MailItem-derived objects into XML.
@@ -204,8 +203,8 @@ public final class ToXML {
       return encodeTag(parent, ifmt, octxt, (Tag) item, fields);
     } else if (item instanceof Contact) {
       return encodeContact(parent, ifmt, octxt, (Contact) item, false, null, fields);
-    } else if (item instanceof CalendarItem) {
-      return encodeCalendarItemSummary(parent, ifmt, octxt, (CalendarItem) item, fields, true);
+    } else if (item instanceof Appointment) {
+      return encodeCalendarItemSummary(parent, ifmt, octxt, (Appointment) item, fields, true);
     } else if (item instanceof Conversation) {
       return encodeConversationSummary(
           parent,
@@ -2165,7 +2164,7 @@ public final class ToXML {
       Element calItemElem,
       ItemIdFormatter ifmt,
       OperationContext octxt,
-      CalendarItem calItem,
+      Appointment calItem,
       int fields,
       boolean encodeInvites,
       boolean includeContent,
@@ -2226,7 +2225,7 @@ public final class ToXML {
       Element calItemElem,
       ItemIdFormatter ifmt,
       OperationContext octxt,
-      CalendarItem calItem,
+      Appointment calItem,
       int fields,
       boolean encodeInvites,
       boolean neuter)
@@ -2238,7 +2237,7 @@ public final class ToXML {
       Element parent,
       ItemIdFormatter ifmt,
       OperationContext octxt,
-      CalendarItem cal,
+      Appointment cal,
       Invite inv,
       boolean neuter)
       throws ServiceException {
@@ -2249,7 +2248,7 @@ public final class ToXML {
       Element parent,
       ItemIdFormatter ifmt,
       OperationContext octxt,
-      CalendarItem cal,
+      Appointment cal,
       Invite inv,
       boolean includeContent,
       boolean neuter)
@@ -2304,7 +2303,7 @@ public final class ToXML {
       Element parent,
       ItemIdFormatter ifmt,
       OperationContext octxt,
-      CalendarItem calItem,
+      Appointment calItem,
       int fields,
       boolean includeInvites,
       boolean includeContent)
@@ -2360,7 +2359,7 @@ public final class ToXML {
       Element parent,
       ItemIdFormatter ifmt,
       OperationContext octxt,
-      CalendarItem calItem,
+      Appointment calItem,
       int fields,
       boolean includeInvites)
       throws ServiceException {
@@ -2368,22 +2367,22 @@ public final class ToXML {
   }
 
   public static void encodeCalendarReplies(
-      Element parent, CalendarItem calItem, Invite inv, String recurIdZ) {
-    List<CalendarItem.ReplyInfo> replies = calItem.getReplyInfo(inv, recurIdZ);
+      Element parent, Appointment calItem, Invite inv, String recurIdZ) {
+    List<ReplyInfo> replies = calItem.getReplyInfo(inv, recurIdZ);
     encodeCalendarReplies(parent, replies);
   }
 
-  public static void encodeCalendarReplies(Element parent, CalendarItem calItem) {
-    List<CalendarItem.ReplyInfo> replies = calItem.getAllReplies();
+  public static void encodeCalendarReplies(Element parent, Appointment calItem) {
+    List<ReplyInfo> replies = calItem.getAllReplies();
     encodeCalendarReplies(parent, replies);
   }
 
-  private static void encodeCalendarReplies(Element parent, List<CalendarItem.ReplyInfo> replies) {
+  private static void encodeCalendarReplies(Element parent, List<ReplyInfo> replies) {
     if (replies.isEmpty()) {
       return;
     }
     List<CalendarReply> jaxbReplies = Lists.newArrayList();
-    for (CalendarItem.ReplyInfo repInfo : replies) {
+    for (ReplyInfo repInfo : replies) {
       jaxbReplies.add(repInfo.toJAXB());
     }
     CalendarReply.encodeCalendarReplyList(parent, jaxbReplies);
@@ -2418,7 +2417,7 @@ public final class ToXML {
       Element parent,
       ItemIdFormatter ifmt,
       OperationContext octxt,
-      CalendarItem calItem,
+      Appointment calItem,
       String recurIdZ,
       ItemId iid,
       String part,
@@ -2742,7 +2741,7 @@ public final class ToXML {
     }
   }
 
-  private static boolean allowPrivateAccess(OperationContext octxt, CalendarItem calItem)
+  private static boolean allowPrivateAccess(OperationContext octxt, Appointment calItem)
       throws ServiceException {
     Account authAccount = octxt != null ? octxt.getAuthenticatedUser() : null;
     boolean asAdmin = octxt != null ? octxt.isUsingAdminPrivileges() : false;
@@ -2753,7 +2752,7 @@ public final class ToXML {
       Element parent,
       ItemIdFormatter ifmt,
       OperationContext octxt,
-      CalendarItem calItem /* may be null */,
+      Appointment calItem /* may be null */,
       ItemId calId /* may be null */,
       Invite invite,
       int fields,
@@ -3012,7 +3011,7 @@ public final class ToXML {
     for (Iterator<Message.CalendarItemInfo> iter = msg.getCalendarItemInfoIterator();
         iter.hasNext(); ) {
       Message.CalendarItemInfo info = iter.next();
-      CalendarItem calItem = null;
+      Appointment calItem = null;
       ICalTok method = ICalTok.REQUEST;
       Invite invCi = info.getInvite();
       if (invCi != null) {
@@ -3750,7 +3749,7 @@ public final class ToXML {
   /**
    * @return the next alarm time or Long.MAX_VALUE if there isn't one
    */
-  private static long getNextAlarmTime(CalendarItem calItem) {
+  private static long getNextAlarmTime(Appointment calItem) {
     AlarmData alarmData = calItem.getAlarmData();
     if (alarmData == null) {
       return Long.MAX_VALUE;
@@ -3758,14 +3757,14 @@ public final class ToXML {
     return alarmData.getNextAt();
   }
 
-  public static void encodeAlarmTimes(Element elem, CalendarItem calItem) {
+  public static void encodeAlarmTimes(Element elem, Appointment calItem) {
     long nextAlarm = getNextAlarmTime(calItem);
     if (nextAlarm < Long.MAX_VALUE) {
       elem.addAttribute(MailConstants.A_CAL_NEXT_ALARM, nextAlarm);
     }
   }
 
-  public static AlarmDataInfo alarmDataToJaxb(CalendarItem calItem, AlarmData alarmData) {
+  public static AlarmDataInfo alarmDataToJaxb(Appointment calItem, AlarmData alarmData) {
     AlarmDataInfo alarm = new AlarmDataInfo();
     long nextAlarm = getNextAlarmTime(calItem);
     if (nextAlarm < Long.MAX_VALUE) {
@@ -3794,7 +3793,7 @@ public final class ToXML {
     return alarm;
   }
 
-  public static Element encodeAlarmData(Element parent, CalendarItem calItem, AlarmData alarmData) {
+  public static Element encodeAlarmData(Element parent, Appointment calItem, AlarmData alarmData) {
     Element alarmElem = parent.addNonUniqueElement(MailConstants.E_CAL_ALARM_DATA);
     encodeAlarmTimes(alarmElem, calItem);
     // Start time of the meeting instance we're reminding about.

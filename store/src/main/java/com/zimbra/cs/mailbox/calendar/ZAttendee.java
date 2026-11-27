@@ -221,15 +221,15 @@ public class ZAttendee extends CalendarUser {
             sb.append("CUTYPE=").append(getCUType());
         }
         if (hasRole()) {
-            if (sb.length() > 0) sb.append(';');
+            if (!sb.isEmpty()) sb.append(';');
             sb.append("ROLE=").append(getRole());
         }
         if (hasPartStat()) {
-            if (sb.length() > 0) sb.append(';');
+            if (!sb.isEmpty()) sb.append(';');
             sb.append("PARTSTAT=").append(getPartStat());
         }
         if (hasRsvp()) {
-            if (sb.length() > 0) sb.append(';');
+            if (!sb.isEmpty()) sb.append(';');
             sb.append("RSVP=");
             if (getRsvp())
                 sb.append("TRUE");
@@ -237,15 +237,15 @@ public class ZAttendee extends CalendarUser {
                 sb.append("FALSE");
         }
         if (hasMember()) {
-            if (sb.length() > 0) sb.append(';');
+            if (!sb.isEmpty()) sb.append(';');
             sb.append("MEMBER=\"MAILTO:").append(getMember()).append('"');
         }
         if (hasDelegatedTo()) {
-            if (sb.length() > 0) sb.append(';');
+            if (!sb.isEmpty()) sb.append(';');
             sb.append("DELEGATED-TO=\"MAILTO:").append(getDelegatedTo()).append('"');
         }
         if (hasDelegatedTo()) {
-            if (sb.length() > 0) sb.append(';');
+            if (!sb.isEmpty()) sb.append(';');
             sb.append("DELEGATED-FROM=\"MAILTO:").append(getDelegatedFrom()).append('"');
         }
 
@@ -399,13 +399,10 @@ public class ZAttendee extends CalendarUser {
 
         List<ZParameter> xparams = CalendarUtil.parseXParams(element);
 
-        ZAttendee at =
-            new ZAttendee(address, cn, sentBy, dir, lang,
-                          cutype, role, partStat,
-                          rsvp ? Boolean.TRUE : Boolean.FALSE,
-                          member, delTo, delFrom, xparams);
-
-        return at;
+			return new ZAttendee(address, cn, sentBy, dir, lang,
+										cutype, role, partStat,
+										rsvp ? Boolean.TRUE : Boolean.FALSE,
+										member, delTo, delFrom, xparams);
     }
 
     private static void validateAttr(IcalXmlStrMap map, String attrName,

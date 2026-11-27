@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.mailbox.alerts;
 
+import com.zimbra.cs.mailbox.Appointment;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -20,7 +21,6 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailSender;
 import com.zimbra.cs.mailbox.calendar.Invite;
@@ -42,7 +42,7 @@ public class CalItemSmsReminderTask extends CalItemReminderTaskBase {
     }
 
     @Override
-    protected void sendReminder(CalendarItem calItem, Invite invite) throws Exception {
+    protected void sendReminder(Appointment calItem, Invite invite) throws Exception {
         Account account = calItem.getAccount();
         Locale locale = account.getLocale();
         TimeZone tz = Util.getAccountTimeZone(account);
@@ -61,7 +61,7 @@ public class CalItemSmsReminderTask extends CalItemReminderTaskBase {
         mailSender.sendMimeMessage(null, calItem.getMailbox(), mm);
     }
 
-    private String getText(CalendarItem calItem, Invite invite, Locale locale, TimeZone tz) throws ServiceException {
+    private String getText(Appointment calItem, Invite invite, Locale locale, TimeZone tz) throws ServiceException {
         DateFormat dateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
         dateTimeFormat.setTimeZone(tz);
         DateFormat onlyDateFormat = DateFormat.getDateInstance(DateFormat.SHORT, locale);

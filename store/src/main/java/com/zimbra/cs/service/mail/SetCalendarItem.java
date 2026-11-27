@@ -13,8 +13,8 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.mailbox.CalendarItem;
-import com.zimbra.cs.mailbox.CalendarItem.ReplyInfo;
+import com.zimbra.cs.mailbox.Appointment;
+import com.zimbra.cs.mailbox.Appointment.ReplyInfo;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
@@ -106,9 +106,9 @@ public class SetCalendarItem extends CalendarRequest {
       ItemId iidFolder = new ItemId(folderIdStr, zsc);
       Folder folder = mbox.getFolderById(octxt, iidFolder.getId());
       SetCalendarItemParseResult parsed =
-          parseSetAppointmentRequest(request, zsc, octxt, folder, getItemType(), false);
+          parseSetAppointmentRequest(request, zsc, octxt, folder, getItemType());
 
-      CalendarItem calItem =
+      Appointment calItem =
           mbox.setCalendarItem(
               octxt,
               iidFolder.getId(),
@@ -176,7 +176,7 @@ public class SetCalendarItem extends CalendarRequest {
                 .append(" differs from mapped ")
                 .append(calItem.getUid());
             ZimbraLog.calendar.warn(logBuf.toString());
-          } else if (logBuf.length() > 0) {
+          } else if (!logBuf.isEmpty()) {
             ZimbraLog.calendar.info(logBuf.toString());
           }
         }
@@ -245,7 +245,7 @@ public class SetCalendarItem extends CalendarRequest {
     if (inv == null || inv.getDTStamp() == -1) { // zdsync if -1 for 4.5 back compat
       CalendarPartInfo cpi = pm.getCalendarPartInfo();
       ZVCalendar cal = null;
-      if (cpi != null && CalendarItem.isAcceptableInvite(
+      if (cpi != null && Appointment.isAcceptableInvite(
           Provisioning.getInstance().getAccountByMailbox(mbox), cpi)) {
         cal = cpi.cal;
       }
@@ -284,8 +284,7 @@ public class SetCalendarItem extends CalendarRequest {
       ZimbraSoapContext zsc,
       OperationContext octxt,
       Folder folder,
-      MailItem.Type type,
-      boolean parseIds)
+      MailItem.Type type)
       throws ServiceException {
     Account acct = getRequestedAccount(zsc);
     Mailbox mbox = getRequestedMailbox(zsc);
@@ -337,7 +336,7 @@ public class SetCalendarItem extends CalendarRequest {
       }
     }
 
-    if (exceptions.size() > 0) {
+    if (!exceptions.isEmpty()) {
       result.exceptions = new SetCalendarItemData[exceptions.size()];
       exceptions.toArray(result.exceptions);
     } else {
@@ -353,11 +352,11 @@ public class SetCalendarItem extends CalendarRequest {
     result.isTodo = defInv != null && defInv.isTodo();
 
     boolean noNextAlarm = request.getAttributeBool(MailConstants.A_CAL_NO_NEXT_ALARM, false);
-    if (noNextAlarm) result.nextAlarm = CalendarItem.NEXT_ALARM_ALL_DISMISSED;
+    if (noNextAlarm) result.nextAlarm = Appointment.NEXT_ALARM_ALL_DISMISSED;
     else
       result.nextAlarm =
           request.getAttributeLong(
-              MailConstants.A_CAL_NEXT_ALARM, CalendarItem.NEXT_ALARM_KEEP_CURRENT);
+              MailConstants.A_CAL_NEXT_ALARM, Appointment.NEXT_ALARM_KEEP_CURRENT);
 
     return result;
   }

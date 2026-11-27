@@ -28,7 +28,7 @@ import org.apache.commons.lang3.ArrayUtils;
 /**
  * @since Jul 12, 2004
  */
-public class Tag extends MailItem implements ZimbraTag {
+public sealed class Tag extends MailItem implements ZimbraTag permits Flag {
     public static class NormalizedTags {
         private static final String[] NO_TAGS = new String[0];
 

@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxLock;
 import com.zimbra.cs.mailbox.OperationContext;
@@ -39,7 +39,7 @@ public class CalendarRequestTest {
   private ZimbraSoapContext zsc;
   private OperationContext octxt;
   private Mailbox mbox;
-  private CalendarItem calItem;
+  private Appointment calItem;
   private ZAttendee addedAttendee1;
   private ZAttendee addedAttendee2;
   private MailSendQueue sendQueue;
@@ -62,7 +62,7 @@ public class CalendarRequestTest {
     octxt = mock(OperationContext.class);
     invite1 = mock(Invite.class);
     invite2 = mock(Invite.class);
-    calItem = mock(CalendarItem.class);
+    calItem = mock(Appointment.class);
     sendQueue = new CalendarRequest.MailSendQueue();
   }
 
@@ -70,7 +70,7 @@ public class CalendarRequestTest {
   * Test method for {@link
    * com.zimbra.cs.service.mail.CalendarRequest#notifyCalendarItem(com.zimbra.soap.ZimbraSoapContext,
    * com.zimbra.cs.mailbox.OperationContext, com.zimbra.cs.account.Account,
-   * com.zimbra.cs.mailbox.Mailbox, com.zimbra.cs.mailbox.CalendarItem, boolean, java.util.List,
+   * com.zimbra.cs.mailbox.Mailbox, Appointment, boolean, java.util.List,
    * boolean, com.zimbra.cs.service.mail.CalendarRequest.MailSendQueue)}.
   *
   * @throws Exception

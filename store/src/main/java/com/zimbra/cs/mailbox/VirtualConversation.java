@@ -19,7 +19,7 @@ import com.zimbra.cs.session.PendingModifications.Change;
 /**
  * @since Jun 14, 2005
  */
-public class VirtualConversation extends Conversation {
+public final class VirtualConversation extends Conversation {
 
   private static final ConversationRepository CONVERSATION_REPOSITORY = new DbConversation();
 

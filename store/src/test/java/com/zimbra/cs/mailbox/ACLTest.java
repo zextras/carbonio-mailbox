@@ -89,7 +89,7 @@ public class ACLTest extends MailboxTestSuite {
 		underlyingData.parentId = folder.getId();
 		underlyingData.setBlobDigest("test digest");
 
-		CalendarItem calendarItem = new Appointment(mbox, underlyingData, true);
+		Appointment calendarItem = new Appointment(mbox, underlyingData, true);
 		assertTrue(calendarItem.canAccess(ACL.RIGHT_READ, guestUser, false));
 	}
 }

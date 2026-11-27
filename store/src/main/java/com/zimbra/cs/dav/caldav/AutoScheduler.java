@@ -19,9 +19,8 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.dav.DavContext;
 import com.zimbra.cs.dav.DavProtocol;
 import com.zimbra.cs.dav.resource.DavResource;
-import com.zimbra.cs.mailbox.CalendarItem;
-import com.zimbra.cs.mailbox.CalendarItem.Instance;
-import com.zimbra.cs.mailbox.CalendarItem.ReplyInfo;
+import com.zimbra.cs.mailbox.Appointment;
+import com.zimbra.cs.mailbox.Appointment.ReplyInfo;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Mailbox.SetCalendarItemData;
@@ -42,6 +41,7 @@ import java.util.Objects;
 import javax.mail.Address;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
+import com.zimbra.cs.mailbox.Appointment.Instance;
 
 public abstract class AutoScheduler {
   public static final String CANCEL_PREFIX = "Cancel: ";
@@ -122,7 +122,7 @@ public abstract class AutoScheduler {
     return (invites == null) || (invites.length <= 0);
   }
 
-  public abstract CalendarItem doSchedulingActions() throws ServiceException;
+  public abstract Appointment doSchedulingActions() throws ServiceException;
 
   private static void addSchedulingMsg(List<AutoScheduleMsg> msgs, AutoScheduleMsg msg) {
     if (msg == null) {
@@ -225,7 +225,7 @@ public abstract class AutoScheduler {
     return null;
   }
 
-  protected CalendarItem persistToCalendar() throws ServiceException {
+  protected Appointment persistToCalendar() throws ServiceException {
     if (null == scidDefault) {
       return null; // Presumably a DELETE
     }
@@ -237,15 +237,15 @@ public abstract class AutoScheduler {
         scidDefault,
         scidExceptions,
         replies,
-        CalendarItem.NEXT_ALARM_KEEP_CURRENT);
+        Appointment.NEXT_ALARM_KEEP_CURRENT);
   }
 
-  protected CalendarItem processSchedulingMessages(List<AutoScheduleMsg> msgs)
+  protected Appointment processSchedulingMessages(List<AutoScheduleMsg> msgs)
       throws ServiceException {
     for (AutoScheduleMsg msg : msgs) {
       msg.updateCalendarInfo();
     }
-    CalendarItem newCalItem = persistToCalendar();
+    Appointment newCalItem = persistToCalendar();
 
     for (AutoScheduleMsg msg : msgs) {
       msg.sendSchedulingMsg();
@@ -395,7 +395,7 @@ public abstract class AutoScheduler {
     }
 
     @Override
-    public CalendarItem doSchedulingActions() throws ServiceException {
+    public Appointment doSchedulingActions() throws ServiceException {
       if (isEmpty(origInvites)) {
         return doSchedulingActionsForNewCreate();
       } else {
@@ -403,7 +403,7 @@ public abstract class AutoScheduler {
       }
     }
 
-    private CalendarItem doSchedulingActionsForNewCreate() throws ServiceException {
+    private Appointment doSchedulingActionsForNewCreate() throws ServiceException {
       List<AutoScheduleMsg> msgs = Lists.newArrayList();
       // Always deal with series first
       Invite seriesOrSingletonInvite = Invite.matchingInvite(newInvites, null);
@@ -443,7 +443,7 @@ public abstract class AutoScheduler {
       return processSchedulingMessages(msgs);
     }
 
-    private CalendarItem doSchedulingActionsForUpdate() throws ServiceException {
+    private Appointment doSchedulingActionsForUpdate() throws ServiceException {
       List<AutoScheduleMsg> msgs = Lists.newArrayList();
       // Always deal with series first
       Invite oldSeriesOrSingletonInvite = Invite.matchingInvite(origInvites, null);
@@ -688,7 +688,7 @@ public abstract class AutoScheduler {
     }
 
     @Override
-    public CalendarItem doSchedulingActions() throws ServiceException {
+    public Appointment doSchedulingActions() throws ServiceException {
       List<AutoScheduleMsg> msgs = Lists.newArrayList();
       if (organizer == null) {
         return persistToCalendar();

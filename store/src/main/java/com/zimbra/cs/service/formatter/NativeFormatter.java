@@ -19,7 +19,7 @@ import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.extension.ExtensionUtil;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.DeliveryOptions;
 import com.zimbra.cs.mailbox.Folder;
@@ -113,9 +113,9 @@ public final class NativeFormatter extends Formatter {
             }
             if (context.target instanceof Message) {
                 handleMessage(context, (Message) context.target);
-            } else if (context.target instanceof CalendarItem) {
+            } else if (context.target instanceof Appointment) {
                 // Don't return private appointments/tasks if the requester is not the mailbox owner.
-                CalendarItem calItem = (CalendarItem) context.target;
+                Appointment calItem = (Appointment) context.target;
                 if (calItem.isPublic() || calItem.allowPrivateAccess(
                         context.getAuthAccount(), context.isUsingAdminPrivileges())) {
                     handleCalendarItem(context, calItem);
@@ -154,7 +154,7 @@ public final class NativeFormatter extends Formatter {
         }
     }
 
-    private void handleCalendarItem(UserServletContext context, CalendarItem calItem) throws IOException, ServiceException, MessagingException, ServletException {
+    private void handleCalendarItem(UserServletContext context, Appointment calItem) throws IOException, ServiceException, MessagingException, ServletException {
         if (context.hasPart()) {
             MimePart mp;
             if (context.itemId.hasSubpart()) {
@@ -357,7 +357,7 @@ public final class NativeFormatter extends Formatter {
         }
     }
 
-    public static MimePart getMimePart(CalendarItem calItem, String part) throws IOException, MessagingException, ServiceException {
+    public static MimePart getMimePart(Appointment calItem, String part) throws IOException, MessagingException, ServiceException {
         return Mime.getMimePart(calItem.getMimeMessage(), part);
     }
 

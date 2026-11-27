@@ -8,10 +8,10 @@
  */
 package com.zimbra.cs.redolog.op;
 
+import com.zimbra.cs.mailbox.Appointment;
 import java.io.IOException;
 
 import com.zimbra.common.calendar.ParsedDateTime;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxOperation;
@@ -60,7 +60,7 @@ public class ModifyInvitePartStat extends RedoableOp
 
     @Override public void redo() throws Exception {
         Mailbox mbox = MailboxManager.getInstance().getMailboxById(getMailboxId());
-        CalendarItem calItem = mbox.getCalendarItemById(null, mCalItemId);
+        Appointment calItem = mbox.getCalendarItemById(null, mCalItemId);
         RecurId recurId = null;
         if (mRecurIdDt != null)
             recurId = new RecurId(ParsedDateTime.parse(mRecurIdDt, calItem.getTimeZoneMap()), mRecurIdRange);

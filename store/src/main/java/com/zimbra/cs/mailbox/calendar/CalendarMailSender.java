@@ -8,6 +8,7 @@ package com.zimbra.cs.mailbox.calendar;
 import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.util.SignatureUtil;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.calendar.Attach;
@@ -36,7 +37,6 @@ import com.zimbra.cs.account.CalendarResource;
 import com.zimbra.cs.account.Identity;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Signature;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.MailSender;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -169,7 +169,7 @@ public class CalendarMailSender {
       String authIdentityId,
       boolean asAdmin,
       boolean onBehalfOf,
-      CalendarItem calItem,
+      Appointment calItem,
       Invite inv,
       MimeMessage mmInv,
       String replySubject,
@@ -202,7 +202,7 @@ public class CalendarMailSender {
       String authIdentityId,
       boolean asAdmin,
       boolean onBehalfOf,
-      CalendarItem calItem,
+      Appointment calItem,
       Invite inv,
       MimeMessage mmInv,
       String replySubject,
@@ -398,7 +398,7 @@ public class CalendarMailSender {
       boolean asAdmin,
       boolean onBehalfOf,
       List<Address> toAddrs,
-      CalendarItem calItem,
+      Appointment calItem,
       Invite inv,
       String text,
       ZVCalendar iCal)
@@ -1326,7 +1326,7 @@ public class CalendarMailSender {
       Verb verb,
       boolean partialAccept,
       String additionalMsgBody,
-      CalendarItem calItem,
+      Appointment calItem,
       Invite inv,
       Invite[] replies,
       MimeMessage mmInv,
@@ -1470,7 +1470,7 @@ public class CalendarMailSender {
       Verb verb,
       boolean partialAccept,
       String additionalMsgBody,
-      CalendarItem calItem,
+      Appointment calItem,
       Invite inv,
       Invite[] replies,
       MimeMessage mmInv)

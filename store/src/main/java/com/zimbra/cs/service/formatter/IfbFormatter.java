@@ -20,7 +20,6 @@ import com.zimbra.cs.account.IDNUtil;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.fb.FreeBusy;
 import com.zimbra.cs.mailbox.Appointment;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.service.UserServlet;
 import com.zimbra.cs.service.UserServletContext;
@@ -68,7 +67,7 @@ public class IfbFormatter extends Formatter {
             String exuid = context.params.get(UserServlet.QP_EXUID);
             Appointment exAppt = null;
             if (exuid != null) {
-                CalendarItem ci = context.targetMailbox.getCalendarItemByUid(context.opContext, exuid);
+                Appointment ci = context.targetMailbox.getCalendarItemByUid(context.opContext, exuid);
                 if (ci instanceof Appointment)
                     exAppt = (Appointment) ci;
             }

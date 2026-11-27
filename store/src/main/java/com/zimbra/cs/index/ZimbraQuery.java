@@ -18,7 +18,7 @@ import com.zimbra.cs.index.query.Query;
 import com.zimbra.cs.index.query.Query.Modifier;
 import com.zimbra.cs.index.query.SubQuery;
 import com.zimbra.cs.index.query.parser.QueryParser;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
@@ -637,7 +637,7 @@ public final class ZimbraQuery {
         }
         for (Folder f : allVisibleFolders) {
           if (f.getType() == MailItem.Type.FOLDER
-              && CalendarItem.allowPrivateAccess(f, authAcct, false)) {
+              && Appointment.allowPrivateAccess(f, authAcct, false)) {
             hasFolderRightPrivateSet.add(f);
           }
         }
@@ -779,7 +779,7 @@ public final class ZimbraQuery {
             .addAndedClause(
                 new TermQuery(
                     new Term(
-                        LuceneFields.L_FIELD, CalendarItem.INDEX_FIELD_ITEM_CLASS + ":private")),
+                        LuceneFields.L_FIELD, Appointment.INDEX_FIELD_ITEM_CLASS + ":private")),
                 false);
       }
     }
