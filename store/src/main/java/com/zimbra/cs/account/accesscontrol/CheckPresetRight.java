@@ -144,7 +144,7 @@ public class CheckPresetRight extends CheckRight {
 
         if (adminRight) {
             // if the grantee is no longer legitimate, e.g. not an admin any more, ignore all his grants
-            if (!RightBearer.isValidGranteeForAdminRights(GranteeType.GT_USER, mGranteeMailTarget)) {
+            if (!RightBearer.isValidGranteeForRight(GranteeType.GT_USER, mGranteeMailTarget, mRightNeeded)) {
                 return null;
             }
 
@@ -318,7 +318,15 @@ public class CheckPresetRight extends CheckRight {
             return false;
         }
 
-        if (!CheckRight.rightApplicableOnTargetType(mTargetType, mRightNeeded, mCanDelegateNeeded)) {
+        // Login-as rights can also be checked on global/domain targets
+        // ("can he log in as the accounts under this target?"), e.g.
+        // zmprov ckr global <admin> adminLoginAs
+        boolean loginAsOnContainer = !mCanDelegateNeeded
+                && RightBearer.isLoginAsRight(mRightNeeded)
+                && (mTargetType == TargetType.global || mTargetType == TargetType.domain);
+
+        if (!loginAsOnContainer
+                && !CheckRight.rightApplicableOnTargetType(mTargetType, mRightNeeded, mCanDelegateNeeded)) {
             return false;
         }
 

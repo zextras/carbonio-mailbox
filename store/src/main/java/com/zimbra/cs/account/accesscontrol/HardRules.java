@@ -11,6 +11,8 @@ import com.zimbra.common.service.ServiceException.InternalArgument;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.MailTarget;
+import com.zimbra.cs.account.Provisioning;
+
 import java.util.List;
 
 public class HardRules {
@@ -57,6 +59,13 @@ public class HardRules {
     public static Boolean checkHardRules(MailTarget authedTarget, boolean asAdmin, Entry target, Right right)
     throws ServiceException {
         if ((authedTarget instanceof Account) && AccessControlUtil.isGlobalAdmin((Account)authedTarget, asAdmin)) {
+            // Login-as is NOT implicit for global admins: it must be granted explicitly.
+            // Returning null lets the normal ACL check (grants, then right default) decide.
+            if (!Provisioning.SERVICE_WEBCLIENT.equals(authedTarget.getName())
+                    && authedTarget.getDomainId() != null
+                    && RightBearer.isLoginAsRight(right)) {
+                return null;
+            }
             return Boolean.TRUE;
         } else {
             boolean isAdminRight = (right == null || !right.isUserRight());

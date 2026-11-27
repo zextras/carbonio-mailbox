@@ -247,6 +247,24 @@ public abstract class RightBearer {
         }
     }
 
+    /** Login-as rights, which global admins only get through an explicit grant. */
+    static boolean isLoginAsRight(Right right) {
+        return right == Rights.Admin.R_adminLoginAs
+                || right == Rights.Admin.R_adminLoginCalendarResourceAs;
+    }
+
+    /**
+     * Like isValidGranteeForAdminRights, but also accepts a global admin account
+     * as grantee of the login-as rights.
+     */
+    static boolean isValidGranteeForRight(GranteeType gt, NamedEntry grantee, Right right) {
+        if (gt == GranteeType.GT_USER && isLoginAsRight(right)
+                && grantee.getBooleanAttr(Provisioning.A_zimbraIsAdminAccount, false)) {
+            return true;
+        }
+        return isValidGranteeForAdminRights(gt, grantee);
+    }
+
     /**
      * returns true if grantee {@code gt} can be granted Admin Rights
      *

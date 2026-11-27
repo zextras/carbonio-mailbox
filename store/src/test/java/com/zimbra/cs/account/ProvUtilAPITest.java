@@ -114,6 +114,10 @@ class ProvUtilAPITest {
     return runCommand(new String[]{"ca", accountMail, "password"});
   }
 
+  private String createAccount(String accountMail, String attribute, String value) throws Exception {
+    return runCommand(new String[]{"ca", accountMail, "password", attribute, value});
+  }
+
   private String runCommand(String... commandWithArgs) throws Exception {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
@@ -299,6 +303,69 @@ class ProvUtilAPITest {
   @Test
   void testCheckRightUsage() {
     assertCommandThrows(() -> runCommand(new String[]{"ckr", "blah"}));
+  }
+
+  @Test
+  void adminLoginAsIsDeniedWithoutExplicitGrant() throws Exception {
+    String admin = "global-admin@test.com";
+    createAccount(
+        admin,
+        Provisioning.A_zimbraIsAdminAccount,
+        "TRUE");
+    String target = "target@test.com";
+    createAccount(target);
+
+    Assertions.assertEquals(
+        "DENIED\n", runCommand("ckr", "account", target, admin, "adminLoginAs"));
+  }
+
+  @Test
+  void adminLoginAsIsAllowedWithExplicitGrant() throws Exception {
+    String admin = "global-admin@test.com";
+    createAccount(
+        admin,
+        Provisioning.A_zimbraIsAdminAccount,
+        "TRUE");
+    String target = "target@test.com";
+    createAccount(target);
+
+    ByteArrayOutputStream grantError = new ByteArrayOutputStream();
+    Assertions.assertDoesNotThrow(
+        () ->
+            runCommand(
+                new ByteArrayOutputStream(),
+                grantError,
+                "grantRight",
+                "global",
+                "usr",
+                admin,
+                "adminLoginAs"),
+        grantError::toString);
+
+    Assertions.assertTrue(
+        runCommand("ckr", "account", target, admin, "adminLoginAs").startsWith("ALLOWED\n"));
+  }
+
+  @Test
+  void adminLoginAsIsApplicableOnGlobalAndDomainTargets() throws Exception {
+    String admin = "delegated-admin@test.com";
+    createAccount(
+        admin,
+        Provisioning.A_zimbraIsDelegatedAdminAccount,
+        "TRUE");
+
+    runCommand("grantRight", "global", "usr", admin, "adminLoginAs");
+    runCommand("grantRight", "domain", "test.com", "usr", admin, "adminLoginAs");
+
+    Assertions.assertTrue(
+        runCommand("ckr", "global", admin, "adminLoginAs").startsWith("ALLOWED\n"));
+    Assertions.assertTrue(
+        runCommand("ckr", "domain", "test.com", admin, "adminLoginAs").startsWith("ALLOWED\n"));
+
+    Assertions.assertEquals(
+        "DENIED\n", runCommand("ckr", "global", admin, "modifyAccount"));
+    Assertions.assertEquals(
+        "DENIED\n", runCommand("ckr", "domain", "test.com", admin, "modifyAccount"));
   }
 
   //////////////////////////////// MAILBOX

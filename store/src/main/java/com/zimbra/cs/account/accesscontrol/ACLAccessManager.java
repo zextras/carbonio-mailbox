@@ -393,6 +393,16 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
       allowed = true;
     }
 
+    // Global admins can always grant/revoke any right, including the login-as
+    // rights that HardRules no longer allows them implicitly.
+    if (!allowed
+            && canDelegateNeeded
+            && RightBearer.isLoginAsRight(rightNeeded)
+            && grantee instanceof Account
+            && AccessControlUtil.isGlobalAdmin((Account) grantee, asAdmin)) {
+      return true;
+    }
+
     return allowed;
   }
 
