@@ -4680,7 +4680,6 @@ public abstract class CalendarItem extends MailItem {
     }
   }
 
-  @Override
   MailItem getRevision(int version) throws ServiceException {
     if (version == mVersion) {
       return this;

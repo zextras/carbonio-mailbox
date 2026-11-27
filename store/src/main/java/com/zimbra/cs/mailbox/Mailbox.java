@@ -3481,7 +3481,11 @@ public class Mailbox implements MailboxStore {
     boolean success = false;
     try {
       beginTransaction("getItemRevision", octxt);
-      MailItem revision = checkAccess(getItemById(id, type, fromDumpster)).getRevision(version);
+      MailItem item = checkAccess(getItemById(id, type, fromDumpster));
+      MailItem revision =
+          item instanceof CalendarItem
+              ? ((CalendarItem) item).getRevision(version)
+              : (item.getVersion() == version ? item : null);
       success = true;
       return revision;
     } finally {

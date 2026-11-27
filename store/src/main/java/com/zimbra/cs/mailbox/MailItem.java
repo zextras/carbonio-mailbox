@@ -2156,11 +2156,6 @@ public abstract class MailItem
     return mblob;
   }
 
-  // do *not* make this public, as it'd skirt Mailbox-level synchronization and caching
-  MailItem getRevision(int version) throws ServiceException {
-    return version == mVersion ? this : null;
-  }
-
   /**
    * Recalculates the size, metadata, etc. for an existing MailItem and persists that information to
    * the database. Maintains any existing mutable metadata. Updates mailbox and folder sizes
