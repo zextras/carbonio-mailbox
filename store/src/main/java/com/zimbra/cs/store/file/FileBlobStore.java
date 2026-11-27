@@ -15,7 +15,6 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.FileCache;
 import com.zimbra.common.util.FileUtil;
-import com.zimbra.common.util.SystemUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.store.Blob;
@@ -275,14 +274,6 @@ public class FileBlobStore extends StoreManager {
         short srcVolumeId = blob.getVolumeId();
         if (srcVolumeId == volume.getId()) {
             boolean renamed = srcFile.renameTo(destFile);
-            if (SystemUtil.ON_WINDOWS) {
-                // On Windows renameTo fails if the dest already exists.  So delete
-                // the destination and try the rename again
-                if (!renamed && destFile.exists()) {
-                    destFile.delete();
-                    renamed = srcFile.renameTo(destFile);
-                }
-            }
             if (!renamed)
                 throw new IOException("Unable to rename " + srcPath + " to " + destPath);
         } else {

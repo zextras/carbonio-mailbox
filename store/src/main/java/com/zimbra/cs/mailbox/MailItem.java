@@ -25,7 +25,6 @@ import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.EmailUtil;
 import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.StringUtil;
-import com.zimbra.common.util.SystemUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.GuestAccount;
@@ -2143,9 +2142,7 @@ public abstract sealed class MailItem
     MailboxBlob mblob = null;
     if (staged != null) {
       StoreManager sm = StoreManager.getInstance();
-      // under windows, a rename will fail if the incoming file is open
-      if (SystemUtil.ON_WINDOWS) mblob = sm.link(staged, mMailbox, mId, getSavedSequence());
-      else mblob = sm.renameTo(staged, mMailbox, mId, getSavedSequence());
+      mblob = sm.renameTo(staged, mMailbox, mId, getSavedSequence());
       mMailbox.markOtherItemDirty(mblob);
     }
     mBlob = null;

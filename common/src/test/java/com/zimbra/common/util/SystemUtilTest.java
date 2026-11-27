@@ -50,9 +50,4 @@ public class SystemUtilTest {
   void getProductVersionReadsPackageManifest() {
     assertDoesNotThrow(SystemUtil::getProductVersion);
   }
-
-  @Test
-  void onWindowsMatchesOsName() {
-    assertEquals(System.getProperty("os.name").toLowerCase().startsWith("win"), SystemUtil.ON_WINDOWS);
-  }
 }
