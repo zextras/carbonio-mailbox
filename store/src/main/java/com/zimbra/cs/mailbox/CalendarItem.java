@@ -4617,9 +4617,146 @@ public abstract class CalendarItem extends MailItem {
     return super.move(target);
   }
 
+  @Override
+  public long getTotalSize() throws ServiceException {
+    long size = mData.size;
+    if (isTagged(Flag.FlagInfo.VERSIONED)) {
+      for (MailItem revision : loadCalendarItemRevisions()) {
+        size += revision.getSize();
+      }
+    }
+    return size;
+  }
+
+  @Override
+  boolean lastRevisionUsesBlob() throws ServiceException {
+    if (isTagged(Flag.FlagInfo.VERSIONED)) {
+      List<MailItem> revisions = loadCalendarItemRevisions();
+      if (!revisions.isEmpty()) {
+        MailItem lastRev = revisions.get(revisions.size() - 1);
+        return lastRev.getSavedSequence() == getSavedSequence();
+      }
+    }
+    return false;
+  }
+
+  @Override
+  void purgeRevisionsOverLimit(int maxNumRevisions, Folder folder) throws ServiceException {
+    // Purge revisions and their blobs beyond revision count limit.
+    if (maxNumRevisions > 0 && isTagged(Flag.FlagInfo.VERSIONED)) {
+      List<MailItem> revisions = loadCalendarItemRevisions();
+      int numRevsToPurge = revisions.size() - (maxNumRevisions - 1); // -1 for main item
+      if (numRevsToPurge > 0) {
+        List<MailItem> toPurge = new ArrayList<>();
+        int numPurged = 0;
+        for (Iterator<MailItem> it = revisions.iterator();
+            it.hasNext() && numPurged < numRevsToPurge;
+            numPurged++) {
+          MailItem revision = it.next();
+          toPurge.add(revision);
+          it.remove();
+        }
+
+        // The following logic depends on version, mod_metadata and mod_content each being
+        // monotonically increasing in the revisions list. (f(n) <= f(n+1))
+
+        // Filter out blobs that are still in use; mark the rest for deletion.
+        int oldestRemainingSavedSequence =
+            revisions.isEmpty() ? mData.modContent : revisions.get(0).getSavedSequence();
+        for (MailItem revision : toPurge) {
+          if (revision.getSavedSequence() < oldestRemainingSavedSequence) {
+            mMailbox.updateSize(-revision.getSize());
+            folder.updateSize(0, 0, -revision.getSize());
+            revision.markBlobForDeletion();
+          }
+        }
+        // Purge revisions from db.
+        int highestPurgedVer = toPurge.get(toPurge.size() - 1).getVersion();
+        DbMailItem.purgeRevisions(this, highestPurgedVer, true);
+      }
+      if (revisions.isEmpty()) {
+        removeTag(mMailbox.getFlagById(Flag.ID_VERSIONED));
+      }
+    }
+  }
+
+  @Override
+  MailItem getRevision(int version) throws ServiceException {
+    if (version == mVersion) {
+      return this;
+    }
+    if (version <= 0 || version > mVersion || !isTagged(Flag.FlagInfo.VERSIONED)) {
+      return null;
+    }
+    for (MailItem revision : loadCalendarItemRevisions()) {
+      if (revision.mVersion == version) return revision;
+    }
+    return null;
+  }
+
+  @Override
+  void purgeRevision(int version, boolean includeOlderRevisions) throws ServiceException {
+    if (!canAccess(ACL.RIGHT_WRITE))
+      throw ServiceException.PERM_DENIED("you do not have the necessary permissions on the item");
+    PendingDelete info = new PendingDelete();
+    for (MailItem revision : loadCalendarItemRevisions()) {
+      if (revision.getVersion() == version
+          || (includeOlderRevisions && revision.getVersion() <= version)) {
+        try {
+          info.blobs.add(revision.getBlob());
+          info.blobDigests.add(revision.getDigest());
+          info.size += revision.getSize();
+        } catch (Exception e) {
+          ZimbraLog.mailbox.error(
+              "missing blob for id: " + revision.getId() + ", revision: " + revision.getVersion());
+        }
+      }
+    }
+    DbMailItem.purgeRevisions(this, version, includeOlderRevisions);
+    getMailbox().markOtherItemDirty(info);
+    getMailbox().updateSize(-info.size);
+    mRevisions = null;
+  }
+
+  @Override
+  void copyRevisions(StoreManager sm, int copyId, boolean inDumpster)
+      throws IOException, ServiceException {
+    for (MailItem revision : loadCalendarItemRevisions()) {
+      MailboxBlob srcRevBlob = revision.getBlob();
+      String revLocator = null;
+      if (srcRevBlob != null) {
+        MailboxBlob copyRevBlob =
+            sm.copy(srcRevBlob, mMailbox, copyId, revision.getSavedSequence());
+        mMailbox.markOtherItemDirty(copyRevBlob);
+        revLocator = copyRevBlob.getLocator();
+      }
+      DbMailItem.copyRevision(revision, copyId, revLocator, inDumpster);
+    }
+  }
+
+  @Override
+  List<MailItem> itemAndRevisions() throws ServiceException {
+    List<MailItem> items = new ArrayList<>(3);
+    items.add(this);
+    items.addAll(loadCalendarItemRevisions());
+    return items;
+  }
+
+  List<MailItem> loadCalendarItemRevisions() throws ServiceException {
+    if (mRevisions == null) {
+      mRevisions = new ArrayList<>();
+      if (isTagged(Flag.FlagInfo.VERSIONED)) {
+        for (UnderlyingData data : DbMailItem.getRevisionInfo(this, inDumpster()))
+          mRevisions.add(constructItem(mMailbox, data));
+      }
+    }
+
+    return mRevisions;
+  }
+
   private boolean snapshotCurrentVersion(Folder folder) throws ServiceException {
     if (calendarItemMaxRevisions() == 1) return true;
-    loadRevisions();
+    loadCalendarItemRevisions();
 
     // Don't take two revisions for the same data.
     if (!mRevisions.isEmpty()) {

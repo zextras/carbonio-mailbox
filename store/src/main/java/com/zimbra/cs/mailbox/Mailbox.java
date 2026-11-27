@@ -3501,7 +3501,10 @@ public class Mailbox implements MailboxStore {
     try {
       beginTransaction("getAllRevisions", octxt);
       T item = (T) checkAccess(getItemById(id, type));
-      List<MailItem> previousRevisions = item.loadRevisions();
+      List<MailItem> previousRevisions =
+          item instanceof CalendarItem
+              ? ((CalendarItem) item).loadCalendarItemRevisions()
+              : new ArrayList<>();
       List<T> result = new ArrayList<>(previousRevisions.size());
       for (MailItem rev : previousRevisions) {
         result.add((T) rev);

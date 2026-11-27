@@ -1046,13 +1046,7 @@ public abstract class MailItem
    * that have a blob, this is the sum of the size in bytes of the raw blobs.
    */
   public long getTotalSize() throws ServiceException {
-    long size = mData.size;
-    if (isTagged(Flag.FlagInfo.VERSIONED)) {
-      for (MailItem revision : loadRevisions()) {
-        size += revision.getSize();
-      }
-    }
-    return size;
+    return mData.size;
   }
 
   public String getSubject() {
@@ -2121,18 +2115,7 @@ public abstract class MailItem
       if (!canAccess(ACL.RIGHT_WRITE)) {
         throw ServiceException.PERM_DENIED("you do not have the necessary permissions on the item");
       }
-      boolean delete = true;
-      // don't delete blob if last revision uses it
-      if (isTagged(Flag.FlagInfo.VERSIONED)) {
-        List<MailItem> revisions = loadRevisions();
-        if (!revisions.isEmpty()) {
-          MailItem lastRev = revisions.get(revisions.size() - 1);
-          if (lastRev.getSavedSequence() == getSavedSequence()) {
-            delete = false;
-          }
-        }
-      }
-      if (delete) {
+      if (!lastRevisionUsesBlob()) {
         markBlobForDeletion();
       }
     }
@@ -2171,10 +2154,20 @@ public abstract class MailItem
     return mblob;
   }
 
+  boolean lastRevisionUsesBlob() throws ServiceException {
+    if (isTagged(Flag.FlagInfo.VERSIONED)) {
+      List<MailItem> revisions = loadRevisions();
+      if (!revisions.isEmpty()) {
+        MailItem lastRev = revisions.get(revisions.size() - 1);
+        return lastRev.getSavedSequence() == getSavedSequence();
+      }
+    }
+    return false;
+  }
+
   public List<MailItem> loadRevisions() throws ServiceException {
     if (mRevisions == null) {
       mRevisions = new ArrayList<>();
-
       if (isTagged(Flag.FlagInfo.VERSIONED)) {
         for (UnderlyingData data : DbMailItem.getRevisionInfo(this, inDumpster()))
           mRevisions.add(constructItem(mMailbox, data));
@@ -2197,6 +2190,15 @@ public abstract class MailItem
     // now that we've made a copy of the item, we can increment the version number
     mVersion++;
 
+    purgeRevisionsOverLimit(maxNumRevisions, folder);
+
+    metadataChanged(updateFolderMODSEQ);
+    if (persist) {
+      saveData(new DbMailItem(mMailbox));
+    }
+  }
+
+  void purgeRevisionsOverLimit(int maxNumRevisions, Folder folder) throws ServiceException {
     // Purge revisions and their blobs beyond revision count limit.
     if (maxNumRevisions > 0 && isTagged(Flag.FlagInfo.VERSIONED)) {
       List<MailItem> revisions = loadRevisions();
@@ -2234,11 +2236,6 @@ public abstract class MailItem
       if (revisions.isEmpty()) {
         removeTag(mMailbox.getFlagById(Flag.ID_VERSIONED));
       }
-    }
-
-    metadataChanged(updateFolderMODSEQ);
-    if (persist) {
-      saveData(new DbMailItem(mMailbox));
     }
   }
 
@@ -2697,17 +2694,7 @@ public abstract class MailItem
     // to another,
     // it is never desirable to copy old revisions. (bug 55070)
     if (inDumpster) {
-      for (MailItem revision : loadRevisions()) {
-        MailboxBlob srcRevBlob = revision.getBlob();
-        String revLocator = null;
-        if (srcRevBlob != null) {
-          MailboxBlob copyRevBlob =
-              sm.copy(srcRevBlob, mMailbox, copyId, revision.getSavedSequence());
-          mMailbox.markOtherItemDirty(copyRevBlob);
-          revLocator = copyRevBlob.getLocator();
-        }
-        DbMailItem.copyRevision(revision, copyId, revLocator, inDumpster);
-      }
+      copyRevisions(sm, copyId, inDumpster);
     }
 
     MailItem copy = constructItem(mMailbox, data);
@@ -2744,6 +2731,21 @@ public abstract class MailItem
    *       <li><tt>service.PERM_DENIED</tt> - if you don't have sufficient permissions
    *     </ul>
    */
+  void copyRevisions(StoreManager sm, int copyId, boolean inDumpster)
+      throws IOException, ServiceException {
+    for (MailItem revision : loadRevisions()) {
+      MailboxBlob srcRevBlob = revision.getBlob();
+      String revLocator = null;
+      if (srcRevBlob != null) {
+        MailboxBlob copyRevBlob =
+            sm.copy(srcRevBlob, mMailbox, copyId, revision.getSavedSequence());
+        mMailbox.markOtherItemDirty(copyRevBlob);
+        revLocator = copyRevBlob.getLocator();
+      }
+      DbMailItem.copyRevision(revision, copyId, revLocator, inDumpster);
+    }
+  }
+
   MailItem icopy(Folder target, int copyId, String copyUuid) throws IOException, ServiceException {
     if (!isCopyable()) throw MailServiceException.CANNOT_COPY(mId);
     if (!target.canContain(this)) throw MailServiceException.CANNOT_CONTAIN();
@@ -3441,6 +3443,13 @@ public abstract class MailItem
    * @perms {@link ACL#RIGHT_DELETE} on the item
    * @return A fully-populated <tt>PendingDelete</tt> object.
    */
+  List<MailItem> itemAndRevisions() throws ServiceException {
+    List<MailItem> items = new ArrayList<>(3);
+    items.add(this);
+    items.addAll(loadRevisions());
+    return items;
+  }
+
   PendingDelete getDeletionInfo() throws ServiceException {
     if (!canAccess(ACL.RIGHT_DELETE)) {
       throw ServiceException.PERM_DENIED("you do not have the required rights on the item");
@@ -3479,10 +3488,7 @@ public abstract class MailItem
         }
       }
 
-      List<MailItem> items = new ArrayList<>(3);
-      items.add(this);
-      items.addAll(loadRevisions());
-      for (MailItem revision : items) {
+      for (MailItem revision : itemAndRevisions()) {
         try {
           info.blobs.add(revision.getBlob());
         } catch (Exception e) {
