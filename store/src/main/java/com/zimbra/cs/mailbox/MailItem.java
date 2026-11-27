@@ -93,8 +93,6 @@ public abstract class MailItem
      * Mailbox}.
      */
     MOUNTPOINT(13, MailItemType.MOUNTPOINT),
-    /** Item is a {@link Chat} */
-    CHAT(16, MailItemType.CHAT),
     CALENDAR_GROUP(17, MailItemType.CALENDAR_GROUP);
 
     private static final Map<Byte, Type> BYTE2TYPE;
@@ -1820,8 +1818,6 @@ public abstract class MailItem
         return new Appointment(mbox, data, skipCache);
       case MOUNTPOINT:
         return new Mountpoint(mbox, data, skipCache);
-      case CHAT:
-        return new Chat(mbox, data, skipCache);
       case VIRTUAL_CONVERSATION:
         return new VirtualConversation(mbox, data, skipCache);
       default:
@@ -1852,7 +1848,6 @@ public abstract class MailItem
       case VIRTUAL_CONVERSATION:
       case CONVERSATION:
         return MailServiceException.NO_SUCH_CONV(id);
-      case CHAT:
       case MESSAGE:
         return MailServiceException.NO_SUCH_MSG(id);
       case CONTACT:
@@ -1909,9 +1904,6 @@ public abstract class MailItem
       return true;
     } else if (desired == Type.CONVERSATION && actual == Type.VIRTUAL_CONVERSATION) {
       return true;
-    } else if (desired == Type.MESSAGE && actual == Type.CHAT) {
-      return true;
-      // failure: found something, but it's not the type you were looking for
     } else {
       return false;
     }
@@ -3354,7 +3346,7 @@ public abstract class MailItem
         // we're doing an old-item expunge or the like rather than a single delete/empty op
         info.cascadeIds =
             DbMailItem.markDeletionTargets(
-                mbox, info.itemIds.getIds(EnumSet.of(Type.MESSAGE, Type.CHAT)), info.modifiedIds);
+                mbox, info.itemIds.getIds(EnumSet.of(Type.MESSAGE)), info.modifiedIds);
         if (info.cascadeIds != null) {
           info.modifiedIds.removeAll(info.cascadeIds);
         }

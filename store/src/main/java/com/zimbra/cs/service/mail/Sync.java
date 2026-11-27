@@ -213,7 +213,6 @@ public class Sync extends MailDocumentHandler {
       } else {
         TypedIdList idList = mbox.getItemIds(octxt, folder.getId());
         initialMsgSync(f, idList, octxt, mbox, folder, messageSyncStart);
-        initialItemSync(f, MailConstants.E_CHAT, idList.getIds(MailItem.Type.CHAT));
         initialItemSync(f, MailConstants.E_CONTACT, idList.getIds(MailItem.Type.CONTACT));
         initialCalendarSync(f, idList, octxt, mbox, folder, calendarStart);
         initialCovSync(f, idList, octxt, mbox, folder, messageSyncStart);
@@ -551,8 +550,6 @@ public class Sync extends MailDocumentHandler {
       case VIRTUAL_CONVERSATION:
       case CONVERSATION:
         return MailConstants.E_CONV;
-      case CHAT:
-        return MailConstants.E_CHAT;
       case MESSAGE:
         return MailConstants.E_MSG;
       case CONTACT:
@@ -577,8 +574,6 @@ public class Sync extends MailDocumentHandler {
       return MailItem.Type.CONVERSATION;
     } else if (name.equals(MailConstants.E_MSG)) {
       return MailItem.Type.MESSAGE;
-    } else if (name.equals(MailConstants.E_CHAT)) {
-      return MailItem.Type.CHAT;
     } else if (name.equals(MailConstants.E_CONTACT)) {
       return MailItem.Type.CONTACT;
     } else if (name.equals(MailConstants.E_APPOINTMENT)) {

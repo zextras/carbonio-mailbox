@@ -10,7 +10,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.mail.type.CalendarItemInfo;
-import com.zimbra.soap.mail.type.ChatSummary;
 import com.zimbra.soap.mail.type.ContactInfo;
 import com.zimbra.soap.mail.type.ConversationSummary;
 import com.zimbra.soap.mail.type.MessageSummary;
@@ -79,8 +78,7 @@ public class SyncResponse {
     @XmlElement(name = MailConstants.E_CONTACT /* cn */, type = ContactInfo.class),
     @XmlElement(name = MailConstants.E_APPOINTMENT /* appt */, type = CalendarItemInfo.class),
     @XmlElement(name = MailConstants.E_CONV /* c */, type = ConversationSummary.class),
-    @XmlElement(name = MailConstants.E_MSG /* m */, type = MessageSummary.class),
-    @XmlElement(name = MailConstants.E_CHAT /* chat */, type = ChatSummary.class)
+    @XmlElement(name = MailConstants.E_MSG /* m */, type = MessageSummary.class)
   })
   private List<Object> items = Lists.newArrayList();
 

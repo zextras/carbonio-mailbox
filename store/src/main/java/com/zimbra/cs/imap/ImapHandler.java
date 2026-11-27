@@ -2351,7 +2351,7 @@ public abstract class ImapHandler {
 
             //bug 6418 ..filter out folders which are contacts and chat for LIST command.
             //  chat has item type of message.  hence ignoring the chat folder by name.
-            if (isMailFolders && (folderStore.isChatsFolder() || (folderStore.getName().equals ("Chats")))) {
+            if (isMailFolders && folderStore.getName().equals("Chats")) {
                 continue;
             }
             /* In remote case, list includes children of mountpoints - filter them out here and instead
@@ -2537,7 +2537,7 @@ public abstract class ImapHandler {
                     boolean isMailFolders =  Provisioning.getInstance().getLocalServer().isImapDisplayMailFoldersOnly();
                     for (FolderStore folder : mbox.getUserRootSubfolderHierarchy(getContext())) {
                         //  chat has item type of message.hence ignoring the chat folder by name.
-                        if ((isMailFolders) && (folder.isChatsFolder() || (folder.getName().equals ("Chats")))) {
+                        if (isMailFolders && folder.getName().equals("Chats")) {
                                 continue;
                         }
                         String fAcctId = folder.getFolderItemIdentifier().accountId;

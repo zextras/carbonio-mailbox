@@ -86,7 +86,7 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
     }
 
     public static final Set<MailItem.Type> SUPPORTED_TYPES = EnumSet.of(
-            MailItem.Type.MESSAGE, MailItem.Type.CHAT, MailItem.Type.CONTACT);
+            MailItem.Type.MESSAGE, MailItem.Type.CONTACT);
 
     static final int IMAP_FLAGS = Flag.BITMASK_UNREAD | Flag.BITMASK_FLAGGED | Flag.BITMASK_DELETED |
                                   Flag.BITMASK_DRAFT  | Flag.BITMASK_REPLIED | Flag.BITMASK_FORWARDED |

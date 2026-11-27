@@ -13,7 +13,6 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.soap.mail.type.ChatMessageInfo;
 import com.zimbra.soap.mail.type.MessageInfo;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -24,7 +23,6 @@ public class RemoveAttachmentsResponse {
      * @zm-api-field-description Information about the message
      */
     @XmlElements({
-        @XmlElement(name=MailConstants.E_CHAT /* chat */, type=ChatMessageInfo.class),
         @XmlElement(name=MailConstants.E_MSG /* m */, type=MessageInfo.class)
     })
     private MessageInfo message;

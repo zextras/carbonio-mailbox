@@ -151,7 +151,6 @@ public class DbMailItem {
       stmt.setString(pos++, data.getBlobDigest());
       switch (type) {
         case MESSAGE:
-        case CHAT:
         case FOLDER:
           stmt.setInt(pos++, data.unreadCount);
           break;
@@ -2050,7 +2049,7 @@ public class DbMailItem {
           + ')';
 
   private static final String MESSAGE_TYPES =
-      "(" + MailItem.Type.MESSAGE.toByte() + ',' + MailItem.Type.CHAT.toByte() + ')';
+      "(" + MailItem.Type.MESSAGE.toByte() + ')';
 
 
   private static final String DUMPSTER_TYPES =
@@ -2060,8 +2059,6 @@ public class DbMailItem {
           + MailItem.Type.CONTACT.toByte()
           + ','
           + MailItem.Type.APPOINTMENT.toByte()
-          + ','
-          + MailItem.Type.CHAT.toByte()
           + ')';
 
   public static final String NON_SEARCHABLE_TYPES =
@@ -3296,7 +3293,6 @@ public class DbMailItem {
         case CONTACT:
           info.contacts++;
           break;
-        case CHAT:
         case MESSAGE:
           isMessage = true;
           break;
@@ -3523,8 +3519,6 @@ public class DbMailItem {
   static final String IMAP_TYPES =
       "("
           + MailItem.Type.MESSAGE.toByte()
-          + ","
-          + MailItem.Type.CHAT.toByte()
           + ','
           + MailItem.Type.CONTACT.toByte()
           + ")";

@@ -130,7 +130,6 @@ import com.zimbra.cs.redolog.op.ColorItem;
 import com.zimbra.cs.redolog.op.CopyItem;
 import com.zimbra.cs.redolog.op.CreateCalendarItemPlayer;
 import com.zimbra.cs.redolog.op.CreateCalendarItemRecorder;
-import com.zimbra.cs.redolog.op.CreateChat;
 import com.zimbra.cs.redolog.op.CreateContact;
 import com.zimbra.cs.redolog.op.CreateFolder;
 import com.zimbra.cs.redolog.op.CreateFolderPath;
@@ -167,7 +166,6 @@ import com.zimbra.cs.redolog.op.RenameItem;
 import com.zimbra.cs.redolog.op.RenameItemPath;
 import com.zimbra.cs.redolog.op.RenameMailbox;
 import com.zimbra.cs.redolog.op.RevokeAccess;
-import com.zimbra.cs.redolog.op.SaveChat;
 import com.zimbra.cs.redolog.op.SaveDraft;
 import com.zimbra.cs.redolog.op.SetActiveSyncDisabled;
 import com.zimbra.cs.redolog.op.SetCalendarItem;
@@ -273,7 +271,6 @@ public class Mailbox implements MailboxStore {
   public static final int ID_FOLDER_ROOT = FolderConstants.ID_FOLDER_ROOT; // 11;
 
   public static final int ID_FOLDER_AUTO_CONTACTS = FolderConstants.ID_FOLDER_AUTO_CONTACTS; // 13;
-  public static final int ID_FOLDER_IM_LOGS = FolderConstants.ID_FOLDER_IM_LOGS; // 14;
   // ID_FOLDER_PROFILE Was used for folder related to ProfileServlet which was used in pre-release
   // Iron Maiden only.
   // Old mailboxes may still contain a system folder with id 18
@@ -2306,19 +2303,6 @@ public class Mailbox implements MailboxStore {
           "Emailed Contacts",
           system,
           MailItem.Type.CONTACT,
-          0,
-          MailItem.DEFAULT_COLOR_RGB,
-          null,
-          null,
-          null);
-      Folder.create(
-          ID_FOLDER_IM_LOGS,
-          UUIDUtil.generateUUID(),
-          this,
-          userRoot,
-          "Chats",
-          system,
-          MailItem.Type.MESSAGE,
           0,
           MailItem.DEFAULT_COLOR_RGB,
           null,
@@ -4658,10 +4642,6 @@ public class Mailbox implements MailboxStore {
 
   public Mountpoint getMountpointById(OperationContext octxt, int mptId) throws ServiceException {
     return (Mountpoint) getItemById(octxt, mptId, MailItem.Type.MOUNTPOINT);
-  }
-
-  public Chat getChatById(OperationContext octxt, int id) throws ServiceException {
-    return (Chat) getItemById(octxt, id, MailItem.Type.CHAT);
   }
 
   public Contact getContactById(OperationContext octxt, int id) throws ServiceException {
@@ -9932,113 +9912,6 @@ public class Mailbox implements MailboxStore {
       success = true;
     } finally {
       endTransaction(success);
-    }
-  }
-
-  public Chat createChat(
-      OperationContext octxt, ParsedMessage pm, int folderId, int flags, String[] tags)
-      throws IOException, ServiceException {
-    if (pm == null) {
-      throw ServiceException.INVALID_REQUEST(
-          "null ParsedMessage when adding chat to mailbox " + mId, null);
-    }
-
-    // write the chat content directly to the mailbox's blob staging area
-    StoreManager sm = StoreManager.getInstance();
-    StagedBlob staged;
-    InputStream is = pm.getRawInputStream();
-    try {
-      staged = sm.stage(is, this);
-    } finally {
-      ByteUtil.closeStream(is);
-    }
-    String digest = staged.getDigest();
-    int size = (int) staged.getSize();
-
-    CreateChat redoRecorder = new CreateChat(mId, digest, size, folderId, flags, tags);
-    boolean success = false;
-    try {
-      beginTransaction("createChat", octxt, redoRecorder);
-
-      Tag.NormalizedTags ntags = new Tag.NormalizedTags(this, tags);
-
-      CreateChat redoPlayer = (octxt == null ? null : (CreateChat) octxt.getPlayer());
-      redoRecorder.setMessageBodyInfo(new ParsedMessageDataSource(pm), size);
-
-      int itemId =
-          getNextItemId(redoPlayer == null ? ID_AUTO_INCREMENT : redoPlayer.getMessageId());
-
-      Chat chat = Chat.create(itemId, getFolderById(folderId), pm, staged, false, flags, ntags);
-      redoRecorder.setMessageId(chat.getId());
-
-      MailboxBlob mblob = sm.link(staged, this, itemId, getOperationChangeID());
-      markOtherItemDirty(mblob);
-      // when we created the Chat, we used the staged locator/size/digest;
-      //   make sure that data actually matches the final blob in the store
-      chat.updateBlobData(mblob);
-
-      index.add(chat);
-      success = true;
-      return chat;
-    } finally {
-      endTransaction(success);
-      sm.quietDelete(staged);
-    }
-  }
-
-  public Chat updateChat(OperationContext octxt, ParsedMessage pm, int id)
-      throws IOException, ServiceException {
-    if (pm == null) {
-      throw ServiceException.INVALID_REQUEST(
-          "null ParsedMessage when updating chat " + id + " in mailbox " + mId, null);
-    }
-
-    // write the chat content directly to the mailbox's blob staging area
-    StoreManager sm = StoreManager.getInstance();
-    StagedBlob staged;
-    InputStream is = pm.getRawInputStream();
-    try {
-      staged = sm.stage(is, this);
-    } finally {
-      ByteUtil.closeStream(is);
-    }
-
-    String digest = staged.getDigest();
-    int size = (int) staged.getSize();
-
-    SaveChat redoRecorder = new SaveChat(mId, id, digest, size, -1, 0, null);
-    boolean success = false;
-    try {
-      beginTransaction("saveChat", octxt, redoRecorder);
-
-      SaveChat redoPlayer = (SaveChat) currentChange().getRedoPlayer();
-
-      redoRecorder.setMessageBodyInfo(new ParsedMessageDataSource(pm), size);
-
-      Chat chat = (Chat) getItemById(id, MailItem.Type.CHAT);
-
-      if (!chat.isMutable()) {
-        throw MailServiceException.IMMUTABLE_OBJECT(id);
-      }
-      if (!checkItemChangeID(chat)) {
-        throw MailServiceException.MODIFY_CONFLICT();
-      }
-
-      // content changed, so we're obliged to change the IMAP uid
-      int imapID = getNextItemId(redoPlayer == null ? ID_AUTO_INCREMENT : redoPlayer.getImapId());
-      redoRecorder.setImapId(imapID);
-
-      // update the content and increment the revision number
-      chat.setContent(staged, pm);
-
-      // NOTE: msg is now uncached (will this cause problems during commit/reindex?)
-      index.add(chat);
-
-      success = true;
-      return chat;
-    } finally {
-      endTransaction(success);
-      sm.quietDelete(staged);
     }
   }
 

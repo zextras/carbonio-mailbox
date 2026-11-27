@@ -4824,9 +4824,7 @@ public class ZMailbox implements MailboxStore {
   public ZimbraMailItem getItemById(OpContext octxt, ItemIdentifier id, MailItemType type)
       throws ServiceException {
     switch (type) {
-      case CHAT:
       case MESSAGE:
-        // ImapHandler suggests that chats have item type of message
         return getMessageById(id);
       case CONTACT:
         return getContact(id);

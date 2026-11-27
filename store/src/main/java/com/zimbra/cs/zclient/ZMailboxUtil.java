@@ -401,7 +401,7 @@ public class ZMailboxUtil implements DebugListener {
           "types",
           true,
           "list of types to search for"
-              + " (message,conversation,contact,appointment,document,task,wiki)");
+              + " (message,conversation,contact,appointment,document,wiki)");
   static Option O_URL = new Option("u", "url", true, "url to connect to");
   static Option O_VERBOSE = new Option("v", "verbose", false, "verbose output");
   static Option O_VIEW =
@@ -409,7 +409,7 @@ public class ZMailboxUtil implements DebugListener {
           "V",
           "view",
           true,
-          "default type for folder (appointment,contact,conversation,document,message,task,wiki)");
+          "default type for folder (appointment,contact,conversation,document,message,wiki)");
   static Option O_NO_VALIDATION =
       new Option(null, "noValidation", false, "don't validate file content");
   static Option O_DUMPSTER = new Option(null, "dumpster", false, "search in dumpster");

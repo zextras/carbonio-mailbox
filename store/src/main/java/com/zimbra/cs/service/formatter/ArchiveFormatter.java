@@ -31,7 +31,6 @@ import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.CalendarItem.Instance;
-import com.zimbra.cs.mailbox.Chat;
 import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.Conversation;
 import com.zimbra.cs.mailbox.DeliveryOptions;
@@ -326,8 +325,7 @@ public abstract class ArchiveFormatter extends Formatter {
         EnumSet.of(
             MailItem.Type.MESSAGE,
             MailItem.Type.CONTACT,
-            MailItem.Type.APPOINTMENT,
-            MailItem.Type.CHAT);
+            MailItem.Type.APPOINTMENT);
     ArchiveOutputStream aos = null;
     String types = context.getTypesString();
     MailboxMaintenance maintenance = null;
@@ -602,10 +600,6 @@ public abstract class ArchiveFormatter extends Formatter {
         } else {
           ext = "ics";
         }
-        break;
-
-      case CHAT:
-        ext = "chat";
         break;
 
       case CONTACT:
@@ -1404,37 +1398,6 @@ public abstract class ArchiveFormatter extends Formatter {
             }
           }
           break;
-        case CHAT:
-          Chat chat = (Chat) mi;
-          byte[] content = readArchiveEntry(ais, aie);
-          pm = new ParsedMessage(content, mi.getDate(), mbox.attachmentsIndexingEnabled());
-          fldr = createPath(context, fmap, path, MailItem.Type.CHAT);
-          if (root && r != Resolve.Reset) {
-            Chat oldChat = null;
-
-            try {
-              oldChat = mbox.getChatById(octxt, chat.getId());
-              if (oldChat.getFolderId() != fldr.getId()) {
-                oldChat = null;
-              }
-            } catch (Exception e) {
-            }
-            if (oldChat != null
-                && chat.getSender().equals(oldChat.getSender())
-                && chat.getSubject().equals(oldChat.getSubject())) {
-              if (r == Resolve.Replace) {
-                mbox.delete(octxt, oldChat.getId(), oldChat.getType());
-              } else {
-                oldItem = oldChat;
-                if (r == Resolve.Modify) newItem = mbox.updateChat(octxt, pm, oldItem.getId());
-              }
-            }
-          }
-          if (oldItem == null)
-            newItem =
-                mbox.createChat(octxt, pm, fldr.getId(), chat.getFlagBitmask(), chat.getTags());
-          break;
-
         case CONVERSATION:
           Conversation cv = (Conversation) mi;
 

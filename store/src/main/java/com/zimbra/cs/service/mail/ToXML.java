@@ -76,7 +76,6 @@ import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.CalendarItem.AlarmData;
 import com.zimbra.cs.mailbox.CalendarItem.Instance;
-import com.zimbra.cs.mailbox.Chat;
 import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.Contact.Attachment;
 import com.zimbra.cs.mailbox.ContactGroup;
@@ -2652,8 +2651,7 @@ public final class ToXML {
       boolean serializeType)
       throws ServiceException {
 
-    String name =
-        serializeType && item instanceof Chat ? MailConstants.E_CHAT : MailConstants.E_MSG;
+    String name = MailConstants.E_MSG;
     Element elem = parent.addNonUniqueElement(name);
     // DO NOT encode the item-id here, as some Invite-Messages-In-CalendarItems have special
     // item-id's

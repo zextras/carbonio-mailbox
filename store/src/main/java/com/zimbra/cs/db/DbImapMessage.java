@@ -391,7 +391,7 @@ public class DbImapMessage {
                 "  LEFT OUTER JOIN " + getTableName(mbox) + " imap " +
                 "  ON imap.mailbox_id = mi.mailbox_id AND imap.item_id = mi.id " +
                 "WHERE mi.mailbox_id = ? AND mi.folder_id = ? AND imap.item_id IS NULL " +
-                "AND mi.type IN (" + MailItem.Type.MESSAGE.toByte() + ", " + MailItem.Type.CHAT.toByte() + ")");
+                "AND mi.type = " + MailItem.Type.MESSAGE.toByte());
             int pos = 1;
             pos = DbMailItem.setMailboxId(stmt, mbox, pos);
             stmt.setInt(pos, folderId);
