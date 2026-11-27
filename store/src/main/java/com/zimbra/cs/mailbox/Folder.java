@@ -935,23 +935,13 @@ public class Folder extends MailItem implements FolderStore {
     data.metadata =
         encodeMetadata(
             color,
-            1,
-            1,
             custom,
             attributes,
             view,
-            null,
             new SyncData(url),
             id + 1,
-            0,
-            mbox.getOperationChangeID(),
-            -1,
-            0,
-            0,
-            0,
-            null,
-            false,
-            -1);
+            mbox.getOperationChangeID()
+        );
     data.contentChanged(mbox);
     ZimbraLog.mailop.debug("adding folder %s: id=%d, parentId=%d.", name, data.id, data.parentId);
     new DbMailItem(mbox).create(data);
@@ -1168,8 +1158,8 @@ public class Folder extends MailItem implements FolderStore {
     }
 
     // mark all messages in this folder as read in the database
-    if (ZimbraLog.mailop.isDebugEnabled() && targets.size() > 0) {
-      String state = unread ? "unread" : "read";
+    if (ZimbraLog.mailop.isDebugEnabled() && !targets.isEmpty()) {
+      String state = "read";
       String context = getMailopContext(this);
       for (List<Integer> ids : ListUtil.split(targets, 200)) {
         ZimbraLog.mailop.debug(
@@ -1213,7 +1203,7 @@ public class Folder extends MailItem implements FolderStore {
       effectiveACL = null;
     }
     // change the tag on the Folder itself, not on its contents
-    markItemModified(tag instanceof Flag ? Change.FLAGS : Change.TAGS);
+    markItemModified(Change.FLAGS);
     tagChanged(tag, newValue);
 
     if (ZimbraLog.mailop.isDebugEnabled()) {
@@ -1605,44 +1595,33 @@ public class Folder extends MailItem implements FolderStore {
 
   private static String encodeMetadata(
       Color color,
-      int metaVersion,
-      int version,
       CustomMetadata custom,
       byte attributes,
       Type view,
-      ACL rights,
       SyncData fsd,
       int uidnext,
-      long totalSize,
-      int modseq,
-      int imapRecent,
-      int imapRecentCutoff,
-      int deleted,
-      int deletedUnread,
-      RetentionPolicy rp,
-      boolean disableActiveSync,
-      int webOfflineSyncdDays) {
+      int modseq) {
     CustomMetadataList extended = (custom == null ? null : custom.asList());
     return encodeMetadata(
             new Metadata(),
             color,
-            metaVersion,
-            version,
+        1,
+        1,
             extended,
             attributes,
             view,
-            rights,
+        null,
             fsd,
             uidnext,
-            totalSize,
+        0,
             modseq,
-            imapRecent,
-            imapRecentCutoff,
-            deleted,
-            deletedUnread,
-            rp,
-            disableActiveSync,
-            webOfflineSyncdDays)
+        -1,
+        0,
+        0,
+        0,
+        null,
+        false,
+        -1)
         .toString();
   }
 

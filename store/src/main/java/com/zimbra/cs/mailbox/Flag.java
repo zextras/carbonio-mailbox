@@ -236,10 +236,6 @@ public final class Flag extends Tag {
         return (byte) (flagId > 0 || flagId < -MailItem.MAX_FLAG_COUNT ? -1 : -flagId - 1);
     }
 
-    public char toChar() {
-        return toChar(mId);
-    }
-
     public static char toChar(int flagId) {
         int index = getIndex(flagId);
         if (index < 0 || index >= INDEX2FLAG.length) {
