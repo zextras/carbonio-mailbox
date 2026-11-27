@@ -89,12 +89,6 @@ public class ContactAutoComplete {
             keys.add(key);
         }
 
-        public void appendEntries(AutoCompleteResult result) {
-            for (ContactEntry entry : result.entries) {
-                addEntry(entry);
-            }
-        }
-
         void clear() {
             entries.clear();
             keys.clear();
@@ -381,10 +375,6 @@ public class ContactAutoComplete {
         return mRequestedAcct.getId();
     }
 
-    public Collection<String> getEmailKeys() {
-        return mEmailKeys;
-    }
-
     public boolean includeGal() {
         return mIncludeGal;
     }
@@ -401,19 +391,6 @@ public class ContactAutoComplete {
         mSearchType = type;
     }
 
-    public AutoCompleteResult resolveEmailAddr(String str) throws ServiceException {
-           AutoCompleteResult result = new AutoCompleteResult(1);
-           result.rankings = new ContactRankings(getRequestedAcctId());
-           for (String addr : mRequestedAcct.getAllAddrsSet()) {
-               if (addr.equals(str)) {
-                  ContactEntry entry = new ContactEntry();
-                  entry.mEmail = addr;
-                  result.addEntry(entry);
-                  break;
-               }
-             }
-           return result;
-    }
     public AutoCompleteResult query(String str, Collection<Integer> folders, int limit) throws ServiceException {
         ZimbraLog.gal.debug("AutoComplete querying: %s", str);
         str = str.toLowerCase();
