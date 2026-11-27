@@ -11,9 +11,9 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AttributeCallback;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Provisioning;
+import com.zextras.mailbox.mail.OutOfOfficeRepository;
 import com.zimbra.cs.db.DbOutOfOffice;
-import com.zimbra.cs.db.DbPool;
-import com.zimbra.cs.db.DbPool.DbConnection;
+import java.time.Instant;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Notification;
@@ -21,6 +21,8 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 
 public class OutOfOfficeCallback extends AttributeCallback {
+
+    private final OutOfOfficeRepository outOfOfficeRepository = new DbOutOfOffice();
 
     @Override 
     public void preModify(CallbackContext context, String attrName, Object value,
@@ -46,25 +48,10 @@ public class OutOfOfficeCallback extends AttributeCallback {
         try {
             Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-            DbConnection conn = null;
-            try {
-                // clear the OOF database for this account
-                conn = DbPool.getConnection(mbox);
-                DbOutOfOffice.clear(conn, mbox);
-                conn.commit();
-                ZimbraLog.misc.info("reset vacation info");
-
-                // Convenient place to prune old data, until we determine that this
-                //  needs to be a separate scheduled process.
-                // TODO: only prune once a day?
-                long interval = account.getTimeInterval(Provisioning.A_zimbraPrefOutOfOfficeCacheDuration, Notification.DEFAULT_OUT_OF_OFFICE_CACHE_DURATION_MILLIS);
-                DbOutOfOffice.prune(conn, interval);
-                conn.commit();
-            } catch (ServiceException e) {
-                DbPool.quietRollback(conn);
-            } finally {
-                DbPool.quietClose(conn);
-            }
+            outOfOfficeRepository.clear(mbox.getId());
+            ZimbraLog.misc.info("reset vacation info");
+            long interval = account.getTimeInterval(Provisioning.A_zimbraPrefOutOfOfficeCacheDuration, Notification.DEFAULT_OUT_OF_OFFICE_CACHE_DURATION_MILLIS);
+            outOfOfficeRepository.prune(Instant.now().minusMillis(interval));
         } catch (ServiceException e) {
             ZimbraLog.misc.warn("error handling out-of-office", e);
         }

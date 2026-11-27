@@ -5,6 +5,10 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zextras.mailbox.mail.TombstoneRepository;
+import com.zimbra.cs.db.DbTombstone;
+import com.zextras.mailbox.mail.ConversationRepository;
+import com.zimbra.cs.db.DbConversation;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
@@ -16,6 +20,7 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Closeables;
 import com.google.common.primitives.Ints;
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
+import com.zextras.mailbox.calendar.CalendarItemRepository;
 import com.zextras.mailbox.quota.QuotaCheckSingleton;
 import com.zimbra.client.ZMailbox;
 import com.zimbra.client.ZMailbox.Options;
@@ -67,6 +72,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ProvisioningCache;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.datasource.DataSourceManager;
+import com.zimbra.cs.db.DbCalendarItem;
 import com.zimbra.cs.db.DbDataSource;
 import com.zimbra.cs.db.DbMailItem;
 import com.zimbra.cs.db.DbMailItem.QueryParams;
@@ -209,11 +215,6 @@ import com.zimbra.cs.util.Zimbra;
 import com.zimbra.soap.admin.type.DataSourceType;
 import com.zimbra.soap.mail.type.Policy;
 import com.zimbra.soap.mail.type.RetentionPolicy;
-
-import javax.mail.Address;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimePart;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -244,11 +245,20 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
+import javax.mail.Address;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimePart;
 
 /**
  * @since Jun 13, 2004
  */
 public class Mailbox implements MailboxStore {
+
+  private static final ConversationRepository CONVERSATION_REPOSITORY = new DbConversation();
+
+  private static final CalendarItemRepository CALENDAR_ITEM_REPOSITORY = new DbCalendarItem();
+  private static final TombstoneRepository TOMBSTONE_REPOSITORY = new DbTombstone();
 
   public static final int ID_AUTO_INCREMENT = FolderConstants.ID_AUTO_INCREMENT; // -1;
   public static final int ID_FOLDER_USER_ROOT = FolderConstants.ID_FOLDER_USER_ROOT; // 1;
@@ -3914,7 +3924,7 @@ public class Mailbox implements MailboxStore {
       boolean success = false;
       try {
         beginReadTransaction("getTombstones", null);
-        TypedIdList tombstones = DbMailItem.readTombstones(this, lastSync, equalModSeq);
+        TypedIdList tombstones = TOMBSTONE_REPOSITORY.readTombstones(this, lastSync, equalModSeq);
         success = true;
         return tombstones;
       } finally {
@@ -4758,7 +4768,7 @@ public class Mailbox implements MailboxStore {
     }
 
     // XXX: why not just do a "getConversationById()" if convId != null?
-    MailItem.UnderlyingData data = DbMailItem.getByHash(this, hash);
+    MailItem.UnderlyingData data = CONVERSATION_REPOSITORY.getByHash(this, hash);
     if (data == null || data.type == MailItem.Type.CONVERSATION.toByte()) {
       return getConversation(data);
     }
@@ -4788,7 +4798,7 @@ public class Mailbox implements MailboxStore {
         throw ServiceException.PERM_DENIED("you do not have sufficient permissions");
       }
       success = true;
-      return DbMailItem.getCalendarItemMetadata(f, start, end);
+      return CALENDAR_ITEM_REPOSITORY.getCalendarMetadata(f, start, end);
     } finally {
       endTransaction(success);
     }
@@ -4845,7 +4855,7 @@ public class Mailbox implements MailboxStore {
    *     unconstrained.
    */
   public TypedIdList listCalendarItemsForRange(
-      OperationContext octxt, MailItem.Type type, long start, long end, int folderId)
+      OperationContext octxt, long start, long end, int folderId)
       throws ServiceException {
     if (folderId == ID_AUTO_INCREMENT) {
       return new TypedIdList();
@@ -4858,7 +4868,7 @@ public class Mailbox implements MailboxStore {
       getFolderById(folderId);
 
       // get the list of all visible calendar items in the specified folder
-      TypedIdList ids = DbMailItem.listCalendarItems(this, type, start, end, folderId, null);
+      TypedIdList ids = CALENDAR_ITEM_REPOSITORY.listCalendars(this, start, end, folderId, null);
       success = true;
       return ids;
     } finally {
@@ -4867,21 +4877,8 @@ public class Mailbox implements MailboxStore {
   }
 
   public List<CalendarItem> getCalendarItems(
-      OperationContext octxt, MailItem.Type type, int folderId) throws ServiceException {
-    return getCalendarItemsForRange(octxt, type, -1, -1, folderId, null);
-  }
-
-  /**
-   * @param start start time of range, in milliseconds. {@code -1} means to leave the start time
-   *     unconstrained.
-   * @param end end time of range, in milliseconds. {@code -1} means to leave the end time
-   *     unconstrained.
-   */
-  public List<CalendarItem> getCalendarItemsForRange(
-      OperationContext octxt, long start, long end, int folderId, int[] excludeFolders)
-      throws ServiceException {
-    return getCalendarItemsForRange(
-        octxt, MailItem.Type.UNKNOWN, start, end, folderId, excludeFolders);
+      OperationContext octxt, int folderId) throws ServiceException {
+    return getCalendarItemsForRange(octxt, -1, -1, folderId, null);
   }
 
   /**
@@ -4908,7 +4905,6 @@ public class Mailbox implements MailboxStore {
    */
   public List<CalendarItem> getCalendarItemsForRange(
       OperationContext octxt,
-      MailItem.Type type,
       long start,
       long end,
       int folderId,
@@ -4926,7 +4922,7 @@ public class Mailbox implements MailboxStore {
       // get the list of all visible calendar items in the specified folder
       List<CalendarItem> calItems = new ArrayList<>();
       List<MailItem.UnderlyingData> invData =
-          DbMailItem.getCalendarItems(this, type, start, end, folderId, excludeFolders);
+          CALENDAR_ITEM_REPOSITORY.getCalendars(this, start, end, folderId, excludeFolders);
       for (MailItem.UnderlyingData data : invData) {
         try {
           CalendarItem calItem = getCalendarItem(data);
@@ -5092,8 +5088,7 @@ public class Mailbox implements MailboxStore {
   }
 
   public CalendarDataResult getCalendarSummaryForRange(
-      OperationContext octxt, int folderId, MailItem.Type type, long start, long end)
-      throws ServiceException {
+      OperationContext octxt, int folderId, long start, long end) throws ServiceException {
     lock.lock(false);
     try {
       Folder folder = getFolderById(folderId);
@@ -5103,14 +5098,14 @@ public class Mailbox implements MailboxStore {
       }
       return CalendarCacheManager.getInstance()
           .getSummaryCache()
-          .getCalendarSummary(octxt, getAccountId(), folderId, type, start, end, true);
+          .getCalendarSummary(octxt, getAccountId(), folderId, start, end, true);
     } finally {
       lock.release();
     }
   }
 
   public List<CalendarDataResult> getAllCalendarsSummaryForRange(
-      OperationContext octxt, MailItem.Type type, long start, long end) throws ServiceException {
+      OperationContext octxt, long start, long end) throws ServiceException {
     boolean success = false;
     try {
       // folder cache is populated in beginTransaction...
@@ -5126,7 +5121,7 @@ public class Mailbox implements MailboxStore {
         // in any folder, but that requires scanning too many folders each time, most of which don't
         // contain
         // any calendar items.
-        if (folder.getDefaultView() != type) {
+        if (folder.getDefaultView() != MailItem.Type.APPOINTMENT) {
           continue;
         }
         try {
@@ -5137,7 +5132,7 @@ public class Mailbox implements MailboxStore {
               CalendarCacheManager.getInstance()
                   .getSummaryCache()
                   .getCalendarSummary(
-                      octxt, getAccountId(), folder.getId(), type, start, end, true);
+                      octxt, getAccountId(), folder.getId(), start, end, true);
           if (result != null) {
             list.add(result);
           }
@@ -6025,7 +6020,7 @@ public class Mailbox implements MailboxStore {
     boolean success = false;
     try {
       beginReadTransaction("getCalendarItemByUid", octxt);
-      MailItem.UnderlyingData data = DbMailItem.getCalendarItem(this, uid);
+      MailItem.UnderlyingData data = CALENDAR_ITEM_REPOSITORY.getCalendar(this, uid);
       CalendarItem calItem = (CalendarItem) getItem(data);
       success = true;
       return calItem;
@@ -6041,7 +6036,7 @@ public class Mailbox implements MailboxStore {
       beginTransaction("getCalendarItemsByUid", octxt);
       ArrayList<String> uidList = new ArrayList<>(uids);
       Map<String, CalendarItem> calItems = new HashMap<>();
-      List<MailItem.UnderlyingData> invData = DbMailItem.getCalendarItems(this, uids);
+      List<MailItem.UnderlyingData> invData = CALENDAR_ITEM_REPOSITORY.getCalendars(this, uids);
       for (MailItem.UnderlyingData data : invData) {
         try {
           CalendarItem calItem = getCalendarItem(data);
@@ -8121,7 +8116,7 @@ public class Mailbox implements MailboxStore {
       // deletes have already been collected, so fetch the tombstones and write once
       TypedIdList tombstones = collectPendingTombstones();
       if (tombstones != null && !tombstones.isEmpty()) {
-        DbMailItem.writeTombstones(this, tombstones);
+        TOMBSTONE_REPOSITORY.writeTombstones(this, tombstones);
       }
 
       success = true;
@@ -9844,20 +9839,20 @@ public class Mailbox implements MailboxStore {
       // deletes have already been collected, so fetch the tombstones and write once
       TypedIdList tombstones = collectPendingTombstones();
       if (tombstones != null && !tombstones.isEmpty()) {
-        DbMailItem.writeTombstones(this, tombstones);
+        TOMBSTONE_REPOSITORY.writeTombstones(this, tombstones);
       }
 
       if (Threader.isHashPurgeAllowed(acct)) {
         int convTimeoutSecs =
             (int) (LC.conversation_max_age_ms.longValue() / Constants.MILLIS_PER_SECOND);
-        DbMailItem.closeOldConversations(this, getOperationTimestamp() - convTimeoutSecs);
+        CONVERSATION_REPOSITORY.closeOldConversations(this, getOperationTimestamp() - convTimeoutSecs);
       }
 
       if (isTrackingSync()) {
         int tombstoneTimeoutSecs =
             (int) (LC.tombstone_max_age_ms.longValue() / Constants.MILLIS_PER_SECOND);
         int largestTrimmed =
-            DbMailItem.purgeTombstones(this, getOperationTimestamp() - tombstoneTimeoutSecs);
+            TOMBSTONE_REPOSITORY.purgeTombstones(this, getOperationTimestamp() - tombstoneTimeoutSecs);
         if (largestTrimmed > getSyncCutoff()) {
           currentChange().sync = largestTrimmed;
           DbMailbox.setSyncCutoff(this, currentChange().sync);
@@ -10664,9 +10659,9 @@ public class Mailbox implements MailboxStore {
   }
 
   public TypedIdList listConvItemsForSync(
-      OperationContext octxt, int folderId, MailItem.Type type, long messageSyncStart)
+      OperationContext octxt, int folderId, long messageSyncStart)
       throws ServiceException {
-    if (folderId == ID_AUTO_INCREMENT) {
+		if (folderId == ID_AUTO_INCREMENT) {
       return new TypedIdList();
     }
 
@@ -10676,7 +10671,7 @@ public class Mailbox implements MailboxStore {
 
       // if they specified a folder, make sure it actually exists
       Folder folder = getFolderById(folderId);
-      TypedIdList ids = DbMailItem.listConvItems(folder, messageSyncStart, type, true, false);
+      TypedIdList ids = CONVERSATION_REPOSITORY.listConvItems(folder, messageSyncStart, true, false);
       success = true;
       return ids;
     } finally {

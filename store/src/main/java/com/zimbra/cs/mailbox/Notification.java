@@ -43,8 +43,8 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbOutOfOffice;
-import com.zimbra.cs.db.DbPool;
-import com.zimbra.cs.db.DbPool.DbConnection;
+import com.zextras.mailbox.mail.OutOfOfficeRepository;
+import java.time.Instant;
 import com.zimbra.cs.lmtpserver.LmtpCallback;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.mime.ParsedMessage;
@@ -68,6 +68,8 @@ public class Notification implements LmtpCallback {
     private static final int OUT_OF_OFFICE_DIRECT_CHECK_NUM_RECIPIENTS = 10; // M x N, so limit it.
 
     private static final Notification sInstance = new Notification();
+
+    private final OutOfOfficeRepository outOfOfficeRepository = new DbOutOfOffice();
 
     private Notification() {
     }
@@ -257,15 +259,10 @@ public class Notification implements LmtpCallback {
         }
 
         // If we've already sent to this user, do not send again
-        DbConnection conn = null;
-        try {
-            conn = DbPool.getConnection(mbox);
-            if (DbOutOfOffice.alreadySent(conn, mbox, destination, account.getTimeInterval(Provisioning.A_zimbraPrefOutOfOfficeCacheDuration, DEFAULT_OUT_OF_OFFICE_CACHE_DURATION_MILLIS))) {
-                ofailed("already sent", destination, rcpt, msgId);
-                return;
-            }
-        } finally {
-            DbPool.quietClose(conn);
+        long cacheDuration = account.getTimeInterval(Provisioning.A_zimbraPrefOutOfOfficeCacheDuration, DEFAULT_OUT_OF_OFFICE_CACHE_DURATION_MILLIS);
+        if (outOfOfficeRepository.alreadySent(mbox.getId(), destination, Instant.now().minusMillis(cacheDuration))) {
+            ofailed("already sent", destination, rcpt, msgId);
+            return;
         }
 
         // Send the message
@@ -333,13 +330,7 @@ public class Notification implements LmtpCallback {
             ZimbraLog.mailbox.info("outofoffice sent dest='" + destination + "' rcpt='" + rcpt + "' mid=" + msgId);
 
             // Save so we will not send to again
-            try {
-                conn = DbPool.getConnection(mbox);
-                DbOutOfOffice.setSentTime(conn, mbox, destination);
-                conn.commit();
-            } finally {
-                DbPool.quietClose(conn);
-            }
+            outOfOfficeRepository.setSentTime(mbox.getId(), destination, Instant.now());
         } catch (MessagingException me) {
             ofailed("send failed", destination, rcpt, msgId, me);
         }

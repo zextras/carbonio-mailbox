@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zextras.mailbox.mail.ConversationRepository;
+import com.zimbra.cs.db.DbConversation;
 import com.zimbra.cs.account.Provisioning;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +33,8 @@ import com.zimbra.cs.session.Session;
  * @since Jun 13, 2004
  */
 public class Conversation extends MailItem {
+
+  private static final ConversationRepository CONVERSATION_REPOSITORY = new DbConversation();
     private   String     mEncodedSenders;
     protected SenderList mSenderList;
 
@@ -289,11 +293,11 @@ public class Conversation extends MailItem {
     }
 
     void open(String hash) throws ServiceException {
-        DbMailItem.openConversation(hash, this);
+        CONVERSATION_REPOSITORY.openConversation(getMailbox(), hash, getId());
     }
 
     void close(String hash) throws ServiceException {
-        DbMailItem.closeConversation(hash, this);
+        CONVERSATION_REPOSITORY.closeConversation(getMailbox(), hash, getId());
     }
 
     @Override
@@ -723,8 +727,18 @@ public class Conversation extends MailItem {
             msg.mData.parentId = mId;
             MetadataCallback.duringConversationAdd(mExtendedData, msg);
         }
-        DbMailItem.reparentChildren(other, this);
-        DbMailItem.changeOpenTargets(other, getId());
+        if (other.getMailbox() != getMailbox()) {
+            throw MailServiceException.WRONG_MAILBOX();
+        }
+        Integer newConversationId = this instanceof VirtualConversation ? null : getId();
+        int otherOpenTargetId =
+            other instanceof VirtualConversation ? ((VirtualConversation) other).getMessageId() : other.getId();
+        if (other instanceof VirtualConversation) {
+            CONVERSATION_REPOSITORY.reparentMessage(getMailbox(), otherOpenTargetId, newConversationId);
+        } else {
+            CONVERSATION_REPOSITORY.reparentChildren(getMailbox(), otherOpenTargetId, newConversationId);
+        }
+        CONVERSATION_REPOSITORY.changeOpenTargets(getMailbox(), otherOpenTargetId, getId());
 
         recalculateMetadata();
 

@@ -3,171 +3,119 @@
 //
 // SPDX-License-Identifier: GPL-2.0-only
 
-/**
- * @author apalaniswamy
- */
 package com.zimbra.cs.db;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.List;
-
+import com.zextras.mailbox.mail.OutOfOfficeRepository;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.cs.db.DbPool.DbConnection;
-import com.zimbra.cs.mailbox.Mailbox;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.List;
 
-// TODO mailbox migration between servers
-// TODO backup/restore
-// TODO redo logging!
-// TODO have to do GC for sanity
+public class DbOutOfOffice implements OutOfOfficeRepository {
 
-public class DbOutOfOffice {
-    public static String TABLE_NAME = "out_of_office";
-    private static Log mLog = LogFactory.getLog(DbOutOfOffice.class);
+    private static final String TABLE_NAME = "out_of_office";
+    private static final Log LOG = LogFactory.getLog(DbOutOfOffice.class);
 
-    /**
-     * Determines whether an out-of-office reply has already been sent to the
-     * specified address within the last <code>numDays</code> days.
-     *
-     * @param conn the database connection
-     * @param mbox the sender's mailbox
-     * @param sentTo the recipient's email address
-     * @param cacheDurationMillis threshold for determining last sent time
-     * @throws ServiceException if a database error occurs
-     */
-    public static boolean alreadySent(DbConnection conn, Mailbox mbox, String sentTo, long cacheDurationMillis)
-    throws ServiceException {
-        sentTo = sentTo.toLowerCase();
-        boolean result = false;
-        Timestamp cutoff = new Timestamp(System.currentTimeMillis() - cacheDurationMillis);
-
+    @Override
+    public boolean alreadySent(int mailboxId, String sentTo, Instant since) throws ServiceException {
+        String recipient = sentTo.toLowerCase();
+        DbConnection conn = DbPool.getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
             stmt = conn.prepareStatement("SELECT COUNT(*) FROM " + TABLE_NAME +
                     " WHERE " + DbMailItem.IN_THIS_MAILBOX_AND + "sent_to = ? AND sent_on > ?");
             int pos = 1;
-            pos = DbMailItem.setMailboxId(stmt, mbox, pos);
-            stmt.setString(pos++, sentTo);
-            stmt.setTimestamp(pos++, cutoff);
-
+            pos = DbMailItem.setMailboxId(stmt, mailboxId, pos);
+            stmt.setString(pos++, recipient);
+            stmt.setTimestamp(pos++, Timestamp.from(since));
             rs = stmt.executeQuery();
             rs.next();
-            int count = rs.getInt(1);
-            result = (count > 0);
+            boolean result = rs.getInt(1) > 0;
+            LOG.debug("DbOutOfOffice.alreadySent() returning %s. mailbox_id=%d, sent_to='%s' since=%s",
+                    result, mailboxId, recipient, since);
+            return result;
         } catch (SQLException e) {
-            throw ServiceException.FAILURE("DbOutOfOffice.getSentTime: sql exception (mailbox_id="
-                            + mbox.getId() + " sent_to=" + sentTo + ")", e);
+            throw ServiceException.FAILURE("DbOutOfOffice.alreadySent: sql exception (mailbox_id="
+                    + mailboxId + " sent_to=" + recipient + ")", e);
         } finally {
             DbPool.closeResults(rs);
             DbPool.closeStatement(stmt);
+            DbPool.quietClose(conn);
         }
-
-        if (mLog.isDebugEnabled()) {
-            mLog.debug("DbOutOfOffice.alreadySent() returning " + result +
-                        ".  mailbox_id=" + mbox.getId() + ", sent_to='" + sentTo + "' cutoff=" + cutoff.getTime());
-        }
-        return result;
     }
 
-    /**
-     * Stores a row in the out_of_office table, indicating that we sent an
-     * out-of-office reply to the specified address.
-     *
-     * @param conn the database connection
-     * @param mbox the mailbox of the sender
-     * @param sentTo the email address of the recipient
-     * @throws ServiceException if a database error occurred
-     */
-    public static void setSentTime(DbConnection conn, Mailbox mbox, String sentTo)
-    throws ServiceException {
-        setSentTime(conn, mbox, sentTo, System.currentTimeMillis());
-    }
-
-    /**
-     * Stores a row in the out_of_office table, indicating that we sent an
-     * out-of-office reply to the specified address.
-     *
-     * @param conn the database connection
-     * @param mbox the mailbox of the sender
-     * @param sentTo the email address of the recipient
-     * @param sentOn the timestamp of the out-of-office message
-     * @throws ServiceException if a database error occurred
-     */
-    public static void setSentTime(DbConnection conn, Mailbox mbox, String sentTo, long sentOn) throws ServiceException {
-        Timestamp ts = new Timestamp(sentOn);
-
+    @Override
+    public void setSentTime(int mailboxId, String sentTo, Instant sentOn) throws ServiceException {
+        DbConnection conn = DbPool.getConnection();
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(DbUtil.upsert(TABLE_NAME,
                     DbMailItem.withMailboxId("sent_to", "sent_on"), DbMailItem.withMailboxId("sent_to"), List.of("sent_on")));
             int pos = 1;
-            pos = DbMailItem.setMailboxId(stmt, mbox, pos);
+            pos = DbMailItem.setMailboxId(stmt, mailboxId, pos);
             stmt.setString(pos++, sentTo.toLowerCase());
-            stmt.setTimestamp(pos++, ts);
+            stmt.setTimestamp(pos++, Timestamp.from(sentOn));
             int num = stmt.executeUpdate();
+            conn.commit();
             if (num > 0) {
-                if (mLog.isDebugEnabled()) {
-                    mLog.debug("DbOutOfOffice.setSentTime: ok (mailbox_id=" + mbox.getId() +
-                            " sent_to=" + sentTo + " sent_on=" + sentOn + " rows=" + num + ")");
-                }
+                LOG.debug("DbOutOfOffice.setSentTime: ok (mailbox_id=%d sent_to=%s sent_on=%s rows=%d)",
+                        mailboxId, sentTo, sentOn, num);
             } else {
-                mLog.error("DbOutOfOffice.setSentTime: no rows updated (mailbox_id=" + mbox.getId()
+                LOG.error("DbOutOfOffice.setSentTime: no rows updated (mailbox_id=" + mailboxId
                         + " sent_to=" + sentTo + " sent_on=" + sentOn + " rows=" + num + ")");
             }
         } catch (SQLException e) {
+            DbPool.quietRollback(conn);
             throw ServiceException.FAILURE("DbOutOfOffice.setSentTime: sql exception " +
-                    "(mailbox_id=" + mbox.getId() + " sent_to" + sentTo + " sent_on=" + sentOn + ")", e);
+                    "(mailbox_id=" + mailboxId + " sent_to" + sentTo + " sent_on=" + sentOn + ")", e);
         } finally {
             DbPool.closeStatement(stmt);
+            DbPool.quietClose(conn);
         }
     }
 
-    /**
-     * Clears entries from the <code>out_of_office</code> table for the
-     * specified mailbox.
-     *
-     * @param conn database connection
-     * @param mbox mailbox
-     * @throws ServiceException if a database error occurred
-     */
-    public static void clear(DbConnection conn, Mailbox mbox) throws ServiceException {
+    @Override
+    public void clear(int mailboxId) throws ServiceException {
+        DbConnection conn = DbPool.getConnection();
         PreparedStatement stmt = null;
-        ResultSet rs = null;
         try {
-            stmt = conn.prepareStatement("DELETE FROM " + TABLE_NAME +
-                    " WHERE mailbox_id = ?");
-            DbMailItem.setMailboxId(stmt, mbox, 1);
+            stmt = conn.prepareStatement("DELETE FROM " + TABLE_NAME + " WHERE mailbox_id = ?");
+            DbMailItem.setMailboxId(stmt, mailboxId, 1);
             int num = stmt.executeUpdate();
-
-            mLog.debug("DbOutOfOffice.clear() mbox=" + mbox.getId() + " rows=" + num);
+            conn.commit();
+            LOG.debug("DbOutOfOffice.clear() mbox=%d rows=%d", mailboxId, num);
         } catch (SQLException e) {
-            throw ServiceException.FAILURE("DbOutOfOffice.clear acctId=" + mbox.getAccountId(), e);
+            DbPool.quietRollback(conn);
+            throw ServiceException.FAILURE("DbOutOfOffice.clear mailbox_id=" + mailboxId, e);
         } finally {
-            DbPool.closeResults(rs);
             DbPool.closeStatement(stmt);
+            DbPool.quietClose(conn);
         }
     }
 
-    public static void prune(DbConnection conn, long cacheDurationMillis)
-    throws ServiceException {
+    @Override
+    public void prune(Instant before) throws ServiceException {
+        DbConnection conn = DbPool.getConnection();
         PreparedStatement stmt = null;
         try {
-            Timestamp cutoff = new Timestamp(System.currentTimeMillis() - cacheDurationMillis);
             stmt = conn.prepareStatement("DELETE FROM " + TABLE_NAME + " WHERE sent_on <= ?");
-            stmt.setTimestamp(1, cutoff);
+            stmt.setTimestamp(1, Timestamp.from(before));
             int num = stmt.executeUpdate();
-
-            if (mLog.isDebugEnabled())
-                mLog.debug("DbOutOfOffice.prune() deleted " + num + " rows with cutoff <= " + cutoff.getTime());
+            conn.commit();
+            LOG.debug("DbOutOfOffice.prune() deleted %d rows with cutoff <= %s", num, before);
         } catch (SQLException e) {
+            DbPool.quietRollback(conn);
             throw ServiceException.FAILURE("DbOutOfOffice.prune()", e);
         } finally {
             DbPool.closeStatement(stmt);
+            DbPool.quietClose(conn);
         }
     }
 }

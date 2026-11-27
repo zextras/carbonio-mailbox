@@ -5,6 +5,10 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zextras.mailbox.mail.TombstoneRepository;
+import com.zimbra.cs.db.DbTombstone;
+import com.zextras.mailbox.calendar.CalendarItemRepository;
+import com.zimbra.cs.db.DbCalendarItem;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Splitter;
@@ -63,6 +67,9 @@ import java.util.TreeSet;
  */
 public abstract class MailItem
     implements Comparable<MailItem>, ScheduledTaskResult, ZimbraMailItem {
+
+  private static final CalendarItemRepository CALENDAR_ITEM_REPOSITORY = new DbCalendarItem();
+  private static final TombstoneRepository TOMBSTONE_REPOSITORY = new DbTombstone();
 
   public enum Type {
     UNKNOWN(-1, MailItemType.UNKNOWN),
@@ -2716,7 +2723,7 @@ public abstract class MailItem
       data.setPrevFolders(prevFolders);
     }
     if (this instanceof CalendarItem)
-      DbMailItem.copyCalendarItem((CalendarItem) this, copyId, inDumpster);
+      CALENDAR_ITEM_REPOSITORY.copyCalendar((CalendarItem) this, copyId, inDumpster);
 
     // older revisions
     // Copy revisions only when recovering from dumpster.  When copying from one non-dumpster folder
@@ -3435,7 +3442,7 @@ public abstract class MailItem
 
     // write a deletion record for later sync
     if (writeTombstones && mbox.isTrackingSync() && !info.itemIds.isEmpty() && !fromDumpster) {
-      DbMailItem.writeTombstones(mbox, info.itemIds);
+      TOMBSTONE_REPOSITORY.writeTombstones(mbox, info.itemIds);
     }
 
     // don't actually delete the blobs or index entries here; wait until after the commit

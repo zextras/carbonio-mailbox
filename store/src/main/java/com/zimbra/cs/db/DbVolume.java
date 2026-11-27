@@ -78,22 +78,6 @@ public final class DbVolume {
         return get(conn, nextId);
     }
 
-    public static Volume updateMetadata(DbConnection conn, short volumeId, VolumeMetadata volumeMetadata) throws ServiceException {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("UPDATE volume SET metadata = ? WHERE id = ?");
-            int pos = 1;
-            stmt.setString(pos++, volumeMetadata.toString());
-            stmt.setShort(pos++, volumeId);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw ServiceException.FAILURE("updating volume " + volumeId, e);
-        } finally {
-            DbPool.closeStatement(stmt);
-        }
-        return get(conn, volumeId);
-    }
-
     public static Volume update(DbConnection conn, Volume volume) throws ServiceException {
         PreparedStatement stmt = null;
         try {

@@ -148,7 +148,7 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 
 	private static List<CalendarItem> getCalendarAppointments(Account userB) throws ServiceException {
 		return mailboxManager.getMailboxByAccount(userB)
-				.getCalendarItems(null, Type.APPOINTMENT, getFirstCalendar(userB).getFolderId());
+				.getCalendarItems(null, getFirstCalendar(userB).getFolderId());
 	}
 
 	private static CalendarItem getCalendarItemById(Account account,

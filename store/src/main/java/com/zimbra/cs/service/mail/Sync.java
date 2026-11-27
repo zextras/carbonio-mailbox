@@ -267,7 +267,7 @@ public class Sync extends MailDocumentHandler {
         && !Collections.disjoint(idlist.types(), EnumSet.of(MailItem.Type.CONVERSATION))) {
       idlist =
           mbox.listConvItemsForSync(
-              octxt, folder.getId(), MailItem.Type.CONVERSATION, messageSyncStart);
+              octxt, folder.getId(), messageSyncStart);
     }
     initialItemSync(f, MailConstants.E_CONV, idlist.getIds(MailItem.Type.CONVERSATION));
   }
@@ -299,7 +299,7 @@ public class Sync extends MailDocumentHandler {
     if (calendarStart > 0 && !Collections.disjoint(idlist.types(), CALENDAR_TYPES)) {
       idlist =
           mbox.listCalendarItemsForRange(
-              octxt, MailItem.Type.UNKNOWN, calendarStart, -1, folder.getId());
+              octxt, calendarStart, -1, folder.getId());
     }
     initialItemSync(f, MailConstants.E_APPOINTMENT, idlist.getIds(MailItem.Type.APPOINTMENT));
   }

@@ -7,7 +7,6 @@ package com.zimbra.cs.service.mail;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 import com.zimbra.client.ZMailbox;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
@@ -48,6 +47,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.SearchRequest;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -80,8 +80,8 @@ public class Search extends MailDocumentHandler {
       throw ServiceException.INVALID_REQUEST("cannot search for conversations in dumpster", null);
     }
 
-    if (LC.calendar_cache_enabled.booleanValue()) {
-      List<String> apptFolderIds = getFolderIdListIfSimpleAppointmentsQuery(params, zsc);
+    if (LC.calendar_cache_enabled.booleanValue() && isAppointmentSearch(params)) {
+      List<String> apptFolderIds = getFolderIdListIfSimpleAppointmentsQuery(params);
       if (apptFolderIds != null) {
         Account authAcct = getAuthenticatedAccount(zsc);
         Element response = zsc.createElement(MailConstants.SEARCH_RESPONSE);
@@ -190,20 +190,9 @@ public class Search extends MailDocumentHandler {
    * null.
    *
    * @param params search parameters
-   * @param zsc not used, may be used in subclass
-   * @throws ServiceException subclass may throw
    */
-  protected List<String> getFolderIdListIfSimpleAppointmentsQuery(
-      SearchParams params, ZimbraSoapContext zsc) throws ServiceException {
-    // types = "appointment"
-    Set<MailItem.Type> types = params.getTypes();
-    if (types.size() != 1) {
-      return null;
-    }
-    MailItem.Type type = Iterables.getOnlyElement(types);
-    if (type != MailItem.Type.APPOINTMENT) {
-      return null;
-    }
+  private List<String> getFolderIdListIfSimpleAppointmentsQuery(
+      SearchParams params) {
     // has time range
     if (params.getCalItemExpandStart() == -1 || params.getCalItemExpandEnd() == -1) {
       return null;
@@ -244,6 +233,10 @@ public class Search extends MailDocumentHandler {
     return folderIdStrs;
   }
 
+  private static boolean isAppointmentSearch(SearchParams params) {
+    return params.getTypes().equals(EnumSet.of(MailItem.Type.APPOINTMENT));
+  }
+
   private static String removeOuterParens(String str) {
     int len = str.length();
     if (len > 2 && str.charAt(0) == '(' && str.charAt(len - 1) == ')')
@@ -270,10 +263,6 @@ public class Search extends MailDocumentHandler {
       Mailbox mbox,
       List<String> folderIdStrs)
       throws ServiceException {
-    Set<MailItem.Type> types = params.getTypes();
-    MailItem.Type type =
-        types.size() == 1 ? Iterables.getOnlyElement(types) : MailItem.Type.APPOINTMENT;
-
     if (params.getSortBy() != null) {
       parent.addAttribute(MailConstants.A_SORTBY, params.getSortBy().toString());
     }
@@ -320,7 +309,7 @@ public class Search extends MailDocumentHandler {
             try {
               CalendarDataResult result =
                   calCache.getCalendarSummary(
-                      octxt, acctId, folderId, type, rangeStart, rangeEnd, true);
+                      octxt, acctId, folderId, rangeStart, rangeEnd, true);
               if (result != null) {
                 // Found data in cache.
                 iterFolderId.remove();
@@ -368,7 +357,7 @@ public class Search extends MailDocumentHandler {
           }
           Mailbox targetMbox = mboxMgr.getMailboxByAccount(targetAcct);
           searchLocalAccountCalendars(
-              parent, params, octxt, zsc, authAcct, targetMbox, folderIds, type);
+              parent, params, octxt, zsc, authAcct, targetMbox, folderIds);
         }
       } else { // remote server
         searchRemoteAccountCalendars(parent, params, zsc, authAcct, accountFolders);
@@ -402,8 +391,7 @@ public class Search extends MailDocumentHandler {
       ZimbraSoapContext zsc,
       Account authAcct,
       Mailbox targetMbox,
-      List<Integer> folderIds,
-      MailItem.Type type)
+      List<Integer> folderIds)
       throws ServiceException {
     ItemIdFormatter ifmt = new ItemIdFormatter(authAcct.getId(), targetMbox.getAccountId(), false);
     long rangeStart = params.getCalItemExpandStart();
@@ -411,7 +399,7 @@ public class Search extends MailDocumentHandler {
     for (int folderId : folderIds) {
       try {
         CalendarDataResult result =
-            targetMbox.getCalendarSummaryForRange(octxt, folderId, type, rangeStart, rangeEnd);
+            targetMbox.getCalendarSummaryForRange(octxt, folderId, rangeStart, rangeEnd);
         if (result != null) {
           addCalendarDataToResponse(parent, zsc, ifmt, result.data, result.allowPrivateAccess);
         }

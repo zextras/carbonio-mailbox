@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zextras.mailbox.calendar.CalendarItemRepository;
+import com.zimbra.cs.db.DbCalendarItem;
 import com.google.common.base.Strings;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.calendar.ICalTimeZone;
@@ -103,6 +105,8 @@ import javax.mail.util.SharedByteArrayInputStream;
  * the 28th
  */
 public abstract class CalendarItem extends MailItem {
+
+  private static final CalendarItemRepository CALENDAR_ITEM_REPOSITORY = new DbCalendarItem();
 
   // these are special values indexed in the L_FIELD structured index field, they allow us to
   // restrict lucene searches keyed off of public/private settings
@@ -649,7 +653,7 @@ public abstract class CalendarItem extends MailItem {
       }
     }
 
-    DbMailItem.addToCalendarItemTable(item);
+    CALENDAR_ITEM_REPOSITORY.addCalendar(item);
 
     Callback cb = getCallback();
     if (cb != null) {
@@ -673,7 +677,7 @@ public abstract class CalendarItem extends MailItem {
     if (endTime != mEndTime) {
       markItemModified(Change.CONTENT | Change.INVITE);
       mEndTime = endTime;
-      DbMailItem.updateInCalendarItemTable(this);
+      CALENDAR_ITEM_REPOSITORY.updateCalendar(this);
       return 1;
     }
     return 0;
@@ -871,7 +875,7 @@ public abstract class CalendarItem extends MailItem {
         ZimbraLog.calendar.debug(
             "Updating recurrence for %s.  nextAlarm=%d.", getMailopContext(this), nextAlarm);
       }
-      DbMailItem.updateInCalendarItemTable(this);
+      CALENDAR_ITEM_REPOSITORY.updateCalendar(this);
     }
     return true;
   }
@@ -4112,7 +4116,7 @@ public abstract class CalendarItem extends MailItem {
         ZimbraLog.calendar.debug(
             "Setting next alarm for %s to %d.", getMailopContext(this), nextAlarm);
       }
-      DbMailItem.updateInCalendarItemTable(this);
+      CALENDAR_ITEM_REPOSITORY.updateCalendar(this);
     }
     if (mAlarmData != null || hadAlarm) saveMetadata();
   }

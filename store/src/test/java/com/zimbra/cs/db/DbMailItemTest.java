@@ -21,6 +21,7 @@ import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.mailbox.util.TypedIdList;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -269,59 +270,30 @@ public final class DbMailItemTest extends MailboxTestSuite {
 
   @Test
   void readTombstones() throws Exception {
-    int now = (int) (System.currentTimeMillis() / 1000);
-    DbTestUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.tombstone "
-            + "(mailbox_id, sequence, date, type, ids) "
-            + "VALUES(?, ?, ?, ?, ?)",
-        mbox.getId(),
-        100,
-        now,
-        MailItem.Type.MESSAGE.toByte(),
-        "1,2,3");
-    DbTestUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.tombstone "
-            + "(mailbox_id, sequence, date, type, ids) "
-            + "VALUES(?, ?, ?, ?, ?)",
-        mbox.getId(),
-        100,
-        now,
-        MailItem.Type.APPOINTMENT.toByte(),
-        "11,12,13,14");
-    DbTestUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.tombstone "
-            + "(mailbox_id, sequence, date, type, ids) "
-            + "VALUES(?, ?, ?, ?, ?)",
-        mbox.getId(),
-        100,
-        now,
-        MailItem.Type.CONTACT.toByte(),
-        "31,32");
-    Set<MailItem.Type> types = new HashSet<>();
-    types.add(MailItem.Type.MESSAGE);
-    List<Integer> tombstones = DbMailItem.readTombstones(mbox, conn, 0, types);
-    assertEquals(3, tombstones.size());
-    types.add(MailItem.Type.APPOINTMENT);
-    tombstones = DbMailItem.readTombstones(mbox, conn, 0, types);
-    assertEquals(7, tombstones.size());
+    mbox.beginTrackingSync();
+    int cutoff = mbox.getSyncCutoff();
+    insertTombstone(cutoff + 1, MailItem.Type.MESSAGE, "1,2,3");
+    insertTombstone(cutoff + 1, MailItem.Type.APPOINTMENT, "11,12,13,14");
+    insertTombstone(cutoff + 1, MailItem.Type.CONTACT, "31,32");
+    conn.commit();
 
-    types = new HashSet<>();
-    types.add(MailItem.Type.APPOINTMENT);
-    tombstones = DbMailItem.readTombstones(mbox, conn, 0, types);
-    assertEquals(4, tombstones.size());
+    TypedIdList tombstones = mbox.getTombstones(cutoff);
 
-    types = new HashSet<>();
-    types.add(MailItem.Type.CONTACT);
-    tombstones = DbMailItem.readTombstones(mbox, conn, 0, types);
-    assertEquals(2, tombstones.size());
-
-    types = new HashSet<>();
-    types.add(MailItem.Type.MESSAGE);
-    types.add(MailItem.Type.APPOINTMENT);
-    tombstones = DbMailItem.readTombstones(mbox, conn, 0, types);
-    assertEquals(7, tombstones.size());
+    assertEquals(3, tombstones.getIds(MailItem.Type.MESSAGE).size());
+    assertEquals(4, tombstones.getIds(MailItem.Type.APPOINTMENT).size());
+    assertEquals(2, tombstones.getIds(MailItem.Type.CONTACT).size());
+    assertEquals(9, tombstones.getAllIds().size());
   }
+
+  private void insertTombstone(int sequence, MailItem.Type type, String ids) throws ServiceException {
+    DbTestUtil.executeUpdate(
+        conn,
+        "INSERT INTO mboxgroup1.tombstone (mailbox_id, sequence, date, type, ids) VALUES(?, ?, ?, ?, ?)",
+        mbox.getId(),
+        sequence,
+        (int) (System.currentTimeMillis() / 1000),
+        type.toByte(),
+        ids);
+  }
+
 }

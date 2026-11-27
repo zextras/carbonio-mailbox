@@ -50,6 +50,27 @@ public class SearchTest extends MailboxTestSuite {
   }
 
   @Test
+  void searchWithSeveralTypesRunsTheNormalSearch() throws Exception {
+    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(testAccount);
+    Message msg =
+        mbox.addMessage(
+            null,
+            MailboxTestUtil.generateMessage("several types subject"),
+            new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX),
+            null);
+
+    Element request =
+        new Element.XMLElement(MailConstants.SEARCH_REQUEST)
+            .addAttribute(MailConstants.A_SEARCH_TYPES, "message,contact");
+    request.addAttribute(MailConstants.E_QUERY, "several", Element.Disposition.CONTENT);
+    Element response = new Search().handle(request, ServiceTestUtil.getRequestContext(testAccount));
+
+    List<Element> hits = response.listElements(MailConstants.E_MSG);
+    assertEquals(1, hits.size());
+    assertEquals(msg.getId(), hits.get(0).getAttributeLong(MailConstants.A_ID));
+  }
+
+  @Test
   void mute() throws Exception {
     Account acct = Provisioning.getInstance().getAccountByName("test@zimbra.com");
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
