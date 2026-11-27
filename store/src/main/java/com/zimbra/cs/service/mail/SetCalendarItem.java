@@ -106,7 +106,7 @@ public class SetCalendarItem extends CalendarRequest {
       ItemId iidFolder = new ItemId(folderIdStr, zsc);
       Folder folder = mbox.getFolderById(octxt, iidFolder.getId());
       SetCalendarItemParseResult parsed =
-          parseSetAppointmentRequest(request, zsc, octxt, folder, getItemType(), false);
+          parseSetAppointmentRequest(request, zsc, octxt, folder, getItemType());
 
       Appointment calItem =
           mbox.setCalendarItem(
@@ -176,7 +176,7 @@ public class SetCalendarItem extends CalendarRequest {
                 .append(" differs from mapped ")
                 .append(calItem.getUid());
             ZimbraLog.calendar.warn(logBuf.toString());
-          } else if (logBuf.length() > 0) {
+          } else if (!logBuf.isEmpty()) {
             ZimbraLog.calendar.info(logBuf.toString());
           }
         }
@@ -284,8 +284,7 @@ public class SetCalendarItem extends CalendarRequest {
       ZimbraSoapContext zsc,
       OperationContext octxt,
       Folder folder,
-      MailItem.Type type,
-      boolean parseIds)
+      MailItem.Type type)
       throws ServiceException {
     Account acct = getRequestedAccount(zsc);
     Mailbox mbox = getRequestedMailbox(zsc);
@@ -337,7 +336,7 @@ public class SetCalendarItem extends CalendarRequest {
       }
     }
 
-    if (exceptions.size() > 0) {
+    if (!exceptions.isEmpty()) {
       result.exceptions = new SetCalendarItemData[exceptions.size()];
       exceptions.toArray(result.exceptions);
     } else {

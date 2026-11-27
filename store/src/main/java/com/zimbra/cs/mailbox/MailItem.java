@@ -1601,7 +1601,7 @@ public abstract sealed class MailItem
         return compareNumeric(n1, n2);
       } else if (first != second) {
         return returnResult(first - second);
-      } else if (first == 0 && second == 0) {
+      } else if (first == 0) {
         return 0;
       }
 

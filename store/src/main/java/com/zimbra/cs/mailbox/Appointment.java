@@ -5202,20 +5202,5 @@ public final class Appointment extends MailItem {
         mInstStartMap.put(pos, instStart);
       }
 
-      public long getTriggerTime(int pos) {
-        Long triggerAt = mTriggerMap.get(pos);
-        if (triggerAt != null) return triggerAt;
-        else return 0;
-      }
-
-      public long getInstStart(int pos) {
-        Long start = mInstStartMap.get(pos);
-        if (start != null) return start;
-        else return 0;
-      }
-
-      public Iterator<Integer> posIterator() {
-        return mTriggerMap.keySet().iterator();
-      }
     }
 }

@@ -309,14 +309,6 @@ public final class Message extends MailItem {
   }
 
   /**
-   * Returns whether the Message was sent by the owner of this mailbox. Note that this can only be
-   * set when the Message is created; it cannot be altered thereafter.
-   */
-  public boolean isFromMe() {
-    return mData.isSet(Flag.FlagInfo.FROM_ME);
-  }
-
-  /**
    * Returns the ID of the {@link Conversation} the Message belongs to. If the ID is negative, it
    * refers to a single-message {@link VirtualConversation}.
    */
