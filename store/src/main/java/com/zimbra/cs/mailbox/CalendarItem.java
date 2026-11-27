@@ -1816,7 +1816,7 @@ public abstract class CalendarItem extends MailItem {
     }
 
     // Do not allow organizer to be changed. (bug 74400)
-    boolean organizerChanged = organizerChangeCheck(newInvite, true);
+    boolean organizerChanged = organizerChangeCheck(newInvite);
     ZOrganizer newOrganizer = newInvite.getOrganizer();
 
     // If we got a cancel request, check if this cancel will result in canceling the entire
@@ -2515,7 +2515,7 @@ public abstract class CalendarItem extends MailItem {
    * @return true if organizer change was detected, false if no change
    * @throws ServiceException
    */
-  private boolean organizerChangeCheck(Invite newInvite, boolean denyChange)
+  private boolean organizerChangeCheck(Invite newInvite)
       throws ServiceException {
     Invite originalInvite = null;
     if (!newInvite.hasRecurId()) {
@@ -2562,7 +2562,7 @@ public abstract class CalendarItem extends MailItem {
       if (newInvite.hasOrganizer()) {
         String newOrgAddr = newInvite.getOrganizer().getAddress();
         if (originalOrganizer == null) {
-          if (denyChange) {
+          if (true) {
             newInvite.isTodo();
             if (updatingSameComponent) {
               throw BadOrganizerException.ADD_ORGANIZER_NOT_ALLOWED(newOrgAddr, calDesc(newInvite));
@@ -2577,7 +2577,7 @@ public abstract class CalendarItem extends MailItem {
           // Both old and new organizers are set.  They must be the same address.
           String origOrgAddr = originalOrganizer.getAddress();
           if (newOrgAddr == null || !CalendarUtils.belongToSameAccount(origOrgAddr, newOrgAddr)) {
-            if (denyChange) {
+            if (true) {
               if (updatingSameComponent) {
                 throw BadOrganizerException.CHANGE_ORGANIZER_NOT_ALLOWED(
                     origOrgAddr, newOrgAddr, calDesc(newInvite));
@@ -2593,7 +2593,7 @@ public abstract class CalendarItem extends MailItem {
       } else if (originalOrganizer != null) {
         // No organizer for new newInvite but there is one in the original
         String origOrgAddr = originalOrganizer.getAddress();
-        if (denyChange) {
+        if (true) {
           if (updatingSameComponent) {
             throw BadOrganizerException.DEL_ORGANIZER_NOT_ALLOWED(origOrgAddr, calDesc(newInvite));
           } else {
@@ -2620,7 +2620,7 @@ public abstract class CalendarItem extends MailItem {
             newInvite.setIsOrganizer(true);
           }
           if (!newInvite.isOrganizer()) {
-            if (denyChange) {
+            if (true) {
               if (originalOrganizer != null) {
                 if (updatingSameComponent) {
                   throw BadOrganizerException.CHANGE_ORGANIZER_NOT_ALLOWED(
