@@ -24,8 +24,7 @@ import com.zimbra.soap.type.IdAndType;
 
 // soap-waitset.txt implies a lot of these attributes are directly unser QueryWaitSetResponse.  They aren't.
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlType(propOrder = {"sessions", "errors", "signalledAccounts",
-    "bufferedCommits"})
+@XmlType(propOrder = {"sessions", "errors", "signalledAccounts"})
 public class WaitSetInfo {
 
     //  This class provides a single JAXB object for handling all of
@@ -105,14 +104,6 @@ public class WaitSetInfo {
     private String nextSeqNo;
 
     /**
-     * @zm-api-field-description Buffered commit information
-     */
-    @ZimbraJsonArrayForWrapper
-    @XmlElementWrapper(name="buffered", required=false)
-    @XmlElement(name="commit", required=false)
-    private final List<BufferedCommitInfo> bufferedCommits = Lists.newArrayList();
-
-    /**
      * @zm-api-field-description Session information
      */
     @XmlElement(name="session", required=false)
@@ -173,19 +164,6 @@ public class WaitSetInfo {
     }
 
     public void setNextSeqNo(String nextSeqNo) { this.nextSeqNo = nextSeqNo; }
-    public void setBufferedCommits(
-                    Iterable <BufferedCommitInfo> bufferedCommits) {
-        this.bufferedCommits.clear();
-        if (bufferedCommits != null) {
-            Iterables.addAll(this.bufferedCommits,bufferedCommits);
-        }
-    }
-
-    public WaitSetInfo addBufferedCommit(BufferedCommitInfo bufferedCommit) {
-        this.bufferedCommits.add(bufferedCommit);
-        return this;
-    }
-
     public String getWaitSetId() { return waitSetId; }
     public String getOwner() { return owner; }
     public List<SessionForWaitSet> getSessions() {
@@ -200,7 +178,4 @@ public class WaitSetInfo {
     public String getCbSeqNo() { return cbSeqNo; }
     public String getCurrentSeqNo() { return currentSeqNo; }
     public String getNextSeqNo() { return nextSeqNo; }
-    public List<BufferedCommitInfo> getBufferedCommits() {
-        return Collections.unmodifiableList(bufferedCommits);
-    }
 }

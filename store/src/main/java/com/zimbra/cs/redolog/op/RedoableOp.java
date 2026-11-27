@@ -28,7 +28,6 @@ import com.zimbra.common.util.LogFactory;
 
 import com.zimbra.cs.mailbox.MailboxOperation;
 import com.zimbra.cs.mailbox.OperationContext;
-import com.zimbra.cs.redolog.RedoCommitCallback;
 import com.zimbra.cs.redolog.RedoLogInput;
 import com.zimbra.cs.redolog.RedoLogManager;
 import com.zimbra.cs.redolog.RedoLogOutput;
@@ -61,7 +60,6 @@ public abstract class RedoableOp {
     private int mMailboxId;
     private RedoLogManager mRedoLogMgr;
     private boolean mUnloggedReplay;  // true if redo of this op is not redo-logged
-    protected RedoCommitCallback mCommitCallback;
 
     protected RedoableOp(MailboxOperation op, RedoLogManager mgr) {
         mOperation = op;
@@ -88,14 +86,6 @@ public abstract class RedoableOp {
      * commit() is called.
      * @param callback
      */
-    public void setCommitCallback(RedoCommitCallback callback) {
-        mCommitCallback = callback;
-    }
-
-    protected RedoCommitCallback getCommitCallback() {
-        return mCommitCallback;
-    }
-
     public void start(long timestamp) {
         // Assign timestamp and txn ID to the operation.
         // Doing the assignment in this method means we timestamp and sequence
