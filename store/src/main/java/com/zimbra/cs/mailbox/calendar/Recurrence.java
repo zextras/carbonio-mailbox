@@ -13,7 +13,6 @@ import com.zimbra.common.calendar.ICalTimeZone;
 import com.zimbra.common.calendar.ParsedDateTime;
 import com.zimbra.common.calendar.ParsedDuration;
 import com.zimbra.common.calendar.TimeZoneMap;
-import com.zimbra.common.calendar.ZCalendar.ICalTok;
 import com.zimbra.common.calendar.ZWeekDay;
 import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.service.ServiceException;
@@ -63,11 +62,6 @@ public class Recurrence
      * Has a RecurId.
      */
     public static final int TYPE_CANCELLATION = 3;
-
-    /**
-     * Always stored as part of SingleDates
-     */
-    public static final int TYPE_SINGLE_INSTANCE_DEPRECATED = 4;
 
     /**
      * Always stored as part of a Recurrence, Exception, or Cancellation -- a rule for generating dates
@@ -676,16 +670,6 @@ public class Recurrence
                     addAttribute(MailConstants.A_CAL_RULE_DAY, wkst.toString());
             }
 
-//            // x-name
-//            Map xNames = mRecur.getExperimentalValues();
-//            for (Iterator iter = mRecur.getExperimentalValues().entrySet().iterator();
-//                 iter.hasNext(); ) {
-//                Map.Entry entry = (Map.Entry) iter.next();
-//                Element xElt = rule.addElement(MailService.E_CAL_RULE_XNAME);
-//                xElt.addAttribute(MailService.A_CAL_RULE_XNAME_NAME, (String) entry.getKey());
-//                xElt.addAttribute(MailService.A_CAL_RULE_XNAME_VALUE, (String) entry.getValue());
-//            }
-
             return rule;
         }
 
@@ -1077,73 +1061,6 @@ public class Recurrence
         protected InviteInfo mInvId;
     }
 
-//
-// This is commented-out for compatability (not supported by many CUAs) --but leave the code here hopefully
-// we can figure out a way to enable it eventually...
-//
-//
-//    /**
-//     * @author tim
-//     *
-//     * Represents the range of instances specified by a RECURRENCE_ID iCalendar component
-//     */
-//    public static class RecurrenceRange
-//    {
-//        public static final int NOT_RANGE = 1;
-//        public static final int THIS_AND_FUTURE = 2;
-//        public static final int THIS_AND_PRIOR = 3;
-//
-//        static final String FN_RANGE_TYPE = "rgtyp";
-//        static final String FN_RECURRENCE_ID = "recurId";
-//
-//        private ParsedDateTime mRecurrenceId;
-//        private int mRangeType = NOT_RANGE;
-//
-//        RecurrenceRange(ParsedDateTime recurrenceId, int rangeType) {
-//            mRecurrenceId = recurrenceId;
-//            assert(rangeType == NOT_RANGE || rangeType == THIS_AND_FUTURE || rangeType == THIS_AND_PRIOR);
-//            mRangeType = rangeType;
-//        }
-//
-//        public Metadata encodeMetadata()
-//        {
-//            Metadata meta = new Metadata();
-//
-//            meta.put(FN_RECURRENCE_ID, mRecurrenceId);
-//            meta.put(FN_RANGE_TYPE, Integer.toString(mRangeType));
-//
-//            return meta;
-//        }
-//
-//        protected RecurrenceRange(Metadata meta, TimeZoneMap tzMap) throws ServiceException, ParseException
-//        {
-//            mRecurrenceId = ParsedDateTime.parse(meta.get(FN_RECURRENCE_ID), tzMap);
-//            mRangeType = (int)meta.getLong(FN_RANGE_TYPE);
-//        }
-//
-//        public boolean matches(long date) {
-//            // TODO we don't currently handle ranges!
-//            return (mRecurrenceId.compareTo(date) == 0);
-//        }
-//
-//
-//        public String toString() {
-//            StringBuffer toRet = new StringBuffer();
-//            switch (mRangeType) {
-//            case NOT_RANGE:
-//                toRet.append("(RECURRENCE-ID=").append(mRecurrenceId.toString()).append(")");
-//                break;
-//            case THIS_AND_FUTURE:
-//                toRet.append("(RECURRENCE-ID=RANGE:THISANDFUTURE;").append(mRecurrenceId.toString()).append(")");
-//                break;
-//            case THIS_AND_PRIOR:
-//                toRet.append("(RECURRENCE-ID=RANGE:THISANDPRIOR;").append(mRecurrenceId.toString()).append(")");
-//                break;
-//            }
-//            return toRet.toString();
-//        }
-//    }
-
     /**
      * @author tim
      *
@@ -1359,20 +1276,13 @@ public class Recurrence
             mExceptions = new ArrayList<>();
         }
 
-        public RecurrenceRule(ParsedDateTime dtstart, ParsedDuration duration,
-                InviteInfo invId)
-        {
-            super(dtstart, duration, invId);
-            mExceptions = new ArrayList<>();
-        }
-
         @Override
         public int getType() { return TYPE_RECURRENCE; }
 
         @Override
         public void setInviteId(InviteInfo invId) {
             super.setInviteId(invId);
-            assert(mExceptions.size() == 0); // must not call this on an calendar item-owned Invite
+            assert(mExceptions.isEmpty()); // must not call this on an calendar item-owned Invite
         }
 
         public Iterator<IException> exceptionsIter() {
@@ -1671,73 +1581,5 @@ public class Recurrence
         } else {
             return rule1 == rule2;
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        ICalTimeZone pacific = new ICalTimeZone(
-                "America/Los_Angeles",
-                -28800000, "16010101T020000", "FREQ=YEARLY;WKST=MO;INTERVAL=1;BYMONTH=11;BYDAY=1SU", "PST",
-                -25200000, "16010101T020000", "FREQ=YEARLY;WKST=MO;INTERVAL=1;BYMONTH=3;BYDAY=2SU", "PDT");
-        TimeZoneMap tzmap = new TimeZoneMap(pacific);
-        String str = "TZID=\"" + pacific.getID() + "\":20090105T120000";
-        ParsedDateTime dtStart = ParsedDateTime.parse(str, tzmap);
-        ParsedDuration duration = ParsedDuration.parse("PT1H");
-
-        List<IRecurrence> addRules = new ArrayList<>();
-        List<IRecurrence> subRules = new ArrayList<>();
-
-        // weekly from 2009/01/05, for 52 weeks
-        ZRecur rule = new ZRecur("FREQ=WEEKLY;INTERVAL=1", tzmap);
-        addRules.add(new SimpleRepeatingRule(dtStart, duration, rule, null));
-
-        // add a couple of RDATES: 2009/01/06, 2009/01/07
-        RdateExdate rdate = new RdateExdate(ICalTok.RDATE, pacific);
-        str = "TZID=\"" + pacific.getID() + "\":20090106T120000";
-        ParsedDateTime rd1 = ParsedDateTime.parse(str, tzmap);
-        rdate.addValue(rd1);
-        str = "TZID=\"" + pacific.getID() + "\":20090107T120000";
-        ParsedDateTime rd2 = ParsedDateTime.parse(str, tzmap);
-        rdate.addValue(rd2);
-        addRules.add(new SingleDates(rdate, duration));
-
-        // modify instance on 2009/02/16 to start at 1pm instead of noon, for 2 hours
-        str = "TZID=\"" + pacific.getID() + "\":20090216T120000";
-        ParsedDateTime ridDtModify1 = ParsedDateTime.parse(str, tzmap);
-        RecurId ridModify1 = new RecurId(ridDtModify1, RecurId.RANGE_NONE);
-        str = "TZID=\"" + pacific.getID() + "\":20090216T130000";
-        ParsedDateTime dtStartModify1 = ParsedDateTime.parse(str, tzmap);
-        ParsedDuration durModify1 = ParsedDuration.parse("PT2H");
-        ExceptionRule modify1 = new ExceptionRule(ridModify1, dtStartModify1, durModify1, null);
-
-        // cancel instance on 2009/01/19
-        str = "TZID=\"" + pacific.getID() + "\":20090119T120000";
-        ParsedDateTime dtCancel1 = ParsedDateTime.parse(str, tzmap);
-        RecurId ridCancel1 = new RecurId(dtCancel1, RecurId.RANGE_NONE);
-        CancellationRule cancel1 = new CancellationRule(ridCancel1);
-
-        // EXDATE on 2009/02/09
-        RdateExdate exdate = new RdateExdate(ICalTok.EXDATE, pacific);
-        str = "TZID=\"" + pacific.getID() + "\":20090209T120000";
-        ParsedDateTime ex1 = ParsedDateTime.parse(str, tzmap);
-        exdate.addValue(ex1);
-        SingleDates exdateRule = new SingleDates(exdate, duration);
-        subRules.add(exdateRule);
-
-        RecurrenceRule recurrence = new RecurrenceRule(dtStart, duration, null, addRules, subRules);
-        recurrence.addException(modify1);
-        recurrence.addException(cancel1);
-
-        // Get all instances between 2009/01/01 and 2010/01/01.
-        Calendar startCal = new GregorianCalendar(pacific);
-        startCal.clear();
-        startCal.set(2009, Calendar.JANUARY, 1, 0, 0, 0);
-        Calendar endCal = (Calendar) startCal.clone();
-        endCal.add(Calendar.YEAR, 1);
-//        List<Instance> instances = recurrence.expandInstances(-1, startCal.getTimeInMillis(), endCal.getTimeInMillis());
-        List<Instance> instances = recurrence.expandInstances(-1, startCal.getTimeInMillis(), Long.MAX_VALUE);
-        for (Instance inst : instances) {
-            System.out.println(inst);
-        }
-        System.out.println("Got " + instances.size() + " instances");
     }
 }
