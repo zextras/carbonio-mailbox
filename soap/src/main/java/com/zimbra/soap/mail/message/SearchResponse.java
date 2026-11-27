@@ -11,7 +11,6 @@ import com.google.common.collect.Lists;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.json.jackson.annotate.ZimbraJsonArrayForWrapper;
 import com.zimbra.soap.mail.type.AppointmentHitInfo;
-import com.zimbra.soap.mail.type.ChatHitInfo;
 import com.zimbra.soap.mail.type.ContactInfo;
 import com.zimbra.soap.mail.type.ConversationHitInfo;
 import com.zimbra.soap.mail.type.MessageHitInfo;
@@ -80,7 +79,6 @@ public class SearchResponse {
     @XmlElement(name = "hit", type = SimpleSearchHit.class),
     @XmlElement(name = MailConstants.E_CONV /* c */, type = ConversationHitInfo.class),
     @XmlElement(name = MailConstants.E_MSG /* m */, type = MessageHitInfo.class),
-    @XmlElement(name = MailConstants.E_CHAT /* chat */, type = ChatHitInfo.class),
     @XmlElement(name = MailConstants.E_MIMEPART /* mp */, type = MessagePartHitInfo.class),
     @XmlElement(name = MailConstants.E_CONTACT /* cn */, type = ContactInfo.class),
     @XmlElement(name = MailConstants.E_APPOINTMENT /* appt */, type = AppointmentHitInfo.class)

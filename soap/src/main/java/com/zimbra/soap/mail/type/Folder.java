@@ -53,11 +53,7 @@ public class Folder {
     @XmlEnumValue("virtual conversation")
     VIRTUAL_CONVERSATION("virtual conversation"),
     @XmlEnumValue("remote folder")
-    REMOTE_FOLDER("remote folder"),
-    @XmlEnumValue("task")
-    TASK("task"),
-    @XmlEnumValue("chat")
-    CHAT("chat");
+    REMOTE_FOLDER("remote folder");
 
     private static Map<String, View> nameToView = new HashMap<>();
 

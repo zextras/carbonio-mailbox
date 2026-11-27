@@ -1445,7 +1445,7 @@ public class Folder extends MailItem implements FolderStore {
     if (info.incomplete) {
       info.cascadeIds =
           DbMailItem.markDeletionTargets(
-              mMailbox, info.itemIds.getIds(EnumSet.of(Type.MESSAGE, Type.CHAT)), info.modifiedIds);
+              mMailbox, info.itemIds.getIds(EnumSet.of(Type.MESSAGE)), info.modifiedIds);
     } else {
       info.cascadeIds = DbMailItem.markDeletionTargets(this, info.modifiedIds);
     }
@@ -1532,7 +1532,6 @@ public class Folder extends MailItem implements FolderStore {
       case Mailbox.ID_FOLDER_SPAM:
       case Mailbox.ID_FOLDER_SENT:
       case Mailbox.ID_FOLDER_DRAFTS:
-      case Mailbox.ID_FOLDER_IM_LOGS:
       case Mailbox.ID_FOLDER_ARCHIVE:
         view = Type.MESSAGE;
         break;
@@ -1803,11 +1802,6 @@ public class Folder extends MailItem implements FolderStore {
   }
 
   @Override
-  public boolean isChatsFolder() {
-    return (MailItem.Type.CHAT == this.getDefaultView());
-  }
-
-  @Override
   public boolean isSyncFolder() {
     return isTagged(Flag.FlagInfo.SYNCFOLDER);
   }
@@ -1847,7 +1841,6 @@ public class Folder extends MailItem implements FolderStore {
     switch (getDefaultView()) {
       case APPOINTMENT:
       case CONTACT:
-      case CHAT:
         return !displayMailFoldersOnly;
       default:
         return true;

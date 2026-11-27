@@ -21,7 +21,6 @@ public interface FolderStore extends BaseFolderInfo {
     boolean isInboxFolder();
     boolean isSearchFolder();
     boolean isContactsFolder();
-    boolean isChatsFolder();
     boolean isSyncFolder();
     boolean isIMAPSubscribed();
     boolean inTrash();

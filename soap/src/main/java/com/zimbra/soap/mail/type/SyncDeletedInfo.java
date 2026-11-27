@@ -37,7 +37,6 @@ public class SyncDeletedInfo {
     @XmlElement(name = MailConstants.E_MOUNT /* link */, type = MountIdsAttr.class),
     @XmlElement(name = MailConstants.E_TAG /* tag */, type = TagIdsAttr.class),
     @XmlElement(name = MailConstants.E_CONV /* c */, type = ConvIdsAttr.class),
-    @XmlElement(name = MailConstants.E_CHAT /* chat */, type = ChatIdsAttr.class),
     @XmlElement(name = MailConstants.E_MSG /* m */, type = MsgIdsAttr.class),
     @XmlElement(name = MailConstants.E_CONTACT /* cn */, type = ContactIdsAttr.class),
     @XmlElement(name = MailConstants.E_APPOINTMENT /* appt */, type = ApptIdsAttr.class)

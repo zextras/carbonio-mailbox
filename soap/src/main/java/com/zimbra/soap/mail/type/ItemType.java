@@ -26,13 +26,11 @@ import com.google.common.base.Splitter;
 @XmlEnum
 public enum ItemType {
     @XmlEnumValue("appointment") APPOINTMENT,
-    @XmlEnumValue("chat") CHAT,
     @XmlEnumValue("contact") CONTACT,
     @XmlEnumValue("conversation") CONVERSATION,
     @XmlEnumValue("document") DOCUMENT,
     @XmlEnumValue("message") MESSAGE,
     @XmlEnumValue("tag") TAG,
-    @XmlEnumValue("task") TASK,
     @XmlEnumValue("wiki") WIKI;
 
     @Override

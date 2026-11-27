@@ -143,7 +143,7 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
    *     for all other kinds of result
    */
   static final boolean shouldAddDuplicateHits(MailItem.Type type) {
-    return (type == MailItem.Type.CHAT || type == MailItem.Type.MESSAGE);
+    return type == MailItem.Type.MESSAGE;
   }
 
   /**
@@ -173,7 +173,6 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
 
     ZimbraHit result = null;
     switch (sr.getType()) {
-      case CHAT:
       case MESSAGE:
         if (doc != null) {
           result = getMessagePartHit(mbox, sr.getId(), (Message) item, doc, sr.getSortValue());

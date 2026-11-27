@@ -8,7 +8,6 @@ package com.zimbra.soap.mail.message;
 import com.google.common.base.MoreObjects;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.mail.type.CalendarItemInfo;
-import com.zimbra.soap.mail.type.ChatSummary;
 import com.zimbra.soap.mail.type.ContactInfo;
 import com.zimbra.soap.mail.type.ConversationSummary;
 import com.zimbra.soap.mail.type.Folder;
@@ -30,8 +29,7 @@ public class GetItemResponse {
     @XmlElement(name = MailConstants.E_CONTACT /* cn */, type = ContactInfo.class),
     @XmlElement(name = MailConstants.E_APPOINTMENT /* appt */, type = CalendarItemInfo.class),
     @XmlElement(name = MailConstants.E_CONV /* c */, type = ConversationSummary.class),
-    @XmlElement(name = MailConstants.E_MSG /* m */, type = MessageSummary.class),
-    @XmlElement(name = MailConstants.E_CHAT /* chat */, type = ChatSummary.class)
+    @XmlElement(name = MailConstants.E_MSG /* m */, type = MessageSummary.class)
   })
   private Object item;
 

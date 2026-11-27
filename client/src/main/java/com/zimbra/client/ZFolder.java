@@ -185,13 +185,11 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
 
   public enum View {
     appointment,
-    chat,
     contact,
     conversation,
     message,
     remote,
     search,
-    task,
     unknown,
     voice;
 
@@ -473,11 +471,6 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
   }
 
   @Override
-  public boolean isChatsFolder() {
-    return (View.chat == getDefaultView());
-  }
-
-  @Override
   public boolean isDeletable() {
     return mDeletable;
   }
@@ -508,10 +501,8 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
   public boolean isVisibleInImap(boolean displayMailFoldersOnly) {
     switch (getDefaultView()) {
       case appointment:
-      case task:
         return false;
       case contact:
-      case chat:
         return !displayMailFoldersOnly;
       default:
         return true;
