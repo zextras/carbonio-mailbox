@@ -657,10 +657,6 @@ public abstract class CalendarItem extends MailItem {
 
     CALENDAR_ITEM_REPOSITORY.addCalendar(item);
 
-    Callback cb = getCallback();
-    if (cb != null) {
-      cb.created(item);
-    }
     return item;
   }
 
@@ -2496,9 +2492,6 @@ public abstract class CalendarItem extends MailItem {
             }
           }
 
-          Callback cb = getCallback();
-          if (cb != null) cb.modified(this);
-
           return true;
         }
       } else {
@@ -2509,34 +2502,6 @@ public abstract class CalendarItem extends MailItem {
         return false;
       }
     }
-  }
-
-  @Override
-  void delete() throws ServiceException {
-    super.delete();
-    if (!inDumpster()) {
-      Callback cb = getCallback();
-      if (cb != null) cb.deleted(this);
-    }
-  }
-
-  // YCC special
-  public interface Callback {
-    void created(CalendarItem calItem) throws ServiceException;
-
-    void modified(CalendarItem calItem) throws ServiceException;
-
-    void deleted(CalendarItem calItem) throws ServiceException;
-  }
-
-  private static Callback sCallback = null;
-
-  public static synchronized void registerCallback(Callback cb) {
-    sCallback = cb;
-  }
-
-  public static synchronized Callback getCallback() {
-    return sCallback;
   }
 
   private String calDesc(Invite invite) {

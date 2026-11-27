@@ -5,10 +5,6 @@
 
 package com.zimbra.cs.mailbox;
 
-import com.zextras.mailbox.mail.TombstoneRepository;
-import com.zimbra.cs.db.DbTombstone;
-import com.zextras.mailbox.mail.ConversationRepository;
-import com.zimbra.cs.db.DbConversation;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
@@ -21,6 +17,8 @@ import com.google.common.io.Closeables;
 import com.google.common.primitives.Ints;
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import com.zextras.mailbox.calendar.CalendarItemRepository;
+import com.zextras.mailbox.mail.ConversationRepository;
+import com.zextras.mailbox.mail.TombstoneRepository;
 import com.zextras.mailbox.quota.QuotaCheckSingleton;
 import com.zimbra.client.ZMailbox;
 import com.zimbra.client.ZMailbox.Options;
@@ -73,6 +71,7 @@ import com.zimbra.cs.account.ProvisioningCache;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.datasource.DataSourceManager;
 import com.zimbra.cs.db.DbCalendarItem;
+import com.zimbra.cs.db.DbConversation;
 import com.zimbra.cs.db.DbDataSource;
 import com.zimbra.cs.db.DbMailItem;
 import com.zimbra.cs.db.DbMailItem.QueryParams;
@@ -80,6 +79,7 @@ import com.zimbra.cs.db.DbMailbox;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.db.DbTag;
+import com.zimbra.cs.db.DbTombstone;
 import com.zimbra.cs.db.DbVolumeBlobs;
 import com.zimbra.cs.fb.FreeBusy;
 import com.zimbra.cs.fb.FreeBusyQuery;
@@ -97,7 +97,6 @@ import com.zimbra.cs.index.ZimbraQuery;
 import com.zimbra.cs.index.ZimbraQueryResults;
 import com.zimbra.cs.ldap.LdapConstants;
 import com.zimbra.cs.mailbox.CalendarItem.AlarmData;
-import com.zimbra.cs.mailbox.CalendarItem.Callback;
 import com.zimbra.cs.mailbox.CalendarItem.ReplyInfo;
 import com.zimbra.cs.mailbox.FoldersTagsCache.FoldersTags;
 import com.zimbra.cs.mailbox.MailItem.CustomMetadata;
@@ -5648,11 +5647,6 @@ public class Mailbox implements MailboxStore {
         uncacheItem(calItemId);
         calItem = getCalendarItemById(octxt, calItemId);
         success = true;
-
-        Callback cb = CalendarItem.getCallback();
-        if (cb != null) {
-          cb.modified(calItem);
-        }
       }
       return numFixed;
     } finally {
