@@ -2286,14 +2286,14 @@ public abstract class MailItem
     }
   }
 
-  final void alterSystemFlag(Flag flag, boolean newValue) throws ServiceException {
+  final void alterSystemFlag(Flag flag) throws ServiceException {
     if (flag == null) {
       throw ServiceException.FAILURE("no tag supplied when trying to tag item " + mId, null);
     } else if ((flag.toBitmask() & Flag.FLAGS_SYSTEM) == 0) {
       throw ServiceException.FAILURE("requested to alter a non-system tag", null);
-    } else if (newValue && !flag.canTag(this)) {
+    } else if (!flag.canTag(this)) {
       throw MailServiceException.CANNOT_TAG(flag, this);
-    } else if (newValue == isTagged(flag)) {
+    } else if (isTagged(flag)) {
       return;
     }
 
@@ -2301,14 +2301,14 @@ public abstract class MailItem
     MailItem parent = getParent();
 
     // change our cached tags
-    tagChanged(flag, newValue);
+    tagChanged(flag, true);
 
     // alter our tags in the DB
-    DbTag.alterTag(flag, Arrays.asList(getId()), newValue);
+    DbTag.alterTag(flag, Arrays.asList(getId()), true);
 
     // tell our parent about the tag change (note: must happen after DbMailItem.alterTag)
     if (parent != null) {
-      parent.inheritedTagChanged(flag, newValue);
+      parent.inheritedTagChanged(flag, true);
     }
   }
 
@@ -2528,7 +2528,7 @@ public abstract class MailItem
     parent = detach ? null : parent;
 
     if (shareIndex && !isTagged(Flag.FlagInfo.COPIED)) {
-      alterSystemFlag(mMailbox.getFlagById(Flag.ID_COPIED), true);
+      alterSystemFlag(mMailbox.getFlagById(Flag.ID_COPIED));
       if (ZimbraLog.mailop.isDebugEnabled()) {
         ZimbraLog.mailop.debug("setting copied flag for %s", getMailopContext(this));
       }
