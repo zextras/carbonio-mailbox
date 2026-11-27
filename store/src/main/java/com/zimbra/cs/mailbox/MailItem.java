@@ -61,6 +61,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * @since Aug 12, 2004
@@ -2199,6 +2201,8 @@ public abstract class MailItem
     if (maxNumRevisions > 0 && isTagged(Flag.FlagInfo.VERSIONED)) {
       List<MailItem> revisions = loadRevisions();
       int numRevsToPurge = revisions.size() - (maxNumRevisions - 1); // -1 for main item
+      // this code relies on revisions. The problem is an item is revisioned if it has a version
+      // version is set through Flag.ID_VERSIONED which happens only in calendar item
       if (numRevsToPurge > 0) {
         List<MailItem> toPurge = new ArrayList<>();
         int numPurged = 0;
@@ -2228,7 +2232,7 @@ public abstract class MailItem
         DbMailItem.purgeRevisions(this, highestPurgedVer, true);
       }
       if (revisions.isEmpty()) {
-        tagChanged(mMailbox.getFlagById(Flag.ID_VERSIONED), false);
+        removeTag(mMailbox.getFlagById(Flag.ID_VERSIONED));
       }
     }
 
@@ -2434,6 +2438,24 @@ public abstract class MailItem
    * @param add <tt>true</tt> if the item was tagged, <tt>false</tt> if the item was untagged.
    */
   protected void tagChanged(Tag tag, boolean add) throws ServiceException {
+    if (add) {
+      addTag(tag);
+    } else {
+      removeTag(tag);
+    }
+  }
+
+  protected void addTag(Tag tag) throws ServiceException {
+    updateTag(tag, flag -> mData.setFlag(flag), Set::add);
+  }
+
+  protected void removeTag(Tag tag) throws ServiceException {
+    updateTag(tag, flag -> mData.unsetFlag(flag), Set::remove);
+  }
+
+  private void updateTag(
+      Tag tag, Consumer<Flag> flagUpdate, BiConsumer<Set<String>, String> tagNamesUpdate)
+      throws ServiceException {
     boolean isFlag = tag instanceof Flag;
     markItemModified(isFlag ? Change.FLAGS : Change.TAGS);
     // changing a system flag is not a syncable event
@@ -2442,19 +2464,11 @@ public abstract class MailItem
     }
 
     if (isFlag) {
-      if (add) {
-        mData.setFlag((Flag) tag);
-      } else {
-        mData.unsetFlag((Flag) tag);
-      }
+      flagUpdate.accept((Flag) tag);
     } else {
       Set<String> tags = Sets.newLinkedHashSet();
       Collections.addAll(tags, mData.getTags());
-      if (add) {
-        tags.add(tag.getName());
-      } else {
-        tags.remove(tag.getName());
-      }
+      tagNamesUpdate.accept(tags, tag.getName());
       mData.setTags(tags.isEmpty() ? null : new Tag.NormalizedTags(tags));
     }
   }
@@ -2786,8 +2800,8 @@ public abstract class MailItem
 
     if (shareIndex && !isTagged(Flag.FlagInfo.COPIED)) {
       Flag copiedFlag = mMailbox.getFlagById(Flag.ID_COPIED);
-      tagChanged(copiedFlag, true);
-      copy.tagChanged(copiedFlag, true);
+      addTag(copiedFlag);
+      copy.addTag(copiedFlag);
       if (parent != null) parent.inheritedTagChanged(copiedFlag, true);
     }
 

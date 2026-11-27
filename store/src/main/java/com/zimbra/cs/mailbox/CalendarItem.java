@@ -4654,7 +4654,7 @@ public abstract class CalendarItem extends MailItem {
 
     DbMailItem.snapshotRevision(this, mVersion);
     if (!isTagged(Flag.FlagInfo.VERSIONED)) {
-      tagChanged(mMailbox.getFlagById(Flag.ID_VERSIONED), true);
+      addTag(mMailbox.getFlagById(Flag.ID_VERSIONED));
     }
     return true;
   }
