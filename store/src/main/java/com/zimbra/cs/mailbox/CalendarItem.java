@@ -1869,7 +1869,7 @@ public abstract class CalendarItem extends MailItem {
         move(trash);
         // If we have revisions enabled we need to force metadata write to db because version field
         // changed.
-        if (getMaxRevisions() != 1) saveMetadata();
+        if (calendarItemMaxRevisions() != 1) saveMetadata();
         return true;
       }
     }
@@ -4613,8 +4613,50 @@ public abstract class CalendarItem extends MailItem {
             "you do not have permission to move private calendar item to the target folder");
     }
 
-    addRevision(true);
+    addRevision(true, true, calendarItemMaxRevisions(), this::snapshotCurrentVersion);
     return super.move(target);
+  }
+
+  private boolean snapshotCurrentVersion(Folder folder) throws ServiceException {
+    if (calendarItemMaxRevisions() == 1) return true;
+    loadRevisions();
+
+    // Don't take two revisions for the same data.
+    if (!mRevisions.isEmpty()) {
+      MailItem lastRev = mRevisions.get(mRevisions.size() - 1);
+      if (lastRev.mData.modContent == mData.modContent
+          && lastRev.mData.modMetadata == mData.modMetadata) return false;
+
+      int maxVer = 0;
+      for (MailItem rev : mRevisions) maxVer = Math.max(maxVer, rev.getVersion());
+
+      if (mVersion <= maxVer) {
+        ZimbraLog.mailop.info(
+            "Item's current version is not greater than highest revision; "
+                + "adjusting to "
+                + (maxVer + 1)
+                + " (was "
+                + mVersion
+                + ")");
+        mVersion = maxVer + 1;
+      }
+    }
+
+    UnderlyingData data = mData.clone();
+    data.metadata = encodeMetadata().toString();
+    data.setFlag(Flag.FlagInfo.UNCACHED);
+    mRevisions.add(constructItem(mMailbox, data));
+
+    mMailbox.updateSize(mData.size, isQuotaCheckRequired());
+    folder.updateSize(0, 0, mData.size);
+
+    ZimbraLog.mailop.debug("saving revision %d for %s", mVersion, getMailopContext(this));
+
+    DbMailItem.snapshotRevision(this, mVersion);
+    if (!isTagged(Flag.FlagInfo.VERSIONED)) {
+      tagChanged(mMailbox.getFlagById(Flag.ID_VERSIONED), true);
+    }
+    return true;
   }
 
   @Override
@@ -4766,8 +4808,7 @@ public abstract class CalendarItem extends MailItem {
     return true;
   }
 
-  @Override
-  int getMaxRevisions() throws ServiceException {
+  private int calendarItemMaxRevisions() throws ServiceException {
     return getAccount().getIntAttr(Provisioning.A_zimbraCalendarMaxRevisions, 1);
   }
 
@@ -4776,7 +4817,8 @@ public abstract class CalendarItem extends MailItem {
   }
 
   public void snapshotRevision(boolean updateFolderMODSEQ) throws ServiceException {
-    addRevision(false, updateFolderMODSEQ);
+    addRevision(
+        false, updateFolderMODSEQ, calendarItemMaxRevisions(), this::snapshotCurrentVersion);
   }
 
   @Override

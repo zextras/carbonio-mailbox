@@ -2109,7 +2109,7 @@ public abstract class MailItem
   }
 
   MailboxBlob setContent(StagedBlob staged, Object content) throws ServiceException, IOException {
-    addRevision(false);
+    addRevision(false, true, 1, folder -> true);
 
     // update the item's relevant attributes
     markItemModified(Change.CONTENT | Change.DATE | Change.IMAP_UID | Change.SIZE);
@@ -2169,11 +2169,6 @@ public abstract class MailItem
     return mblob;
   }
 
-  @SuppressWarnings("unused")
-  int getMaxRevisions() throws ServiceException {
-    return 1;
-  }
-
   public List<MailItem> loadRevisions() throws ServiceException {
     if (mRevisions == null) {
       mRevisions = new ArrayList<>();
@@ -2187,57 +2182,15 @@ public abstract class MailItem
     return mRevisions;
   }
 
-  void addRevision(boolean persist) throws ServiceException {
-    addRevision(persist, true);
-  }
-
-  void addRevision(boolean persist, boolean updateFolderMODSEQ) throws ServiceException {
+  void addRevision(
+      boolean persist, boolean updateFolderMODSEQ, int maxNumRevisions, RevisionSnapshot snapshot)
+      throws ServiceException {
     // don't take two revisions for the same data
     if (mData.modMetadata == mMailbox.getOperationChangeID()) return;
 
     Folder folder = getFolder();
-    int maxNumRevisions = getMaxRevisions();
 
-    // record the current version as a revision
-    if (maxNumRevisions != 1) {
-      loadRevisions();
-
-      // Don't take two revisions for the same data.
-      if (!mRevisions.isEmpty()) {
-        MailItem lastRev = mRevisions.get(mRevisions.size() - 1);
-        if (lastRev.mData.modContent == mData.modContent
-            && lastRev.mData.modMetadata == mData.modMetadata) return;
-
-        int maxVer = 0;
-        for (MailItem rev : mRevisions) maxVer = Math.max(maxVer, rev.getVersion());
-
-        if (mVersion <= maxVer) {
-          ZimbraLog.mailop.info(
-              "Item's current version is not greater than highest revision; "
-                  + "adjusting to "
-                  + (maxVer + 1)
-                  + " (was "
-                  + mVersion
-                  + ")");
-          mVersion = maxVer + 1;
-        }
-      }
-
-      UnderlyingData data = mData.clone();
-      data.metadata = encodeMetadata().toString();
-      data.setFlag(Flag.FlagInfo.UNCACHED);
-      mRevisions.add(constructItem(mMailbox, data));
-
-      mMailbox.updateSize(mData.size, isQuotaCheckRequired());
-      folder.updateSize(0, 0, mData.size);
-
-      ZimbraLog.mailop.debug("saving revision %d for %s", mVersion, getMailopContext(this));
-
-      DbMailItem.snapshotRevision(this, mVersion);
-      if (!isTagged(Flag.FlagInfo.VERSIONED)) {
-        tagChanged(mMailbox.getFlagById(Flag.ID_VERSIONED), true);
-      }
-    }
+    if (!snapshot.take(folder)) return;
 
     // now that we've made a copy of the item, we can increment the version number
     mVersion++;
