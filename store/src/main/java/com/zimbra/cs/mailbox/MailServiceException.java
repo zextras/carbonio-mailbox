@@ -93,7 +93,6 @@ public class MailServiceException extends ServiceException {
   public static final String CONTACT_TOO_BIG = "mail.CONTACT_TOO_BIG";
   public static final String CANNOT_GRANT = "mail.CANNOT_GRANT";
 
-  public static final String INVALID_COMMIT_ID = "mail.INVALID_COMMIT_ID";
   public static final String INVALID_IMAGE = "mail.INVALID_IMAGE";
   // TODO: in future we can consider moving not implemented to a more generic/shared error code
   public static final String NOT_IMPLEMENTED = "mail.NOT_IMPLEMENTED";
@@ -866,11 +865,6 @@ public class MailServiceException extends ServiceException {
         SENDERS_FAULT,
         new Argument("TOKEN", token, Argument.Type.STR),
         new Argument("MAX", max, Argument.Type.NUM));
-  }
-
-  public static MailServiceException INVALID_COMMIT_ID(String commitId) {
-    return new MailServiceException(
-        "CommitId " + commitId + " not found in redo logs", INVALID_COMMIT_ID, SENDERS_FAULT);
   }
 
   public static MailServiceException MESSAGE_TOO_BIG(long maxSize, long actualSize) {

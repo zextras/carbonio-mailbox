@@ -13,6 +13,5 @@ public interface CreateWaitSetReq {
     void setAccounts(Iterable<WaitSetAddSpec> accounts);
     CreateWaitSetReq addAccount(WaitSetAddSpec account);
     String getDefaultInterests();
-    Boolean getAllAccounts();
     List<WaitSetAddSpec> getAccounts();
 }

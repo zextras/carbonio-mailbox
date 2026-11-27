@@ -16,12 +16,9 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.redolog.CommitId;
-import com.zimbra.cs.redolog.RedoCommitCallback;
 import com.zimbra.cs.redolog.RedoConfig;
 import com.zimbra.cs.redolog.RedoLogManager;
 import com.zimbra.cs.redolog.RolloverManager;
-import com.zimbra.cs.redolog.op.CommitTxn;
 import com.zimbra.cs.redolog.op.RedoableOp;
 import com.zimbra.cs.util.Zimbra;
 
@@ -81,7 +78,6 @@ public class FileLogWriter implements LogWriter {
     private int mLogCount;          // how many times log was called
     private int mFsyncCount;        // how many times fsync was called
 
-    private CommitNotifyQueue mCommitNotifyQueue;
 
     public FileLogWriter(RedoLogManager redoLogMgr,
                          File logfile,
@@ -98,7 +94,6 @@ public class FileLogWriter implements LogWriter {
 
         mFsyncCount = mLogCount = 0;
 
-        mCommitNotifyQueue = new CommitNotifyQueue(100);
     }
 
     @Override public long getSequence() {
@@ -285,21 +280,6 @@ public class FileLogWriter implements LogWriter {
             }
             data.close();
 
-            // We do this with log writer lock held, so the commits and any
-            // callbacks made on their behalf are truly in the correct order.
-            if (op instanceof CommitTxn) {
-                CommitTxn cmt = (CommitTxn) op;
-                RedoCommitCallback cb = cmt.getCallback();
-                if (cb != null) {
-                    long redoSeq = mRedoLogMgr.getRolloverManager().getCurrentSequence();
-                    CommitId cid = new CommitId(redoSeq, (CommitTxn) op);
-                    Notif notif = new Notif(cb, cid);
-                    // We queue it instead making the callback right away.
-                    // Call it only after the commit record has been fsynced.
-                    mCommitNotifyQueue.push(notif);
-                }
-            }
-
             mLastLogTime = System.currentTimeMillis();
 
             sameMboxAsLastOp = mLastOpMboxId == op.getMailboxId();
@@ -455,7 +435,6 @@ public class FileLogWriter implements LogWriter {
                         mRAF.getChannel().force(false);
                     else
                         throw new IOException("Redolog file closed");
-                    mCommitNotifyQueue.flush(false);
                 }
             }
             synchronized (mLock) {
@@ -544,72 +523,6 @@ public class FileLogWriter implements LogWriter {
             	ZimbraLog.redolog.info("%s finished", getName());
             } catch (InterruptedException e) {
                 ZimbraLog.redolog.warn("InterruptedException while stopping FsyncThread", e);
-            }
-        }
-    }
-
-
-    // Commit callback handling
-
-    private static class Notif {
-        private RedoCommitCallback mCallback;
-        private CommitId mCommitId;
-
-        public Notif(RedoCommitCallback callback, CommitId cid) {
-            mCallback = callback;
-            mCommitId = cid;
-        }
-        public RedoCommitCallback getCallback() { return mCallback; }
-        public CommitId getCommitId() { return mCommitId; }
-    }
-
-    private class CommitNotifyQueue {
-        private Notif[] mQueue = new Notif[100];
-        private int mHead;  // points to first entry
-        private int mTail;  // points to just after last entry (first empty slot)
-        private boolean mFull;
-
-        public CommitNotifyQueue(int size) {
-            mQueue = new Notif[size];
-            mHead = mTail = 0;
-            mFull = false;
-        }
-
-        public synchronized void push(Notif notif) throws IOException {
-            if (notif != null) {
-                if (mFull) flush(true);  // queue is full
-                assert(!mFull);
-                mQueue[mTail] = notif;
-                mTail++;
-                mTail %= mQueue.length;
-                mFull = mTail == mHead;
-            }
-        }
-
-        private synchronized Notif pop() {
-            if (mHead == mTail && !mFull) return null;  // queue is empty
-            Notif n = mQueue[mHead];
-            mQueue[mHead] = null;  // help with GC
-            mHead++;
-            mHead %= mQueue.length;
-            mFull = false;
-            return n;
-        }
-
-        public synchronized void flush(boolean fsync) throws IOException {
-            if (fsync)
-                fsync();
-            Notif notif;
-            while ((notif = pop()) != null) {
-                RedoCommitCallback cb = notif.getCallback();
-                assert(cb != null);
-                try {
-                    cb.callback(notif.getCommitId());
-                } catch (OutOfMemoryError e) {
-                    Zimbra.halt("out of memory", e);
-                } catch (Throwable t) {
-                    ZimbraLog.misc.error("Error while making commit callback", t);
-                }
             }
         }
     }

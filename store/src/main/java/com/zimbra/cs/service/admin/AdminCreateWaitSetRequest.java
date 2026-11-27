@@ -28,8 +28,7 @@ public class AdminCreateWaitSetRequest extends AdminDocumentHandler {
 
     @Override
     public void docRights(List<AdminRight> relatedRights, List<String> notes) {
-        notes.add("If allAccounts is specified, " + AdminRightCheckPoint.Notes.SYSTEM_ADMINS_ONLY);
-        notes.add("Otherwise, for each requested account, " + AdminRightCheckPoint.Notes.ADMIN_LOGIN_AS);
+        notes.add("For each requested account, " + AdminRightCheckPoint.Notes.ADMIN_LOGIN_AS);
     }
 
 }

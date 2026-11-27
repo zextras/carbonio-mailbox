@@ -192,20 +192,7 @@ public class WaitSetRequest extends MailDocumentHandler {
       servletRequest.setAttribute(VARS_ATTR_NAME, cb);
       servletRequest.setAttribute(ZimbraSoapContext.soapRequestIdAttr, zsc.getSoapRequestId());
 
-      String defInterestStr = null;
-      if (waitSetId.startsWith(WaitSetMgr.ALL_ACCOUNTS_ID_PREFIX)) {
-        WaitSetMgr.checkRightForAllAccounts(zsc);
-
-        // default interest types required for "All" waitsets
-        defInterestStr = req.getDefaultInterests();
-        Set<MailItem.Type> defaultInterests =
-            WaitSetRequest.parseInterestStr(defInterestStr, EnumSet.noneOf(MailItem.Type.class));
-        cb.ws =
-            WaitSetMgr.lookupOrCreateForAllAccts(
-                zsc.getRequestedAccountId(), waitSetId, defaultInterests, lastKnownSeqNo);
-      } else {
-        cb.ws = WaitSetMgr.lookup(waitSetId);
-      }
+      cb.ws = WaitSetMgr.lookup(waitSetId);
 
       if (cb.ws == null) throw AdminServiceException.NO_SUCH_WAITSET(waitSetId);
 
@@ -237,7 +224,6 @@ public class WaitSetRequest extends MailDocumentHandler {
       cb.errors.addAll(cb.ws.removeAccounts(remove));
       synchronized (cb.ws) { // bug 28190: always grab the WS lock before the CB lock.
         synchronized (cb) {
-          // note that doWait for AllAccountsWaitSet ignores 'add' and 'update'
           cb.errors.addAll(cb.ws.doWait(cb, lastKnownSeqNo, add, update));
           // after this point, the ws has a pointer to the cb and so we *MUST NOT* lock
           // the ws until we release the cb lock!

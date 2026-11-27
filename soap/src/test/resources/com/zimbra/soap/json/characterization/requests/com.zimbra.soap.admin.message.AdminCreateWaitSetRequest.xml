@@ -1,4 +1,4 @@
-<AdminCreateWaitSetRequest defTypes="defaultInterests" allAccounts="false" xmlns="urn:zimbraAdmin">
+<AdminCreateWaitSetRequest defTypes="defaultInterests" xmlns="urn:zimbraAdmin">
   <add>
     <a types="interests" folderInterests="7" name="name" id="id" token="token"/>
     <a types="interests" folderInterests="7" name="name" id="id" token="token"/>

@@ -183,7 +183,7 @@ public class ImapServerListener {
             return; //another thread has already restored waitset
         }
         cancelPendingRequest();
-        AdminCreateWaitSetRequest req = new AdminCreateWaitSetRequest("all", false);
+        AdminCreateWaitSetRequest req = new AdminCreateWaitSetRequest("all");
         checkAuth();
         AdminCreateWaitSetResponse resp;
         resp = soapProv.invokeJaxbAsAdminWithRetry(req, server);
@@ -243,7 +243,7 @@ public class ImapServerListener {
 
     private synchronized void initWaitSet(String accountId, boolean alreadyListening) throws ServiceException {
         if(wsID == null && this.sessionMap.containsKey(accountId)) {
-            AdminCreateWaitSetRequest req = new AdminCreateWaitSetRequest("all", false);
+            AdminCreateWaitSetRequest req = new AdminCreateWaitSetRequest("all");
             checkAuth();
             AdminCreateWaitSetResponse resp;
             resp = soapProv.invokeJaxbAsAdminWithRetry(req, server);

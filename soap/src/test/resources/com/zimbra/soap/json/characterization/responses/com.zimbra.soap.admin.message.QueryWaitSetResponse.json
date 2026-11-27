@@ -52,17 +52,6 @@
       "ready": [{
           "accounts": "accounts"
         }],
-      "buffered": [{
-          "commit": [
-            {
-              "aid": "aid",
-              "cid": "cid"
-            },
-            {
-              "aid": "aid",
-              "cid": "cid"
-            }]
-        }],
       "id": "waitSetId",
       "owner": "owner",
       "defTypes": "defaultInterests",
@@ -122,17 +111,6 @@
         }],
       "ready": [{
           "accounts": "accounts"
-        }],
-      "buffered": [{
-          "commit": [
-            {
-              "aid": "aid",
-              "cid": "cid"
-            },
-            {
-              "aid": "aid",
-              "cid": "cid"
-            }]
         }],
       "id": "waitSetId",
       "owner": "owner",

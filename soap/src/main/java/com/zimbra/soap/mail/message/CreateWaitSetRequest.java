@@ -21,7 +21,6 @@ import com.google.common.collect.Lists;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.base.CreateWaitSetReq;
 import com.zimbra.soap.type.WaitSetAddSpec;
-import com.zimbra.soap.type.ZmBoolean;
 
 /**
  * @zm-api-command-auth-required true
@@ -55,24 +54,6 @@ public class CreateWaitSetRequest implements CreateWaitSetReq {
     private final String defaultInterests;
 
     /**
-     * @zm-api-field-tag all-accounts
-     * @zm-api-field-description If <b>{all-accounts}</b> is set, then all mailboxes on the system will be listened
-     * to, including any mailboxes which are created on the system while the WaitSet is in existence.
-     * Additionally:
-     * <ul>
-     * <li> &lt;add>, &lt;remove> and &lt;update> tags are IGNORED
-     * <li> The requesting authtoken must be an admin token
-     * </ul>
-     * <p>
-     * AllAccounts WaitSets are *semi-persistent*, that is, even if the server restarts, it is OK to call
-     * &lt;WaitSetRequest> passing in your previous sequence number.  The server will attempt to resynchronize the
-     * waitset using the sequence number you provide (the server's ability to do this is limited by the RedoLogs that
-     * are available)
-     */
-    @XmlAttribute(name=MailConstants.A_ALL_ACCOUNTS /* allAccounts */, required=false)
-    private final ZmBoolean allAccounts;
-
-    /**
      * @zm-api-field-description Waitsets to add
      */
     @XmlElementWrapper(name=MailConstants.E_WAITSET_ADD /* add */, required=false)
@@ -84,12 +65,11 @@ public class CreateWaitSetRequest implements CreateWaitSetReq {
      */
     @SuppressWarnings("unused")
     private CreateWaitSetRequest() {
-        this(null, null);
+        this(null);
     }
 
-    public CreateWaitSetRequest(String defaultInterests, Boolean allAccounts) {
+    public CreateWaitSetRequest(String defaultInterests) {
         this.defaultInterests = defaultInterests;
-        this.allAccounts = ZmBoolean.fromBool(allAccounts);
     }
 
     @Override
@@ -109,8 +89,6 @@ public class CreateWaitSetRequest implements CreateWaitSetReq {
     @Override
     public String getDefaultInterests() { return defaultInterests; }
     @Override
-    public Boolean getAllAccounts() { return ZmBoolean.toBool(allAccounts, false); }
-    @Override
     public List<WaitSetAddSpec> getAccounts() {
         return Collections.unmodifiableList(accounts);
     }
@@ -118,7 +96,6 @@ public class CreateWaitSetRequest implements CreateWaitSetReq {
     public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
         return helper
             .add("defaultInterests", defaultInterests)
-            .add("allAccounts", allAccounts)
             .add("accounts", accounts);
     }
 
