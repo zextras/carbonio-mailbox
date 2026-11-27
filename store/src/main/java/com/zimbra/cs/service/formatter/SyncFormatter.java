@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.formatter;
 
+import com.zimbra.cs.mailbox.Appointment;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,7 +27,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.HttpUtil;
 import com.zimbra.common.util.Pair;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.DeliveryOptions;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
@@ -110,9 +110,9 @@ public class SyncFormatter extends Formatter {
                 handleMessagePart(context, context.target);
             } else if (context.target instanceof Message) {
                 handleMessage(context, (Message) context.target);
-            } else if (context.target instanceof CalendarItem) {
+            } else if (context.target instanceof Appointment) {
                 // Don't return private appointments/tasks if the requester is not the mailbox owner.
-                CalendarItem calItem = (CalendarItem) context.target;
+                Appointment calItem = (Appointment) context.target;
                 if (calItem.isPublic() || calItem.allowPrivateAccess(
                         context.getAuthAccount(), context.isUsingAdminPrivileges())) {
                     handleCalendarItem(context, calItem);
@@ -125,7 +125,7 @@ public class SyncFormatter extends Formatter {
         }
     }
 
-    private void handleCalendarItem(UserServletContext context, CalendarItem calItem) throws IOException, ServiceException, MessagingException {
+    private void handleCalendarItem(UserServletContext context, Appointment calItem) throws IOException, ServiceException, MessagingException {
         context.resp.setContentType(MimeConstants.CT_TEXT_PLAIN);
         if (context.itemId.hasSubpart()) {
             Pair<MimeMessage,Integer> calItemMsgData = calItem.getSubpartMessageData(context.itemId.getSubpartId());
@@ -191,7 +191,7 @@ public class SyncFormatter extends Formatter {
         context.resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "part not found");
     }
 
-    public static MimePart getMimePart(CalendarItem calItem, String part) throws IOException, MessagingException, ServiceException {
+    public static MimePart getMimePart(Appointment calItem, String part) throws IOException, MessagingException, ServiceException {
         return Mime.getMimePart(calItem.getMimeMessage(), part);
     }
 

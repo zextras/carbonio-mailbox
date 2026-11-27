@@ -20,13 +20,13 @@ import com.zextras.db.DbError;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Constants;
 import com.zimbra.cs.db.DbPool.DbConnection;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
+import com.zimbra.cs.mailbox.Appointment.CalendarMetadata;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem.UnderlyingData;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.mailbox.Metadata;
 import com.zimbra.cs.mailbox.util.TypedIdList;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,7 +41,7 @@ public class DbCalendarItem implements CalendarItemRepository {
   private static final String CALENDAR_TYPES = "(" + MailItem.Type.APPOINTMENT.toByte() + ')';
 
   @Override
-  public void copyCalendar(CalendarItem calItem, int newId, boolean fromDumpster)
+  public void copyCalendar(Appointment calItem, int newId, boolean fromDumpster)
       throws ServiceException {
     Mailbox mbox = calItem.getMailbox();
     if (newId <= 0) {
@@ -274,7 +274,7 @@ public class DbCalendarItem implements CalendarItemRepository {
   }
 
   @Override
-  public void addCalendar(CalendarItem calItem) throws ServiceException {
+  public void addCalendar(Appointment calItem) throws ServiceException {
     Mailbox mbox = calItem.getMailbox();
 
     long start = calItem.getStartTime();
@@ -325,7 +325,7 @@ public class DbCalendarItem implements CalendarItemRepository {
   }
 
   @Override
-  public void updateCalendar(CalendarItem calItem) throws ServiceException {
+  public void updateCalendar(Appointment calItem) throws ServiceException {
     Mailbox mbox = calItem.getMailbox();
     long start = calItem.getStartTime();
     long end = calItem.getEndTime();
@@ -359,11 +359,11 @@ public class DbCalendarItem implements CalendarItemRepository {
 
 
   @Override
-  public List<CalendarItem.CalendarMetadata> getCalendarMetadata(
+  public List<CalendarMetadata> getCalendarMetadata(
       Folder folder, long start, long end) throws ServiceException {
     Mailbox mbox = folder.getMailbox();
 
-    ArrayList<CalendarItem.CalendarMetadata> result =
+    ArrayList<CalendarMetadata> result =
         new ArrayList<>();
 
     DbConnection conn = mbox.getOperationConnection();
@@ -397,7 +397,7 @@ public class DbCalendarItem implements CalendarItemRepository {
       rs = stmt.executeQuery();
       while (rs.next()) {
         result.add(
-            new CalendarItem.CalendarMetadata(
+            new CalendarMetadata(
                 rs.getInt(1),
                 rs.getInt(2),
                 rs.getString(3),

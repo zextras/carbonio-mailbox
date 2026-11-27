@@ -13,7 +13,7 @@ import com.zimbra.common.util.L10nUtil.MsgKey;
 import com.zimbra.cs.fb.FreeBusy;
 import com.zimbra.cs.fb.FreeBusy.FBInstance;
 import com.zimbra.cs.fb.FreeBusy.Interval;
-import com.zimbra.cs.mailbox.CalendarItem.Instance;
+import com.zimbra.cs.mailbox.Appointment.Instance;
 import com.zimbra.cs.mailbox.calendar.CalendarMailSender;
 import com.zimbra.cs.mailbox.calendar.IcalXmlStrMap;
 import com.zimbra.cs.mailbox.calendar.Invite;
@@ -193,7 +193,7 @@ final class AppointmentAvailability {
 
         int apptId = instance.getApptId();
         long recurIdDt = instance.getRecurIdDt();
-        CalendarItem appt = mbox.getCalendarItemById(octxt, apptId);
+        Appointment appt = mbox.getCalendarItemById(octxt, apptId);
         Invite inv = appt.getInviteForRecurId(recurIdDt);
         if (inv != null && inv.hasOrganizer()) {
           ZOrganizer organizer = inv.getOrganizer();

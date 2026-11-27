@@ -21,7 +21,7 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.dav.DavContext;
 import com.zimbra.cs.dav.DavException;
 import com.zimbra.cs.dav.service.DavServlet;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.DavNames;
 import com.zimbra.cs.mailbox.Folder;
@@ -571,7 +571,7 @@ public class UrlNamespace {
         Invite invite = calItemInfo.getInvite();
         if (invite == null && calItemInfo.calItemCreated()) {
           // Pre-6.0 data
-          CalendarItem item =
+          Appointment item =
               mbox.getCalendarItemById(ctxt.getOperationContext(), calItemInfo.getCalendarItemId());
           invite = calItemInfo.getInvite();
           int compNum = calItemInfo.getComponentNo();
@@ -636,7 +636,7 @@ public class UrlNamespace {
           }
           break;
         case APPOINTMENT:
-          resource = new CalendarObject.LocalCalendarObject(ctxt, (CalendarItem) item);
+          resource = new CalendarObject.LocalCalendarObject(ctxt, (Appointment) item);
           break;
         case MESSAGE:
           resource = getCalendarItemForMessage(ctxt, (Message) item);

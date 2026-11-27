@@ -24,7 +24,7 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.html.DefangFactory;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -164,8 +164,8 @@ public class ContentServlet extends ZimbraServlet {
             }
             resp.setContentType(MimeConstants.CT_TEXT_PLAIN);
             ByteUtil.copy(msg.getContentStream(), true, resp.getOutputStream(), false);
-          } else if (item instanceof CalendarItem) {
-            CalendarItem calItem = (CalendarItem) item;
+          } else if (item instanceof Appointment) {
+            Appointment calItem = (Appointment) item;
             if (sync) {
               resp.getOutputStream().write(header.toString().getBytes());
             }
@@ -185,7 +185,7 @@ public class ContentServlet extends ZimbraServlet {
           if (item instanceof Message) {
             mp = getMimePart((Message) item, part);
           } else {
-            CalendarItem calItem = (CalendarItem) item;
+            Appointment calItem = (Appointment) item;
             if (itemId.hasSubpart()) {
               MimeMessage mbp = calItem.getSubpartMessage(itemId.getSubpartId());
               if (mbp != null) mp = Mime.getMimePart(mbp, part);
@@ -303,7 +303,7 @@ public class ContentServlet extends ZimbraServlet {
     }
   }
 
-  public static MimePart getMimePart(CalendarItem calItem, String part)
+  public static MimePart getMimePart(Appointment calItem, String part)
       throws IOException, MessagingException, ServiceException {
     return Mime.getMimePart(calItem.getMimeMessage(), part);
   }

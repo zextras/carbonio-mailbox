@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.mailbox.calendar;
 
+import com.zimbra.cs.mailbox.Appointment.Instance;
 import java.text.ParseException;
 import java.util.*;
 
@@ -20,8 +21,6 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ListUtil;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.mailbox.CalendarItem;
-import com.zimbra.cs.mailbox.CalendarItem.Instance;
 import com.zimbra.cs.mailbox.Metadata;
 
 
@@ -937,13 +936,13 @@ public class Recurrence
             ParsedDateTime dtFirstEnd = mDuration != null ? mDtStart.add(mDuration) : null;
             long firstEnd = dtFirstEnd != null ? dtFirstEnd.getUtcTime() : firstStart;
             if (firstStart < end && firstEnd > start) {
-                CalendarItem.Instance first = null;
+                Instance first = null;
                 if (toAdd.size() > 0) {
                     first = toAdd.get(0);
                 }
 
                 boolean allDay = !mDtStart.hasTime() || (mDtStart.hasZeroTime() && mDuration != null && mDuration.isMultipleOfDays());
-                CalendarItem.Instance dtstartInst = new CalendarItem.Instance(
+                Instance dtstartInst = new Instance(
                         calItemId, mInvId, true, true, firstStart, firstEnd,
                         allDay, mDtStart.getOffset(), dtFirstEnd != null ? dtFirstEnd.getOffset() : 0,
                         false, true);

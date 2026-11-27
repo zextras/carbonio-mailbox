@@ -5,6 +5,7 @@ package com.zimbra.cs.mailbox.calendar;
 //
 // SPDX-License-Identifier: GPL-2.0-only
 
+import com.zimbra.cs.mailbox.Appointment;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -21,7 +22,6 @@ import com.zimbra.common.util.Log;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.calendar.Recurrence.IRecurrence;
@@ -113,7 +113,7 @@ public class FriendlyCalendaringDescription {
             // client.  Currently, this information is not stored in the Calendar.
             // Might be able to extract the information from messages in the Sent folder at
             // some point in the future?
-            CalendarItem calItem = mbox.getCalendarItemByUid(null, uid);
+            Appointment calItem = mbox.getCalendarItemByUid(null, uid);
             if (calItem != null) {
                 Invite [] calInvites = calItem.getInvites();
                 if ((calInvites != null) && (calInvites.length > 1))

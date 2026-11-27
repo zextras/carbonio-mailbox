@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.dav.resource;
 
+import com.zimbra.cs.mailbox.Appointment;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -48,7 +49,6 @@ import com.zimbra.cs.dav.caldav.CalDavUtils;
 import com.zimbra.cs.fb.FreeBusy;
 import com.zimbra.cs.fb.FreeBusyQuery;
 import com.zimbra.cs.index.SortBy;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -481,7 +481,7 @@ public class ScheduleOutbox extends CalendarCollection {
         // if (ctxt.useIcalDelegation()) { return; }
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(ctxt.getAuthAccount());
         String uid = req.getPropVal(ICalTok.UID, null);
-        CalendarItem matchingCalendarEntry = mbox.getCalendarItemByUid(ctxt.getOperationContext(), uid);
+        Appointment matchingCalendarEntry = mbox.getCalendarItemByUid(ctxt.getOperationContext(), uid);
         if (matchingCalendarEntry == null) {
             List<com.zimbra.cs.mailbox.Mountpoint> sharedCalendars =
                     mbox.getCalendarMountpoints(ctxt.getOperationContext(), SortBy.NONE);

@@ -10,8 +10,7 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.mailbox.CalendarItem;
-import com.zimbra.cs.mailbox.CalendarItem.AlarmData;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -22,6 +21,7 @@ import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.util.Iterator;
 import java.util.Map;
+import com.zimbra.cs.mailbox.Appointment.AlarmData;
 
 public class SnoozeCalendarItemAlarm extends DocumentHandler {
 
@@ -57,7 +57,7 @@ public class SnoozeCalendarItemAlarm extends DocumentHandler {
         try {
           ciMbox.snoozeCalendarItemAlarm(octxt, calItemId, snoozeUntil);
 
-          CalendarItem calItem = ciMbox.getCalendarItemById(octxt, calItemId);
+          Appointment calItem = ciMbox.getCalendarItemById(octxt, calItemId);
           Element calItemRespElem = response.addElement(MailConstants.E_APPOINTMENT);
           calItemRespElem.addAttribute(MailConstants.A_CAL_ID, iid.toString(ifmt));
 

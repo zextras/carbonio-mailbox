@@ -13,8 +13,8 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.mailbox.CalendarItem;
-import com.zimbra.cs.mailbox.CalendarItem.ReplyInfo;
+import com.zimbra.cs.mailbox.Appointment;
+import com.zimbra.cs.mailbox.Appointment.ReplyInfo;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
@@ -108,7 +108,7 @@ public class SetCalendarItem extends CalendarRequest {
       SetCalendarItemParseResult parsed =
           parseSetAppointmentRequest(request, zsc, octxt, folder, getItemType(), false);
 
-      CalendarItem calItem =
+      Appointment calItem =
           mbox.setCalendarItem(
               octxt,
               iidFolder.getId(),
@@ -245,7 +245,7 @@ public class SetCalendarItem extends CalendarRequest {
     if (inv == null || inv.getDTStamp() == -1) { // zdsync if -1 for 4.5 back compat
       CalendarPartInfo cpi = pm.getCalendarPartInfo();
       ZVCalendar cal = null;
-      if (cpi != null && CalendarItem.isAcceptableInvite(
+      if (cpi != null && Appointment.isAcceptableInvite(
           Provisioning.getInstance().getAccountByMailbox(mbox), cpi)) {
         cal = cpi.cal;
       }
@@ -353,11 +353,11 @@ public class SetCalendarItem extends CalendarRequest {
     result.isTodo = defInv != null && defInv.isTodo();
 
     boolean noNextAlarm = request.getAttributeBool(MailConstants.A_CAL_NO_NEXT_ALARM, false);
-    if (noNextAlarm) result.nextAlarm = CalendarItem.NEXT_ALARM_ALL_DISMISSED;
+    if (noNextAlarm) result.nextAlarm = Appointment.NEXT_ALARM_ALL_DISMISSED;
     else
       result.nextAlarm =
           request.getAttributeLong(
-              MailConstants.A_CAL_NEXT_ALARM, CalendarItem.NEXT_ALARM_KEEP_CURRENT);
+              MailConstants.A_CAL_NEXT_ALARM, Appointment.NEXT_ALARM_KEEP_CURRENT);
 
     return result;
   }

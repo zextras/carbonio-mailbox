@@ -783,7 +783,7 @@ public final class Message extends MailItem {
     boolean autoAddNew;
     AccountAddressMatcher acctMatcher = null;
     private final Account account;
-    CalendarItem calItem = null;
+    Appointment calItem = null;
 
     ProcessInvitesStatus(Account acct, ParsedMessage pm) throws ServiceException {
       account = acct;
@@ -974,7 +974,7 @@ public final class Message extends MailItem {
 
     boolean publicInvites = true; // used to check if any invite is non-public
     status.calItemFolderId = Mailbox.ID_FOLDER_CALENDAR;
-    CalendarItem firstCalItem = null;
+    Appointment firstCalItem = null;
     Set<String> calUidsSeen = new HashSet<>();
     for (Invite cur : invites) {
       if (!cur.isPublic()) {
@@ -1021,7 +1021,7 @@ public final class Message extends MailItem {
               // If appointment is not found, fall back to the intended-for address, then finally to
               // self.
               ZOrganizer org = null;
-              CalendarItem ci = mMailbox.getCalendarItemByUid(octxt, cur.getUid());
+              Appointment ci = mMailbox.getCalendarItemByUid(octxt, cur.getUid());
               if (ci != null) {
                 Invite inv = ci.getInvite(cur.getRecurId());
                 if (inv == null) {
@@ -1403,7 +1403,7 @@ public final class Message extends MailItem {
                     pm,
                     cur,
                     calFolderId,
-                    CalendarItem.NEXT_ALARM_KEEP_CURRENT,
+                    Appointment.NEXT_ALARM_KEEP_CURRENT,
                     true /* preserveAlarms */,
                     discardExistingInvites,
                     false /* updatePrevFolders */);

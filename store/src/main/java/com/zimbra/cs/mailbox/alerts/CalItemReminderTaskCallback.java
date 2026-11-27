@@ -7,7 +7,7 @@ package com.zimbra.cs.mailbox.alerts;
 
 import com.zimbra.common.util.ScheduledTaskCallback;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.ScheduledTaskResult;
 
 import java.util.concurrent.Callable;
@@ -22,7 +22,7 @@ public class CalItemReminderTaskCallback implements ScheduledTaskCallback<Schedu
             return;
         if (task instanceof CalItemReminderTaskBase) {
             ZimbraLog.scheduler.debug("afterTaskRun() for %s", task);
-            CalItemReminderService.scheduleNextReminders((CalendarItem) lastResult,
+            CalItemReminderService.scheduleNextReminders((Appointment) lastResult,
                     task instanceof CalItemEmailReminderTask, task instanceof CalItemSmsReminderTask);
         }
     }

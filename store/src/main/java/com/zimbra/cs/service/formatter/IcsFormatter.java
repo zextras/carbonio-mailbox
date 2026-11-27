@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.formatter;
 
+import com.zimbra.cs.mailbox.Appointment;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -26,8 +27,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.FileBufferedWriter;
 import com.zimbra.common.util.HttpUtil;
 import com.zimbra.common.util.HttpUtil.Browser;
-import com.zimbra.cs.mailbox.CalendarItem;
-import com.zimbra.cs.mailbox.CalendarItem.Instance;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.OperationContext;
@@ -38,6 +37,7 @@ import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.service.UserServletContext;
 import com.zimbra.cs.service.UserServletException;
 import com.zimbra.cs.service.formatter.FormatterFactory.FormatType;
+import com.zimbra.cs.mailbox.Appointment.Instance;
 
 public class IcsFormatter extends Formatter {
 
@@ -59,7 +59,7 @@ public class IcsFormatter extends Formatter {
     @Override
     public void formatCallback(UserServletContext context) throws IOException, ServiceException {
         Iterator<? extends MailItem> iterator = null;
-        List<CalendarItem> calItems = new ArrayList<>();
+        List<Appointment> calItems = new ArrayList<>();
         //ZimbraLog.mailbox.info("start = "+new Date(context.getStartTime()));
         //ZimbraLog.mailbox.info("end = "+new Date(context.getEndTime()));
         try {
@@ -71,8 +71,8 @@ public class IcsFormatter extends Formatter {
             // this is lame
             while (iterator.hasNext()) {
                 MailItem item = iterator.next();
-                if (item instanceof CalendarItem) {
-                    CalendarItem calItem = (CalendarItem) item;
+                if (item instanceof Appointment) {
+                    Appointment calItem = (Appointment) item;
                     if (hasTimeRange) {
                         Collection<Instance> instances = calItem.expandInstances(start, end, false);
                         if (!instances.isEmpty())

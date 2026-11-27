@@ -8,7 +8,7 @@ package com.zimbra.cs.index;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.db.DbSearch;
 import com.zimbra.cs.imap.ImapMessage;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -106,7 +106,7 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
   }
 
   protected CalendarItemHit getAppointmentHit(
-      Mailbox mbx, int id, CalendarItem cal, Object sortValue) {
+      Mailbox mbx, int id, Appointment cal, Object sortValue) {
     CalendarItemHit hit = calItemHits.get(id);
     if (hit == null) {
       hit = new CalendarItemHit(this, mbx, id, cal, sortValue);
@@ -184,7 +184,7 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
         result = getContactHit(mbox, sr.getId(), (Contact) item, sr.getSortValue());
         break;
       case APPOINTMENT:
-        result = getAppointmentHit(mbox, sr.getId(), (CalendarItem) item, sr.getSortValue());
+        result = getAppointmentHit(mbox, sr.getId(), (Appointment) item, sr.getSortValue());
         break;
       default:
         assert (false);

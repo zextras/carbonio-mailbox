@@ -13,7 +13,6 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.GuestAccount;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Appointment;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.OperationContext;
@@ -128,7 +127,7 @@ public class FreeBusyQuery {
           else octxt = new OperationContext(GuestAccount.ANONYMOUS_ACCT);
           Appointment exAppt = null;
           if (mExApptUid != null) {
-            CalendarItem ci = mbox.getCalendarItemByUid(octxt, mExApptUid);
+            Appointment ci = mbox.getCalendarItemByUid(octxt, mExApptUid);
             if (ci instanceof Appointment) exAppt = (Appointment) ci;
           }
           local.add(mbox.getFreeBusy(octxt, id, mStart, mEnd, folder, exAppt));

@@ -26,7 +26,7 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.CalendarResource;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.ACL;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailSender;
 import com.zimbra.cs.mailbox.MailServiceException;
@@ -109,7 +109,7 @@ public class SendInviteReply extends CalendarRequest {
     Invite oldInv = null;
     int calItemId;
     int inviteMsgId;
-    CalendarItem calItem = null;
+    Appointment calItem = null;
     boolean wasInTrash = false;
     String stat = null;
 
@@ -602,7 +602,7 @@ public class SendInviteReply extends CalendarRequest {
   }
 
   /** Note returns null if {@code calItemId} represents a remote calendar item */
-  private static CalendarItem safeGetCalendarItemById(
+  private static Appointment safeGetCalendarItemById(
       Mailbox mbox, OperationContext octxt, ItemId calItemId) throws ServiceException {
     try {
       return mbox.getCalendarItemById(octxt, calItemId);
@@ -616,7 +616,7 @@ public class SendInviteReply extends CalendarRequest {
     }
   }
 
-  private static CalendarItem safeGetCalendarItemById(
+  private static Appointment safeGetCalendarItemById(
       Mailbox mbox, OperationContext octxt, int calItemId) throws ServiceException {
     try {
       return mbox.getCalendarItemById(octxt, calItemId);

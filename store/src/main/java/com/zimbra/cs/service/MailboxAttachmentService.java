@@ -8,7 +8,7 @@ import static io.vavr.API.Case;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.AuthToken;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Message;
@@ -84,14 +84,14 @@ public class MailboxAttachmentService implements AttachmentService {
           if (mailItem instanceof Message message) {
             mimePart = Mime.getMimePart(message.getMimeMessage(), part);
           } else {
-            mimePart = extractMimePartFromCalendarItem((CalendarItem) mailItem, itemId, part).getOrNull();
+            mimePart = extractMimePartFromCalendarItem((Appointment) mailItem, itemId, part).getOrNull();
           }
           return Optional.ofNullable(mimePart)
               .orElseThrow(() -> new AttachmentNotFound(part));
         }));
   }
 
-  private Try<MimePart> extractMimePartFromCalendarItem(CalendarItem calItem, ItemId itemId, String part) {
+  private Try<MimePart> extractMimePartFromCalendarItem(Appointment calItem, ItemId itemId, String part) {
     return Try.of(() -> {
       MimeMessage mimeMessage = itemId.hasSubpart()
           ? calItem.getSubpartMessage(itemId.getSubpartId())

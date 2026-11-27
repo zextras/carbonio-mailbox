@@ -28,7 +28,7 @@ import com.zimbra.cs.account.DataSource;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.mailbox.ACL;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.ContactGroup;
 import com.zimbra.cs.mailbox.ContactGroup.Member;
@@ -908,7 +908,7 @@ public class ItemActionHelper {
           }
           break;
         case APPOINTMENT:
-          CalendarItem cal = (CalendarItem) item;
+          Appointment cal = (Appointment) item;
           // private calendar item may not be moved by non-owner unless permission was granted
           if (!cal.isPublic()) {
             boolean asAdmin = mOpCtxt != null ? mOpCtxt.isUsingAdminPrivileges() : false;
@@ -1019,7 +1019,7 @@ public class ItemActionHelper {
 
   private void addCalendarPart(
       Element parent,
-      CalendarItem cal,
+      Appointment cal,
       Invite inv,
       ZMailbox zmbx,
       Account target,

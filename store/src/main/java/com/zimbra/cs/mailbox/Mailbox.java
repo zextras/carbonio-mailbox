@@ -96,8 +96,7 @@ import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.index.ZimbraQuery;
 import com.zimbra.cs.index.ZimbraQueryResults;
 import com.zimbra.cs.ldap.LdapConstants;
-import com.zimbra.cs.mailbox.CalendarItem.AlarmData;
-import com.zimbra.cs.mailbox.CalendarItem.ReplyInfo;
+import com.zimbra.cs.mailbox.Appointment.CalendarMetadata;
 import com.zimbra.cs.mailbox.FoldersTagsCache.FoldersTags;
 import com.zimbra.cs.mailbox.MailItem.CustomMetadata;
 import com.zimbra.cs.mailbox.MailItem.PendingDelete;
@@ -248,6 +247,8 @@ import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimePart;
+import com.zimbra.cs.mailbox.Appointment.ReplyInfo;
+import com.zimbra.cs.mailbox.Appointment.AlarmData;
 
 /**
  * @since Jun 13, 2004
@@ -3482,8 +3483,8 @@ public class Mailbox implements MailboxStore {
       beginTransaction("getItemRevision", octxt);
       MailItem item = checkAccess(getItemById(id, type, fromDumpster));
       MailItem revision =
-          item instanceof CalendarItem
-              ? ((CalendarItem) item).getRevision(version)
+          item instanceof Appointment
+              ? ((Appointment) item).getRevision(version)
               : (item.getVersion() == version ? item : null);
       success = true;
       return revision;
@@ -3505,8 +3506,8 @@ public class Mailbox implements MailboxStore {
       beginTransaction("getAllRevisions", octxt);
       T item = (T) checkAccess(getItemById(id, type));
       List<MailItem> previousRevisions =
-          item instanceof CalendarItem
-              ? ((CalendarItem) item).loadCalendarItemRevisions()
+          item instanceof Appointment
+              ? ((Appointment) item).loadCalendarItemRevisions()
               : new ArrayList<>();
       List<T> result = new ArrayList<>(previousRevisions.size());
       for (MailItem rev : previousRevisions) {
@@ -4794,7 +4795,7 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  public Collection<CalendarItem.CalendarMetadata> getCalendarItemMetadata(
+  public Collection<CalendarMetadata> getCalendarItemMetadata(
       int folderId, long start, long end) throws ServiceException {
     boolean success = false;
     try {
@@ -4821,7 +4822,7 @@ public class Mailbox implements MailboxStore {
    * Get Calendar entry associated with {@code id} as long as the calendar belongs to this mailbox
    * Note: This means that entries for mounted calendars are NOT returned.
    */
-  public CalendarItem getCalendarItemById(OperationContext octxt, ItemId id)
+  public Appointment getCalendarItemById(OperationContext octxt, ItemId id)
       throws ServiceException {
     if ((id == null) || (!id.belongsTo(this))) {
       return null;
@@ -4829,25 +4830,25 @@ public class Mailbox implements MailboxStore {
     return getCalendarItemById(octxt, id.getId());
   }
 
-  public CalendarItem getCalendarItemById(OperationContext octxt, int id) throws ServiceException {
+  public Appointment getCalendarItemById(OperationContext octxt, int id) throws ServiceException {
     lock.lock(false);
     try {
       MailItem item = getItemById(octxt, id, MailItem.Type.UNKNOWN);
       checkCalendarType(item);
-      return (CalendarItem) item;
+      return (Appointment) item;
     } finally {
       lock.release();
     }
   }
 
-  private CalendarItem getCalendarItemById(int id) throws ServiceException {
+  private Appointment getCalendarItemById(int id) throws ServiceException {
     MailItem item = getItemById(id, MailItem.Type.UNKNOWN);
     checkCalendarType(item);
-    return (CalendarItem) item;
+    return (Appointment) item;
   }
 
-  CalendarItem getCalendarItem(MailItem.UnderlyingData data) throws ServiceException {
-    return (CalendarItem) getItem(data);
+  Appointment getCalendarItem(MailItem.UnderlyingData data) throws ServiceException {
+    return (Appointment) getItem(data);
   }
 
   public Appointment getAppointmentById(OperationContext octxt, int id) throws ServiceException {
@@ -4882,7 +4883,7 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  public List<CalendarItem> getCalendarItems(
+  public List<Appointment> getCalendarItems(
       OperationContext octxt, int folderId) throws ServiceException {
     return getCalendarItemsForRange(octxt, -1, -1, folderId, null);
   }
@@ -4909,7 +4910,7 @@ public class Mailbox implements MailboxStore {
    * @perms {@link ACL#RIGHT_READ} on all returned calendar items.
    * @throws ServiceException
    */
-  public List<CalendarItem> getCalendarItemsForRange(
+  public List<Appointment> getCalendarItemsForRange(
       OperationContext octxt,
       long start,
       long end,
@@ -4926,12 +4927,12 @@ public class Mailbox implements MailboxStore {
       }
 
       // get the list of all visible calendar items in the specified folder
-      List<CalendarItem> calItems = new ArrayList<>();
+      List<Appointment> calItems = new ArrayList<>();
       List<MailItem.UnderlyingData> invData =
           CALENDAR_ITEM_REPOSITORY.getCalendars(this, start, end, folderId, excludeFolders);
       for (MailItem.UnderlyingData data : invData) {
         try {
-          CalendarItem calItem = getCalendarItem(data);
+          Appointment calItem = getCalendarItem(data);
           if (folderId == calItem.getFolderId()
               || (folderId == ID_AUTO_INCREMENT && calItem.inMailbox())) {
             if (calItem.canAccess(ACL.RIGHT_READ)) {
@@ -4958,7 +4959,7 @@ public class Mailbox implements MailboxStore {
   public void writeICalendarForCalendarItems(
       Writer writer,
       OperationContext octxt,
-      Collection<CalendarItem> calItems,
+      Collection<Appointment> calItems,
       boolean useOutlookCompatMode,
       boolean ignoreErrors,
       boolean needAppleICalHacks,
@@ -4979,7 +4980,7 @@ public class Mailbox implements MailboxStore {
   public void writeICalendarForCalendarItems(
       Writer writer,
       OperationContext octxt,
-      Collection<CalendarItem> calItems,
+      Collection<Appointment> calItems,
       Folder f,
       boolean useOutlookCompatMode,
       boolean ignoreErrors,
@@ -5003,7 +5004,7 @@ public class Mailbox implements MailboxStore {
   public void writeICalendarForCalendarItems(
       Writer writer,
       OperationContext octxt,
-      Collection<CalendarItem> calItems,
+      Collection<Appointment> calItems,
       Folder f,
       boolean useOutlookCompatMode,
       boolean ignoreErrors,
@@ -5035,7 +5036,7 @@ public class Mailbox implements MailboxStore {
       // timezones
       ICalTimeZone localTz = Util.getAccountTimeZone(getAccount());
       TimeZoneMap tzmap = new TimeZoneMap(localTz);
-      for (CalendarItem calItem : calItems) {
+      for (Appointment calItem : calItems) {
         tzmap.add(calItem.getTimeZoneMap());
       }
       // iterate the tzmap and add all the VTimeZone's
@@ -5046,8 +5047,8 @@ public class Mailbox implements MailboxStore {
       tzmap = null; // help keep memory consumption low
 
       // build all the event components and add them to the Calendar
-      for (Iterator<CalendarItem> iter = calItems.iterator(); iter.hasNext(); ) {
-        CalendarItem calItem = iter.next();
+      for (Iterator<Appointment> iter = calItems.iterator(); iter.hasNext(); ) {
+        Appointment calItem = iter.next();
         boolean allowPrivateAccess =
             calItem.isPublic()
                 || calItem.allowPrivateAccess(
@@ -5298,7 +5299,7 @@ public class Mailbox implements MailboxStore {
     boolean success = false;
     try {
       beginTransaction("dismissAlarm", octxt, redoRecorder);
-      CalendarItem calItem = getCalendarItemById(octxt, calItemId);
+      Appointment calItem = getCalendarItemById(octxt, calItemId);
       if (calItem == null) {
         throw MailServiceException.NO_SUCH_CALITEM(calItemId);
       }
@@ -5318,7 +5319,7 @@ public class Mailbox implements MailboxStore {
     boolean success = false;
     try {
       beginTransaction("snoozeAlarm", octxt, redoRecorder);
-      CalendarItem calItem = getCalendarItemById(octxt, calItemId);
+      Appointment calItem = getCalendarItemById(octxt, calItemId);
       if (calItem == null) {
         throw MailServiceException.NO_SUCH_CALITEM(calItemId);
       }
@@ -5364,7 +5365,7 @@ public class Mailbox implements MailboxStore {
    * @param exceptions can be NULL
    * @return calendar item ID
    */
-  public CalendarItem setCalendarItem(
+  public Appointment setCalendarItem(
       OperationContext octxt,
       int folderId,
       int flags,
@@ -5397,7 +5398,7 @@ public class Mailbox implements MailboxStore {
         }
       }
 
-      CalendarItem calItem = null;
+      Appointment calItem = null;
 
       // bug 19868: Preserve invId of existing Invites.  We have to do this before making any
       // calls to processNewInvite() because it'll delete all existing Invites and we'll lose
@@ -5545,9 +5546,9 @@ public class Mailbox implements MailboxStore {
       }
 
       // Recompute alarm time after processing all Invites.
-      if (nextAlarm == CalendarItem.NEXT_ALARM_KEEP_CURRENT) {
+      if (nextAlarm == Appointment.NEXT_ALARM_KEEP_CURRENT) {
         nextAlarm =
-            oldAlarmData != null ? oldAlarmData.getNextAt() : CalendarItem.NEXT_ALARM_FROM_NOW;
+            oldAlarmData != null ? oldAlarmData.getNextAt() : Appointment.NEXT_ALARM_FROM_NOW;
       }
       calItem.updateNextAlarm(nextAlarm, oldAlarmData, false);
 
@@ -5580,10 +5581,10 @@ public class Mailbox implements MailboxStore {
     lists.add(getItemList(octxt, MailItem.Type.APPOINTMENT));
     for (List<MailItem> items : lists) {
       for (Object obj : items) {
-        if (!(obj instanceof CalendarItem)) {
+        if (!(obj instanceof Appointment)) {
           continue;
         }
-        CalendarItem calItem = (CalendarItem) obj;
+        Appointment calItem = (Appointment) obj;
         long end = calItem.getEndTime();
         if (end <= after) {
           continue;
@@ -5630,7 +5631,7 @@ public class Mailbox implements MailboxStore {
     boolean success = false;
     try {
       beginTransaction("fixCalendarItemTimeZone2", octxt, redoRecorder);
-      CalendarItem calItem = getCalendarItemById(octxt, calItemId);
+      Appointment calItem = getCalendarItemById(octxt, calItemId);
       Map<String, ICalTimeZone> replaced = new HashMap<>();
       int numFixed = fixupRules.fixCalendarItem(calItem, replaced);
       if (numFixed > 0) {
@@ -5662,10 +5663,10 @@ public class Mailbox implements MailboxStore {
     lists[0] = getItemList(octxt, MailItem.Type.APPOINTMENT);
     for (List<MailItem> items : lists) {
       for (Object obj : items) {
-        if (!(obj instanceof CalendarItem)) {
+        if (!(obj instanceof Appointment)) {
           continue;
         }
-        CalendarItem calItem = (CalendarItem) obj;
+        Appointment calItem = (Appointment) obj;
         try {
           numFixed += fixCalendarItemEndTime(octxt, calItem);
         } catch (ServiceException e) {
@@ -5689,7 +5690,7 @@ public class Mailbox implements MailboxStore {
     return numFixed;
   }
 
-  public int fixCalendarItemEndTime(OperationContext octxt, CalendarItem calItem)
+  public int fixCalendarItemEndTime(OperationContext octxt, Appointment calItem)
       throws ServiceException {
     FixCalendarItemEndTime redoRecorder = new FixCalendarItemEndTime(getId(), calItem.getId());
     boolean success = false;
@@ -5716,10 +5717,10 @@ public class Mailbox implements MailboxStore {
     lists[0] = getItemList(octxt, MailItem.Type.APPOINTMENT);
     for (List<MailItem> items : lists) {
       for (Object obj : items) {
-        if (!(obj instanceof CalendarItem)) {
+        if (!(obj instanceof Appointment)) {
           continue;
         }
-        CalendarItem calItem = (CalendarItem) obj;
+        Appointment calItem = (Appointment) obj;
         try {
           numFixed += fixCalendarItemPriority(octxt, calItem);
         } catch (ServiceException e) {
@@ -5743,7 +5744,7 @@ public class Mailbox implements MailboxStore {
     return numFixed;
   }
 
-  public int fixCalendarItemPriority(OperationContext octxt, CalendarItem calItem)
+  public int fixCalendarItemPriority(OperationContext octxt, Appointment calItem)
       throws ServiceException {
     FixCalendarItemPriority redoRecorder = new FixCalendarItemPriority(getId(), calItem.getId());
     boolean success = false;
@@ -5897,7 +5898,7 @@ public class Mailbox implements MailboxStore {
         }
       }
 
-      CalendarItem calItem = getCalendarItemByUid(octxt, inv.getUid());
+      Appointment calItem = getCalendarItemByUid(octxt, inv.getUid());
       boolean processed = true;
       if (calItem == null) {
         // ONLY create an calendar item if this is a REQUEST method...otherwise don't.
@@ -5925,7 +5926,7 @@ public class Mailbox implements MailboxStore {
                 pm,
                 inv,
                 folderId,
-                CalendarItem.NEXT_ALARM_KEEP_CURRENT,
+                Appointment.NEXT_ALARM_KEEP_CURRENT,
                 preserveExistingAlarms,
                 discardExistingInvites,
                 updatePrevFolders);
@@ -6016,13 +6017,13 @@ public class Mailbox implements MailboxStore {
     return htmlDesc;
   }
 
-  public CalendarItem getCalendarItemByUid(OperationContext octxt, String uid)
+  public Appointment getCalendarItemByUid(OperationContext octxt, String uid)
       throws ServiceException {
     boolean success = false;
     try {
       beginReadTransaction("getCalendarItemByUid", octxt);
       MailItem.UnderlyingData data = CALENDAR_ITEM_REPOSITORY.getCalendar(this, uid);
-      CalendarItem calItem = (CalendarItem) getItem(data);
+      Appointment calItem = (Appointment) getItem(data);
       success = true;
       return calItem;
     } finally {
@@ -6030,17 +6031,17 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  public Map<String, CalendarItem> getCalendarItemsByUid(OperationContext octxt, List<String> uids)
+  public Map<String, Appointment> getCalendarItemsByUid(OperationContext octxt, List<String> uids)
       throws ServiceException {
     boolean success = false;
     try {
       beginTransaction("getCalendarItemsByUid", octxt);
       ArrayList<String> uidList = new ArrayList<>(uids);
-      Map<String, CalendarItem> calItems = new HashMap<>();
+      Map<String, Appointment> calItems = new HashMap<>();
       List<MailItem.UnderlyingData> invData = CALENDAR_ITEM_REPOSITORY.getCalendars(this, uids);
       for (MailItem.UnderlyingData data : invData) {
         try {
-          CalendarItem calItem = getCalendarItem(data);
+          Appointment calItem = getCalendarItem(data);
           calItems.put(calItem.getUid(), calItem);
           uidList.remove(calItem.getUid());
         } catch (ServiceException e) {
@@ -6073,7 +6074,7 @@ public class Mailbox implements MailboxStore {
     // if the deduping rules say to drop this duplicated incoming message,
     // .... but only dedupe messages not carrying a calendar part
     if (mSentMessageIDs.containsKey(msgidHeader)
-        && (cpi == null || !CalendarItem.isAcceptableInvite(getAccount(), cpi))) {
+        && (cpi == null || !Appointment.isAcceptableInvite(getAccount(), cpi))) {
       Account acct = getAccount();
       switch (acct.getPrefDedupeMessagesSentToSelf()) {
         case dedupeAll:
@@ -6124,7 +6125,7 @@ public class Mailbox implements MailboxStore {
     try {
       beginTransaction("iCalReply", octxt, redoRecorder);
       String uid = inv.getUid();
-      CalendarItem calItem = getCalendarItemByUid(octxt, uid);
+      Appointment calItem = getCalendarItemByUid(octxt, uid);
       if (calItem == null) {
         ZimbraLog.calendar.warn("Unknown calendar item UID %s", uid);
         return;
@@ -6182,7 +6183,7 @@ public class Mailbox implements MailboxStore {
         if (fromOutlook && !inv.isAllDayEvent() && inv.hasRecurId()) {
           RecurId rid = inv.getRecurId();
           if (rid.getDt() != null && rid.getDt().hasZeroTime()) {
-            CalendarItem calItem = getCalendarItemByUid(octxt, inv.getUid());
+            Appointment calItem = getCalendarItemByUid(octxt, inv.getUid());
             if (calItem != null) {
               Invite seriesInv = calItem.getDefaultInviteOrNull();
               if (seriesInv != null) {
@@ -6401,7 +6402,7 @@ public class Mailbox implements MailboxStore {
     if (!noICal) {
       try {
         CalendarPartInfo cpi = pm.getCalendarPartInfo();
-        if (cpi != null && CalendarItem.isAcceptableInvite(getAccount(), cpi)) {
+        if (cpi != null && Appointment.isAcceptableInvite(getAccount(), cpi)) {
           if (ICalTok.REPLY.equals(cpi.method)) {
             processICalReplies(octxt, cpi.cal, null);
           } else if (ICalTok.COUNTER.equals(cpi.method)) {
@@ -6696,7 +6697,7 @@ public class Mailbox implements MailboxStore {
 
       CalendarPartInfo cpi = pm.getCalendarPartInfo();
       ZVCalendar iCal = null;
-      if (cpi != null && CalendarItem.isAcceptableInvite(getAccount(), cpi)) {
+      if (cpi != null && Appointment.isAcceptableInvite(getAccount(), cpi)) {
         iCal = cpi.cal;
       }
       msg =
@@ -7075,7 +7076,7 @@ public class Mailbox implements MailboxStore {
     boolean success = false;
     try {
       beginTransaction("updateInvitePartStat", octxt, redoRecorder);
-      CalendarItem calItem = getCalendarItemById(calItemId);
+      Appointment calItem = getCalendarItemById(calItemId);
       Account acct = getAccount();
       markItemModified(calItem, Change.INVITE);
       calItem.modifyPartStat(
@@ -8342,7 +8343,7 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  CalendarItem createCalendarItem(
+  Appointment createCalendarItem(
       int folderId,
       int flags,
       Tag.NormalizedTags ntags,
@@ -8361,8 +8362,8 @@ public class Mailbox implements MailboxStore {
         redoPlayer == null ? Mailbox.ID_AUTO_INCREMENT : redoPlayer.getCalendarItemId();
     int createId = getNextItemId(newCalItemId);
 
-    CalendarItem calItem =
-        CalendarItem.create(
+    Appointment calItem =
+        Appointment.create(
             createId,
             getFolderById(folderId),
             flags,
@@ -9118,7 +9119,7 @@ public class Mailbox implements MailboxStore {
           }
           try {
             boolean importIt;
-            CalendarItem calItem = getCalendarItemByUid(octxtNoConflicts, uid);
+            Appointment calItem = getCalendarItemByUid(octxtNoConflicts, uid);
             if (calItem == null) {
               // New appointment.  Import it.
               importIt = true;

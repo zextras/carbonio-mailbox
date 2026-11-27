@@ -38,8 +38,7 @@ import com.zimbra.cs.gal.GalGroup;
 import com.zimbra.cs.gal.GalGroupMembers;
 import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.ldap.LdapUtil;
-import com.zimbra.cs.mailbox.CalendarItem;
-import com.zimbra.cs.mailbox.CalendarItem.ReplyInfo;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -70,6 +69,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import com.zimbra.cs.mailbox.Appointment.ReplyInfo;
 
 public class CalendarUtils {
   // Start of Microsoft time
@@ -407,7 +407,7 @@ public class CalendarUtils {
     // Get the existing invite to populate X-MS-OLK-ORIGINALSTART and X-MS-OLK-ORIGINALEND
     if (oldInvite == null) {
       Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
-      CalendarItem calItem = mbox.getCalendarItemByUid(null, inv.getUid());
+      Appointment calItem = mbox.getCalendarItemByUid(null, inv.getUid());
       if (calItem != null) oldInvite = calItem.getInvite(inv.getRecurId());
     }
 
@@ -1397,7 +1397,7 @@ public class CalendarUtils {
       Account senderAcct,
       boolean asAdmin,
       boolean onBehalfOf,
-      CalendarItem calItem,
+      Appointment calItem,
       Invite inv,
       String comment,
       List<ZAttendee> forAttendees)
@@ -1411,7 +1411,7 @@ public class CalendarUtils {
       Account senderAcct,
       boolean asAdmin,
       boolean onBehalfOf,
-      CalendarItem calItem,
+      Appointment calItem,
       Invite inv,
       String comment)
       throws ServiceException {
@@ -1423,7 +1423,7 @@ public class CalendarUtils {
       Account senderAcct,
       boolean asAdmin,
       boolean onBehalfOf,
-      CalendarItem calItem,
+      Appointment calItem,
       Invite inv,
       String comment,
       RecurId recurId)
@@ -1460,7 +1460,7 @@ public class CalendarUtils {
       Account senderAcct,
       boolean asAdmin,
       boolean onBehalfOf,
-      CalendarItem calItem,
+      Appointment calItem,
       Invite inv,
       String comment,
       List<ZAttendee> forAttendees,
@@ -1491,7 +1491,7 @@ public class CalendarUtils {
       RecurId recurId,
       boolean incrementSeq)
       throws ServiceException {
-    boolean allowPrivateAccess = CalendarItem.allowPrivateAccess(folder, senderAcct, asAdmin);
+    boolean allowPrivateAccess = Appointment.allowPrivateAccess(folder, senderAcct, asAdmin);
     return cancelInvite(
         acct,
         senderAcct,

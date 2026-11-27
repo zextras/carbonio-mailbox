@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.mailbox.calendar;
 
+import com.zimbra.cs.mailbox.Appointment.Instance;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -76,7 +77,7 @@ public class RecurId implements Cloneable
 //        return new RecurId(dt, rangeVal);
 //    }
     
-    public static RecurId createFromInstance(Appointment.Instance inst) {
+    public static RecurId createFromInstance(Instance inst) {
         return new RecurId(ParsedDateTime.fromUTCTime(inst.getStart()), RANGE_NONE);
     }
     

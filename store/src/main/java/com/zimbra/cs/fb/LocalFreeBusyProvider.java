@@ -22,7 +22,6 @@ import com.zimbra.cs.fb.FreeBusy.FBInstance;
 import com.zimbra.cs.fb.FreeBusy.Interval;
 import com.zimbra.cs.fb.FreeBusy.IntervalList;
 import com.zimbra.cs.mailbox.Appointment;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -93,7 +92,7 @@ public class LocalFreeBusyProvider {
                 continue;
             }
             // Free/busy must be allowed by folder or at account-level.
-            boolean folderFBAllowed = CalendarItem.allowFreeBusyAccess(f, authAcct, asAdmin);
+            boolean folderFBAllowed = Appointment.allowFreeBusyAccess(f, authAcct, asAdmin);
             if (folderFBAllowed)
                 ++numAllowedFolders;
             if (!folderFBAllowed && !accountAceAllowed) {

@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 
 public class CalendarItemTest extends MailboxTestSuite {
   private OperationContext octxt;
-  private CalendarItem calItem;
+  private Appointment calItem;
   private final Integer SEQ = 123;
 
   /**

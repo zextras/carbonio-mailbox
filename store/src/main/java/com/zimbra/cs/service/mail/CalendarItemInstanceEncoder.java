@@ -15,8 +15,7 @@ import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.Appointment;
-import com.zimbra.cs.mailbox.CalendarItem.AlarmData;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment.Instance;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mailbox.calendar.Invite;
@@ -32,6 +31,7 @@ import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.util.Collection;
 import java.util.List;
+import com.zimbra.cs.mailbox.Appointment.AlarmData;
 
 final class CalendarItemInstanceEncoder {
 
@@ -58,7 +58,7 @@ final class CalendarItemInstanceEncoder {
   static EncodeCalendarItemResult encodeCalendarItemInstances(
       ZimbraSoapContext lc,
       OperationContext octxt,
-      CalendarItem calItem,
+      Appointment calItem,
       Account acct,
       long rangeStart,
       long rangeEnd,
@@ -132,7 +132,7 @@ final class CalendarItemInstanceEncoder {
       int numInRange = 0;
 
       if (expandRanges) {
-        Collection<CalendarItem.Instance> instances =
+        Collection<Instance> instances =
             calItem.expandInstances(rangeStart, rangeEnd, true);
         long alarmTime = 0;
         long alarmInst = 0;
@@ -140,7 +140,7 @@ final class CalendarItemInstanceEncoder {
           alarmTime = alarmData.getNextAt();
           alarmInst = alarmData.getNextInstanceStart();
         }
-        for (CalendarItem.Instance inst : instances) {
+        for (Instance inst : instances) {
           try {
             InviteInfo invId = inst.getInviteInfo();
             Invite inv = calItem.getInvite(invId.getMsgId(), invId.getComponentId());

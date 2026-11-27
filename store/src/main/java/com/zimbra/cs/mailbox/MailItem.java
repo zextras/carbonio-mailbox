@@ -67,7 +67,7 @@ import java.util.function.Consumer;
  */
 public abstract sealed class MailItem
     implements Comparable<MailItem>, ScheduledTaskResult, ZimbraMailItem
-    permits Message, Contact, Conversation, Folder, Tag, CalendarItem {
+    permits Appointment, Contact, Conversation, Folder, Message, Tag {
 
   private static final TombstoneRepository TOMBSTONE_REPOSITORY = new DbTombstone();
 

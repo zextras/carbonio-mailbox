@@ -10,7 +10,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.mailbox.CalendarItem.Instance;
+import com.zimbra.cs.mailbox.Appointment.Instance;
 
 /**
  * Captures differences between Before and After Invites for an Organizer calendar

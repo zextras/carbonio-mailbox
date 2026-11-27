@@ -10,7 +10,7 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -99,7 +99,7 @@ public class ModifyCalendarItem extends CalendarRequest {
         int compNum = (int) request.getAttributeLong(MailConstants.A_CAL_COMP, 0);
         requestedMailbox.lock.lock();
         try {
-            CalendarItem calItem = requestedMailbox.getCalendarItemById(octxt, iid.getId());
+            Appointment calItem = requestedMailbox.getCalendarItemById(octxt, iid.getId());
             if (calItem == null) {
                 throw MailServiceException.NO_SUCH_CALITEM(iid.toString(), "Could not find calendar item");
             }
@@ -144,7 +144,7 @@ public class ModifyCalendarItem extends CalendarRequest {
 
         // Inter-mailbox move if necessary.
         if (isInterMboxMove) {
-            CalendarItem calItem = requestedMailbox.getCalendarItemById(octxt, iid.getId());
+            Appointment calItem = requestedMailbox.getCalendarItemById(octxt, iid.getId());
             List<Integer> ids = new ArrayList<>(1);
             ids.add(calItem.getId());
             ItemActionHelper.MOVE(octxt, requestedMailbox, zsc.getResponseProtocol(), ids, calItem.getType(), null, iidFolder);
@@ -156,7 +156,7 @@ public class ModifyCalendarItem extends CalendarRequest {
     private Element modifyCalendarItem(
             ZimbraSoapContext zsc, OperationContext octxt, Element request,
             Account acct, Mailbox mbox, int folderId,
-            CalendarItem calItem, Invite inv, Invite seriesInv, Element response,
+            Appointment calItem, Invite inv, Invite seriesInv, Element response,
             MailSendQueue sendQueue)
     throws ServiceException {
         // <M>

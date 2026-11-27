@@ -342,7 +342,7 @@ public final class Flag extends Tag {
         if ((info.bitmask & FLAGS_MESSAGE) != 0 && !(item instanceof Message)) {
             return false;
         }
-        if ((info.bitmask & FLAGS_CALITEM) != 0 && !(item instanceof CalendarItem)) {
+        if ((info.bitmask & FLAGS_CALITEM) != 0 && !(item instanceof Appointment)) {
             return false;
         }
         return true;

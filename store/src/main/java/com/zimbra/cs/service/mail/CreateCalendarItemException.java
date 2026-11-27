@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.calendar.IcalXmlStrMap;
 import com.zimbra.cs.mime.MimeProcessorUtil;
 import com.zimbra.cs.service.mail.message.parser.InviteParser;
@@ -21,7 +22,6 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -102,7 +102,7 @@ public class CreateCalendarItemException extends CalendarRequest {
         Element response = getResponseElement(zsc);
         mbox.lock.lock();
         try {
-            CalendarItem calItem = mbox.getCalendarItemById(octxt, iid.getId());
+            Appointment calItem = mbox.getCalendarItemById(octxt, iid.getId());
             if (calItem == null)
                 throw MailServiceException.NO_SUCH_CALITEM(iid.getId(), " for CreateCalendarItemExceptionRequest(" + iid + "," + compNum + ")");
 
@@ -204,7 +204,7 @@ public class CreateCalendarItemException extends CalendarRequest {
 
         // Inter-mailbox move if necessary.
         if (isInterMboxMove) {
-            CalendarItem calItem = mbox.getCalendarItemById(octxt, iid.getId());
+            Appointment calItem = mbox.getCalendarItemById(octxt, iid.getId());
             List<Integer> ids = new ArrayList<>(1);
             ids.add(calItem.getId());
             ItemActionHelper.MOVE(octxt, mbox, zsc.getResponseProtocol(), ids, calItem.getType(), null, iidFolder);

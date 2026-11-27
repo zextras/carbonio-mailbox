@@ -33,7 +33,9 @@ import com.zimbra.cs.dav.caldav.Filter;
 import com.zimbra.cs.dav.caldav.Range.ExpandRange;
 import com.zimbra.cs.dav.caldav.Range.TimeRange;
 import com.zimbra.cs.dav.property.CalDavProperty;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
+import com.zimbra.cs.mailbox.Appointment.CalendarMetadata;
+import com.zimbra.cs.mailbox.Appointment.Instance;
 import com.zimbra.cs.mailbox.DavNames;
 import com.zimbra.cs.mailbox.DavNames.DavName;
 import com.zimbra.cs.mailbox.Flag;
@@ -213,7 +215,7 @@ public interface CalendarObject {
           OperationContext octxt = ctxt.getOperationContext();
           Folder folder = mbox.getFolderById(octxt, mFolderId);
           allowPrivateAccess =
-              CalendarItem.allowPrivateAccess(
+              Appointment.allowPrivateAccess(
                   folder, ctxt.getAuthAccount(), octxt.isUsingAdminPrivileges());
         } catch (ServiceException se) {
           ZimbraLog.dav.warn("cannot determine private access status", se);
@@ -281,7 +283,7 @@ public interface CalendarObject {
     private final long mEnd;
 
     public LightWeightCalendarObject(
-        String path, String owner, CalendarItem.CalendarMetadata data) {
+        String path, String owner, CalendarMetadata data) {
       super(CalendarPath.generate(null, path, data.uid, data.mailboxId, data.itemId, -1), owner);
       mMailboxId = data.mailboxId;
       mId = data.itemId;
@@ -356,11 +358,11 @@ public interface CalendarObject {
   class LocalCalendarObject extends LocalCalendarObjectBase
       implements CalendarObject {
 
-    public LocalCalendarObject(DavContext ctxt, CalendarItem calItem) throws ServiceException {
+    public LocalCalendarObject(DavContext ctxt, Appointment calItem) throws ServiceException {
       this(ctxt, calItem, false);
     }
 
-    public LocalCalendarObject(DavContext ctxt, CalendarItem calItem, boolean newItem)
+    public LocalCalendarObject(DavContext ctxt, Appointment calItem, boolean newItem)
         throws ServiceException {
       this(
           ctxt,
@@ -375,7 +377,7 @@ public interface CalendarObject {
       mNewlyCreated = newItem;
     }
 
-    public LocalCalendarObject(DavContext ctxt, String path, CalendarItem calItem)
+    public LocalCalendarObject(DavContext ctxt, String path, Appointment calItem)
         throws ServiceException {
       super(ctxt, path, calItem);
       item = calItem;
@@ -403,7 +405,7 @@ public interface CalendarObject {
       mEnd = calItem.getEndTime();
     }
 
-    private final CalendarItem item;
+    private final Appointment item;
     private final String mUid;
     private Invite[] mInvites;
     private final TimeZoneMap mTzmap;
@@ -483,7 +485,7 @@ public interface CalendarObject {
         OperationContext octxt = ctxt.getOperationContext();
         Folder folder = mbox.getFolderById(octxt, mFolderId);
         allowPrivateAccess =
-            CalendarItem.allowPrivateAccess(
+            Appointment.allowPrivateAccess(
                 folder, ctxt.getAuthAccount(), octxt.isUsingAdminPrivileges());
       } catch (ServiceException se) {
         ZimbraLog.dav.warn("cannot determine private access status", se);
@@ -585,7 +587,7 @@ public interface CalendarObject {
       if (defInvite == null) return;
       ArrayList<Invite> inviteList = new ArrayList<>();
       try {
-        for (CalendarItem.Instance instance :
+        for (Instance instance :
             item.expandInstances(range.getStart(), range.getEnd(), false)) {
           InviteInfo info = instance.getInviteInfo();
           Invite inv = item.getInvite(info.getMsgId(), info.getComponentId());

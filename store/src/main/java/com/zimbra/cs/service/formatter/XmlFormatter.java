@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.formatter;
 
+import com.zimbra.cs.mailbox.Appointment;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -12,13 +13,12 @@ import java.util.Set;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.MailItem;
-import com.zimbra.cs.mailbox.CalendarItem.Instance;
 import com.zimbra.cs.service.UserServletContext;
 import com.zimbra.cs.service.formatter.FormatterFactory.FormatType;
 import com.zimbra.cs.service.mail.ToXML;
 import com.zimbra.cs.service.util.ItemIdFormatter;
+import com.zimbra.cs.mailbox.Appointment.Instance;
 
 public class XmlFormatter extends Formatter {
 
@@ -46,9 +46,9 @@ public class XmlFormatter extends Formatter {
             // this is lame
             while (iterator.hasNext()) {
                 MailItem item = iterator.next();
-                if (item instanceof CalendarItem && hasTimeRange) {
+                if (item instanceof Appointment && hasTimeRange) {
                     // Skip appointments that have no instance in the time range.
-                    CalendarItem calItem = (CalendarItem) item;
+                    Appointment calItem = (Appointment) item;
                     Collection<Instance> instances = calItem.expandInstances(start, end, false);
                     if (instances.isEmpty())
                         continue;

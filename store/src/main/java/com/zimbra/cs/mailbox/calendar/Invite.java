@@ -36,8 +36,7 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Identity;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.index.Fragment;
-import com.zimbra.cs.mailbox.CalendarItem;
-import com.zimbra.cs.mailbox.CalendarItem.Instance;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -69,6 +68,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimePart;
 import org.apache.commons.io.IOUtils;
+import com.zimbra.cs.mailbox.Appointment.Instance;
 
 /**
  * Invite
@@ -99,7 +99,7 @@ public class Invite {
       MailItem.Type type,
       String methodStr,
       TimeZoneMap tzmap,
-      CalendarItem calItem,
+      Appointment calItem,
       String uid,
       String status,
       String priority,
@@ -590,7 +590,7 @@ public class Invite {
    * @throws ServiceException
    */
   public static Invite decodeMetadata(
-      int mailboxId, Metadata meta, CalendarItem calItem, ICalTimeZone accountTZ)
+      int mailboxId, Metadata meta, Appointment calItem, ICalTimeZone accountTZ)
       throws ServiceException {
     byte btype = (byte) meta.getLong(FN_ITEMTYPE, -1);
     MailItem.Type type = btype >= 0 ? MailItem.Type.of(btype) : MailItem.Type.APPOINTMENT;
@@ -1089,11 +1089,11 @@ public class Invite {
   /**
    * @return the CalendarItem object, or null if one could not be found
    */
-  public CalendarItem getCalendarItem() {
+  public Appointment getCalendarItem() {
     return mCalItem;
   }
 
-  public void setCalendarItem(CalendarItem calItem) {
+  public void setCalendarItem(Appointment calItem) {
     mCalItem = calItem;
   }
 
@@ -1592,7 +1592,7 @@ public class Invite {
   public static final int APPT_FLAG_NEVER_SENT =
       0x200; // true means attendees have never been notified
 
-  protected CalendarItem mCalItem = null;
+  protected Appointment mCalItem = null;
 
   // all of these are loaded from / stored in the meta
   protected String mUid;

@@ -9,7 +9,8 @@ import com.zimbra.common.mailbox.BaseItemInfo;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
+import com.zimbra.cs.mailbox.Appointment.AlarmData;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxListener;
@@ -36,20 +37,20 @@ public class CalItemReminderService extends MailboxListener {
     if (notification.mods.created != null) {
       for (Map.Entry<ModificationKey, BaseItemInfo> entry : notification.mods.created.entrySet()) {
         BaseItemInfo item = entry.getValue();
-        if (item instanceof CalendarItem) {
-          CalendarItem calItem = (CalendarItem) item;
+        if (item instanceof Appointment) {
+          Appointment calItem = (Appointment) item;
           ZimbraLog.scheduler.debug(
               "Handling creation of calendar item (id=%s,mailboxId=%s)",
               calItem.getId(), calItem.getMailboxId());
-          scheduleNextReminders((CalendarItem) item, true, true);
+          scheduleNextReminders((Appointment) item, true, true);
         }
       }
     }
     if (notification.mods.modified != null) {
       for (Map.Entry<ModificationKey, Change> entry : notification.mods.modified.entrySet()) {
         Change change = entry.getValue();
-        if (change.what instanceof CalendarItem) {
-          CalendarItem calItem = (CalendarItem) change.what;
+        if (change.what instanceof Appointment) {
+          Appointment calItem = (Appointment) change.what;
           ZimbraLog.scheduler.debug(
               "Handling modification of calendar item (id=%s,mailboxId=%s)",
               calItem.getId(), calItem.getMailboxId());
@@ -94,7 +95,7 @@ public class CalItemReminderService extends MailboxListener {
    * @param calItem
    * @return true if no error was encountered during cancellation
    */
-  static boolean cancelExistingReminders(CalendarItem calItem) {
+  static boolean cancelExistingReminders(Appointment calItem) {
     return cancelExistingReminders(calItem.getId(), calItem.getMailboxId());
   }
 
@@ -131,9 +132,9 @@ public class CalItemReminderService extends MailboxListener {
    * @param email
    * @param sms
    */
-  static void scheduleNextReminders(CalendarItem calItem, boolean email, boolean sms) {
+  static void scheduleNextReminders(Appointment calItem, boolean email, boolean sms) {
     try {
-      CalendarItem.AlarmData alarmData = calItem.getNextEmailAlarm();
+      AlarmData alarmData = calItem.getNextEmailAlarm();
       if (alarmData == null) return;
       boolean emailAlarmExists = true;
       boolean smsAlarmExists = false;
@@ -165,7 +166,7 @@ public class CalItemReminderService extends MailboxListener {
   }
 
   private static void scheduleReminder(
-      CalItemReminderTaskBase reminderTask, CalendarItem calItem, CalendarItem.AlarmData alarmData)
+      CalItemReminderTaskBase reminderTask, Appointment calItem, AlarmData alarmData)
       throws ServiceException {
     reminderTask.setMailboxId(calItem.getMailboxId());
     reminderTask.setExecTime(new Date(alarmData.getNextAt()));

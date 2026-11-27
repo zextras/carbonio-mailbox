@@ -10,9 +10,8 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.index.SortBy;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.Folder;
-import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.calendar.Invite;
@@ -85,8 +84,8 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		assertTrue(ics1.contains("ATTENDEE;CN=userb@test.com;ROLE=REQ-PARTICIPANT:mailto:userb@test.com"));
 		assertTrue(ics1.contains("ATTENDEE;CN=userd@test.com;ROLE=REQ-PARTICIPANT:mailto:userd@test.com"));
 		greenMail.reset();
-		final List<CalendarItem> calendarItems = getCalendarAppointments(userB);
-		final CalendarItem userBAppointment = calendarItems.get(0);
+		final List<Appointment> calendarItems = getCalendarAppointments(userB);
+		final Appointment userBAppointment = calendarItems.get(0);
 		forwardAppointment(userB, String.valueOf(userBAppointment.getId()), userC.getName());
 
 		MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
@@ -107,8 +106,8 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		greenMail.reset();
 
 		final Account userD = createAccount().create();
-		final List<CalendarItem> calendarItems = getCalendarAppointments(userB);
-		final CalendarItem userBAppointment = calendarItems.get(0);
+		final List<Appointment> calendarItems = getCalendarAppointments(userB);
+		final Appointment userBAppointment = calendarItems.get(0);
 
 		forwardAppointment(userB, String.valueOf(userBAppointment.getId()), userD.getName());
 
@@ -132,8 +131,8 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		greenMail.reset();
 
 		final Account userD = createAccount().create();
-		final List<CalendarItem> calendarItems = getCalendarAppointments(userB);
-		final CalendarItem userBAppointment = calendarItems.get(0);
+		final List<Appointment> calendarItems = getCalendarAppointments(userB);
+		final Appointment userBAppointment = calendarItems.get(0);
 
 		forwardAppointment(userB, String.valueOf(userBAppointment.getId()), userD.getName());
 		final MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
@@ -146,12 +145,12 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
         "to additional recipients."));
 	}
 
-	private static List<CalendarItem> getCalendarAppointments(Account userB) throws ServiceException {
+	private static List<Appointment> getCalendarAppointments(Account userB) throws ServiceException {
 		return mailboxManager.getMailboxByAccount(userB)
 				.getCalendarItems(null, getFirstCalendar(userB).getFolderId());
 	}
 
-	private static CalendarItem getCalendarItemById(Account account,
+	private static Appointment getCalendarItemById(Account account,
 			CreateAppointmentResponse appointmentResponse) throws ServiceException {
 		return mailboxManager.getMailboxByAccount(account)
 				.getCalendarItemById(null, Integer.parseInt(appointmentResponse.getCalItemId()));

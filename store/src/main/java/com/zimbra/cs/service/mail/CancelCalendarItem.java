@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,6 @@ import com.zimbra.common.util.L10nUtil;
 import com.zimbra.common.util.L10nUtil.MsgKey;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.MailSender;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -64,7 +64,7 @@ public class CancelCalendarItem extends CalendarRequest {
             throw ServiceException.INVALID_REQUEST("missing invId subpart: id should be specified as \"item-inv\"", null);
         int compNum = (int) request.getAttributeLong(MailConstants.E_INVITE_COMPONENT);
 
-        CalendarItem calItem = mbox.getCalendarItemById(octxt, iid.getId());
+        Appointment calItem = mbox.getCalendarItemById(octxt, iid.getId());
         if (calItem == null)
             throw MailServiceException.NO_SUCH_CALITEM(iid.getId(), " for CancelCalendarItemRequest(" + iid + "," + compNum + ")");
         if (calItem.inTrash())
@@ -150,7 +150,7 @@ public class CancelCalendarItem extends CalendarRequest {
     }
 
     void cancelInstance(ZimbraSoapContext zsc, OperationContext octxt, Element msgElem, Account acct, Mailbox mbox,
-            CalendarItem calItem, Invite inv, RecurId recurId, List<ZAttendee> toNotify, MailSendQueue sendQueue)
+            Appointment calItem, Invite inv, RecurId recurId, List<ZAttendee> toNotify, MailSendQueue sendQueue)
     throws ServiceException {
         boolean onBehalfOf = isOnBehalfOfRequest(zsc);
         Account authAcct = getAuthenticatedAccount(zsc);
@@ -192,7 +192,7 @@ public class CancelCalendarItem extends CalendarRequest {
     }
 
     protected void cancelInvite(ZimbraSoapContext zsc, OperationContext octxt, Element msgElem, Account acct, Mailbox mbox,
-            CalendarItem calItem, Invite inv, MailSendQueue sendQueue)
+            Appointment calItem, Invite inv, MailSendQueue sendQueue)
     throws ServiceException {
         boolean onBehalfOf = isOnBehalfOfRequest(zsc);
         Account authAcct = getAuthenticatedAccount(zsc);

@@ -16,7 +16,7 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Appointment;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment.Instance;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
@@ -109,7 +109,7 @@ public class CalSummaryCache {
   }
 
   public static CalendarItemData reloadCalendarItemOverRange(
-      CalendarItem calItem, long rangeStart, long rangeEnd) throws ServiceException {
+      Appointment calItem, long rangeStart, long rangeEnd) throws ServiceException {
     CalendarItemData calItemData = null;
     try {
       boolean rangeValid =
@@ -133,7 +133,7 @@ public class CalSummaryCache {
         defaultFba = ((Appointment) calItem).getEffectiveFreeBusyActual(defaultInvite, null);
 
       AlarmData alarm = null;
-      CalendarItem.AlarmData calItemAlarmData = calItem.getAlarmData();
+      Appointment.AlarmData calItemAlarmData = calItem.getAlarmData();
       long alarmTime = 0;
       long alarmInst = 0;
       if (calItemAlarmData != null) {
@@ -201,9 +201,9 @@ public class CalSummaryCache {
       long actualRangeStart = 0;
       long actualRangeEnd = 0;
       int numInstances = 0;
-      Collection<CalendarItem.Instance> instances =
+      Collection<Instance> instances =
           calItem.expandInstances(rangeStart, rangeEnd, true);
-      for (CalendarItem.Instance inst : instances) {
+      for (Instance inst : instances) {
         try {
           long instStart = inst.getStart();
           long duration = inst.getEnd() - instStart;
@@ -364,7 +364,7 @@ public class CalSummaryCache {
       long rangeStart,
       long rangeEnd)
       throws ServiceException {
-    CalendarItem calItem = null;
+    Appointment calItem = null;
     try {
       calItem = mbox.getCalendarItemById(octxt, calItemId);
     } catch (MailServiceException e) {
@@ -408,9 +408,9 @@ public class CalSummaryCache {
 
     Folder folder = mbox.getFolderById(octxt, folderId);
     CalendarData calData = new CalendarData(folderId, folder.getImapMODSEQ(), rangeStart, rangeEnd);
-    Collection<CalendarItem> calItems =
+    Collection<Appointment> calItems =
         mbox.getCalendarItemsForRange(octxt, rangeStart, rangeEnd, folderId, null);
-    for (CalendarItem calItem : calItems) {
+    for (Appointment calItem : calItems) {
       if (prevCalData != null) {
         // Reuse the appointment if it didn't change.
         CalendarItemData cur = prevCalData.getCalendarItemData(calItem.getId());
@@ -451,7 +451,7 @@ public class CalSummaryCache {
       Folder folder = mbox.getFolderById(octxt, folderId);
       Account authAcct = octxt != null ? octxt.getAuthenticatedUser() : null;
       boolean asAdmin = octxt != null && octxt.isUsingAdminPrivileges();
-      result.allowPrivateAccess = CalendarItem.allowPrivateAccess(folder, authAcct, asAdmin);
+      result.allowPrivateAccess = Appointment.allowPrivateAccess(folder, authAcct, asAdmin);
       result.data =
           reloadCalendarOverRangeWithFolderScan(
               octxt, mbox, folderId, rangeStart, rangeEnd, null);
@@ -703,8 +703,8 @@ public class CalSummaryCache {
     if (mods.created != null) {
       for (Map.Entry<ModificationKey, BaseItemInfo> entry : mods.created.entrySet()) {
         BaseItemInfo item = entry.getValue();
-        if (item instanceof CalendarItem) {
-          CalendarItem calItem = (CalendarItem) item;
+        if (item instanceof Appointment) {
+          Appointment calItem = (Appointment) item;
           int folderId = calItem.getFolderId();
           invalidateItem(calItem.getMailbox(), folderId, calItem.getId());
         }
@@ -714,8 +714,8 @@ public class CalSummaryCache {
       for (Map.Entry<ModificationKey, Change> entry : mods.modified.entrySet()) {
         Change change = entry.getValue();
         Object whatChanged = change.what;
-        if (whatChanged instanceof CalendarItem) {
-          CalendarItem item = (CalendarItem) whatChanged;
+        if (whatChanged instanceof Appointment) {
+          Appointment item = (Appointment) whatChanged;
           Mailbox mbox = item.getMailbox();
           int folderId = item.getFolderId();
           int itemId = item.getId();

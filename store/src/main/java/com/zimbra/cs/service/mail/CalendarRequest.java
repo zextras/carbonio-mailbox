@@ -26,7 +26,7 @@ import com.zimbra.common.zmime.ZSharedFileInputStream;
 import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailSender;
 import com.zimbra.cs.mailbox.MailServiceException;
@@ -563,7 +563,7 @@ public abstract class CalendarRequest extends MailDocumentHandler {
       boolean wantHtml,
       boolean neuter)
       throws ServiceException {
-    CalendarItem calItem = mbox.getCalendarItemById(octxt, aid.calItemId);
+    Appointment calItem = mbox.getCalendarItemById(octxt, aid.calItemId);
     Invite inv = calItem.getInvite(aid.invId, aid.compNum);
     String recurIdZ = null;
     if (inv != null && inv.getRecurId() != null) recurIdZ = inv.getRecurId().getDtZ();
@@ -609,7 +609,7 @@ public abstract class CalendarRequest extends MailDocumentHandler {
       OperationContext octxt,
       Account acct,
       Mailbox mbox,
-      CalendarItem calItem,
+      Appointment calItem,
       boolean notifyAllAttendees,
       List<ZAttendee> addedAttendees,
       boolean ignorePastExceptions,
@@ -713,7 +713,7 @@ public abstract class CalendarRequest extends MailDocumentHandler {
   protected static void addRemoveAttendeesInExceptions(
       OperationContext octxt,
       Mailbox mbox,
-      CalendarItem calItem,
+      Appointment calItem,
       List<ZAttendee> toAdd,
       List<ZAttendee> toRemove,
       boolean ignorePastExceptions)
@@ -790,7 +790,7 @@ public abstract class CalendarRequest extends MailDocumentHandler {
       OperationContext octxt,
       Account acct,
       Mailbox mbox,
-      CalendarItem calItem,
+      Appointment calItem,
       Invite invToCancel,
       List<ZAttendee> removedAttendees,
       MailSendQueue sendQueue)
