@@ -34,7 +34,7 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.Rights;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailSender;
 import com.zimbra.cs.mailbox.MailServiceException;
@@ -757,7 +757,7 @@ public class SendMsg extends MailDocumentHandler {
         String uid = replyInv.getUid();
         mMailbox.lock.lock();
         try {
-          CalendarItem calItem = mMailbox.getCalendarItemByUid(null, uid);
+          Appointment calItem = mMailbox.getCalendarItemByUid(null, uid);
           if (calItem != null) {
             RecurId rid = replyInv.getRecurId();
             Invite inv = calItem.getInvite(rid);

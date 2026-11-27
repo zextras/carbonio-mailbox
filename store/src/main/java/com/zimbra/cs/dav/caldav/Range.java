@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.dav.caldav;
 
+import com.zimbra.cs.mailbox.Appointment;
+import com.zimbra.cs.mailbox.Appointment.Instance;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
@@ -16,7 +18,6 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.dav.DavElements;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.OperationContext;
@@ -124,8 +125,8 @@ public abstract class Range {
             try {
                 // check each instances and see if at least one of them overlaps with the requested range.
                 Mailbox mbox = MailboxManager.getInstance().getMailboxById(mboxId);
-                CalendarItem item = mbox.getCalendarItemById(new OperationContext(mbox), itemId);
-                for (CalendarItem.Instance instance : item.expandInstances(mStart, mEnd, false)) {
+                Appointment item = mbox.getCalendarItemById(new OperationContext(mbox), itemId);
+                for (Instance instance : item.expandInstances(mStart, mEnd, false)) {
                     if (instance.getStart() < mEnd && instance.getEnd() > mStart) {
                         return true;
                     }

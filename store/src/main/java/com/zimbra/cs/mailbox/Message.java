@@ -65,7 +65,7 @@ import javax.mail.internet.MimeMessage;
 /**
  * @since Jun 13, 2004
  */
-public class Message extends MailItem {
+public final class Message extends MailItem {
 
   private static final ConversationRepository CONVERSATION_REPOSITORY = new DbConversation();
 
@@ -306,14 +306,6 @@ public class Message extends MailItem {
     }
     return DbMailItem.normalize(
         ParsedAddress.getSortString(paddrs), DbMailItem.MAX_RECIPIENTS_LENGTH);
-  }
-
-  /**
-   * Returns whether the Message was sent by the owner of this mailbox. Note that this can only be
-   * set when the Message is created; it cannot be altered thereafter.
-   */
-  public boolean isFromMe() {
-    return mData.isSet(Flag.FlagInfo.FROM_ME);
   }
 
   /**
@@ -783,7 +775,7 @@ public class Message extends MailItem {
     boolean autoAddNew;
     AccountAddressMatcher acctMatcher = null;
     private final Account account;
-    CalendarItem calItem = null;
+    Appointment calItem = null;
 
     ProcessInvitesStatus(Account acct, ParsedMessage pm) throws ServiceException {
       account = acct;
@@ -974,7 +966,7 @@ public class Message extends MailItem {
 
     boolean publicInvites = true; // used to check if any invite is non-public
     status.calItemFolderId = Mailbox.ID_FOLDER_CALENDAR;
-    CalendarItem firstCalItem = null;
+    Appointment firstCalItem = null;
     Set<String> calUidsSeen = new HashSet<>();
     for (Invite cur : invites) {
       if (!cur.isPublic()) {
@@ -1021,7 +1013,7 @@ public class Message extends MailItem {
               // If appointment is not found, fall back to the intended-for address, then finally to
               // self.
               ZOrganizer org = null;
-              CalendarItem ci = mMailbox.getCalendarItemByUid(octxt, cur.getUid());
+              Appointment ci = mMailbox.getCalendarItemByUid(octxt, cur.getUid());
               if (ci != null) {
                 Invite inv = ci.getInvite(cur.getRecurId());
                 if (inv == null) {
@@ -1403,7 +1395,7 @@ public class Message extends MailItem {
                     pm,
                     cur,
                     calFolderId,
-                    CalendarItem.NEXT_ALARM_KEEP_CURRENT,
+                    Appointment.NEXT_ALARM_KEEP_CURRENT,
                     true /* preserveAlarms */,
                     discardExistingInvites,
                     false /* updatePrevFolders */);
@@ -1539,11 +1531,17 @@ public class Message extends MailItem {
    */
   @Override
   boolean move(Folder target) throws ServiceException {
-    boolean moved = super.move(target);
-    if (moved && isDraft() && target.inTrash()) {
+    if (!beginMove(target)) {
+      return false;
+    }
+    if (!inSpam() && target.inSpam()) {
+      detach();
+    }
+    finishMove(target);
+    if (isDraft() && target.inTrash()) {
       setDraftAutoSendTime(0);
     }
-    return moved;
+    return true;
   }
 
   public ParsedMessage getParsedMessage() throws ServiceException {
@@ -1671,8 +1669,7 @@ public class Message extends MailItem {
     }
   }
 
-  @Override
-  void detach() throws ServiceException {
+  private void detach() throws ServiceException {
     MailItem parent = getParent();
     if (!(parent instanceof Conversation)) {
       return;

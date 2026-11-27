@@ -7,8 +7,6 @@ package com.zimbra.cs.mailbox;
 
 import com.zextras.mailbox.mail.TombstoneRepository;
 import com.zimbra.cs.db.DbTombstone;
-import com.zextras.mailbox.calendar.CalendarItemRepository;
-import com.zimbra.cs.db.DbCalendarItem;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Splitter;
@@ -27,7 +25,6 @@ import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.EmailUtil;
 import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.StringUtil;
-import com.zimbra.common.util.SystemUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.GuestAccount;
@@ -61,14 +58,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * @since Aug 12, 2004
  */
-public abstract class MailItem
-    implements Comparable<MailItem>, ScheduledTaskResult, ZimbraMailItem {
+public abstract sealed class MailItem
+    implements Comparable<MailItem>, ScheduledTaskResult, ZimbraMailItem
+    permits Appointment, Contact, Conversation, Folder, Message, Tag {
 
-  private static final CalendarItemRepository CALENDAR_ITEM_REPOSITORY = new DbCalendarItem();
   private static final TombstoneRepository TOMBSTONE_REPOSITORY = new DbTombstone();
 
   public enum Type {
@@ -768,7 +767,6 @@ public abstract class MailItem
   protected MailboxBlob mBlob;
   protected int mMetaVersion = 1;
   protected int mVersion = 1;
-  protected List<MailItem> mRevisions;
   protected Color mRGBColor; // 8 bits each for red, green, and blue.
   // if highest byte is zero it's old style
   // color map with 9 fixed colors.
@@ -1040,17 +1038,11 @@ public abstract class MailItem
   }
 
   /**
-   * Returns the item's total count against mailbox quota including all old revisions. For items
-   * that have a blob, this is the sum of the size in bytes of the raw blobs.
+   * Returns the item's total count against mailbox quota. For items that have a blob, this is the
+   * size in bytes of the raw blob.
    */
   public long getTotalSize() throws ServiceException {
-    long size = mData.size;
-    if (isTagged(Flag.FlagInfo.VERSIONED)) {
-      for (MailItem revision : loadRevisions()) {
-        size += revision.getSize();
-      }
-    }
-    return size;
+    return mData.size;
   }
 
   public String getSubject() {
@@ -1608,7 +1600,7 @@ public abstract class MailItem
         return compareNumeric(n1, n2);
       } else if (first != second) {
         return returnResult(first - second);
-      } else if (first == 0 && second == 0) {
+      } else if (first == 0) {
         return 0;
       }
 
@@ -2109,7 +2101,10 @@ public abstract class MailItem
   }
 
   MailboxBlob setContent(StagedBlob staged, Object content) throws ServiceException, IOException {
-    addRevision(false);
+    if (mData.modMetadata != mMailbox.getOperationChangeID()) {
+      mVersion++;
+      metadataChanged(true);
+    }
 
     // update the item's relevant attributes
     markItemModified(Change.CONTENT | Change.DATE | Change.IMAP_UID | Change.SIZE);
@@ -2119,22 +2114,14 @@ public abstract class MailItem
       if (!canAccess(ACL.RIGHT_WRITE)) {
         throw ServiceException.PERM_DENIED("you do not have the necessary permissions on the item");
       }
-      boolean delete = true;
-      // don't delete blob if last revision uses it
-      if (isTagged(Flag.FlagInfo.VERSIONED)) {
-        List<MailItem> revisions = loadRevisions();
-        if (!revisions.isEmpty()) {
-          MailItem lastRev = revisions.get(revisions.size() - 1);
-          if (lastRev.getSavedSequence() == getSavedSequence()) {
-            delete = false;
-          }
-        }
-      }
-      if (delete) {
-        markBlobForDeletion();
-      }
+      markBlobForDeletion();
     }
 
+    return writeContent(staged, content);
+  }
+
+  MailboxBlob writeContent(StagedBlob staged, Object content)
+      throws ServiceException, IOException {
     // remove the content from the cache
     MessageCache.purge(this);
 
@@ -2155,9 +2142,7 @@ public abstract class MailItem
     MailboxBlob mblob = null;
     if (staged != null) {
       StoreManager sm = StoreManager.getInstance();
-      // under windows, a rename will fail if the incoming file is open
-      if (SystemUtil.ON_WINDOWS) mblob = sm.link(staged, mMailbox, mId, getSavedSequence());
-      else mblob = sm.renameTo(staged, mMailbox, mId, getSavedSequence());
+      mblob = sm.renameTo(staged, mMailbox, mId, getSavedSequence());
       mMailbox.markOtherItemDirty(mblob);
     }
     mBlob = null;
@@ -2167,159 +2152,6 @@ public abstract class MailItem
     reanalyze(content, size);
 
     return mblob;
-  }
-
-  @SuppressWarnings("unused")
-  int getMaxRevisions() throws ServiceException {
-    return 1;
-  }
-
-  public List<MailItem> loadRevisions() throws ServiceException {
-    if (mRevisions == null) {
-      mRevisions = new ArrayList<>();
-
-      if (isTagged(Flag.FlagInfo.VERSIONED)) {
-        for (UnderlyingData data : DbMailItem.getRevisionInfo(this, inDumpster()))
-          mRevisions.add(constructItem(mMailbox, data));
-      }
-    }
-
-    return mRevisions;
-  }
-
-  void addRevision(boolean persist) throws ServiceException {
-    addRevision(persist, true);
-  }
-
-  void addRevision(boolean persist, boolean updateFolderMODSEQ) throws ServiceException {
-    // don't take two revisions for the same data
-    if (mData.modMetadata == mMailbox.getOperationChangeID()) return;
-
-    Folder folder = getFolder();
-    int maxNumRevisions = getMaxRevisions();
-
-    // record the current version as a revision
-    if (maxNumRevisions != 1) {
-      loadRevisions();
-
-      // Don't take two revisions for the same data.
-      if (!mRevisions.isEmpty()) {
-        MailItem lastRev = mRevisions.get(mRevisions.size() - 1);
-        if (lastRev.mData.modContent == mData.modContent
-            && lastRev.mData.modMetadata == mData.modMetadata) return;
-
-        int maxVer = 0;
-        for (MailItem rev : mRevisions) maxVer = Math.max(maxVer, rev.getVersion());
-
-        if (mVersion <= maxVer) {
-          ZimbraLog.mailop.info(
-              "Item's current version is not greater than highest revision; "
-                  + "adjusting to "
-                  + (maxVer + 1)
-                  + " (was "
-                  + mVersion
-                  + ")");
-          mVersion = maxVer + 1;
-        }
-      }
-
-      UnderlyingData data = mData.clone();
-      data.metadata = encodeMetadata().toString();
-      data.setFlag(Flag.FlagInfo.UNCACHED);
-      mRevisions.add(constructItem(mMailbox, data));
-
-      mMailbox.updateSize(mData.size, isQuotaCheckRequired());
-      folder.updateSize(0, 0, mData.size);
-
-      ZimbraLog.mailop.debug("saving revision %d for %s", mVersion, getMailopContext(this));
-
-      DbMailItem.snapshotRevision(this, mVersion);
-      if (!isTagged(Flag.FlagInfo.VERSIONED)) {
-        tagChanged(mMailbox.getFlagById(Flag.ID_VERSIONED), true);
-      }
-    }
-
-    // now that we've made a copy of the item, we can increment the version number
-    mVersion++;
-
-    // Purge revisions and their blobs beyond revision count limit.
-    if (maxNumRevisions > 0 && isTagged(Flag.FlagInfo.VERSIONED)) {
-      List<MailItem> revisions = loadRevisions();
-      int numRevsToPurge = revisions.size() - (maxNumRevisions - 1); // -1 for main item
-      if (numRevsToPurge > 0) {
-        List<MailItem> toPurge = new ArrayList<>();
-        int numPurged = 0;
-        for (Iterator<MailItem> it = revisions.iterator();
-            it.hasNext() && numPurged < numRevsToPurge;
-            numPurged++) {
-          MailItem revision = it.next();
-          toPurge.add(revision);
-          it.remove();
-        }
-
-        // The following logic depends on version, mod_metadata and mod_content each being
-        // monotonically increasing in the revisions list. (f(n) <= f(n+1))
-
-        // Filter out blobs that are still in use; mark the rest for deletion.
-        int oldestRemainingSavedSequence =
-            revisions.isEmpty() ? mData.modContent : revisions.get(0).getSavedSequence();
-        for (MailItem revision : toPurge) {
-          if (revision.getSavedSequence() < oldestRemainingSavedSequence) {
-            mMailbox.updateSize(-revision.getSize());
-            folder.updateSize(0, 0, -revision.getSize());
-            revision.markBlobForDeletion();
-          }
-        }
-        // Purge revisions from db.
-        int highestPurgedVer = toPurge.get(toPurge.size() - 1).getVersion();
-        DbMailItem.purgeRevisions(this, highestPurgedVer, true);
-      }
-      if (revisions.isEmpty()) {
-        tagChanged(mMailbox.getFlagById(Flag.ID_VERSIONED), false);
-      }
-    }
-
-    metadataChanged(updateFolderMODSEQ);
-    if (persist) {
-      saveData(new DbMailItem(mMailbox));
-    }
-  }
-
-  // do *not* make this public, as it'd skirt Mailbox-level synchronization and caching
-  MailItem getRevision(int version) throws ServiceException {
-    if (version == mVersion) {
-      return this;
-    }
-    if (version <= 0 || version > mVersion || !isTagged(Flag.FlagInfo.VERSIONED)) {
-      return null;
-    }
-    for (MailItem revision : loadRevisions()) {
-      if (revision.mVersion == version) return revision;
-    }
-    return null;
-  }
-
-  void purgeRevision(int version, boolean includeOlderRevisions) throws ServiceException {
-    if (!canAccess(ACL.RIGHT_WRITE))
-      throw ServiceException.PERM_DENIED("you do not have the necessary permissions on the item");
-    PendingDelete info = new PendingDelete();
-    for (MailItem revision : loadRevisions()) {
-      if (revision.getVersion() == version
-          || (includeOlderRevisions && revision.getVersion() <= version)) {
-        try {
-          info.blobs.add(revision.getBlob());
-          info.blobDigests.add(revision.getDigest());
-          info.size += revision.getSize();
-        } catch (Exception e) {
-          ZimbraLog.mailbox.error(
-              "missing blob for id: " + revision.getId() + ", revision: " + revision.getVersion());
-        }
-      }
-    }
-    DbMailItem.purgeRevisions(this, version, includeOlderRevisions);
-    getMailbox().markOtherItemDirty(info);
-    getMailbox().updateSize(-info.size);
-    mRevisions = null;
   }
 
   /**
@@ -2333,9 +2165,6 @@ public abstract class MailItem
   void reanalyze(Object data, long newSize) throws ServiceException {
     throw ServiceException.FAILURE("reanalysis of " + getType() + "s not supported", null);
   }
-
-  @SuppressWarnings("unused")
-  void detach() throws ServiceException {}
 
   /**
    * Updates the item's unread state. Persists the change to the database and cache, and also
@@ -2447,14 +2276,14 @@ public abstract class MailItem
     }
   }
 
-  final void alterSystemFlag(Flag flag, boolean newValue) throws ServiceException {
+  final void alterSystemFlag(Flag flag) throws ServiceException {
     if (flag == null) {
       throw ServiceException.FAILURE("no tag supplied when trying to tag item " + mId, null);
     } else if ((flag.toBitmask() & Flag.FLAGS_SYSTEM) == 0) {
       throw ServiceException.FAILURE("requested to alter a non-system tag", null);
-    } else if (newValue && !flag.canTag(this)) {
+    } else if (!flag.canTag(this)) {
       throw MailServiceException.CANNOT_TAG(flag, this);
-    } else if (newValue == isTagged(flag)) {
+    } else if (isTagged(flag)) {
       return;
     }
 
@@ -2462,14 +2291,14 @@ public abstract class MailItem
     MailItem parent = getParent();
 
     // change our cached tags
-    tagChanged(flag, newValue);
+    tagChanged(flag, true);
 
     // alter our tags in the DB
-    DbTag.alterTag(flag, Arrays.asList(getId()), newValue);
+    DbTag.alterTag(flag, Arrays.asList(getId()), true);
 
     // tell our parent about the tag change (note: must happen after DbMailItem.alterTag)
     if (parent != null) {
-      parent.inheritedTagChanged(flag, newValue);
+      parent.inheritedTagChanged(flag, true);
     }
   }
 
@@ -2481,6 +2310,24 @@ public abstract class MailItem
    * @param add <tt>true</tt> if the item was tagged, <tt>false</tt> if the item was untagged.
    */
   protected void tagChanged(Tag tag, boolean add) throws ServiceException {
+    if (add) {
+      addTag(tag);
+    } else {
+      removeTag(tag);
+    }
+  }
+
+  protected void addTag(Tag tag) throws ServiceException {
+    updateTag(tag, flag -> mData.setFlag(flag), Set::add);
+  }
+
+  protected void removeTag(Tag tag) throws ServiceException {
+    updateTag(tag, flag -> mData.unsetFlag(flag), Set::remove);
+  }
+
+  private void updateTag(
+      Tag tag, Consumer<Flag> flagUpdate, BiConsumer<Set<String>, String> tagNamesUpdate)
+      throws ServiceException {
     boolean isFlag = tag instanceof Flag;
     markItemModified(isFlag ? Change.FLAGS : Change.TAGS);
     // changing a system flag is not a syncable event
@@ -2489,19 +2336,11 @@ public abstract class MailItem
     }
 
     if (isFlag) {
-      if (add) {
-        mData.setFlag((Flag) tag);
-      } else {
-        mData.unsetFlag((Flag) tag);
-      }
+      flagUpdate.accept((Flag) tag);
     } else {
       Set<String> tags = Sets.newLinkedHashSet();
       Collections.addAll(tags, mData.getTags());
-      if (add) {
-        tags.add(tag.getName());
-      } else {
-        tags.remove(tag.getName());
-      }
+      tagNamesUpdate.accept(tags, tag.getName());
       mData.setTags(tags.isEmpty() ? null : new Tag.NormalizedTags(tags));
     }
   }
@@ -2679,7 +2518,7 @@ public abstract class MailItem
     parent = detach ? null : parent;
 
     if (shareIndex && !isTagged(Flag.FlagInfo.COPIED)) {
-      alterSystemFlag(mMailbox.getFlagById(Flag.ID_COPIED), true);
+      alterSystemFlag(mMailbox.getFlagById(Flag.ID_COPIED));
       if (ZimbraLog.mailop.isDebugEnabled()) {
         ZimbraLog.mailop.debug("setting copied flag for %s", getMailopContext(this));
       }
@@ -2722,27 +2561,6 @@ public abstract class MailItem
     if (!StringUtil.isNullOrEmpty(prevFolders)) {
       data.setPrevFolders(prevFolders);
     }
-    if (this instanceof CalendarItem)
-      CALENDAR_ITEM_REPOSITORY.copyCalendar((CalendarItem) this, copyId, inDumpster);
-
-    // older revisions
-    // Copy revisions only when recovering from dumpster.  When copying from one non-dumpster folder
-    // to another,
-    // it is never desirable to copy old revisions. (bug 55070)
-    if (inDumpster) {
-      for (MailItem revision : loadRevisions()) {
-        MailboxBlob srcRevBlob = revision.getBlob();
-        String revLocator = null;
-        if (srcRevBlob != null) {
-          MailboxBlob copyRevBlob =
-              sm.copy(srcRevBlob, mMailbox, copyId, revision.getSavedSequence());
-          mMailbox.markOtherItemDirty(copyRevBlob);
-          revLocator = copyRevBlob.getLocator();
-        }
-        DbMailItem.copyRevision(revision, copyId, revLocator, inDumpster);
-      }
-    }
-
     MailItem copy = constructItem(mMailbox, data);
     copy.finishCreation(parent);
 
@@ -2833,8 +2651,8 @@ public abstract class MailItem
 
     if (shareIndex && !isTagged(Flag.FlagInfo.COPIED)) {
       Flag copiedFlag = mMailbox.getFlagById(Flag.ID_COPIED);
-      tagChanged(copiedFlag, true);
-      copy.tagChanged(copiedFlag, true);
+      addTag(copiedFlag);
+      copy.addTag(copiedFlag);
       if (parent != null) parent.inheritedTagChanged(copiedFlag, true);
     }
 
@@ -2898,32 +2716,6 @@ public abstract class MailItem
       throw MailServiceException.INVALID_NAME(name);
     }
     return trimmed;
-  }
-
-  public static String normalizeItemName(String name) {
-    try {
-      return validateItemName(name);
-    } catch (ServiceException e) {
-      String normalized = StringUtil.stripControlCharacters(name);
-      if (normalized == null) {
-        normalized = "";
-      }
-      if (normalized.length() > MailItem.MAX_NAME_LENGTH) {
-        normalized = normalized.substring(0, MailItem.MAX_NAME_LENGTH);
-      }
-      if (normalized.matches(INVALID_NAME_PATTERN)) {
-        normalized = normalized.replaceAll(INVALID_NAME_CHARACTERS, "");
-      }
-      normalized = StringUtil.trimTrailingSpaces(normalized);
-      if (RESERVED_NAMES.contains(normalized)) {
-        normalized = "";
-      }
-
-      if (normalized.trim().equals("")) {
-        normalized = "item" + System.currentTimeMillis();
-      }
-      return normalized;
-    }
   }
 
   /**
@@ -3047,6 +2839,14 @@ public abstract class MailItem
    * @return whether anything was actually moved
    */
   boolean move(Folder target) throws ServiceException {
+    if (!beginMove(target)) {
+      return false;
+    }
+    finishMove(target);
+    return true;
+  }
+
+  boolean beginMove(Folder target) throws ServiceException {
     if (mData.folderId == target.getId()) {
       return false;
     }
@@ -3084,10 +2884,10 @@ public abstract class MailItem
       oldFolder.updateUnread(-mData.unreadCount, isDeleted ? -mData.unreadCount : 0);
       target.updateUnread(mData.unreadCount, isDeleted ? mData.unreadCount : 0);
     }
-    // moving a message (etc.) to Spam removes it from its conversation
-    if (!inSpam() && target.inSpam()) {
-      detach();
-    }
+    return true;
+  }
+
+  void finishMove(Folder target) throws ServiceException {
     // item moved out of spam, so update the index id (will be written to DB in
     // DbMailItem.setFolder());
     if (inSpam() && !target.inSpam() && getIndexStatus() == IndexStatus.DONE) {
@@ -3097,7 +2897,6 @@ public abstract class MailItem
     ZimbraLog.mailop.info("moving " + getMailopContext(this) + " to " + getMailopContext(target));
     DbMailItem.setFolder(this, target);
     folderChanged(target, 0);
-    return true;
   }
 
   /**
@@ -3500,9 +3299,7 @@ public abstract class MailItem
     //   1) deleting a regular item and dumpster is not in use, OR
     //   2) permantently deleting an item from dumpster
     // In other words, skip the blob/index deletes when soft-deleting item to dumpster.
-    if (!getMailbox().dumpsterEnabled()
-				|| inDumpster()
-				|| mData.folderId == Mailbox.ID_FOLDER_DRAFTS) {
+    if (deletesContentImmediately()) {
       if (getIndexStatus() != IndexStatus.NO) {
         int indexId = getIndexStatus() == IndexStatus.DONE ? mData.indexId : mData.id;
         if (isTagged(Flag.FlagInfo.COPIED)) {
@@ -3512,22 +3309,27 @@ public abstract class MailItem
         }
       }
 
-      List<MailItem> items = new ArrayList<>(3);
-      items.add(this);
-      items.addAll(loadRevisions());
-      for (MailItem revision : items) {
-        try {
-          info.blobs.add(revision.getBlob());
-        } catch (Exception e) {
-          ZimbraLog.mailbox.error(
-              "missing blob for id: " + mId + ", change: " + revision.getSavedSequence());
-        }
-      }
+      addBlobForDeletion(info, this);
     } else {
 	    inSpam();
     }
 
 		return info;
+  }
+
+  boolean deletesContentImmediately() {
+    return !getMailbox().dumpsterEnabled()
+        || inDumpster()
+        || mData.folderId == Mailbox.ID_FOLDER_DRAFTS;
+  }
+
+  void addBlobForDeletion(PendingDelete info, MailItem item) {
+    try {
+      info.blobs.add(item.getBlob());
+    } catch (Exception e) {
+      ZimbraLog.mailbox.error(
+          "missing blob for id: " + mId + ", change: " + item.getSavedSequence());
+    }
   }
 
   private static final int UNREAD_ITEM_BATCH_SIZE = 500;

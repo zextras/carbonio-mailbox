@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.cs.mailbox.Appointment;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +17,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -84,7 +84,7 @@ public class GetMsg extends MailDocumentHandler {
         Element response = zsc.createElement(MailConstants.GET_MSG_RESPONSE);
         if (iid.hasSubpart()) {
             // calendar item
-            CalendarItem calItem = getCalendarItem(octxt, mbox, iid);
+            Appointment calItem = getCalendarItem(octxt, mbox, iid);
             if (raw) {
                 throw ServiceException.INVALID_REQUEST("Cannot request RAW formatted subpart message", null);
             } else {
@@ -129,7 +129,7 @@ public class GetMsg extends MailDocumentHandler {
         return RedoLogProvider.getInstance().isSlave();
     }
 
-    public static CalendarItem getCalendarItem(OperationContext octxt, Mailbox mbox, ItemId iid) throws ServiceException {
+    public static Appointment getCalendarItem(OperationContext octxt, Mailbox mbox, ItemId iid) throws ServiceException {
         assert(iid.hasSubpart());
         return mbox.getCalendarItemById(octxt, iid.getId());
     }

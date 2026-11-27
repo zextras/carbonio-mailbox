@@ -47,7 +47,7 @@ class MessageCacheTest {
         SmimeHandler smimeHandler = Mockito.mock();
         SmimeHandler.registerHandler(smimeHandler);
         Mockito.when(cache.message.getContentType()).thenReturn("application/pkcs7-mime; smime-type=enveloped-data; name=\"smime.p7m\"");
-        MailItem item = Mockito.mock();
+        MailItem item = Mockito.mock(Message.class);
         Mailbox mailbox = Mockito.mock();
         Mockito.when(item.getMailbox()).thenReturn(mailbox);
         Mockito.when(smimeHandler.decryptMessage(mailbox, cache.message, 0)).thenReturn(null);
@@ -62,7 +62,7 @@ class MessageCacheTest {
         SmimeHandler smimeHandler = Mockito.mock();
         SmimeHandler.registerHandler(smimeHandler);
         Mockito.when(cache.message.getContentType()).thenReturn("application/pkcs7-mime; smime-type=enveloped-data; name=\"smime.p7m\"");
-        MailItem item = Mockito.mock();
+        MailItem item = Mockito.mock(Message.class);
         Mailbox mailbox = Mockito.mock();
         Mockito.when(item.getMailbox()).thenReturn(mailbox);
         MimeMessage mimeMessage = Mockito.mock();

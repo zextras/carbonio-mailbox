@@ -329,17 +329,6 @@ public class FileUtil {
     public static void delete(File file) throws IOException {
         if (file.delete() || !file.exists())
             return;
-        if (SystemUtil.ON_WINDOWS) {
-            //HACK: work around JVM bug
-            for (int i = 0; i < 2; ++i) {
-                System.gc();
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException x) {}
-                if (file.delete() || !file.exists())
-                    return;
-            }
-        }
         throw new IOException("file deletion failed: " + file.getPath());
     }
 
@@ -448,18 +437,6 @@ public class FileUtil {
     public static void rename(File src, File dst) throws IOException {
         if (src.renameTo(dst))
             return;
-        if (SystemUtil.ON_WINDOWS) {
-            //HACK: according to http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298 there's a jvm bug on windows
-            //HACK: this is the recommended hack
-            for (int i = 0; i < 2; ++i) {
-                System.gc();
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException x) {}
-                if (src.renameTo(dst))
-                    return;
-            }
-        }
         if (!src.exists())
             throw new IOException("renaming source file " + src.getPath() + " doesn't exist");
         if (dst.exists())

@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.formatter;
 
+import com.zimbra.cs.mailbox.Appointment;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -15,14 +16,13 @@ import java.util.Iterator;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.Constants;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Message;
-import com.zimbra.cs.mailbox.CalendarItem.Instance;
 import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mailbox.calendar.InviteInfo;
 import com.zimbra.cs.service.UserServletContext;
 import com.zimbra.cs.service.formatter.FormatterFactory.FormatType;
+import com.zimbra.cs.mailbox.Appointment.Instance;
 
 public class RssFormatter extends Formatter {
 
@@ -64,9 +64,9 @@ public class RssFormatter extends Formatter {
                 if (curHit > limit)
                     break;
                 if (curHit >= offset) {
-                    if (itItem instanceof CalendarItem) {
+                    if (itItem instanceof Appointment) {
                         // Don't return private appointments/tasks if the requester is not the mailbox owner.
-                        CalendarItem calItem = (CalendarItem) itItem;
+                        Appointment calItem = (Appointment) itItem;
                         if (calItem.isPublic() || calItem.allowPrivateAccess(
                                 context.getAuthAccount(), context.isUsingAdminPrivileges())) {
                             addCalendarItem(calItem, channel, context);
@@ -95,7 +95,7 @@ public class RssFormatter extends Formatter {
         return System.currentTimeMillis() + (7*Constants.MILLIS_PER_DAY);
     }
 
-    private void addCalendarItem(CalendarItem calItem, Element channel, UserServletContext context) throws ServiceException {
+    private void addCalendarItem(Appointment calItem, Element channel, UserServletContext context) throws ServiceException {
         Collection<Instance> instances = calItem.expandInstances(context.getStartTime(), context.getEndTime(), false);
       for (Instance inst : instances) {
         InviteInfo invId = inst.getInviteInfo();

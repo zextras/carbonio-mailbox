@@ -87,7 +87,7 @@ public class MetadataTest extends MailboxTestSuite {
     cal.set(2005, 2, 21);
     invite.setDtEnd(ParsedDateTime.fromUTCTime(cal.getTimeInMillis()));
     defaultInv.invite = invite;
-    CalendarItem calItem =
+    Appointment calItem =
         mbox.setCalendarItem(
             null,
             Mailbox.ID_FOLDER_CALENDAR,
@@ -96,7 +96,7 @@ public class MetadataTest extends MailboxTestSuite {
             defaultInv,
             null,
             null,
-            CalendarItem.NEXT_ALARM_KEEP_CURRENT);
+            Appointment.NEXT_ALARM_KEEP_CURRENT);
 
     calItem.mData.dateChanged = (int) (cal.getTimeInMillis() / 1000L);
     Metadata meta = calItem.encodeMetadata();

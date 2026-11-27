@@ -11,7 +11,6 @@ import com.zimbra.common.calendar.ZCalendar.ScheduleAgent;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.dav.DavContext;
 import com.zimbra.cs.dav.caldav.AutoScheduler.OrganizerAutoScheduler;
-import com.zimbra.cs.mailbox.CalendarItem.ReplyInfo;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Mailbox.SetCalendarItemData;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -22,6 +21,7 @@ import java.util.List;
 import javax.mail.Address;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import com.zimbra.cs.mailbox.Appointment.ReplyInfo;
 
 public class OrganizerAutoSchedulerTest extends MailboxTestSuite {
 

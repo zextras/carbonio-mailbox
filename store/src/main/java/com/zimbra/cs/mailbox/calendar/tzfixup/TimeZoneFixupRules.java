@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.mailbox.calendar.tzfixup;
 
+import com.zimbra.cs.mailbox.Appointment;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -16,7 +17,6 @@ import com.zimbra.common.calendar.ICalTimeZone.SimpleOnset;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.calendar.Invite;
 
 public class TimeZoneFixupRules {
@@ -192,7 +192,7 @@ public class TimeZoneFixupRules {
     }
 
     // returns the number of timezones fixed up
-    public int fixCalendarItem(CalendarItem calItem, Map<String, ICalTimeZone> replaced) {
+    public int fixCalendarItem(Appointment calItem, Map<String, ICalTimeZone> replaced) {
         int numFixed = 0;
         TimeZoneMap tzmap = calItem.getTimeZoneMap();
         numFixed += fixTZMap(tzmap, replaced);

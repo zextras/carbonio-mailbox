@@ -7,7 +7,7 @@ package com.zimbra.cs.index;
 
 import com.google.common.base.MoreObjects;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 
@@ -17,9 +17,9 @@ import com.zimbra.cs.mailbox.Mailbox;
 public class CalendarItemHit extends ZimbraHit {
 
     protected int id;
-    protected CalendarItem item;
+    protected Appointment item;
 
-    CalendarItemHit(ZimbraQueryResultsImpl results, Mailbox mbx, int id, CalendarItem cal, Object sortValue) {
+    CalendarItemHit(ZimbraQueryResultsImpl results, Mailbox mbx, int id, Appointment cal, Object sortValue) {
         super(results, mbx, sortValue);
         this.id = id;
         item = cal;
@@ -30,7 +30,7 @@ public class CalendarItemHit extends ZimbraHit {
         return getCalendarItem();
     }
 
-    public CalendarItem getCalendarItem() throws ServiceException {
+    public Appointment getCalendarItem() throws ServiceException {
         if (item == null) {
             item = getMailbox().getCalendarItemById(null, id);
         }
@@ -50,7 +50,7 @@ public class CalendarItemHit extends ZimbraHit {
 
     @Override
     void setItem(MailItem value) {
-        item = (CalendarItem) value;
+        item = (Appointment) value;
     }
 
     @Override

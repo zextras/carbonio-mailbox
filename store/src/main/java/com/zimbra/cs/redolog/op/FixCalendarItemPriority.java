@@ -5,9 +5,9 @@
 
 package com.zimbra.cs.redolog.op;
 
+import com.zimbra.cs.mailbox.Appointment;
 import java.io.IOException;
 
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxOperation;
@@ -46,7 +46,7 @@ public class FixCalendarItemPriority extends RedoableOp {
     @Override public void redo() throws Exception {
         Mailbox mbox = MailboxManager.getInstance().getMailboxById(getMailboxId());
         OperationContext octxt = getOperationContext();
-        CalendarItem calItem = mbox.getCalendarItemById(octxt, mId);
+        Appointment calItem = mbox.getCalendarItemById(octxt, mId);
         if (calItem != null)
             mbox.fixCalendarItemPriority(octxt, calItem);
     }

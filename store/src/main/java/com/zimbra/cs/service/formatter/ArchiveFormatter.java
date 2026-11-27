@@ -29,8 +29,8 @@ import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.index.ZimbraQueryResults;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Appointment;
-import com.zimbra.cs.mailbox.CalendarItem;
-import com.zimbra.cs.mailbox.CalendarItem.Instance;
+import com.zimbra.cs.mailbox.Appointment.AlarmData;
+import com.zimbra.cs.mailbox.Appointment.Instance;
 import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.Conversation;
 import com.zimbra.cs.mailbox.DeliveryOptions;
@@ -715,11 +715,11 @@ public abstract class ArchiveFormatter extends Formatter {
         aos = getOutputStream(context, charsetEncoder.charset().name());
       }
 
-      if ((mi instanceof CalendarItem)
+      if ((mi instanceof Appointment)
           && (context.getStartTime() != TIME_UNSPECIFIED
               || context.getEndTime() != TIME_UNSPECIFIED)) {
         Collection<Instance> instances =
-            ((CalendarItem) mi)
+            ((Appointment) mi)
                 .expandInstances(context.getStartTime(), context.getEndTime(), false);
         if (instances.isEmpty()) {
           return aos;
@@ -749,15 +749,15 @@ public abstract class ArchiveFormatter extends Formatter {
         aos.putNextEntry(aoe);
         aos.write(metaData);
         aos.closeEntry();
-      } else if (mi instanceof CalendarItem) {
+      } else if (mi instanceof Appointment) {
         Browser browser = HttpUtil.guessBrowser(context.req);
-        List<CalendarItem> calItems = new ArrayList<>();
+        List<Appointment> calItems = new ArrayList<>();
         boolean needAppleICalHacks = Browser.APPLE_ICAL.equals(browser);
         boolean useOutlookCompatMode = Browser.IE.equals(browser);
         OperationContext octxt =
             new OperationContext(context.getAuthAccount(), context.isUsingAdminPrivileges());
         StringWriter writer = new StringWriter();
-        calItems.add((CalendarItem) mi);
+        calItems.add((Appointment) mi);
         context.targetMailbox.writeICalendarForCalendarItems(
             writer, octxt, calItems, useOutlookCompatMode, true, needAppleICalHacks, true);
         data = writer.toString().getBytes(charsetEncoder.charset());
@@ -1340,11 +1340,11 @@ public abstract class ArchiveFormatter extends Formatter {
 
       switch (mi.getType()) {
         case APPOINTMENT:
-          CalendarItem ci = (CalendarItem) mi;
+          Appointment ci = (Appointment) mi;
 
           fldr = createPath(context, fmap, path, MailItem.Type.APPOINTMENT);
           if (!root || r != Resolve.Reset) {
-            CalendarItem oldCI = null;
+            Appointment oldCI = null;
 
             try {
               oldCI = mbox.getCalendarItemByUid(octxt, ci.getUid());
@@ -1357,10 +1357,10 @@ public abstract class ArchiveFormatter extends Formatter {
             }
           }
           if (oldItem == null || r != Resolve.Skip) {
-            CalendarItem.AlarmData ad = ci.getAlarmData();
+            AlarmData ad = ci.getAlarmData();
             byte[] data = readArchiveEntry(ais, aie);
             Map<Integer, MimeMessage> blobMimeMsgMap =
-                data == null ? null : CalendarItem.decomposeBlob(data);
+                data == null ? null : Appointment.decomposeBlob(data);
             SetCalendarItemData defScid = new SetCalendarItemData();
             SetCalendarItemData[] exceptionScids = null;
             Invite[] invs = ci.getInvites();
@@ -1394,7 +1394,7 @@ public abstract class ArchiveFormatter extends Formatter {
                       defScid,
                       exceptionScids,
                       ci.getAllReplies(),
-                      ad == null ? CalendarItem.NEXT_ALARM_KEEP_CURRENT : ad.getNextAt());
+                      ad == null ? Appointment.NEXT_ALARM_KEEP_CURRENT : ad.getNextAt());
             }
           }
           break;

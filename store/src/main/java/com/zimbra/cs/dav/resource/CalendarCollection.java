@@ -32,9 +32,10 @@ import com.zimbra.cs.dav.service.method.Delete;
 import com.zimbra.cs.dav.service.method.Get;
 import com.zimbra.cs.fb.FreeBusy;
 import com.zimbra.cs.fb.FreeBusyQuery;
+import com.zimbra.cs.mailbox.Appointment;
+import com.zimbra.cs.mailbox.Appointment.CalendarMetadata;
+import com.zimbra.cs.mailbox.Appointment.ReplyInfo;
 import com.zimbra.cs.mailbox.BadOrganizerException;
-import com.zimbra.cs.mailbox.CalendarItem;
-import com.zimbra.cs.mailbox.CalendarItem.ReplyInfo;
 import com.zimbra.cs.mailbox.DavNames;
 import com.zimbra.cs.mailbox.DavNames.DavName;
 import com.zimbra.cs.mailbox.Folder;
@@ -225,12 +226,12 @@ public class CalendarCollection extends Collection {
     if (!needCalendarData(ctxt)) {
       ZimbraLog.dav.debug("METADATA only");
       mMetadataOnly = true;
-      for (CalendarItem.CalendarMetadata item : mbox.getCalendarItemMetadata(getId(), start, end)) {
+      for (CalendarMetadata item : mbox.getCalendarItemMetadata(getId(), start, end)) {
         appts.put(
             item.uid, new CalendarObject.LightWeightCalendarObject(getUri(), getOwner(), item));
       }
     } else {
-      for (CalendarItem calItem :
+      for (Appointment calItem :
           mbox.getCalendarItemsForRange(ctxt.getOperationContext(), start, end, getId(), null))
         appts.put(calItem.getUid(), new CalendarObject.LocalCalendarObject(ctxt, calItem));
     }
@@ -244,11 +245,11 @@ public class CalendarCollection extends Collection {
 
     ArrayList<DavResource> appts = new ArrayList<>();
     ctxt.setCollectionPath(getUri());
-    Map<String, CalendarItem> calItems =
+    Map<String, Appointment> calItems =
         mbox.getCalendarItemsByUid(
             ctxt.getOperationContext(), new ArrayList<>(uidmap.keySet()));
     for (String uid : calItems.keySet()) {
-      CalendarItem calItem = calItems.get(uid);
+      Appointment calItem = calItems.get(uid);
       if (calItem == null) appts.add(new DavResource.InvalidResource(uidmap.get(uid), getOwner()));
       else appts.add(new CalendarObject.LocalCalendarObject(ctxt, calItem));
     }
@@ -476,7 +477,7 @@ public class CalendarCollection extends Collection {
 
       String uid = findEventUid(invites);
       Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
-      CalendarItem origCalItem = null;
+      Appointment origCalItem = null;
       // Is the basename of the path client assigned rather than following the standard pattern?
       Integer itemId = null;
       if (acceptableClientChosenBasename) {
@@ -486,8 +487,8 @@ public class CalendarCollection extends Collection {
         try {
           MailItem mailItem =
               mbox.getItemById(ctxt.getOperationContext(), itemId, MailItem.Type.UNKNOWN);
-          if (mailItem instanceof CalendarItem) {
-            origCalItem = (CalendarItem) mailItem;
+          if (mailItem instanceof Appointment) {
+            origCalItem = (Appointment) mailItem;
           }
         } catch (ServiceException se) {
         }
@@ -632,7 +633,7 @@ public class CalendarCollection extends Collection {
           }
         }
       }
-      CalendarItem newCalItem = null;
+      Appointment newCalItem = null;
       AutoScheduler autoScheduler =
           AutoScheduler.getAutoScheduler(
               mbox,
@@ -655,7 +656,7 @@ public class CalendarCollection extends Collection {
                 scidDefault,
                 scidExceptions,
                 replies,
-                CalendarItem.NEXT_ALARM_KEEP_CURRENT);
+                Appointment.NEXT_ALARM_KEEP_CURRENT);
       } else {
         // Note: This also sets the calendar item
         newCalItem = autoScheduler.doSchedulingActions();
@@ -690,7 +691,7 @@ public class CalendarCollection extends Collection {
     }
   }
 
-  private String hrefForCalendarItem(CalendarItem calItem, String user, String uid)
+  private String hrefForCalendarItem(Appointment calItem, String user, String uid)
       throws DavException, ServiceException {
     String preexistingHref = null;
     DavName davName = null;

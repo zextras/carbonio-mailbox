@@ -22,7 +22,6 @@ import com.zimbra.cs.dav.client.DavObject;
 import com.zimbra.cs.dav.client.DavRequest;
 import com.zimbra.cs.db.DbDataSource;
 import com.zimbra.cs.db.DbDataSource.DataSourceItem;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
@@ -411,7 +410,7 @@ public class CalDavDataImport extends MailItemImport {
     String url = folder.remoteId;
     switch (mitem.getType()) {
       case APPOINTMENT:
-        url += ((CalendarItem) mitem).getUid() + ".ics";
+        url += ((com.zimbra.cs.mailbox.Appointment) mitem).getUid() + ".ics";
         break;
       default:
         String name = mitem.getName();
@@ -451,7 +450,7 @@ public class CalDavDataImport extends MailItemImport {
       }
       // push modified appt
       ZimbraLog.datasource.debug("pushModify: sending appointment %s", item.remoteId);
-      String etag = putAppointment((CalendarItem) mitem, item);
+      String etag = putAppointment((com.zimbra.cs.mailbox.Appointment) mitem, item);
       if (etag == null) {
         Appointment appt = mClient.getEtag(item.remoteId);
         etag = appt.etag;
@@ -468,7 +467,7 @@ public class CalDavDataImport extends MailItemImport {
     }
   }
 
-  private String putAppointment(CalendarItem calItem, DataSourceItem dsItem)
+  private String putAppointment(com.zimbra.cs.mailbox.Appointment calItem, DataSourceItem dsItem)
       throws ServiceException, IOException, DavException {
     StringBuilder buf = new StringBuilder();
     ArrayList<String> recipients = new ArrayList<>();
@@ -646,7 +645,7 @@ public class CalDavDataImport extends MailItemImport {
               main,
               exceptions,
               null,
-              CalendarItem.NEXT_ALARM_KEEP_CURRENT);
+              com.zimbra.cs.mailbox.Appointment.NEXT_ALARM_KEEP_CURRENT);
       dsItem.itemId = mi.getId();
       dsItem.folderId = mi.getFolderId();
       if (isCreate) {

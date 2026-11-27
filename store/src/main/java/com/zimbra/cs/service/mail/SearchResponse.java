@@ -25,7 +25,6 @@ import com.zimbra.cs.index.SearchParams.ExpandResults;
 import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.index.ZimbraHit;
 import com.zimbra.cs.mailbox.Appointment;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.ContactMemberOfMap;
 import com.zimbra.cs.mailbox.Conversation;
 import com.zimbra.cs.mailbox.Flag;
@@ -377,7 +376,7 @@ final class SearchResponse {
    * @return could be NULL
    */
   private Element add(CalendarItemHit hit) throws ServiceException {
-    CalendarItem item = hit.getCalendarItem();
+    Appointment item = hit.getCalendarItem();
     Account acct = DocumentHandler.getRequestedAccount(zsc);
     long rangeStart = params.getCalItemExpandStart();
     long rangeEnd = params.getCalItemExpandEnd();

@@ -25,7 +25,7 @@ import com.zimbra.common.zmime.ZMimeMessage;
 import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.OperationContext;
@@ -92,7 +92,7 @@ public class ForwardCalendarItem extends CalendarRequest {
             parsedMessageData);
     Element exc = request.getOptionalElement(MailConstants.E_CAL_EXCEPTION_ID);
     Element tzElem = request.getOptionalElement(MailConstants.E_CAL_TZ);
-    CalendarItem calItem = mbox.getCalendarItemById(octxt, iid.getId());
+    Appointment calItem = mbox.getCalendarItemById(octxt, iid.getId());
     if (calItem == null) {
       throw MailServiceException.NO_SUCH_CALITEM(iid.toString(), "Could not find calendar item");
     }
@@ -148,7 +148,7 @@ public class ForwardCalendarItem extends CalendarRequest {
   public static Pair<List<MimeMessage>, List<MimeMessage>> forwardCalItem(
       Mailbox mbox,
       OperationContext octxt,
-      CalendarItem calItem,
+      Appointment calItem,
       RecurId rid,
       MimeMessage mm,
       Account senderAcct)
@@ -213,7 +213,7 @@ public class ForwardCalendarItem extends CalendarRequest {
   }
 
   private static Pair<List<MimeMessage>, List<MimeMessage>> getSeriesFwdMsgs(
-      OperationContext octxt, Account senderAcct, CalendarItem calItem, MimeMessage mmFwdWrapper)
+      OperationContext octxt, Account senderAcct, Appointment calItem, MimeMessage mmFwdWrapper)
       throws ServiceException {
     // Get plain and html texts entered by the forwarder.
     DescDetectVisitor visitor = new DescDetectVisitor();

@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.cs.mailbox.Appointment;
 import java.util.Map;
 
 import com.zimbra.common.service.ServiceException;
@@ -12,7 +13,6 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
-import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.OperationContext;
@@ -76,7 +76,7 @@ public class GetCalendarItem extends CalendarRequest {
             fields |= Change.CONFLICT;
         }
         Element response = getResponseElement(zsc);
-        CalendarItem calItem = null;
+        Appointment calItem = null;
         mbox.lock.lock(false);
         try {
             if (uid != null) {

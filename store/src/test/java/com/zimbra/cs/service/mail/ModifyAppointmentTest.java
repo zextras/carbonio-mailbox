@@ -17,7 +17,7 @@ import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.index.SortBy;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -83,7 +83,7 @@ class ModifyAppointmentTest extends SoapTestSuite {
     
   }
 
-  private static CalendarItem getCalendarItemById(Account account, String id) throws ServiceException {
+  private static Appointment getCalendarItemById(Account account, String id) throws ServiceException {
     return mailboxManager.getMailboxByAccount(account)
         .getCalendarItemById(null, Integer.parseInt(id));
   }

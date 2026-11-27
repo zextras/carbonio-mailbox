@@ -10,7 +10,7 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Mailbox.AddInviteData;
 import com.zimbra.cs.mailbox.Mailbox.SetCalendarItemData;
@@ -49,7 +49,7 @@ public class AddCalendarItemInvite extends CalendarRequest {
         SetCalendarItem.getSetCalendarItemData(zsc, octxt, acct, mbox, request, parser);
 
     Invite inv = scid.invite;
-    CalendarItem calItem = mbox.getCalendarItemByUid(octxt, inv.getUid());
+    Appointment calItem = mbox.getCalendarItemByUid(octxt, inv.getUid());
     int folderId = Mailbox.ID_FOLDER_CALENDAR;
     if (calItem != null) {
       int f = calItem.getFolderId();
