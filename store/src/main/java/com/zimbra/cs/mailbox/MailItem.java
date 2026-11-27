@@ -3302,10 +3302,6 @@ public abstract class MailItem
    * @perms {@link ACL#RIGHT_DELETE} on the item
    * @return A fully-populated <tt>PendingDelete</tt> object.
    */
-  List<MailItem> itemAndRevisions() throws ServiceException {
-    return List.of(this);
-  }
-
   PendingDelete getDeletionInfo() throws ServiceException {
     if (!canAccess(ACL.RIGHT_DELETE)) {
       throw ServiceException.PERM_DENIED("you do not have the required rights on the item");
@@ -3332,9 +3328,7 @@ public abstract class MailItem
     //   1) deleting a regular item and dumpster is not in use, OR
     //   2) permantently deleting an item from dumpster
     // In other words, skip the blob/index deletes when soft-deleting item to dumpster.
-    if (!getMailbox().dumpsterEnabled()
-				|| inDumpster()
-				|| mData.folderId == Mailbox.ID_FOLDER_DRAFTS) {
+    if (deletesContentImmediately()) {
       if (getIndexStatus() != IndexStatus.NO) {
         int indexId = getIndexStatus() == IndexStatus.DONE ? mData.indexId : mData.id;
         if (isTagged(Flag.FlagInfo.COPIED)) {
@@ -3344,19 +3338,27 @@ public abstract class MailItem
         }
       }
 
-      for (MailItem revision : itemAndRevisions()) {
-        try {
-          info.blobs.add(revision.getBlob());
-        } catch (Exception e) {
-          ZimbraLog.mailbox.error(
-              "missing blob for id: " + mId + ", change: " + revision.getSavedSequence());
-        }
-      }
+      addBlobForDeletion(info, this);
     } else {
 	    inSpam();
     }
 
 		return info;
+  }
+
+  boolean deletesContentImmediately() {
+    return !getMailbox().dumpsterEnabled()
+        || inDumpster()
+        || mData.folderId == Mailbox.ID_FOLDER_DRAFTS;
+  }
+
+  void addBlobForDeletion(PendingDelete info, MailItem item) {
+    try {
+      info.blobs.add(item.getBlob());
+    } catch (Exception e) {
+      ZimbraLog.mailbox.error(
+          "missing blob for id: " + mId + ", change: " + item.getSavedSequence());
+    }
   }
 
   private static final int UNREAD_ITEM_BATCH_SIZE = 500;

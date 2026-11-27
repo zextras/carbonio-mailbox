@@ -4711,11 +4711,14 @@ public abstract class CalendarItem extends MailItem {
   }
 
   @Override
-  List<MailItem> itemAndRevisions() throws ServiceException {
-    List<MailItem> items = new ArrayList<>(3);
-    items.add(this);
-    items.addAll(loadCalendarItemRevisions());
-    return items;
+  PendingDelete getDeletionInfo() throws ServiceException {
+    PendingDelete info = super.getDeletionInfo();
+    if (deletesContentImmediately()) {
+      for (MailItem revision : loadCalendarItemRevisions()) {
+        addBlobForDeletion(info, revision);
+      }
+    }
+    return info;
   }
 
   List<MailItem> loadCalendarItemRevisions() throws ServiceException {
