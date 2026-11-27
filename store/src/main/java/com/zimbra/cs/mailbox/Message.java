@@ -1539,11 +1539,17 @@ public class Message extends MailItem {
    */
   @Override
   boolean move(Folder target) throws ServiceException {
-    boolean moved = super.move(target);
-    if (moved && isDraft() && target.inTrash()) {
+    if (!beginMove(target)) {
+      return false;
+    }
+    if (!inSpam() && target.inSpam()) {
+      detach();
+    }
+    finishMove(target);
+    if (isDraft() && target.inTrash()) {
       setDraftAutoSendTime(0);
     }
-    return moved;
+    return true;
   }
 
   public ParsedMessage getParsedMessage() throws ServiceException {
@@ -1671,8 +1677,7 @@ public class Message extends MailItem {
     }
   }
 
-  @Override
-  void detach() throws ServiceException {
+  private void detach() throws ServiceException {
     MailItem parent = getParent();
     if (!(parent instanceof Conversation)) {
       return;

@@ -300,8 +300,7 @@ public class Conversation extends MailItem {
         CONVERSATION_REPOSITORY.closeConversation(getMailbox(), hash, getId());
     }
 
-    @Override
-    void detach() throws ServiceException {
+    private void detach() throws ServiceException {
         close(Mailbox.getHash(getNormalizedSubject()));
     }
 

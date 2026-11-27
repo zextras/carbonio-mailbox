@@ -2168,9 +2168,6 @@ public abstract class MailItem
     throw ServiceException.FAILURE("reanalysis of " + getType() + "s not supported", null);
   }
 
-  @SuppressWarnings("unused")
-  void detach() throws ServiceException {}
-
   /**
    * Updates the item's unread state. Persists the change to the database and cache, and also
    * updates the unread counts for the item's {@link Folder} and {@link Tag}s appropriately.
@@ -2844,6 +2841,14 @@ public abstract class MailItem
    * @return whether anything was actually moved
    */
   boolean move(Folder target) throws ServiceException {
+    if (!beginMove(target)) {
+      return false;
+    }
+    finishMove(target);
+    return true;
+  }
+
+  boolean beginMove(Folder target) throws ServiceException {
     if (mData.folderId == target.getId()) {
       return false;
     }
@@ -2881,10 +2886,10 @@ public abstract class MailItem
       oldFolder.updateUnread(-mData.unreadCount, isDeleted ? -mData.unreadCount : 0);
       target.updateUnread(mData.unreadCount, isDeleted ? mData.unreadCount : 0);
     }
-    // moving a message (etc.) to Spam removes it from its conversation
-    if (!inSpam() && target.inSpam()) {
-      detach();
-    }
+    return true;
+  }
+
+  void finishMove(Folder target) throws ServiceException {
     // item moved out of spam, so update the index id (will be written to DB in
     // DbMailItem.setFolder());
     if (inSpam() && !target.inSpam() && getIndexStatus() == IndexStatus.DONE) {
@@ -2894,7 +2899,6 @@ public abstract class MailItem
     ZimbraLog.mailop.info("moving " + getMailopContext(this) + " to " + getMailopContext(target));
     DbMailItem.setFolder(this, target);
     folderChanged(target, 0);
-    return true;
   }
 
   /**
