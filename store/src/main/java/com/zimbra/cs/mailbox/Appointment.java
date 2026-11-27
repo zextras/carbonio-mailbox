@@ -7,19 +7,15 @@ package com.zimbra.cs.mailbox;
 
 import com.zimbra.cs.account.Provisioning;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import javax.mail.internet.MimeMessage;
 
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.CalendarResource;
-import com.zimbra.cs.fb.FreeBusy;
-import com.zimbra.cs.fb.FreeBusy.FBInstance;
-import com.zimbra.cs.fb.FreeBusy.Interval;
+import com.zimbra.cs.mailbox.AppointmentAvailability.Conflict;
+import com.zimbra.cs.mailbox.AppointmentAvailability.ConflictCheckResult;
 import com.zimbra.cs.mailbox.calendar.CalendarMailSender;
 import com.zimbra.cs.mailbox.calendar.IcalXmlStrMap;
 import com.zimbra.cs.mailbox.calendar.Invite;
@@ -27,7 +23,6 @@ import com.zimbra.cs.mailbox.calendar.InviteInfo;
 import com.zimbra.cs.mailbox.calendar.RecurId;
 import com.zimbra.cs.mailbox.calendar.Util;
 import com.zimbra.cs.mailbox.calendar.ZAttendee;
-import com.zimbra.cs.mailbox.calendar.ZOrganizer;
 import com.zimbra.cs.mailbox.calendar.CalendarMailSender.Verb;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.redolog.op.CreateCalendarItemPlayer;
@@ -35,7 +30,6 @@ import com.zimbra.cs.redolog.op.CreateCalendarItemRecorder;
 import com.zimbra.common.calendar.ICalTimeZone;
 import com.zimbra.common.calendar.ParsedDateTime;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.DateTimeUtil;
 import com.zimbra.common.util.L10nUtil;
 import com.zimbra.common.util.L10nUtil.MsgKey;
 
@@ -94,210 +88,6 @@ public final class Appointment extends CalendarItem {
             }
         }
         return inv.getFreeBusyActual();
-    }
-
-    public static class Conflict {
-        private Instance mInstance;
-        private FreeBusy mFreeBusy;
-        private String mFreeBusyStatus;
-
-        public Conflict(Instance inst, String fbStatus, FreeBusy fb) {
-            mInstance = inst;
-            mFreeBusyStatus = fbStatus;
-            mFreeBusy = fb;
-        }
-
-        public Instance getInstance() { return mInstance; }
-        public FreeBusy getFreeBusy() { return mFreeBusy; }
-        public boolean isBusy() { return isBusy(mFreeBusyStatus); }
-
-        public static boolean isBusy(String fbStatus) {
-            return IcalXmlStrMap.FBTYPE_BUSY.equals(fbStatus)
-                   || IcalXmlStrMap.FBTYPE_BUSY_UNAVAILABLE.equals(fbStatus);
-        }
-    }
-
-    private static String getBusyTimesString(
-            OperationContext octxt, Mailbox mbox, List<Conflict> list, TimeZone tz, Locale lc,
-            boolean hasMoreConflicts)
-    throws ServiceException {
-        StringBuilder sb = new StringBuilder();
-        int conflictCount = 0;
-        for (Conflict avail : list) {
-            if (!avail.isBusy()) continue;
-
-            // List conflicting appointments and their organizers.
-            FreeBusy fb = avail.getFreeBusy();
-            List<FBInstance> instances = new ArrayList<>();
-          for (Interval interval : fb) {
-            // busy intervals only
-            if (Conflict.isBusy(interval.getStatus())) {
-              // busy appointments only
-              for (FBInstance fbinst : interval.getInstances()) {
-                if (Conflict.isBusy(fbinst.getFreeBusy()))
-                  instances.add(fbinst);
-              }
-            }
-          }
-            for (FBInstance instance : instances) {
-                Date startDate = new Date(instance.getStartTime());
-                Date endDate = new Date(instance.getEndTime());
-                String start = CalendarMailSender.formatDateTime(startDate, tz, lc);
-                sb.append(" * ").append(start);
-                String end;
-                if (DateTimeUtil.sameDay(startDate, endDate, tz)) {
-                    end = CalendarMailSender.formatTime(endDate, tz, lc);
-                    sb.append(" - ").append(end);
-                } else {
-                    end = CalendarMailSender.formatDateTime(endDate, tz, lc);
-                    sb.append("\r\n   - ").append(end);
-                }
-
-                int apptId = instance.getApptId();
-                long recurIdDt = instance.getRecurIdDt();
-                CalendarItem appt = mbox.getCalendarItemById(octxt, apptId);
-                Invite inv = appt.getInviteForRecurId(recurIdDt);
-                if (inv != null && inv.hasOrganizer()) {
-                    ZOrganizer organizer = inv.getOrganizer();
-                    String orgDispName;
-                    if (organizer.hasCn())
-                        orgDispName = organizer.getCn() + " <" + organizer.getAddress() + ">";
-                    else
-                        orgDispName = organizer.getAddress();
-                    sb.append(L10nUtil.getMessage(MsgKey.calendarResourceConflictScheduledBy, lc, orgDispName));
-                }
-                sb.append("\r\n");
-                conflictCount++;
-            }
-        }
-        if (hasMoreConflicts)
-            sb.append(" * ...\r\n");
-        return sb.toString();
-    }
-
-    private static final int TWENTY_FIVE_HOURS = 25 * 60 * 60 * 1000;
-    private static final int TWO_HOURS = 2 * 60 * 60 * 1000;
-
-    private static String getDeclinedTimesString(
-            OperationContext octxt, Mailbox mbox, List<Conflict> conflicts, boolean allDay,
-            TimeZone tz, Locale lc)
-    throws ServiceException {
-        StringBuilder sb = new StringBuilder();
-        int conflictCount = 0;
-        for (Conflict conflict : conflicts) {
-            // List declined instances' start times.
-            Instance instance = conflict.getInstance();
-            Date startDate = new Date(instance.getStart());
-            Date endDate = new Date(instance.getEnd());
-            if (!allDay) {
-                String start = CalendarMailSender.formatDateTime(startDate, tz, lc);
-                sb.append(" * ").append(start);
-                if (DateTimeUtil.sameDay(startDate, endDate, tz)) {
-                    String end = CalendarMailSender.formatTime(endDate, tz, lc);
-                    sb.append(" - ").append(end);
-                } else {
-                    String end = CalendarMailSender.formatDateTime(endDate, tz, lc);
-                    sb.append("\r\n   - ").append(end);
-                }
-            } else {
-                // all-day appointments
-                String start = CalendarMailSender.formatDate(startDate, tz, lc);
-                sb.append(" * ").append(start);
-                // If each instance is two days or longer, show the end date.
-                long duration = endDate.getTime() - startDate.getTime();
-                if (duration > TWENTY_FIVE_HOURS) {  // longest 1-day = 25 hours on DST "fall back" day
-                    // Bring back end date by 2 hours so the displayed date is inclusive end date,
-                    // not exclusive.  Without DST, we can bring it back by just 1 millisecond, but
-                    // if the instance spans the DST "fall back" date we have a 25-hour day.  Negating
-                    // that requires pulling back end date by at least 1 hour and 1 millisecond.
-                    // Pulling back by 2 hours should work in all cases.
-                    endDate = new Date(instance.getEnd() - TWO_HOURS);
-                    String end = CalendarMailSender.formatDate(endDate, tz, lc);
-                    sb.append(" - ").append(end);
-                }
-            }
-            sb.append("\r\n");
-            conflictCount++;
-        }
-        return sb.toString();
-    }
-
-    private static class ConflictCheckResult {
-        private List<Conflict> mConflicts;
-        private boolean mTooManyConflicts;
-        private boolean mHasMoreConflicts;
-
-        public ConflictCheckResult(List<Conflict> conflicts, boolean tooManyConflicts, boolean hasMoreConflicts) {
-            mConflicts = conflicts;
-            mTooManyConflicts = tooManyConflicts;
-            mHasMoreConflicts = hasMoreConflicts;
-        }
-
-        public List<Conflict> getConflicts() { return mConflicts; }
-        public boolean tooManyConflicts() { return mTooManyConflicts; }
-        public boolean hasMoreConflicts() { return mHasMoreConflicts; }
-    }
-
-    private static final int MIN_CONFLICT_LIST_SIZE = 5;
-
-    private ConflictCheckResult checkAvailability(long now, Invite invite, int maxNumConflicts, int maxPctConflicts)
-    throws ServiceException {
-
-        long st, et;
-        if (invite.isRecurrence()) {
-            // Resource is getting invited to a recurring appointment.
-            st = getStartTime();
-            et = getEndTime();
-        } else {
-            // Resource is getting invited to a single instance.
-            ParsedDateTime dtStart = invite.getStartTime();
-            ParsedDateTime dtEnd = invite.getEffectiveEndTime();
-            if (dtStart != null && dtEnd != null) {
-                st = dtStart.getUtcTime();
-                et = dtEnd.getUtcTime();
-            } else {
-                // Start time and/or end time can't be determined.  Give up.
-                return null;
-            }
-        }
-        // Ignore conflicts in the past.
-        st = Math.max(st, now);
-        if (et <= st)
-            return null;
-
-        OperationContext octxt = new OperationContext(getAccount());
-        Collection<Instance> instances;
-        if (invite.isRecurrence()) {
-            instances = expandInstances(st, et, false);
-        } else {
-            instances = new ArrayList<>(1);
-            instances.add(Instance.fromInvite(getId(), invite));
-        }
-        if (instances == null || instances.isEmpty())
-            return null;
-
-        int maxByPct = maxPctConflicts * instances.size() / 100;
-        int maxConflicts = Math.min(maxNumConflicts, maxByPct);
-
-        List<Conflict> list = new ArrayList<>();
-        int numConflicts = 0;
-        boolean hasMoreConflicts = false;
-        for (Instance inst : instances) {
-            if (numConflicts > Math.max(maxConflicts, MIN_CONFLICT_LIST_SIZE - 1)) {
-                hasMoreConflicts = true;
-                break;
-            }
-            long start = inst.getStart();
-            long end = inst.getEnd();
-            // Run free/busy search of this user between instance start/end times.
-            FreeBusy fb = getMailbox().getFreeBusy(octxt, getAccount(), start, end, this);
-            String status = fb.getBusiest();
-            if (Conflict.isBusy(status)) {
-                list.add(new Conflict(inst, status, fb));
-                numConflicts++;
-            }
-        }
-        return new ConflictCheckResult(list, numConflicts > maxConflicts, hasMoreConflicts);
     }
 
     @Override
@@ -398,7 +188,8 @@ public final class Appointment extends CalendarItem {
                     // Auto decline is enabled.  Let's check for conflicts.
                     int maxNumConflicts = resource.getMaxNumConflictsAllowed();
                     int maxPctConflicts = resource.getMaxPercentConflictsAllowed();
-                    ConflictCheckResult checkResult = checkAvailability(opTime, invite, maxNumConflicts, maxPctConflicts);
+                    ConflictCheckResult checkResult =
+                        new AppointmentAvailability(this).checkAvailability(opTime, invite, maxNumConflicts, maxPctConflicts);
                     if (checkResult != null) {
                         List<Conflict> conflicts = checkResult.getConflicts();
                         if (conflicts.size() > 0) {
@@ -434,8 +225,8 @@ public final class Appointment extends CalendarItem {
                                     if (needReplyEmail) {
                                         ICalTimeZone tz = chooseReplyTZ(invite);
                                         // Send one email to accept the series.
-                                        String declinedInstances = getDeclinedTimesString(
-                                                octxt, mbox, conflicts, invite.isAllDayEvent(), tz, lc);
+                                        String declinedInstances = AppointmentAvailability.getDeclinedTimesString(
+                                                conflicts, invite.isAllDayEvent(), tz, lc);
                                         String msg =
                                             L10nUtil.getMessage(MsgKey.calendarResourceDeclinedInstances, lc) +
                                             "\r\n\r\n" + declinedInstances;
@@ -445,7 +236,7 @@ public final class Appointment extends CalendarItem {
                                                 msg,
                                                 this, invite, new Invite[] { acceptInv }, mmInv);
                                         // Send another email to decline instances, all in one email.
-                                        String conflictingTimes = getBusyTimesString(octxt, mbox, conflicts, tz, lc, false);
+                                        String conflictingTimes = AppointmentAvailability.getBusyTimesString(octxt, mbox, conflicts, tz, lc, false);
                                         msg =
                                             L10nUtil.getMessage(MsgKey.calendarResourceDeclinedInstances, lc) +
                                             "\r\n\r\n" + declinedInstances + "\r\n" +
@@ -473,7 +264,7 @@ public final class Appointment extends CalendarItem {
                                     String msg =
                                         L10nUtil.getMessage(MsgKey.calendarResourceDeclineReasonConflict, lc) +
                                         "\r\n\r\n" +
-                                        getBusyTimesString(octxt, mbox, conflicts, tz, lc, checkResult.hasMoreConflicts());
+                                        AppointmentAvailability.getBusyTimesString(octxt, mbox, conflicts, tz, lc, checkResult.hasMoreConflicts());
                                     Invite replyInv = makeReplyInvite(
                                             account, authAcct, lc, onBehalfOf, allowPrivateAccess, invite, invite.getRecurId(),
                                             CalendarMailSender.VERB_DECLINE);
