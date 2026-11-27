@@ -8,6 +8,7 @@ package com.zimbra.cs.store.file;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -389,7 +390,9 @@ public class BlobConsistencyChecker {
     throws IOException {
         long fileLen = file.length();
         if (fileLen != expected && FileUtil.isGzipped(file)) {
-            return ByteUtil.getDataLength(new GZIPInputStream(new FileInputStream(file)));
+            try (InputStream in = new FileInputStream(file)) {
+                return ByteUtil.getDataLength(new GZIPInputStream(in));
+            }
         } else {
             return fileLen;
         }
