@@ -5,9 +5,8 @@
 
 package com.zimbra.cs.mailbox;
 
-import com.zextras.mailbox.calendar.CalendarItemRepository;
-import com.zimbra.cs.db.DbCalendarItem;
 import com.google.common.base.Strings;
+import com.zextras.mailbox.calendar.CalendarItemRepository;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.calendar.ICalTimeZone;
 import com.zimbra.common.calendar.ParsedDateTime;
@@ -32,6 +31,7 @@ import com.zimbra.common.zmime.ZMimeMultipart;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.CalendarResource;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.db.DbCalendarItem;
 import com.zimbra.cs.db.DbMailItem;
 import com.zimbra.cs.index.IndexDocument;
 import com.zimbra.cs.index.LuceneFields;
@@ -4615,7 +4615,7 @@ public abstract class CalendarItem extends MailItem {
             "you do not have permission to move private calendar item to the target folder");
     }
 
-    addRevision(true, true, calendarItemMaxRevisions(), this::snapshotCurrentVersion);
+    addRevision(true, true, calendarItemMaxRevisions());
     return super.move(target);
   }
 
@@ -4642,8 +4642,7 @@ public abstract class CalendarItem extends MailItem {
     return false;
   }
 
-  @Override
-  void purgeRevisionsOverLimit(int maxNumRevisions, Folder folder) throws ServiceException {
+  private void purgeRevisionsOverLimit(int maxNumRevisions, Folder folder) throws ServiceException {
     // Purge revisions and their blobs beyond revision count limit.
     if (maxNumRevisions > 0 && isTagged(Flag.FlagInfo.VERSIONED)) {
       List<MailItem> revisions = loadCalendarItemRevisions();
@@ -4694,30 +4693,6 @@ public abstract class CalendarItem extends MailItem {
       if (revision.mVersion == version) return revision;
     }
     return null;
-  }
-
-  @Override
-  void purgeRevision(int version, boolean includeOlderRevisions) throws ServiceException {
-    if (!canAccess(ACL.RIGHT_WRITE))
-      throw ServiceException.PERM_DENIED("you do not have the necessary permissions on the item");
-    PendingDelete info = new PendingDelete();
-    for (MailItem revision : loadCalendarItemRevisions()) {
-      if (revision.getVersion() == version
-          || (includeOlderRevisions && revision.getVersion() <= version)) {
-        try {
-          info.blobs.add(revision.getBlob());
-          info.blobDigests.add(revision.getDigest());
-          info.size += revision.getSize();
-        } catch (Exception e) {
-          ZimbraLog.mailbox.error(
-              "missing blob for id: " + revision.getId() + ", revision: " + revision.getVersion());
-        }
-      }
-    }
-    DbMailItem.purgeRevisions(this, version, includeOlderRevisions);
-    getMailbox().markOtherItemDirty(info);
-    getMailbox().updateSize(-info.size);
-    mRevisions = null;
   }
 
   @Override
@@ -4955,9 +4930,36 @@ public abstract class CalendarItem extends MailItem {
     snapshotRevision(true);
   }
 
+  @Override
+  MailboxBlob setContent(StagedBlob staged, Object content) throws ServiceException, IOException {
+    addRevision(false, true, calendarItemMaxRevisions());
+    return replaceContent(staged, content);
+  }
+
+  private void addRevision(
+      boolean persist, boolean updateFolderMODSEQ, int maxNumRevisions)
+      throws ServiceException {
+    // don't take two revisions for the same data
+    if (mData.modMetadata == mMailbox.getOperationChangeID()) return;
+
+    Folder folder = getFolder();
+
+    if (!this.snapshotCurrentVersion(folder)) return;
+
+    // now that we've made a copy of the item, we can increment the version number
+    mVersion++;
+
+    purgeRevisionsOverLimit(maxNumRevisions, folder);
+
+    metadataChanged(updateFolderMODSEQ);
+    if (persist) {
+      saveData(new DbMailItem(mMailbox));
+    }
+  }
+
   public void snapshotRevision(boolean updateFolderMODSEQ) throws ServiceException {
     addRevision(
-        false, updateFolderMODSEQ, calendarItemMaxRevisions(), this::snapshotCurrentVersion);
+        false, updateFolderMODSEQ, calendarItemMaxRevisions());
   }
 
   @Override

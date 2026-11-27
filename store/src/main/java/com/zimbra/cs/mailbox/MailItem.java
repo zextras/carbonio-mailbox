@@ -2104,8 +2104,16 @@ public abstract class MailItem
   }
 
   MailboxBlob setContent(StagedBlob staged, Object content) throws ServiceException, IOException {
-    addRevision(false, true, 1, folder -> true);
+    if (mData.modMetadata != mMailbox.getOperationChangeID()) {
+      mVersion++;
+      metadataChanged(true);
+    }
 
+    return replaceContent(staged, content);
+  }
+
+  MailboxBlob replaceContent(StagedBlob staged, Object content)
+      throws ServiceException, IOException {
     // update the item's relevant attributes
     markItemModified(Change.CONTENT | Change.DATE | Change.IMAP_UID | Change.SIZE);
 
@@ -2157,37 +2165,9 @@ public abstract class MailItem
     return false;
   }
 
-  void addRevision(
-      boolean persist, boolean updateFolderMODSEQ, int maxNumRevisions, RevisionSnapshot snapshot)
-      throws ServiceException {
-    // don't take two revisions for the same data
-    if (mData.modMetadata == mMailbox.getOperationChangeID()) return;
-
-    Folder folder = getFolder();
-
-    if (!snapshot.take(folder)) return;
-
-    // now that we've made a copy of the item, we can increment the version number
-    mVersion++;
-
-    purgeRevisionsOverLimit(maxNumRevisions, folder);
-
-    metadataChanged(updateFolderMODSEQ);
-    if (persist) {
-      saveData(new DbMailItem(mMailbox));
-    }
-  }
-
-  void purgeRevisionsOverLimit(int maxNumRevisions, Folder folder) throws ServiceException {}
-
   // do *not* make this public, as it'd skirt Mailbox-level synchronization and caching
   MailItem getRevision(int version) throws ServiceException {
     return version == mVersion ? this : null;
-  }
-
-  void purgeRevision(int version, boolean includeOlderRevisions) throws ServiceException {
-    if (!canAccess(ACL.RIGHT_WRITE))
-      throw ServiceException.PERM_DENIED("you do not have the necessary permissions on the item");
   }
 
   /**
