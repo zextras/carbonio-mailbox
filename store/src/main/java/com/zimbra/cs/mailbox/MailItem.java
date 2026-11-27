@@ -2728,32 +2728,6 @@ public abstract class MailItem
     return trimmed;
   }
 
-  public static String normalizeItemName(String name) {
-    try {
-      return validateItemName(name);
-    } catch (ServiceException e) {
-      String normalized = StringUtil.stripControlCharacters(name);
-      if (normalized == null) {
-        normalized = "";
-      }
-      if (normalized.length() > MailItem.MAX_NAME_LENGTH) {
-        normalized = normalized.substring(0, MailItem.MAX_NAME_LENGTH);
-      }
-      if (normalized.matches(INVALID_NAME_PATTERN)) {
-        normalized = normalized.replaceAll(INVALID_NAME_CHARACTERS, "");
-      }
-      normalized = StringUtil.trimTrailingSpaces(normalized);
-      if (RESERVED_NAMES.contains(normalized)) {
-        normalized = "";
-      }
-
-      if (normalized.trim().equals("")) {
-        normalized = "item" + System.currentTimeMillis();
-      }
-      return normalized;
-    }
-  }
-
   /**
    * Renames the item in place. Altering an item's name's case (e.g. from <tt>foo</tt> to
    * <tt>FOO</tt>) is allowed.
