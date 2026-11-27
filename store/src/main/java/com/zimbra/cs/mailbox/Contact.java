@@ -230,7 +230,7 @@ public class Contact extends MailItem {
                     if (!ContactConstants.A_dlist.equals(field))
                         temp.add(field);
                 }
-                if (temp.size() > 0)
+                if (!temp.isEmpty())
                     emailFields = temp.toArray(new String[0]);
             }
 
@@ -415,13 +415,13 @@ public class Contact extends MailItem {
             default:
             case ContactConstants.FA_LAST_C_FIRST:
                 result.append(last);
-                if (first.length() > 0 && last.length() > 0)
+                if (!first.isEmpty() && !last.isEmpty())
                     result.append(", ");
                 result.append(first);
                 break;
             case ContactConstants.FA_FIRST_LAST:
                 result.append(first);
-                if (first.length() > 0 && last.length() > 0)
+                if (!first.isEmpty() && !last.isEmpty())
                     result.append(' ');
                 result.append(last);
                 break;
@@ -430,34 +430,34 @@ public class Contact extends MailItem {
                 break;
             case ContactConstants.FA_LAST_C_FIRST_COMPANY:
                 result.append(last);
-                if (first.length() > 0 && last.length() > 0)
+                if (!first.isEmpty() && !last.isEmpty())
                     result.append(", ");
                 result.append(first);
-                if (company.length() > 0)
+                if (!company.isEmpty())
                     result.append(" (").append(company).append(')');
                 break;
             case ContactConstants.FA_FIRST_LAST_COMPANY:
                 result.append(first);
-                if (first.length() > 0 && last.length() > 0)
+                if (!first.isEmpty() && !last.isEmpty())
                     result.append(' ');
                 result.append(last);
-                if (company.length() > 0)
+                if (!company.isEmpty())
                     result.append(" (").append(company).append(')');
                 break;
             case ContactConstants.FA_COMPANY_LAST_C_FIRST:
                 result.append(company);
-                if (first.length() > 0 || last.length() > 0) {
+                if (!first.isEmpty() || !last.isEmpty()) {
                     result.append(" (").append(last);
-                    if (first.length() > 0 && last.length() > 0)
+                    if (!first.isEmpty() && !last.isEmpty())
                         result.append(", ");
                     result.append(first).append(')');
                 }
                 break;
             case ContactConstants.FA_COMPANY_FIRST_LAST:
                 result.append(company);
-                if (first.length() > 0 || last.length() > 0) {
+                if (!first.isEmpty() || !last.isEmpty()) {
                     result.append(" (").append(first);
-                    if (first.length() > 0 && last.length() > 0)
+                    if (!first.isEmpty() && !last.isEmpty())
                         result.append(' ');
                     result.append(last).append(')');
                 }
@@ -473,7 +473,7 @@ public class Contact extends MailItem {
      */
     public static void normalizeFileAs(Map<String, String> attrs) {
         String fileAs = attrs.get(ContactConstants.A_fullName);
-        if (fileAs == null || fileAs.trim().length() == 0)
+        if (fileAs == null || fileAs.trim().isEmpty())
             return;
 
         String last = attrs.get(ContactConstants.A_lastName);
@@ -497,7 +497,7 @@ public class Contact extends MailItem {
         //ContactConstants.A_LAST_C_FIRST = 1
         StringBuilder sb = new StringBuilder();
         sb.append(last);
-        if (last.length() > 0 && first.length() > 0) sb.append(", ");
+        if (!last.isEmpty() && !first.isEmpty()) sb.append(", ");
         sb.append(first);
         if (sb.toString().equals(fileAs)) {
             attrs.put(ContactConstants.A_fileAs, Integer.valueOf(ContactConstants.FA_LAST_C_FIRST).toString());
@@ -507,7 +507,7 @@ public class Contact extends MailItem {
         //ContactConstants.A_FIRST_LAST = 2
         sb = new StringBuilder();
         sb.append(first);
-        if (last.length() > 0 && first.length() > 0) sb.append(' ');
+        if (!last.isEmpty() && !first.isEmpty()) sb.append(' ');
         sb.append(last);
         if (sb.toString().equals(fileAs)) {
             attrs.put(ContactConstants.A_fileAs, Integer.valueOf(ContactConstants.FA_FIRST_LAST).toString());
@@ -523,9 +523,9 @@ public class Contact extends MailItem {
         //ContactConstants.A_LAST_C_FIRST_COMPANY = 4
         sb = new StringBuilder();
         sb.append(last);
-        if (last.length() > 0 && first.length() > 0) sb.append(", ");
+        if (!last.isEmpty() && !first.isEmpty()) sb.append(", ");
         sb.append(first);
-        if (company.length() > 0) sb.append(" (").append(company).append(')');
+        if (!company.isEmpty()) sb.append(" (").append(company).append(')');
         if (sb.toString().equals(fileAs)) {
             attrs.put(ContactConstants.A_fileAs, Integer.valueOf(ContactConstants.FA_LAST_C_FIRST_COMPANY).toString());
             return;
@@ -534,9 +534,9 @@ public class Contact extends MailItem {
         //ContactConstants.A_FIRST_LAST_COMPANY = 5
         sb = new StringBuilder();
         sb.append(first);
-        if (last.length() > 0 && first.length() > 0) sb.append(' ');
+        if (!last.isEmpty() && !first.isEmpty()) sb.append(' ');
         sb.append(last);
-        if (company.length() > 0) sb.append(" (").append(company).append(')');
+        if (!company.isEmpty()) sb.append(" (").append(company).append(')');
         if (sb.toString().equals(fileAs)) {
             attrs.put(ContactConstants.A_fileAs, Integer.valueOf(ContactConstants.FA_FIRST_LAST_COMPANY).toString());
             return;
@@ -545,9 +545,9 @@ public class Contact extends MailItem {
         //ContactConstants.A_COMPANY_LAST_C_FIRST = 6
         sb = new StringBuilder();
         sb.append(company);
-        if (last.length() > 0 || first.length() > 0) {
+        if (!last.isEmpty() || !first.isEmpty()) {
             sb.append(" (").append(last);
-            if (last.length() > 0 && first.length() > 0) sb.append(", ");
+            if (!last.isEmpty() && !first.isEmpty()) sb.append(", ");
             sb.append(first).append(')');
         }
         if (sb.toString().equals(fileAs)) {
@@ -558,9 +558,9 @@ public class Contact extends MailItem {
         //ContactConstants.A_COMPANY_FIRST_LAST = 7
         sb = new StringBuilder();
         sb.append(company);
-        if (last.length() > 0 || first.length() > 0) {
+        if (!last.isEmpty() || !first.isEmpty()) {
             sb.append(" (").append(first);
-            if (last.length() > 0 && first.length() > 0) sb.append(' ');
+            if (!last.isEmpty() && !first.isEmpty()) sb.append(' ');
             sb.append(last).append(')');
         }
         if (sb.toString().equals(fileAs)) {
@@ -695,7 +695,7 @@ public class Contact extends MailItem {
         data.date = mbox.getOperationTimestamp();
         data.setFlags(flags | (pc.hasAttachment() ? Flag.BITMASK_ATTACHED : 0));
         data.setTags(ntags);
-        data.metadata = encodeMetadata(DEFAULT_COLOR_RGB, 1, 1, custom, pc.getFields(), pc.getAttachments());
+        data.metadata = encodeMetadata(custom, pc.getFields(), pc.getAttachments());
         data.contentChanged(mbox);
 
         if (ZimbraLog.mailop.isInfoEnabled()) {
@@ -755,7 +755,7 @@ public class Contact extends MailItem {
             throw ServiceException.INVALID_REQUEST("contact must have fields", null);
         }
         attachments = pc.getAttachments();
-        if (attachments != null && attachments.size() > 0) {
+        if (attachments != null && !attachments.isEmpty()) {
             for (Attachment attach: attachments) {
                 //refresh the data handler. the content rev changes which can change the blob filename/locator.
                 //not safe to keep old data handler that may point to old blob
@@ -831,9 +831,9 @@ public class Contact extends MailItem {
         return encodeMetadata(meta, mRGBColor, mMetaVersion, mVersion, mExtendedData, fields, attachments);
     }
 
-    private static String encodeMetadata(Color color, int metaVersion, int version, CustomMetadata custom, Map<String, String> fields, List<Attachment> attachments) {
+    private static String encodeMetadata(CustomMetadata custom, Map<String, String> fields, List<Attachment> attachments) {
         CustomMetadataList extended = (custom == null ? null : custom.asList());
-        return encodeMetadata(new Metadata(), color, metaVersion, version, extended, fields, attachments).toString();
+        return encodeMetadata(new Metadata(), MailItem.DEFAULT_COLOR_RGB, 1, 1, extended, fields, attachments).toString();
     }
 
     static Metadata encodeMetadata(Metadata meta, Color color, int metaVersion, int version, CustomMetadataList extended,
@@ -856,10 +856,6 @@ public class Contact extends MailItem {
             helper.add(entry.getKey(), entry.getValue());
         }
         return helper.toString();
-    }
-
-    public String getVCardUID() {
-        return fields.get(ContactConstants.A_vCardUID);
     }
 
     public ListMultimap<String, VCardParamsAndValue> getUnknownVCardProps() {
@@ -909,7 +905,7 @@ public class Contact extends MailItem {
 
     public static ListMultimap<String, VCardParamsAndValue> decodeUnknownVCardProps(String xpropStr) {
         ListMultimap<String, VCardParamsAndValue> xprops = ArrayListMultimap.create();
-        if (xpropStr == null || xpropStr.length() == 0) {
+        if (xpropStr == null || xpropStr.isEmpty()) {
             return xprops;
         }
         ObjectMapper mapper = new ObjectMapper();
@@ -1042,8 +1038,7 @@ public class Contact extends MailItem {
             return jsonobj.getJSONArray(ZMVAL);
         } else {
             JSONObject jsonobj = new JSONObject(attr);
-            JSONArray array = jsonobj.getJSONArray(ZMVAL);
-            return array;
+					return jsonobj.getJSONArray(ZMVAL);
         }
     }
 }
