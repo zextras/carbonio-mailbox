@@ -15,7 +15,7 @@ import static com.zimbra.cs.db.DbMailItem.MAILBOX_ID;
 import static com.zimbra.cs.db.DbMailItem.MAILBOX_ID_VALUE;
 import static com.zimbra.cs.db.DbMailItem.withMailboxId;
 
-import com.zextras.mailbox.calendar.CalendarItemRepository;
+import com.zextras.mailbox.calendar.AppointmentRepository;
 import com.zextras.db.DbError;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Constants;
@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class DbCalendarItem implements CalendarItemRepository {
+public class DbAppointment implements AppointmentRepository {
 
   private static final String CALENDAR_TYPES = "(" + MailItem.Type.APPOINTMENT.toByte() + ')';
 

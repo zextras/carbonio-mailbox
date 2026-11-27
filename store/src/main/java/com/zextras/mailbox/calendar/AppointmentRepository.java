@@ -13,7 +13,7 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.util.TypedIdList;
 import java.util.List;
 
-public interface CalendarItemRepository {
+public interface AppointmentRepository {
 
   void copyCalendar(Appointment calItem, int newId, boolean fromDumpster) throws ServiceException;
 

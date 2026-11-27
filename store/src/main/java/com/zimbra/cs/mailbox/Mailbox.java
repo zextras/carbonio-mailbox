@@ -16,7 +16,7 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Closeables;
 import com.google.common.primitives.Ints;
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
-import com.zextras.mailbox.calendar.CalendarItemRepository;
+import com.zextras.mailbox.calendar.AppointmentRepository;
 import com.zextras.mailbox.mail.ConversationRepository;
 import com.zextras.mailbox.mail.TombstoneRepository;
 import com.zextras.mailbox.quota.QuotaCheckSingleton;
@@ -70,7 +70,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ProvisioningCache;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.datasource.DataSourceManager;
-import com.zimbra.cs.db.DbCalendarItem;
+import com.zimbra.cs.db.DbAppointment;
 import com.zimbra.cs.db.DbConversation;
 import com.zimbra.cs.db.DbDataSource;
 import com.zimbra.cs.db.DbMailItem;
@@ -257,7 +257,7 @@ public class Mailbox implements MailboxStore {
 
   private static final ConversationRepository CONVERSATION_REPOSITORY = new DbConversation();
 
-  private static final CalendarItemRepository CALENDAR_ITEM_REPOSITORY = new DbCalendarItem();
+  private static final AppointmentRepository APPOINTMENT_REPOSITORY = new DbAppointment();
   private static final TombstoneRepository TOMBSTONE_REPOSITORY = new DbTombstone();
 
   public static final int ID_AUTO_INCREMENT = FolderConstants.ID_AUTO_INCREMENT; // -1;
@@ -4805,7 +4805,7 @@ public class Mailbox implements MailboxStore {
         throw ServiceException.PERM_DENIED("you do not have sufficient permissions");
       }
       success = true;
-      return CALENDAR_ITEM_REPOSITORY.getCalendarMetadata(f, start, end);
+      return APPOINTMENT_REPOSITORY.getCalendarMetadata(f, start, end);
     } finally {
       endTransaction(success);
     }
@@ -4875,7 +4875,7 @@ public class Mailbox implements MailboxStore {
       getFolderById(folderId);
 
       // get the list of all visible calendar items in the specified folder
-      TypedIdList ids = CALENDAR_ITEM_REPOSITORY.listCalendars(this, start, end, folderId, null);
+      TypedIdList ids = APPOINTMENT_REPOSITORY.listCalendars(this, start, end, folderId, null);
       success = true;
       return ids;
     } finally {
@@ -4929,7 +4929,7 @@ public class Mailbox implements MailboxStore {
       // get the list of all visible calendar items in the specified folder
       List<Appointment> calItems = new ArrayList<>();
       List<MailItem.UnderlyingData> invData =
-          CALENDAR_ITEM_REPOSITORY.getCalendars(this, start, end, folderId, excludeFolders);
+          APPOINTMENT_REPOSITORY.getCalendars(this, start, end, folderId, excludeFolders);
       for (MailItem.UnderlyingData data : invData) {
         try {
           Appointment calItem = getCalendarItem(data);
@@ -6022,7 +6022,7 @@ public class Mailbox implements MailboxStore {
     boolean success = false;
     try {
       beginReadTransaction("getCalendarItemByUid", octxt);
-      MailItem.UnderlyingData data = CALENDAR_ITEM_REPOSITORY.getCalendar(this, uid);
+      MailItem.UnderlyingData data = APPOINTMENT_REPOSITORY.getCalendar(this, uid);
       Appointment calItem = (Appointment) getItem(data);
       success = true;
       return calItem;
@@ -6038,7 +6038,7 @@ public class Mailbox implements MailboxStore {
       beginTransaction("getCalendarItemsByUid", octxt);
       ArrayList<String> uidList = new ArrayList<>(uids);
       Map<String, Appointment> calItems = new HashMap<>();
-      List<MailItem.UnderlyingData> invData = CALENDAR_ITEM_REPOSITORY.getCalendars(this, uids);
+      List<MailItem.UnderlyingData> invData = APPOINTMENT_REPOSITORY.getCalendars(this, uids);
       for (MailItem.UnderlyingData data : invData) {
         try {
           Appointment calItem = getCalendarItem(data);

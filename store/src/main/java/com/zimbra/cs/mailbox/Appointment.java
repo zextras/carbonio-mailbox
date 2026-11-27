@@ -6,7 +6,7 @@
 package com.zimbra.cs.mailbox;
 
 import com.google.common.base.Strings;
-import com.zextras.mailbox.calendar.CalendarItemRepository;
+import com.zextras.mailbox.calendar.AppointmentRepository;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.calendar.ICalTimeZone;
 import com.zimbra.common.calendar.ParsedDateTime;
@@ -33,7 +33,7 @@ import com.zimbra.common.zmime.ZMimeMultipart;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.CalendarResource;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.db.DbCalendarItem;
+import com.zimbra.cs.db.DbAppointment;
 import com.zimbra.cs.db.DbMailItem;
 import com.zimbra.cs.index.IndexDocument;
 import com.zimbra.cs.index.LuceneFields;
@@ -134,7 +134,7 @@ public final class Appointment extends MailItem {
     public static final String FN_CALITEM_RECURRENCE = "apptRecur";
     public static final long MILLIS_IN_YEAR = 365L * 24L * 60L * 60L * 1000L;
     public static final long MILLIS_IN_DAY = 24L * 60L * 60L * 1000L;
-    private static final CalendarItemRepository CALENDAR_ITEM_REPOSITORY = new DbCalendarItem();
+    private static final AppointmentRepository APPOINTMENT_REPOSITORY = new DbAppointment();
     static Log sLog = LogFactory.getLog(Appointment.class);
     private List<MailItem> mRevisions;
     private String mUid;
@@ -346,7 +346,7 @@ public final class Appointment extends MailItem {
         }
       }
 
-      CALENDAR_ITEM_REPOSITORY.addCalendar(item);
+      APPOINTMENT_REPOSITORY.addCalendar(item);
 
       return item;
     }
@@ -1122,7 +1122,7 @@ public final class Appointment extends MailItem {
       if (endTime != mEndTime) {
         markItemModified(Change.CONTENT | Change.INVITE);
         mEndTime = endTime;
-        CALENDAR_ITEM_REPOSITORY.updateCalendar(this);
+        APPOINTMENT_REPOSITORY.updateCalendar(this);
         return 1;
       }
       return 0;
@@ -1320,7 +1320,7 @@ public final class Appointment extends MailItem {
           ZimbraLog.calendar.debug(
               "Updating recurrence for %s.  nextAlarm=%d.", getMailopContext(this), nextAlarm);
         }
-        CALENDAR_ITEM_REPOSITORY.updateCalendar(this);
+        APPOINTMENT_REPOSITORY.updateCalendar(this);
       }
       return true;
     }
@@ -3429,7 +3429,7 @@ public final class Appointment extends MailItem {
           ZimbraLog.calendar.debug(
               "Setting next alarm for %s to %d.", getMailopContext(this), nextAlarm);
         }
-        CALENDAR_ITEM_REPOSITORY.updateCalendar(this);
+        APPOINTMENT_REPOSITORY.updateCalendar(this);
       }
       if (mAlarmData != null || hadAlarm) saveMetadata();
     }
@@ -4081,7 +4081,7 @@ public final class Appointment extends MailItem {
       }
       MailItem copy = super.copy(folder, id, uuid, parent);
       boolean inDumpster = inDumpster();
-      CALENDAR_ITEM_REPOSITORY.copyCalendar(this, id, inDumpster);
+      APPOINTMENT_REPOSITORY.copyCalendar(this, id, inDumpster);
       // Copy revisions only when recovering from dumpster.  When copying from one non-dumpster folder
       // to another, it is never desirable to copy old revisions. (bug 55070)
       if (inDumpster) {
