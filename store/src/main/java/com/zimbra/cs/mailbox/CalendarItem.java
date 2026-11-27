@@ -39,6 +39,7 @@ import com.zimbra.cs.index.analysis.FieldTokenStream;
 import com.zimbra.cs.index.analysis.RFC822AddressTokenStream;
 import com.zimbra.cs.mailbox.MailItem.CustomMetadata.CustomMetadataList;
 import com.zimbra.cs.mailbox.Mailbox.SetCalendarItemData;
+import com.zimbra.cs.mailbox.Tag.NormalizedTags;
 import com.zimbra.cs.mailbox.calendar.Alarm;
 import com.zimbra.cs.mailbox.calendar.Alarm.Action;
 import com.zimbra.cs.mailbox.calendar.CalendarMailSender;
@@ -472,11 +473,10 @@ public abstract class CalendarItem extends MailItem {
       int id,
       Folder folder,
       int flags,
-      Tag.NormalizedTags ntags,
+      NormalizedTags ntags,
       String uid,
       ParsedMessage pm,
       Invite firstInvite,
-      long nextAlarm,
       CustomMetadata custom)
       throws ServiceException {
     firstInvite.sanitize(false);
@@ -565,9 +565,6 @@ public abstract class CalendarItem extends MailItem {
     data.setSubject(subject);
     data.metadata =
         encodeMetadata(
-            DEFAULT_COLOR_RGB,
-            1,
-            1,
             custom,
             uid,
             startTime,
@@ -575,8 +572,8 @@ public abstract class CalendarItem extends MailItem {
             recur,
             invites,
             firstInvite.getTimeZoneMap(),
-            new ReplyList(),
-            null);
+            new ReplyList()
+        );
     data.contentChanged(mbox, false);
 
     if (!firstInvite.hasRecurId()) {
@@ -644,7 +641,7 @@ public abstract class CalendarItem extends MailItem {
     item.mEndTime = item.recomputeRecurrenceEndTime(item.mEndTime);
 
     if (firstInvite.hasAlarm()) {
-      item.recomputeNextAlarm(nextAlarm, false, false);
+      item.recomputeNextAlarm(CalendarItem.NEXT_ALARM_FROM_NOW, false, false);
       item.saveMetadata();
       AlarmData alarmData = item.getAlarmData();
       if (alarmData != null) {
@@ -975,24 +972,20 @@ public abstract class CalendarItem extends MailItem {
   }
 
   private static String encodeMetadata(
-      Color color,
-      int metaVersion,
-      int version,
       CustomMetadata custom,
       String uid,
       long startTime,
       long endTime,
-      Recurrence.IRecurrence recur,
+      IRecurrence recur,
       List<Invite> invs,
       TimeZoneMap tzmap,
-      ReplyList replyList,
-      AlarmData alarmData) {
+      ReplyList replyList) {
     CustomMetadataList extended = (custom == null ? null : custom.asList());
     return encodeMetadata(
             new Metadata(),
-            color,
-            metaVersion,
-            version,
+        MailItem.DEFAULT_COLOR_RGB,
+        1,
+        1,
             extended,
             uid,
             startTime,
@@ -1001,7 +994,7 @@ public abstract class CalendarItem extends MailItem {
             invs,
             tzmap,
             replyList,
-            alarmData)
+        null)
         .toString();
   }
 
@@ -1539,40 +1532,6 @@ public abstract class CalendarItem extends MailItem {
     return defInv;
   }
 
-  /**
-   * Returns the Invite with matching RECURRENCE-ID date/time, expressed as "YYYYMMDD[ThhmmssZ]"
-   * string. If time comonent is specified, it must be in UTC timezone ("Z"). If no matching one is
-   * found, the default/series Invite is returned.
-   *
-   * @param recurIdZ
-   * @return
-   */
-  public Invite getInviteForRecurIdZ(String recurIdZ) {
-    Invite defInv = null;
-    for (Invite inv : mInvites) {
-      RecurId rid = inv.getRecurId();
-      if (recurIdZ != null) {
-        if (rid == null) {
-          if (defInv == null) defInv = inv;
-        } else {
-          if (recurIdZ.equals(rid.getDtZ())) return inv;
-        }
-      } else { // recurIdZ == null
-        if (rid == null) return inv;
-      }
-    }
-    return defInv;
-  }
-
-  public Invite getInviteByMailItem(int mailItemId) {
-    for (Invite cur : mInvites) {
-      if (cur.getMailItemId() == mailItemId) {
-        return cur;
-      }
-    }
-    return null;
-  }
-
   public Invite getDefaultInviteOrNull() {
     Invite first = null;
     for (Invite cur : mInvites) {
@@ -1598,7 +1557,7 @@ public abstract class CalendarItem extends MailItem {
   public boolean isPublic() {
     boolean result = true;
     Invite[] invs = getInvites();
-    if (invs != null && invs.length > 0) {
+    if (invs != null) {
       for (Invite i : invs) {
         if (!i.isPublic()) {
           result = false;
@@ -1673,7 +1632,7 @@ public abstract class CalendarItem extends MailItem {
       boolean replaceExistingInvites,
       boolean updatePrevFolders)
       throws ServiceException {
-    invite.setHasAttachment(pm != null ? pm.hasAttachments() : false);
+    invite.setHasAttachment(pm != null && pm.hasAttachments());
 
     String method = invite.getMethod();
     if (method.equals(ICalTok.REQUEST.toString())
@@ -1701,9 +1660,7 @@ public abstract class CalendarItem extends MailItem {
   void processNewInviteExceptions(
       List<SetCalendarItemData> scidList,
       int folderId,
-      long nextAlarm,
-      boolean preserveAlarms,
-      boolean replaceExistingInvites)
+      long nextAlarm)
       throws ServiceException {
     persistBatchedChanges = false;
     for (SetCalendarItemData scid : scidList) {
@@ -1712,8 +1669,8 @@ public abstract class CalendarItem extends MailItem {
           scid.invite,
           folderId,
           nextAlarm,
-          preserveAlarms,
-          replaceExistingInvites,
+          false,
+          false,
           true);
     }
     // now update the recurrence.
@@ -1787,7 +1744,7 @@ public abstract class CalendarItem extends MailItem {
 
     OperationContext octxt = getMailbox().getOperationContext();
     Account authAccount = octxt != null ? octxt.getAuthenticatedUser() : null;
-    boolean asAdmin = octxt != null ? octxt.isUsingAdminPrivileges() : false;
+    boolean asAdmin = octxt != null && octxt.isUsingAdminPrivileges();
     boolean isCancel = newInvite.isCancel();
 
     boolean requirePrivateCheck = requirePrivateCheck(newInvite);
@@ -1801,7 +1758,7 @@ public abstract class CalendarItem extends MailItem {
     Mailbox mailbox = getMailbox();
     boolean isCalendarResource = Provisioning.getInstance().getAccountByMailbox(mailbox) instanceof CalendarResource;
     boolean denyPrivateAccess =
-        requirePrivateCheck ? !allowPrivateAccess(authAccount, asAdmin) : false;
+				requirePrivateCheck && !allowPrivateAccess(authAccount, asAdmin);
     if (!newInvite.isPublic() || !isPublic()) {
       if (folderId != getFolderId()) {
         Folder folder = getMailbox().getFolderById(folderId);

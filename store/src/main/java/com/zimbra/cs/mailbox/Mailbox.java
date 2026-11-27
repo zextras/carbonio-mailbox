@@ -5541,7 +5541,7 @@ public class Mailbox implements MailboxStore {
         // remove the first one. it is already processed
         scidList.remove(0);
         // exceptions
-        calItem.processNewInviteExceptions(scidList, folderId, nextAlarm, false, false);
+        calItem.processNewInviteExceptions(scidList, folderId, nextAlarm);
       }
 
       // Recompute alarm time after processing all Invites.
@@ -8370,7 +8370,6 @@ public class Mailbox implements MailboxStore {
             uid,
             pm,
             invite,
-            CalendarItem.NEXT_ALARM_FROM_NOW,
             custom);
 
     if (redoRecorder != null) {
