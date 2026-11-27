@@ -108,6 +108,8 @@ public abstract class CalendarItem extends MailItem {
 
   private static final CalendarItemRepository CALENDAR_ITEM_REPOSITORY = new DbCalendarItem();
 
+  private List<MailItem> mRevisions;
+
   // these are special values indexed in the L_FIELD structured index field, they allow us to
   // restrict lucene searches keyed off of public/private settings
   //
