@@ -4630,8 +4630,7 @@ public abstract class CalendarItem extends MailItem {
     return size;
   }
 
-  @Override
-  boolean lastRevisionUsesBlob() throws ServiceException {
+  private boolean lastRevisionUsesBlob() throws ServiceException {
     if (isTagged(Flag.FlagInfo.VERSIONED)) {
       List<MailItem> revisions = loadCalendarItemRevisions();
       if (!revisions.isEmpty()) {
@@ -4941,7 +4940,19 @@ public abstract class CalendarItem extends MailItem {
   @Override
   MailboxBlob setContent(StagedBlob staged, Object content) throws ServiceException, IOException {
     addRevision(false, true, calendarItemMaxRevisions());
-    return replaceContent(staged, content);
+
+    markItemModified(Change.CONTENT | Change.DATE | Change.IMAP_UID | Change.SIZE);
+
+    if (getSavedSequence() != mMailbox.getOperationChangeID()) {
+      if (!canAccess(ACL.RIGHT_WRITE)) {
+        throw ServiceException.PERM_DENIED("you do not have the necessary permissions on the item");
+      }
+      if (!lastRevisionUsesBlob()) {
+        markBlobForDeletion();
+      }
+    }
+
+    return writeContent(staged, content);
   }
 
   private void addRevision(

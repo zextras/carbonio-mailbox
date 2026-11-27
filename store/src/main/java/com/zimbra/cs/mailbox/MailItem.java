@@ -2106,11 +2106,6 @@ public abstract class MailItem
       metadataChanged(true);
     }
 
-    return replaceContent(staged, content);
-  }
-
-  MailboxBlob replaceContent(StagedBlob staged, Object content)
-      throws ServiceException, IOException {
     // update the item's relevant attributes
     markItemModified(Change.CONTENT | Change.DATE | Change.IMAP_UID | Change.SIZE);
 
@@ -2119,11 +2114,14 @@ public abstract class MailItem
       if (!canAccess(ACL.RIGHT_WRITE)) {
         throw ServiceException.PERM_DENIED("you do not have the necessary permissions on the item");
       }
-      if (!lastRevisionUsesBlob()) {
-        markBlobForDeletion();
-      }
+      markBlobForDeletion();
     }
 
+    return writeContent(staged, content);
+  }
+
+  MailboxBlob writeContent(StagedBlob staged, Object content)
+      throws ServiceException, IOException {
     // remove the content from the cache
     MessageCache.purge(this);
 
@@ -2156,10 +2154,6 @@ public abstract class MailItem
     reanalyze(content, size);
 
     return mblob;
-  }
-
-  boolean lastRevisionUsesBlob() throws ServiceException {
-    return false;
   }
 
   // do *not* make this public, as it'd skirt Mailbox-level synchronization and caching
