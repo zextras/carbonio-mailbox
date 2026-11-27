@@ -34,7 +34,7 @@ import java.util.*;
 /**
  * @since Aug 18, 2004
  */
-public class Folder extends MailItem implements FolderStore {
+public sealed class Folder extends MailItem implements FolderStore permits SearchFolder, Mountpoint {
   public static class FolderOptions {
     private byte attributes;
     private Type defaultView = MailItem.Type.UNKNOWN;

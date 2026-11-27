@@ -30,7 +30,7 @@ public class CalendarItemTest extends MailboxTestSuite {
     Mailbox mbox =
         MailboxManager.getInstance().getMailboxByAccount(account);
     // have to spy because later real method is called
-    calItem = mock(CalendarItem.class, CALLS_REAL_METHODS);
+    calItem = mock(Appointment.class, CALLS_REAL_METHODS);
     calItem.mData = new UnderlyingData();
     calItem.mMailbox = mbox;
   }

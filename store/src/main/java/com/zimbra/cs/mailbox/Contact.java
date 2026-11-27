@@ -55,7 +55,7 @@ import com.zimbra.cs.store.StagedBlob;
 /**
  * @since Aug 23, 2004
  */
-public class Contact extends MailItem {
+public final class Contact extends MailItem {
 
     public static class Attachment implements DataSource {
         private DataHandler mDataHandler;

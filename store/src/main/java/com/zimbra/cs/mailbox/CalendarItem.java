@@ -105,7 +105,7 @@ import javax.mail.util.SharedByteArrayInputStream;
  * name "Gorilla Discussion" EXCEPT for the 21st, where we talk about lefties instead. CANCELED for
  * the 28th
  */
-public abstract class CalendarItem extends MailItem {
+public abstract sealed class CalendarItem extends MailItem permits Appointment {
 
   private static final CalendarItemRepository CALENDAR_ITEM_REPOSITORY = new DbCalendarItem();
 

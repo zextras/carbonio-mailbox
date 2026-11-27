@@ -65,7 +65,7 @@ import javax.mail.internet.MimeMessage;
 /**
  * @since Jun 13, 2004
  */
-public class Message extends MailItem {
+public final class Message extends MailItem {
 
   private static final ConversationRepository CONVERSATION_REPOSITORY = new DbConversation();
 

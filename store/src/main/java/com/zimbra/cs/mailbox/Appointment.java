@@ -51,7 +51,7 @@ import com.zimbra.common.util.L10nUtil.MsgKey;
  *
  * @since Feb 17, 2005
  */
-public class Appointment extends CalendarItem {
+public final class Appointment extends CalendarItem {
 
     public Appointment(Mailbox mbox, UnderlyingData data) throws ServiceException {
         this(mbox, data, false);

@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxLock;
@@ -62,7 +63,7 @@ public class CalendarRequestTest {
     octxt = mock(OperationContext.class);
     invite1 = mock(Invite.class);
     invite2 = mock(Invite.class);
-    calItem = mock(CalendarItem.class);
+    calItem = mock(Appointment.class);
     sendQueue = new CalendarRequest.MailSendQueue();
   }
 

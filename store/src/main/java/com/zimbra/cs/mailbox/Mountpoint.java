@@ -19,7 +19,7 @@ import com.zimbra.cs.session.PendingModifications.Change;
 /**
  * @since Jul 3, 2005
  */
-public class Mountpoint extends Folder implements MountpointStore {
+public final class Mountpoint extends Folder implements MountpointStore {
 
     private String mOwnerId;
     private int    mRemoteId;
