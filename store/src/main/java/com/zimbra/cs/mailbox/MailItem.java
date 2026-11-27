@@ -1038,8 +1038,8 @@ public abstract class MailItem
   }
 
   /**
-   * Returns the item's total count against mailbox quota including all old revisions. For items
-   * that have a blob, this is the sum of the size in bytes of the raw blobs.
+   * Returns the item's total count against mailbox quota. For items that have a blob, this is the
+   * size in bytes of the raw blob.
    */
   public long getTotalSize() throws ServiceException {
     return mData.size;
