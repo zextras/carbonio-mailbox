@@ -4695,9 +4695,9 @@ public abstract class CalendarItem extends MailItem {
     return null;
   }
 
-  @Override
-  void copyRevisions(StoreManager sm, int copyId, boolean inDumpster)
+  private void copyRevisions(int copyId, boolean inDumpster)
       throws IOException, ServiceException {
+    StoreManager sm = StoreManager.getInstance();
     for (MailItem revision : loadCalendarItemRevisions()) {
       MailboxBlob srcRevBlob = revision.getBlob();
       String revLocator = null;
@@ -4801,7 +4801,15 @@ public abstract class CalendarItem extends MailItem {
         throw ServiceException.PERM_DENIED(
             "you do not have permission to copy private calendar item to the target folder");
     }
-    return super.copy(folder, id, uuid, parent);
+    MailItem copy = super.copy(folder, id, uuid, parent);
+    boolean inDumpster = inDumpster();
+    CALENDAR_ITEM_REPOSITORY.copyCalendar(this, id, inDumpster);
+    // Copy revisions only when recovering from dumpster.  When copying from one non-dumpster folder
+    // to another, it is never desirable to copy old revisions. (bug 55070)
+    if (inDumpster) {
+      copyRevisions(id, inDumpster);
+    }
+    return copy;
   }
 
   @Override

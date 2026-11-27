@@ -7,8 +7,6 @@ package com.zimbra.cs.mailbox;
 
 import com.zextras.mailbox.mail.TombstoneRepository;
 import com.zimbra.cs.db.DbTombstone;
-import com.zextras.mailbox.calendar.CalendarItemRepository;
-import com.zimbra.cs.db.DbCalendarItem;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Splitter;
@@ -70,7 +68,6 @@ import java.util.function.Consumer;
 public abstract class MailItem
     implements Comparable<MailItem>, ScheduledTaskResult, ZimbraMailItem {
 
-  private static final CalendarItemRepository CALENDAR_ITEM_REPOSITORY = new DbCalendarItem();
   private static final TombstoneRepository TOMBSTONE_REPOSITORY = new DbTombstone();
 
   public enum Type {
@@ -2580,17 +2577,6 @@ public abstract class MailItem
     if (!StringUtil.isNullOrEmpty(prevFolders)) {
       data.setPrevFolders(prevFolders);
     }
-    if (this instanceof CalendarItem)
-      CALENDAR_ITEM_REPOSITORY.copyCalendar((CalendarItem) this, copyId, inDumpster);
-
-    // older revisions
-    // Copy revisions only when recovering from dumpster.  When copying from one non-dumpster folder
-    // to another,
-    // it is never desirable to copy old revisions. (bug 55070)
-    if (inDumpster) {
-      copyRevisions(sm, copyId, inDumpster);
-    }
-
     MailItem copy = constructItem(mMailbox, data);
     copy.finishCreation(parent);
 
@@ -2625,9 +2611,6 @@ public abstract class MailItem
    *       <li><tt>service.PERM_DENIED</tt> - if you don't have sufficient permissions
    *     </ul>
    */
-  void copyRevisions(StoreManager sm, int copyId, boolean inDumpster)
-      throws IOException, ServiceException {}
-
   MailItem icopy(Folder target, int copyId, String copyUuid) throws IOException, ServiceException {
     if (!isCopyable()) throw MailServiceException.CANNOT_COPY(mId);
     if (!target.canContain(this)) throw MailServiceException.CANNOT_CONTAIN();
