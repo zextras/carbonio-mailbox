@@ -3498,13 +3498,19 @@ public class Mailbox implements MailboxStore {
    * These revisions are returned in increasing order of their 1-based "version", with the current
    * revision always present and listed last.
    */
-  @SuppressWarnings("unchecked")
   public <T extends MailItem> List<T> getAllRevisions(
       OperationContext octxt, int id, MailItem.Type type) throws ServiceException {
+    return getAllRevisions(octxt, id, type, false);
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T extends MailItem> List<T> getAllRevisions(
+      OperationContext octxt, int id, MailItem.Type type, boolean fromDumpster)
+      throws ServiceException {
     boolean success = false;
     try {
       beginTransaction("getAllRevisions", octxt);
-      T item = (T) checkAccess(getItemById(id, type));
+      T item = (T) checkAccess(getItemById(id, type, fromDumpster));
       List<MailItem> previousRevisions =
           item instanceof Appointment
               ? ((Appointment) item).loadCalendarItemRevisions()
