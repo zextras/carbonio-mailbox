@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.mailbox;
 
+import com.zextras.mailbox.mail.TombstoneRepository;
+import com.zimbra.cs.db.DbTombstone;
 import com.zextras.mailbox.mail.ConversationRepository;
 import com.zimbra.cs.db.DbConversation;
 import com.google.common.base.CharMatcher;
@@ -256,6 +258,7 @@ public class Mailbox implements MailboxStore {
   private static final ConversationRepository CONVERSATION_REPOSITORY = new DbConversation();
 
   private static final CalendarItemRepository CALENDAR_ITEM_REPOSITORY = new DbCalendarItem();
+  private static final TombstoneRepository TOMBSTONE_REPOSITORY = new DbTombstone();
 
   public static final int ID_AUTO_INCREMENT = FolderConstants.ID_AUTO_INCREMENT; // -1;
   public static final int ID_FOLDER_USER_ROOT = FolderConstants.ID_FOLDER_USER_ROOT; // 1;
@@ -3921,7 +3924,7 @@ public class Mailbox implements MailboxStore {
       boolean success = false;
       try {
         beginReadTransaction("getTombstones", null);
-        TypedIdList tombstones = DbMailItem.readTombstones(this, lastSync, equalModSeq);
+        TypedIdList tombstones = TOMBSTONE_REPOSITORY.readTombstones(this, lastSync, equalModSeq);
         success = true;
         return tombstones;
       } finally {
@@ -8113,7 +8116,7 @@ public class Mailbox implements MailboxStore {
       // deletes have already been collected, so fetch the tombstones and write once
       TypedIdList tombstones = collectPendingTombstones();
       if (tombstones != null && !tombstones.isEmpty()) {
-        DbMailItem.writeTombstones(this, tombstones);
+        TOMBSTONE_REPOSITORY.writeTombstones(this, tombstones);
       }
 
       success = true;
@@ -9836,7 +9839,7 @@ public class Mailbox implements MailboxStore {
       // deletes have already been collected, so fetch the tombstones and write once
       TypedIdList tombstones = collectPendingTombstones();
       if (tombstones != null && !tombstones.isEmpty()) {
-        DbMailItem.writeTombstones(this, tombstones);
+        TOMBSTONE_REPOSITORY.writeTombstones(this, tombstones);
       }
 
       if (Threader.isHashPurgeAllowed(acct)) {
@@ -9849,7 +9852,7 @@ public class Mailbox implements MailboxStore {
         int tombstoneTimeoutSecs =
             (int) (LC.tombstone_max_age_ms.longValue() / Constants.MILLIS_PER_SECOND);
         int largestTrimmed =
-            DbMailItem.purgeTombstones(this, getOperationTimestamp() - tombstoneTimeoutSecs);
+            TOMBSTONE_REPOSITORY.purgeTombstones(this, getOperationTimestamp() - tombstoneTimeoutSecs);
         if (largestTrimmed > getSyncCutoff()) {
           currentChange().sync = largestTrimmed;
           DbMailbox.setSyncCutoff(this, currentChange().sync);
