@@ -337,7 +337,7 @@ public class VCard {
 
             if (vcprop.getEncoding() == Encoding.B && !vcprop.containsParam("VALUE=URI")) {
                 if (name.equals("PHOTO")) {
-                    String suffix = vcprop.getParamValue("TYPE").toUpperCase();
+                    String suffix = Strings.nullToEmpty(vcprop.getParamValue("TYPE")).toUpperCase();
                     String ctype = null;
                     if (!Strings.isNullOrEmpty(suffix)) {
                         ctype = "image/" + suffix.toLowerCase();
