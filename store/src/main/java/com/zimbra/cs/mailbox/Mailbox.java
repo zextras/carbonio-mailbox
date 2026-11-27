@@ -195,7 +195,6 @@ import com.zimbra.cs.service.util.ItemData;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.SpamHandler;
 import com.zimbra.cs.service.util.SpamHandler.SpamReport;
-import com.zimbra.cs.session.AllAccountsRedoCommitCallback;
 import com.zimbra.cs.session.PendingLocalModifications;
 import com.zimbra.cs.session.PendingModifications;
 import com.zimbra.cs.session.PendingModifications.Change;
@@ -10125,16 +10124,6 @@ public class Mailbox implements MailboxStore {
         // The first
         // case would result in a redo error, and the second case would index the wrong value.
         if (redoRecorder != null) {
-          if (currentChange().dirty != null && !currentChange().dirty.changedTypes.isEmpty()) {
-            // if an "all accounts" waitset is active, and this change has an appropriate type,
-            // then we'll need to set a commit-callback
-            AllAccountsRedoCommitCallback cb =
-                AllAccountsRedoCommitCallback.getRedoCallbackIfNecessary(
-                    getAccountId(), currentChange().dirty.changedTypes);
-            if (cb != null) {
-              redoRecorder.setCommitCallback(cb);
-            }
-          }
           redoRecorder.commit();
         }
       }

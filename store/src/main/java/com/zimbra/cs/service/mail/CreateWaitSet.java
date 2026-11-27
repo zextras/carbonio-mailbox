@@ -66,11 +66,6 @@ public class CreateWaitSet extends MailDocumentHandler {
                 EnumSet.noneOf(MailItem.Type.class));
         boolean adminAllowed = zsc.getAuthToken().isAdmin();
 
-        boolean allAccts = request.getAllAccounts();
-        if (allAccts) {
-            WaitSetMgr.checkRightForAllAccounts(zsc);
-        }
-
         List<WaitSetAccount> add = WaitSetRequest.parseAddUpdateAccounts(zsc, request.getAccounts(), defaultInterests);
 
         // workaround for 27480: load the mailboxes NOW, before we grab the waitset lock
@@ -87,7 +82,7 @@ public class CreateWaitSet extends MailDocumentHandler {
 
 
         Pair<String, List<WaitSetError>> result = WaitSetMgr.create(zsc.getRequestedAccountId(), adminAllowed,
-                defaultInterests, allAccts, add);
+                defaultInterests, add);
         String wsId = result.getFirst();
         List<WaitSetError> errors = result.getSecond();
 

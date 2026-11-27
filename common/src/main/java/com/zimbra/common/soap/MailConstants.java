@@ -1198,7 +1198,6 @@ public final class MailConstants {
   public static final String A_BLOCK = "block";
   public static final String A_CANCELED = "canceled";
   public static final String A_DEFTYPES = "defTypes";
-  public static final String A_ALL_ACCOUNTS = "allAccounts";
   public static final String A_TYPES = "types";
   public static final String A_FOLDER_INTERESTS = "folderInterests";
   public static final String A_CHANGED_FOLDERS = "changedFolders";

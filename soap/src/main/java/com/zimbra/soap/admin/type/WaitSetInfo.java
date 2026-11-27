@@ -29,7 +29,7 @@ import com.zimbra.soap.type.IdAndType;
 public class WaitSetInfo {
 
     //  This class provides a single JAXB object for handling all of
-    //  WaitSetBase / AllAccountsWaitSet / SomeAccountsWaitSet
+    //  WaitSetBase / SomeAccountsWaitSet
 
     /**
      * @zm-api-field-tag waitset-id

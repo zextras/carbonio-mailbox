@@ -2,7 +2,6 @@
   "Body": {
     "AdminCreateWaitSetRequest": {
       "defTypes": "defaultInterests",
-      "allAccounts": false,
       "add": {
         "a": [
           {

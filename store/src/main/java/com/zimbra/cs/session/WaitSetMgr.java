@@ -35,7 +35,6 @@ import com.zimbra.soap.ZimbraSoapContext;
  *
  */
 public class WaitSetMgr {
-    public static final String ALL_ACCOUNTS_ID_PREFIX = "AllWaitSet-";
 
     private static final int MAX_WAITSETS_PER_NONADMIN_ACCOUNT = LC.zimbra_waitset_max_per_account.intValueWithinRange(1,Integer.MAX_VALUE);
     private static final TimerTask sSweeper = new TimerTask() {
@@ -77,30 +76,13 @@ public class WaitSetMgr {
      * @throws ServiceException
      */
     public static Pair<String, List<WaitSetError>> create(String ownerAccountId, boolean allowMultiple,
-            Set<MailItem.Type> defaultInterest, boolean allAccts, List<WaitSetAccount> add) throws ServiceException {
+            Set<MailItem.Type> defaultInterest, List<WaitSetAccount> add) throws ServiceException {
 
-        // generate an appropriate ID for the new WaitSet
-        String id;
-        if (allAccts) {
-//                id = ALL_ACCOUNTS_ID_PREFIX+sWaitSetNumber;
-            id = ALL_ACCOUNTS_ID_PREFIX+LdapUtil.generateUUID();
-        } else {
-            id = "WaitSet-"+LdapUtil.generateUUID();
-        }
+        String id = "WaitSet-"+LdapUtil.generateUUID();
 
-        // create the proper kind of WaitSet
-        WaitSetBase ws;
-        List<WaitSetError> errors = null;
-        if (allAccts) {
-            AllAccountsWaitSet aws = AllAccountsWaitSet.create(ownerAccountId, id, defaultInterest);
-            ws = aws;
-            errors = new ArrayList<>();
-        } else {
-            SomeAccountsWaitSet sws = new SomeAccountsWaitSet(ownerAccountId, id, defaultInterest);
-            errors = sws.addAccountErrors(add);
-            MailboxManager.getInstance().addListener(sws);
-            ws = sws;
-        }
+        SomeAccountsWaitSet ws = new SomeAccountsWaitSet(ownerAccountId, id, defaultInterest);
+        List<WaitSetError> errors = ws.addAccountErrors(add);
+        MailboxManager.getInstance().addListener(ws);
 
         synchronized(sWaitSets) {
             if (!allowMultiple) {
@@ -157,11 +139,7 @@ public class WaitSetMgr {
 
             // skip permission checking if zsc is null
             if (zsc != null) {
-                if (id.startsWith(WaitSetMgr.ALL_ACCOUNTS_ID_PREFIX)) {
-                    checkRightForAllAccounts(zsc);
-                } else {
-                    checkRightForOwnerAccount(ws, requestingAcctId);
-                }
+                checkRightForOwnerAccount(ws, requestingAcctId);
             }
 
             //remove from the by-id map
@@ -197,41 +175,6 @@ public class WaitSetMgr {
      */
     public static IWaitSet lookup(String id) {
         return lookupInternal(id);
-    }
-
-    /**
-     * WaitSets that are targeted at "all accounts" can be used across server restarts
-     * (they are simply re-created)
-     *
-     * @param ownerAccountId Account ID of the owner/creator
-     */
-    public static IWaitSet lookupOrCreateForAllAccts(String ownerAccountId, String id,
-            Set<MailItem.Type> defaultInterests, String lastKnownSeqNo) throws ServiceException {
-        synchronized(sWaitSets) {
-            if (!id.startsWith(ALL_ACCOUNTS_ID_PREFIX)) {
-                throw ServiceException.INVALID_REQUEST("Called WaitSetMgr.lookupOrCreate but wasn't an 'All-' waitset ID", null);
-            }
-
-            IWaitSet toRet = lookup(id);
-            if (toRet == null) {
-                // oops, it's gone!  Try to re-create it given the last known sequence number
-                AllAccountsWaitSet ws = AllAccountsWaitSet.createWithSeqNo(ownerAccountId, id, defaultInterests, lastKnownSeqNo);
-                toRet = ws;
-                ws.setLastAccessedTime(System.currentTimeMillis());
-
-                // add the set to the two hashmaps
-                sWaitSets.put(id, ws);
-                List<String> list = sWaitSetsByAccountId.get(ownerAccountId);
-                if (list == null) {
-                    list = new ArrayList<>();
-                    sWaitSetsByAccountId.put(ownerAccountId, list);
-                }
-                list.add(id);
-
-            }
-            assert(toRet instanceof AllAccountsWaitSet);
-            return toRet;
-        }
     }
 
     public static void shutdown() {
