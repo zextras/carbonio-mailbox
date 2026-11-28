@@ -36,7 +36,7 @@
     </test.argLine>
     <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <sonar.version>5.5.0.6356</sonar.version>
+    <sonar.version>5.9.0.7382</sonar.version>
     <jetty.version>12.1.10</jetty.version>
     <jetty.servlet-api.version>4.0.9</jetty.servlet-api.version>
     <lucene.version>3.5.0</lucene.version>
